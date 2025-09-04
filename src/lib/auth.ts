@@ -18,9 +18,7 @@ export interface AuthUser {
 
 // Admin email list (update this with your admin emails)
 const ADMIN_EMAILS = [
-  'admin@heiwahouse.com',
-  'admin@heiwahouse.co',
-  'support@heiwahouse.com',
+  'julianmjavierm@gmail.com',
   // Add your admin emails here
 ];
 

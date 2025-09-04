@@ -9,8 +9,7 @@ const serviceAccount = require('../heiwahousedashboard-firebase-adminsdk-fbsvc-5
 
 // Admin email list
 const ADMIN_EMAILS = [
-  'admin@heiwahouse.com',
-  'support@heiwahouse.com'
+  'julianmjavierm@gmail.com'
 ];
 
 // Initialize Firebase Admin SDK
@@ -52,10 +51,10 @@ async function setupAdminUsers() {
       // Add/update admin document in Firestore
       const adminDoc = {
         isAdmin: true,
-        name: email.split('@')[0].replace(/^\w/, c => c.toUpperCase()),
+        name: 'Julian Javier',
         email: email,
         phone: '',
-        notes: 'Admin user',
+        notes: 'Admin user - Sole administrator',
         lastBookingDate: null,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now()
