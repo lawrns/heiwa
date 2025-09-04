@@ -43,6 +43,7 @@ import {
   ColumnDef,
   SortingState,
   ColumnFiltersState,
+  RowSelectionState,
 } from '@tanstack/react-table';
 import type { Client, CreateClientSchema } from '@/lib/schemas';
 
@@ -51,7 +52,7 @@ const ClientFormSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address'),
   phone: z.string().min(1, 'Phone is required'),
-  notes: z.string().optional().default(''),
+  notes: z.string(),
 });
 
 type ClientFormData = z.infer<typeof ClientFormSchema>;
@@ -65,7 +66,7 @@ export default function ClientsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState<(Client & { id: string }) | null>(null);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [selectedRows, setSelectedRows] = useState<RowSelectionState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -160,7 +161,11 @@ export default function ClientsPage() {
     try {
       await deleteDoc(doc(db, 'clients', clientId));
       toast.success('Client deleted successfully!');
-      setSelectedRows(selectedRows.filter(id => id !== clientId));
+      setSelectedRows(prev => {
+        const newSelection = { ...prev };
+        delete newSelection[clients.findIndex(c => c.id === clientId)];
+        return newSelection;
+      });
     } catch (error: any) {
       toast.error(`Failed to delete client: ${error.message}`);
     }
@@ -168,15 +173,16 @@ export default function ClientsPage() {
 
   // Handle bulk delete
   const handleBulkDelete = async () => {
-    if (selectedRows.length === 0) return;
-    if (!confirm(`Are you sure you want to delete ${selectedRows.length} clients?`)) return;
+    const selectedIds = Object.keys(selectedRows);
+    if (selectedIds.length === 0) return;
+    if (!confirm(`Are you sure you want to delete ${selectedIds.length} clients?`)) return;
     try {
-      const deletePromises = selectedRows.map(clientId =>
-        deleteDoc(doc(db, 'clients', clientId))
+      const deletePromises = selectedIds.map(clientIndex =>
+        deleteDoc(doc(db, 'clients', clients[parseInt(clientIndex)].id))
       );
       await Promise.all(deletePromises);
-      toast.success(`${selectedRows.length} clients deleted successfully!`);
-      setSelectedRows([]);
+      toast.success(`${selectedIds.length} clients deleted successfully!`);
+      setSelectedRows({});
     } catch (error: any) {
       toast.error(`Failed to delete clients: ${error.message}`);
     }
@@ -339,11 +345,7 @@ export default function ClientsPage() {
     state: {
       sorting,
       columnFilters,
-      rowSelection: selectedRows.reduce((acc, id) => {
-        const index = clients.findIndex(client => client.id === id);
-        if (index !== -1) acc[index] = true;
-        return acc;
-      }, {} as Record<string, boolean>),
+      rowSelection: selectedRows,
     },
   });
 
@@ -389,10 +391,10 @@ export default function ClientsPage() {
           <p className="text-gray-600">Manage client information and booking history</p>
         </div>
         <div className="flex items-center space-x-2">
-          {selectedRows.length > 0 && (
+          {Object.keys(selectedRows).length > 0 && (
             <Button variant="destructive" onClick={handleBulkDelete}>
               <Trash2 className="w-4 h-4 mr-2" />
-              Delete Selected ({selectedRows.length})
+              Delete Selected ({Object.keys(selectedRows).length})
             </Button>
           )}
           <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
