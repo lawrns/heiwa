@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { getAuth as getFirebaseAuth } from 'firebase/auth';
 import { getAuth } from '@/lib/firebase';
@@ -40,22 +40,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   // Always call hooks at the top level (Rules of Hooks) - only after build-time check
-  const [firebaseAuth, setFirebaseAuth] = useState<any>(null);
   const [isClient, setIsClient] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
 
-  // Always call useAuthState hook (never conditionally)
-  const [firebaseUser, loading, error] = useAuthState(firebaseAuth || undefined);
+  // Use useMemo to create a stable auth instance
+  const firebaseAuth = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      return getFirebaseAuth();
+    } catch (error) {
+      console.warn('Failed to get Firebase auth:', error);
+      return null;
+    }
+  }, []);
 
-  // Initialize Firebase auth only on client side
+  // Always call useAuthState hook (never conditionally)
+  const [firebaseUser, loading, error] = useAuthState(firebaseAuth as any);
+
+  // Initialize client state
   useEffect(() => {
     setIsClient(true);
-    try {
-      const authInstance = getFirebaseAuth();
-      setFirebaseAuth(authInstance);
-    } catch (error) {
-      console.warn('Failed to initialize Firebase auth:', error);
-    }
   }, []);
 
   useEffect(() => {
@@ -119,9 +123,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Always provide consistent context value to prevent SSR hydration issues
   const value: AuthContextType = {
-    user: isClient ? user : null,
-    loading: !isClient || loading,
-    error: isClient ? error : undefined,
+    user: user,
+    loading: !isClient || loading || !firebaseAuth,
+    error: error,
     signOut,
   };
 

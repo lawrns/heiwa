@@ -69,8 +69,9 @@ export { db, auth, storage };
 
 // SSR-safe getters
 export function getAuth() {
-  if (typeof window === 'undefined') {
-    return null;
+  // Always try to initialize if not already done
+  if (typeof window !== 'undefined' && !auth) {
+    initializeFirebase();
   }
   return auth;
 }
