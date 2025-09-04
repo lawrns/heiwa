@@ -22,6 +22,11 @@ firebase-debug.log
 firestore-debug.log
 *firebase-adminsdk*.json
 firebase-service-account.json
+firebase-config.js
+firebase-keys.js
+*keys.js
+*config.js
+*.firebase.js
 
 # IDE
 .vscode/
