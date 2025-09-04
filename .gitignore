@@ -28,6 +28,12 @@ firebase-keys.js
 *config.js
 *.firebase.js
 
+# Environment variables with actual credentials
+.env.local
+.env.*.local
+.env.development
+.env.production
+
 # IDE
 .vscode/
 .idea/

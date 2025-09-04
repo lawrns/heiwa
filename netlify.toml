@@ -6,7 +6,7 @@
   NODE_VERSION = "18"
   # Configure secrets scanning to allow Firebase configuration values
   SECRETS_SCAN_SMART_DETECTION_ENABLED = "true"
-  SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "AIzaSy*,*.firebaseapp.com,*.firebasestorage.app,1:*:*:web:*"
+  SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "AIzaSy*,*.firebaseapp.com,*.firebasestorage.app,1:*:*:web:*,G-*,221240912006,heiwahousedashboard,firebase-adminsdk-fbsvc@heiwahousedashboard.iam.gserviceaccount.com"
 
 [functions]
   directory = "netlify/functions"
