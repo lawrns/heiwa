@@ -1,0 +1,49 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Admin email list - update this with your admin emails
+    function isAdminEmail() {
+      return request.auth != null &&
+        request.auth.token.email in [
+          'admin@heiwahouse.com',
+          'support@heiwahouse.com'
+          // Add your admin emails here
+        ];
+    }
+
+    // Allow public read access for all files
+    match /{allPaths=**} {
+      allow read: if true;
+
+      // Admin-only write access with file size and type restrictions
+      allow write: if isAdminEmail() &&
+        request.resource.size <= 5 * 1024 * 1024 && // 5MB limit
+        request.resource.contentType.matches('image/(jpeg|png|jpg|gif|webp)'); // Image files only
+    }
+
+    // Specific rules for profile images
+    match /profile-images/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if isAdminEmail() &&
+        request.auth.uid == userId &&
+        request.resource.size <= 2 * 1024 * 1024 && // 2MB limit for profile images
+        request.resource.contentType.matches('image/(jpeg|png|jpg|webp)');
+    }
+
+    // Specific rules for room images
+    match /room-images/{roomId}/{fileName} {
+      allow read: if true;
+      allow write: if isAdminEmail() &&
+        request.resource.size <= 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/(jpeg|png|jpg|gif|webp)');
+    }
+
+    // Specific rules for surf camp images
+    match /surf-camp-images/{campId}/{fileName} {
+      allow read: if true;
+      allow write: if isAdminEmail() &&
+        request.resource.size <= 5 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/(jpeg|png|jpg|gif|webp)');
+    }
+  }
+}

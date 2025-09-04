@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Admin email list - update this with your admin emails
+    function isAdminEmail() {
+      return request.auth != null &&
+        request.auth.token.email in [
+          'admin@heiwahouse.com',
+          'support@heiwahouse.com'
+          // Add your admin emails here
+        ];
+    }
+
+    // Clients collection - admin only access
+    match /clients/{document} {
+      allow read, write: if isAdminEmail();
+    }
+
+    // Surf camps collection - admin only access
+    match /surfCamps/{document} {
+      allow read, write: if isAdminEmail();
+    }
+
+    // Rooms collection - admin only access
+    match /rooms/{document} {
+      allow read, write: if isAdminEmail();
+    }
+
+    // Add-ons collection - admin only access
+    match /addOns/{document} {
+      allow read, write: if isAdminEmail();
+    }
+
+    // Bookings collection - admin only access
+    match /bookings/{document} {
+      allow read, write: if isAdminEmail();
+    }
+
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
