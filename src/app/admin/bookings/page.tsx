@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, query, where, orderBy, doc, runTransaction } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,9 +28,12 @@ function BookingsContent() {
   const [error, setError] = useState('');
 
   const searchParams = useSearchParams();
+  const db = getDb();
 
   // Fetch clients for filter dropdown
-  const [clientsSnapshot, loadingClients] = useCollection(collection(db, COLLECTIONS.CLIENTS));
+  const [clientsSnapshot, loadingClients] = useCollection(
+    db ? collection(db, COLLECTIONS.CLIENTS) : null
+  );
 
   const clients = useMemo(() => {
     if (!clientsSnapshot) return [];
@@ -80,6 +83,7 @@ function BookingsContent() {
       constraints.push(where('clientIds', 'array-contains', clientFilter));
     }
 
+    if (!db) return null;
     return query(collection(db, 'bookings'), ...constraints);
   }, [statusFilter, campTypeFilter, dateRangeFilter, clientFilter]);
 

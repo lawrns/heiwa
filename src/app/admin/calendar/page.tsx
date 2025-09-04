@@ -3,7 +3,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 import { Calendar, momentLocalizer, View, Views } from 'react-big-calendar';
 import { format } from 'date-fns';
 import moment from 'moment';
@@ -62,12 +62,17 @@ const EventComponent = ({ event }: { event: CalendarEvent }) => {
 
 export default function CalendarPage() {
   const router = useRouter();
+  const db = getDb();
 
   // Fetch surf camps
-  const [surfCampsSnapshot, loadingCamps] = useCollection(collection(db, COLLECTIONS.SURF_CAMPS));
+  const [surfCampsSnapshot, loadingCamps] = useCollection(
+    db ? collection(db, COLLECTIONS.SURF_CAMPS) : null
+  );
 
   // Fetch bookings
-  const [bookingsSnapshot, loadingBookings] = useCollection(collection(db, COLLECTIONS.BOOKINGS));
+  const [bookingsSnapshot, loadingBookings] = useCollection(
+    db ? collection(db, COLLECTIONS.BOOKINGS) : null
+  );
 
   // Convert data to our format
   const surfCamps = useMemo(() => {

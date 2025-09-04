@@ -12,7 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -91,8 +91,12 @@ export default function ClientsPage() {
     },
   });
 
+  const db = getDb();
+
   // Use Firestore collection hook for real-time data
-  const [clientsSnapshot, loading, firestoreError] = useCollection(collection(db, 'clients'));
+  const [clientsSnapshot, loading, firestoreError] = useCollection(
+    db ? collection(db, 'clients') : null
+  );
 
   // Convert Firestore data to our format
   const clients = useMemo(() => {
@@ -125,6 +129,11 @@ export default function ClientsPage() {
   // Handle create client
   const handleCreateClient = async (data: ClientFormData) => {
     try {
+      if (!db) {
+        toast.error('Database not available');
+        return;
+      }
+
       await addDoc(collection(db, 'clients'), {
         ...data,
         createdAt: new Date(),

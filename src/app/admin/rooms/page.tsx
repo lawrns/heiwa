@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '@/lib/firebase';
+import { getDb, getAuth, getStorage } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -58,9 +58,14 @@ export default function RoomsPage() {
   const [selectedRoom, setSelectedRoom] = useState<(Room & { id: string }) | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [roomImages, setRoomImages] = useState<{ [key: string]: string[] }>({});
+  const db = getDb();
+  const auth = getAuth();
+  const storage = getStorage();
 
   // Fetch rooms
-  const [roomsSnapshot, loadingRooms, errorRooms] = useCollection(collection(db, COLLECTIONS.ROOMS));
+  const [roomsSnapshot, loadingRooms, errorRooms] = useCollection(
+    db ? collection(db, COLLECTIONS.ROOMS) : null
+  );
 
   const rooms = useMemo(() => {
     if (!roomsSnapshot) return [];
@@ -99,6 +104,10 @@ export default function RoomsPage() {
       throw new Error('File must be JPG or PNG format');
     }
 
+    if (!storage) {
+      throw new Error('Storage not available');
+    }
+
     setUploadingImage(true);
     try {
       const storageRef = ref(storage, `rooms/${Date.now()}_${file.name}`);
@@ -133,6 +142,11 @@ export default function RoomsPage() {
 
       if (existingRoom) {
         toast.error(`A room with the name "${data.name}" already exists`);
+        return;
+      }
+
+      if (!db) {
+        toast.error('Database not available');
         return;
       }
 
@@ -516,8 +530,8 @@ export default function RoomsPage() {
                       </div>
                     </div>
                     <CardTitle className="text-lg">{room.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
+        </CardHeader>
+        <CardContent>
                     <div className="space-y-4">
                       {/* Image Preview */}
                       {room.images && room.images.length > 0 ? (
@@ -588,9 +602,9 @@ export default function RoomsPage() {
                           </div>
                         )}
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+          </div>
+        </CardContent>
+      </Card>
               </motion.div>
             ))
           )}

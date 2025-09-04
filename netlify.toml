@@ -8,9 +8,6 @@
   SECRETS_SCAN_SMART_DETECTION_ENABLED = "true"
   SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "AIzaSy*,*.firebaseapp.com,*.firebasestorage.app,1:*:*:web:*,G-*,221240912006,heiwahousedashboard,firebase-adminsdk-fbsvc@heiwahousedashboard.iam.gserviceaccount.com"
 
-[functions]
-  directory = "netlify/functions"
-
 [dev]
   command = "npm run dev"
   port = 3001

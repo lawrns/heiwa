@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -141,18 +141,27 @@ export default function SurfCampsPage() {
   const [selectedCamp, setSelectedCamp] = useState<(SurfCamp & { id: string }) | null>(null);
   const [assignedClients, setAssignedClients] = useState<string[]>([]);
   const [assignedRooms, setAssignedRooms] = useState<string[]>([]);
+  const db = getDb();
 
   // Fetch surf camps
-  const [surfCampsSnapshot, loadingCamps, errorCamps] = useCollection(collection(db, COLLECTIONS.SURF_CAMPS));
+  const [surfCampsSnapshot, loadingCamps, errorCamps] = useCollection(
+    db ? collection(db, COLLECTIONS.SURF_CAMPS) : null
+  );
 
   // Fetch rooms for assignment
-  const [roomsSnapshot, loadingRooms] = useCollection(collection(db, COLLECTIONS.ROOMS));
+  const [roomsSnapshot, loadingRooms] = useCollection(
+    db ? collection(db, COLLECTIONS.ROOMS) : null
+  );
 
   // Fetch clients for assignment
-  const [clientsSnapshot, loadingClients] = useCollection(collection(db, COLLECTIONS.CLIENTS));
+  const [clientsSnapshot, loadingClients] = useCollection(
+    db ? collection(db, COLLECTIONS.CLIENTS) : null
+  );
 
   // Fetch bookings to calculate occupancy
-  const [bookingsSnapshot] = useCollection(collection(db, COLLECTIONS.BOOKINGS));
+  const [bookingsSnapshot] = useCollection(
+    db ? collection(db, COLLECTIONS.BOOKINGS) : null
+  );
 
   const surfCamps = useMemo(() => {
     if (!surfCampsSnapshot) return [];
@@ -230,6 +239,11 @@ export default function SurfCampsPage() {
 
       if (overlappingCamp) {
         toast.error(`Cannot create camp: There is already a ${data.category} camp scheduled during overlapping dates`);
+        return;
+      }
+
+      if (!db) {
+        toast.error('Database not available');
         return;
       }
 

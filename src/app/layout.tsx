@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/components/AuthProvider'
@@ -10,7 +10,11 @@ export const metadata: Metadata = {
   description: 'Administrative dashboard for managing bookings, rooms, and surf camps',
   keywords: ['admin', 'dashboard', 'booking', 'management', 'heiwa house'],
   authors: [{ name: 'Heiwa House' }],
-  viewport: 'width=device-width, initial-scale=1',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({

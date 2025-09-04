@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/firebase';
+import { getAuth as getFirebaseAuth } from 'firebase/auth';
+import { getAuth } from '@/lib/firebase';
 import { AuthUser, firebaseUserToAuthUser, authAPI } from '@/lib/auth';
 
 interface AuthContextType {
@@ -19,11 +20,42 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [firebaseUser, loading, error] = useAuthState(auth);
+  // Only initialize Firebase auth on the client side
+  const [firebaseAuth, setFirebaseAuth] = useState<any>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  // Initialize Firebase auth only on client side
+  useEffect(() => {
+    setIsClient(true);
+    try {
+      const authInstance = getFirebaseAuth();
+      setFirebaseAuth(authInstance);
+    } catch (error) {
+      console.warn('Failed to initialize Firebase auth:', error);
+    }
+  }, []);
+
+  // During SSR, provide a basic context with loading state
+  if (!isClient) {
+    const ssrValue: AuthContextType = {
+      user: null,
+      loading: true,
+      error: undefined,
+      signOut: async () => {},
+    };
+    return (
+      <AuthContext.Provider value={ssrValue}>
+        {children}
+      </AuthContext.Provider>
+    );
+  }
+
+  // Now we're on client, but auth might not be initialized yet
+  const [firebaseUser, loading, error] = useAuthState(firebaseAuth || undefined);
   const [user, setUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
-    if (firebaseUser) {
+    if (firebaseUser && firebaseAuth) {
       setUser(firebaseUserToAuthUser(firebaseUser));
 
       // Set authentication cookie for middleware
@@ -70,8 +102,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signOut = async () => {
     // Clear auth cookie before signing out
-    document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    await auth.signOut();
+    if (typeof document !== 'undefined') {
+      document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    }
+    if (firebaseAuth) {
+      await firebaseAuth.signOut();
+    }
   };
 
   const value: AuthContextType = {

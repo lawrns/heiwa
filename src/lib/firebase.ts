@@ -1,34 +1,45 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
+import { getAuth as getFirebaseAuth, connectAuthEmulator } from 'firebase/auth';
+import { getStorage as getFirebaseStorage, connectStorageEmulator } from 'firebase/storage';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-};
-
-// Check if we have valid Firebase config
-const hasValidConfig = process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
-                      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-
-// Initialize Firebase only if we have valid config
+// Initialize Firebase services
 let app: any = null;
 let db: any = null;
 let auth: any = null;
 let storage: any = null;
+let isInitialized = false;
 
-if (hasValidConfig) {
+// Function to initialize Firebase with runtime config
+async function initializeFirebase() {
+  if (isInitialized) return;
+
   try {
-    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+    // Fetch Firebase config from API route
+    const response = await fetch('/api/firebase-config');
+    if (!response.ok) {
+      throw new Error('Failed to fetch Firebase config');
+    }
+
+    const firebaseConfig = await response.json();
+
+    // Initialize Firebase only if we have valid config
+    if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+          app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
     db = getFirestore(app);
-    auth = getAuth(app);
-    storage = getStorage(app);
+    auth = getFirebaseAuth(app);
+    storage = getFirebaseStorage(app);
+      isInitialized = true;
+
+      console.log('Firebase initialized successfully');
+    } else {
+      console.warn('Firebase config is missing or invalid');
+      // Create dummy objects
+      app = {};
+      db = {};
+      auth = {};
+      storage = {};
+    }
   } catch (error) {
     console.warn('Failed to initialize Firebase:', error);
     // Create dummy objects for build time
@@ -37,13 +48,11 @@ if (hasValidConfig) {
     auth = {};
     storage = {};
   }
-} else {
-  console.warn('Firebase config is missing or invalid - using dummy objects for build');
-  // Create dummy objects for build time when config is missing
-  app = {};
-  db = {};
-  auth = {};
-  storage = {};
+}
+
+// Initialize Firebase immediately if we're in the browser
+if (typeof window !== 'undefined') {
+  initializeFirebase();
 }
 
 // Export Firebase services
@@ -95,16 +104,36 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
 }
 */
 
-// Debug Firebase configuration
-console.log('Firebase Config Status:', {
-  hasValidConfig,
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? 'Set' : 'Missing',
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'Missing',
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'Missing',
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || 'Missing',
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ? 'Set' : 'Missing',
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID ? 'Set' : 'Missing',
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID ? 'Set' : 'Missing',
-});
+// Function to get Firebase services (ensures initialization)
+export async function getFirebaseServices() {
+  if (!isInitialized && typeof window !== 'undefined') {
+    await initializeFirebase();
+  }
+  return { db, auth, storage, app };
+}
+
+// SSR-safe auth getter
+export function getAuth() {
+  if (typeof window === 'undefined') {
+    return null; // Return null during SSR
+  }
+  return auth;
+}
+
+// SSR-safe db getter
+export function getDb() {
+  if (typeof window === 'undefined') {
+    return null; // Return null during SSR
+  }
+  return db;
+}
+
+// SSR-safe storage getter
+export function getStorage() {
+  if (typeof window === 'undefined') {
+    return null; // Return null during SSR
+  }
+  return storage;
+}
 
 export default app;
