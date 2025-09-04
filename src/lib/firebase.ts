@@ -13,13 +13,41 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+// Check if we have valid Firebase config
+const hasValidConfig = process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+                      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
-// Initialize Firebase services
-export const db = getFirestore(app);
-export const auth = getAuth(app);
-export const storage = getStorage(app);
+// Initialize Firebase only if we have valid config
+let app: any = null;
+let db: any = null;
+let auth: any = null;
+let storage: any = null;
+
+if (hasValidConfig) {
+  try {
+    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+    db = getFirestore(app);
+    auth = getAuth(app);
+    storage = getStorage(app);
+  } catch (error) {
+    console.warn('Failed to initialize Firebase:', error);
+    // Create dummy objects for build time
+    app = {};
+    db = {};
+    auth = {};
+    storage = {};
+  }
+} else {
+  console.warn('Firebase config is missing or invalid - using dummy objects for build');
+  // Create dummy objects for build time when config is missing
+  app = {};
+  db = {};
+  auth = {};
+  storage = {};
+}
+
+// Export Firebase services
+export { db, auth, storage };
 
 // Connect to emulators in development (optional)
 // Uncomment this section if you want to use Firebase emulators
@@ -68,15 +96,15 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
 */
 
 // Debug Firebase configuration
-if (process.env.NODE_ENV === 'development') {
-  console.log('Firebase Config:', {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? 'Set' : 'Missing',
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ? 'Set' : 'Missing',
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID ? 'Set' : 'Missing',
-  });
-}
+console.log('Firebase Config Status:', {
+  hasValidConfig,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? 'Set' : 'Missing',
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'Missing',
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'Missing',
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || 'Missing',
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ? 'Set' : 'Missing',
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID ? 'Set' : 'Missing',
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID ? 'Set' : 'Missing',
+});
 
 export default app;

@@ -24,20 +24,40 @@ export function docToData<T>(doc: QueryDocumentSnapshot<DocumentData>): T & { id
   return { id: doc.id, ...doc.data() } as T & { id: string };
 }
 
+// Helper function to check if Firebase is available
+function isFirebaseAvailable(): boolean {
+  return db && typeof db.collection === 'function';
+}
+
+// Helper function to handle Firebase unavailability
+function handleFirebaseUnavailable(operation: string, returnValue: any = null) {
+  console.warn(`Firebase not available for ${operation}, returning ${returnValue}`);
+  return returnValue;
+}
+
 // Client operations
 export const clientsAPI = {
   async getAll(): Promise<(Client & { id: string })[]> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('clients.getAll', []);
+    }
     const querySnapshot = await getDocs(collection(db, COLLECTIONS.CLIENTS));
     return querySnapshot.docs.map(doc => docToData<Client>(doc));
   },
 
   async getById(id: string): Promise<(Client & { id: string }) | null> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('clients.getById', null);
+    }
     const docRef = doc(db, COLLECTIONS.CLIENTS, id);
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as Client & { id: string } : null;
   },
 
   async create(clientData: Omit<Client, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('clients.create', 'dummy-id');
+    }
     const now = Timestamp.now();
     const docRef = await addDoc(collection(db, COLLECTIONS.CLIENTS), {
       ...clientData,
@@ -48,6 +68,9 @@ export const clientsAPI = {
   },
 
   async update(id: string, updates: Partial<Omit<Client, 'id' | 'createdAt'>>): Promise<void> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('clients.update');
+    }
     const docRef = doc(db, COLLECTIONS.CLIENTS, id);
     await updateDoc(docRef, {
       ...updates,
@@ -56,11 +79,17 @@ export const clientsAPI = {
   },
 
   async delete(id: string): Promise<void> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('clients.delete');
+    }
     const docRef = doc(db, COLLECTIONS.CLIENTS, id);
     await deleteDoc(docRef);
   },
 
   async findByEmail(email: string): Promise<(Client & { id: string }) | null> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('clients.findByEmail', null);
+    }
     const q = query(collection(db, COLLECTIONS.CLIENTS), where('email', '==', email));
     const querySnapshot = await getDocs(q);
     return querySnapshot.empty ? null : docToData<Client>(querySnapshot.docs[0]);
@@ -70,6 +99,9 @@ export const clientsAPI = {
 // Surf Camps operations
 export const surfCampsAPI = {
   async getAll(): Promise<(SurfCamp & { id: string })[]> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('surfCamps.getAll', []);
+    }
     const querySnapshot = await getDocs(
       query(collection(db, COLLECTIONS.SURF_CAMPS), orderBy('startDate', 'desc'))
     );
@@ -77,6 +109,9 @@ export const surfCampsAPI = {
   },
 
   async getById(id: string): Promise<(SurfCamp & { id: string }) | null> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('surfCamps.getById', null);
+    }
     const docRef = doc(db, COLLECTIONS.SURF_CAMPS, id);
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as SurfCamp & { id: string } : null;
@@ -193,6 +228,9 @@ export const addOnsAPI = {
 // Bookings operations
 export const bookingsAPI = {
   async getAll(): Promise<(Booking & { id: string })[]> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('bookings.getAll', []);
+    }
     const querySnapshot = await getDocs(
       query(collection(db, COLLECTIONS.BOOKINGS), orderBy('createdAt', 'desc'))
     );
@@ -200,12 +238,18 @@ export const bookingsAPI = {
   },
 
   async getById(id: string): Promise<(Booking & { id: string }) | null> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('bookings.getById', null);
+    }
     const docRef = doc(db, COLLECTIONS.BOOKINGS, id);
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } as Booking & { id: string } : null;
   },
 
   async getByClientId(clientId: string): Promise<(Booking & { id: string })[]> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('bookings.getByClientId', []);
+    }
     const q = query(
       collection(db, COLLECTIONS.BOOKINGS),
       where('clientIds', 'array-contains', clientId),
@@ -216,6 +260,9 @@ export const bookingsAPI = {
   },
 
   async getByStatus(status: 'pending' | 'confirmed' | 'cancelled'): Promise<(Booking & { id: string })[]> {
+    if (!isFirebaseAvailable()) {
+      return handleFirebaseUnavailable('bookings.getByStatus', []);
+    }
     const q = query(
       collection(db, COLLECTIONS.BOOKINGS),
       where('paymentStatus', '==', status),
