@@ -56,7 +56,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     if (firebaseUser && firebaseAuth) {
-      setUser(firebaseUserToAuthUser(firebaseUser));
+      const authUser = firebaseUserToAuthUser(firebaseUser);
+      setUser(authUser);
 
       // Set authentication cookie for middleware
       const setAuthCookie = async () => {
@@ -96,9 +97,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } else {
       setUser(null);
       // Clear auth cookie when user logs out
-      document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      if (typeof document !== 'undefined') {
+        document.cookie = 'firebase-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      }
     }
-  }, [firebaseUser]);
+  }, [firebaseUser, firebaseAuth]);
 
   const signOut = async () => {
     // Clear auth cookie before signing out
@@ -136,44 +139,4 @@ export function useAuth(): AuthContextType {
 export function useIsAdmin(): boolean {
   const { user } = useAuth();
   return user?.isAdmin || false;
-}
-
-// Hook for requiring authentication
-export function useRequireAuth(): AuthUser {
-  const { user, loading } = useAuth();
-  
-  useEffect(() => {
-    if (!loading && !user) {
-      // Redirect to login if not authenticated
-      if (typeof window !== 'undefined') {
-        window.location.href = '/admin/login';
-      }
-    }
-  }, [user, loading]);
-
-  if (!user) {
-    throw new Error('Authentication required');
-  }
-
-  return user;
-}
-
-// Hook for requiring admin access
-export function useRequireAdmin(): AuthUser {
-  const user = useRequireAuth();
-  
-  useEffect(() => {
-    if (user && !user.isAdmin) {
-      // Redirect to login if not admin
-      if (typeof window !== 'undefined') {
-        window.location.href = '/admin/login';
-      }
-    }
-  }, [user]);
-
-  if (!user.isAdmin) {
-    throw new Error('Admin access required');
-  }
-
-  return user;
 }
