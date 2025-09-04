@@ -3,6 +3,17 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth as getFirebaseAuth } from 'firebase/auth';
 import { getStorage as getFirebaseStorage } from 'firebase/storage';
 
+// Firebase configuration using real environment variables
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+};
+
 // Initialize Firebase services
 let app: any = null;
 let db: any = null;
@@ -10,25 +21,13 @@ let auth: any = null;
 let storage: any = null;
 let isInitialized = false;
 
-// Function to initialize Firebase with runtime config
-async function initializeFirebase() {
-  if (isInitialized) return;
+// Function to initialize Firebase
+function initializeFirebase() {
+  if (isInitialized || typeof window === 'undefined') return;
 
   try {
-    // Fetch Firebase config from API route
-    const response = await fetch('/api/firebase-config');
-    if (!response.ok) {
-      throw new Error('Failed to fetch Firebase config');
-    }
-
-    const firebaseConfig = await response.json();
-
-    // Initialize Firebase only if we have valid config (not demo values)
-    if (firebaseConfig.apiKey &&
-        firebaseConfig.projectId &&
-        !firebaseConfig.apiKey.includes('demo') &&
-        !firebaseConfig.projectId.includes('demo')) {
-
+    // Check if we have valid Firebase configuration
+    if (firebaseConfig.apiKey && firebaseConfig.projectId) {
       if (!getApps().length) {
         app = initializeApp(firebaseConfig);
       } else {
@@ -39,9 +38,9 @@ async function initializeFirebase() {
       storage = getFirebaseStorage(app);
       isInitialized = true;
 
-      console.log('Firebase initialized successfully');
+      console.log('Firebase initialized successfully with real credentials');
     } else {
-      console.warn('Firebase config is missing or using demo values - Firebase not initialized');
+      console.warn('Firebase config is missing - using demo mode');
       // Set dummy values for development/demo
       app = {};
       db = {};
@@ -63,14 +62,6 @@ async function initializeFirebase() {
 // Initialize Firebase immediately if we're in the browser
 if (typeof window !== 'undefined') {
   initializeFirebase();
-}
-
-// Function to get Firebase services (ensures initialization)
-export async function getFirebaseServices() {
-  if (!isInitialized && typeof window !== 'undefined') {
-    await initializeFirebase();
-  }
-  return { db, auth, storage, app };
 }
 
 // Export Firebase services (may be null during SSR)
