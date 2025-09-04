@@ -3,32 +3,33 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth as getFirebaseAuth } from 'firebase/auth';
 import { getStorage as getFirebaseStorage } from 'firebase/storage';
 
-// Initialize Firebase services - only on client side
+// Initialize Firebase services
 let app: any = null;
 let db: any = null;
 let auth: any = null;
 let storage: any = null;
 let isInitialized = false;
 
-// Function to initialize Firebase
-function initializeFirebase() {
-  if (isInitialized || typeof window === 'undefined') return;
+// Function to initialize Firebase with runtime config
+async function initializeFirebase() {
+  if (isInitialized) return;
 
   try {
-    // Get Firebase config from environment variables (only available on client)
-    const firebaseConfig = {
-      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-      measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-    };
+    // Fetch Firebase config from API route
+    const response = await fetch('/api/firebase-config');
+    if (!response.ok) {
+      throw new Error('Failed to fetch Firebase config');
+    }
 
-    // Only initialize if we have valid config
+    const firebaseConfig = await response.json();
+
+    // Initialize Firebase only if we have valid config
     if (firebaseConfig.apiKey && firebaseConfig.projectId) {
-      app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+      if (!getApps().length) {
+        app = initializeApp(firebaseConfig);
+      } else {
+        app = getApps()[0];
+      }
       db = getFirestore(app);
       auth = getFirebaseAuth(app);
       storage = getFirebaseStorage(app);
@@ -43,9 +44,17 @@ function initializeFirebase() {
   }
 }
 
-// Initialize Firebase only on client side with a delay to ensure env vars are loaded
+// Initialize Firebase immediately if we're in the browser
 if (typeof window !== 'undefined') {
-  setTimeout(initializeFirebase, 100);
+  initializeFirebase();
+}
+
+// Function to get Firebase services (ensures initialization)
+export async function getFirebaseServices() {
+  if (!isInitialized && typeof window !== 'undefined') {
+    await initializeFirebase();
+  }
+  return { db, auth, storage, app };
 }
 
 // Export Firebase services (may be null during SSR)
