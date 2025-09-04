@@ -92,6 +92,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const { user, signOut, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -131,35 +132,47 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         )}
 
         {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform ${
+        <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-lg transform transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-0`}>
-          <div className="flex items-center justify-between h-16 px-6 bg-blue-600">
-            <Link href="/admin" className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+        } md:translate-x-0 md:static md:inset-0 ${
+          sidebarCollapsed ? 'md:w-16' : 'md:w-64'
+        }`}>
+          <div className="flex items-center justify-between h-16 px-4 bg-blue-600">
+            <Link href="/admin" className={`flex items-center space-x-3 ${sidebarCollapsed ? 'justify-center' : ''}`}>
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-blue-600 font-bold text-sm">H</span>
               </div>
-              <span className="text-white font-semibold text-lg">Heiwa House</span>
+              {!sidebarCollapsed && <span className="text-white font-semibold text-lg truncate">Heiwa House</span>}
             </Link>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="md:hidden text-white hover:text-gray-200"
-            >
-              <XMarkIcon className="h-6 w-6" />
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="hidden md:block text-white hover:text-gray-200 p-1 rounded"
+                title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                <Bars3Icon className={`h-5 w-5 transition-transform ${sidebarCollapsed ? 'rotate-180' : ''}`} />
+              </button>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="md:hidden text-white hover:text-gray-200"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
+            </div>
           </div>
 
           <nav className="mt-8" aria-label="Navigation menu">
-            <div className="px-4 space-y-2">
+            <div className={`${sidebarCollapsed ? 'px-2' : 'px-4'} space-y-2`}>
               {navigationItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="flex items-center px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-blue-600 transition-colors"
+                  className={`flex items-center ${sidebarCollapsed ? 'px-3 justify-center' : 'px-4'} py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-blue-600 transition-colors`}
                   onClick={() => setSidebarOpen(false)}
+                  title={sidebarCollapsed ? item.name : ""}
                 >
-                  <item.icon className="mr-3 h-5 w-5" />
-                  {item.name}
+                  <item.icon className={`${sidebarCollapsed ? 'h-6 w-6' : 'mr-3 h-5 w-5'}`} />
+                  {!sidebarCollapsed && item.name}
                 </Link>
               ))}
             </div>
@@ -167,7 +180,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
 
         {/* Main content */}
-        <div className="md:pl-64">
+        <div className={`transition-all duration-300 ${sidebarCollapsed ? 'md:pl-16' : 'md:pl-64'}`}>
           {/* Top header */}
           <header className="bg-white shadow-sm border-b border-gray-200">
             <div className="flex items-center justify-between h-16 px-6">

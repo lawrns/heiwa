@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 // Disable prerendering for this page since it uses Firebase
 export const dynamic = 'force-dynamic';
@@ -77,6 +77,19 @@ export default function RoomsPage() {
       ...doc.data()
     })) as (Room & { id: string })[];
   }, [roomsSnapshot]);
+
+  // Handle Firestore errors and permissions
+  useEffect(() => {
+    if (errorRooms) {
+      const errorMessage = errorRooms.message || 'Failed to load rooms';
+      if (errorMessage.includes('Missing or insufficient permissions')) {
+        toast.error('Access denied: Insufficient permissions to view rooms');
+        console.warn('Permissions error:', errorRooms);
+      } else {
+        toast.error(`Failed to load rooms: ${errorMessage}`);
+      }
+    }
+  }, [errorRooms]);
 
   // Form for creating/editing rooms
   const form = useForm<RoomFormData>({

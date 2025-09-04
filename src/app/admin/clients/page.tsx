@@ -1,759 +1,459 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react';
-
-// Disable prerendering for this page since it uses Firebase
-export const dynamic = 'force-dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { getDb } from '@/lib/firebase';
-import { toast } from 'react-toastify';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Search, Plus, Edit, Eye, Users, UserCheck, UserPlus, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Plus,
-  Search,
-  RefreshCw,
-  Edit,
-  Eye,
-  Users,
-  Trash2,
-  ChevronUp,
-  ChevronDown,
-  ChevronsLeft,
-  ChevronsRight,
-  MoreHorizontal
-} from 'lucide-react';
-import {
-  useReactTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  flexRender,
-  createColumnHelper,
-  ColumnDef,
-  SortingState,
-  ColumnFiltersState,
-  RowSelectionState,
-} from '@tanstack/react-table';
-import type { Client, CreateClientSchema } from '@/lib/schemas';
 
-// Form schema for client creation/editing
-const ClientFormSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().min(1, 'Phone is required'),
-  notes: z.string(),
-});
+// TypeScript interfaces
+interface Timestamp {
+  seconds: number;
+  nanoseconds?: number;
+}
 
-type ClientFormData = z.infer<typeof ClientFormSchema>;
+interface Client {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  lastBookingDate: Timestamp | null;
+  notes: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
 
-// Column helper for react-table
-const columnHelper = createColumnHelper<Client & { id: string }>();
+// Mock data for demonstration
+const MOCK_CLIENTS: Client[] = [
+  {
+    id: '1',
+    name: 'Sarah Johnson',
+    email: 'sarah.johnson@email.com',
+    phone: '+1 (555) 123-4567',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 7 }, // 1 week ago
+    notes: 'VIP client, prefers ocean view rooms. Allergic to shellfish.',
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 30 }, // 1 month ago
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 7 }
+  },
+  {
+    id: '2',
+    name: 'Marcus Rodriguez',
+    email: 'marcus.r@surfmail.com',
+    phone: '+1 (555) 987-6543',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 3 }, // 3 days ago
+    notes: 'Professional surfer, books extended stays. Requires early check-in.',
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 90 }, // 3 months ago
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 3 }
+  },
+  {
+    id: '3',
+    name: 'Emily Chen',
+    email: 'emily.chen.travel@gmail.com',
+    phone: '+1 (555) 456-7890',
+    lastBookingDate: null,
+    notes: 'First-time visitor, interested in beginner surf lessons.',
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 5 }, // 5 days ago
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 5 }
+  },
+  {
+    id: '4',
+    name: 'David Thompson',
+    email: 'dthompson@corporate.com',
+    phone: '+1 (555) 234-5678',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 14 }, // 2 weeks ago
+    notes: 'Corporate bookings for team retreats. Needs group discounts and meeting facilities.',
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 180 }, // 6 months ago
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 14 }
+  },
+  {
+    id: '5',
+    name: 'Isabella Martinez',
+    email: 'bella.martinez@hotmail.com',
+    phone: '+1 (555) 345-6789',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 1 }, // 1 day ago
+    notes: 'Yoga instructor, books monthly wellness retreats.',
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 60 }, // 2 months ago
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 1 }
+  },
+  {
+    id: '6',
+    name: 'James Wilson',
+    email: 'jwilson.photographer@outlook.com',
+    phone: '+1 (555) 567-8901',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 21 }, // 3 weeks ago
+    notes: 'Professional photographer, needs equipment storage and early sunrise access.',
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 120 }, // 4 months ago
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 21 }
+  },
+  {
+    id: '7',
+    name: 'Aisha Patel',
+    email: 'aisha.patel.md@medical.org',
+    phone: '+1 (555) 678-9012',
+    lastBookingDate: null,
+    notes: 'Medical professional, interested in stress-relief packages.',
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 2 }, // 2 days ago
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 2 }
+  },
+  {
+    id: '8',
+    name: 'Robert Kim',
+    email: 'robert.kim.tech@startup.io',
+    phone: '+1 (555) 789-0123',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 45 }, // 1.5 months ago
+    notes: 'Tech entrepreneur, books last-minute. Prefers digital check-in.',
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 200 }, // ~7 months ago
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 45 }
+  }
+];
 
-export default function ClientsPage() {
+// Loading skeleton component
+const ClientRowSkeleton = () => (
+  <TableRow>
+    {[...Array(6)].map((_, i) => (
+      <TableCell key={i}>
+        <div className="h-4 bg-gray-200 rounded animate-pulse" />
+      </TableCell>
+    ))}
+  </TableRow>
+);
+
+// Main component
+export default function AdminClientsPage() {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedClient, setSelectedClient] = useState<(Client & { id: string }) | null>(null);
-  const [selectedRows, setSelectedRows] = useState<RowSelectionState>({});
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // Forms
-  const createForm = useForm<ClientFormData>({
-    resolver: zodResolver(ClientFormSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      phone: '',
-      notes: '',
-    },
-  });
-
-  const editForm = useForm<ClientFormData>({
-    resolver: zodResolver(ClientFormSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      phone: '',
-      notes: '',
-    },
-  });
-
-  const db = getDb();
-
-  // Use Firestore collection hook for real-time data
-  const [clientsSnapshot, loading, firestoreError] = useCollection(
-    db ? collection(db, 'clients') : null
-  );
-
-  // Convert Firestore data to our format
-  const clients = useMemo(() => {
-    if (!clientsSnapshot) return [];
-    return clientsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as (Client & { id: string })[];
-  }, [clientsSnapshot]);
-
-  // Handle Firestore errors
+  // Simulate API loading
   useEffect(() => {
-    if (firestoreError) {
-      const errorMessage = firestoreError.message || 'Failed to load clients';
-      setError(errorMessage);
-      toast.error(`Failed to load clients: ${errorMessage}`);
-    }
-  }, [firestoreError]);
+    loadClients();
+  }, []);
 
-  // Format date helper
-  const formatDate = (timestamp: any) => {
+  const loadClients = async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      // In production, this would be: const response = await fetch('/api/clients');
+      setClients(MOCK_CLIENTS);
+    } catch (error: any) {
+      setError('Failed to load clients. Please try again.');
+      console.error('Load clients error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadClients();
+    setRefreshing(false);
+  };
+
+  // Memoized filtered clients with debounced search
+  const filteredClients = useMemo(() => {
+    if (!searchTerm.trim()) return clients;
+
+    const term = searchTerm.toLowerCase();
+    return clients.filter(client =>
+      client.name.toLowerCase().includes(term) ||
+      client.email.toLowerCase().includes(term) ||
+      client.phone.replace(/\D/g, '').includes(term.replace(/\D/g, ''))
+    );
+  }, [clients, searchTerm]);
+
+  // Statistics calculations
+  const statistics = useMemo(() => {
+    const now = new Date();
+    const thisMonth = now.getMonth();
+    const thisYear = now.getFullYear();
+
+    return {
+      total: clients.length,
+      withBookings: clients.filter(c => c.lastBookingDate).length,
+      newThisMonth: clients.filter(c => {
+        const created = new Date(c.createdAt.seconds * 1000);
+        return created.getMonth() === thisMonth && created.getFullYear() === thisYear;
+      }).length
+    };
+  }, [clients]);
+
+  // Date formatting utility
+  const formatDate = (timestamp: Timestamp | null): string => {
     if (!timestamp) return 'Never';
     try {
-      return new Date(timestamp.seconds * 1000).toLocaleDateString();
+      const date = new Date(timestamp.seconds * 1000);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
     } catch {
       return 'Invalid date';
     }
   };
 
-  // Handle create client
-  const handleCreateClient = async (data: ClientFormData) => {
-    try {
-      if (!db) {
-        toast.error('Database not available');
-        return;
-      }
-
-      await addDoc(collection(db, 'clients'), {
-        ...data,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-      toast.success('Client created successfully!');
-      setShowCreateModal(false);
-      createForm.reset();
-    } catch (error: any) {
-      toast.error(`Failed to create client: ${error.message}`);
-    }
+  // Truncate notes utility
+  const truncateNotes = (notes: string, maxLength: number = 50): string => {
+    if (!notes) return 'No notes';
+    return notes.length > maxLength ? `${notes.substring(0, maxLength)}...` : notes;
   };
-
-  // Handle edit client
-  const handleEditClient = async (data: ClientFormData) => {
-    if (!selectedClient) return;
-    try {
-      await updateDoc(doc(db, 'clients', selectedClient.id), {
-        ...data,
-        updatedAt: new Date(),
-      });
-      toast.success('Client updated successfully!');
-      setShowEditModal(false);
-      setSelectedClient(null);
-      editForm.reset();
-    } catch (error: any) {
-      toast.error(`Failed to update client: ${error.message}`);
-    }
-  };
-
-  // Handle delete client
-  const handleDeleteClient = async (clientId: string) => {
-    if (!confirm('Are you sure you want to delete this client?')) return;
-    try {
-      await deleteDoc(doc(db, 'clients', clientId));
-      toast.success('Client deleted successfully!');
-      setSelectedRows(prev => {
-        const newSelection = { ...prev };
-        delete newSelection[clients.findIndex(c => c.id === clientId)];
-        return newSelection;
-      });
-    } catch (error: any) {
-      toast.error(`Failed to delete client: ${error.message}`);
-    }
-  };
-
-  // Handle bulk delete
-  const handleBulkDelete = async () => {
-    const selectedIds = Object.keys(selectedRows);
-    if (selectedIds.length === 0) return;
-    if (!confirm(`Are you sure you want to delete ${selectedIds.length} clients?`)) return;
-    try {
-      const deletePromises = selectedIds.map(clientIndex =>
-        deleteDoc(doc(db, 'clients', clients[parseInt(clientIndex)].id))
-      );
-      await Promise.all(deletePromises);
-      toast.success(`${selectedIds.length} clients deleted successfully!`);
-      setSelectedRows({});
-    } catch (error: any) {
-      toast.error(`Failed to delete clients: ${error.message}`);
-    }
-  };
-
-  // Open edit modal with client data
-  const openEditModal = (client: Client & { id: string }) => {
-    setSelectedClient(client);
-    editForm.reset({
-      name: client.name,
-      email: client.email,
-      phone: client.phone,
-      notes: client.notes || '',
-    });
-    setShowEditModal(true);
-  };
-
-  // Define table columns
-  const columns = useMemo<ColumnDef<Client & { id: string }, any>[]>(
-    () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Select all"
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
-        ),
-        enableSorting: false,
-        enableColumnFilter: false,
-      },
-      columnHelper.accessor('name', {
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-            className="h-auto p-0 font-medium"
-          >
-            Name
-            {column.getIsSorted() === 'asc' ? (
-              <ChevronUp className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === 'desc' ? (
-              <ChevronDown className="ml-2 h-4 w-4" />
-            ) : null}
-          </Button>
-        ),
-        cell: (info) => (
-          <div className="font-medium">{info.getValue()}</div>
-        ),
-      }),
-      columnHelper.accessor('email', {
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-            className="h-auto p-0 font-medium"
-          >
-            Email
-            {column.getIsSorted() === 'asc' ? (
-              <ChevronUp className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === 'desc' ? (
-              <ChevronDown className="ml-2 h-4 w-4" />
-            ) : null}
-          </Button>
-        ),
-        cell: (info) => (
-          <a
-            href={`mailto:${info.getValue()}`}
-            className="text-blue-600 hover:text-blue-800 underline"
-          >
-            {info.getValue()}
-          </a>
-        ),
-      }),
-      columnHelper.accessor('phone', {
-        header: 'Phone',
-        cell: (info) => (
-          <a
-            href={`tel:${info.getValue()}`}
-            className="text-blue-600 hover:text-blue-800 underline"
-          >
-            {info.getValue()}
-          </a>
-        ),
-      }),
-      columnHelper.accessor('lastBookingDate', {
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-            className="h-auto p-0 font-medium"
-          >
-            Last Booking
-            {column.getIsSorted() === 'asc' ? (
-              <ChevronUp className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === 'desc' ? (
-              <ChevronDown className="ml-2 h-4 w-4" />
-            ) : null}
-          </Button>
-        ),
-        cell: (info) => formatDate(info.getValue()),
-      }),
-      columnHelper.accessor('notes', {
-        header: 'Notes',
-        cell: (info) => (
-          <div className="max-w-xs truncate" title={info.getValue()}>
-            {info.getValue() || 'No notes'}
-          </div>
-        ),
-      }),
-      {
-        id: 'actions',
-        header: 'Actions',
-        cell: ({ row }) => (
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => openEditModal(row.original)}
-            >
-              <Edit className="w-4 h-4 mr-1" />
-              Edit
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleDeleteClient(row.original.id)}
-            >
-              <Trash2 className="w-4 h-4 mr-1" />
-              Delete
-            </Button>
-          </div>
-        ),
-        enableSorting: false,
-        enableColumnFilter: false,
-      },
-    ],
-    [formatDate]
-  );
-
-  // Create table instance
-  const table = useReactTable({
-    data: clients,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onRowSelectionChange: setSelectedRows,
-    state: {
-      sorting,
-      columnFilters,
-      rowSelection: selectedRows,
-    },
-  });
-
-  // Update global filter
-  useEffect(() => {
-    table.setGlobalFilter(searchTerm);
-  }, [searchTerm, table]);
-
-  // Stats calculations
-  const stats = useMemo(() => {
-    const total = clients.length;
-    const recent = clients.filter(c => c.lastBookingDate).length;
-    const newThisMonth = clients.filter(c => {
-      if (!c.createdAt) return false;
-      const created = new Date(c.createdAt.seconds * 1000);
-      const now = new Date();
-      return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
-    }).length;
-    return { total, recent, newThisMonth };
-  }, [clients]);
-
-  if (loading) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex items-center justify-center h-64"
-      >
-        <div className="text-lg text-gray-600">Loading clients...</div>
-      </motion.div>
-    );
-  }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
-    >
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 animate-fade-in">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Clients</h1>
-          <p className="text-gray-600">Manage client information and booking history</p>
+          <p className="text-gray-600 mt-1">Manage client information and booking history</p>
         </div>
-        <div className="flex items-center space-x-2">
-          {Object.keys(selectedRows).length > 0 && (
-            <Button variant="destructive" onClick={handleBulkDelete}>
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete Selected ({Object.keys(selectedRows).length})
-            </Button>
-          )}
-          <Dialog open={showCreateModal} onOpenChange={setShowCreateModal}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                Add New Client
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Add New Client</DialogTitle>
-                <DialogDescription>
-                  Create a new client record in the system.
-                </DialogDescription>
-              </DialogHeader>
-              <Form {...createForm}>
-                <form onSubmit={createForm.handleSubmit(handleCreateClient)} className="space-y-4">
-                  <FormField
-                    control={createForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="john@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createForm.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                          <Input placeholder="+1 (555) 123-4567" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createForm.control}
-                    name="notes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Notes (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Additional notes about the client..." {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex justify-end space-x-2">
-                    <Button type="button" variant="outline" onClick={() => setShowCreateModal(false)}>
-                      Cancel
-                    </Button>
-                    <Button type="submit">Create Client</Button>
-                  </div>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
-        </div>
+        <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
+          <Plus className="h-4 w-4" />
+          Add New Client
+        </Button>
       </div>
 
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md"
-        >
-          {error}
-        </motion.div>
-      )}
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center">
-                <Users className="w-5 h-5 mr-2 text-blue-600" />
-                Total Clients
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-blue-600">{stats.total}</div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center">
-                <Users className="w-5 h-5 mr-2 text-green-600" />
-                Recent Clients
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-green-600">{stats.recent}</div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center">
-                <Users className="w-5 h-5 mr-2 text-purple-600" />
-                New This Month
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-purple-600">{stats.newThisMonth}</div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Client Directory</CardTitle>
-            <CardDescription>
-              View and manage all registered clients with advanced filtering and sorting
-            </CardDescription>
-            <div className="flex items-center space-x-4">
-              <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Search clients..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                  aria-label="Search clients"
-                />
-              </div>
-              <Button
-                variant="outline"
-                onClick={() => window.location.reload()}
-                aria-label="Refresh client list"
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Refresh
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {table.getFilteredRowModel().rows.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-8 text-gray-500"
-              >
-                <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p className="text-lg font-medium">
-                  {searchTerm ? 'No clients found matching your search.' : 'No clients found.'}
-                </p>
-                <p className="text-sm text-gray-400 mt-2">
-                  {searchTerm ? 'Try adjusting your search terms.' : 'Get started by adding your first client.'}
-                </p>
-              </motion.div>
-            ) : (
-              <div className="space-y-4">
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                          {headerGroup.headers.map((header) => (
-                            <TableHead key={header.id}>
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
-                            </TableHead>
-                          ))}
-                        </TableRow>
-                      ))}
-                    </TableHeader>
-                    <TableBody>
-                      {table.getRowModel().rows.map((row) => (
-                        <TableRow
-                          key={row.id}
-                          data-state={row.getIsSelected() && "selected"}
-                        >
-                          {row.getVisibleCells().map((cell) => (
-                            <TableCell key={cell.id}>
-                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-
-                {/* Pagination */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <p className="text-sm font-medium">
-                      Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{' '}
-                      {Math.min(
-                        (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-                        table.getFilteredRowModel().rows.length
-                      )} of {table.getFilteredRowModel().rows.length} results
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => table.setPageIndex(0)}
-                      disabled={!table.getCanPreviousPage()}
-                    >
-                      <ChevronsLeft className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => table.previousPage()}
-                      disabled={!table.getCanPreviousPage()}
-                    >
-                      Previous
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => table.nextPage()}
-                      disabled={!table.getCanNextPage()}
-                    >
-                      Next
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                      disabled={!table.getCanNextPage()}
-                    >
-                      <ChevronsRight className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Edit Modal */}
+      {/* Error Alert */}
       <AnimatePresence>
-        {showEditModal && selectedClient && (
-          <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Edit Client</DialogTitle>
-                <DialogDescription>
-                  Update client information.
-                </DialogDescription>
-              </DialogHeader>
-              <Form {...editForm}>
-                <form onSubmit={editForm.handleSubmit(handleEditClient)} className="space-y-4">
-                  <FormField
-                    control={editForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={editForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="john@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={editForm.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                          <Input placeholder="+1 (555) 123-4567" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={editForm.control}
-                    name="notes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Notes (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Additional notes about the client..." {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex justify-end space-x-2">
-                    <Button type="button" variant="outline" onClick={() => setShowEditModal(false)}>
-                      Cancel
-                    </Button>
-                    <Button type="submit">Update Client</Button>
-                  </div>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center gap-2"
+          >
+            <span>{error}</span>
+            <Button variant="outline" size="sm" onClick={loadClients} className="ml-auto">
+              Retry
+            </Button>
+          </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+
+      {/* Main Content Card */}
+      <Card className="shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5 text-blue-600" />
+            Client Directory
+          </CardTitle>
+          <CardDescription>
+            View and manage all registered clients
+          </CardDescription>
+
+          {/* Search and Actions */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search clients by name, email, or phone..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          </div>
+        </CardHeader>
+
+        <CardContent>
+          {loading ? (
+            /* Loading State */
+            <div className="space-y-4">
+              <div className="flex items-center justify-center py-8">
+                <div className="flex items-center gap-2 text-gray-600">
+                  <RefreshCw className="h-5 w-5 animate-spin" />
+                  <span>Loading clients...</span>
+                </div>
+              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Last Booking</TableHead>
+                    <TableHead>Notes</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[...Array(5)].map((_, i) => <ClientRowSkeleton key={i} />)}
+                </TableBody>
+              </Table>
+            </div>
+          ) : filteredClients.length === 0 ? (
+            /* Empty State */
+            <div className="text-center py-12">
+              <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {searchTerm ? 'No clients found' : 'No clients yet'}
+              </h3>
+              <p className="text-gray-500 mb-4">
+                {searchTerm
+                  ? `No clients match "${searchTerm}". Try adjusting your search.`
+                  : 'Get started by adding your first client.'
+                }
+              </p>
+              {!searchTerm && (
+                <Button className="flex items-center gap-2 mx-auto">
+                  <Plus className="h-4 w-4" />
+                  Add First Client
+                </Button>
+              )}
+            </div>
+          ) : (
+            /* Data Table */
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="font-semibold">Name</TableHead>
+                    <TableHead className="font-semibold">Email</TableHead>
+                    <TableHead className="font-semibold">Phone</TableHead>
+                    <TableHead className="font-semibold">Last Booking</TableHead>
+                    <TableHead className="font-semibold">Notes</TableHead>
+                    <TableHead className="font-semibold">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <AnimatePresence>
+                    {filteredClients.map((client, index) => (
+                      <motion.tr
+                        key={client.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
+                        <TableCell className="font-medium">{client.name}</TableCell>
+                        <TableCell className="text-gray-600">{client.email}</TableCell>
+                        <TableCell className="text-gray-600">{client.phone}</TableCell>
+                        <TableCell>
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            client.lastBookingDate
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {formatDate(client.lastBookingDate)}
+                          </span>
+                        </TableCell>
+                        <TableCell className="max-w-xs">
+                          <span
+                            title={client.notes || 'No notes'}
+                            className="text-gray-600 cursor-help"
+                          >
+                            {truncateNotes(client.notes)}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex items-center gap-1 hover:bg-blue-50 hover:border-blue-300"
+                            >
+                              <Edit className="h-3 w-3" />
+                              Edit
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex items-center gap-1 hover:bg-green-50 hover:border-green-300"
+                            >
+                              <Eye className="h-3 w-3" />
+                              View Bookings
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </motion.tr>
+                    ))}
+                  </AnimatePresence>
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600">Total Clients</CardTitle>
+              <Users className="h-4 w-4 text-blue-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-blue-600">{statistics.total}</div>
+              <p className="text-xs text-gray-500 mt-1">
+                {statistics.total > 0 ? 'Registered clients' : 'No clients yet'}
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600">With Bookings</CardTitle>
+              <UserCheck className="h-4 w-4 text-green-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">{statistics.withBookings}</div>
+              <p className="text-xs text-gray-500 mt-1">
+                {statistics.total > 0
+                  ? `${Math.round((statistics.withBookings / statistics.total) * 100)}% of clients`
+                  : 'No bookings yet'
+                }
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Card className="hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600">New This Month</CardTitle>
+              <UserPlus className="h-4 w-4 text-purple-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-purple-600">{statistics.newThisMonth}</div>
+              <p className="text-xs text-gray-500 mt-1">
+                {statistics.newThisMonth > 0 ? 'New registrations' : 'No new clients'}
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    </div>
   );
 }

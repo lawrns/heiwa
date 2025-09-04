@@ -64,50 +64,85 @@ function BookingsContent() {
 
   // Create Firestore query based on all filters
   const bookingsQuery = useMemo(() => {
-    let constraints: any[] = [orderBy('createdAt', 'desc')];
-
-    // Status filter
-    if (statusFilter !== 'all') {
-      constraints.push(where('paymentStatus', '==', statusFilter));
-    }
-
-    // Camp type filter
-    if (campTypeFilter !== 'all') {
-      constraints.push(where('category', '==', campTypeFilter));
-    }
-
-    // Date range filter
-    if (dateRangeFilter !== 'all') {
-      const now = new Date();
-      let startDate: Date;
-
-      switch (dateRangeFilter) {
-        case 'this-week':
-          startDate = new Date(now.setDate(now.getDate() - now.getDay()));
-          break;
-        case 'this-month':
-          startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-          break;
-        case 'this-year':
-          startDate = new Date(now.getFullYear(), 0, 1);
-          break;
-        default:
-          startDate = new Date(0);
-      }
-      constraints.push(where('createdAt', '>=', startDate));
-    }
-
-    // Client filter
-    if (clientFilter !== 'all') {
-      constraints.push(where('clientIds', 'array-contains', clientFilter));
-    }
-
     if (!db) return null;
-    return query(collection(db, 'bookings'), ...constraints);
-  }, [statusFilter, campTypeFilter, dateRangeFilter, clientFilter]);
+
+    try {
+      let constraints: any[] = [];
+
+      // Basic ordering - only add if we have a valid db connection
+      try {
+        constraints.push(orderBy('createdAt', 'desc'));
+      } catch (error) {
+        console.warn('OrderBy constraint failed:', error);
+      }
+
+      // Status filter - use simpler query
+      if (statusFilter !== 'all') {
+        try {
+          constraints.push(where('paymentStatus', '==', statusFilter));
+        } catch (error) {
+          console.warn('Status filter failed:', error);
+        }
+      }
+
+      // Camp type filter
+      if (campTypeFilter !== 'all') {
+        try {
+          constraints.push(where('category', '==', campTypeFilter));
+        } catch (error) {
+          console.warn('Category filter failed:', error);
+        }
+      }
+
+      // Date range filter - simplified
+      if (dateRangeFilter !== 'all') {
+        try {
+          const now = new Date();
+          let startDate: Date;
+
+          switch (dateRangeFilter) {
+            case 'this-week':
+              startDate = new Date(now.setDate(now.getDate() - now.getDay()));
+              break;
+            case 'this-month':
+              startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+              break;
+            case 'this-year':
+              startDate = new Date(now.getFullYear(), 0, 1);
+              break;
+            default:
+              startDate = new Date(0);
+          }
+          constraints.push(where('createdAt', '>=', startDate));
+        } catch (error) {
+          console.warn('Date filter failed:', error);
+        }
+      }
+
+      // Client filter - simplified
+      if (clientFilter !== 'all') {
+        try {
+          constraints.push(where('clientIds', 'array-contains', clientFilter));
+        } catch (error) {
+          console.warn('Client filter failed:', error);
+        }
+      }
+
+      // Create query with error handling
+      try {
+        return query(collection(db, 'bookings'), ...constraints);
+      } catch (error) {
+        console.warn('Query creation failed:', error);
+        return null;
+      }
+    } catch (error) {
+      console.warn('Bookings query setup failed:', error);
+      return null;
+    }
+  }, [db, statusFilter, campTypeFilter, dateRangeFilter, clientFilter]);
 
   // Use Firestore collection hook for real-time data
-  const [bookingsSnapshot, loading, firestoreError] = useCollection(bookingsQuery);
+  const [bookingsSnapshot, loading, firestoreError] = useCollection(bookingsQuery || null);
 
   // Convert Firestore data to our format
   const bookings = useMemo(() => {
@@ -143,6 +178,11 @@ function BookingsContent() {
 
   // Update payment status with Firestore transaction
   const updatePaymentStatus = async (bookingId: string, newStatus: 'pending' | 'confirmed' | 'cancelled') => {
+    if (!db) {
+      toast.error('Database not available');
+      return;
+    }
+
     try {
       await runTransaction(db, async (transaction) => {
         const bookingRef = doc(db, 'bookings', bookingId);

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 // Disable prerendering for this page since it uses Firebase
 export const dynamic = 'force-dynamic';
@@ -160,6 +160,19 @@ export default function SurfCampsPage() {
   const [clientsSnapshot, loadingClients] = useCollection(
     db ? collection(db, COLLECTIONS.CLIENTS) : null
   );
+
+  // Handle Firestore errors and permissions
+  useEffect(() => {
+    if (errorCamps) {
+      const errorMessage = errorCamps.message || 'Failed to load surf camps';
+      if (errorMessage.includes('Missing or insufficient permissions')) {
+        toast.error('Access denied: Insufficient permissions to view surf camps');
+        console.warn('Permissions error:', errorCamps);
+      } else {
+        toast.error(`Failed to load surf camps: ${errorMessage}`);
+      }
+    }
+  }, [errorCamps]);
 
   // Fetch bookings to calculate occupancy
   const [bookingsSnapshot] = useCollection(

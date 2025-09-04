@@ -57,10 +57,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Always call useAuthState hook (never conditionally)
   const [firebaseUser, loading, error] = useAuthState(firebaseAuth as any);
 
-  // Initialize client state
+  // Initialize client state and handle auto sign-out
   useEffect(() => {
     setIsClient(true);
-  }, []);
+
+    // Clear auth state on page load if no token exists
+    if (typeof window !== 'undefined') {
+      const token = document.cookie.split('; ').find(row => row.startsWith('firebase-token='));
+      if (!token || !token.split('=')[1]) {
+        // No token found, clear any existing auth state
+        if (firebaseAuth) {
+          firebaseAuth.signOut().catch(console.warn);
+        }
+        // Redirect to login if not already there
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/admin/login';
+        }
+      }
+    }
+  }, [firebaseAuth]);
 
   useEffect(() => {
     if (firebaseUser && firebaseAuth) {

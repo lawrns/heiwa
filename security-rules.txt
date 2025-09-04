@@ -5,8 +5,7 @@ service cloud.firestore {
     function isAdminEmail() {
       return request.auth != null &&
         request.auth.token.email in [
-          'admin@heiwahouse.com',
-          'support@heiwahouse.com'
+          'julianmjavierm@gmail.com'
           // Add your admin emails here
         ];
     }
