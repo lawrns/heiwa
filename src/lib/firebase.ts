@@ -23,8 +23,12 @@ async function initializeFirebase() {
 
     const firebaseConfig = await response.json();
 
-    // Initialize Firebase only if we have valid config
-    if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+    // Initialize Firebase only if we have valid config (not demo values)
+    if (firebaseConfig.apiKey &&
+        firebaseConfig.projectId &&
+        !firebaseConfig.apiKey.includes('demo') &&
+        !firebaseConfig.projectId.includes('demo')) {
+
       if (!getApps().length) {
         app = initializeApp(firebaseConfig);
       } else {
@@ -37,10 +41,22 @@ async function initializeFirebase() {
 
       console.log('Firebase initialized successfully');
     } else {
-      console.warn('Firebase config is missing or invalid');
+      console.warn('Firebase config is missing or using demo values - Firebase not initialized');
+      // Set dummy values for development/demo
+      app = {};
+      db = {};
+      auth = {};
+      storage = {};
+      isInitialized = true;
     }
   } catch (error) {
     console.warn('Failed to initialize Firebase:', error);
+    // Set dummy values on error
+    app = {};
+    db = {};
+    auth = {};
+    storage = {};
+    isInitialized = true;
   }
 }
 
