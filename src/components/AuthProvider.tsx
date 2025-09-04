@@ -20,9 +20,32 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  // Only initialize Firebase auth on the client side
+  // Check if we're in a build/static generation context BEFORE calling any hooks
+  const isBuildTime = typeof window === 'undefined' &&
+    (process.env.NODE_ENV === 'production' || !process.env.NEXT_RUNTIME);
+
+  // If we're in build time, provide static context to prevent SSR errors
+  if (isBuildTime) {
+    const buildTimeValue: AuthContextType = {
+      user: null,
+      loading: false,
+      error: undefined,
+      signOut: async () => {},
+    };
+    return (
+      <AuthContext.Provider value={buildTimeValue}>
+        {children}
+      </AuthContext.Provider>
+    );
+  }
+
+  // Always call hooks at the top level (Rules of Hooks) - only after build-time check
   const [firebaseAuth, setFirebaseAuth] = useState<any>(null);
   const [isClient, setIsClient] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
+
+  // Always call useAuthState hook (never conditionally)
+  const [firebaseUser, loading, error] = useAuthState(firebaseAuth || undefined);
 
   // Initialize Firebase auth only on client side
   useEffect(() => {
@@ -35,25 +58,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, []);
 
-  // During SSR, provide a basic context with loading state
-  if (!isClient) {
-    const ssrValue: AuthContextType = {
-      user: null,
-      loading: true,
-      error: undefined,
-      signOut: async () => {},
-    };
-    return (
-      <AuthContext.Provider value={ssrValue}>
-        {children}
-      </AuthContext.Provider>
-    );
-  }
-
-  // Now we're on client, but auth might not be initialized yet
-  const [firebaseUser, loading, error] = useAuthState(firebaseAuth || undefined);
-  const [user, setUser] = useState<AuthUser | null>(null);
-
   useEffect(() => {
     if (firebaseUser && firebaseAuth) {
       const authUser = firebaseUserToAuthUser(firebaseUser);
@@ -63,7 +67,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const setAuthCookie = async () => {
         try {
           const token = await firebaseUser.getIdToken();
-          if (token) {
+          if (token && typeof document !== 'undefined') {
             // Set cookie that middleware can read
             document.cookie = `firebase-token=${token}; path=/; max-age=3600; secure; samesite=strict`;
           }
@@ -78,7 +82,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const checkTokenExpiry = async () => {
         try {
           const token = await firebaseUser.getIdToken(true); // Force refresh
-          if (token) {
+          if (token && typeof document !== 'undefined') {
             // Update cookie with new token
             document.cookie = `firebase-token=${token}; path=/; max-age=3600; secure; samesite=strict`;
           } else {
@@ -113,10 +117,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  // Always provide consistent context value to prevent SSR hydration issues
   const value: AuthContextType = {
-    user,
-    loading,
-    error,
+    user: isClient ? user : null,
+    loading: !isClient || loading,
+    error: isClient ? error : undefined,
     signOut,
   };
 

@@ -10,16 +10,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
-  // Redirect if already authenticated
-  if (user?.isAdmin) {
+  // Redirect if already authenticated (only on client side)
+  if (typeof window !== 'undefined' && user?.isAdmin && !authLoading) {
     router.push('/admin');
     return null;
   }

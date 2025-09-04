@@ -12,6 +12,8 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+// This page uses Firebase and should not be prerendered
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { COLLECTIONS, SurfCamp, Booking } from '@/lib/schemas';

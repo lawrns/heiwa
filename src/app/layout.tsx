@@ -22,6 +22,19 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // During build/static generation, don't use AuthProvider to prevent Firebase SSR issues
+  const isBuildTime = typeof window === 'undefined' && !process.env.NEXT_RUNTIME;
+
+  if (isBuildTime) {
+    return (
+      <html lang="en">
+        <body className={inter.className}>
+          {children}
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="en">
       <body className={inter.className}>

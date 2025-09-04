@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+// This page uses Firebase and should not be prerendered
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -26,6 +28,23 @@ function BookingsContent() {
   const [dateRangeFilter, setDateRangeFilter] = useState<string>('all');
   const [clientFilter, setClientFilter] = useState<string>('all');
   const [error, setError] = useState('');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Prevent SSR rendering to avoid Firebase prerendering errors
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading bookings...</p>
+        </div>
+      </div>
+    );
+  }
 
   const searchParams = useSearchParams();
   const db = getDb();

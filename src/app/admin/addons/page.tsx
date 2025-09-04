@@ -1,6 +1,9 @@
 'use client'
 
 import React, { useState, useMemo } from 'react';
+
+// Disable prerendering for this page since it uses Firebase
+export const dynamic = 'force-dynamic';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';

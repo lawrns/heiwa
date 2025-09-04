@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // Enable experimental features if needed
-  },
+  serverExternalPackages: [],
   images: {
     domains: [
       'firebasestorage.googleapis.com',
@@ -22,6 +20,12 @@ const nextConfig = {
         permanent: false,
       },
     ]
+  },
+
+
+  // Force dynamic rendering for admin routes to prevent Firebase SSR issues
+  generateBuildId: async () => {
+    return 'build-' + Date.now()
   },
 }
 

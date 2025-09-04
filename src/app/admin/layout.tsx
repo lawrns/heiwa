@@ -1,12 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { Component, ReactNode, useState } from 'react'
+
+import { Component, ReactNode, useState, useEffect, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/components/AuthProvider'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import dynamicImport from 'next/dynamic'
 import {
   HomeIcon,
   UserGroupIcon,
@@ -87,9 +89,27 @@ const navigationItems = [
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Show loading state while auth is initializing or during SSR
+  if (loading || !isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading admin dashboard...</p>
+          {!isClient && <p className="text-sm text-gray-500 mt-2">Initializing Firebase...</p>}
+        </div>
+      </div>
+    );
+  }
 
   const handleLogout = async () => {
     try {
