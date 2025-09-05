@@ -126,13 +126,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="min-h-screen bg-gray-50">
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
-          <div className="fixed inset-0 z-40 md:hidden">
+          <div className="fixed inset-0 z-30 md:hidden">
             <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
           </div>
         )}
 
         {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-50 bg-white shadow-lg transform transition-all duration-300 ease-in-out ${
+        <div className={`fixed inset-y-0 left-0 z-40 bg-white shadow-lg transform transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0 md:static md:inset-0 ${
           sidebarCollapsed ? 'md:w-16' : 'md:w-64'
@@ -180,7 +180,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
 
         {/* Main content */}
-        <div className={`transition-all duration-300 ${sidebarCollapsed ? 'md:pl-16' : 'md:pl-64'}`}>
+        <div className={`transition-all duration-300 relative z-10 ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'}`}>
           {/* Top header */}
           <header className="bg-white shadow-sm border-b border-gray-200">
             <div className="flex items-center justify-between h-16 px-6">

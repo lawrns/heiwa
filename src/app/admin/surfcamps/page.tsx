@@ -87,6 +87,137 @@ interface DraggableRoomProps {
   isAssigned: boolean;
 }
 
+// Demo data for surf camps
+const DEMO_SURF_CAMPS: (SurfCamp & { id: string })[] = [
+  {
+    id: 'demo-camp-1',
+    category: 'FR',
+    startDate: Timestamp.fromMillis(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week from now
+    endDate: Timestamp.fromMillis(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
+    availableRooms: ['demo-room-1', 'demo-room-2'],
+    occupancy: 12,
+    createdAt: Timestamp.fromMillis(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
+    updatedAt: Timestamp.fromMillis(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+  },
+  {
+    id: 'demo-camp-2',
+    category: 'HH',
+    startDate: Timestamp.fromMillis(Date.now() + 21 * 24 * 60 * 60 * 1000), // 3 weeks from now
+    endDate: Timestamp.fromMillis(Date.now() + 28 * 24 * 60 * 60 * 1000), // 4 weeks from now
+    availableRooms: ['demo-room-3', 'demo-room-4'],
+    occupancy: 8,
+    createdAt: Timestamp.fromMillis(Date.now() - 15 * 24 * 60 * 60 * 1000), // 15 days ago
+    updatedAt: Timestamp.fromMillis(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+  },
+];
+
+// Demo data for rooms
+const DEMO_ROOMS: (Room & { id: string })[] = [
+  {
+    id: 'demo-room-1',
+    name: 'Ocean View Suite',
+    capacity: 4,
+    bookingType: 'whole',
+    pricing: {
+      standard: 299,
+      offSeason: 249,
+      camp: { 1: 199, 2: 179, 3: 169, 4: 159 },
+    },
+    description: 'Beautiful ocean view suite with private balcony',
+    images: [],
+    amenities: ['private-bathroom', 'sea-view', 'balcony'],
+    isActive: true,
+    createdAt: Timestamp.fromMillis(Date.now() - 60 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 7 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-room-2',
+    name: 'Garden Bungalow',
+    capacity: 2,
+    bookingType: 'whole',
+    pricing: {
+      standard: 199,
+      offSeason: 159,
+      camp: { 1: 149, 2: 139 },
+    },
+    description: 'Cozy bungalow surrounded by tropical gardens',
+    images: [],
+    amenities: ['private-bathroom', 'kitchen'],
+    isActive: true,
+    createdAt: Timestamp.fromMillis(Date.now() - 45 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 5 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-room-3',
+    name: 'Beachfront Dorm',
+    capacity: 8,
+    bookingType: 'perBed',
+    pricing: {
+      standard: 45,
+      offSeason: 35,
+      camp: { perBed: 32.5 },
+    },
+    description: 'Shared beachfront accommodation with bunk beds',
+    images: [],
+    amenities: ['wifi', 'air-conditioning'],
+    isActive: true,
+    createdAt: Timestamp.fromMillis(Date.now() - 90 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 10 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-room-4',
+    name: 'Premium Villa',
+    capacity: 6,
+    bookingType: 'whole',
+    pricing: {
+      standard: 499,
+      offSeason: 399,
+      camp: { 1: 349, 2: 329, 3: 309, 4: 289, 5: 269, 6: 249 },
+    },
+    description: 'Luxury villa with ocean views and private pool',
+    images: [],
+    amenities: ['private-bathroom', 'sea-view', 'balcony', 'wifi', 'kitchen', 'air-conditioning'],
+    isActive: true,
+    createdAt: Timestamp.fromMillis(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 3 * 24 * 60 * 60 * 1000),
+  },
+];
+
+// Demo data for clients
+const DEMO_CLIENTS: (Client & { id: string })[] = [
+  {
+    id: 'demo-client-1',
+    name: 'Sarah Johnson',
+    email: 'sarah.johnson@email.com',
+    phone: '+1 (555) 123-4567',
+    lastBookingDate: Timestamp.fromMillis(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    notes: 'VIP client, prefers ocean view rooms',
+    createdAt: Timestamp.fromMillis(Date.now() - 90 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 7 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-client-2',
+    name: 'Marcus Rodriguez',
+    email: 'marcus.r@surfmail.com',
+    phone: '+1 (555) 987-6543',
+    lastBookingDate: Timestamp.fromMillis(Date.now() - 3 * 24 * 60 * 60 * 1000),
+    notes: 'Professional surfer, books extended stays',
+    createdAt: Timestamp.fromMillis(Date.now() - 60 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 3 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-client-3',
+    name: 'Emily Chen',
+    email: 'emily.chen.travel@gmail.com',
+    phone: '+1 (555) 456-7890',
+    lastBookingDate: undefined,
+    notes: 'First-time visitor, interested in beginner surf lessons',
+    createdAt: Timestamp.fromMillis(Date.now() - 15 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 5 * 24 * 60 * 60 * 1000),
+  },
+];
+
+
 const DraggableRoom: React.FC<DraggableRoomProps> = ({ room, isAssigned }) => {
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.ROOM,
@@ -152,22 +283,27 @@ export default function SurfCampsPage() {
   );
 
   // Fetch rooms for assignment
-  const [roomsSnapshot, loadingRooms] = useCollection(
+  const [roomsSnapshot, loadingRooms, errorRooms] = useCollection(
     db ? collection(db, COLLECTIONS.ROOMS) : null
   );
 
   // Fetch clients for assignment
-  const [clientsSnapshot, loadingClients] = useCollection(
+  const [clientsSnapshot, loadingClients, errorClients] = useCollection(
     db ? collection(db, COLLECTIONS.CLIENTS) : null
   );
 
-  // Handle Firestore errors and permissions
+  // Handle Firestore errors and permissions with fallback to demo data
   useEffect(() => {
     if (errorCamps) {
       const errorMessage = errorCamps.message || 'Failed to load surf camps';
       if (errorMessage.includes('Missing or insufficient permissions')) {
-        toast.error('Access denied: Insufficient permissions to view surf camps');
+        toast.error('Access denied: Using demo data. Please check your admin permissions.');
         console.warn('Permissions error:', errorCamps);
+        // Will fall back to demo data below
+      } else if (errorMessage.includes('permission-denied') || errorMessage.includes('PERMISSION_DENIED')) {
+        toast.error('Permission denied: Using demo data. Please check your admin permissions.');
+        console.warn('Firebase permission error:', errorCamps);
+        // Will fall back to demo data below
       } else {
         toast.error(`Failed to load surf camps: ${errorMessage}`);
       }
@@ -180,28 +316,49 @@ export default function SurfCampsPage() {
   );
 
   const surfCamps = useMemo(() => {
+    // Fall back to demo data if there's a permissions error or no data
+    if (errorCamps && (errorCamps.message?.includes('Missing or insufficient permissions') ||
+                       errorCamps.message?.includes('permission-denied') ||
+                       errorCamps.message?.includes('PERMISSION_DENIED'))) {
+      return DEMO_SURF_CAMPS;
+    }
+
     if (!surfCampsSnapshot) return [];
     return surfCampsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     })) as (SurfCamp & { id: string })[];
-  }, [surfCampsSnapshot]);
+  }, [surfCampsSnapshot, errorCamps]);
 
   const rooms = useMemo(() => {
+    // Fall back to demo data if there's a permissions error or no data
+    if (errorRooms && (errorRooms.message?.includes('Missing or insufficient permissions') ||
+                       errorRooms.message?.includes('permission-denied') ||
+                       errorRooms.message?.includes('PERMISSION_DENIED'))) {
+      return DEMO_ROOMS;
+    }
+
     if (!roomsSnapshot) return [];
     return roomsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     })) as (Room & { id: string })[];
-  }, [roomsSnapshot]);
+  }, [roomsSnapshot, errorRooms]);
 
   const clients = useMemo(() => {
+    // Fall back to demo data if there's a permissions error or no data
+    if (errorClients && (errorClients.message?.includes('Missing or insufficient permissions') ||
+                         errorClients.message?.includes('permission-denied') ||
+                         errorClients.message?.includes('PERMISSION_DENIED'))) {
+      return DEMO_CLIENTS;
+    }
+
     if (!clientsSnapshot) return [];
     return clientsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     })) as (Client & { id: string })[];
-  }, [clientsSnapshot]);
+  }, [clientsSnapshot, errorClients]);
 
   const bookings = useMemo(() => {
     if (!bookingsSnapshot) return [];

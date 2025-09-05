@@ -31,6 +31,112 @@ import { COLLECTIONS, CreateRoomSchema, Room } from '@/lib/schemas';
 type RoomFormData = z.infer<typeof CreateRoomSchema>;
 import { Plus, Edit, Trash2, Upload, Image as ImageIcon, Bed, Users, Wifi, Eye, Coffee } from 'lucide-react';
 
+// Demo data for rooms
+const DEMO_ROOMS: (Room & { id: string })[] = [
+  {
+    id: 'demo-room-1',
+    name: 'Ocean View Suite',
+    capacity: 4,
+    bookingType: 'whole',
+    pricing: {
+      standard: 299,
+      offSeason: 249,
+      camp: { 1: 199, 2: 179, 3: 169, 4: 159 },
+    },
+    description: 'Beautiful ocean view suite with private balcony',
+    images: [],
+    amenities: ['private-bathroom', 'sea-view', 'balcony'],
+    isActive: true,
+    createdAt: Timestamp.fromMillis(Date.now() - 60 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 7 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-room-2',
+    name: 'Garden Bungalow',
+    capacity: 2,
+    bookingType: 'whole',
+    pricing: {
+      standard: 199,
+      offSeason: 159,
+      camp: { 1: 149, 2: 139 },
+    },
+    description: 'Cozy bungalow surrounded by tropical gardens',
+    images: [],
+    amenities: ['private-bathroom', 'kitchen'],
+    isActive: true,
+    createdAt: Timestamp.fromMillis(Date.now() - 45 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 5 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-room-3',
+    name: 'Beachfront Dorm',
+    capacity: 8,
+    bookingType: 'perBed',
+    pricing: {
+      standard: 45,
+      offSeason: 35,
+      camp: { perBed: 32.5 },
+    },
+    description: 'Shared beachfront accommodation with bunk beds',
+    images: [],
+    amenities: ['wifi', 'air-conditioning'],
+    isActive: true,
+    createdAt: Timestamp.fromMillis(Date.now() - 90 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 10 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-room-4',
+    name: 'Premium Villa',
+    capacity: 6,
+    bookingType: 'whole',
+    pricing: {
+      standard: 499,
+      offSeason: 399,
+      camp: { 1: 349, 2: 329, 3: 309, 4: 289, 5: 269, 6: 249 },
+    },
+    description: 'Luxury villa with ocean views and private pool',
+    images: [],
+    amenities: ['private-bathroom', 'sea-view', 'balcony', 'wifi', 'kitchen', 'air-conditioning'],
+    isActive: true,
+    createdAt: Timestamp.fromMillis(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 3 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-room-5',
+    name: 'Standard Room',
+    capacity: 2,
+    bookingType: 'whole',
+    pricing: {
+      standard: 149,
+      offSeason: 119,
+      camp: { 1: 99, 2: 89 },
+    },
+    description: 'Comfortable standard room with garden views',
+    images: [],
+    amenities: ['private-bathroom', 'wifi'],
+    isActive: true,
+    createdAt: Timestamp.fromMillis(Date.now() - 120 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 15 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 'demo-room-6',
+    name: 'Deluxe Suite',
+    capacity: 4,
+    bookingType: 'whole',
+    pricing: {
+      standard: 399,
+      offSeason: 319,
+      camp: { 1: 279, 2: 269, 3: 259, 4: 249 },
+    },
+    description: 'Spacious deluxe suite with premium amenities',
+    images: [],
+    amenities: ['private-bathroom', 'sea-view', 'balcony', 'wifi', 'kitchen', 'air-conditioning'],
+    isActive: false, // Demo inactive room
+    createdAt: Timestamp.fromMillis(Date.now() - 180 * 24 * 60 * 60 * 1000),
+    updatedAt: Timestamp.fromMillis(Date.now() - 20 * 24 * 60 * 60 * 1000),
+  },
+];
+
 // Slider settings for image previews
 const sliderSettings = {
   dots: true,
@@ -71,20 +177,32 @@ export default function RoomsPage() {
   );
 
   const rooms = useMemo(() => {
+    // Fall back to demo data if there's a permissions error or no data
+    if (errorRooms && (errorRooms.message?.includes('Missing or insufficient permissions') ||
+                       errorRooms.message?.includes('permission-denied') ||
+                       errorRooms.message?.includes('PERMISSION_DENIED'))) {
+      return DEMO_ROOMS;
+    }
+
     if (!roomsSnapshot) return [];
     return roomsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     })) as (Room & { id: string })[];
-  }, [roomsSnapshot]);
+  }, [roomsSnapshot, errorRooms]);
 
-  // Handle Firestore errors and permissions
+  // Handle Firestore errors and permissions with fallback to demo data
   useEffect(() => {
     if (errorRooms) {
       const errorMessage = errorRooms.message || 'Failed to load rooms';
       if (errorMessage.includes('Missing or insufficient permissions')) {
-        toast.error('Access denied: Insufficient permissions to view rooms');
+        toast.error('Access denied: Using demo data. Please check your admin permissions.');
         console.warn('Permissions error:', errorRooms);
+        // Will fall back to demo data below
+      } else if (errorMessage.includes('permission-denied') || errorMessage.includes('PERMISSION_DENIED')) {
+        toast.error('Permission denied: Using demo data. Please check your admin permissions.');
+        console.warn('Firebase permission error:', errorRooms);
+        // Will fall back to demo data below
       } else {
         toast.error(`Failed to load rooms: ${errorMessage}`);
       }

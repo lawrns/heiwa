@@ -1,6 +1,9 @@
 import { z } from 'zod';
 import { Timestamp } from 'firebase/firestore';
 
+// Export Timestamp for use in components
+export { Timestamp };
+
 // Helper schema for Firebase Timestamp
 const TimestampSchema = z.custom<Timestamp>((val) => val instanceof Timestamp);
 

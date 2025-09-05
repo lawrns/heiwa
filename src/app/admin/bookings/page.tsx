@@ -29,6 +29,7 @@ function BookingsContent() {
   const [clientFilter, setClientFilter] = useState<string>('all');
   const [error, setError] = useState('');
   const [isClient, setIsClient] = useState(false);
+  const [renderError, setRenderError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -162,10 +163,17 @@ function BookingsContent() {
     }
   }, [firestoreError]);
 
-  const filteredBookings = bookings.filter(booking =>
-    booking.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    booking.notes?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredBookings = bookings.filter(booking => {
+    try {
+      const searchLower = searchTerm.toLowerCase();
+      const idMatch = booking.id?.toLowerCase().includes(searchLower) || false;
+      const notesMatch = booking.notes?.toLowerCase().includes(searchLower) || false;
+      return idMatch || notesMatch;
+    } catch (error) {
+      console.warn('Error filtering booking:', error, booking);
+      return false;
+    }
+  });
 
   const formatDate = (timestamp: any) => {
     if (!timestamp) return 'N/A';
@@ -217,16 +225,31 @@ function BookingsContent() {
     const groups: { [key: string]: (Booking & { id: string })[] } = {};
 
     filteredBookings.forEach(booking => {
-      // Group by week starting from Monday
-      const date = new Date(booking.createdAt.seconds * 1000);
-      const monday = new Date(date);
-      monday.setDate(date.getDate() - date.getDay() + 1);
-      const weekKey = monday.toISOString().split('T')[0];
+      try {
+        // Safely access createdAt timestamp
+        if (!booking.createdAt || !booking.createdAt.seconds) {
+          console.warn('Invalid booking createdAt:', booking);
+          return;
+        }
 
-      if (!groups[weekKey]) {
-        groups[weekKey] = [];
+        // Group by week starting from Monday
+        const date = new Date(booking.createdAt.seconds * 1000);
+        if (isNaN(date.getTime())) {
+          console.warn('Invalid booking date:', booking);
+          return;
+        }
+
+        const monday = new Date(date);
+        monday.setDate(date.getDate() - date.getDay() + 1);
+        const weekKey = monday.toISOString().split('T')[0];
+
+        if (!groups[weekKey]) {
+          groups[weekKey] = [];
+        }
+        groups[weekKey].push(booking);
+      } catch (error) {
+        console.warn('Error grouping booking:', error, booking);
       }
-      groups[weekKey].push(booking);
     });
 
     return groups;
@@ -240,13 +263,14 @@ function BookingsContent() {
     );
   }
 
-  return (
-    <motion.div
-      className="space-y-6"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+  try {
+    return (
+      <motion.div
+        className="space-y-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
       <div className="flex items-center justify-between">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -420,14 +444,14 @@ function BookingsContent() {
                                 <span className="font-medium">{booking.id.slice(0, 8)}...</span>
                               </div>
                               <span className="text-sm text-gray-600">
-                                {booking.clientIds.length} client{booking.clientIds.length !== 1 ? 's' : ''}
+                                {booking.clientIds?.length || 0} client{(booking.clientIds?.length || 0) !== 1 ? 's' : ''}
                               </span>
                               <span className="text-sm font-medium text-blue-600">
-                                ${booking.totalAmount.toFixed(2)}
+                                ${(booking.totalAmount || 0).toFixed(2)}
                               </span>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <OccupancyBar occupancy={booking.items.length} capacity={10} />
+                              <OccupancyBar occupancy={booking.items?.length || 0} capacity={10} />
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="ghost" size="sm">
@@ -512,14 +536,38 @@ function BookingsContent() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-purple-600">
-              ${bookings.filter(b => b.paymentStatus === 'confirmed').reduce((sum, b) => sum + b.totalAmount, 0).toFixed(2)}
+              ${bookings.filter(b => b.paymentStatus === 'confirmed').reduce((sum, b) => sum + (b.totalAmount || 0), 0).toFixed(2)}
             </div>
           </CardContent>
         </Card>
       </div>
       </motion.div>
     </motion.div>
-  );
+    );
+  } catch (error) {
+    console.error('Error rendering bookings page:', error);
+    setRenderError(error instanceof Error ? error.message : 'An unexpected error occurred');
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Bookings</h1>
+            <p className="text-gray-600">Manage all bookings and reservations</p>
+          </div>
+        </div>
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+          <h3 className="font-medium">Error Loading Bookings</h3>
+          <p className="text-sm mt-1">{renderError || 'An unexpected error occurred while loading the bookings page.'}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+          >
+            Reload Page
+          </button>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default function BookingsPage() {
