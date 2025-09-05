@@ -168,3 +168,4 @@ export async function sendInvoiceEmail(invoiceData: InvoiceData): Promise<boolea
 
   return true
 }
+

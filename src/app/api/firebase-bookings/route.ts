@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { bookingsAPI, clientsAPI } from '@/lib/firebase-admin';
+import { bookingsAPI, clientsAPI } from '@/lib/supabase-admin';
 import { requireAdminSession } from '@/lib/auth';
 import { CreateBookingSchema, UpdateBookingSchema } from '@/lib/schemas';
 import { sendBookingEmails } from '@/lib/email-service';

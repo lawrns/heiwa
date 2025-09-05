@@ -2,11 +2,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 
-// Disable prerendering for this page since it uses Firebase
+// Disable prerendering for this page since it uses Supabase
 export const dynamic = 'force-dynamic';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
-import { db, auth, storage } from '@/lib/firebase';
+import { supabase } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,7 +23,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { COLLECTIONS, CreateRoomSchema, Room } from '@/lib/schemas';
+import { CreateRoomSchema, Room } from '@/lib/schemas';
 
 type RoomFormData = z.infer<typeof CreateRoomSchema>;
 import { Plus, Edit, Trash2, Upload, Image as ImageIcon, Bed, Users, Wifi, Eye, Coffee } from 'lucide-react';
@@ -47,8 +45,8 @@ const DEMO_ROOMS: (Room & { id: string })[] = [
     images: [],
     amenities: ['private-bathroom', 'sea-view', 'balcony'],
     isActive: true,
-    createdAt: Timestamp.fromMillis(Date.now() - 60 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 7 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
   },
   {
     id: 'demo-room-2',
@@ -64,8 +62,8 @@ const DEMO_ROOMS: (Room & { id: string })[] = [
     images: [],
     amenities: ['private-bathroom', 'kitchen'],
     isActive: true,
-    createdAt: Timestamp.fromMillis(Date.now() - 45 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
   },
   {
     id: 'demo-room-3',
@@ -81,8 +79,8 @@ const DEMO_ROOMS: (Room & { id: string })[] = [
     images: [],
     amenities: ['wifi', 'air-conditioning'],
     isActive: true,
-    createdAt: Timestamp.fromMillis(Date.now() - 90 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 10 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
   },
   {
     id: 'demo-room-4',
@@ -98,8 +96,8 @@ const DEMO_ROOMS: (Room & { id: string })[] = [
     images: [],
     amenities: ['private-bathroom', 'sea-view', 'balcony', 'wifi', 'kitchen', 'air-conditioning'],
     isActive: true,
-    createdAt: Timestamp.fromMillis(Date.now() - 30 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 3 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
   },
   {
     id: 'demo-room-5',
@@ -115,8 +113,8 @@ const DEMO_ROOMS: (Room & { id: string })[] = [
     images: [],
     amenities: ['private-bathroom', 'wifi'],
     isActive: true,
-    createdAt: Timestamp.fromMillis(Date.now() - 120 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 15 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
   },
   {
     id: 'demo-room-6',
@@ -132,8 +130,8 @@ const DEMO_ROOMS: (Room & { id: string })[] = [
     images: [],
     amenities: ['private-bathroom', 'sea-view', 'balcony', 'wifi', 'kitchen', 'air-conditioning'],
     isActive: false, // Demo inactive room
-    createdAt: Timestamp.fromMillis(Date.now() - 180 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 20 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
   },
 ];
 
@@ -164,46 +162,69 @@ const AVAILABLE_AMENITIES = [
 export default function RoomsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState<(Room & { id: string }) | null>(null);
-  // Firebase services are imported directly
+  const [selectedRoom, setSelectedRoom] = useState<any>(null);
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [loadingRooms, setLoadingRooms] = useState(true);
+  const [errorRooms, setErrorRooms] = useState<string | null>(null);
 
-  // Fetch rooms
-  const [roomsSnapshot, loadingRooms, errorRooms] = useCollection(
-    db ? collection(db, COLLECTIONS.ROOMS) : null
-  );
+  // Fetch rooms from Supabase
+  const fetchRooms = async () => {
+    try {
+      setLoadingRooms(true);
+      setErrorRooms(null);
 
-  const rooms = useMemo(() => {
-    // Fall back to demo data if there's a permissions error or no data
-    if (errorRooms && (errorRooms.message?.includes('Missing or insufficient permissions') ||
-                       errorRooms.message?.includes('permission-denied') ||
-                       errorRooms.message?.includes('PERMISSION_DENIED'))) {
-      return DEMO_ROOMS;
-    }
+      const { data, error } = await supabase
+        .from('rooms')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    if (!roomsSnapshot) return [];
-    return roomsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as (Room & { id: string })[];
-  }, [roomsSnapshot, errorRooms]);
-
-  // Handle Firestore errors and permissions with fallback to demo data
-  useEffect(() => {
-    if (errorRooms) {
-      const errorMessage = errorRooms.message || 'Failed to load rooms';
-      if (errorMessage.includes('Missing or insufficient permissions')) {
-        toast.error('Access denied: Using demo data. Please check your admin permissions.');
-        console.warn('Permissions error:', errorRooms);
-        // Will fall back to demo data below
-      } else if (errorMessage.includes('permission-denied') || errorMessage.includes('PERMISSION_DENIED')) {
-        toast.error('Permission denied: Using demo data. Please check your admin permissions.');
-        console.warn('Firebase permission error:', errorRooms);
-        // Will fall back to demo data below
-      } else {
-        toast.error(`Failed to load rooms: ${errorMessage}`);
+      if (error) {
+        console.error('Error fetching rooms:', error);
+        setErrorRooms(error.message);
+        // Fall back to demo data if there's a permissions error
+        if (error.message?.includes('permission denied') || error.message?.includes('RLS')) {
+          toast.error('Access denied: Using demo data. Please check your admin permissions.');
+          setRooms(DEMO_ROOMS);
+        } else {
+          toast.error(`Failed to load rooms: ${error.message}`);
+        }
+        return;
       }
+
+      if (data && data.length > 0) {
+        // Convert snake_case to camelCase for compatibility
+        const formattedRooms = data.map(room => ({
+          id: room.id,
+          name: room.name,
+          capacity: room.capacity,
+          bookingType: room.booking_type,
+          pricing: room.pricing,
+          description: room.description,
+          images: room.images || [],
+          amenities: room.amenities || [],
+          isActive: room.is_active,
+          createdAt: new Date(room.created_at),
+          updatedAt: new Date(room.updated_at)
+        }));
+        setRooms(formattedRooms);
+      } else {
+        // No data, use demo data
+        setRooms(DEMO_ROOMS);
+      }
+    } catch (error: any) {
+      console.error('Error fetching rooms:', error);
+      setErrorRooms(error.message || 'Failed to load rooms');
+      toast.error(`Failed to load rooms: ${error.message}`);
+      // Fall back to demo data
+      setRooms(DEMO_ROOMS);
+    } finally {
+      setLoadingRooms(false);
     }
-  }, [errorRooms]);
+  };
+
+  useEffect(() => {
+    fetchRooms();
+  }, []);
 
   // Form for creating/editing rooms
   const form = useForm<RoomFormData>({
@@ -237,19 +258,31 @@ export default function RoomsPage() {
         return;
       }
 
-      if (!db) {
-        toast.error('Database not available');
-        return;
+      // Convert camelCase to snake_case for Supabase
+      const roomData = {
+        name: data.name,
+        capacity: data.capacity,
+        booking_type: data.bookingType,
+        pricing: data.pricing,
+        description: data.description,
+        images: data.images || [],
+        amenities: data.amenities || [],
+        is_active: data.isActive
+      };
+
+      const { error } = await supabase
+        .from('rooms')
+        .insert([roomData]);
+
+      if (error) {
+        throw new Error(error.message);
       }
 
-      await addDoc(collection(db, COLLECTIONS.ROOMS), {
-        ...data,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      });
       toast.success('Room created successfully');
       setShowCreateModal(false);
       form.reset();
+      // Refresh the rooms list
+      fetchRooms();
     } catch (error: any) {
       toast.error(`Failed to create room: ${error.message}`);
     }
@@ -257,11 +290,28 @@ export default function RoomsPage() {
 
   const handleUpdateRoom = async (roomId: string, data: Partial<RoomFormData>) => {
     try {
-      await updateDoc(doc(db, COLLECTIONS.ROOMS, roomId), {
-        ...data,
-        updatedAt: Timestamp.now(),
-      });
+      // Convert camelCase to snake_case for Supabase
+      const updateData: any = {};
+      if (data.name !== undefined) updateData.name = data.name;
+      if (data.capacity !== undefined) updateData.capacity = data.capacity;
+      if (data.bookingType !== undefined) updateData.booking_type = data.bookingType;
+      if (data.pricing !== undefined) updateData.pricing = data.pricing;
+      if (data.description !== undefined) updateData.description = data.description;
+      if (data.images !== undefined) updateData.images = data.images;
+      if (data.amenities !== undefined) updateData.amenities = data.amenities;
+      if (data.isActive !== undefined) updateData.is_active = data.isActive;
+
+      const { error } = await supabase
+        .from('rooms')
+        .update(updateData)
+        .eq('id', roomId);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
       toast.success('Room updated successfully');
+      fetchRooms(); // Refresh the list
     } catch (error: any) {
       toast.error(`Failed to update room: ${error.message}`);
     }
@@ -271,8 +321,17 @@ export default function RoomsPage() {
     if (!confirm('Are you sure you want to delete this room?')) return;
 
     try {
-      await deleteDoc(doc(db, COLLECTIONS.ROOMS, roomId));
+      const { error } = await supabase
+        .from('rooms')
+        .delete()
+        .eq('id', roomId);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
       toast.success('Room deleted successfully');
+      fetchRooms(); // Refresh the list
     } catch (error: any) {
       toast.error(`Failed to delete room: ${error.message}`);
     }

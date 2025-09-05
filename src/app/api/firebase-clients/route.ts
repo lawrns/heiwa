@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { clientsAPI } from '@/lib/firebase-admin';
+import { clientsAPI } from '@/lib/supabase-admin';
 import { requireAdminSession } from '@/lib/auth';
 import { CreateClientSchema, UpdateClientSchema } from '@/lib/clients/schema';
 

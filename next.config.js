@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['firebase-admin'],
   webpack: (config, { isServer }) => {
     if (isServer) {
       config.resolve.fallback = {
@@ -21,7 +20,7 @@ const nextConfig = {
   },
   images: {
     domains: [
-      'firebasestorage.googleapis.com',
+      'zejrhceuuujzgyukdwnb.supabase.co', // Supabase storage domain
       // Add other image domains as needed
     ],
   },
@@ -41,7 +40,7 @@ const nextConfig = {
   },
 
 
-  // Force dynamic rendering for admin routes to prevent Firebase SSR issues
+  // Force dynamic rendering for admin routes to prevent SSR issues
   generateBuildId: async () => {
     return 'build-' + Date.now()
   },

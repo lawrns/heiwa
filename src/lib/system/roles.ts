@@ -1,5 +1,4 @@
-import { getAuth } from 'firebase/auth'
-import { getIdTokenResult } from 'firebase/auth'
+import { supabase } from '@/lib/firebase'
 
 // Role constants
 export const ROLES = {
@@ -17,7 +16,7 @@ export const ROLE_HIERARCHY = {
   [ROLES.SUPERADMIN]: 3
 } as const
 
-// Custom claims interface for Firebase Auth
+// Custom claims interface for Supabase Auth
 export interface UserClaims {
   role?: Role
   permissions?: string[]
@@ -25,39 +24,35 @@ export interface UserClaims {
   updatedAt?: number
 }
 
-// Get user's role from Firebase Auth custom claims
+// Get user's role from Supabase Auth metadata
 export async function getUserRole(uid: string): Promise<Role | null> {
   try {
-    const { adminAuth } = await import('@/lib/firebase/admin')
+    const { data, error } = await supabase.auth.admin.getUserById(uid)
 
-    if (!adminAuth) {
-      console.warn('Admin auth not available')
+    if (error) {
+      console.error('Error getting user:', error)
       return null
     }
 
-    const user = await adminAuth.getUser(uid)
-    const claims = user.customClaims as UserClaims
-
-    return claims?.role || null
+    const userMetadata = data.user?.user_metadata as UserClaims
+    return userMetadata?.role || null
   } catch (error) {
     console.error('Error getting user role:', error)
     return null
   }
 }
 
-// Get current user's role from Firebase Auth custom claims (client-side)
+// Get current user's role from Supabase Auth session (client-side)
 export async function getCurrentUserRole(): Promise<Role | null> {
   try {
-    const { auth } = await import('@/lib/firebase/client')
+    const { data: { session }, error } = await supabase.auth.getSession()
 
-    if (!auth || !auth.currentUser) {
+    if (error || !session?.user) {
       return null
     }
 
-    const idTokenResult = await auth.currentUser.getIdTokenResult()
-    const claims = idTokenResult.claims as UserClaims
-
-    return claims.role || null
+    const userMetadata = session.user.user_metadata as UserClaims
+    return userMetadata?.role || null
   } catch (error) {
     console.error('Error getting current user role:', error)
     return null
