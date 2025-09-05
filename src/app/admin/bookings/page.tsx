@@ -33,102 +33,61 @@ function BookingsContent() {
 
   // Always call hooks at the top level
   const searchParams = useSearchParams();
-  // Firebase db is imported directly
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Prevent SSR rendering to avoid Firebase prerendering errors
-  if (!isClient) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading bookings...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Fetch clients for filter dropdown
+  // Fetch clients for filter dropdown - moved to top level
   const [clientsSnapshot, loadingClients] = useCollection(
     db ? collection(db, COLLECTIONS.CLIENTS) : null
   );
 
-  const clients = useMemo(() => {
-    if (!clientsSnapshot) return [];
-    return clientsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as (Client & { id: string })[];
-  }, [clientsSnapshot]);
-
-  // Create Firestore query based on all filters
+  // Create bookings query for filtering
   const bookingsQuery = useMemo(() => {
     if (!db) return null;
 
     try {
-      const constraints: any[] = [];
+      const constraints = [];
 
-      // Basic ordering - only add if we have a valid db connection
-      try {
-        constraints.push(orderBy('createdAt', 'desc'));
-      } catch (error) {
-        console.warn('OrderBy constraint failed:', error);
-      }
-
-      // Status filter - use simpler query
+      // Add status filter
       if (statusFilter !== 'all') {
-        try {
-          constraints.push(where('paymentStatus', '==', statusFilter));
-        } catch (error) {
-          console.warn('Status filter failed:', error);
-        }
+        constraints.push(where('paymentStatus', '==', statusFilter));
       }
 
-      // Camp type filter
+      // Add camp type filter
       if (campTypeFilter !== 'all') {
-        try {
-          constraints.push(where('category', '==', campTypeFilter));
-        } catch (error) {
-          console.warn('Category filter failed:', error);
-        }
+        constraints.push(where('campType', '==', campTypeFilter));
       }
 
-      // Date range filter - simplified
-      if (dateRangeFilter !== 'all') {
-        try {
-          const now = new Date();
-          let startDate: Date;
-
-          switch (dateRangeFilter) {
-            case 'this-week':
-              startDate = new Date(now.setDate(now.getDate() - now.getDay()));
-              break;
-            case 'this-month':
-              startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-              break;
-            case 'this-year':
-              startDate = new Date(now.getFullYear(), 0, 1);
-              break;
-            default:
-              startDate = new Date(0);
-          }
-          constraints.push(where('createdAt', '>=', startDate));
-        } catch (error) {
-          console.warn('Date filter failed:', error);
-        }
-      }
-
-      // Client filter - simplified
+      // Add client filter
       if (clientFilter !== 'all') {
-        try {
-          constraints.push(where('clientIds', 'array-contains', clientFilter));
-        } catch (error) {
-          console.warn('Client filter failed:', error);
-        }
+        constraints.push(where('clientIds', 'array-contains', clientFilter));
       }
+
+      // Add date range filter
+      if (dateRangeFilter !== 'all') {
+        const now = new Date();
+        let startDate;
+
+        switch (dateRangeFilter) {
+          case 'week':
+            startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            break;
+          case 'month':
+            startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            break;
+          case 'quarter':
+            startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+            break;
+          default:
+            startDate = new Date(0); // All time
+        }
+
+        constraints.push(where('createdAt', '>=', startDate));
+      }
+
+      constraints.push(orderBy('createdAt', 'desc'));
 
       // Create query with error handling
       try {
@@ -146,23 +105,27 @@ function BookingsContent() {
   // Use Firestore collection hook for real-time data
   const [bookingsSnapshot, loading, firestoreError] = useCollection(bookingsQuery || null);
 
-  // Convert Firestore data to our format
-  const bookings = useMemo(() => {
-    if (!bookingsSnapshot) return [];
-    return bookingsSnapshot.docs.map(doc => ({
+  // Prevent SSR rendering to avoid Firebase prerendering errors
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading bookings...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const clients = useMemo(() => {
+    if (!clientsSnapshot) return [];
+    return clientsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
-    })) as (Booking & { id: string })[];
-  }, [bookingsSnapshot]);
+    })) as (Client & { id: string })[];
+  }, [clientsSnapshot]);
 
-  // Handle Firestore errors
-  useEffect(() => {
-    if (firestoreError) {
-      const errorMessage = firestoreError.message || 'Failed to load bookings';
-      setError(errorMessage);
-      toast.error(`Failed to load bookings: ${errorMessage}`);
-    }
-  }, [firestoreError]);
+  // All Firebase logic moved to top level
 
   const filteredBookings = bookings.filter(booking => {
     try {

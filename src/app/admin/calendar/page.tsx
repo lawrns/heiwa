@@ -1,9 +1,7 @@
 'use client'
 
-import React, { useMemo, useCallback } from 'react';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { collection } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
+import { supabase } from '@/lib/firebase';
 import { Calendar, momentLocalizer, View, Views } from 'react-big-calendar';
 import { format } from 'date-fns';
 import moment from 'moment';
@@ -13,10 +11,10 @@ import { useRouter } from 'next/navigation';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-// This page uses Firebase and should not be prerendered
+// This page uses Supabase and should not be prerendered
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { COLLECTIONS, SurfCamp, Booking } from '@/lib/schemas';
+import { SurfCamp, Booking } from '@/lib/schemas';
 import { CalendarDays, Users, MapPin, Plus } from 'lucide-react';
 
 // Setup the localizer for react-big-calendar
@@ -64,36 +62,126 @@ const EventComponent = ({ event }: { event: CalendarEvent }) => {
 
 export default function CalendarPage() {
   const router = useRouter();
-  // Firebase db is imported directly
+  // State for data and loading
+  const [surfCamps, setSurfCamps] = useState<(SurfCamp & { id: string })[]>([]);
+  const [bookings, setBookings] = useState<(Booking & { id: string })[]>([]);
+  const [loadingCamps, setLoadingCamps] = useState(true);
+  const [loadingBookings, setLoadingBookings] = useState(true);
 
-  // Fetch surf camps
-  const [surfCampsSnapshot, loadingCamps] = useCollection(
-    db ? collection(db, COLLECTIONS.SURF_CAMPS) : null
-  );
+  // Fetch surf camps from Supabase with caching
+  const fetchSurfCamps = useCallback(async () => {
+    try {
+      setLoadingCamps(true);
+      const { data, error } = await supabase
+        .from('surf_camps')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-  // Fetch bookings
-  const [bookingsSnapshot, loadingBookings] = useCollection(
-    db ? collection(db, COLLECTIONS.BOOKINGS) : null
-  );
+      if (error) {
+        console.error('Error fetching surf camps:', error);
+        return;
+      }
 
-  // Convert data to our format
-  const surfCamps = useMemo(() => {
-    if (!surfCampsSnapshot) return [];
-    return surfCampsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as (SurfCamp & { id: string })[];
-  }, [surfCampsSnapshot]);
+      if (data) {
+        const formattedCamps = data.map(camp => ({
+          id: camp.id,
+          name: camp.name,
+          description: camp.description,
+          startDate: new Date(camp.start_date),
+          endDate: new Date(camp.end_date),
+          maxParticipants: camp.max_participants,
+          price: camp.price,
+          level: camp.level,
+          includes: camp.includes || [],
+          images: camp.images || [],
+          isActive: camp.is_active,
+          createdAt: new Date(camp.created_at),
+          updatedAt: new Date(camp.updated_at)
+        }));
+        setSurfCamps(formattedCamps);
+      }
+    } catch (error) {
+      console.error('Error fetching surf camps:', error);
+    } finally {
+      setLoadingCamps(false);
+    }
+  }, []);
 
-  const bookings = useMemo(() => {
-    if (!bookingsSnapshot) return [];
-    return bookingsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as (Booking & { id: string })[];
-  }, [bookingsSnapshot]);
+  // Fetch bookings from Supabase with caching
+  const fetchBookings = useCallback(async () => {
+    try {
+      setLoadingBookings(true);
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-  // Create calendar events from surf camps and bookings
+      if (error) {
+        console.error('Error fetching bookings:', error);
+        return;
+      }
+
+      if (data) {
+        const formattedBookings = data.map(booking => ({
+          id: booking.id,
+          clientIds: booking.client_ids || [],
+          items: booking.items || [],
+          totalAmount: booking.total_amount,
+          paymentStatus: booking.payment_status,
+          paymentMethod: booking.payment_method,
+          notes: booking.notes,
+          createdAt: new Date(booking.created_at),
+          updatedAt: new Date(booking.updated_at)
+        }));
+        setBookings(formattedBookings);
+      }
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+    } finally {
+      setLoadingBookings(false);
+    }
+  }, []);
+
+  // Load data on mount
+  useEffect(() => {
+    fetchSurfCamps();
+    fetchBookings();
+  }, [fetchSurfCamps, fetchBookings]);
+
+  // Set up real-time subscriptions
+  useEffect(() => {
+    // Subscribe to surf camps changes
+    const surfCampsSubscription = supabase
+      .channel('surf_camps_changes')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'surf_camps' },
+        (payload) => {
+          console.log('Surf camps change detected:', payload);
+          fetchSurfCamps(); // Refresh data when changes occur
+        }
+      )
+      .subscribe();
+
+    // Subscribe to bookings changes
+    const bookingsSubscription = supabase
+      .channel('bookings_changes')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'bookings' },
+        (payload) => {
+          console.log('Bookings change detected:', payload);
+          fetchBookings(); // Refresh data when changes occur
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscriptions on unmount
+    return () => {
+      surfCampsSubscription.unsubscribe();
+      bookingsSubscription.unsubscribe();
+    };
+  }, [fetchSurfCamps, fetchBookings]);
+
+  // Create calendar events from surf camps and bookings (memoized for performance)
   const calendarEvents: CalendarEvent[] = useMemo(() => {
     const events: CalendarEvent[] = [];
 
@@ -218,11 +306,12 @@ export default function CalendarPage() {
         </Button>
       </div>
       <h2 className="text-xl font-semibold text-gray-900">{label}</h2>
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2 flex-wrap">
         <Button
           variant={onView === 'month' ? 'default' : 'outline'}
           size="sm"
           onClick={() => onView('month')}
+          className="text-xs sm:text-sm"
         >
           Month
         </Button>
@@ -230,6 +319,7 @@ export default function CalendarPage() {
           variant={onView === 'week' ? 'default' : 'outline'}
           size="sm"
           onClick={() => onView('week')}
+          className="text-xs sm:text-sm"
         >
           Week
         </Button>
@@ -237,6 +327,7 @@ export default function CalendarPage() {
           variant={onView === 'day' ? 'default' : 'outline'}
           size="sm"
           onClick={() => onView('day')}
+          className="text-xs sm:text-sm"
         >
           Day
         </Button>
@@ -324,7 +415,7 @@ export default function CalendarPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[800px]" role="main" aria-label="Booking calendar">
+            <div className="h-[600px] sm:h-[700px] lg:h-[800px]" role="main" aria-label="Booking calendar">
               <Calendar
                 localizer={localizer}
                 events={calendarEvents}
