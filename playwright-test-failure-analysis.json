@@ -1,0 +1,209 @@
+{
+  "analysis_timestamp": "2025-01-04T12:00:00Z",
+  "test_execution_summary": {
+    "total_tests_run": 15,
+    "total_failures": 15,
+    "success_rate": "0%",
+    "browsers_affected": ["chromium", "firefox", "webkit"],
+    "execution_time": "Unknown (interrupted)"
+  },
+  "failure_categories": {
+    "strict_mode_violations": {
+      "count": 6,
+      "description": "Multiple DOM elements matching the same locator text",
+      "affected_tests": [
+        "should load dashboard with key metrics",
+        "should navigate to analytics dashboard"
+      ],
+      "root_cause": "Test selectors are too generic and match multiple elements on the page",
+      "examples": [
+        {
+          "locator": "text=Surf Camps",
+          "matches_found": 5,
+          "elements": [
+            "Sidebar navigation link",
+            "Dashboard description text",
+            "Card heading",
+            "Button text",
+            "Card description"
+          ]
+        },
+        {
+          "locator": "a[href='/admin/analytics']",
+          "matches_found": 2,
+          "elements": [
+            "Sidebar navigation link",
+            "Dashboard card link"
+          ]
+        }
+      ]
+    },
+    "navigation_failures": {
+      "count": 6,
+      "description": "Page navigation not working as expected",
+      "affected_tests": [
+        "should navigate to bookings management",
+        "should navigate to clients management"
+      ],
+      "root_cause": "Button clicks not triggering navigation or navigation not completing",
+      "evidence": {
+        "expected_url": "/admin/bookings",
+        "actual_url": "/admin",
+        "click_target": "Manage Bookings button"
+      }
+    },
+    "title_assertion_failures": {
+      "count": 3,
+      "description": "Title element assertions failing despite title being present",
+      "affected_tests": [
+        "should display system health metrics"
+      ],
+      "root_cause": "Race condition or timing issue with title element detection",
+      "evidence": {
+        "expected_text": "Heiwa House Admin Dashboard",
+        "locator_log": "9 × locator resolved to <title>Heiwa House Admin Dashboard</title>",
+        "received_value": "\"\"",
+        "issue_type": "Flaky timing-based assertion"
+      }
+    }
+  },
+  "root_cause_analysis": {
+    "primary_issue": {
+      "category": "Test Design Problems",
+      "description": "Tests written without considering actual DOM structure and multiple element matches",
+      "severity": "CRITICAL",
+      "fix_complexity": "HIGH"
+    },
+    "secondary_issues": [
+      {
+        "category": "Selector Strategy",
+        "description": "Using generic text selectors instead of specific role-based or data-testid selectors",
+        "impact": "All text-based assertions failing"
+      },
+      {
+        "category": "Page State Management",
+        "description": "Tests not waiting for proper page hydration or state changes",
+        "impact": "Timing-related failures"
+      },
+      {
+        "category": "Navigation Testing",
+        "description": "Button clicks not properly triggering client-side navigation",
+        "impact": "URL change assertions failing"
+      }
+    ]
+  },
+  "dom_structure_analysis": {
+    "sidebar_navigation": {
+      "structure": "Multiple navigation links with same href",
+      "issue": "Analytics link exists in both sidebar and dashboard card",
+      "solution_needed": "Use more specific selectors (role, aria-label, data-testid)"
+    },
+    "dashboard_cards": {
+      "structure": "Generic text content shared across multiple cards",
+      "issue": "Words like 'Surf Camps' appear in multiple contexts",
+      "solution_needed": "Use card-specific selectors or data attributes"
+    },
+    "page_titles": {
+      "structure": "Consistent title across all admin pages",
+      "issue": "Title assertions working but with timing issues",
+      "solution_needed": "Add proper wait conditions or use different assertion strategy"
+    }
+  },
+  "recommended_fixes": {
+    "immediate_actions": [
+      {
+        "action": "Replace generic text selectors with specific ones",
+        "examples": [
+          "text=Surf Camps → [aria-label='Manage Surf Camps']",
+          "text=Analytics → getByRole('link', { name: 'Analytics', exact: true })"
+        ],
+        "priority": "CRITICAL"
+      },
+      {
+        "action": "Add data-testid attributes to key elements",
+        "target_elements": ["navigation links", "dashboard cards", "buttons"],
+        "priority": "HIGH"
+      },
+      {
+        "action": "Use role-based selectors instead of text",
+        "examples": [
+          "getByRole('button', { name: 'Manage Bookings' })",
+          "getByRole('link', { name: 'Analytics' })"
+        ],
+        "priority": "HIGH"
+      }
+    ],
+    "structural_fixes": [
+      {
+        "action": "Implement proper test data isolation",
+        "description": "Ensure each test starts with clean state",
+        "priority": "MEDIUM"
+      },
+      {
+        "action": "Add explicit wait conditions",
+        "description": "Wait for page hydration and element stability",
+        "priority": "MEDIUM"
+      },
+      {
+        "action": "Fix navigation testing",
+        "description": "Ensure client-side routing completes before assertions",
+        "priority": "HIGH"
+      }
+    ],
+    "long_term_improvements": [
+      {
+        "action": "Implement test utilities",
+        "description": "Create reusable selector functions and page objects",
+        "priority": "MEDIUM"
+      },
+      {
+        "action": "Add visual regression testing",
+        "description": "Ensure UI changes don't break existing functionality",
+        "priority": "LOW"
+      }
+    ]
+  },
+  "test_execution_environment": {
+    "server_status": "RUNNING",
+    "server_url": "http://localhost:3000",
+    "firebase_status": "INITIALIZED",
+    "page_load_status": "SUCCESSFUL",
+    "dom_hydration": "COMPLETED"
+  },
+  "success_criteria_for_fixes": {
+    "selector_specificity": "No more strict mode violations",
+    "navigation_reliability": "All navigation tests passing",
+    "timing_stability": "No flaky title assertions",
+    "cross_browser_compatibility": "Tests pass on all 3 browsers",
+    "overall_success_rate": "100% test pass rate"
+  },
+  "estimated_effort": {
+    "fix_implementation": "2-4 hours",
+    "test_validation": "1-2 hours",
+    "regression_testing": "30-60 minutes",
+    "total_effort": "4-7 hours"
+  },
+  "risk_assessment": {
+    "current_risk": "HIGH - No automated testing coverage",
+    "business_impact": "Cannot validate functionality changes",
+    "deployment_risk": "High risk of undetected regressions",
+    "recommended_action": "Fix critical test failures before deployment"
+  },
+  "alternative_approaches": {
+    "quick_fix": {
+      "description": "Disable strict mode and use first() locator method",
+      "pros": ["Fast implementation", "Immediate results"],
+      "cons": ["Less reliable", "May hide real issues", "Not best practice"]
+    },
+    "comprehensive_fix": {
+      "description": "Rewrite tests with proper selectors and page objects",
+      "pros": ["Reliable", "Maintainable", "Best practice"],
+      "cons": ["Time intensive", "Requires UI changes"]
+    },
+    "hybrid_approach": {
+      "description": "Fix critical selectors, add data attributes gradually",
+      "pros": ["Balanced effort/results", "Progressive improvement"],
+      "cons": ["Partial solution"]
+    }
+  }
+}

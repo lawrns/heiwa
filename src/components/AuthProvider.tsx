@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState, createContext, useContext } from "react";
 import { onAuthStateChanged, User, signOut as firebaseSignOut } from "firebase/auth";
-import { getAuth } from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
 import { AuthUser, firebaseUserToAuthUser } from '@/lib/auth';
 
 interface AuthContextType {
@@ -24,21 +24,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [error, setError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
-    // Get auth instance safely (will be null during SSR)
-    const auth = getAuth();
-
-    if (!auth) {
-      // During SSR or if Firebase isn't ready, show loading
-      setLoading(false);
-      return;
-    }
-
     const unsubscribe = onAuthStateChanged(
       auth,
-      async (firebaseUser: User | null) => {
+      (firebaseUser: User | null) => {
         try {
           if (firebaseUser) {
-            const authUser = await firebaseUserToAuthUser(firebaseUser);
+            const authUser = firebaseUserToAuthUser(firebaseUser);
             setUser(authUser);
           } else {
             setUser(null);

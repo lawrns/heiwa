@@ -6,7 +6,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 export const dynamic = 'force-dynamic';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, where, getDocs } from 'firebase/firestore';
-import { getDb } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -275,7 +275,7 @@ export default function SurfCampsPage() {
   const [selectedCamp, setSelectedCamp] = useState<(SurfCamp & { id: string }) | null>(null);
   const [assignedClients, setAssignedClients] = useState<string[]>([]);
   const [assignedRooms, setAssignedRooms] = useState<string[]>([]);
-  const db = getDb();
+  // Firebase db is imported directly
 
   // Fetch surf camps
   const [surfCampsSnapshot, loadingCamps, errorCamps] = useCollection(

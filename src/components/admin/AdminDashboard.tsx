@@ -19,7 +19,7 @@ export default function AdminDashboard() {
     <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-6">
       {/* Dashboard Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+        <h1 className="text-4xl font-bold text-gray-900 mb-2" data-testid="admin-dashboard-title">
           Admin Dashboard
         </h1>
         <p className="text-gray-600">
@@ -77,6 +77,7 @@ export default function AdminDashboard() {
                 <Button
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                   aria-label="Manage Bookings"
+                  data-testid="manage-bookings-button"
                 >
                   Manage Bookings
                 </Button>
@@ -113,6 +114,7 @@ export default function AdminDashboard() {
                 <Button
                   className="w-full bg-green-600 hover:bg-green-700 text-white"
                   aria-label="Manage Rooms"
+                  data-testid="manage-rooms-button"
                 >
                   Manage Rooms
                 </Button>
@@ -149,6 +151,7 @@ export default function AdminDashboard() {
                 <Button
                   className="w-full bg-teal-600 hover:bg-teal-700 text-white"
                   aria-label="Manage Surf Camps"
+                  data-testid="manage-surf-camps-button"
                 >
                   Manage Surf Camps
                 </Button>
@@ -185,6 +188,7 @@ export default function AdminDashboard() {
                 <Button
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                   aria-label="Manage Clients"
+                  data-testid="manage-clients-button"
                 >
                   Manage Clients
                 </Button>

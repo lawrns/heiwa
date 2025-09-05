@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/components/AuthProvider'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,24 +24,22 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // During build/static generation, don't use AuthProvider to prevent Firebase SSR issues
-  const isBuildTime = typeof window === 'undefined' && !process.env.NEXT_RUNTIME;
-
-  if (isBuildTime) {
-    return (
-      <html lang="en">
-        <body className={inter.className}>
-          {children}
-        </body>
-      </html>
-    );
-  }
-
   return (
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
           {children}
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </AuthProvider>
       </body>
     </html>

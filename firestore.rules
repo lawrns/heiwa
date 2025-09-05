@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read/write access to all documents for authenticated users
+    // In production, you should implement more restrictive rules
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Allow public read access to certain collections if needed
+    match /surfCamps/{document} {
+      allow read: if true;
+    }
+    
+    match /rooms/{document} {
+      allow read: if true;
+    }
+  }
+}

@@ -1,175 +1,280 @@
-'use client'
+'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { SortingState, RowSelectionState, VisibilityState } from '@tanstack/react-table';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Plus, Edit, Eye, Users, UserCheck, UserPlus, RefreshCw } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Users, UserCheck, UserPlus } from 'lucide-react';
+import { toast } from 'react-toastify';
 
-// TypeScript interfaces
-interface Timestamp {
-  seconds: number;
-  nanoseconds?: number;
-}
+// Import our new components
+import { ClientsToolbar } from '@/components/admin/clients/ClientsToolbar';
+import { ClientsTable } from '@/components/admin/clients/ClientsTable';
+import { BulkBar } from '@/components/admin/clients/BulkBar';
+import { ClientDialog } from '@/components/admin/clients/ClientDialog';
+import { NoClientsState, NoSearchResultsState, LoadingState } from '@/components/admin/EmptyState';
 
-interface Client {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  lastBookingDate: Timestamp | null;
-  notes: string;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-}
+// Import types and utilities
+import { Client, CreateClient, UpdateClient } from '@/lib/clients/schema';
+import { exportToCSV, importClientsFromCSV, ImportResult } from '@/lib/clients/csv';
 
-// Mock data for demonstration
+// Mock data - in production this would come from API
 const MOCK_CLIENTS: Client[] = [
   {
     id: '1',
     name: 'Sarah Johnson',
     email: 'sarah.johnson@email.com',
     phone: '+1 (555) 123-4567',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 7 }, // 1 week ago
+    brand: 'Heiwa House',
+    status: 'Active',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 7, nanoseconds: 0 },
+    registrationDate: { seconds: Date.now() / 1000 - 86400 * 30, nanoseconds: 0 },
     notes: 'VIP client, prefers ocean view rooms. Allergic to shellfish.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 30 }, // 1 month ago
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 7 }
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 30, nanoseconds: 0 },
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 7, nanoseconds: 0 }
   },
   {
     id: '2',
     name: 'Marcus Rodriguez',
     email: 'marcus.r@surfmail.com',
     phone: '+1 (555) 987-6543',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 3 }, // 3 days ago
+    brand: 'Freedom Routes',
+    status: 'Active',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 3, nanoseconds: 0 },
+    registrationDate: { seconds: Date.now() / 1000 - 86400 * 90, nanoseconds: 0 },
     notes: 'Professional surfer, books extended stays. Requires early check-in.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 90 }, // 3 months ago
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 3 }
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 90, nanoseconds: 0 },
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 3, nanoseconds: 0 }
   },
   {
     id: '3',
     name: 'Emily Chen',
     email: 'emily.chen.travel@gmail.com',
     phone: '+1 (555) 456-7890',
+    brand: 'Heiwa House',
+    status: 'Active',
     lastBookingDate: null,
+    registrationDate: { seconds: Date.now() / 1000 - 86400 * 5, nanoseconds: 0 },
     notes: 'First-time visitor, interested in beginner surf lessons.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 5 }, // 5 days ago
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 5 }
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 5, nanoseconds: 0 },
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 5, nanoseconds: 0 }
   },
   {
     id: '4',
     name: 'David Thompson',
     email: 'dthompson@corporate.com',
     phone: '+1 (555) 234-5678',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 14 }, // 2 weeks ago
+    brand: 'Freedom Routes',
+    status: 'Active',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 14, nanoseconds: 0 },
+    registrationDate: { seconds: Date.now() / 1000 - 86400 * 180, nanoseconds: 0 },
     notes: 'Corporate bookings for team retreats. Needs group discounts and meeting facilities.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 180 }, // 6 months ago
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 14 }
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 180, nanoseconds: 0 },
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 14, nanoseconds: 0 }
   },
   {
     id: '5',
     name: 'Isabella Martinez',
     email: 'bella.martinez@hotmail.com',
     phone: '+1 (555) 345-6789',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 1 }, // 1 day ago
+    brand: 'Heiwa House',
+    status: 'Active',
+    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 1, nanoseconds: 0 },
+    registrationDate: { seconds: Date.now() / 1000 - 86400 * 60, nanoseconds: 0 },
     notes: 'Yoga instructor, books monthly wellness retreats.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 60 }, // 2 months ago
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 1 }
+    createdAt: { seconds: Date.now() / 1000 - 86400 * 60, nanoseconds: 0 },
+    updatedAt: { seconds: Date.now() / 1000 - 86400 * 1, nanoseconds: 0 }
   },
-  {
-    id: '6',
-    name: 'James Wilson',
-    email: 'jwilson.photographer@outlook.com',
-    phone: '+1 (555) 567-8901',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 21 }, // 3 weeks ago
-    notes: 'Professional photographer, needs equipment storage and early sunrise access.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 120 }, // 4 months ago
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 21 }
-  },
-  {
-    id: '7',
-    name: 'Aisha Patel',
-    email: 'aisha.patel.md@medical.org',
-    phone: '+1 (555) 678-9012',
-    lastBookingDate: null,
-    notes: 'Medical professional, interested in stress-relief packages.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 2 }, // 2 days ago
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 2 }
-  },
-  {
-    id: '8',
-    name: 'Robert Kim',
-    email: 'robert.kim.tech@startup.io',
-    phone: '+1 (555) 789-0123',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 45 }, // 1.5 months ago
-    notes: 'Tech entrepreneur, books last-minute. Prefers digital check-in.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 200 }, // ~7 months ago
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 45 }
-  }
 ];
 
-// Loading skeleton component
-const ClientRowSkeleton = () => (
-  <TableRow>
-    {[...Array(6)].map((_, i) => (
-      <TableCell key={i}>
-        <div className="h-4 bg-gray-200 rounded animate-pulse" />
-      </TableCell>
-    ))}
-  </TableRow>
-);
-
-// Main component
 export default function AdminClientsPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Core state
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
 
-  // Simulate API loading
+  // UI state with URL persistence
+  const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
+  const [brandFilter, setBrandFilter] = useState(searchParams.get('brand') || 'All');
+  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'All');
+  const [sorting, setSorting] = useState<SortingState>([{
+    id: searchParams.get('sort') || 'name',
+    desc: searchParams.get('order') === 'desc'
+  }]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    name: true,
+    email: true,
+    phone: true,
+    lastBookingDate: true,
+    brand: true,
+    status: true,
+    registrationDate: false, // Hidden by default
+  });
+
+  // Dialog state
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  // Operations state
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+
+  // Event handlers - moved up to avoid temporal dead zone issues
+  const handleAddClient = useCallback(() => {
+    setEditingClient(null);
+    setDialogOpen(true);
+  }, []);
+
+  const handleExport = useCallback(async (selectedIds?: string[]) => {
+    setIsExporting(true);
+    try {
+      const dataToExport = selectedIds
+        ? clients.filter(c => selectedIds.includes(c.id))
+        : filteredData;
+
+      exportToCSV(dataToExport);
+      toast.success('Export completed');
+    } catch (err) {
+      toast.error('Export failed');
+    } finally {
+      setIsExporting(false);
+    }
+  }, [clients, filteredData]);
+
+  // Load clients on mount
   useEffect(() => {
     loadClients();
   }, []);
+
+  // Update URL when filters change
+  const updateURL = useCallback((params: Record<string, string>) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+
+    // Update or remove params
+    Object.entries(params).forEach(([key, value]) => {
+      if (value && value !== 'All' && value !== 'name' && value !== 'asc') {
+        newSearchParams.set(key, value);
+      } else {
+        newSearchParams.delete(key);
+      }
+    });
+
+    // Update URL without triggering a page reload
+    const newURL = `${window.location.pathname}?${newSearchParams.toString()}`;
+    window.history.replaceState({}, '', newURL);
+  }, [searchParams]);
+
+  // Update URL when search/filter/sort changes
+  useEffect(() => {
+    updateURL({
+      q: searchValue,
+      brand: brandFilter,
+      status: statusFilter,
+      sort: sorting[0]?.id || 'name',
+      order: sorting[0]?.desc ? 'desc' : 'asc',
+    });
+  }, [searchValue, brandFilter, statusFilter, sorting, updateURL]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Only handle shortcuts when not typing in inputs
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      switch (event.key.toLowerCase()) {
+        case '/':
+          event.preventDefault();
+          // Focus search input
+          const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement;
+          if (searchInput) {
+            searchInput.focus();
+          }
+          break;
+        case 'a':
+          if (!event.ctrlKey && !event.metaKey) {
+            event.preventDefault();
+            handleAddClient();
+          }
+          break;
+        case 'e':
+          if (!event.ctrlKey && !event.metaKey) {
+            event.preventDefault();
+            handleExport();
+          }
+          break;
+        case 'i':
+          if (!event.ctrlKey && !event.metaKey) {
+            event.preventDefault();
+            // Trigger file input for import
+            const fileInput = document.getElementById('csv-import') as HTMLInputElement;
+            if (fileInput) {
+              fileInput.click();
+            }
+          }
+          break;
+        case 'escape':
+          if (dialogOpen) {
+            setDialogOpen(false);
+          }
+          break;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [dialogOpen, handleAddClient]);
 
   const loadClients = async () => {
     try {
       setLoading(true);
       setError('');
-
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1200));
-
-      // In production, this would be: const response = await fetch('/api/clients');
+      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
       setClients(MOCK_CLIENTS);
-    } catch (error: any) {
+    } catch (err) {
       setError('Failed to load clients. Please try again.');
-      console.error('Load clients error:', error);
+      console.error('Load clients error:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await loadClients();
-    setRefreshing(false);
-  };
+  // Filtered and sorted data
+  const filteredData = useMemo(() => {
+    let filtered = clients;
 
-  // Memoized filtered clients with debounced search
-  const filteredClients = useMemo(() => {
-    if (!searchTerm.trim()) return clients;
+    // Apply search filter
+    if (searchValue.trim()) {
+      const term = searchValue.toLowerCase();
+      filtered = filtered.filter(client =>
+        client.name.toLowerCase().includes(term) ||
+        client.email.toLowerCase().includes(term) ||
+        client.phone?.toLowerCase().includes(term)
+      );
+    }
 
-    const term = searchTerm.toLowerCase();
-    return clients.filter(client =>
-      client.name.toLowerCase().includes(term) ||
-      client.email.toLowerCase().includes(term) ||
-      client.phone.replace(/\D/g, '').includes(term.replace(/\D/g, ''))
-    );
-  }, [clients, searchTerm]);
+    // Apply brand filter
+    if (brandFilter !== 'All') {
+      filtered = filtered.filter(client => client.brand === brandFilter);
+    }
 
-  // Statistics calculations
+    // Apply status filter
+    if (statusFilter !== 'All') {
+      filtered = filtered.filter(client => client.status === statusFilter);
+    }
+
+    return filtered;
+  }, [clients, searchValue, brandFilter, statusFilter]);
+
+  // Statistics
   const statistics = useMemo(() => {
     const now = new Date();
     const thisMonth = now.getMonth();
@@ -185,275 +290,297 @@ export default function AdminClientsPage() {
     };
   }, [clients]);
 
-  // Date formatting utility
-  const formatDate = (timestamp: Timestamp | null): string => {
-    if (!timestamp) return 'Never';
-    try {
-      const date = new Date(timestamp.seconds * 1000);
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      });
-    } catch {
-      return 'Invalid date';
-    }
-  };
+  // Event handlers
+  const handleEditClient = useCallback((client: Client) => {
+    setEditingClient(client);
+    setDialogOpen(true);
+  }, []);
 
-  // Truncate notes utility
-  const truncateNotes = (notes: string, maxLength: number = 50): string => {
-    if (!notes) return 'No notes';
-    return notes.length > maxLength ? `${notes.substring(0, maxLength)}...` : notes;
-  };
+  const handleViewClient = useCallback((client: Client) => {
+    toast.info(`Viewing details for ${client.name}`);
+    // TODO: Implement view client details
+  }, []);
+
+  const handleArchiveClient = useCallback((client: Client) => {
+    toast.info(`Archiving ${client.name}`);
+    // TODO: Implement archive functionality
+  }, []);
+
+  const handleDeleteClient = useCallback((client: Client) => {
+    toast.info(`Deleting ${client.name}`);
+    // TODO: Implement delete functionality
+  }, []);
+
+  const handleSaveClient = useCallback(async (data: CreateClient | UpdateClient) => {
+    setSaving(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+
+      if (editingClient) {
+        // Update existing client
+        setClients(prev => prev.map(c =>
+          c.id === editingClient.id
+            ? { ...c, ...data, updatedAt: { seconds: Date.now() / 1000, nanoseconds: 0 } }
+            : c
+        ));
+        toast.success('Client updated successfully');
+      } else {
+        // Create new client
+        const newClient: Client = {
+          id: Date.now().toString(),
+          ...data,
+          registrationDate: { seconds: Date.now() / 1000, nanoseconds: 0 },
+          createdAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
+          updatedAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
+        };
+        setClients(prev => [...prev, newClient]);
+        toast.success('Client added successfully');
+      }
+    } catch (err) {
+      toast.error('Failed to save client');
+      throw err;
+    } finally {
+      setSaving(false);
+    }
+  }, [editingClient]);
+
+  const handleImport = useCallback(async (file: File) => {
+    setIsImporting(true);
+    try {
+      const result: ImportResult = await importClientsFromCSV(file);
+
+      if (result.validRows > 0) {
+        // Convert valid rows to clients and add them
+        const newClients: Client[] = result.data.map((row, index) => ({
+          id: `imported-${Date.now()}-${index}`,
+          ...row,
+          registrationDate: row.registrationDate
+            ? { seconds: new Date(row.registrationDate).getTime() / 1000, nanoseconds: 0 }
+            : { seconds: Date.now() / 1000, nanoseconds: 0 },
+          createdAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
+          updatedAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
+        }));
+
+        setClients(prev => [...prev, ...newClients]);
+        toast.success(`Imported ${result.validRows} clients successfully${result.invalidRows > 0 ? ` (${result.invalidRows} errors)` : ''}`);
+      } else {
+        toast.error('No valid rows found in the CSV file');
+      }
+
+      if (result.invalidRows > 0) {
+        console.warn('Import validation errors:', result.errors);
+      }
+    } catch (err) {
+      toast.error('Import failed');
+      console.error('Import error:', err);
+    } finally {
+      setIsImporting(false);
+    }
+  }, []);
+
+  const handleBulkArchive = useCallback(() => {
+    const selectedIds = Object.keys(rowSelection);
+    toast.info(`Archiving ${selectedIds.length} clients`);
+    // TODO: Implement bulk archive
+    setRowSelection({});
+  }, [rowSelection]);
+
+  const handleBulkDelete = useCallback(() => {
+    const selectedIds = Object.keys(rowSelection);
+    toast.info(`Deleting ${selectedIds.length} clients`);
+    // TODO: Implement bulk delete
+    setRowSelection({});
+  }, [rowSelection]);
+
+  const handleBulkExport = useCallback(() => {
+    const selectedIds = Object.keys(rowSelection);
+    handleExport(selectedIds);
+  }, [rowSelection, handleExport]);
+
+  const handleClearSelection = useCallback(() => {
+    setRowSelection({});
+  }, []);
+
+  // Determine which columns to show
+  const visibleColumns = useMemo(() => {
+    return Object.keys(columnVisibility).filter(key => columnVisibility[key]);
+  }, [columnVisibility]);
+
+  const selectedCount = Object.keys(rowSelection).length;
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-6" role="main" aria-label="Clients management page">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sticky top-0 z-40 bg-white pb-4"
+      >
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Clients</h1>
-          <p className="text-gray-600 mt-1">Manage client information and booking history</p>
-        </div>
-        <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
-          <Plus className="h-4 w-4" />
-          Add New Client
-        </Button>
-      </div>
-
-      {/* Error Alert */}
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center gap-2"
-          >
-            <span>{error}</span>
-            <Button variant="outline" size="sm" onClick={loadClients} className="ml-auto">
-              Retry
-            </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Main Content Card */}
-      <Card className="shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-blue-600" />
-            Client Directory
-          </CardTitle>
-          <CardDescription>
-            View and manage all registered clients
-          </CardDescription>
-
-          {/* Search and Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search clients by name, email, or phone..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button
-              variant="outline"
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-gray-900">Clients</h1>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {statistics.total}
+            </span>
           </div>
-        </CardHeader>
+          <p className="text-gray-600 mt-1">Manage your client records by searching, filtering, and sorting.</p>
+          <div className="mt-2 text-xs text-gray-500">
+            <span className="font-medium">Keyboard shortcuts:</span> Press <kbd className="px-1 py-0.5 bg-gray-200 rounded text-xs">/</kbd> to search, <kbd className="px-1 py-0.5 bg-gray-200 rounded text-xs">A</kbd> to add client, <kbd className="px-1 py-0.5 bg-gray-200 rounded text-xs">E</kbd> to export, <kbd className="px-1 py-0.5 bg-gray-200 rounded text-xs">I</kbd> to import, <kbd className="px-1 py-0.5 bg-gray-200 rounded text-xs">Esc</kbd> to close dialogs
+          </div>
+        </div>
+      </motion.div>
 
-        <CardContent>
+      {/* Error State */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center justify-between"
+        >
+          <span>{error}</span>
+          <Button variant="outline" size="sm" onClick={loadClients}>
+            Retry
+          </Button>
+        </motion.div>
+      )}
+
+      {/* Toolbar */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <ClientsToolbar
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          brandFilter={brandFilter}
+          onBrandFilterChange={setBrandFilter}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          visibleColumns={visibleColumns}
+          onColumnVisibilityChange={(columns) => {
+            const newVisibility: VisibilityState = {};
+            ['name', 'email', 'phone', 'lastBookingDate', 'brand', 'status', 'registrationDate'].forEach(col => {
+              newVisibility[col] = columns.includes(col);
+            });
+            setColumnVisibility(newVisibility);
+          }}
+          sortBy={sorting[0]?.id || 'name'}
+          sortDirection={sorting[0]?.desc ? 'desc' : 'asc'}
+          onSortChange={(sortBy, direction) => {
+            setSorting([{ id: sortBy, desc: direction === 'desc' }]);
+          }}
+          onAddClient={handleAddClient}
+          onImport={handleImport}
+          onExport={handleExport}
+          totalCount={filteredData.length}
+          selectedCount={selectedCount}
+          isExporting={isExporting}
+        />
+      </motion.div>
+
+      {/* Bulk Actions Bar */}
+      <BulkBar
+        selectedCount={selectedCount}
+        onArchiveSelected={handleBulkArchive}
+        onDeleteSelected={handleBulkDelete}
+        onExportSelected={handleBulkExport}
+        onClearSelection={handleClearSelection}
+      />
+
+      {/* Main Content */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Card className="rounded-lg shadow-sm border bg-white p-2 md:p-3">
           {loading ? (
-            /* Loading State */
-            <div className="space-y-4">
-              <div className="flex items-center justify-center py-8">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <RefreshCw className="h-5 w-5 animate-spin" />
-                  <span>Loading clients...</span>
-                </div>
-              </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Last Booking</TableHead>
-                    <TableHead>Notes</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {[...Array(5)].map((_, i) => <ClientRowSkeleton key={i} />)}
-                </TableBody>
-              </Table>
-            </div>
-          ) : filteredClients.length === 0 ? (
-            /* Empty State */
-            <div className="text-center py-12">
-              <Users className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {searchTerm ? 'No clients found' : 'No clients yet'}
-              </h3>
-              <p className="text-gray-500 mb-4">
-                {searchTerm
-                  ? `No clients match "${searchTerm}". Try adjusting your search.`
-                  : 'Get started by adding your first client.'
-                }
-              </p>
-              {!searchTerm && (
-                <Button className="flex items-center gap-2 mx-auto">
-                  <Plus className="h-4 w-4" />
-                  Add First Client
-                </Button>
-              )}
-            </div>
+            <LoadingState />
+          ) : filteredData.length === 0 ? (
+            searchValue ? (
+              <NoSearchResultsState
+                searchTerm={searchValue}
+                onClearSearch={() => setSearchValue('')}
+              />
+            ) : (
+              <NoClientsState onAddClient={handleAddClient} />
+            )
           ) : (
-            /* Data Table */
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="font-semibold">Name</TableHead>
-                    <TableHead className="font-semibold">Email</TableHead>
-                    <TableHead className="font-semibold">Phone</TableHead>
-                    <TableHead className="font-semibold">Last Booking</TableHead>
-                    <TableHead className="font-semibold">Notes</TableHead>
-                    <TableHead className="font-semibold">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <AnimatePresence>
-                    {filteredClients.map((client, index) => (
-                      <motion.tr
-                        key={client.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="hover:bg-gray-50 transition-colors"
-                      >
-                        <TableCell className="font-medium">{client.name}</TableCell>
-                        <TableCell className="text-gray-600">{client.email}</TableCell>
-                        <TableCell className="text-gray-600">{client.phone}</TableCell>
-                        <TableCell>
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            client.lastBookingDate
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-600'
-                          }`}>
-                            {formatDate(client.lastBookingDate)}
-                          </span>
-                        </TableCell>
-                        <TableCell className="max-w-xs">
-                          <span
-                            title={client.notes || 'No notes'}
-                            className="text-gray-600 cursor-help"
-                          >
-                            {truncateNotes(client.notes)}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="flex items-center gap-1 hover:bg-blue-50 hover:border-blue-300"
-                            >
-                              <Edit className="h-3 w-3" />
-                              Edit
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="flex items-center gap-1 hover:bg-green-50 hover:border-green-300"
-                            >
-                              <Eye className="h-3 w-3" />
-                              View Bookings
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </motion.tr>
-                    ))}
-                  </AnimatePresence>
-                </TableBody>
-              </Table>
-            </div>
+            <ClientsTable
+              data={filteredData}
+              visibleColumns={visibleColumns}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              rowSelection={rowSelection}
+              onRowSelectionChange={setRowSelection}
+              columnVisibility={columnVisibility}
+              onColumnVisibilityChange={setColumnVisibility}
+              onViewClient={handleViewClient}
+              onEditClient={handleEditClient}
+              onArchiveClient={handleArchiveClient}
+              onDeleteClient={handleDeleteClient}
+              isLoading={loading}
+            />
           )}
-        </CardContent>
-      </Card>
+        </Card>
+      </motion.div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
-          <Card className="hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Clients</CardTitle>
-              <Users className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{statistics.total}</div>
-              <p className="text-xs text-gray-500 mt-1">
-                {statistics.total > 0 ? 'Registered clients' : 'No clients yet'}
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+      >
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600">Total Clients</CardTitle>
+            <Users className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">{statistics.total}</div>
+            <p className="text-xs text-gray-500 mt-1">Registered clients</p>
+          </CardContent>
+        </Card>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <Card className="hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">With Bookings</CardTitle>
-              <UserCheck className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{statistics.withBookings}</div>
-              <p className="text-xs text-gray-500 mt-1">
-                {statistics.total > 0
-                  ? `${Math.round((statistics.withBookings / statistics.total) * 100)}% of clients`
-                  : 'No bookings yet'
-                }
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600">With Bookings</CardTitle>
+            <UserCheck className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{statistics.withBookings}</div>
+            <p className="text-xs text-gray-500 mt-1">
+              {statistics.total > 0
+                ? `${Math.round((statistics.withBookings / statistics.total) * 100)}% of clients`
+                : 'No bookings yet'
+              }
+            </p>
+          </CardContent>
+        </Card>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <Card className="hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">New This Month</CardTitle>
-              <UserPlus className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-purple-600">{statistics.newThisMonth}</div>
-              <p className="text-xs text-gray-500 mt-1">
-                {statistics.newThisMonth > 0 ? 'New registrations' : 'No new clients'}
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600">New This Month</CardTitle>
+            <UserPlus className="h-4 w-4 text-purple-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">{statistics.newThisMonth}</div>
+            <p className="text-xs text-gray-500 mt-1">New registrations</p>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Client Dialog */}
+      <ClientDialog
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        client={editingClient}
+        onSave={handleSaveClient}
+        isSaving={saving}
+        mode={editingClient ? 'edit' : 'create'}
+      />
     </div>
   );
 }

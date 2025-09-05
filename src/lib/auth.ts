@@ -19,6 +19,7 @@ export interface AuthUser {
 // Admin email list (update this with your admin emails)
 const ADMIN_EMAILS = [
   'julianmjavierm@gmail.com',
+  'julian@fyves.com',
   // Add your admin emails here
 ];
 

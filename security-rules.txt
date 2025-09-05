@@ -5,34 +5,58 @@ service cloud.firestore {
     function isAdminEmail() {
       return request.auth != null &&
         request.auth.token.email in [
-          'julianmjavierm@gmail.com'
+          'julian@fyves.com',
+          'julianmjavierm@gmail.com',
+          'admin@heiwa.house',
+          'manager@heiwa.house'
           // Add your admin emails here
         ];
     }
 
-    // Clients collection - admin only access
+    // Clients collection - allow all authenticated users for development
     match /clients/{document} {
-      allow read, write: if isAdminEmail();
+      allow read, write: if request.auth != null;
     }
 
-    // Surf camps collection - admin only access
+    // Surf camps collection - allow all authenticated users for development
     match /surfCamps/{document} {
-      allow read, write: if isAdminEmail();
+      allow read, write: if request.auth != null;
     }
 
-    // Rooms collection - admin only access
+    // Rooms collection - allow all authenticated users for development
     match /rooms/{document} {
-      allow read, write: if isAdminEmail();
+      allow read, write: if request.auth != null;
     }
 
-    // Add-ons collection - admin only access
+    // Add-ons collection - allow all authenticated users for development
     match /addOns/{document} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Bookings collection - allow all authenticated users for development
+    match /bookings/{document} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Audit logs collection - admin only access
+    match /auditLogs/{document} {
       allow read, write: if isAdminEmail();
     }
 
-    // Bookings collection - admin only access
-    match /bookings/{document} {
+    // Consents collection - admin only access
+    match /consents/{document} {
       allow read, write: if isAdminEmail();
+    }
+
+    // System settings collection - admin only access
+    match /system/{document} {
+      allow read, write: if isAdminEmail();
+    }
+
+    // User profiles collection - for client portal (authenticated users can read/write their own)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isAdminEmail();
     }
 
     // Deny all other access

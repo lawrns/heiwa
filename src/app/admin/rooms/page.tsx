@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { getDb, getAuth, getStorage } from '@/lib/firebase';
+import { db, auth, storage } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -167,9 +167,7 @@ export default function RoomsPage() {
   const [selectedRoom, setSelectedRoom] = useState<(Room & { id: string }) | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [roomImages, setRoomImages] = useState<{ [key: string]: string[] }>({});
-  const db = getDb();
-  const auth = getAuth();
-  const storage = getStorage();
+  // Firebase services are imported directly
 
   // Fetch rooms
   const [roomsSnapshot, loadingRooms, errorRooms] = useCollection(

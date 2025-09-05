@@ -15,23 +15,14 @@ const config: Config = {
   			ring: 'hsl(var(--ring))',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
-  			primary: {
-  				'50': '#eff6ff',
-  				'100': '#dbeafe',
-  				'200': '#bfdbfe',
-  				'300': '#93c5fd',
-  				'400': '#60a5fa',
-  				'500': '#3b82f6',
-  				'600': '#2563eb',
-  				'700': '#1d4ed8',
-  				'800': '#1e40af',
-  				'900': '#1e3a8a',
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
-  			},
-  			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
+  			primary: '#3b82f6',
+  			secondary: '#f97316',
+  			success: '#22c55e',
+  			accent: '#a855f7',
+  			textNeutral: '#4b5563',
+  			neutral: {
+  				DEFAULT: '#4b5563',
+  				foreground: '#ffffff'
   			},
   			destructive: {
   				DEFAULT: 'hsl(var(--destructive))',
@@ -41,10 +32,6 @@ const config: Config = {
   				DEFAULT: 'hsl(var(--muted))',
   				foreground: 'hsl(var(--muted-foreground))'
   			},
-  			accent: {
-  				DEFAULT: 'hsl(var(--accent))',
-  				foreground: 'hsl(var(--accent-foreground))'
-  			},
   			popover: {
   				DEFAULT: 'hsl(var(--popover))',
   				foreground: 'hsl(var(--popover-foreground))'
@@ -53,6 +40,44 @@ const config: Config = {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},
+  			// Enhanced Heiwa House Brand Colors
+  			oceanBlue: {
+  				'50': 'var(--ocean-blue-50)',
+  				'100': 'var(--ocean-blue-100)',
+  				'200': 'var(--ocean-blue-200)',
+  				'300': 'var(--ocean-blue-300)',
+  				'400': 'var(--ocean-blue-400)',
+  				'500': 'var(--ocean-blue-500)',
+  				'600': 'var(--ocean-blue-600)',
+  				'700': 'var(--ocean-blue-700)',
+  				'800': 'var(--ocean-blue-800)',
+  				'900': 'var(--ocean-blue-900)'
+  			},
+  			surfTeal: {
+  				'50': 'var(--surf-teal-50)',
+  				'100': 'var(--surf-teal-100)',
+  				'200': 'var(--surf-teal-200)',
+  				'300': 'var(--surf-teal-300)',
+  				'400': 'var(--surf-teal-400)',
+  				'500': 'var(--surf-teal-500)',
+  				'600': 'var(--surf-teal-600)',
+  				'700': 'var(--surf-teal-700)',
+  				'800': 'var(--surf-teal-800)',
+  				'900': 'var(--surf-teal-900)'
+  			},
+  			sandBeige: {
+  				'50': 'var(--sand-beige-50)',
+  				'100': 'var(--sand-beige-100)',
+  				'200': 'var(--sand-beige-200)',
+  				'300': 'var(--sand-beige-300)',
+  				'400': 'var(--sand-beige-400)',
+  				'500': 'var(--sand-beige-500)',
+  				'600': 'var(--sand-beige-600)',
+  				'700': 'var(--sand-beige-700)',
+  				'800': 'var(--sand-beige-800)',
+  				'900': 'var(--sand-beige-900)'
+  			},
+  			// Legacy brand colors (keeping for backward compatibility)
   			frOrange: {
   				'50': '#fff7ed',
   				'100': '#ffedd5',
@@ -104,6 +129,43 @@ const config: Config = {
   				'sans-serif'
   			]
   		},
+  		fontSize: {
+  			'xs': 'var(--font-size-xs)',
+  			'sm': 'var(--font-size-sm)',
+  			'base': 'var(--font-size-base)',
+  			'lg': 'var(--font-size-lg)',
+  			'xl': 'var(--font-size-xl)',
+  			'2xl': 'var(--font-size-2xl)',
+  			'3xl': 'var(--font-size-3xl)',
+  			'4xl': 'var(--font-size-4xl)',
+  			'5xl': 'var(--font-size-5xl)'
+  		},
+  		fontWeight: {
+  			light: 'var(--font-weight-light)',
+  			normal: 'var(--font-weight-normal)',
+  			medium: 'var(--font-weight-medium)',
+  			semibold: 'var(--font-weight-semibold)',
+  			bold: 'var(--font-weight-bold)'
+  		},
+  		lineHeight: {
+  			tight: 'var(--line-height-tight)',
+  			normal: 'var(--line-height-normal)',
+  			relaxed: 'var(--line-height-relaxed)'
+  		},
+  		spacing: {
+  			'1': 'var(--space-1)',
+  			'2': 'var(--space-2)',
+  			'3': 'var(--space-3)',
+  			'4': 'var(--space-4)',
+  			'5': 'var(--space-5)',
+  			'6': 'var(--space-6)',
+  			'8': 'var(--space-8)',
+  			'10': 'var(--space-10)',
+  			'12': 'var(--space-12)',
+  			'16': 'var(--space-16)',
+  			'20': 'var(--space-20)',
+  			'24': 'var(--space-24)'
+  		},
   		animation: {
   			'fade-in': 'fadeIn 0.5s ease-in-out',
   			'slide-up': 'slideUp 0.3s ease-out',
@@ -147,9 +209,31 @@ const config: Config = {
   			}
   		},
   		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
+  			'none': 'var(--radius-none)',
+  			'sm': 'var(--radius-sm)',
+  			'base': 'var(--radius-base)',
+  			'md': 'var(--radius-md)',
+  			'lg': 'var(--radius-lg)',
+  			'xl': 'var(--radius-xl)',
+  			'2xl': 'var(--radius-2xl)',
+  			'3xl': 'var(--radius-3xl)',
+  			'full': 'var(--radius-full)',
+  			radiusCard: '8px',
+  			radiusButton: '6px'
+  		},
+  		boxShadow: {
+  			'sm': 'var(--shadow-sm)',
+  			'base': 'var(--shadow-base)',
+  			'md': 'var(--shadow-md)',
+  			'lg': 'var(--shadow-lg)',
+  			'xl': 'var(--shadow-xl)',
+  			'2xl': 'var(--shadow-2xl)',
+  			shadowCard: '0 4px 6px rgba(0,0,0,0.1)'
+  		},
+  		transitionDuration: {
+  			'fast': 'var(--transition-fast)',
+  			'normal': 'var(--transition-normal)',
+  			'slow': 'var(--transition-slow)'
   		}
   	}
   },

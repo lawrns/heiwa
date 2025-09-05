@@ -3,7 +3,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection } from 'firebase/firestore';
-import { getDb } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
 import { Calendar, momentLocalizer, View, Views } from 'react-big-calendar';
 import { format } from 'date-fns';
 import moment from 'moment';
@@ -64,7 +64,7 @@ const EventComponent = ({ event }: { event: CalendarEvent }) => {
 
 export default function CalendarPage() {
   const router = useRouter();
-  const db = getDb();
+  // Firebase db is imported directly
 
   // Fetch surf camps
   const [surfCampsSnapshot, loadingCamps] = useCollection(

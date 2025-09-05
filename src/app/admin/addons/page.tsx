@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { getDb, getStorage } from '@/lib/firebase';
+import { db, storage } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -50,8 +50,7 @@ export default function AddOnsPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedAddOn, setSelectedAddOn] = useState<(AddOn & { id: string }) | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const db = getDb();
-  const storage = getStorage();
+  // Firebase services are imported directly
 
   // Fetch add-ons
   const [addOnsSnapshot, loadingAddOns, errorAddOns] = useCollection(

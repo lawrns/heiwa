@@ -12,7 +12,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, query, where, orderBy, doc, runTransaction } from 'firebase/firestore';
-import { getDb } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -31,6 +31,10 @@ function BookingsContent() {
   const [isClient, setIsClient] = useState(false);
   const [renderError, setRenderError] = useState<string | null>(null);
 
+  // Always call hooks at the top level
+  const searchParams = useSearchParams();
+  // Firebase db is imported directly
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -46,9 +50,6 @@ function BookingsContent() {
       </div>
     );
   }
-
-  const searchParams = useSearchParams();
-  const db = getDb();
 
   // Fetch clients for filter dropdown
   const [clientsSnapshot, loadingClients] = useCollection(
@@ -68,7 +69,7 @@ function BookingsContent() {
     if (!db) return null;
 
     try {
-      let constraints: any[] = [];
+      const constraints: any[] = [];
 
       // Basic ordering - only add if we have a valid db connection
       try {
