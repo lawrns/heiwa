@@ -80,13 +80,13 @@ export async function POST(request: NextRequest) {
   try {
     // Initialize Firebase for server-side use
     const firebaseConfig = {
-      apiKey: "AIzaSyDQTtlEowOBdeDj-StcrlnscogXpmy52x4",
-      authDomain: "heiwahousedashboard.firebaseapp.com",
-      projectId: "heiwahousedashboard",
-      storageBucket: "heiwahousedashboard.firebasestorage.app",
-      messagingSenderId: "221240912006",
-      appId: "1:221240912006:web:1c7a974b44c5361519c907",
-      measurementId: "G-ZBSB3V5M6J"
+      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "demo-api-key",
+      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "demo-project.firebaseapp.com",
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "demo-project",
+      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "demo-project.firebasestorage.app",
+      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "123456789",
+      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:123456789:web:demo",
+      measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "G-DEMOMEASURE"
     }
 
     let app

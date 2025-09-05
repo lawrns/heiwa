@@ -13,7 +13,13 @@ export const config = {
   appName: 'Heiwa House',
   appVersion: '1.0.0',
 
-  // Firebase configuration
+  // Supabase configuration
+  supabase: {
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+  },
+
+  // Legacy Firebase configuration (for reference)
   firebase: {
     projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'heiwahousedashboard',
     useEmulator: process.env.NODE_ENV === 'development' && process.env.USE_FIREBASE_EMULATOR === 'true',

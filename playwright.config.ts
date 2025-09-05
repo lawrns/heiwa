@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: 'html',
 
   use: {
-    baseURL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3005',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
@@ -29,11 +29,11 @@ export default defineConfig({
     },
   ],
 
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 180 * 1000,
-  },
+  // webServer: {
+  //   command: 'npm run dev',
+  //   url: 'http://localhost:3005',
+  //   reuseExistingServer: !process.env.CI,
+  //   timeout: 180 * 1000,
+  // },
 })
 

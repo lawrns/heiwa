@@ -21,7 +21,7 @@ export const ClientSchema = z.object({
 
 export type Client = z.infer<typeof ClientSchema>;
 
-// Surf Camp schema
+// Surf Camp schema (legacy - keeping for backward compatibility)
 export const SurfCampSchema = z.object({
   id: z.string(),
   category: z.enum(['FR', 'HH']),
@@ -34,6 +34,22 @@ export const SurfCampSchema = z.object({
 });
 
 export type SurfCamp = z.infer<typeof SurfCampSchema>;
+
+// Camp Week schema (new structure for customer-facing weeks)
+export const CampWeekSchema = z.object({
+  id: z.string(),
+  campId: z.string(), // Links to surf camp
+  startDate: TimestampSchema,
+  endDate: TimestampSchema,
+  category: z.enum(['FreedomRoutes', 'Heiwa']),
+  published: z.boolean().default(false),
+  maxGuests: z.number().min(1),
+  pricingRules: z.record(z.string(), z.any()), // Flexible pricing structure
+  createdAt: TimestampSchema,
+  updatedAt: TimestampSchema,
+});
+
+export type CampWeek = z.infer<typeof CampWeekSchema>;
 
 // Room pricing schema
 const RoomPricingSchema = z.object({
@@ -114,6 +130,13 @@ export const COLLECTIONS = {
   ROOMS: 'rooms',
   ADD_ONS: 'addOns',
   BOOKINGS: 'bookings',
+  CAMP_WEEKS: 'campWeeks',
+  ROOM_ASSIGNMENTS: 'roomAssignments',
+  PAYMENTS: 'payments',
+  INVOICES: 'invoices',
+  AUTOMATIONS: 'automations',
+  EXTERNAL_CALENDAR_EVENTS: 'externalCalendarEvents',
+  FEATURE_FLAGS: 'featureFlags',
 } as const;
 
 // Form schemas for creating/updating entities
@@ -148,3 +171,6 @@ export const UpdateAddOnSchema = CreateAddOnSchema.partial();
 
 export const CreateBookingSchema = BookingSchema.omit({ id: true, createdAt: true, updatedAt: true });
 export const UpdateBookingSchema = CreateBookingSchema.partial();
+
+export const CreateCampWeekSchema = CampWeekSchema.omit({ id: true, createdAt: true, updatedAt: true });
+export const UpdateCampWeekSchema = CreateCampWeekSchema.partial();

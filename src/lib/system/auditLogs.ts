@@ -21,24 +21,23 @@ export interface AuditLogEntry {
 export async function logAuditEvent(
   action: string,
   resource: string,
+  userId: string,
+  userEmail: string,
   resourceId?: string,
   details?: Record<string, any>,
   success: boolean = true,
   errorMessage?: string
 ): Promise<void> {
   try {
-    const auth = getAuth()
-    const user = auth.currentUser
-
-    if (!user) {
-      console.warn('Cannot log audit event: No authenticated user')
+    if (!userId || !userEmail) {
+      console.warn('Cannot log audit event: Missing user information')
       return
     }
 
     const auditEntry: Omit<AuditLogEntry, 'id'> = {
       timestamp: new Date(),
-      userId: user.uid,
-      userEmail: user.email || 'unknown',
+      userId: userId,
+      userEmail: userEmail,
       action,
       resource,
       resourceId,

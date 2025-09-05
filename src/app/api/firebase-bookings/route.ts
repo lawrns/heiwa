@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { bookingsAPI } from '@/lib/firebase-admin';
+import { bookingsAPI, clientsAPI } from '@/lib/firebase-admin';
 import { requireAdminSession } from '@/lib/auth';
 import { CreateBookingSchema, UpdateBookingSchema } from '@/lib/schemas';
+import { sendBookingEmails } from '@/lib/email-service';
 
 // GET /api/firebase-bookings - Get all bookings
 export async function GET(request: NextRequest) {
@@ -35,12 +36,33 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     await requireAdminSession(request);
-    
+
     const body = await request.json();
     const validatedData = CreateBookingSchema.parse(body);
 
     const bookingId = await bookingsAPI.create(validatedData);
     const booking = await bookingsAPI.getById(bookingId);
+
+    if (booking) {
+      // Send booking confirmation emails asynchronously
+      // We don't await this to avoid blocking the response
+      sendBookingEmails(booking, {
+        id: booking.clientIds[0], // Use first client ID for now
+        name: 'Client', // This should be fetched from client data
+        email: 'client@example.com', // This should be fetched from client data
+        phone: '',
+        brand: 'Heiwa House',
+        status: 'Active',
+        lastBookingDate: null,
+        registrationDate: new Date(),
+        notes: '',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).catch(error => {
+        console.error('Failed to send booking emails:', error);
+        // Don't fail the booking creation if emails fail
+      });
+    }
 
     return NextResponse.json({ booking }, { status: 201 });
   } catch (error: any) {

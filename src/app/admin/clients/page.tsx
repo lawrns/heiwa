@@ -237,8 +237,12 @@ export default function AdminClientsPage() {
     try {
       setLoading(true);
       setError('');
-      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate API delay
-      setClients(MOCK_CLIENTS);
+      const response = await fetch('/api/firebase-clients');
+      if (!response.ok) {
+        throw new Error('Failed to fetch clients');
+      }
+      const data = await response.json();
+      setClients(data.clients || []);
     } catch (err) {
       setError('Failed to load clients. Please try again.');
       console.error('Load clients error:', err);
@@ -314,28 +318,37 @@ export default function AdminClientsPage() {
   const handleSaveClient = useCallback(async (data: CreateClient | UpdateClient) => {
     setSaving(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      const method = editingClient ? 'PUT' : 'POST';
+      const body = editingClient ? { id: editingClient.id, ...data } : data;
+
+      const response = await fetch('/api/firebase-clients', {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save client');
+      }
+
+      const result = await response.json();
 
       if (editingClient) {
         // Update existing client
         setClients(prev => prev.map(c =>
-          c.id === editingClient.id
-            ? { ...c, ...data, updatedAt: { seconds: Date.now() / 1000, nanoseconds: 0 } }
-            : c
+          c.id === editingClient.id ? result.client : c
         ));
         toast.success('Client updated successfully');
       } else {
-        // Create new client
-        const newClient: Client = {
-          id: Date.now().toString(),
-          ...data,
-          registrationDate: { seconds: Date.now() / 1000, nanoseconds: 0 },
-          createdAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
-          updatedAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
-        };
-        setClients(prev => [...prev, newClient]);
+        // Add new client
+        setClients(prev => [...prev, result.client]);
         toast.success('Client added successfully');
       }
+
+      setDialogOpen(false);
+      setEditingClient(null);
     } catch (err) {
       toast.error('Failed to save client');
       throw err;

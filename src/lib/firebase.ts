@@ -1,23 +1,3 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth as getFirebaseAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getStorage as getFirebaseStorage } from "firebase/storage";
-
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
-};
-
-// Initialize Firebase
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-
-// Initialize Firebase services
-export const auth = getFirebaseAuth(app);
-export const db = getFirestore(app);
-export const storage = getFirebaseStorage(app);
-
-export default app;
+// Re-export client Supabase SDK for backward compatibility
+// This should only be used in client components
+export { supabase } from './firebase/client';

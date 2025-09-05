@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,30 +9,86 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { WavesIcon, MailIcon, LockIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { useAuth } from '@/components/AuthProvider'
 
 export default function ClientAuthPage() {
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (!authLoading && user && !user.isAdmin) {
+      router.push('/client/dashboard')
+    }
+  }, [user, authLoading, router])
+
+  // Show loading state while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-oceanBlue-50 to-surfTeal-50 flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-oceanBlue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Don't render if user is authenticated (will redirect)
+  if (user && !user.isAdmin) {
+    return null
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
-    // Mock authentication - will be replaced with Firebase Auth
-    setTimeout(() => {
+    try {
+      const formData = new FormData(e.target as HTMLFormElement)
+      const email = formData.get('email') as string
+      const password = formData.get('password') as string
+
+      // Firebase authentication
+      const { signInWithEmailAndPassword } = await import('firebase/auth')
+      const { auth } = await import('@/lib/firebase')
+
+      await signInWithEmailAndPassword(auth, email, password)
       toast.success('Login successful!')
+      router.push('/client/dashboard')
+    } catch (error: any) {
+      console.error('Login error:', error)
+      toast.error(error.message || 'Login failed')
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
-    // Mock registration - will be replaced with Firebase Auth
-    setTimeout(() => {
+    try {
+      const formData = new FormData(e.target as HTMLFormElement)
+      const name = formData.get('name') as string
+      const email = formData.get('email') as string
+      const password = formData.get('password') as string
+
+      // Firebase authentication
+      const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth')
+      const { auth } = await import('@/lib/firebase')
+
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      await updateProfile(userCredential.user, { displayName: name })
+
       toast.success('Registration successful!')
+      router.push('/client/dashboard')
+    } catch (error: any) {
+      console.error('Registration error:', error)
+      toast.error(error.message || 'Registration failed')
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   return (
@@ -61,6 +118,7 @@ export default function ClientAuthPage() {
                     <MailIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       placeholder="your@email.com"
                       className="pl-10"
@@ -74,6 +132,7 @@ export default function ClientAuthPage() {
                     <LockIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       id="password"
+                      name="password"
                       type="password"
                       className="pl-10"
                       required
@@ -90,7 +149,7 @@ export default function ClientAuthPage() {
               <form onSubmit={handleRegister} className="space-y-4">
                 <div>
                   <Label htmlFor="reg-name">Full Name</Label>
-                  <Input id="reg-name" placeholder="John Doe" required />
+                  <Input id="reg-name" name="name" placeholder="John Doe" required />
                 </div>
                 <div>
                   <Label htmlFor="reg-email">Email</Label>
@@ -98,6 +157,7 @@ export default function ClientAuthPage() {
                     <MailIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       id="reg-email"
+                      name="email"
                       type="email"
                       placeholder="your@email.com"
                       className="pl-10"
@@ -111,6 +171,7 @@ export default function ClientAuthPage() {
                     <LockIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       id="reg-password"
+                      name="password"
                       type="password"
                       className="pl-10"
                       required

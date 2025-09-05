@@ -6,7 +6,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 export const dynamic = 'force-dynamic';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, auth, storage } from '@/lib/firebase';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
@@ -30,6 +29,7 @@ import { COLLECTIONS, CreateRoomSchema, Room } from '@/lib/schemas';
 
 type RoomFormData = z.infer<typeof CreateRoomSchema>;
 import { Plus, Edit, Trash2, Upload, Image as ImageIcon, Bed, Users, Wifi, Eye, Coffee } from 'lucide-react';
+import { ImageUpload } from '@/components/ui/image-upload';
 
 // Demo data for rooms
 const DEMO_ROOMS: (Room & { id: string })[] = [
@@ -165,8 +165,6 @@ export default function RoomsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<(Room & { id: string }) | null>(null);
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [roomImages, setRoomImages] = useState<{ [key: string]: string[] }>({});
   // Firebase services are imported directly
 
   // Fetch rooms
@@ -226,44 +224,6 @@ export default function RoomsPage() {
     },
   });
 
-  // Image upload handler
-  const uploadImage = async (file: File): Promise<string> => {
-    if (file.size > 5 * 1024 * 1024) {
-      throw new Error('File size must be less than 5MB');
-    }
-
-    if (!['image/jpeg', 'image/png'].includes(file.type)) {
-      throw new Error('File must be JPG or PNG format');
-    }
-
-    if (!storage) {
-      throw new Error('Storage not available');
-    }
-
-    setUploadingImage(true);
-    try {
-      const storageRef = ref(storage, `rooms/${Date.now()}_${file.name}`);
-      await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      return downloadURL;
-    } finally {
-      setUploadingImage(false);
-    }
-  };
-
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const imageUrl = await uploadImage(file);
-      const currentImages = form.getValues('images') || [];
-      form.setValue('images', [...currentImages, imageUrl]);
-      toast.success('Image uploaded successfully');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to upload image');
-    }
-  };
 
   const handleCreateRoom = async (data: RoomFormData) => {
     try {
@@ -519,57 +479,24 @@ export default function RoomsPage() {
                 />
 
                 {/* Image Upload Section */}
-                <div className="space-y-4">
-                  <div>
-                    <FormLabel>Room Images</FormLabel>
-                    <div className="mt-2">
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                        id="image-upload"
-                        disabled={uploadingImage}
-                      />
-                      <label
-                        htmlFor="image-upload"
-                        className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors"
-                      >
-                        <div className="text-center">
-                          <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-600">
-                            {uploadingImage ? 'Uploading...' : 'Click to upload images (JPG/PNG, max 5MB)'}
-                          </p>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Image Preview */}
-                  {form.watch('images') && form.watch('images').length > 0 && (
-                    <div className="grid grid-cols-3 gap-2">
-                      {form.watch('images').map((imageUrl, index) => (
-                        <div key={index} className="relative group">
-                          <img
-                            src={imageUrl}
-                            alt={`Room image ${index + 1}`}
-                            className="w-full h-20 object-cover rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const currentImages = form.getValues('images');
-                              form.setValue('images', currentImages.filter((_, i) => i !== index));
-                            }}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                <FormField
+                  control={form.control}
+                  name="images"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Room Images</FormLabel>
+                      <FormControl>
+                        <ImageUpload
+                          value={field.value || []}
+                          onChange={(urls) => field.onChange(urls)}
+                          storagePath={`rooms/${Date.now()}`}
+                          maxFiles={10}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </div>
+                />
 
                 <FormField
                   control={form.control}
@@ -902,57 +829,24 @@ export default function RoomsPage() {
               />
 
               {/* Image Upload Section */}
-              <div className="space-y-4">
-                <div>
-                  <FormLabel>Room Images</FormLabel>
-                  <div className="mt-2">
-                    <input
-                      type="file"
-                      accept="image/jpeg,image/png"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      id="image-upload-edit"
-                      disabled={uploadingImage}
-                    />
-                    <label
-                      htmlFor="image-upload-edit"
-                      className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors"
-                    >
-                      <div className="text-center">
-                        <Upload className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                        <p className="text-sm text-gray-600">
-                          {uploadingImage ? 'Uploading...' : 'Click to upload images (JPG/PNG, max 5MB)'}
-                        </p>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Image Preview */}
-                {form.watch('images') && form.watch('images').length > 0 && (
-                  <div className="grid grid-cols-3 gap-2">
-                    {form.watch('images').map((imageUrl, index) => (
-                      <div key={index} className="relative group">
-                        <img
-                          src={imageUrl}
-                          alt={`Room image ${index + 1}`}
-                          className="w-full h-20 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const currentImages = form.getValues('images');
-                            form.setValue('images', currentImages.filter((_, i) => i !== index));
-                          }}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+              <FormField
+                control={form.control}
+                name="images"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Room Images</FormLabel>
+                    <FormControl>
+                      <ImageUpload
+                        value={field.value || []}
+                        onChange={(urls) => field.onChange(urls)}
+                        storagePath={`rooms/${selectedRoom?.id || Date.now()}`}
+                        maxFiles={10}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </div>
+              />
 
               <FormField
                 control={form.control}

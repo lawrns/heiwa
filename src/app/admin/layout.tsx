@@ -19,7 +19,7 @@ import {
   Bars3Icon,
   XMarkIcon
 } from '@heroicons/react/24/outline'
-import { BarChart3Icon, ShieldIcon, FileTextIcon } from 'lucide-react'
+import { BarChart3Icon, ShieldIcon, FileTextIcon, UserCheckIcon } from 'lucide-react'
 
 interface ErrorBoundaryState {
   hasError: boolean
@@ -83,6 +83,7 @@ const navigationItems = [
   { name: 'Clients', href: '/admin/clients', icon: UserGroupIcon },
   { name: 'Surf Camps', href: '/admin/surfcamps', icon: BuildingOfficeIcon },
   { name: 'Rooms', href: '/admin/rooms', icon: CubeIcon },
+  { name: 'Assignments', href: '/admin/assignments', icon: UserCheckIcon },
   { name: 'Add-ons', href: '/admin/addons', icon: CubeIcon },
   { name: 'Calendar', href: '/admin/calendar', icon: CalendarIcon },
   { name: 'Bookings', href: '/admin/bookings', icon: ClipboardDocumentListIcon },

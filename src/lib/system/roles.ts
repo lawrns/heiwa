@@ -25,22 +25,41 @@ export interface UserClaims {
   updatedAt?: number
 }
 
-// Get current user's role from Firebase Auth custom claims
-export async function getCurrentUserRole(): Promise<Role | null> {
+// Get user's role from Firebase Auth custom claims
+export async function getUserRole(uid: string): Promise<Role | null> {
   try {
-    const auth = getAuth()
-    const user = auth.currentUser
+    const { adminAuth } = await import('@/lib/firebase/admin')
 
-    if (!user) {
+    if (!adminAuth) {
+      console.warn('Admin auth not available')
       return null
     }
 
-    const idTokenResult = await getIdTokenResult(user)
+    const user = await adminAuth.getUser(uid)
+    const claims = user.customClaims as UserClaims
+
+    return claims?.role || null
+  } catch (error) {
+    console.error('Error getting user role:', error)
+    return null
+  }
+}
+
+// Get current user's role from Firebase Auth custom claims (client-side)
+export async function getCurrentUserRole(): Promise<Role | null> {
+  try {
+    const { auth } = await import('@/lib/firebase/client')
+
+    if (!auth || !auth.currentUser) {
+      return null
+    }
+
+    const idTokenResult = await auth.currentUser.getIdTokenResult()
     const claims = idTokenResult.claims as UserClaims
 
     return claims.role || null
   } catch (error) {
-    console.error('Error getting user role:', error)
+    console.error('Error getting current user role:', error)
     return null
   }
 }

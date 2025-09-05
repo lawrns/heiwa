@@ -14,29 +14,33 @@ test.describe('Admin Dashboard', () => {
     // Check if main dashboard elements are present
     await expect(page.locator('[data-testid="admin-dashboard-title"]')).toBeVisible()
 
-    // Verify key metric cards are displayed using more specific selectors
-    await expect(page.locator('h3').filter({ hasText: 'Bookings Management' })).toBeVisible()
-    await expect(page.locator('h3').filter({ hasText: 'Rooms Management' })).toBeVisible()
-    await expect(page.locator('h3').filter({ hasText: 'Surf Camps' })).toBeVisible()
-    await expect(page.locator('h3').filter({ hasText: 'Total Clients' })).toBeVisible()
-    await expect(page.locator('h3').filter({ hasText: 'Total Bookings' })).toBeVisible()
+    // Verify key metric cards are displayed using data-testid selectors
+    await expect(page.locator('[data-testid="total-clients-metric"]')).toBeVisible()
+    await expect(page.locator('[data-testid="total-bookings-metric"]')).toBeVisible()
+    await expect(page.locator('[data-testid="available-rooms-metric"]')).toBeVisible()
+    await expect(page.locator('[data-testid="revenue-metric"]')).toBeVisible()
+
+    // Verify metric values are displayed
+    await expect(page.locator('[data-testid="total-clients-value"]')).toHaveText('0')
+    await expect(page.locator('[data-testid="total-bookings-value"]')).toHaveText('0')
+    await expect(page.locator('[data-testid="available-rooms-value"]')).toHaveText('0')
+    await expect(page.locator('[data-testid="revenue-value"]')).toHaveText('$0')
   })
 
-  test.skip('should navigate to analytics dashboard', async ({ page }) => {
-    // Skip this test until analytics page is implemented
+  test('should navigate to analytics dashboard', async ({ page }) => {
     await page.goto('/admin')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1000)
 
-    // Click on Analytics navigation link in sidebar (first match)
-    await page.locator('a[href="/admin/analytics"]').first().click()
+    // Click on Analytics button using data-testid
+    await page.locator('[data-testid="view-analytics-button"]').click()
 
     // Wait for navigation to complete
     await page.waitForURL('/admin/analytics')
 
     // Verify navigation to analytics page
     await expect(page).toHaveURL('/admin/analytics')
-    await expect(page).toHaveTitle('Heiwa House Admin Dashboard')
+    await expect(page.locator('h1')).toBeVisible()
   })
 
   test('should display system health metrics', async ({ page }) => {

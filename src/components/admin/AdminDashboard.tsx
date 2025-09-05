@@ -29,21 +29,21 @@ export default function AdminDashboard() {
 
       {/* Simple test content */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-6 rounded-lg shadow" data-testid="total-clients-metric">
           <h3 className="text-lg font-semibold text-gray-900">Total Clients</h3>
-          <p className="text-3xl font-bold text-blue-600">0</p>
+          <p className="text-3xl font-bold text-blue-600" data-testid="total-clients-value">0</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-6 rounded-lg shadow" data-testid="total-bookings-metric">
           <h3 className="text-lg font-semibold text-gray-900">Total Bookings</h3>
-          <p className="text-3xl font-bold text-green-600">0</p>
+          <p className="text-3xl font-bold text-green-600" data-testid="total-bookings-value">0</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-6 rounded-lg shadow" data-testid="available-rooms-metric">
           <h3 className="text-lg font-semibold text-gray-900">Available Rooms</h3>
-          <p className="text-3xl font-bold text-purple-600">0</p>
+          <p className="text-3xl font-bold text-purple-600" data-testid="available-rooms-value">0</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-6 rounded-lg shadow" data-testid="revenue-metric">
           <h3 className="text-lg font-semibold text-gray-900">Revenue</h3>
-          <p className="text-3xl font-bold text-orange-600">$0</p>
+          <p className="text-3xl font-bold text-orange-600" data-testid="revenue-value">$0</p>
         </div>
       </div>
 
@@ -264,6 +264,7 @@ export default function AdminDashboard() {
                 <Button
                   className="w-full bg-gray-600 hover:bg-gray-700 text-white"
                   aria-label="View Analytics"
+                  data-testid="view-analytics-button"
                 >
                   View Analytics
                 </Button>

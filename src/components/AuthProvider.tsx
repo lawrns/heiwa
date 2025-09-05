@@ -1,9 +1,8 @@
 "use client";
 
 import { ReactNode, useEffect, useState, createContext, useContext } from "react";
-import { onAuthStateChanged, User, signOut as firebaseSignOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { AuthUser, firebaseUserToAuthUser } from '@/lib/auth';
+import { supabase } from "@/lib/firebase";
+import { AuthUser, supabaseUserToAuthUser } from '@/lib/auth';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -24,15 +23,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [error, setError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (firebaseUser: User | null) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
         try {
-          if (firebaseUser) {
-            const authUser = firebaseUserToAuthUser(firebaseUser);
+          if (session?.user) {
+            const authUser = supabaseUserToAuthUser(session.user);
             setUser(authUser);
+
+            // Set the Supabase session token as a cookie for server-side verification
+            if (authUser.isAdmin) {
+              const token = session.access_token;
+              const projectRef = process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0];
+              document.cookie = `sb-${projectRef}-auth-token=${token}; path=/; max-age=3600; samesite=strict`;
+            }
           } else {
             setUser(null);
+            // Clear the auth token cookie
+            const projectRef = process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0];
+            document.cookie = `sb-${projectRef}-auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
           }
           setError(undefined);
         } catch (err) {
@@ -42,25 +50,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
         } finally {
           setLoading(false);
         }
-      },
-      (err) => {
-        console.error('Auth state listener error:', err);
-        setError(err instanceof Error ? err : new Error('Authentication listener error'));
-        setLoading(false);
       }
     );
 
-    return () => unsubscribe();
+    return () => subscription.unsubscribe();
   }, []);
 
   const signOut = async () => {
     try {
-      const auth = getAuth();
-      if (auth) {
-        await firebaseSignOut(auth);
-      }
+      await supabase.auth.signOut();
       setUser(null);
       setError(undefined);
+      // Clear the auth token cookie
+      const projectRef = process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0];
+      document.cookie = `sb-${projectRef}-auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
     } catch (err) {
       console.error('Sign out error:', err);
       setError(err instanceof Error ? err : new Error('Sign out error'));

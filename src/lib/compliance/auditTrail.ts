@@ -67,6 +67,8 @@ export async function logAuditEntry(
   actionType: AuditAction,
   entity: AuditEntity,
   entityId: string,
+  userId: string,
+  userEmail: string,
   options: {
     previousData?: DocumentData
     newData?: DocumentData
@@ -76,11 +78,8 @@ export async function logAuditEntry(
   } = {}
 ): Promise<void> {
   try {
-    const auth = getAuth()
-    const user = auth.currentUser
-
-    if (!user) {
-      console.warn('Cannot log audit entry: No authenticated user')
+    if (!userId || !userEmail) {
+      console.warn('Cannot log audit entry: Missing user information')
       return
     }
 
@@ -92,8 +91,8 @@ export async function logAuditEntry(
 
     const auditEntry: Omit<AuditEntry, 'id'> = {
       timestamp: new Date(),
-      adminId: user.uid,
-      adminEmail: user.email || 'unknown',
+      adminId: userId,
+      adminEmail: userEmail,
       actionType,
       entity,
       entityId,
@@ -273,11 +272,16 @@ export function withAuditLogging<T extends any[], R>(
     getPreviousData?: (args: T) => DocumentData
     getNewData?: (result: R) => DocumentData
     legalBasis?: 'consent' | 'contract' | 'legitimate_interest' | 'legal_obligation'
+    getUserId?: (args: T) => string
+    getUserEmail?: (args: T) => string
   }
 ) {
   return async (...args: T): Promise<R> => {
     let previousData: DocumentData | undefined
     let result: R
+
+    const userId = options.getUserId?.(args) || 'system'
+    const userEmail = options.getUserEmail?.(args) || 'system@heiwa.house'
 
     try {
       // Get previous data if available
@@ -293,7 +297,7 @@ export function withAuditLogging<T extends any[], R>(
       const dataSubjectId = options.getDataSubjectId?.(args, result)
       const newData = options.getNewData?.(result)
 
-      await logAuditEntry(options.actionType, options.entity, entityId, {
+      await logAuditEntry(options.actionType, options.entity, entityId, userId, userEmail, {
         previousData,
         newData,
         dataSubjectId,
@@ -309,7 +313,7 @@ export function withAuditLogging<T extends any[], R>(
         const entityId = options.getEntityId(args)
         const dataSubjectId = options.getDataSubjectId?.(args)
 
-        await logAuditEntry(options.actionType, options.entity, entityId, {
+        await logAuditEntry(options.actionType, options.entity, entityId, userId, userEmail, {
           previousData,
           dataSubjectId,
           legalBasis: options.legalBasis,
