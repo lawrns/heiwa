@@ -1,5 +1,6 @@
 [build]
-  command = "npm run build"
+  command = "npm run build && mkdir -p dummy && echo 'placeholder' > dummy/index.html"
+  publish = "dummy"
 
 [build.environment]
   NODE_VERSION = "20"
