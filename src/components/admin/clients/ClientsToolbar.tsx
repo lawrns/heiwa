@@ -240,7 +240,7 @@ export function ClientsToolbar({
           onValueChange={handleSortChange}
         >
           <SelectTrigger className="w-48" aria-label="Sort clients">
-            <ArrowUpDown className="h-4 w-4 mr-2 flex-shrink-0" />
+            <ArrowUpDown className="h-4 w-4 mr-2" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -261,7 +261,7 @@ export function ClientsToolbar({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" aria-label="Toggle column visibility">
-              <Settings className="h-4 w-4 mr-2 flex-shrink-0" />
+              <Settings className="h-4 w-4 mr-2" />
               Columns
             </Button>
           </DropdownMenuTrigger>
@@ -292,7 +292,7 @@ export function ClientsToolbar({
               aria-label="Import clients from CSV"
             >
               <span>
-                <Upload className="h-4 w-4 mr-2 flex-shrink-0" />
+                <Upload className="h-4 w-4 mr-2" />
                 Import
               </span>
             </Button>
@@ -319,7 +319,7 @@ export function ClientsToolbar({
             disabled={isExporting}
             aria-label={selectedCount > 0 ? "Export selected clients" : "Export all clients"}
           >
-            <Download className="h-4 w-4 mr-2 flex-shrink-0" />
+            <Download className="h-4 w-4 mr-2" />
             {isExporting ? 'Exporting...' : 'Export'}
           </Button>
 

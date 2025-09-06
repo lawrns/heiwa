@@ -204,19 +204,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             md:h-screen md:overflow-hidden
           `}>
             {/* Sidebar header */}
-            <div className={`bg-blue-600 border-b border-blue-700 px-4 ${
-              sidebarCollapsed 
-                ? 'flex flex-col items-center justify-center py-3 space-y-2' 
-                : 'flex items-center justify-between h-16'
-            }`}>
+            <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-between h-16 px-4'} bg-blue-600 border-b border-blue-700`}>
               {sidebarCollapsed ? (
-                // Collapsed state: vertical stack with centered alignment
                 <>
+                  {/* Logo div positioned above SVG when collapsed */}
                   <Link href="/admin" className="flex items-center justify-center">
                     <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
                       <span className="text-blue-600 font-bold text-sm">H</span>
                     </div>
                   </Link>
+                  {/* SVG button positioned below logo when collapsed */}
                   <button
                     onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                     className="hidden md:block text-white hover:text-gray-200 p-1 rounded transition-colors"
@@ -227,8 +224,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   </button>
                 </>
               ) : (
-                // Expanded state: horizontal layout
                 <>
+                  {/* Expanded layout - horizontal */}
                   <Link href="/admin" className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
                       <span className="text-blue-600 font-bold text-sm">H</span>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, memo, useCallback } from 'react'
+import { useState, useEffect, memo, useCallback, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -56,43 +56,24 @@ interface DraggableParticipantProps {
 }
 
 const DraggableParticipant: React.FC<DraggableParticipantProps> = memo(({ participant }) => {
-  const [{ isDragging }, drag, preview] = useDrag(() => ({
+  const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.PARTICIPANT,
-    item: { type: ItemTypes.PARTICIPANT, id: participant.id },
-    collect: (monitor) => ({
+    item: () => ({ type: ItemTypes.PARTICIPANT, id: participant.id }),
+    collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
-    // Add canDrag to ensure the item is always draggable
     canDrag: () => true,
-    // Add end callback to ensure drag state is properly reset
-    end: (item, monitor) => {
-      // This ensures the drag state is properly cleaned up
-      if (!monitor.didDrop()) {
-        // Handle case where drag was cancelled
-        console.log('Drag cancelled for participant:', item.id);
-      }
-    },
-  }), [participant.id]) // Add dependency array to ensure proper re-initialization
+  }), [participant.id]);
 
   return (
-    <motion.div
-      ref={(node) => {
-        // Combine drag and preview refs
-        drag(node);
-        preview(node);
-      }}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
+    <div
+      ref={drag}
       className={`p-3 bg-white border rounded-lg cursor-move transition-all ${
         isDragging ? 'opacity-50 shadow-lg' : 'hover:shadow-md'
       }`}
       data-testid={`participant-card-${participant.id}`}
-      // Add draggable attribute to ensure HTML5 drag is enabled
-      draggable={true}
-      // Add style to ensure proper drag behavior
       style={{
         opacity: isDragging ? 0.5 : 1,
-        transform: isDragging ? 'rotate(5deg)' : 'none',
       }}
     >
       <div className="flex items-center space-x-2">
@@ -105,8 +86,14 @@ const DraggableParticipant: React.FC<DraggableParticipantProps> = memo(({ partic
           {participant.surfLevel}
         </Badge>
       </div>
-    </motion.div>
+    </div>
   )
+}, (prevProps, nextProps) => {
+  // Custom comparison function to prevent unnecessary re-renders
+  return prevProps.participant.id === nextProps.participant.id &&
+         prevProps.participant.name === nextProps.participant.name &&
+         prevProps.participant.email === nextProps.participant.email &&
+         prevProps.participant.surfLevel === nextProps.participant.surfLevel;
 })
 
 // Droppable room component
@@ -126,12 +113,11 @@ const DroppableRoom: React.FC<DroppableRoomProps> = memo(({
   const [{ isOver }, drop] = useDrop(() => ({
     accept: ItemTypes.PARTICIPANT,
     drop: (item: { id: string }) => onDrop(item.id),
-    collect: (monitor) => ({
+    collect: (monitor: any) => ({
       isOver: monitor.isOver(),
     }),
-    // Add canDrop to ensure proper drop functionality
     canDrop: () => true,
-  }), [onDrop]) // Add dependency array to ensure proper re-initialization
+  }), [onDrop]);
 
   const occupancyRate = (assignedParticipants.length / room.capacity) * 100
   const isFull = assignedParticipants.length >= room.capacity
@@ -224,6 +210,13 @@ const DroppableRoom: React.FC<DroppableRoomProps> = memo(({
       )}
     </motion.div>
   )
+}, (prevProps, nextProps) => {
+  // Custom comparison function to prevent unnecessary re-renders
+  return prevProps.room.id === nextProps.room.id &&
+         prevProps.assignedParticipants.length === nextProps.assignedParticipants.length &&
+         prevProps.assignedParticipants.every((p, i) => p.id === nextProps.assignedParticipants[i]?.id) &&
+         prevProps.onDrop === nextProps.onDrop &&
+         prevProps.onRemove === nextProps.onRemove;
 })
 
 export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps) {
@@ -321,10 +314,27 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
     ).filter(Boolean) as Participant[]
   }, [assignments, participants])
 
-  const getUnassignedParticipants = useCallback(() => {
+  const unassignedParticipants = useMemo(() => {
     const assignedIds = assignments.flatMap(a => a.participantIds)
     return participants.filter(p => !assignedIds.includes(p.id))
   }, [assignments, participants])
+
+  // Create stable callback maps
+  const dropHandlers = useMemo(() => {
+    const handlers = new Map<string, (participantId: string) => void>()
+    rooms.forEach(room => {
+      handlers.set(room.id, (participantId: string) => handleParticipantDrop(room.id, participantId))
+    })
+    return handlers
+  }, [rooms, handleParticipantDrop])
+
+  const removeHandlers = useMemo(() => {
+    const handlers = new Map<string, (participantId: string) => void>()
+    rooms.forEach(room => {
+      handlers.set(room.id, (participantId: string) => handleParticipantRemove(room.id, participantId))
+    })
+    return handlers
+  }, [rooms, handleParticipantRemove])
 
   const handleSave = async () => {
     setSaving(true)
@@ -363,7 +373,7 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
             </Button>
             <Button onClick={handleSave} disabled={saving} data-testid="save-assignments-button">
               {saving ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 flex-shrink-0"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               ) : (
                 <SaveIcon className="w-4 h-4 mr-2" />
               )}
@@ -421,13 +431,13 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {getUnassignedParticipants().map((participant) => (
+                  {unassignedParticipants.map((participant) => (
                     <DraggableParticipant
                       key={`unassigned-${participant.id}`}
                       participant={participant}
                     />
                   ))}
-                  {getUnassignedParticipants().length === 0 && (
+                  {unassignedParticipants.length === 0 && (
                     <p className="text-sm text-gray-500 text-center py-4">
                       All participants assigned!
                     </p>
@@ -445,8 +455,8 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
                   key={room.id}
                   room={room}
                   assignedParticipants={getAssignedParticipants(room.id)}
-                  onDrop={(participantId) => handleParticipantDrop(room.id, participantId)}
-                  onRemove={(participantId) => handleParticipantRemove(room.id, participantId)}
+                  onDrop={dropHandlers.get(room.id)!}
+                  onRemove={removeHandlers.get(room.id)!}
                 />
               ))}
             </div>
