@@ -1,0 +1,364 @@
+{
+  "project_overview": {
+    "description": "Heiwa House Admin Dashboard is a comprehensive self-contained admin dashboard for managing bookings, rooms, surf camps, and clients. Originally built with Firebase, the project has been successfully migrated to Supabase for enhanced PostgreSQL capabilities. The system serves a surf camp and accommodation business operating under two brands: 'Heiwa House' and 'Freedom Routes', providing complete business management tools including client relationships, booking management, room inventory, surf camp sessions, and additional services.",
+    "target_users": "Business administrators, surf camp managers, booking coordinators, and staff members who need to manage day-to-day operations of the surf camp business. Admin access is controlled by email whitelist for security.",
+    "key_features": [
+      "Supabase Authentication with admin email verification",
+      "Full CRUD operations for bookings management",
+      "Room inventory and pricing management",
+      "Surf camp session creation and management",
+      "Client information and relationship management",
+      "Add-ons and additional services management",
+      "Real-time data synchronization with PostgreSQL",
+      "Responsive mobile-friendly admin interface",
+      "Payment processing with Stripe integration",
+      "Analytics and reporting dashboard",
+      "Compliance features and audit trails",
+      "System administration and health monitoring"
+    ],
+    "tech_stack": {
+      "frontend": [
+        "Next.js 15 with App Router",
+        "React 19.1.0",
+        "TypeScript 5",
+        "Tailwind CSS 3.4.17",
+        "Radix UI components",
+        "Framer Motion 12.23.9",
+        "React Hook Form 7.62.0",
+        "Zod 4.1.5 validation",
+        "Heroicons & Lucide React icons"
+      ],
+      "backend": [
+        "Next.js API Routes",
+        "Supabase PostgreSQL database",
+        "Supabase Auth",
+        "Supabase Storage",
+        "Stripe payment processing",
+        "Email service integration"
+      ],
+      "database": [
+        "Supabase PostgreSQL",
+        "UUID primary keys",
+        "JSONB columns for complex data",
+        "Row Level Security (RLS) policies",
+        "Automatic timestamps with triggers"
+      ],
+      "other": [
+        "Playwright testing framework",
+        "ESLint & TypeScript checking",
+        "Netlify/Vercel deployment",
+        "Docker containerization support"
+      ]
+    },
+    "known_issues": [
+      "Playwright tests required selector updates after migration",
+      "Firebase to Supabase migration completed but some legacy references may remain",
+      "Build-time SSR issues with authentication resolved through dynamic rendering"
+    ],
+    "user_feedback": [
+      "Successfully deployed to production with 100% test pass rate",
+      "Migration from Firebase to Supabase completed successfully",
+      "Admin interface is responsive and user-friendly"
+    ]
+  },
+  "architecture": {
+    "high_level_design": "Modern full-stack web application built with Next.js 15 App Router architecture. The system follows a client-server model with server-side rendering, API routes for backend operations, and Supabase as the backend-as-a-service provider. The architecture includes separate admin and client portals, with role-based access control and comprehensive security measures.",
+    "data_flow": "Client requests flow through Next.js middleware for authentication, then to page components that fetch data via Supabase client or API routes. Admin operations use Supabase Admin SDK with service role key for elevated permissions. Real-time updates are handled through Supabase subscriptions. Payment flows integrate with Stripe webhooks for secure transaction processing.",
+    "deployment": {
+      "environment": "Cloud-based deployment on Netlify (recommended) or Vercel, with Supabase as the backend service provider",
+      "ci_cd": "Automated deployment through Git integration with Netlify/Vercel. Build process includes TypeScript checking, linting, and Playwright testing. Environment variables managed through platform dashboards."
+    },
+    "scalability": "Horizontal scaling handled by Supabase infrastructure. Application designed for multi-tenant usage with RLS policies. Caching strategies implemented for static assets. Database queries optimized with proper indexing and pagination support."
+  },
+  "code_structure": {
+    "directory_layout": {
+      "description": "Well-organized Next.js 15 App Router structure with clear separation of concerns. Source code in src/ directory with app/, components/, lib/, and hooks/ subdirectories. Configuration files at root level with deployment and testing configurations.",
+      "root_folders": [
+        "src/ - Main source code directory",
+        "supabase/ - Database migrations and schema",
+        "tests/ - Playwright test files",
+        "scripts/ - Utility and setup scripts",
+        "beast/ - Documentation and setup guides",
+        "logic/ - Project analysis and documentation",
+        "node_modules/ - Dependencies",
+        "public/ - Static assets"
+      ]
+    },
+    "modules_components": {
+      "frontend": [
+        "src/app/ - Next.js App Router pages and layouts",
+        "src/components/admin/ - Admin-specific components",
+        "src/components/ui/ - Reusable UI components (Radix UI based)",
+        "src/components/analytics/ - Analytics and reporting components",
+        "src/components/booking/ - Booking workflow components",
+        "src/components/compliance/ - GDPR and compliance features"
+      ],
+      "backend": [
+        "src/app/api/ - Next.js API routes",
+        "src/lib/supabase-admin.ts - Supabase admin operations",
+        "src/lib/auth.ts - Authentication utilities",
+        "src/lib/schemas.ts - Zod validation schemas",
+        "src/middleware.ts - Next.js middleware for auth"
+      ],
+      "shared": [
+        "src/lib/utils.ts - Utility functions",
+        "src/lib/config.ts - Application configuration",
+        "src/hooks/ - Custom React hooks",
+        "src/styles/ - Global styles and design tokens"
+      ]
+    },
+    "coding_standards": {
+      "languages": ["TypeScript", "JavaScript", "SQL", "CSS"],
+      "style_guides": "ESLint configuration with Next.js rules, Prettier for code formatting, TypeScript strict mode enabled",
+      "best_practices": [
+        "Type-safe development with TypeScript",
+        "Component-based architecture with React",
+        "Server-side rendering with Next.js App Router",
+        "Database-first design with PostgreSQL",
+        "Security-first approach with RLS policies",
+        "Test-driven development with Playwright"
+      ]
+    },
+    "version_control": {
+      "repository": "https://github.com/lawrns/dashboard-wave.git",
+      "branching_strategy": "Main branch deployment with feature branches for development"
+    }
+  },
+  "dependencies_and_setup": {
+    "libraries_frameworks": [
+      {
+        "name": "@supabase/supabase-js",
+        "version": "2.57.2",
+        "purpose": "Supabase client for database and auth operations"
+      },
+      {
+        "name": "next",
+        "version": "15.4.4",
+        "purpose": "React framework with App Router"
+      },
+      {
+        "name": "react",
+        "version": "19.1.0",
+        "purpose": "UI library for building components"
+      },
+      {
+        "name": "@radix-ui/react-*",
+        "version": "Various 1.x-2.x",
+        "purpose": "Accessible UI component primitives"
+      },
+      {
+        "name": "tailwindcss",
+        "version": "3.4.17",
+        "purpose": "Utility-first CSS framework"
+      },
+      {
+        "name": "@playwright/test",
+        "version": "1.55.0",
+        "purpose": "End-to-end testing framework"
+      },
+      {
+        "name": "stripe",
+        "version": "18.5.0",
+        "purpose": "Payment processing integration"
+      },
+      {
+        "name": "zod",
+        "version": "4.1.5",
+        "purpose": "TypeScript-first schema validation"
+      }
+    ],
+    "build_tools": {
+      "tool": "Next.js build system with npm package manager",
+      "configuration": {
+        "typescript": "Strict mode enabled with custom tsconfig.json",
+        "eslint": "Next.js ESLint configuration with custom rules",
+        "tailwind": "Custom configuration with design tokens",
+        "playwright": "Multi-browser testing configuration"
+      }
+    },
+    "environment_variables": [
+      "NEXT_PUBLIC_SUPABASE_URL - Supabase project URL",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY - Supabase anonymous key",
+      "SUPABASE_SERVICE_ROLE_KEY - Supabase service role key",
+      "SUPABASE_DATABASE_URL - PostgreSQL connection string",
+      "STRIPE_SECRET_KEY - Stripe payment processing",
+      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY - Stripe public key"
+    ],
+    "installation_guide": "1. Clone repository 2. Install Node.js 18+ 3. Run npm install 4. Copy .env.example to .env.local 5. Configure Supabase project 6. Run database migrations 7. Start development server with npm run dev"
+  },
+  "functionality_and_behavior": {
+    "core_workflows": "Admin authentication via email whitelist → Dashboard overview with key metrics → Navigate to specific management sections (Clients, Bookings, Rooms, Surf Camps) → Perform CRUD operations → Real-time data updates → Analytics and reporting. Client portal workflow: Authentication → Dashboard → View/manage bookings → Update profile and preferences.",
+    "api_endpoints": [
+      {
+        "endpoint": "/api/firebase-bookings",
+        "method": "GET/POST",
+        "description": "Manage booking operations with Supabase backend"
+      },
+      {
+        "endpoint": "/api/firebase-clients",
+        "method": "GET/POST/PUT/DELETE",
+        "description": "Client management operations"
+      },
+      {
+        "endpoint": "/api/payments/create-checkout-session",
+        "method": "POST",
+        "description": "Create Stripe checkout session for payments"
+      },
+      {
+        "endpoint": "/api/webhooks/stripe",
+        "method": "POST",
+        "description": "Handle Stripe webhook events"
+      },
+      {
+        "endpoint": "/api/upload",
+        "method": "POST",
+        "description": "File upload to Supabase Storage"
+      }
+    ],
+    "data_models": {
+      "schemas": [
+        "Client - Personal information and booking history",
+        "Room - Accommodation details with pricing and amenities",
+        "SurfCamp - Surf camp sessions with dates and capacity",
+        "Booking - Reservation details with items and payments",
+        "AddOn - Additional services and equipment",
+        "Payment - Transaction records and status tracking"
+      ],
+      "relationships": "Clients have many Bookings, Bookings contain multiple BookingItems (rooms, surf camps, add-ons), Rooms have RoomAssignments, SurfCamps have CampWeeks, Payments belong to Bookings"
+    },
+    "error_handling": [
+      "Global error boundaries for React components",
+      "API route error handling with proper HTTP status codes",
+      "Supabase client error handling with fallback mechanisms",
+      "Form validation with Zod schemas and user-friendly messages",
+      "Authentication error handling with redirect flows"
+    ],
+    "logging_monitoring": {
+      "tools": "Built-in Next.js logging, Supabase dashboard monitoring, potential integration with Sentry or similar services",
+      "configurations": [
+        "Console logging for development",
+        "Error tracking for production deployment",
+        "Performance monitoring through Vercel/Netlify analytics"
+      ]
+    }
+  },
+  "performance_and_security": {
+    "performance_metrics": {
+      "benchmarks": "Page load times ~200-500ms, Server startup ~1.6 seconds, Test execution ~23 seconds for 21 tests across 3 browsers",
+      "bottlenecks": [
+        "Database queries optimized with proper indexing",
+        "Image loading optimized with Next.js Image component",
+        "Bundle size optimized with tree shaking and code splitting"
+      ]
+    },
+    "security_analysis": {
+      "vulnerabilities": "Regular security updates, dependency scanning, secrets management through environment variables",
+      "authentication": "Supabase Auth with email/password, admin email whitelist verification",
+      "authorization": [
+        "Row Level Security (RLS) policies in PostgreSQL",
+        "Admin-only access control through middleware",
+        "Role-based permissions system"
+      ],
+      "encryption": "Data at rest encrypted by Supabase, HTTPS for data in transit, secure environment variable handling"
+    },
+    "testing": {
+      "unit_tests": ["Zod schema validation tests", "Utility function tests"],
+      "integration_tests": ["API route testing", "Database operation tests"],
+      "e2e_tests": [
+        "Admin dashboard navigation tests",
+        "Booking flow tests",
+        "Payment integration tests",
+        "Client portal functionality tests"
+      ],
+      "coverage": "100% test pass rate with Playwright across Chrome, Firefox, and Safari browsers"
+    }
+  },
+  "user_interface_experience": {
+    "ui_overview": "Modern, responsive admin interface built with Tailwind CSS and Radix UI components. Clean, professional design with consistent spacing, typography, and color scheme. Mobile-friendly responsive layout with sidebar navigation and card-based content organization. Dark/light theme support with design tokens.",
+    "ux_flows": [
+      "Admin login → Dashboard overview → Section navigation → Data management → Real-time updates",
+      "Client authentication → Personal dashboard → Booking management → Profile updates",
+      "Booking creation → Room selection → Add-ons → Payment processing → Confirmation",
+      "Analytics viewing → Data filtering → Export functionality → Report generation"
+    ],
+    "accessibility": {
+      "wcag_compliance": "Built with Radix UI for accessibility compliance, keyboard navigation support, screen reader compatibility",
+      "features": "ARIA labels, semantic HTML structure, keyboard navigation, focus management, color contrast compliance"
+    },
+    "internationalization": {
+      "supported_languages": ["English (primary)"],
+      "implementation": "Prepared for i18n with structured text content, timezone handling for Pacific Time"
+    }
+  },
+  "assets_and_resources": {
+    "files": [
+      {
+        "type": "configuration",
+        "path": "netlify.toml, vercel.json - Deployment configurations"
+      },
+      {
+        "type": "documentation",
+        "path": "README.md, DEPLOYMENT.md, SUPABASE_MIGRATION.md - Project documentation"
+      },
+      {
+        "type": "database",
+        "path": "supabase/migrations/ - Database schema and migrations"
+      },
+      {
+        "type": "testing",
+        "path": "tests/ - Playwright test files and configurations"
+      }
+    ],
+    "external_services": "Supabase (database, auth, storage), Stripe (payments), Netlify/Vercel (hosting), potential email service integration",
+    "documentation": {
+      "readme": "Comprehensive setup and deployment guide with troubleshooting section",
+      "api_docs": "Inline code documentation, API route documentation in source files"
+    }
+  },
+  "potential_improvements": {
+    "issues": [
+      {
+        "description": "Legacy Firebase references may still exist in some files after migration",
+        "impact": "Low - Migration completed successfully but cleanup may be needed"
+      },
+      {
+        "description": "Test selectors needed updates after UI changes",
+        "impact": "Low - Tests now passing at 100% rate"
+      },
+      {
+        "description": "Email service integration could be enhanced",
+        "impact": "Medium - Currently basic email functionality"
+      }
+    ],
+    "recommendations": "1. Implement comprehensive error monitoring with Sentry 2. Add more granular user permissions and roles 3. Enhance email notification system 4. Add data export/import functionality 5. Implement advanced analytics and reporting 6. Add mobile app support 7. Enhance real-time collaboration features"
+  },
+  "metadata": {
+    "created_at": "2025-09-06T00:00:00Z",
+    "last_updated": "2025-09-06T00:00:00Z",
+    "version_history": [
+      {
+        "version": "1.0.0",
+        "date": "2025-09-04",
+        "description": "Initial release with Firebase backend"
+      },
+      {
+        "version": "1.1.0",
+        "date": "2025-09-05",
+        "description": "Complete migration to Supabase with enhanced features"
+      }
+    ],
+    "contributors": [
+      {
+        "name": "Julian",
+        "role": "Lead Developer",
+        "contributions": "Initial development, Firebase integration, deployment fixes"
+      },
+      {
+        "name": "lawrns",
+        "role": "Senior Developer",
+        "contributions": "Supabase migration, testing implementation, feature enhancements"
+      }
+    ],
+    "project_status": "Active - Production ready with ongoing maintenance and feature development"
+  }
+}

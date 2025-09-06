@@ -1,0 +1,1657 @@
+{
+  "metadata": {
+    "title": "Heiwa House Complete System - Comprehensive User Stories",
+    "description": "Complete technical specification covering ALL functionality of the Heiwa House system including admin dashboard, client portal, public booking flow, and backend services",
+    "created_at": "2025-09-06T00:00:00Z",
+    "version": "2.0.0",
+    "total_stories": 120,
+    "categories": [
+      "Authentication & Security",
+      "Dashboard & Navigation",
+      "Clients Management",
+      "Bookings Management",
+      "Rooms Management",
+      "Surf Camps Management",
+      "Add-ons Management",
+      "Calendar & Scheduling",
+      "Assignments & Room Allocation",
+      "Analytics & Reporting",
+      "Client Portal",
+      "Public Booking Flow",
+      "Payment Processing",
+      "Email & Notifications",
+      "File Management & Storage",
+      "Compliance & GDPR",
+      "System Administration",
+      "API & Backend Services",
+      "Testing & Quality Assurance",
+      "Deployment & DevOps"
+    ]
+  },
+  "user_stories": {
+    "authentication_security": {
+      "category": "Authentication & Security",
+      "stories": [
+        {
+          "id": "AUTH-001",
+          "title": "Admin Authentication with Email Whitelist",
+          "user_story": "As an admin user, I want to securely log into the dashboard using my whitelisted email address, so that I can access business management tools with proper authorization.",
+          "acceptance_criteria": [
+            "Admin can log in using Supabase Auth with email/password",
+            "Only whitelisted email addresses in ADMIN_EMAILS array can access admin routes",
+            "Successful login redirects to /admin dashboard",
+            "Failed login shows appropriate error messages",
+            "Session persists across browser refreshes",
+            "Logout functionality clears session and redirects to login"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "Supabase Auth API for authentication",
+              "/api/auth/callback - Supabase auth callback"
+            ],
+            "database_operations": [
+              "Query auth.users table for user verification",
+              "Check email against ADMIN_EMAILS whitelist"
+            ],
+            "components": [
+              "src/app/admin/login/page.tsx - Login form",
+              "src/components/AuthProvider.tsx - Auth context provider",
+              "src/lib/auth.ts - Authentication utilities"
+            ],
+            "state_management": [
+              "AuthProvider context for user session state",
+              "useAuth hook for accessing auth state",
+              "Loading states during authentication"
+            ],
+            "error_handling": [
+              "Invalid credentials error display",
+              "Network error handling with retry",
+              "Unauthorized access redirects"
+            ]
+          },
+          "success_criteria": [
+            "100% of whitelisted admins can log in successfully",
+            "Non-whitelisted users are properly rejected",
+            "Session management works correctly",
+            "All auth flows are secure and tested"
+          ]
+        },
+        {
+          "id": "AUTH-002", 
+          "title": "Protected Route Middleware",
+          "user_story": "As a system administrator, I want all admin routes to be protected by authentication middleware, so that unauthorized users cannot access sensitive business data.",
+          "acceptance_criteria": [
+            "All /admin/* routes require valid authentication",
+            "Unauthenticated users are redirected to login page",
+            "API routes validate admin session before processing",
+            "Middleware runs on every protected route request",
+            "Session validation includes email whitelist check"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "All /api/* routes use requireAdminSession()",
+              "Middleware intercepts /admin/* routes"
+            ],
+            "database_operations": [
+              "Session validation against Supabase auth",
+              "Email verification against whitelist"
+            ],
+            "components": [
+              "src/middleware.ts - Route protection middleware",
+              "src/lib/auth.ts - requireAdminSession function"
+            ],
+            "state_management": [
+              "Session state validation on route changes",
+              "Redirect state management for login flow"
+            ],
+            "error_handling": [
+              "401 responses for invalid sessions",
+              "Graceful redirect handling",
+              "Error logging for security events"
+            ]
+          },
+          "success_criteria": [
+            "No unauthorized access to admin routes",
+            "Proper redirects for unauthenticated users",
+            "API security validated through testing",
+            "Middleware performance is acceptable"
+          ]
+        }
+      ]
+    },
+    "dashboard_navigation": {
+      "category": "Dashboard & Navigation",
+      "stories": [
+        {
+          "id": "DASH-001",
+          "title": "Admin Dashboard Overview",
+          "user_story": "As an admin user, I want to see a comprehensive dashboard with key business metrics and quick access to main functions, so that I can efficiently monitor and manage the business.",
+          "acceptance_criteria": [
+            "Dashboard displays key metrics (total bookings, revenue, occupancy)",
+            "Quick action cards for main functions (Clients, Bookings, Rooms, Surf Camps)",
+            "Recent activity feed showing latest bookings and updates",
+            "Responsive design works on desktop and mobile",
+            "Real-time data updates without page refresh",
+            "Loading states while fetching data"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/firebase-bookings - Get booking statistics",
+              "/api/firebase-clients - Get client count",
+              "Supabase real-time subscriptions for live updates"
+            ],
+            "database_operations": [
+              "Aggregate queries for metrics calculation",
+              "Recent records queries with LIMIT and ORDER BY",
+              "Count queries for totals"
+            ],
+            "components": [
+              "src/app/admin/page.tsx - Main dashboard page",
+              "src/components/admin/AdminDashboard.tsx - Dashboard component",
+              "src/components/ui/card.tsx - Metric cards"
+            ],
+            "state_management": [
+              "useState for metrics data",
+              "useEffect for data fetching",
+              "Loading and error states"
+            ],
+            "error_handling": [
+              "Fallback UI for failed data loads",
+              "Error boundaries for component crashes",
+              "Retry mechanisms for failed requests"
+            ]
+          },
+          "success_criteria": [
+            "Dashboard loads within 2 seconds",
+            "All metrics display correctly",
+            "Navigation to sub-sections works",
+            "Mobile responsiveness verified"
+          ]
+        },
+        {
+          "id": "DASH-002",
+          "title": "Sidebar Navigation with Expand/Collapse - BROKEN FEATURE FIX",
+          "user_story": "As an admin user, I want a responsive sidebar navigation that can expand and collapse properly, so that I can efficiently navigate between sections while maximizing screen space.",
+          "acceptance_criteria": [
+            "Sidebar expands/collapses smoothly with animation",
+            "Collapsed state shows only icons with tooltips",
+            "Expanded state shows icons and labels",
+            "Mobile sidebar overlays content with backdrop",
+            "Active page is highlighted in navigation",
+            "Sidebar state persists across page navigation",
+            "No UI glitches during expand/collapse transitions"
+          ],
+          "technical_implementation": {
+            "api_endpoints": ["None - Pure UI functionality"],
+            "database_operations": ["None - Client-side state only"],
+            "components": [
+              "src/app/admin/layout.tsx - Sidebar layout component",
+              "Navigation items array with proper routing",
+              "Responsive CSS classes for different states"
+            ],
+            "state_management": [
+              "useState for sidebarOpen (mobile)",
+              "useState for sidebarCollapsed (desktop)",
+              "localStorage for persistence",
+              "Proper state synchronization"
+            ],
+            "error_handling": [
+              "Fallback to expanded state on errors",
+              "CSS transition error handling",
+              "Mobile touch event handling"
+            ]
+          },
+          "success_criteria": [
+            "Smooth animations without glitches",
+            "Proper responsive behavior",
+            "State persistence works correctly",
+            "All navigation links function properly"
+          ],
+          "broken_feature_details": {
+            "current_issue": "Sidebar expand/contract has UI glitches and state management issues",
+            "symptoms": [
+              "Animation stuttering during transitions",
+              "Inconsistent width calculations",
+              "Mobile overlay not working properly",
+              "State not persisting correctly"
+            ],
+            "root_cause": "CSS transition conflicts and state synchronization issues in layout.tsx",
+            "fix_priority": "HIGH"
+          }
+        }
+      ]
+    },
+    "clients_management": {
+      "category": "Clients Management",
+      "stories": [
+        {
+          "id": "CLIENT-001",
+          "title": "Clients Data Loading and Display - BROKEN FEATURE FIX",
+          "user_story": "As an admin user, I want to view and manage all client information in a searchable, sortable table, so that I can efficiently handle customer relationships and booking history.",
+          "acceptance_criteria": [
+            "Clients table loads data from Supabase successfully",
+            "Search functionality works across name, email, phone",
+            "Sorting works on all columns (name, email, last booking, status)",
+            "Pagination handles large client lists efficiently",
+            "Client status badges display correctly",
+            "Loading states show during data fetch",
+            "Error handling with fallback to mock data",
+            "Bulk operations (select, export, delete) function properly"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/firebase-clients - GET all clients",
+              "/api/firebase-clients - POST create client",
+              "/api/firebase-clients - PUT update client",
+              "/api/firebase-clients - DELETE remove client"
+            ],
+            "database_operations": [
+              "SELECT * FROM clients ORDER BY created_at DESC",
+              "INSERT INTO clients with validation",
+              "UPDATE clients SET ... WHERE id = ?",
+              "DELETE FROM clients WHERE id = ?"
+            ],
+            "components": [
+              "src/app/admin/clients/page.tsx - Main clients page",
+              "src/components/admin/clients/ClientsTable.tsx - Data table",
+              "src/components/admin/clients/ClientsToolbar.tsx - Search/filters",
+              "src/components/admin/clients/ClientDialog.tsx - Create/edit modal"
+            ],
+            "state_management": [
+              "useState for clients array",
+              "useState for loading/error states",
+              "useState for search and filter states",
+              "useEffect for data fetching"
+            ],
+            "error_handling": [
+              "API error handling with user feedback",
+              "Fallback to MOCK_CLIENTS on permission errors",
+              "Network error retry mechanisms",
+              "Form validation error display"
+            ]
+          },
+          "success_criteria": [
+            "Clients page loads without 404 errors",
+            "All CRUD operations work correctly",
+            "Search and filtering perform well",
+            "Data persistence verified"
+          ],
+          "broken_feature_details": {
+            "current_issue": "Clients page shows data loading errors and API failures",
+            "symptoms": [
+              "Failed to fetch clients from /api/firebase-clients",
+              "Permission denied errors from Supabase",
+              "Inconsistent data formatting",
+              "Mock data not displaying properly"
+            ],
+            "root_cause": "API endpoint issues and Supabase RLS policy conflicts",
+            "fix_priority": "HIGH"
+          }
+        },
+        {
+          "id": "CLIENT-002",
+          "title": "Client Creation and Editing",
+          "user_story": "As an admin user, I want to create new clients and edit existing client information, so that I can maintain accurate customer records for booking management.",
+          "acceptance_criteria": [
+            "Create client modal opens with proper form validation",
+            "All required fields (name, email, phone) are validated",
+            "Email format validation prevents invalid entries",
+            "Phone number formatting is consistent",
+            "Client notes field supports rich text input",
+            "Brand assignment (Heiwa House/Freedom Routes) works",
+            "Form submission creates client in database",
+            "Edit functionality pre-populates form with existing data",
+            "Success/error messages display appropriately"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/firebase-clients - POST for creation",
+              "/api/firebase-clients - PUT for updates"
+            ],
+            "database_operations": [
+              "INSERT INTO clients with UUID generation",
+              "UPDATE clients with timestamp updates",
+              "Validation against unique email constraint"
+            ],
+            "components": [
+              "src/components/admin/clients/ClientDialog.tsx - Form modal",
+              "React Hook Form for form management",
+              "Zod schema validation"
+            ],
+            "state_management": [
+              "Form state with React Hook Form",
+              "Modal open/close state",
+              "Submission loading state"
+            ],
+            "error_handling": [
+              "Form validation errors",
+              "API submission errors",
+              "Duplicate email handling"
+            ]
+          },
+          "success_criteria": [
+            "Client creation success rate > 95%",
+            "Form validation catches all invalid inputs",
+            "Database constraints properly enforced",
+            "UI feedback is clear and helpful"
+          ]
+        }
+      ]
+    },
+    "bookings_management": {
+      "category": "Bookings Management",
+      "stories": [
+        {
+          "id": "BOOK-001",
+          "title": "Bookings List Display - BROKEN FEATURE FIX",
+          "user_story": "As an admin user, I want to view all bookings in a comprehensive list with filtering and search capabilities, so that I can manage reservations effectively.",
+          "acceptance_criteria": [
+            "Bookings page displays list instead of 404 error",
+            "All bookings load from Supabase database",
+            "Booking status filtering (pending, confirmed, cancelled)",
+            "Search by client name, booking ID, or dates",
+            "Booking details show client info, dates, amounts",
+            "Payment status indicators are clear",
+            "Sorting by date, amount, status works",
+            "Pagination for large booking lists"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/firebase-bookings - GET with query parameters",
+              "Query params: ?status=pending&clientId=123"
+            ],
+            "database_operations": [
+              "SELECT * FROM bookings JOIN clients",
+              "WHERE payment_status = ? OR client_ids @> ?",
+              "ORDER BY created_at DESC LIMIT ? OFFSET ?"
+            ],
+            "components": [
+              "src/app/admin/bookings/page.tsx - Main bookings page",
+              "BookingsTable component for data display",
+              "BookingFilters component for search/filter"
+            ],
+            "state_management": [
+              "useState for bookings array",
+              "useState for filters and search",
+              "useEffect for data fetching with dependencies"
+            ],
+            "error_handling": [
+              "API error handling with retry",
+              "Empty state for no bookings",
+              "Loading state during fetch"
+            ]
+          },
+          "success_criteria": [
+            "Bookings page loads successfully",
+            "All bookings display correctly",
+            "Filtering and search work properly",
+            "Performance is acceptable for large datasets"
+          ],
+          "broken_feature_details": {
+            "current_issue": "Bookings page shows 404 instead of booking list",
+            "symptoms": [
+              "Page not found error on /admin/bookings",
+              "Routing issues in admin layout",
+              "Component not rendering properly"
+            ],
+            "root_cause": "Missing or incorrect page component implementation",
+            "fix_priority": "HIGH"
+          }
+        }
+      ]
+    },
+    "surf_camps_management": {
+      "category": "Surf Camps Management",
+      "stories": [
+        {
+          "id": "SURF-001",
+          "title": "Surf Camp Creation with Room Selection - BROKEN FEATURE FIX",
+          "user_story": "As an admin user, I want to create new surf camps with proper room selection and assignment capabilities, so that I can set up complete camp packages for booking.",
+          "acceptance_criteria": [
+            "Create surf camp modal opens with all required fields",
+            "Room selection dropdown shows available rooms",
+            "Multiple room selection works properly",
+            "Date picker for start/end dates functions correctly",
+            "Participant capacity validation against selected rooms",
+            "Price calculation includes room costs",
+            "Form validation prevents invalid submissions",
+            "Successful creation adds camp to database and UI"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "Supabase direct insert to surf_camps table",
+              "GET /api/rooms for room selection options"
+            ],
+            "database_operations": [
+              "INSERT INTO surf_camps with all fields",
+              "SELECT * FROM rooms WHERE is_active = true",
+              "Validation of date ranges and capacity"
+            ],
+            "components": [
+              "src/app/admin/surfcamps/page.tsx - Main surf camps page",
+              "CreateSurfCampModal component",
+              "RoomSelector component with multi-select"
+            ],
+            "state_management": [
+              "useState for form data",
+              "useState for available rooms",
+              "useState for selected rooms array"
+            ],
+            "error_handling": [
+              "Form validation with Zod schema",
+              "Database constraint error handling",
+              "Room availability conflict resolution"
+            ]
+          },
+          "success_criteria": [
+            "Surf camp creation works end-to-end",
+            "Room selection UI is intuitive",
+            "All validations work correctly",
+            "Database integrity maintained"
+          ],
+          "broken_feature_details": {
+            "current_issue": "Surf Camp creation popup missing room selection functionality",
+            "symptoms": [
+              "Room selection dropdown not populated",
+              "availableRooms field validation failing",
+              "Form submission errors on room data"
+            ],
+            "root_cause": "Missing room data fetch and form field implementation",
+            "fix_priority": "HIGH"
+          }
+        }
+      ]
+    },
+    "calendar_scheduling": {
+      "category": "Calendar & Scheduling",
+      "stories": [
+        {
+          "id": "CAL-001",
+          "title": "Calendar Add Event Functionality - BROKEN FEATURE FIX",
+          "user_story": "As an admin user, I want to add new events directly from the calendar interface, so that I can quickly schedule bookings and surf camp sessions.",
+          "acceptance_criteria": [
+            "+Add Event button is visible and clickable",
+            "Clicking opens event creation modal",
+            "Modal allows selection of event type (booking/surf camp)",
+            "Date/time selection pre-fills from calendar click",
+            "Event creation saves to appropriate database table",
+            "Calendar refreshes to show new event",
+            "Event details are properly formatted and displayed"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/firebase-bookings - POST for booking events",
+              "Supabase insert for surf camp events"
+            ],
+            "database_operations": [
+              "INSERT INTO bookings for booking events",
+              "INSERT INTO surf_camps for camp events",
+              "Date/time validation and formatting"
+            ],
+            "components": [
+              "src/app/admin/calendar/page.tsx - Calendar page",
+              "CustomToolbar component with Add Event button",
+              "EventCreationModal component"
+            ],
+            "state_management": [
+              "useState for modal open/close",
+              "useState for selected date/time",
+              "useState for event form data"
+            ],
+            "error_handling": [
+              "Date validation errors",
+              "Conflict detection with existing events",
+              "Form submission error handling"
+            ]
+          },
+          "success_criteria": [
+            "+Add Event button works correctly",
+            "Event creation modal functions properly",
+            "New events appear on calendar immediately",
+            "All event types can be created"
+          ],
+          "broken_feature_details": {
+            "current_issue": "Calendar +Add Event button not working",
+            "symptoms": [
+              "Button click has no effect",
+              "No modal opens for event creation",
+              "Missing event handler implementation"
+            ],
+            "root_cause": "Missing onClick handler and modal component",
+            "fix_priority": "MEDIUM"
+          }
+        }
+      ]
+    },
+    "assignments_room_allocation": {
+      "category": "Assignments & Room Allocation",
+      "stories": [
+        {
+          "id": "ASSIGN-001",
+          "title": "Drag-and-Drop Room Assignments - BROKEN FEATURE FIX",
+          "user_story": "As an admin user, I want to assign participants to rooms using drag-and-drop functionality that works reliably, so that I can efficiently manage room allocations for surf camps.",
+          "acceptance_criteria": [
+            "Drag-and-drop works consistently across multiple uses",
+            "Participants can be dragged from unassigned to room slots",
+            "Room capacity limits are enforced visually",
+            "Assignments persist after drag operations",
+            "Visual feedback during drag operations is clear",
+            "Undo functionality for incorrect assignments",
+            "Save assignments to database successfully"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/room-assignments - POST save assignments",
+              "/api/room-assignments - GET load existing assignments"
+            ],
+            "database_operations": [
+              "INSERT/UPDATE room_assignments table",
+              "DELETE old assignments before new ones",
+              "Validation of room capacity constraints"
+            ],
+            "components": [
+              "src/components/admin/assignments/AssignmentBoard.tsx",
+              "DraggableParticipant component with react-dnd",
+              "DropZone component for room slots"
+            ],
+            "state_management": [
+              "useState for assignments array",
+              "useState for drag state",
+              "useEffect for persistence"
+            ],
+            "error_handling": [
+              "Drag operation failure recovery",
+              "Capacity overflow prevention",
+              "Database save error handling"
+            ]
+          },
+          "success_criteria": [
+            "Drag-and-drop works reliably after first use",
+            "All assignments save correctly",
+            "UI provides clear feedback",
+            "Performance is smooth with many participants"
+          ],
+          "broken_feature_details": {
+            "current_issue": "Assignments drag-and-drop breaks after first use",
+            "symptoms": [
+              "First drag operation works",
+              "Subsequent drags don't register",
+              "State not updating properly",
+              "React DnD context issues"
+            ],
+            "root_cause": "State management issues with react-dnd and component re-renders",
+            "fix_priority": "HIGH"
+          }
+        }
+      ]
+    },
+    "analytics_reporting": {
+      "category": "Analytics & Reporting",
+      "stories": [
+        {
+          "id": "ANALYTICS-001",
+          "title": "Business Analytics Dashboard",
+          "user_story": "As an admin user, I want to view comprehensive business analytics including revenue, occupancy, and client metrics, so that I can make informed business decisions.",
+          "acceptance_criteria": [
+            "Revenue charts show monthly/yearly trends",
+            "Occupancy rates display by room and time period",
+            "Client acquisition metrics with growth trends",
+            "Booking conversion funnel analysis",
+            "Export functionality for reports",
+            "Real-time data updates",
+            "Responsive charts on mobile devices"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/analytics/revenue - GET revenue data",
+              "/api/analytics/occupancy - GET occupancy stats",
+              "/api/analytics/clients - GET client metrics"
+            ],
+            "database_operations": [
+              "Aggregate queries for revenue by period",
+              "Occupancy calculations from bookings",
+              "Client growth rate calculations"
+            ],
+            "components": [
+              "src/app/admin/analytics/page.tsx - Analytics page",
+              "src/components/analytics/RevenueChart.tsx",
+              "src/components/analytics/OccupancyChart.tsx"
+            ],
+            "state_management": [
+              "useState for chart data",
+              "useState for date range filters",
+              "useEffect for data fetching"
+            ],
+            "error_handling": [
+              "Chart rendering error handling",
+              "Data loading error states",
+              "Export failure handling"
+            ]
+          },
+          "success_criteria": [
+            "All charts render correctly",
+            "Data accuracy verified",
+            "Export functionality works",
+            "Performance is acceptable"
+          ]
+        }
+      ]
+    },
+    "system_administration": {
+      "category": "System Administration",
+      "stories": [
+        {
+          "id": "SYS-001",
+          "title": "System Health Monitoring",
+          "user_story": "As a system administrator, I want to monitor system health including database connectivity, API performance, and error rates, so that I can ensure optimal system operation.",
+          "acceptance_criteria": [
+            "Database connection status displayed",
+            "API response time metrics shown",
+            "Error rate monitoring with alerts",
+            "System resource usage indicators",
+            "Recent error log display",
+            "Health check endpoints functional",
+            "Automated alerts for critical issues"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/health - System health check",
+              "/api/metrics - Performance metrics",
+              "/api/logs - Error log retrieval"
+            ],
+            "database_operations": [
+              "Connection health queries",
+              "Performance metric collection",
+              "Error log queries with pagination"
+            ],
+            "components": [
+              "src/app/admin/system/page.tsx - System admin page",
+              "src/components/system/SystemHealth.tsx",
+              "src/components/system/AuditLogs.tsx"
+            ],
+            "state_management": [
+              "useState for health metrics",
+              "useInterval for periodic updates",
+              "useState for error logs"
+            ],
+            "error_handling": [
+              "Health check failure handling",
+              "Metric collection error recovery",
+              "Log retrieval error handling"
+            ]
+          },
+          "success_criteria": [
+            "Health monitoring is accurate",
+            "Alerts trigger appropriately",
+            "Performance metrics are useful",
+            "System remains stable"
+          ]
+        }
+      ]
+    },
+    "rooms_management": {
+      "category": "Rooms Management",
+      "stories": [
+        {
+          "id": "ROOM-001",
+          "title": "Room Inventory Management",
+          "user_story": "As an admin user, I want to manage room inventory including capacity, pricing, and amenities, so that I can optimize accommodation offerings and revenue.",
+          "acceptance_criteria": [
+            "Create new rooms with all details (name, capacity, type)",
+            "Set booking type (whole room or per bed)",
+            "Configure pricing tiers (base, peak, off-season)",
+            "Manage amenities list with categories",
+            "Upload and manage room images",
+            "Set room availability status (active/inactive)",
+            "Bulk operations for multiple rooms",
+            "Room search and filtering capabilities"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/rooms - GET all rooms",
+              "/api/rooms - POST create room",
+              "/api/rooms - PUT update room",
+              "/api/rooms - DELETE remove room"
+            ],
+            "database_operations": [
+              "SELECT * FROM rooms WHERE is_active = true",
+              "INSERT INTO rooms with JSONB pricing data",
+              "UPDATE rooms SET pricing = ?, amenities = ?",
+              "Supabase Storage operations for images"
+            ],
+            "components": [
+              "src/app/admin/rooms/page.tsx - Main rooms page",
+              "RoomCard component for display",
+              "RoomDialog component for create/edit",
+              "PricingEditor component for pricing tiers"
+            ],
+            "state_management": [
+              "useState for rooms array",
+              "useState for form data",
+              "useState for image uploads",
+              "useEffect for data fetching"
+            ],
+            "error_handling": [
+              "Image upload error handling",
+              "Pricing validation errors",
+              "Database constraint violations",
+              "Network error recovery"
+            ]
+          },
+          "success_criteria": [
+            "All room CRUD operations work",
+            "Pricing configuration is flexible",
+            "Image management is reliable",
+            "Search and filtering perform well"
+          ]
+        },
+        {
+          "id": "ROOM-002",
+          "title": "Room Availability Calendar",
+          "user_story": "As an admin user, I want to view and manage room availability in a calendar format, so that I can optimize occupancy and prevent overbooking.",
+          "acceptance_criteria": [
+            "Calendar view shows room availability by date",
+            "Color coding for availability status",
+            "Click to block/unblock specific dates",
+            "Bulk availability updates",
+            "Integration with booking system",
+            "Maintenance scheduling functionality",
+            "Availability export for external systems"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/rooms/availability - GET availability data",
+              "/api/rooms/availability - POST update availability"
+            ],
+            "database_operations": [
+              "SELECT availability from room_assignments",
+              "INSERT/UPDATE availability records",
+              "Date range queries for calendar view"
+            ],
+            "components": [
+              "RoomAvailabilityCalendar component",
+              "AvailabilityEditor component",
+              "MaintenanceScheduler component"
+            ],
+            "state_management": [
+              "useState for calendar data",
+              "useState for selected dates",
+              "useCallback for date operations"
+            ],
+            "error_handling": [
+              "Date validation errors",
+              "Booking conflict detection",
+              "Calendar rendering errors"
+            ]
+          },
+          "success_criteria": [
+            "Calendar displays accurately",
+            "Availability updates work correctly",
+            "No booking conflicts occur",
+            "Performance is acceptable"
+          ]
+        }
+      ]
+    },
+    "addons_management": {
+      "category": "Add-ons Management",
+      "stories": [
+        {
+          "id": "ADDON-001",
+          "title": "Add-ons Catalog Management",
+          "user_story": "As an admin user, I want to manage a catalog of add-on services and equipment, so that I can offer additional revenue opportunities to clients.",
+          "acceptance_criteria": [
+            "Create add-ons with categories (equipment, service, food, transport)",
+            "Set pricing and quantity limits",
+            "Upload images and descriptions",
+            "Manage availability and inventory",
+            "Set seasonal pricing variations",
+            "Bulk import/export capabilities",
+            "Integration with booking system"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/addons - GET all add-ons",
+              "/api/addons - POST create add-on",
+              "/api/addons - PUT update add-on",
+              "/api/addons - DELETE remove add-on"
+            ],
+            "database_operations": [
+              "SELECT * FROM add_ons WHERE is_active = true",
+              "INSERT INTO add_ons with category validation",
+              "UPDATE add_ons SET price = ?, max_quantity = ?",
+              "Category-based filtering queries"
+            ],
+            "components": [
+              "src/app/admin/addons/page.tsx - Main add-ons page",
+              "AddOnCard component for display",
+              "AddOnDialog component for create/edit",
+              "CategoryFilter component"
+            ],
+            "state_management": [
+              "useState for add-ons array",
+              "useState for category filters",
+              "useState for form data"
+            ],
+            "error_handling": [
+              "Category validation errors",
+              "Price validation errors",
+              "Image upload failures"
+            ]
+          },
+          "success_criteria": [
+            "Add-on catalog is comprehensive",
+            "Category management works well",
+            "Pricing flexibility is adequate",
+            "Integration with bookings is seamless"
+          ]
+        }
+      ]
+    },
+    "client_portal": {
+      "category": "Client Portal",
+      "stories": [
+        {
+          "id": "CLIENT-PORTAL-001",
+          "title": "Client Dashboard and Profile",
+          "user_story": "As a client, I want to access my personal dashboard and manage my profile information, so that I can track my bookings and keep my information current.",
+          "acceptance_criteria": [
+            "Secure client authentication and registration",
+            "Personal dashboard with booking summary",
+            "Profile management (name, email, phone, preferences)",
+            "Booking history with status tracking",
+            "Upcoming bookings with details",
+            "Profile photo upload capability",
+            "Password change functionality",
+            "Account deletion option"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "Supabase Auth for client authentication",
+              "/api/client/profile - GET/PUT profile data",
+              "/api/client/bookings - GET client bookings"
+            ],
+            "database_operations": [
+              "SELECT * FROM clients WHERE id = ?",
+              "UPDATE clients SET ... WHERE id = ?",
+              "SELECT * FROM bookings WHERE client_ids @> ?"
+            ],
+            "components": [
+              "src/app/client/dashboard/page.tsx - Client dashboard",
+              "src/app/client/profile/page.tsx - Profile management",
+              "src/components/client/ProfileForm.tsx",
+              "src/components/client/BookingSummary.tsx"
+            ],
+            "state_management": [
+              "Client auth context",
+              "useState for profile data",
+              "useState for bookings data"
+            ],
+            "error_handling": [
+              "Authentication errors",
+              "Profile update failures",
+              "Data loading errors"
+            ]
+          },
+          "success_criteria": [
+            "Client can access dashboard securely",
+            "Profile updates work correctly",
+            "Booking history is accurate",
+            "UI is intuitive and responsive"
+          ]
+        },
+        {
+          "id": "CLIENT-PORTAL-002",
+          "title": "Client Booking Management",
+          "user_story": "As a client, I want to view and manage my bookings, including modifications and cancellations, so that I can control my surf camp reservations.",
+          "acceptance_criteria": [
+            "View all bookings with detailed information",
+            "Filter bookings by status and date",
+            "Request booking modifications",
+            "Cancel bookings with policy enforcement",
+            "Download booking confirmations",
+            "Add special requests or notes",
+            "View payment history and receipts"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/client/bookings - GET client bookings",
+              "/api/client/bookings - PUT modify booking",
+              "/api/client/bookings/cancel - POST cancel booking"
+            ],
+            "database_operations": [
+              "SELECT bookings with client filter",
+              "UPDATE booking status and notes",
+              "INSERT cancellation records"
+            ],
+            "components": [
+              "src/app/client/bookings/page.tsx - Booking management",
+              "BookingCard component",
+              "ModificationRequest component",
+              "CancellationDialog component"
+            ],
+            "state_management": [
+              "useState for bookings array",
+              "useState for filter states",
+              "useState for modification forms"
+            ],
+            "error_handling": [
+              "Modification request errors",
+              "Cancellation policy violations",
+              "Payment processing errors"
+            ]
+          },
+          "success_criteria": [
+            "Booking management is comprehensive",
+            "Modification requests work properly",
+            "Cancellation policies are enforced",
+            "Payment information is accurate"
+          ]
+        },
+        {
+          "id": "CLIENT-PORTAL-003",
+          "title": "Client Preferences and Settings",
+          "user_story": "As a client, I want to manage my preferences and notification settings, so that I can customize my experience and communication preferences.",
+          "acceptance_criteria": [
+            "Notification preferences (email, SMS, push)",
+            "Communication frequency settings",
+            "Language and currency preferences",
+            "Booking preferences (room type, board preference)",
+            "Privacy settings and data sharing options",
+            "Marketing communication opt-in/out",
+            "Accessibility preferences"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/client/preferences - GET/PUT preferences",
+              "/api/client/notifications - PUT notification settings"
+            ],
+            "database_operations": [
+              "UPDATE clients SET preferences = ?",
+              "JSONB operations for preference storage"
+            ],
+            "components": [
+              "src/app/client/preferences/page.tsx - Preferences page",
+              "NotificationSettings component",
+              "PrivacySettings component",
+              "BookingPreferences component"
+            ],
+            "state_management": [
+              "useState for preference objects",
+              "useEffect for preference loading",
+              "Form state management"
+            ],
+            "error_handling": [
+              "Preference validation errors",
+              "Save operation failures",
+              "Default value handling"
+            ]
+          },
+          "success_criteria": [
+            "All preferences are configurable",
+            "Settings persist correctly",
+            "Privacy controls work properly",
+            "UI is user-friendly"
+          ]
+        }
+      ]
+    },
+    "public_booking_flow": {
+      "category": "Public Booking Flow",
+      "stories": [
+        {
+          "id": "BOOKING-FLOW-001",
+          "title": "Surf Week Discovery and Selection",
+          "user_story": "As a potential client, I want to browse available surf weeks and view detailed information, so that I can choose the perfect surf camp experience.",
+          "acceptance_criteria": [
+            "Browse available surf weeks with filtering",
+            "View detailed week information (dates, price, level)",
+            "See included services and amenities",
+            "Check availability and remaining spots",
+            "Compare different weeks side by side",
+            "View high-quality images and descriptions",
+            "Mobile-responsive design"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/weeks - GET available surf weeks",
+              "/api/weeks/[weekId] - GET specific week details"
+            ],
+            "database_operations": [
+              "SELECT * FROM surf_camps WHERE is_active = true",
+              "JOIN with availability and pricing data",
+              "Calculate remaining spots from bookings"
+            ],
+            "components": [
+              "src/app/weeks/page.tsx - Weeks listing page",
+              "src/app/weeks/[weekId]/page.tsx - Week details",
+              "WeekCard component",
+              "WeekFilter component"
+            ],
+            "state_management": [
+              "useState for weeks data",
+              "useState for filter states",
+              "useState for loading states"
+            ],
+            "error_handling": [
+              "Data loading errors",
+              "Image loading failures",
+              "Filter operation errors"
+            ]
+          },
+          "success_criteria": [
+            "Week discovery is intuitive",
+            "All information is accurate",
+            "Filtering works effectively",
+            "Mobile experience is excellent"
+          ]
+        },
+        {
+          "id": "BOOKING-FLOW-002",
+          "title": "Booking Wizard and Checkout",
+          "user_story": "As a client, I want to complete the booking process through a guided wizard, so that I can easily reserve my surf camp experience.",
+          "acceptance_criteria": [
+            "Multi-step booking wizard with progress indicator",
+            "Participant information collection",
+            "Room selection with availability checking",
+            "Add-on services selection",
+            "Booking summary with price breakdown",
+            "Terms and conditions acceptance",
+            "Secure payment processing integration"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/booking/create - POST create booking",
+              "/api/rooms/availability - GET room availability",
+              "/api/addons - GET available add-ons"
+            ],
+            "database_operations": [
+              "INSERT INTO bookings with transaction",
+              "UPDATE room availability",
+              "INSERT booking items and participants"
+            ],
+            "components": [
+              "src/components/booking/BookingWizard.tsx",
+              "ParticipantForm component",
+              "RoomSelector component",
+              "AddOnSelector component",
+              "BookingSummary component"
+            ],
+            "state_management": [
+              "useState for wizard steps",
+              "useState for booking data",
+              "useReducer for complex form state"
+            ],
+            "error_handling": [
+              "Form validation errors",
+              "Availability conflicts",
+              "Payment processing errors"
+            ]
+          },
+          "success_criteria": [
+            "Booking process is smooth",
+            "All validations work correctly",
+            "Payment integration is secure",
+            "Confirmation is immediate"
+          ]
+        },
+        {
+          "id": "BOOKING-FLOW-003",
+          "title": "Payment Processing and Confirmation",
+          "user_story": "As a client, I want to securely pay for my booking and receive immediate confirmation, so that I can be confident my reservation is secured.",
+          "acceptance_criteria": [
+            "Secure Stripe payment integration",
+            "Multiple payment methods support",
+            "Real-time payment processing",
+            "Immediate booking confirmation",
+            "Email confirmation with details",
+            "Receipt generation and download",
+            "Payment failure handling and retry"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/payments/create-checkout-session - POST Stripe session",
+              "/api/webhooks/stripe - POST payment webhooks",
+              "/api/booking/confirm - POST confirm booking"
+            ],
+            "database_operations": [
+              "INSERT INTO payments table",
+              "UPDATE booking payment_status",
+              "INSERT invoice records"
+            ],
+            "components": [
+              "src/app/checkout/[weekId]/payment/page.tsx",
+              "src/components/ui/stripe-checkout.tsx",
+              "PaymentForm component",
+              "ConfirmationPage component"
+            ],
+            "state_management": [
+              "useState for payment state",
+              "useState for confirmation data",
+              "useEffect for webhook handling"
+            ],
+            "error_handling": [
+              "Payment failure recovery",
+              "Network timeout handling",
+              "Webhook processing errors"
+            ]
+          },
+          "success_criteria": [
+            "Payment processing is reliable",
+            "Confirmation is immediate",
+            "Email notifications work",
+            "Error handling is graceful"
+          ]
+        }
+      ]
+    },
+    "payment_processing": {
+      "category": "Payment Processing",
+      "stories": [
+        {
+          "id": "PAYMENT-001",
+          "title": "Stripe Integration and Checkout",
+          "user_story": "As a system administrator, I want robust Stripe payment integration, so that clients can securely pay for bookings with multiple payment methods.",
+          "acceptance_criteria": [
+            "Stripe Elements integration for secure card input",
+            "Support for multiple payment methods",
+            "Real-time payment status updates",
+            "Automatic invoice generation",
+            "Refund processing capabilities",
+            "Payment intent creation and confirmation",
+            "Webhook handling for payment events"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/payments/create-checkout-session - POST",
+              "/api/payments/create-payment-intent - POST",
+              "/api/webhooks/stripe - POST webhook handler",
+              "/api/payments/refund - POST refund processing"
+            ],
+            "database_operations": [
+              "INSERT INTO payments with Stripe data",
+              "UPDATE booking payment_status",
+              "INSERT INTO invoices table",
+              "UPDATE payment records on webhook"
+            ],
+            "components": [
+              "src/lib/stripe-service.ts - Stripe utilities",
+              "StripeCheckout component",
+              "PaymentStatus component",
+              "RefundDialog component"
+            ],
+            "state_management": [
+              "useState for payment state",
+              "useStripe hook for Stripe elements",
+              "Payment status tracking"
+            ],
+            "error_handling": [
+              "Card declined handling",
+              "Network error recovery",
+              "Webhook signature validation",
+              "Refund failure handling"
+            ]
+          },
+          "success_criteria": [
+            "Payment success rate > 95%",
+            "All payment methods work",
+            "Webhook processing is reliable",
+            "Refunds process correctly"
+          ]
+        },
+        {
+          "id": "PAYMENT-002",
+          "title": "Invoice and Receipt Management",
+          "user_story": "As an admin user, I want to generate and manage invoices and receipts, so that I can maintain proper financial records and provide clients with documentation.",
+          "acceptance_criteria": [
+            "Automatic invoice generation on booking",
+            "PDF invoice generation and download",
+            "Receipt creation for payments",
+            "Invoice status tracking (sent, paid, overdue)",
+            "Bulk invoice operations",
+            "Custom invoice templates",
+            "Tax calculation and reporting"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/invoices - GET/POST invoice operations",
+              "/api/invoices/[id]/pdf - GET PDF generation",
+              "/api/receipts - GET receipt data"
+            ],
+            "database_operations": [
+              "INSERT INTO invoices with auto-numbering",
+              "UPDATE invoice status and dates",
+              "SELECT with payment joins for receipts"
+            ],
+            "components": [
+              "src/lib/invoices/generator.ts - PDF generation",
+              "InvoiceList component",
+              "InvoiceDialog component",
+              "ReceiptViewer component"
+            ],
+            "state_management": [
+              "useState for invoice data",
+              "useState for PDF generation state",
+              "useEffect for status updates"
+            ],
+            "error_handling": [
+              "PDF generation errors",
+              "Template rendering errors",
+              "Email sending failures"
+            ]
+          },
+          "success_criteria": [
+            "Invoice generation is automatic",
+            "PDF quality is professional",
+            "Status tracking is accurate",
+            "Email delivery is reliable"
+          ]
+        }
+      ]
+    },
+    "email_notifications": {
+      "category": "Email & Notifications",
+      "stories": [
+        {
+          "id": "EMAIL-001",
+          "title": "Automated Email Notifications",
+          "user_story": "As a business owner, I want automated email notifications for booking events, so that clients receive timely communication about their reservations.",
+          "acceptance_criteria": [
+            "Booking confirmation emails with details",
+            "Payment confirmation notifications",
+            "Booking modification notifications",
+            "Cancellation confirmations",
+            "Reminder emails before arrival",
+            "Weather alerts and updates",
+            "Marketing campaign emails"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/send-email - POST email sending",
+              "/api/email/templates - GET email templates",
+              "/api/notifications/schedule - POST schedule notifications"
+            ],
+            "database_operations": [
+              "INSERT INTO email_queue for processing",
+              "SELECT booking data for email content",
+              "UPDATE notification status tracking"
+            ],
+            "components": [
+              "src/lib/email-service.ts - Email utilities",
+              "EmailTemplate components",
+              "NotificationScheduler component"
+            ],
+            "state_management": [
+              "Email queue management",
+              "Template state handling",
+              "Delivery status tracking"
+            ],
+            "error_handling": [
+              "Email delivery failures",
+              "Template rendering errors",
+              "Queue processing errors"
+            ]
+          },
+          "success_criteria": [
+            "Email delivery rate > 98%",
+            "Templates render correctly",
+            "Scheduling works reliably",
+            "Bounce handling is effective"
+          ]
+        }
+      ]
+    },
+    "file_management_storage": {
+      "category": "File Management & Storage",
+      "stories": [
+        {
+          "id": "FILE-001",
+          "title": "Image Upload and Management",
+          "user_story": "As an admin user, I want to upload and manage images for rooms, surf camps, and add-ons, so that I can provide visual content to attract clients.",
+          "acceptance_criteria": [
+            "Drag-and-drop image upload interface",
+            "Multiple file format support (JPEG, PNG, WebP)",
+            "Image compression and optimization",
+            "Bulk upload capabilities",
+            "Image gallery management",
+            "Alt text and metadata editing",
+            "Storage quota monitoring"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/upload - POST file upload",
+              "/api/files - GET file listing",
+              "/api/files/[id] - DELETE file removal"
+            ],
+            "database_operations": [
+              "Supabase Storage bucket operations",
+              "File metadata storage in database",
+              "Image URL generation and caching"
+            ],
+            "components": [
+              "src/components/ui/image-upload.tsx",
+              "ImageGallery component",
+              "FileManager component",
+              "ImageOptimizer utility"
+            ],
+            "state_management": [
+              "useState for upload progress",
+              "useState for file lists",
+              "useCallback for upload handlers"
+            ],
+            "error_handling": [
+              "Upload failure recovery",
+              "File size limit enforcement",
+              "Format validation errors"
+            ]
+          },
+          "success_criteria": [
+            "Upload success rate > 99%",
+            "Image optimization works",
+            "Gallery management is intuitive",
+            "Storage limits are enforced"
+          ]
+        }
+      ]
+    },
+    "compliance_gdpr": {
+      "category": "Compliance & GDPR",
+      "stories": [
+        {
+          "id": "COMPLIANCE-001",
+          "title": "GDPR Data Management",
+          "user_story": "As a data protection officer, I want comprehensive GDPR compliance features, so that client data is handled according to privacy regulations.",
+          "acceptance_criteria": [
+            "Data consent management system",
+            "Right to access - data export functionality",
+            "Right to erasure - data deletion capabilities",
+            "Data portability features",
+            "Consent tracking and audit trails",
+            "Privacy policy integration",
+            "Data retention policy enforcement"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/gdpr/export - POST data export request",
+              "/api/gdpr/delete - POST data deletion request",
+              "/api/consent - GET/POST consent management"
+            ],
+            "database_operations": [
+              "SELECT all user data for export",
+              "DELETE user data with cascade",
+              "INSERT consent records with timestamps"
+            ],
+            "components": [
+              "src/components/compliance/ConsentManager.tsx",
+              "src/components/compliance/DataExport.tsx",
+              "src/components/compliance/RightToErasure.tsx"
+            ],
+            "state_management": [
+              "useState for consent states",
+              "useState for export progress",
+              "useEffect for compliance checks"
+            ],
+            "error_handling": [
+              "Export generation errors",
+              "Deletion cascade failures",
+              "Consent validation errors"
+            ]
+          },
+          "success_criteria": [
+            "GDPR compliance is complete",
+            "Data exports are comprehensive",
+            "Deletion is thorough",
+            "Consent tracking is accurate"
+          ]
+        },
+        {
+          "id": "COMPLIANCE-002",
+          "title": "Audit Trail and Logging",
+          "user_story": "As a compliance officer, I want comprehensive audit trails for all system activities, so that I can track data access and modifications for regulatory compliance.",
+          "acceptance_criteria": [
+            "All data access logging",
+            "Modification history tracking",
+            "User action audit trails",
+            "System event logging",
+            "Compliance report generation",
+            "Log retention policy enforcement",
+            "Secure log storage and access"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/audit/logs - GET audit log data",
+              "/api/audit/report - POST generate compliance report"
+            ],
+            "database_operations": [
+              "INSERT INTO audit_logs for all actions",
+              "SELECT logs with filtering and pagination",
+              "Automated log cleanup based on retention"
+            ],
+            "components": [
+              "src/components/compliance/AuditLogViewer.tsx",
+              "src/lib/compliance/auditTrail.ts",
+              "ComplianceReport component"
+            ],
+            "state_management": [
+              "useState for log data",
+              "useState for filter states",
+              "useEffect for real-time updates"
+            ],
+            "error_handling": [
+              "Log retrieval errors",
+              "Report generation failures",
+              "Storage capacity issues"
+            ]
+          },
+          "success_criteria": [
+            "All actions are logged",
+            "Logs are tamper-proof",
+            "Reports are comprehensive",
+            "Retention policies work"
+          ]
+        }
+      ]
+    },
+    "api_backend_services": {
+      "category": "API & Backend Services",
+      "stories": [
+        {
+          "id": "API-001",
+          "title": "RESTful API Architecture",
+          "user_story": "As a developer, I want a well-structured RESTful API, so that all frontend operations have reliable backend support.",
+          "acceptance_criteria": [
+            "Consistent API endpoint structure",
+            "Proper HTTP status codes",
+            "Request/response validation",
+            "API documentation and schemas",
+            "Rate limiting and throttling",
+            "Authentication middleware",
+            "Error handling standards"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "All /api/* routes with consistent patterns",
+              "OpenAPI/Swagger documentation",
+              "Middleware for auth, validation, logging"
+            ],
+            "database_operations": [
+              "Supabase client and admin operations",
+              "Transaction handling for complex operations",
+              "Connection pooling and optimization"
+            ],
+            "components": [
+              "API route handlers in src/app/api/",
+              "Middleware functions",
+              "Validation schemas with Zod"
+            ],
+            "state_management": [
+              "Server-side state management",
+              "Session handling",
+              "Cache management"
+            ],
+            "error_handling": [
+              "Standardized error responses",
+              "Logging and monitoring",
+              "Graceful degradation"
+            ]
+          },
+          "success_criteria": [
+            "API response time < 200ms",
+            "99.9% uptime reliability",
+            "Comprehensive error handling",
+            "Security best practices followed"
+          ]
+        },
+        {
+          "id": "API-002",
+          "title": "Real-time Data Synchronization",
+          "user_story": "As a user, I want real-time updates across the application, so that I always see the most current information without manual refreshes.",
+          "acceptance_criteria": [
+            "Supabase real-time subscriptions",
+            "Live booking status updates",
+            "Real-time availability changes",
+            "Instant notification delivery",
+            "Conflict resolution for concurrent edits",
+            "Connection state management",
+            "Offline capability with sync"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "Supabase real-time channels",
+              "WebSocket connections for live updates",
+              "Subscription management endpoints"
+            ],
+            "database_operations": [
+              "Real-time triggers and functions",
+              "Change data capture",
+              "Conflict resolution strategies"
+            ],
+            "components": [
+              "Real-time hooks and providers",
+              "Subscription management utilities",
+              "Offline sync components"
+            ],
+            "state_management": [
+              "Real-time state synchronization",
+              "Optimistic updates",
+              "Conflict resolution state"
+            ],
+            "error_handling": [
+              "Connection failure recovery",
+              "Sync conflict resolution",
+              "Offline mode handling"
+            ]
+          },
+          "success_criteria": [
+            "Updates appear within 1 second",
+            "No data loss during conflicts",
+            "Offline mode works correctly",
+            "Connection recovery is automatic"
+          ]
+        }
+      ]
+    },
+    "testing_quality_assurance": {
+      "category": "Testing & Quality Assurance",
+      "stories": [
+        {
+          "id": "TEST-001",
+          "title": "Comprehensive Testing Strategy",
+          "user_story": "As a developer, I want comprehensive automated testing, so that code quality is maintained and regressions are prevented.",
+          "acceptance_criteria": [
+            "Unit tests for all utilities and services",
+            "Integration tests for API endpoints",
+            "End-to-end tests for user workflows",
+            "Component testing with React Testing Library",
+            "Performance testing and benchmarks",
+            "Accessibility testing compliance",
+            "Cross-browser compatibility testing"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "Test endpoints for mocking and fixtures",
+              "Test database seeding endpoints"
+            ],
+            "database_operations": [
+              "Test database setup and teardown",
+              "Fixture data management",
+              "Transaction rollback for tests"
+            ],
+            "components": [
+              "Playwright test files in tests/",
+              "Jest unit test files",
+              "Testing utilities and helpers"
+            ],
+            "state_management": [
+              "Test state isolation",
+              "Mock state management",
+              "Test data factories"
+            ],
+            "error_handling": [
+              "Test failure analysis",
+              "Error reproduction scenarios",
+              "Flaky test detection"
+            ]
+          },
+          "success_criteria": [
+            "Test coverage > 80%",
+            "All tests pass consistently",
+            "CI/CD integration works",
+            "Performance benchmarks met"
+          ]
+        }
+      ]
+    },
+    "deployment_devops": {
+      "category": "Deployment & DevOps",
+      "stories": [
+        {
+          "id": "DEPLOY-001",
+          "title": "Production Deployment Pipeline",
+          "user_story": "As a DevOps engineer, I want automated deployment pipelines, so that code changes can be safely deployed to production.",
+          "acceptance_criteria": [
+            "Automated CI/CD with GitHub Actions",
+            "Multi-environment deployment (dev, staging, prod)",
+            "Environment variable management",
+            "Database migration automation",
+            "Rollback capabilities",
+            "Health checks and monitoring",
+            "Security scanning integration"
+          ],
+          "technical_implementation": {
+            "api_endpoints": [
+              "/api/health - Health check endpoint",
+              "/api/version - Version information"
+            ],
+            "database_operations": [
+              "Migration scripts execution",
+              "Database backup before deployment",
+              "Schema validation checks"
+            ],
+            "components": [
+              "Deployment configuration files",
+              "Environment setup scripts",
+              "Monitoring dashboards"
+            ],
+            "state_management": [
+              "Deployment state tracking",
+              "Environment configuration",
+              "Feature flag management"
+            ],
+            "error_handling": [
+              "Deployment failure recovery",
+              "Rollback procedures",
+              "Alert and notification systems"
+            ]
+          },
+          "success_criteria": [
+            "Deployment success rate > 99%",
+            "Zero-downtime deployments",
+            "Rollback time < 5 minutes",
+            "All environments synchronized"
+          ]
+        }
+      ]
+    }
+  }
+}
