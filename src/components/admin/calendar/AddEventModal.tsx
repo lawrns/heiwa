@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { supabase } from '@/lib/supabase/client';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -124,27 +125,57 @@ export function AddEventModal({ isOpen, onClose, onSuccess, selectedDate }: AddE
   const loadInitialData = async () => {
     try {
       setLoadingData(true);
-      
-      // Load clients and rooms in parallel
-      const [clientsRes, roomsRes] = await Promise.all([
-        fetch('/api/firebase-clients'),
-        fetch('/api/rooms'),
+
+      // Load clients and rooms from Supabase in parallel
+      const [clientsResult, roomsResult] = await Promise.all([
+        supabase.from('clients').select('*').order('created_at', { ascending: false }),
+        supabase.from('rooms').select('*').order('created_at', { ascending: false })
       ]);
 
-      if (clientsRes.ok) {
-        const clientsData = await clientsRes.json();
-        setClients(clientsData.clients || []);
-      } else {
-        console.error('Failed to load clients:', await clientsRes.text());
+      // Process clients
+      if (clientsResult.error) {
+        console.error('Failed to load clients:', clientsResult.error);
         toast.error('Failed to load clients');
+      } else {
+        // Convert database format to Client format
+        const formattedClients = clientsResult.data?.map((client: any) => ({
+          id: client.id,
+          name: client.name,
+          email: client.email,
+          phone: client.phone,
+          brand: 'Heiwa House', // Default brand
+          status: 'Active', // Default status
+          lastBookingDate: client.last_booking_date
+            ? { seconds: new Date(client.last_booking_date).getTime() / 1000, nanoseconds: 0 }
+            : null,
+          registrationDate: { seconds: new Date(client.created_at).getTime() / 1000, nanoseconds: 0 },
+          notes: client.notes || '',
+          createdAt: { seconds: new Date(client.created_at).getTime() / 1000, nanoseconds: 0 },
+          updatedAt: { seconds: new Date(client.updated_at).getTime() / 1000, nanoseconds: 0 }
+        })) as Client[];
+        setClients(formattedClients || []);
       }
 
-      if (roomsRes.ok) {
-        const roomsData = await roomsRes.json();
-        setRooms(roomsData.rooms || []);
-      } else {
-        console.error('Failed to load rooms:', await roomsRes.text());
+      // Process rooms
+      if (roomsResult.error) {
+        console.error('Failed to load rooms:', roomsResult.error);
         toast.error('Failed to load rooms');
+      } else {
+        // Convert database format to Room format
+        const formattedRooms = roomsResult.data?.map((room: any) => ({
+          id: room.id,
+          name: room.name || 'Unnamed Room',
+          capacity: room.capacity || 1,
+          bookingType: room.booking_type || 'whole',
+          pricing: room.pricing || { standard: 0, offSeason: 0, camp: {} },
+          description: room.description || '',
+          images: room.images || [],
+          amenities: room.amenities || [],
+          isActive: room.is_active !== false,
+          createdAt: new Date(room.created_at || Date.now()),
+          updatedAt: new Date(room.updated_at || Date.now())
+        })) as Room[];
+        setRooms(formattedRooms || []);
       }
     } catch (error) {
       console.error('Error loading initial data:', error);

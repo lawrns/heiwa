@@ -15,6 +15,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast } from 'react-toastify';
 import { Loader2, Plus, Minus, Search, Calendar, DollarSign, Users } from 'lucide-react';
 import { z } from 'zod';
+import { supabase } from '@/lib/supabase/client';
 import {
   calculateRoomPrice,
   calculateSurfCampPrice,
@@ -79,45 +80,99 @@ export function CreateBookingModal({ isOpen, onClose, onSuccess }: CreateBooking
   const loadInitialData = async () => {
     try {
       setLoadingData(true);
-      
-      // Load clients, rooms, surf camps, and add-ons in parallel
-      const [clientsRes, roomsRes, surfCampsRes, addOnsRes] = await Promise.all([
-        fetch('/api/firebase-clients'),
-        fetch('/api/rooms'),
-        fetch('/api/surf-camps'),
-        fetch('/api/add-ons'),
+
+      // Load clients, rooms, surf camps, and add-ons from Supabase in parallel
+      const [clientsResult, roomsResult, surfCampsResult, addOnsResult] = await Promise.all([
+        supabase.from('clients').select('*').order('created_at', { ascending: false }),
+        supabase.from('rooms').select('*').order('created_at', { ascending: false }),
+        supabase.from('surf_camps').select('*').order('created_at', { ascending: false }),
+        supabase.from('add_ons').select('*').order('created_at', { ascending: false })
       ]);
 
-      if (clientsRes.ok) {
-        const clientsData = await clientsRes.json();
-        setClients(clientsData.clients || []);
-      } else {
-        console.error('Failed to load clients:', await clientsRes.text());
+      // Process clients
+      if (clientsResult.error) {
+        console.error('Failed to load clients:', clientsResult.error);
         toast.error('Failed to load clients');
+      } else {
+        // Convert database format to Client format
+        const formattedClients = clientsResult.data?.map((client: any) => ({
+          id: client.id,
+          name: client.name,
+          email: client.email,
+          phone: client.phone,
+          brand: 'Heiwa House', // Default brand
+          status: 'Active', // Default status
+          lastBookingDate: client.last_booking_date
+            ? { seconds: new Date(client.last_booking_date).getTime() / 1000, nanoseconds: 0 }
+            : null,
+          registrationDate: { seconds: new Date(client.created_at).getTime() / 1000, nanoseconds: 0 },
+          notes: client.notes || '',
+          createdAt: { seconds: new Date(client.created_at).getTime() / 1000, nanoseconds: 0 },
+          updatedAt: { seconds: new Date(client.updated_at).getTime() / 1000, nanoseconds: 0 }
+        })) as Client[];
+        setClients(formattedClients || []);
       }
 
-      if (roomsRes.ok) {
-        const roomsData = await roomsRes.json();
-        setRooms(roomsData.rooms || []);
-      } else {
-        console.error('Failed to load rooms:', await roomsRes.text());
+      // Process rooms
+      if (roomsResult.error) {
+        console.error('Failed to load rooms:', roomsResult.error);
         toast.error('Failed to load rooms');
+      } else {
+        // Convert database format to Room format
+        const formattedRooms = roomsResult.data?.map((room: any) => ({
+          id: room.id,
+          name: room.name || 'Unnamed Room',
+          capacity: room.capacity || 1,
+          bookingType: room.booking_type || 'whole',
+          pricing: room.pricing || { standard: 0, offSeason: 0, camp: {} },
+          description: room.description || '',
+          images: room.images || [],
+          amenities: room.amenities || [],
+          isActive: room.is_active !== false,
+          createdAt: new Date(room.created_at || Date.now()),
+          updatedAt: new Date(room.updated_at || Date.now())
+        })) as Room[];
+        setRooms(formattedRooms || []);
       }
 
-      if (surfCampsRes.ok) {
-        const surfCampsData = await surfCampsRes.json();
-        setSurfCamps(surfCampsData.surfCamps || []);
-      } else {
-        console.error('Failed to load surf camps:', await surfCampsRes.text());
+      // Process surf camps
+      if (surfCampsResult.error) {
+        console.error('Failed to load surf camps:', surfCampsResult.error);
         toast.error('Failed to load surf camps');
+      } else {
+        // Convert database format to SurfCamp format
+        const formattedSurfCamps = surfCampsResult.data?.map((camp: any) => ({
+          id: camp.id,
+          category: camp.category || 'HH',
+          startDate: new Date(camp.start_date),
+          endDate: new Date(camp.end_date),
+          availableRooms: camp.available_rooms || [],
+          occupancy: camp.occupancy || 1,
+          createdAt: new Date(camp.created_at || Date.now()),
+          updatedAt: new Date(camp.updated_at || Date.now())
+        })) as SurfCamp[];
+        setSurfCamps(formattedSurfCamps || []);
       }
 
-      if (addOnsRes.ok) {
-        const addOnsData = await addOnsRes.json();
-        setAddOns(addOnsData.addOns || []);
-      } else {
-        console.error('Failed to load add-ons:', await addOnsRes.text());
+      // Process add-ons
+      if (addOnsResult.error) {
+        console.error('Failed to load add-ons:', addOnsResult.error);
         toast.error('Failed to load add-ons');
+      } else {
+        // Convert database format to AddOn format
+        const formattedAddOns = addOnsResult.data?.map((addon: any) => ({
+          id: addon.id,
+          name: addon.name || 'Unnamed Add-on',
+          description: addon.description || '',
+          price: addon.price || 0,
+          category: addon.category || 'other',
+          images: addon.images || [],
+          isActive: addon.is_active !== false,
+          maxQuantity: addon.max_quantity,
+          createdAt: new Date(addon.created_at || Date.now()),
+          updatedAt: new Date(addon.updated_at || Date.now())
+        })) as AddOn[];
+        setAddOns(formattedAddOns || []);
       }
     } catch (error) {
       console.error('Error loading initial data:', error);
@@ -253,34 +308,50 @@ export function CreateBookingModal({ isOpen, onClose, onSuccess }: CreateBooking
       // Update the form data with the calculated total
       data.totalAmount = priceBreakdown.total;
 
-      const response = await fetch('/api/firebase-bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+      // Convert form data to database format
+      const bookingData = {
+        client_ids: data.clientIds,
+        items: data.items.map(item => ({
+          type: item.type,
+          item_id: item.itemId,
+          quantity: item.quantity,
+          unit_price: item.unitPrice,
+          total_price: item.totalPrice,
+          dates: item.dates ? {
+            check_in: item.dates.checkIn,
+            check_out: item.dates.checkOut
+          } : null
+        })),
+        total_amount: data.totalAmount,
+        payment_status: data.paymentStatus || 'pending',
+        payment_method: data.paymentMethod || null,
+        notes: data.notes || '',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error occurred' }));
+      // Insert booking into Supabase
+      const { data: result, error } = await supabase
+        .from('bookings')
+        .insert([bookingData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating booking:', error);
 
         // Handle specific error types
-        if (response.status === 400) {
-          toast.error(`Validation Error: ${errorData.error}`);
-        } else if (response.status === 401) {
-          toast.error('Authentication required. Please log in again.');
-        } else if (response.status === 403) {
+        if (error.message.includes('permission denied') || error.message.includes('RLS')) {
           toast.error('You do not have permission to create bookings.');
-        } else if (response.status === 500) {
-          toast.error('Server error. Please try again later.');
+        } else if (error.message.includes('violates check constraint')) {
+          toast.error('Invalid booking data. Please check your inputs.');
         } else {
-          toast.error(errorData.error || 'Failed to create booking');
+          toast.error(`Failed to create booking: ${error.message}`);
         }
 
-        throw new Error(errorData.error || 'Failed to create booking');
+        throw error;
       }
 
-      const result = await response.json();
       toast.success('Booking created successfully!', {
         position: 'top-right',
         autoClose: 3000,
@@ -296,12 +367,11 @@ export function CreateBookingModal({ isOpen, onClose, onSuccess }: CreateBooking
     } catch (error: any) {
       console.error('Error creating booking:', error);
 
-      // Don't show toast again if we already showed a specific error
-      if (!error.message.includes('Validation Error') &&
-          !error.message.includes('Authentication') &&
-          !error.message.includes('permission') &&
-          !error.message.includes('Server error')) {
-        toast.error(error.message || 'Failed to create booking');
+      // Only show generic error if we haven't already shown a specific one
+      if (!error.message?.includes('permission') &&
+          !error.message?.includes('Invalid') &&
+          !error.message?.includes('Failed to create booking')) {
+        toast.error('Failed to create booking. Please try again.');
       }
     } finally {
       setLoading(false);

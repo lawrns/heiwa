@@ -95,19 +95,19 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow" data-testid="total-clients-metric">
           <h3 className="text-lg font-semibold text-gray-900">Total Clients</h3>
-          <p className="text-3xl font-bold text-blue-600" data-testid="total-clients-value">{stats.totalClients}</p>
+          <p className="text-3xl font-bold text-black" data-testid="total-clients-value">{stats.totalClients}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow" data-testid="total-bookings-metric">
           <h3 className="text-lg font-semibold text-gray-900">Total Bookings</h3>
-          <p className="text-3xl font-bold text-green-600" data-testid="total-bookings-value">{stats.totalBookings}</p>
+          <p className="text-3xl font-bold text-black" data-testid="total-bookings-value">{stats.totalBookings}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow" data-testid="available-rooms-metric">
           <h3 className="text-lg font-semibold text-gray-900">Available Rooms</h3>
-          <p className="text-3xl font-bold text-purple-600" data-testid="available-rooms-value">{stats.availableRooms}</p>
+          <p className="text-3xl font-bold text-black" data-testid="available-rooms-value">{stats.availableRooms}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow" data-testid="revenue-metric">
           <h3 className="text-lg font-semibold text-gray-900">Revenue</h3>
-          <p className="text-3xl font-bold text-orange-600" data-testid="revenue-value">${stats.totalRevenue.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-black" data-testid="revenue-value">${stats.totalRevenue.toFixed(2)}</p>
         </div>
       </div>
 
