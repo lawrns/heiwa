@@ -17,7 +17,8 @@ import {
   ClipboardDocumentListIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
-  XMarkIcon
+  XMarkIcon,
+  ChevronRightIcon
 } from '@heroicons/react/24/outline'
 import { BarChart3Icon, ShieldIcon, FileTextIcon, UserCheckIcon } from 'lucide-react'
 
@@ -203,32 +204,56 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             md:h-screen md:overflow-hidden
           `}>
             {/* Sidebar header */}
-            <div className="flex items-center justify-between h-16 px-4 bg-blue-600 border-b border-blue-700">
-              <Link href="/admin" className={`flex items-center space-x-3 ${sidebarCollapsed ? 'justify-center' : ''}`}>
-                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-                  <span className="text-blue-600 font-bold text-sm">H</span>
-                </div>
-                {!sidebarCollapsed && <span className="text-white font-semibold text-lg truncate">Heiwa House</span>}
-              </Link>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                  className="hidden md:block text-white hover:text-gray-200 p-1 rounded transition-colors"
-                  title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                  data-testid="sidebar-toggle"
-                >
-                  {!sidebarCollapsed && (
-                    <Bars3Icon className="h-5 w-5 transition-transform duration-200" />
-                  )}
-                </button>
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  className="md:hidden text-white hover:text-gray-200 p-1 rounded transition-colors"
-                  data-testid="sidebar-close-button"
-                >
-                  <XMarkIcon className="h-6 w-6" />
-                </button>
-              </div>
+            <div className={`bg-blue-600 border-b border-blue-700 px-4 ${
+              sidebarCollapsed 
+                ? 'flex flex-col items-center justify-center py-3 space-y-2' 
+                : 'flex items-center justify-between h-16'
+            }`}>
+              {sidebarCollapsed ? (
+                // Collapsed state: vertical stack with centered alignment
+                <>
+                  <Link href="/admin" className="flex items-center justify-center">
+                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+                      <span className="text-blue-600 font-bold text-sm">H</span>
+                    </div>
+                  </Link>
+                  <button
+                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    className="hidden md:block text-white hover:text-gray-200 p-1 rounded transition-colors"
+                    title="Expand sidebar"
+                    data-testid="sidebar-toggle"
+                  >
+                    <ChevronRightIcon className="h-5 w-5 transition-transform duration-200" />
+                  </button>
+                </>
+              ) : (
+                // Expanded state: horizontal layout
+                <>
+                  <Link href="/admin" className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+                      <span className="text-blue-600 font-bold text-sm">H</span>
+                    </div>
+                    <span className="text-white font-semibold text-lg truncate">Heiwa House</span>
+                  </Link>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                      className="hidden md:block text-white hover:text-gray-200 p-1 rounded transition-colors"
+                      title="Collapse sidebar"
+                      data-testid="sidebar-toggle"
+                    >
+                      <Bars3Icon className="h-5 w-5 transition-transform duration-200" />
+                    </button>
+                    <button
+                      onClick={() => setSidebarOpen(false)}
+                      className="md:hidden text-white hover:text-gray-200 p-1 rounded transition-colors"
+                      data-testid="sidebar-close-button"
+                    >
+                      <XMarkIcon className="h-6 w-6" />
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Navigation */}

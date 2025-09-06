@@ -111,12 +111,12 @@ function CheckoutForm({
       >
         {isLoading ? (
           <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 flex-shrink-0"></div>
             Processing...
           </>
         ) : (
           <>
-            <CreditCard className="h-4 w-4 mr-2" />
+            <CreditCard className="h-4 w-4 mr-2 flex-shrink-0" />
             Pay {new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: currency.toUpperCase(),

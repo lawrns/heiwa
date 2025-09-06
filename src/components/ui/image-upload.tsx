@@ -142,7 +142,7 @@ export function ImageUpload({
               className="mt-4"
               data-testid="file-upload"
             >
-              <ImageIcon className="mr-2 h-4 w-4" />
+              <ImageIcon className="mr-2 h-4 w-4 flex-shrink-0" />
               Choose Images
             </Button>
           </div>
