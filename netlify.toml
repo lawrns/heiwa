@@ -1,27 +1,14 @@
 [build]
   command = "npm run build"
-  publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
   # Configure secrets scanning to allow Supabase configuration values
   SECRETS_SCAN_SMART_DETECTION_ENABLED = "true"
   SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "*.supabase.co,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.*"
 
-[dev]
-  command = "npm run dev"
-  port = 3001
-  publish = ".next"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/_next/static/*"
-  to = "/static/:splat"
-  status = 200
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [[headers]]
   for = "/_next/static/*"
