@@ -1,8 +1,11 @@
-# Netlify configuration - Note: This app works better on Vercel
-# For Netlify deployment, consider using Vercel instead for better Next.js support
+# Netlify configuration for Next.js app
 
 [build]
-  command = "echo 'This Next.js app with API routes works better on Vercel. Please deploy to Vercel instead.' && exit 1"
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [build.environment]
   NODE_VERSION = "20"
