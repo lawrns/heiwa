@@ -1,12 +1,11 @@
 'use client'
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Disable prerendering for this page since it uses Firebase
 export const dynamic = 'force-dynamic';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+// Firebase imports removed - using Supabase
+import { supabase } from '@/lib/supabase/client';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,7 +16,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -25,8 +24,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { COLLECTIONS, CreateSurfCampSchema, SurfCamp, Room, Client } from '@/lib/schemas';
-import { Plus, Edit, Trash2, Users, Calendar, MapPin, BarChart3 } from 'lucide-react';
+import { SurfCamp, Room, Client } from '@/lib/schemas';
+import { Plus, Edit, Trash2, Users, MapPin, BarChart3 } from 'lucide-react';
 
 // Form schema for surf camp creation/editing
 const SurfCampFormSchema = z.object({
@@ -68,7 +67,7 @@ const DraggableClient: React.FC<DraggableClientProps> = ({ client, isAssigned })
 
   return (
     <div
-      ref={drag as any}
+      ref={drag as React.RefObject<HTMLDivElement>}
       className={`p-2 mb-2 border rounded cursor-move transition-colors ${
         isAssigned ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
       } ${isDragging ? 'opacity-50' : 'opacity-100'}`}
@@ -87,137 +86,7 @@ interface DraggableRoomProps {
   isAssigned: boolean;
 }
 
-// Demo data for surf camps
-const DEMO_SURF_CAMPS: (SurfCamp & { id: string })[] = [
-  {
-    id: 'demo-camp-1',
-    category: 'FR',
-    startDate: Timestamp.fromMillis(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week from now
-    endDate: Timestamp.fromMillis(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
-    availableRooms: ['demo-room-1', 'demo-room-2'],
-    occupancy: 12,
-    createdAt: Timestamp.fromMillis(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
-    updatedAt: Timestamp.fromMillis(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-  },
-  {
-    id: 'demo-camp-2',
-    category: 'HH',
-    startDate: Timestamp.fromMillis(Date.now() + 21 * 24 * 60 * 60 * 1000), // 3 weeks from now
-    endDate: Timestamp.fromMillis(Date.now() + 28 * 24 * 60 * 60 * 1000), // 4 weeks from now
-    availableRooms: ['demo-room-3', 'demo-room-4'],
-    occupancy: 8,
-    createdAt: Timestamp.fromMillis(Date.now() - 15 * 24 * 60 * 60 * 1000), // 15 days ago
-    updatedAt: Timestamp.fromMillis(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
-  },
-];
-
-// Demo data for rooms
-const DEMO_ROOMS: (Room & { id: string })[] = [
-  {
-    id: 'demo-room-1',
-    name: 'Ocean View Suite',
-    capacity: 4,
-    bookingType: 'whole',
-    pricing: {
-      standard: 299,
-      offSeason: 249,
-      camp: { 1: 199, 2: 179, 3: 169, 4: 159 },
-    },
-    description: 'Beautiful ocean view suite with private balcony',
-    images: [],
-    amenities: ['private-bathroom', 'sea-view', 'balcony'],
-    isActive: true,
-    createdAt: Timestamp.fromMillis(Date.now() - 60 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 7 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-room-2',
-    name: 'Garden Bungalow',
-    capacity: 2,
-    bookingType: 'whole',
-    pricing: {
-      standard: 199,
-      offSeason: 159,
-      camp: { 1: 149, 2: 139 },
-    },
-    description: 'Cozy bungalow surrounded by tropical gardens',
-    images: [],
-    amenities: ['private-bathroom', 'kitchen'],
-    isActive: true,
-    createdAt: Timestamp.fromMillis(Date.now() - 45 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 5 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-room-3',
-    name: 'Beachfront Dorm',
-    capacity: 8,
-    bookingType: 'perBed',
-    pricing: {
-      standard: 45,
-      offSeason: 35,
-      camp: { perBed: 32.5 },
-    },
-    description: 'Shared beachfront accommodation with bunk beds',
-    images: [],
-    amenities: ['wifi', 'air-conditioning'],
-    isActive: true,
-    createdAt: Timestamp.fromMillis(Date.now() - 90 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 10 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-room-4',
-    name: 'Premium Villa',
-    capacity: 6,
-    bookingType: 'whole',
-    pricing: {
-      standard: 499,
-      offSeason: 399,
-      camp: { 1: 349, 2: 329, 3: 309, 4: 289, 5: 269, 6: 249 },
-    },
-    description: 'Luxury villa with ocean views and private pool',
-    images: [],
-    amenities: ['private-bathroom', 'sea-view', 'balcony', 'wifi', 'kitchen', 'air-conditioning'],
-    isActive: true,
-    createdAt: Timestamp.fromMillis(Date.now() - 30 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 3 * 24 * 60 * 60 * 1000),
-  },
-];
-
-// Demo data for clients
-const DEMO_CLIENTS: (Client & { id: string })[] = [
-  {
-    id: 'demo-client-1',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@email.com',
-    phone: '+1 (555) 123-4567',
-    lastBookingDate: Timestamp.fromMillis(Date.now() - 7 * 24 * 60 * 60 * 1000),
-    notes: 'VIP client, prefers ocean view rooms',
-    createdAt: Timestamp.fromMillis(Date.now() - 90 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 7 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-client-2',
-    name: 'Marcus Rodriguez',
-    email: 'marcus.r@surfmail.com',
-    phone: '+1 (555) 987-6543',
-    lastBookingDate: Timestamp.fromMillis(Date.now() - 3 * 24 * 60 * 60 * 1000),
-    notes: 'Professional surfer, books extended stays',
-    createdAt: Timestamp.fromMillis(Date.now() - 60 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 3 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-client-3',
-    name: 'Emily Chen',
-    email: 'emily.chen.travel@gmail.com',
-    phone: '+1 (555) 456-7890',
-    lastBookingDate: undefined,
-    notes: 'First-time visitor, interested in beginner surf lessons',
-    createdAt: Timestamp.fromMillis(Date.now() - 15 * 24 * 60 * 60 * 1000),
-    updatedAt: Timestamp.fromMillis(Date.now() - 5 * 24 * 60 * 60 * 1000),
-  },
-];
-
-
+// Components for drag and drop functionality
 const DraggableRoom: React.FC<DraggableRoomProps> = ({ room, isAssigned }) => {
   const [{ isDragging }, drag] = useDrag({
     type: ItemTypes.ROOM,
@@ -229,7 +98,7 @@ const DraggableRoom: React.FC<DraggableRoomProps> = ({ room, isAssigned }) => {
 
   return (
     <div
-      ref={drag as any}
+      ref={drag as React.RefObject<HTMLDivElement>}
       className={`p-2 mb-2 border rounded cursor-move transition-colors ${
         isAssigned ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
       } ${isDragging ? 'opacity-50' : 'opacity-100'}`}
@@ -261,7 +130,7 @@ const DropZone: React.FC<DropZoneProps> = ({ onDrop, children, className = '' })
 
   return (
     <div
-      ref={drop as any}
+      ref={drop as React.RefObject<HTMLDivElement>}
       className={`${className} ${isOver ? 'bg-blue-50 border-blue-300' : ''}`}
     >
       {children}
@@ -275,103 +144,143 @@ export default function SurfCampsPage() {
   const [selectedCamp, setSelectedCamp] = useState<(SurfCamp & { id: string }) | null>(null);
   const [assignedClients, setAssignedClients] = useState<string[]>([]);
   const [assignedRooms, setAssignedRooms] = useState<string[]>([]);
-  // Firebase db is imported directly
+  // Supabase data fetching
+  const [surfCamps, setSurfCamps] = useState<(SurfCamp & { id: string })[]>([]);
+  const [rooms, setRooms] = useState<(Room & { id: string })[]>([]);
+  const [clients, setClients] = useState<(Client & { id: string })[]>([]);
+  const [bookings] = useState<(Booking & { id: string })[]>([]);
+  const [loadingCamps, setLoadingCamps] = useState(true);
+  const [loadingRooms] = useState(true);
+  const [loadingClients, setLoadingClients] = useState(true);
+  const [errorCamps, setErrorCamps] = useState<string | null>(null);
+  const [errorRooms, setErrorRooms] = useState<string | null>(null);
+  const [errorClients, setErrorClients] = useState<string | null>(null);
 
-  // Fetch surf camps
-  const [surfCampsSnapshot, loadingCamps, errorCamps] = useCollection(
-    db ? collection(db, COLLECTIONS.SURF_CAMPS) : null
-  );
-
-  // Fetch rooms for assignment
-  const [roomsSnapshot, loadingRooms, errorRooms] = useCollection(
-    db ? collection(db, COLLECTIONS.ROOMS) : null
-  );
-
-  // Fetch clients for assignment
-  const [clientsSnapshot, loadingClients, errorClients] = useCollection(
-    db ? collection(db, COLLECTIONS.CLIENTS) : null
-  );
-
-  // Handle Firestore errors and permissions with fallback to demo data
+  // Handle Supabase errors
   useEffect(() => {
     if (errorCamps) {
-      const errorMessage = errorCamps.message || 'Failed to load surf camps';
-      if (errorMessage.includes('Missing or insufficient permissions')) {
-        toast.error('Access denied: Using demo data. Please check your admin permissions.');
-        console.warn('Permissions error:', errorCamps);
-        // Will fall back to demo data below
-      } else if (errorMessage.includes('permission-denied') || errorMessage.includes('PERMISSION_DENIED')) {
-        toast.error('Permission denied: Using demo data. Please check your admin permissions.');
-        console.warn('Firebase permission error:', errorCamps);
-        // Will fall back to demo data below
-      } else {
-        toast.error(`Failed to load surf camps: ${errorMessage}`);
-      }
+      toast.error(`Failed to load surf camps: ${errorCamps}`);
+      console.warn('Surf camps error:', errorCamps);
     }
   }, [errorCamps]);
 
-  // Fetch bookings to calculate occupancy
-  const [bookingsSnapshot] = useCollection(
-    db ? collection(db, COLLECTIONS.BOOKINGS) : null
-  );
+  // Supabase data fetching
+  useEffect(() => {
+    const fetchSurfCamps = async () => {
+      try {
+        setLoadingCamps(true);
+        const { data, error } = await supabase
+          .from('surf_camps')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-  const surfCamps = useMemo(() => {
-    // Fall back to demo data if there's a permissions error or no data
-    if (errorCamps && (errorCamps.message?.includes('Missing or insufficient permissions') ||
-                       errorCamps.message?.includes('permission-denied') ||
-                       errorCamps.message?.includes('PERMISSION_DENIED'))) {
-      return DEMO_SURF_CAMPS;
-    }
+        if (error) throw error;
 
-    if (!surfCampsSnapshot) return [];
-    return surfCampsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as (SurfCamp & { id: string })[];
-  }, [surfCampsSnapshot, errorCamps]);
+        const formattedCamps = data?.map(item => ({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          startDate: new Date(item.start_date),
+          endDate: new Date(item.end_date),
+          maxParticipants: item.max_participants,
+          price: item.price,
+          level: item.level as SurfCamp['level'],
+          includes: item.includes || [],
+          images: item.images || [],
+          isActive: item.is_active,
+          createdAt: new Date(item.created_at),
+          updatedAt: new Date(item.updated_at)
+        })) as (SurfCamp & { id: string })[];
 
-  const rooms = useMemo(() => {
-    // Fall back to demo data if there's a permissions error or no data
-    if (errorRooms && (errorRooms.message?.includes('Missing or insufficient permissions') ||
-                       errorRooms.message?.includes('permission-denied') ||
-                       errorRooms.message?.includes('PERMISSION_DENIED'))) {
-      return DEMO_ROOMS;
-    }
+        setSurfCamps(formattedCamps || []);
+      } catch (error) {
+        console.error('Error fetching surf camps:', error);
+        setErrorCamps('Failed to load surf camps');
+      } finally {
+        setLoadingCamps(false);
+      }
+    };
 
-    if (!roomsSnapshot) return [];
-    return roomsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as (Room & { id: string })[];
-  }, [roomsSnapshot, errorRooms]);
+    const fetchRooms = async () => {
+      try {
+        setLoadingRooms(true);
+        const { data, error } = await supabase
+          .from('rooms')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-  const clients = useMemo(() => {
-    // Fall back to demo data if there's a permissions error or no data
-    if (errorClients && (errorClients.message?.includes('Missing or insufficient permissions') ||
-                         errorClients.message?.includes('permission-denied') ||
-                         errorClients.message?.includes('PERMISSION_DENIED'))) {
-      return DEMO_CLIENTS;
-    }
+        if (error) throw error;
 
-    if (!clientsSnapshot) return [];
-    return clientsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as (Client & { id: string })[];
-  }, [clientsSnapshot, errorClients]);
+        const formattedRooms = data?.map(item => ({
+          id: item.id,
+          name: item.name,
+          capacity: item.capacity,
+          bookingType: item.booking_type as Room['bookingType'],
+          pricing: item.pricing as Room['pricing'],
+          amenities: item.amenities || [],
+          description: item.description || '',
+          images: item.images || [],
+          isActive: item.is_active,
+          createdAt: new Date(item.created_at),
+          updatedAt: new Date(item.updated_at)
+        })) as (Room & { id: string })[];
 
-  const bookings = useMemo(() => {
-    if (!bookingsSnapshot) return [];
-    return bookingsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as any[];
-  }, [bookingsSnapshot]);
+        setRooms(formattedRooms || []);
+      } catch (error) {
+        console.error('Error fetching rooms:', error);
+        setErrorRooms('Failed to load rooms');
+      } finally {
+        setLoadingRooms(false);
+      }
+    };
+
+    const fetchClients = async () => {
+      try {
+        setLoadingClients(true);
+        const { data, error } = await supabase
+          .from('clients')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const formattedClients = data?.map(item => ({
+          id: item.id,
+          name: item.name,
+          email: item.email,
+          phone: item.phone,
+          lastBookingDate: item.last_booking_date ? new Date(item.last_booking_date) : undefined,
+          notes: item.notes || '',
+          createdAt: new Date(item.created_at),
+          updatedAt: new Date(item.updated_at)
+        })) as (Client & { id: string })[];
+
+        setClients(formattedClients || []);
+      } catch (error) {
+        console.error('Error fetching clients:', error);
+        setErrorClients('Failed to load clients');
+      } finally {
+        setLoadingClients(false);
+      }
+    };
+
+    fetchSurfCamps();
+    fetchRooms();
+    fetchClients();
+  }, []);
+
+  // Use Supabase state directly
+
+  // Use Supabase state directly
+
+  // Use Supabase state directly
+
+  // Use Supabase state directly
 
   // Calculate occupancy for a surf camp
   const getCampOccupancy = (campId: string) => {
     const campBookings = bookings.filter(booking =>
-      booking.items.some((item: any) =>
+      booking.items.some((item: { type: string; itemId: string }) =>
         item.type === 'surfCamp' && item.itemId === campId
       )
     );
@@ -415,39 +324,58 @@ export default function SurfCampsPage() {
         return;
       }
 
-      if (!db) {
-        toast.error('Database not available');
-        return;
-      }
+      const { error } = await supabase
+        .from('surf_camps')
+        .insert({
+          name: data.name,
+          description: data.description,
+          start_date: data.startDate.toISOString(),
+          end_date: data.endDate.toISOString(),
+          max_participants: data.maxParticipants,
+          price: data.price,
+          level: data.level,
+          includes: data.includes,
+          images: data.images,
+          is_active: data.isActive,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
 
-      await addDoc(collection(db, COLLECTIONS.SURF_CAMPS), {
-        ...data,
-        startDate: Timestamp.fromDate(data.startDate),
-        endDate: Timestamp.fromDate(data.endDate),
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      });
+      if (error) throw error;
       toast.success('Surf camp created successfully');
       setShowCreateModal(false);
       form.reset();
-    } catch (error: any) {
-      toast.error(`Failed to create surf camp: ${error.message}`);
+    } catch (error: unknown) {
+      toast.error(`Failed to create surf camp: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
   const handleUpdateCamp = async (campId: string, data: Partial<SurfCampFormData>) => {
     try {
-      const updateData: any = {
-        ...data,
-        updatedAt: Timestamp.now(),
+      const updateData: Record<string, string | number | boolean | string[] | undefined> = {
+        updated_at: new Date().toISOString()
       };
-      if (data.startDate) updateData.startDate = Timestamp.fromDate(data.startDate);
-      if (data.endDate) updateData.endDate = Timestamp.fromDate(data.endDate);
 
-      await updateDoc(doc(db, COLLECTIONS.SURF_CAMPS, campId), updateData);
+      if (data.name !== undefined) updateData.name = data.name;
+      if (data.description !== undefined) updateData.description = data.description;
+      if (data.startDate !== undefined) updateData.start_date = data.startDate.toISOString();
+      if (data.endDate !== undefined) updateData.end_date = data.endDate.toISOString();
+      if (data.maxParticipants !== undefined) updateData.max_participants = data.maxParticipants;
+      if (data.price !== undefined) updateData.price = data.price;
+      if (data.level !== undefined) updateData.level = data.level;
+      if (data.includes !== undefined) updateData.includes = data.includes;
+      if (data.images !== undefined) updateData.images = data.images;
+      if (data.isActive !== undefined) updateData.is_active = data.isActive;
+
+      const { error } = await supabase
+        .from('surf_camps')
+        .update(updateData)
+        .eq('id', campId);
+
+      if (error) throw error;
       toast.success('Surf camp updated successfully');
-    } catch (error: any) {
-      toast.error(`Failed to update surf camp: ${error.message}`);
+    } catch (error: unknown) {
+      toast.error(`Failed to update surf camp: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -455,10 +383,15 @@ export default function SurfCampsPage() {
     if (!confirm('Are you sure you want to delete this surf camp?')) return;
 
     try {
-      await deleteDoc(doc(db, COLLECTIONS.SURF_CAMPS, campId));
+      const { error } = await supabase
+        .from('surf_camps')
+        .delete()
+        .eq('id', campId);
+
+      if (error) throw error;
       toast.success('Surf camp deleted successfully');
-    } catch (error: any) {
-      toast.error(`Failed to delete surf camp: ${error.message}`);
+    } catch (error: unknown) {
+      toast.error(`Failed to delete surf camp: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -525,7 +458,7 @@ export default function SurfCampsPage() {
     setShowDetailsModal(true);
   };
 
-  const formatDate = (timestamp: any) => {
+  const formatDate = (timestamp: Date | string | null | undefined) => {
     if (!timestamp) return 'N/A';
     try {
       return timestamp.toDate().toLocaleDateString();
@@ -588,7 +521,7 @@ export default function SurfCampsPage() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="FR">Frenchman's</SelectItem>
+                              <SelectItem value="FR">Frenchman&apos;s</SelectItem>
                               <SelectItem value="HH">Honolua Bay</SelectItem>
                             </SelectContent>
                           </Select>

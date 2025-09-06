@@ -487,6 +487,7 @@ export default function RightToErasure() {
                       onClick={() => handleErasureRequest(selectedClient)}
                       disabled={isProcessing || !Object.values(confirmations).every(Boolean)}
                       className="bg-red-600 hover:bg-red-700 text-white"
+                      data-testid="data-erasure"
                     >
                       {isProcessing ? 'Processing...' : 'Confirm Erasure'}
                     </Button>

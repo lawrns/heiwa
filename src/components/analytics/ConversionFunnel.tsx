@@ -10,7 +10,7 @@ interface FunnelStep {
   stage: string
   count: number
   percentage: number
-  icon: any
+  icon: React.ComponentType<{ className?: string }>
   color: string
   bgColor: string
 }

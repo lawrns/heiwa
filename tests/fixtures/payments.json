@@ -1,0 +1,122 @@
+[
+  {
+    "id": "payment_001",
+    "booking_id": "booking_001",
+    "stripe_checkout_session_id": "cs_test_1234567890abcdef",
+    "stripe_payment_intent_id": "pi_test_1234567890abcdef",
+    "amount": 1000.00,
+    "currency": "USD",
+    "status": "succeeded",
+    "payment_method": "card",
+    "created_at": "2024-01-25T10:30:00Z",
+    "updated_at": "2024-01-25T10:35:00Z"
+  },
+  {
+    "id": "payment_002",
+    "booking_id": "booking_002",
+    "stripe_checkout_session_id": "cs_test_2345678901bcdefg",
+    "stripe_payment_intent_id": "pi_test_2345678901bcdefg",
+    "amount": 450.00,
+    "currency": "USD",
+    "status": "pending",
+    "payment_method": "card",
+    "created_at": "2024-02-15T14:20:00Z",
+    "updated_at": "2024-02-15T14:20:00Z"
+  },
+  {
+    "id": "payment_003",
+    "booking_id": "booking_003",
+    "stripe_checkout_session_id": "cs_test_3456789012cdefgh",
+    "stripe_payment_intent_id": "pi_test_3456789012cdefgh",
+    "amount": 540.00,
+    "currency": "USD",
+    "status": "succeeded",
+    "payment_method": "card",
+    "created_at": "2024-02-05T16:45:00Z",
+    "updated_at": "2024-02-05T16:50:00Z"
+  },
+  {
+    "id": "payment_004",
+    "booking_id": "booking_004",
+    "stripe_checkout_session_id": "cs_test_4567890123defghi",
+    "stripe_payment_intent_id": "pi_test_4567890123defghi",
+    "amount": 270.00,
+    "currency": "USD",
+    "status": "pending",
+    "payment_method": "card",
+    "created_at": "2024-02-18T09:15:00Z",
+    "updated_at": "2024-02-18T09:15:00Z"
+  },
+  {
+    "id": "payment_005",
+    "booking_id": "booking_005",
+    "stripe_checkout_session_id": "cs_test_5678901234efghij",
+    "stripe_payment_intent_id": "pi_test_5678901234efghij",
+    "amount": 4800.00,
+    "currency": "USD",
+    "status": "succeeded",
+    "payment_method": "card",
+    "created_at": "2024-03-01T11:00:00Z",
+    "updated_at": "2024-03-01T11:05:00Z"
+  },
+  {
+    "id": "payment_006",
+    "booking_id": "booking_001",
+    "stripe_checkout_session_id": "cs_test_6789012345fghijk",
+    "stripe_payment_intent_id": "pi_test_6789012345fghijk",
+    "amount": 150.00,
+    "currency": "USD",
+    "status": "failed",
+    "payment_method": "card",
+    "created_at": "2024-01-24T08:30:00Z",
+    "updated_at": "2024-01-24T08:35:00Z"
+  },
+  {
+    "id": "payment_007",
+    "booking_id": "booking_002",
+    "stripe_checkout_session_id": "cs_test_7890123456ghijkl",
+    "stripe_payment_intent_id": "pi_test_7890123456ghijkl",
+    "amount": 450.00,
+    "currency": "USD",
+    "status": "requires_action",
+    "payment_method": "card",
+    "created_at": "2024-02-16T12:00:00Z",
+    "updated_at": "2024-02-16T12:00:00Z"
+  },
+  {
+    "id": "payment_008",
+    "booking_id": "booking_003",
+    "stripe_checkout_session_id": "cs_test_8901234567hijklm",
+    "stripe_payment_intent_id": "pi_test_8901234567hijklm",
+    "amount": 540.00,
+    "currency": "USD",
+    "status": "canceled",
+    "payment_method": "card",
+    "created_at": "2024-02-04T15:30:00Z",
+    "updated_at": "2024-02-04T15:35:00Z"
+  },
+  {
+    "id": "payment_009",
+    "booking_id": "booking_004",
+    "stripe_checkout_session_id": "cs_test_9012345678ijklmn",
+    "stripe_payment_intent_id": "pi_test_9012345678ijklmn",
+    "amount": 270.00,
+    "currency": "USD",
+    "status": "processing",
+    "payment_method": "card",
+    "created_at": "2024-02-19T13:45:00Z",
+    "updated_at": "2024-02-19T13:45:00Z"
+  },
+  {
+    "id": "payment_010",
+    "booking_id": "booking_005",
+    "stripe_checkout_session_id": "cs_test_0123456789jklmno",
+    "stripe_payment_intent_id": "pi_test_0123456789jklmno",
+    "amount": 4800.00,
+    "currency": "USD",
+    "status": "succeeded",
+    "payment_method": "card",
+    "created_at": "2024-03-02T10:20:00Z",
+    "updated_at": "2024-03-02T10:25:00Z"
+  }
+]

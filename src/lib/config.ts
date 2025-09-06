@@ -19,11 +19,7 @@ export const config = {
     anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
   },
 
-  // Legacy Firebase configuration (for reference)
-  firebase: {
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'heiwahousedashboard',
-    useEmulator: process.env.NODE_ENV === 'development' && process.env.USE_FIREBASE_EMULATOR === 'true',
-  },
+
 
   // UI configuration
   ui: {

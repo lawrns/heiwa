@@ -1,13 +1,11 @@
 'use client'
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Disable prerendering for this page since it uses Firebase
 export const dynamic = 'force-dynamic';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { collection, addDoc, updateDoc, deleteDoc, doc, Timestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { db, storage } from '@/lib/firebase';
+// Firebase imports removed - using Supabase
+import { supabase } from '@/lib/supabase/client';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,7 +15,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -26,7 +24,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { COLLECTIONS, CreateAddOnSchema, AddOn } from '@/lib/schemas';
+import { CreateAddOnSchema, AddOn } from '@/lib/schemas';
 
 type AddOnFormData = z.infer<typeof CreateAddOnSchema>;
 import { Plus, Edit, Trash2, Upload, Image as ImageIcon, Package, DollarSign, Tag } from 'lucide-react';
@@ -50,20 +48,47 @@ export default function AddOnsPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedAddOn, setSelectedAddOn] = useState<(AddOn & { id: string }) | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
-  // Firebase services are imported directly
+  // Supabase data fetching
+  const [addOns, setAddOns] = useState<(AddOn & { id: string })[]>([]);
+  const [loadingAddOns, setLoadingAddOns] = useState(true);
+  const [errorAddOns, setErrorAddOns] = useState<string | null>(null);
 
-  // Fetch add-ons
-  const [addOnsSnapshot, loadingAddOns, errorAddOns] = useCollection(
-    db ? collection(db, COLLECTIONS.ADD_ONS) : null
-  );
+  // Fetch add-ons from Supabase
+  useEffect(() => {
+    const fetchAddOns = async () => {
+      try {
+        setLoadingAddOns(true);
+        const { data, error } = await supabase
+          .from('add_ons')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-  const addOns = useMemo(() => {
-    if (!addOnsSnapshot) return [];
-    return addOnsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as (AddOn & { id: string })[];
-  }, [addOnsSnapshot]);
+        if (error) throw error;
+
+        const formattedAddOns = data?.map(item => ({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          category: item.category,
+          images: item.images || [],
+          isActive: item.is_active,
+          maxQuantity: item.max_quantity,
+          createdAt: new Date(item.created_at),
+          updatedAt: new Date(item.updated_at)
+        })) as (AddOn & { id: string })[];
+
+        setAddOns(formattedAddOns || []);
+      } catch (error) {
+        console.error('Error fetching add-ons:', error);
+        setErrorAddOns('Failed to load add-ons');
+      } finally {
+        setLoadingAddOns(false);
+      }
+    };
+
+    fetchAddOns();
+  }, []);
 
   // Form for creating/editing add-ons
   const form = useForm<AddOnFormData>({
@@ -90,10 +115,18 @@ export default function AddOnsPage() {
 
     setUploadingImage(true);
     try {
-      const storageRef = ref(storage, `addons/${Date.now()}_${file.name}`);
-      await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      return downloadURL;
+      const fileName = `addons/${Date.now()}_${file.name}`;
+      const { error } = await supabase.storage
+        .from('images')
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('images')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
     } finally {
       setUploadingImage(false);
     }
@@ -108,8 +141,8 @@ export default function AddOnsPage() {
       const currentImages = form.getValues('images') || [];
       form.setValue('images', [...currentImages, imageUrl]);
       toast.success('Image uploaded successfully');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to upload image');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Failed to upload image');
     }
   };
 
@@ -125,33 +158,52 @@ export default function AddOnsPage() {
         return;
       }
 
-      if (!db) {
-        toast.error('Database not available');
-        return;
-      }
+      const { error } = await supabase
+        .from('add_ons')
+        .insert({
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          category: data.category,
+          images: data.images,
+          is_active: data.isActive,
+          max_quantity: data.maxQuantity,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
 
-      await addDoc(collection(db, COLLECTIONS.ADD_ONS), {
-        ...data,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      });
+      if (error) throw error;
       toast.success('Add-on created successfully');
       setShowCreateModal(false);
       form.reset();
-    } catch (error: any) {
-      toast.error(`Failed to create add-on: ${error.message}`);
+    } catch (error: unknown) {
+      toast.error(`Failed to create add-on: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
   const handleUpdateAddOn = async (addOnId: string, data: Partial<AddOnFormData>) => {
     try {
-      await updateDoc(doc(db, COLLECTIONS.ADD_ONS, addOnId), {
-        ...data,
-        updatedAt: Timestamp.now(),
-      });
+      const updateData: Record<string, string | number | boolean | string[] | undefined> = {
+        updated_at: new Date().toISOString()
+      };
+
+      if (data.name !== undefined) updateData.name = data.name;
+      if (data.description !== undefined) updateData.description = data.description;
+      if (data.price !== undefined) updateData.price = data.price;
+      if (data.category !== undefined) updateData.category = data.category;
+      if (data.images !== undefined) updateData.images = data.images;
+      if (data.isActive !== undefined) updateData.is_active = data.isActive;
+      if (data.maxQuantity !== undefined) updateData.max_quantity = data.maxQuantity;
+
+      const { error } = await supabase
+        .from('add_ons')
+        .update(updateData)
+        .eq('id', addOnId);
+
+      if (error) throw error;
       toast.success('Add-on updated successfully');
-    } catch (error: any) {
-      toast.error(`Failed to update add-on: ${error.message}`);
+    } catch (error: unknown) {
+      toast.error(`Failed to update add-on: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -159,10 +211,15 @@ export default function AddOnsPage() {
     if (!confirm('Are you sure you want to delete this add-on?')) return;
 
     try {
-      await deleteDoc(doc(db, COLLECTIONS.ADD_ONS, addOnId));
+      const { error } = await supabase
+        .from('add_ons')
+        .delete()
+        .eq('id', addOnId);
+
+      if (error) throw error;
       toast.success('Add-on deleted successfully');
-    } catch (error: any) {
-      toast.error(`Failed to delete add-on: ${error.message}`);
+    } catch (error: unknown) {
+      toast.error(`Failed to delete add-on: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -211,7 +268,7 @@ export default function AddOnsPage() {
   if (errorAddOns) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-        Failed to load add-ons: {errorAddOns.message}
+        Failed to load add-ons: {errorAddOns}
       </div>
     );
   }

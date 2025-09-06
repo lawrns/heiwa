@@ -63,7 +63,7 @@ export default function OccupancyChart() {
     fetchOccupancyData()
   }, [])
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ payload: { occupancy: number; month: string } }>; label?: string }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
@@ -125,32 +125,34 @@ export default function OccupancyChart() {
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={250}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis
-            dataKey="month"
-            stroke="#6b7280"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-          />
-          <YAxis
-            stroke="#6b7280"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-            domain={[0, 100]}
-            tickFormatter={(value) => `${value}%`}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <Bar
-            dataKey="occupancy"
-            fill="#14b8a6"
-            radius={[4, 4, 0, 0]}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+      <div data-testid="occupancy-chart">
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis
+              dataKey="month"
+              stroke="#6b7280"
+              fontSize={12}
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis
+              stroke="#6b7280"
+              fontSize={12}
+              tickLine={false}
+              axisLine={false}
+              domain={[0, 100]}
+              tickFormatter={(value) => `${value}%`}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <Bar
+              dataKey="occupancy"
+              fill="#14b8a6"
+              radius={[4, 4, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
 
       <div className="text-center">
         <p className="text-sm text-gray-600">

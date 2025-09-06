@@ -1,0 +1,208 @@
+# Page snapshot
+
+```yaml
+- generic:
+  - generic:
+    - banner:
+      - generic:
+        - generic:
+          - button [expanded]:
+            - img
+          - button:
+            - img
+            - generic: Logout
+    - generic:
+      - complementary:
+        - generic:
+          - link:
+            - /url: /admin
+            - generic:
+              - generic: H
+            - generic: Heiwa House
+          - generic:
+            - button:
+              - generic:
+                - img
+        - navigation:
+          - generic:
+            - generic:
+              - link:
+                - /url: /admin
+                - img
+                - generic: Dashboard
+            - generic:
+              - link:
+                - /url: /admin/clients
+                - img
+                - generic: Clients
+            - generic:
+              - link:
+                - /url: /admin/surfcamps
+                - img
+                - generic: Surf Camps
+            - generic:
+              - link:
+                - /url: /admin/rooms
+                - img
+                - generic: Rooms
+            - generic:
+              - link:
+                - /url: /admin/assignments
+                - img
+                - generic: Assignments
+            - generic:
+              - link:
+                - /url: /admin/addons
+                - img
+                - generic: Add-ons
+            - generic:
+              - link:
+                - /url: /admin/calendar
+                - img
+                - generic: Calendar
+            - generic:
+              - link:
+                - /url: /admin/bookings
+                - img
+                - generic: Bookings
+            - generic:
+              - link:
+                - /url: /admin/analytics
+                - img
+                - generic: Analytics
+            - generic:
+              - link:
+                - /url: /admin/compliance
+                - img
+                - generic: Compliance
+            - generic:
+              - link:
+                - /url: /admin/system
+                - img
+                - generic: System
+      - main:
+        - generic:
+          - generic:
+            - generic:
+              - heading [level=1]: Admin Dashboard
+              - paragraph: Manage your bookings, rooms, and surf camps from one central location
+            - generic:
+              - generic:
+                - heading [level=3]: Total Clients
+                - paragraph: "0"
+              - generic:
+                - heading [level=3]: Total Bookings
+                - paragraph: "0"
+              - generic:
+                - heading [level=3]: Available Rooms
+                - paragraph: "0"
+              - generic:
+                - heading [level=3]: Revenue
+                - paragraph: $0
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: Bookings Management
+                  - generic:
+                    - paragraph: View and manage all bookings for rooms and surf camps.
+                    - generic:
+                      - generic: ~ 12 Active Bookings
+                    - link:
+                      - /url: /admin/bookings
+                      - button: Manage Bookings
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: Rooms Management
+                  - generic:
+                    - paragraph: Manage room inventory, pricing, and availability.
+                    - generic:
+                      - generic: ~ 8 Available Rooms
+                    - link:
+                      - /url: /admin/rooms
+                      - button: Manage Rooms
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: Surf Camps
+                  - generic:
+                    - paragraph: Create and manage surf camp sessions and schedules.
+                    - generic:
+                      - generic: ~ 3 Active Camps
+                    - link:
+                      - /url: /admin/surfcamps
+                      - button: Manage Surf Camps
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: Clients
+                  - generic:
+                    - paragraph: View and manage client information and history.
+                    - generic:
+                      - generic: ~ 45 Total Clients
+                    - link:
+                      - /url: /admin/clients
+                      - button: Manage Clients
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: Calendar
+                  - generic:
+                    - paragraph: View booking calendar and manage schedules.
+                    - generic:
+                      - generic: ~ 15 Events This Week
+                    - link:
+                      - /url: /admin/calendar
+                      - button: View Calendar
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                      - generic:
+                        - heading [level=3]: Analytics
+                  - generic:
+                    - paragraph: View booking statistics and revenue reports.
+                    - generic:
+                      - generic: ~ 80% Occupancy Rate
+                    - link:
+                      - /url: /admin/analytics
+                      - button: View Analytics
+  - region "Notifications Alt+T"
+  - region "Notifications Alt+T"
+  - button "Open Next.js Dev Tools" [ref=e6] [cursor=pointer]:
+    - img [ref=e7] [cursor=pointer]
+  - alert
+  - menu "Toggle theme" [active] [ref=e10]:
+    - menuitem "Light" [ref=e11] [cursor=pointer]:
+      - img [ref=e12] [cursor=pointer]
+      - text: Light
+    - menuitem "Dark" [ref=e14] [cursor=pointer]:
+      - img [ref=e15] [cursor=pointer]
+      - text: Dark
+    - menuitem "System" [ref=e17] [cursor=pointer]:
+      - img [ref=e18] [cursor=pointer]
+      - text: System
+```

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminSession } from '@/lib/auth';
-import { storageUtils } from '@/lib/firebase-storage';
+import { storageUtils } from '@/lib/supabase-storage';
 
 export async function POST(request: NextRequest) {
   try {

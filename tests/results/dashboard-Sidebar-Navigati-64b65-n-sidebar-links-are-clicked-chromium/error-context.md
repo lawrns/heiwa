@@ -1,0 +1,152 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e5]:
+        - button "Toggle theme" [ref=e8] [cursor=pointer]:
+          - img [ref=e9] [cursor=pointer]
+        - button "Sign out" [ref=e11] [cursor=pointer]:
+          - img [ref=e12] [cursor=pointer]
+          - generic [ref=e14] [cursor=pointer]: Logout
+    - generic [ref=e15]:
+      - complementary [ref=e16]:
+        - generic [ref=e17]:
+          - link "H Heiwa House" [ref=e18] [cursor=pointer]:
+            - /url: /admin
+            - generic [ref=e20] [cursor=pointer]: H
+            - generic [ref=e21] [cursor=pointer]: Heiwa House
+          - button "Collapse sidebar" [ref=e23] [cursor=pointer]:
+            - img [ref=e25] [cursor=pointer]
+        - navigation "Navigation menu" [ref=e27]:
+          - generic [ref=e28]:
+            - link "Dashboard" [ref=e30] [cursor=pointer]:
+              - /url: /admin
+              - img [ref=e31] [cursor=pointer]
+              - generic [ref=e33] [cursor=pointer]: Dashboard
+            - link "Clients" [ref=e35] [cursor=pointer]:
+              - /url: /admin/clients
+              - img [ref=e36] [cursor=pointer]
+              - generic [ref=e38] [cursor=pointer]: Clients
+            - link "Surf Camps" [ref=e40] [cursor=pointer]:
+              - /url: /admin/surfcamps
+              - img [ref=e41] [cursor=pointer]
+              - generic [ref=e43] [cursor=pointer]: Surf Camps
+            - link "Rooms" [ref=e45] [cursor=pointer]:
+              - /url: /admin/rooms
+              - img [ref=e46] [cursor=pointer]
+              - generic [ref=e48] [cursor=pointer]: Rooms
+            - link "Assignments" [ref=e50] [cursor=pointer]:
+              - /url: /admin/assignments
+              - img [ref=e51] [cursor=pointer]
+              - generic [ref=e55] [cursor=pointer]: Assignments
+            - link "Add-ons" [ref=e57] [cursor=pointer]:
+              - /url: /admin/addons
+              - img [ref=e58] [cursor=pointer]
+              - generic [ref=e60] [cursor=pointer]: Add-ons
+            - link "Calendar" [ref=e62] [cursor=pointer]:
+              - /url: /admin/calendar
+              - img [ref=e63] [cursor=pointer]
+              - generic [ref=e65] [cursor=pointer]: Calendar
+            - link "Bookings" [ref=e67] [cursor=pointer]:
+              - /url: /admin/bookings
+              - img [ref=e68] [cursor=pointer]
+              - generic [ref=e70] [cursor=pointer]: Bookings
+            - link "Analytics" [ref=e72] [cursor=pointer]:
+              - /url: /admin/analytics
+              - img [ref=e73] [cursor=pointer]
+              - generic [ref=e75] [cursor=pointer]: Analytics
+            - link "Compliance" [ref=e77] [cursor=pointer]:
+              - /url: /admin/compliance
+              - img [ref=e78] [cursor=pointer]
+              - generic [ref=e81] [cursor=pointer]: Compliance
+            - link "System" [ref=e83] [cursor=pointer]:
+              - /url: /admin/system
+              - img [ref=e84] [cursor=pointer]
+              - generic [ref=e86] [cursor=pointer]: System
+      - main [ref=e87]:
+        - generic [ref=e89]:
+          - generic [ref=e90]:
+            - heading "Admin Dashboard" [level=1] [ref=e91]
+            - paragraph [ref=e92]: Manage your bookings, rooms, and surf camps from one central location
+          - generic [ref=e93]:
+            - generic [ref=e94]:
+              - heading "Total Clients" [level=3] [ref=e95]
+              - paragraph [ref=e96]: "0"
+            - generic [ref=e97]:
+              - heading "Total Bookings" [level=3] [ref=e98]
+              - paragraph [ref=e99]: "0"
+            - generic [ref=e100]:
+              - heading "Available Rooms" [level=3] [ref=e101]
+              - paragraph [ref=e102]: "0"
+            - generic [ref=e103]:
+              - heading "Revenue" [level=3] [ref=e104]
+              - paragraph [ref=e105]: $0
+          - generic [ref=e106]:
+            - generic [ref=e108]:
+              - generic [ref=e110]:
+                - img [ref=e112]
+                - heading "Bookings Management" [level=3] [ref=e115]
+              - generic [ref=e116]:
+                - paragraph [ref=e117]: View and manage all bookings for rooms and surf camps.
+                - generic [ref=e120]: ~ 12 Active Bookings
+                - link "Manage Bookings" [ref=e121] [cursor=pointer]:
+                  - /url: /admin/bookings
+                  - button "Manage Bookings" [ref=e122] [cursor=pointer]
+            - generic [ref=e124]:
+              - generic [ref=e126]:
+                - img [ref=e128]
+                - heading "Rooms Management" [level=3] [ref=e131]
+              - generic [ref=e132]:
+                - paragraph [ref=e133]: Manage room inventory, pricing, and availability.
+                - generic [ref=e136]: ~ 8 Available Rooms
+                - link "Manage Rooms" [ref=e137] [cursor=pointer]:
+                  - /url: /admin/rooms
+                  - button "Manage Rooms" [ref=e138] [cursor=pointer]
+            - generic [ref=e140]:
+              - generic [ref=e142]:
+                - img [ref=e144]
+                - heading "Surf Camps" [level=3] [ref=e149]
+              - generic [ref=e150]:
+                - paragraph [ref=e151]: Create and manage surf camp sessions and schedules.
+                - generic [ref=e154]: ~ 3 Active Camps
+                - link "Manage Surf Camps" [ref=e155] [cursor=pointer]:
+                  - /url: /admin/surfcamps
+                  - button "Manage Surf Camps" [ref=e156] [cursor=pointer]
+            - generic [ref=e158]:
+              - generic [ref=e160]:
+                - img [ref=e162]
+                - heading "Clients" [level=3] [ref=e168]
+              - generic [ref=e169]:
+                - paragraph [ref=e170]: View and manage client information and history.
+                - generic [ref=e173]: ~ 45 Total Clients
+                - link "Manage Clients" [ref=e174] [cursor=pointer]:
+                  - /url: /admin/clients
+                  - button "Manage Clients" [ref=e175] [cursor=pointer]
+            - generic [ref=e177]:
+              - generic [ref=e179]:
+                - img [ref=e181]
+                - heading "Calendar" [level=3] [ref=e184]
+              - generic [ref=e185]:
+                - paragraph [ref=e186]: View booking calendar and manage schedules.
+                - generic [ref=e189]: ~ 15 Events This Week
+                - link "View Calendar" [ref=e190] [cursor=pointer]:
+                  - /url: /admin/calendar
+                  - button "View Calendar" [ref=e191] [cursor=pointer]
+            - generic [ref=e193]:
+              - generic [ref=e195]:
+                - img [ref=e197]
+                - heading "Analytics" [level=3] [ref=e200]
+              - generic [ref=e201]:
+                - paragraph [ref=e202]: View booking statistics and revenue reports.
+                - generic [ref=e205]: ~ 80% Occupancy Rate
+                - link "View Analytics" [ref=e209] [cursor=pointer]:
+                  - /url: /admin/analytics
+                  - button "View Analytics" [ref=e210] [cursor=pointer]
+  - region "Notifications Alt+T"
+  - region "Notifications Alt+T"
+  - button "Open Next.js Dev Tools" [ref=e216] [cursor=pointer]:
+    - img [ref=e217] [cursor=pointer]
+  - alert [ref=e220]
+```

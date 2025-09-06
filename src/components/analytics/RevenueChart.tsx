@@ -71,7 +71,7 @@ export default function RevenueChart() {
     }).format(value)
   }
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ payload: { revenue: number; month: string } }>; label?: string }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
@@ -137,39 +137,41 @@ export default function RevenueChart() {
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={300}>
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis
-            dataKey="month"
-            stroke="#6b7280"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-          />
-          <YAxis
-            stroke="#6b7280"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={formatCurrency}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <Area
-            type="monotone"
-            dataKey="revenue"
-            stroke="#3b82f6"
-            strokeWidth={2}
-            fill="url(#revenueGradient)"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+      <div data-testid="revenue-chart">
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart data={data}>
+            <defs>
+              <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis
+              dataKey="month"
+              stroke="#6b7280"
+              fontSize={12}
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis
+              stroke="#6b7280"
+              fontSize={12}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={formatCurrency}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <Area
+              type="monotone"
+              dataKey="revenue"
+              stroke="#3b82f6"
+              strokeWidth={2}
+              fill="url(#revenueGradient)"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }

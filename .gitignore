@@ -16,17 +16,10 @@ out/
 .env.test.local
 .env.production.local
 
-# Firebase
-.firebase/
-firebase-debug.log
-firestore-debug.log
-*firebase-adminsdk*.json
-firebase-service-account.json
-firebase-config.js
-firebase-keys.js
-*keys.js
-*config.js
-*.firebase.js
+# Supabase
+*supabase-service-account*.json
+supabase-config.js
+supabase-keys.js
 
 # Environment variables with actual credentials
 .env.local

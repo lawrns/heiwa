@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
-import { supabase } from '@/lib/firebase';
-import { Calendar, momentLocalizer, View, Views } from 'react-big-calendar';
-import { format } from 'date-fns';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { supabase } from '@/lib/supabase/client';
+import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { motion } from 'framer-motion';
@@ -207,7 +206,7 @@ export default function CalendarPage() {
             category: camp.category,
             occupancy: currentOccupancy,
             capacity: camp.occupancy,
-            location: camp.category === 'FR' ? 'Frenchman\'s' : 'Honolua Bay',
+            location: camp.category === 'FR' ? 'Frenchman&apos;s' : 'Honolua Bay',
           },
         });
       }
@@ -270,29 +269,9 @@ export default function CalendarPage() {
     }
   }, [router]);
 
-  // Custom tooltip
-  const EventTooltip = ({ event }: { event: CalendarEvent }) => {
-    const occupancyText = `${event.resource.occupancy}/${event.resource.capacity} spots`;
-    const statusText = event.resource.status ? `Status: ${event.resource.status}` : '';
-    const locationText = event.resource.location ? `Location: ${event.resource.location}` : '';
-
-    return (
-      <div className="p-3 bg-white border border-gray-300 rounded-lg shadow-lg max-w-xs">
-        <h4 className="font-semibold text-gray-900 mb-2">{event.title}</h4>
-        <div className="space-y-1 text-sm text-gray-600">
-          <p><Users className="w-4 h-4 inline mr-1" />{occupancyText}</p>
-          {locationText && <p><MapPin className="w-4 h-4 inline mr-1" />{locationText}</p>}
-          {statusText && <p>{statusText}</p>}
-        </div>
-        <div className="mt-2 text-xs text-gray-500">
-          {moment(event.start).format('MMM DD, YYYY')} - {moment(event.end).format('MMM DD, YYYY')}
-        </div>
-      </div>
-    );
-  };
 
   // Custom toolbar
-  const CustomToolbar = ({ label, onNavigate, onView }: any) => (
+  const CustomToolbar = ({ label, onNavigate, onView }: { label: string; onNavigate: (action: string) => void; onView: (view: string) => void }) => (
     <div className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg">
       <div className="flex items-center space-x-4">
         <Button variant="outline" size="sm" onClick={() => onNavigate('PREV')}>
@@ -390,7 +369,7 @@ export default function CalendarPage() {
       >
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 bg-orange-500 rounded"></div>
-          <span className="text-sm font-medium">Frenchman's Surf Camp</span>
+          <span className="text-sm font-medium">Frenchman&apos;s Surf Camp</span>
         </div>
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 bg-blue-500 rounded"></div>

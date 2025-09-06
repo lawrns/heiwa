@@ -30,8 +30,8 @@ export default function AdminLoginPage() {
       await authAPI.signIn(email, password);
       toast.success('Login successful!');
       router.push('/admin');
-    } catch (error: any) {
-      const errorMessage = error.message || 'Failed to sign in';
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to sign in';
 
       if (errorMessage.includes('network') || errorMessage.includes('timeout')) {
         if (retryCount < 2) {
@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
 
     try {
       await handleSignIn(email, password);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Error already handled in handleSignIn
     } finally {
       setLoading(false);

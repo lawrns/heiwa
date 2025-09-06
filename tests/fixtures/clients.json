@@ -1,0 +1,102 @@
+[
+  {
+    "id": "client_001",
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@email.com",
+    "phone": "+1-555-0123",
+    "last_booking_date": "2024-01-15T00:00:00Z",
+    "notes": "Regular customer, prefers ocean view rooms",
+    "created_at": "2023-06-10T00:00:00Z",
+    "updated_at": "2024-01-15T00:00:00Z"
+  },
+  {
+    "id": "client_002",
+    "name": "Michael Chen",
+    "email": "michael.chen@email.com",
+    "phone": "+1-555-0124",
+    "last_booking_date": "2024-01-20T00:00:00Z",
+    "notes": "First-time visitor, interested in surf camps",
+    "created_at": "2023-08-22T00:00:00Z",
+    "updated_at": "2024-01-20T00:00:00Z"
+  },
+  {
+    "id": "client_003",
+    "name": "Emma Rodriguez",
+    "email": "emma.rodriguez@email.com",
+    "phone": "+1-555-0125",
+    "last_booking_date": "2024-02-01T00:00:00Z",
+    "notes": "Vegetarian, needs special meal arrangements",
+    "created_at": "2023-09-15T00:00:00Z",
+    "updated_at": "2024-02-01T00:00:00Z"
+  },
+  {
+    "id": "client_004",
+    "name": "James Wilson",
+    "email": "james.wilson@email.com",
+    "phone": "+1-555-0126",
+    "last_booking_date": "2024-02-10T00:00:00Z",
+    "notes": "Advanced surfer, prefers challenging waves",
+    "created_at": "2023-10-05T00:00:00Z",
+    "updated_at": "2024-02-10T00:00:00Z"
+  },
+  {
+    "id": "client_005",
+    "name": "Lisa Thompson",
+    "email": "lisa.thompson@email.com",
+    "phone": "+1-555-0127",
+    "last_booking_date": "2024-02-15T00:00:00Z",
+    "notes": "Beginner surfer, needs extra instruction",
+    "created_at": "2023-11-12T00:00:00Z",
+    "updated_at": "2024-02-15T00:00:00Z"
+  },
+  {
+    "id": "client_006",
+    "name": "David Martinez",
+    "email": "david.martinez@email.com",
+    "phone": "+1-555-0128",
+    "last_booking_date": "2024-02-20T00:00:00Z",
+    "notes": "Group leader, booking for 5 people",
+    "created_at": "2023-12-01T00:00:00Z",
+    "updated_at": "2024-02-20T00:00:00Z"
+  },
+  {
+    "id": "client_007",
+    "name": "Sophie Anderson",
+    "email": "sophie.anderson@email.com",
+    "phone": "+1-555-0129",
+    "last_booking_date": "2024-02-25T00:00:00Z",
+    "notes": "Photographer, interested in sunrise sessions",
+    "created_at": "2024-01-05T00:00:00Z",
+    "updated_at": "2024-02-25T00:00:00Z"
+  },
+  {
+    "id": "client_008",
+    "name": "Ryan O'Connor",
+    "email": "ryan.oconnor@email.com",
+    "phone": "+1-555-0130",
+    "last_booking_date": "2024-03-01T00:00:00Z",
+    "notes": "Yoga instructor, interested in surf-yoga combo",
+    "created_at": "2024-01-10T00:00:00Z",
+    "updated_at": "2024-03-01T00:00:00Z"
+  },
+  {
+    "id": "client_009",
+    "name": "Maria Garcia",
+    "email": "maria.garcia@email.com",
+    "phone": "+1-555-0131",
+    "last_booking_date": "2024-03-05T00:00:00Z",
+    "notes": "Family booking with 2 children",
+    "created_at": "2024-01-15T00:00:00Z",
+    "updated_at": "2024-03-05T00:00:00Z"
+  },
+  {
+    "id": "client_010",
+    "name": "Alex Kim",
+    "email": "alex.kim@email.com",
+    "phone": "+1-555-0132",
+    "last_booking_date": "2024-03-10T00:00:00Z",
+    "notes": "Corporate retreat organizer",
+    "created_at": "2024-01-20T00:00:00Z",
+    "updated_at": "2024-03-10T00:00:00Z"
+  }
+]

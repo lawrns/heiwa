@@ -233,7 +233,7 @@ export default function WeekDetailPage() {
           {/* What's Included */}
           <Card>
             <CardHeader>
-              <CardTitle>What's Included</CardTitle>
+              <CardTitle>What&apos;s Included</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

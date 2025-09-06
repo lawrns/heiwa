@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { Timestamp } from 'firebase/firestore';
 
-// Export Timestamp for use in components
-export { Timestamp };
-
-// Helper schema for Firebase Timestamp
-const TimestampSchema = z.custom<Timestamp>((val) => val instanceof Timestamp);
+// Helper schema for Supabase timestamps (ISO strings or Date objects)
+const TimestampSchema = z.union([
+  z.string(),
+  z.date(),
+  z.object({ seconds: z.number(), nanoseconds: z.number().optional() })
+]);
 
 // Client schema
 export const ClientSchema = z.object({

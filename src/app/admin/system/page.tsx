@@ -106,9 +106,9 @@ export default function SystemPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-blue-900">3</div>
-                <p className="text-xs text-blue-600 mt-1">
+                <div className="text-xs text-blue-600 mt-1">
                   <Badge variant="secondary" className="bg-blue-200 text-blue-800">1 Superadmin</Badge>
-                </p>
+                </div>
               </CardContent>
             </Card>
 

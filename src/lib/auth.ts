@@ -1,5 +1,5 @@
 // Supabase Authentication utilities
-import { supabase } from './firebase';
+import { supabase } from './supabase/client';
 import type { User, Session } from '@supabase/supabase-js';
 
 export interface AuthUser {

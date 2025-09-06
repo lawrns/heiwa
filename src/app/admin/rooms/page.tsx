@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 
 // Disable prerendering for this page since it uses Supabase
 export const dynamic = 'force-dynamic';
-import { supabase } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase/client';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

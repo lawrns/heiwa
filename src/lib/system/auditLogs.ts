@@ -1,6 +1,4 @@
-import { collection, addDoc, query, orderBy, limit, getDocs, where, Timestamp } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
-import { getAuth } from 'firebase/auth'
+// Firebase imports removed - using Supabase
 
 export interface AuditLogEntry {
   id?: string

@@ -1,57 +1,54 @@
 # Heiwa House Admin Dashboard
 
-A self-contained admin dashboard for managing bookings, rooms, surf camps, and clients with Firebase integration.
+A self-contained admin dashboard for managing bookings, rooms, surf camps, and clients with Supabase integration.
 
 ## Features
 
-- **Authentication**: Firebase Auth with admin email verification
+- **Authentication**: Supabase Auth with admin email verification
 - **Bookings Management**: Full CRUD operations for bookings
 - **Rooms Management**: Manage room inventory and pricing
 - **Surf Camps Management**: Create and manage surf camp sessions
 - **Clients Management**: View and manage client information
 - **Add-ons Management**: Manage additional services
-- **Real-time Updates**: Firebase Firestore real-time data synchronization
+- **Real-time Updates**: Supabase PostgreSQL real-time data synchronization
 - **Responsive Design**: Mobile-friendly admin interface
 
 ## Tech Stack
 
 - **Framework**: Next.js 15 with App Router
-- **Database**: Firebase Firestore
-- **Authentication**: Firebase Auth
+- **Database**: Supabase PostgreSQL
+- **Authentication**: Supabase Auth
 - **UI Components**: Radix UI + Tailwind CSS
-- **State Management**: React Query + React Firebase Hooks
+- **State Management**: React Query + Supabase Client
 - **Forms**: React Hook Form + Zod validation
 - **Icons**: Heroicons + Lucide React
 
 ## Prerequisites
 
-- Node.js 18+ 
-- Firebase project with Firestore and Authentication enabled
+- Node.js 18+
+- Supabase project with PostgreSQL and Authentication enabled
 - Admin email addresses for authentication
 
 ## Setup Instructions
 
-### 1. Firebase Project Setup
+### 1. Supabase Project Setup
 
-1. Create a new Firebase project at [Firebase Console](https://console.firebase.google.com)
+1. Create a new Supabase project at [Supabase Console](https://supabase.com/dashboard)
 2. Enable Authentication with Email/Password provider
-3. Enable Firestore Database
-4. (Optional) Enable Firebase Storage for file uploads
-5. Get your Firebase configuration from Project Settings
+3. Set up PostgreSQL database with required tables
+4. Enable Storage for file uploads
+5. Get your Supabase configuration from Project Settings
 
 ### 2. Environment Configuration
 
 1. Copy `.env.example` to `.env.local`
-2. Fill in your Firebase configuration values:
+2. Fill in your Supabase configuration values:
 
 ```bash
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+SUPABASE_DATABASE_URL=postgresql://postgres:your_password@db.your-project-ref.supabase.co:5432/postgres
 ```
 
 ### 3. Admin User Setup
@@ -64,7 +61,7 @@ const ADMIN_EMAILS = [
 ];
 ```
 
-2. Create admin users in Firebase Authentication console or register through the app
+2. Create admin users in Supabase Authentication console or register through the app
 
 ### 4. Installation & Development
 
@@ -99,12 +96,11 @@ admin-dashboard/
 │   │   ├── admin/           # Admin-specific components
 │   │   └── ui/              # Reusable UI components
 │   └── lib/
-│       ├── firebase.ts      # Firebase client config
-│       ├── firebase-admin.ts # Firebase admin operations
+│       ├── supabase/        # Supabase client config
+│       ├── supabase-admin.ts # Supabase admin operations
 │       ├── auth.ts          # Authentication utilities
 │       └── schemas.ts       # Data validation schemas
 ├── public/                  # Static assets
-├── firebase.json           # Firebase configuration
 ├── .env.example           # Environment template
 └── package.json           # Dependencies
 ```
@@ -113,7 +109,7 @@ admin-dashboard/
 
 - Admin access is controlled by email whitelist in `src/lib/auth.ts`
 - All API routes require admin authentication
-- Firebase security rules should restrict access to authenticated admin users
+- Supabase Row Level Security (RLS) policies restrict access to authenticated admin users
 - Use environment variables for all sensitive configuration
 
 ## Deployment

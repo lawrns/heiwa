@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/firebase'
+import { supabase } from '@/lib/supabase/client'
 
 // Role constants
 export const ROLES = {

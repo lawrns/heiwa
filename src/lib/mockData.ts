@@ -1,5 +1,5 @@
 // Mock data for development and demo purposes
-import { Timestamp } from 'firebase/firestore';
+// Firebase import removed - using Supabase
 import type { Client, Booking, BookingItem } from './schemas';
 
 // Mock Clients Data

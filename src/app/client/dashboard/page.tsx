@@ -122,7 +122,7 @@ export default function ClientDashboard() {
         <div className="flex items-center space-x-3 mb-4">
           <WavesIcon className="w-8 h-8" />
           <div>
-            <h1 className="text-2xl font-bold">Welcome back, {user?.name || 'Surfer'}!</h1>
+            <h1 className="text-2xl font-bold">Welcome back, {user?.displayName || 'Surfer'}!</h1>
             <p className="text-oceanBlue-100">Ready for your next adventure?</p>
           </div>
         </div>

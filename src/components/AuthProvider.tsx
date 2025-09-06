@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useState, createContext, useContext } from "react";
-import { supabase } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase/client";
 import { AuthUser, supabaseUserToAuthUser } from '@/lib/auth';
 
 interface AuthContextType {

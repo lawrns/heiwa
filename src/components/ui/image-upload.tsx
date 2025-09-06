@@ -6,7 +6,7 @@ import { Progress } from './progress';
 import { Card, CardContent } from './card';
 import { X, Upload, Image as ImageIcon, AlertCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { uploadFile, uploadFiles, validateFile, UploadedFile, UploadProgress } from '@/lib/firebase-storage';
+import { uploadFile, uploadFiles, validateFile, UploadedFile, UploadProgress } from '@/lib/supabase-storage';
 
 interface ImageUploadProps {
   value?: string[];
@@ -140,6 +140,7 @@ export function ImageUpload({
               onClick={handleUploadClick}
               disabled={disabled || uploading || images.length >= maxFiles}
               className="mt-4"
+              data-testid="file-upload"
             >
               <ImageIcon className="mr-2 h-4 w-4" />
               Choose Images

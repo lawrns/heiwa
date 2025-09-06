@@ -1,17 +1,28 @@
 import { test, expect } from '@playwright/test'
 
-test.describe('Admin Assignment Board', () => {
+// Mock data setup
+test.beforeEach(async ({ page }) => {
+  // Mock assignment board data
+  await page.addInitScript(() => {
+    (window as any).__assignmentMockData = {
+      participants: [
+        { id: 'p1', name: 'John Doe', email: 'john@example.com', surfLevel: 'Beginner', bookingId: 'b1' },
+        { id: 'p2', name: 'Jane Smith', email: 'jane@example.com', surfLevel: 'Intermediate', bookingId: 'b2' },
+        { id: 'p3', name: 'Bob Wilson', email: 'bob@example.com', surfLevel: 'Advanced', bookingId: 'b3' },
+        { id: 'p4', name: 'Alice Brown', email: 'alice@example.com', surfLevel: 'Beginner', bookingId: 'b4' }
+      ],
+      rooms: [
+        { id: 'r1', name: 'Ocean View Suite', capacity: 2, type: 'private', currentOccupancy: 0, amenities: [] },
+        { id: 'r2', name: 'Garden Bungalow', capacity: 2, type: 'private', currentOccupancy: 0, amenities: [] },
+        { id: 'r3', name: 'Beachfront Dorm', capacity: 8, type: 'dorm', currentOccupancy: 0, amenities: [] }
+      ]
+    };
+  });
+});
+
+test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   test('should load assignment board with participants and rooms', async ({ page }) => {
-    // Navigate to admin assignments
-    await page.goto('/admin')
-    await page.waitForLoadState('networkidle')
-    await page.waitForTimeout(1000)
-
-    // Navigate to assignments page
-    await page.locator('[data-testid="manage-clients-button"]').click()
-    await page.waitForURL('/admin/clients')
-
-    // Actually navigate to assignments (assuming we add it to sidebar)
+    // Navigate directly to assignments page
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)

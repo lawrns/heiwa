@@ -132,6 +132,33 @@ export default function AdminClientsPage() {
     setDialogOpen(true);
   }, []);
 
+  // Filtered and sorted data
+  const filteredData = useMemo(() => {
+    let filtered = clients;
+
+    // Apply search filter
+    if (searchValue.trim()) {
+      const term = searchValue.toLowerCase();
+      filtered = filtered.filter(client =>
+        client.name.toLowerCase().includes(term) ||
+        client.email.toLowerCase().includes(term) ||
+        client.phone?.toLowerCase().includes(term)
+      );
+    }
+
+    // Apply brand filter
+    if (brandFilter !== 'All') {
+      filtered = filtered.filter(client => client.brand === brandFilter);
+    }
+
+    // Apply status filter
+    if (statusFilter !== 'All') {
+      filtered = filtered.filter(client => client.status === statusFilter);
+    }
+
+    return filtered;
+  }, [clients, searchValue, brandFilter, statusFilter]);
+
   const handleExport = useCallback(async (selectedIds?: string[]) => {
     setIsExporting(true);
     try {
@@ -250,33 +277,6 @@ export default function AdminClientsPage() {
       setLoading(false);
     }
   };
-
-  // Filtered and sorted data
-  const filteredData = useMemo(() => {
-    let filtered = clients;
-
-    // Apply search filter
-    if (searchValue.trim()) {
-      const term = searchValue.toLowerCase();
-      filtered = filtered.filter(client =>
-        client.name.toLowerCase().includes(term) ||
-        client.email.toLowerCase().includes(term) ||
-        client.phone?.toLowerCase().includes(term)
-      );
-    }
-
-    // Apply brand filter
-    if (brandFilter !== 'All') {
-      filtered = filtered.filter(client => client.brand === brandFilter);
-    }
-
-    // Apply status filter
-    if (statusFilter !== 'All') {
-      filtered = filtered.filter(client => client.status === statusFilter);
-    }
-
-    return filtered;
-  }, [clients, searchValue, brandFilter, statusFilter]);
 
   // Statistics
   const statistics = useMemo(() => {

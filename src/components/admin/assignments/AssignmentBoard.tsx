@@ -66,12 +66,13 @@ const DraggableParticipant: React.FC<DraggableParticipantProps> = ({ participant
 
   return (
     <motion.div
-      ref={drag}
+      ref={drag as any}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       className={`p-3 bg-white border rounded-lg cursor-move transition-all ${
         isDragging ? 'opacity-50 shadow-lg' : 'hover:shadow-md'
       }`}
+      data-testid={`participant-card-${participant.id}`}
     >
       <div className="flex items-center space-x-2">
         <UsersIcon className="w-4 h-4 text-gray-500" />
@@ -115,7 +116,7 @@ const DroppableRoom: React.FC<DroppableRoomProps> = ({
 
   return (
     <motion.div
-      ref={drop}
+      ref={drop as any}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={`border-2 border-dashed rounded-lg p-4 min-h-[200px] transition-all ${
@@ -125,6 +126,7 @@ const DroppableRoom: React.FC<DroppableRoomProps> = ({
             ? 'border-red-300 bg-red-50'
             : 'border-gray-300 hover:border-gray-400'
       }`}
+      data-testid={`room-zone-${room.id}`}
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
@@ -136,7 +138,7 @@ const DroppableRoom: React.FC<DroppableRoomProps> = ({
         </div>
         <div className="flex items-center space-x-2">
           <UsersIcon className="w-4 h-4 text-gray-500" />
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-gray-600" data-testid={`occupancy-${room.id}`}>
             {assignedParticipants.length}/{room.capacity}
           </span>
         </div>
@@ -347,13 +349,13 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4" data-testid="occupancy-stats">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <UsersIcon className="w-5 h-5 text-blue-600" />
                 <div>
-                  <p className="text-2xl font-bold">{participants.length}</p>
+                  <p className="text-2xl font-bold" data-testid="total-participants-1">{participants.length}</p>
                   <p className="text-sm text-gray-600">Total Participants</p>
                 </div>
               </div>
@@ -365,7 +367,7 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
               <div className="flex items-center space-x-2">
                 <BedIcon className="w-5 h-5 text-green-600" />
                 <div>
-                  <p className="text-2xl font-bold">{assignments.length}</p>
+                  <p className="text-2xl font-bold" data-testid="rooms-assigned-count">{assignments.length}</p>
                   <p className="text-sm text-gray-600">Rooms Assigned</p>
                 </div>
               </div>
@@ -377,7 +379,7 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
               <div className="flex items-center space-x-2">
                 <CheckCircleIcon className="w-5 h-5 text-orange-600" />
                 <div>
-                  <p className="text-2xl font-bold">{getUnassignedParticipants().length}</p>
+                  <p className="text-2xl font-bold" data-testid="unassigned-count">{getUnassignedParticipants().length}</p>
                   <p className="text-sm text-gray-600">Unassigned</p>
                 </div>
               </div>

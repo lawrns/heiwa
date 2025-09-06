@@ -49,11 +49,11 @@ export default function ClientAuthPage() {
       const email = formData.get('email') as string
       const password = formData.get('password') as string
 
-      // Firebase authentication
-      const { signInWithEmailAndPassword } = await import('firebase/auth')
-      const { auth } = await import('@/lib/firebase')
+      // Supabase authentication
+      const { supabase } = await import('@/lib/supabase/client')
 
-      await signInWithEmailAndPassword(auth, email, password)
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) throw error
       toast.success('Login successful!')
       router.push('/client/dashboard')
     } catch (error: any) {
@@ -74,12 +74,19 @@ export default function ClientAuthPage() {
       const email = formData.get('email') as string
       const password = formData.get('password') as string
 
-      // Firebase authentication
-      const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth')
-      const { auth } = await import('@/lib/firebase')
+      // Supabase authentication
+      const { supabase } = await import('@/lib/supabase/client')
 
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-      await updateProfile(userCredential.user, { displayName: name })
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            display_name: name
+          }
+        }
+      })
+      if (error) throw error
 
       toast.success('Registration successful!')
       router.push('/client/dashboard')

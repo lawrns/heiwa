@@ -177,7 +177,7 @@ export default function CompliancePage() {
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <h3 className="font-medium text-blue-900 mb-2">Admin Confirmations</h3>
                   <p className="text-sm text-blue-700 mb-2">
-                    All administrators must confirm they've read and understood the latest privacy policy.
+                    All administrators must confirm they&apos;ve read and understood the latest privacy policy.
                   </p>
                   <div className="flex items-center space-x-4">
                     <Badge className="bg-green-100 text-green-800">3/3 Confirmed</Badge>

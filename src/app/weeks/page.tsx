@@ -85,7 +85,7 @@ export default function WeeksPage() {
   }, [])
 
   const filteredAndSortedWeeks = useMemo(() => {
-    let filtered = weeks.filter(week => {
+    const filtered = weeks.filter(week => {
       const matchesSearch = week.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            week.startDate.includes(searchTerm)
       const matchesCategory = categoryFilter === 'all' || week.category === categoryFilter

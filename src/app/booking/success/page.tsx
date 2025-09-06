@@ -6,8 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { CheckCircleIcon, CalendarIcon, UsersIcon, DollarSignIcon, MailIcon } from 'lucide-react'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
-export default function BookingSuccessPage() {
+function BookingSuccessContent() {
   const searchParams = useSearchParams()
   const bookingId = searchParams.get('bookingId') || 'mock-booking-id'
 
@@ -84,7 +85,7 @@ export default function BookingSuccessPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <h3 className="font-semibold text-lg mb-4">What's Next?</h3>
+              <h3 className="font-semibold text-lg mb-4">What&apos;s Next?</h3>
               <div className="space-y-3">
                 <div className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
                   <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -92,7 +93,7 @@ export default function BookingSuccessPage() {
                   </div>
                   <div>
                     <p className="font-medium text-blue-900">Check Your Email</p>
-                    <p className="text-sm text-blue-700">You'll receive a detailed confirmation with all booking information</p>
+                    <p className="text-sm text-blue-700">You&apos;ll receive a detailed confirmation with all booking information</p>
                   </div>
                 </div>
 
@@ -102,7 +103,7 @@ export default function BookingSuccessPage() {
                   </div>
                   <div>
                     <p className="font-medium text-green-900">Prepare for Your Trip</p>
-                    <p className="text-sm text-green-700">We'll send preparation materials 5 days before your arrival</p>
+                    <p className="text-sm text-green-700">We&apos;ll send preparation materials 5 days before your arrival</p>
                   </div>
                 </div>
 
@@ -159,5 +160,20 @@ export default function BookingSuccessPage() {
         </Card>
       </motion.div>
     </div>
+  )
+}
+
+export default function BookingSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-oceanBlue-50 to-surfTeal-50 flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-oceanBlue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <BookingSuccessContent />
+    </Suspense>
   )
 }

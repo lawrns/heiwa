@@ -393,6 +393,7 @@ export default function DataExport() {
                       onClick={() => handleExportRequest(selectedClient)}
                       disabled={isExporting}
                       className="bg-oceanBlue-600 hover:bg-oceanBlue-700 text-white"
+                      data-testid="data-export"
                     >
                       {isExporting ? 'Processing...' : 'Confirm Export'}
                     </Button>

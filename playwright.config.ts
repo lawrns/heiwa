@@ -4,34 +4,68 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: 2,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
+  timeout: 30000,
+  outputDir: 'tests/results/',
 
   use: {
-    baseURL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3005',
+    baseURL: 'http://localhost:3005',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    headless: true,
   },
 
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        headless: true,
+        viewport: { width: 1280, height: 720 }, // Consistent viewport for visual regression
+      },
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        headless: true,
+        viewport: { width: 1280, height: 720 },
+      },
     },
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      use: {
+        ...devices['Desktop Safari'],
+        headless: true,
+        viewport: { width: 1280, height: 720 },
+      },
+    },
+    // Mobile testing for responsive visual regression
+    {
+      name: 'Mobile Chrome',
+      use: {
+        ...devices['Pixel 5'],
+        headless: true,
+      },
     },
   ],
 
+  expect: {
+    // Visual regression testing configuration
+    toMatchSnapshot: { threshold: 0.2, mode: 'pixel' },
+    toHaveScreenshot: {
+      threshold: 0.2,
+      mode: 'css',
+      animations: 'disabled',
+      caret: 'hide',
+    },
+  },
+
   // webServer: {
   //   command: 'npm run dev',
-  //   url: 'http://localhost:3005',
+  //   url: 'http://localhost:3000',
   //   reuseExistingServer: !process.env.CI,
   //   timeout: 180 * 1000,
   // },

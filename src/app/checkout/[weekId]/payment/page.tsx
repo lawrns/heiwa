@@ -63,6 +63,19 @@ export default function PaymentPage() {
     router.push('/booking/success?bookingId=mock-payment-success')
   }
 
+  // Validation function to check if form is complete
+  const isFormValid = () => {
+    if (paymentMethod === 'card') {
+      return (
+        cardDetails.name.trim() !== '' &&
+        cardDetails.number.replace(/\s/g, '').length >= 16 &&
+        cardDetails.expiry.length >= 5 &&
+        cardDetails.cvv.length >= 3
+      )
+    }
+    return paymentMethod !== ''
+  }
+
   const formatCardNumber = (value: string) => {
     // Remove spaces and limit to 16 digits
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
@@ -124,9 +137,17 @@ export default function PaymentPage() {
           >
             <Card data-testid="payment-form">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <CreditCardIcon className="w-5 h-5" />
-                  <span>Payment Details</span>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <CreditCardIcon className="w-5 h-5" />
+                    <span>Payment Details</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <LockIcon className="w-4 h-4 text-green-600" data-testid="lock-icon" />
+                    <span className="text-xs text-green-600 font-medium" data-testid="pci-badge">
+                      PCI Compliant
+                    </span>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -228,7 +249,7 @@ export default function PaymentPage() {
                       <span className="text-white text-xl font-bold">P</span>
                     </div>
                     <p className="text-gray-600 mb-4">
-                      You'll be redirected to PayPal to complete your payment securely.
+                      You&apos;ll be redirected to PayPal to complete your payment securely.
                     </p>
                   </div>
                 )}
@@ -241,7 +262,7 @@ export default function PaymentPage() {
 
                 <Button
                   onClick={handlePayment}
-                  disabled={isProcessing}
+                  disabled={isProcessing || !isFormValid()}
                   className="w-full"
                   size="lg"
                   data-testid="pay-button"

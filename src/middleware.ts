@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyIdToken, checkAdminClaim } from './lib/firebase/admin';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -15,7 +14,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // TEMPORARY: Bypass authentication for testing
-  // TODO: Re-enable authentication for production
+  // TODO: Re-enable Supabase authentication for production
   return NextResponse.next();
 
   /* ORIGINAL AUTH CODE - COMMENTED OUT FOR TESTING
