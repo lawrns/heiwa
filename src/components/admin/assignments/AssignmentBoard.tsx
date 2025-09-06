@@ -413,7 +413,7 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
               <div className="flex items-center space-x-2">
                 <CheckCircleIcon className="w-5 h-5 text-orange-600" />
                 <div>
-                  <p className="text-2xl font-bold" data-testid="unassigned-count">{getUnassignedParticipants().length}</p>
+                  <p className="text-2xl font-bold" data-testid="unassigned-count">{unassignedParticipants.length}</p>
                   <p className="text-sm text-gray-600">Unassigned</p>
                 </div>
               </div>
