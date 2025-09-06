@@ -49,7 +49,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8">
           {/* Sidebar */}
-          <nav className="w-64 flex-shrink-0">
+          <nav className="w-64 flex-shrink-0" data-testid="client-sidebar-nav">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <ul className="space-y-2">
                 {navigation.map((item) => {
@@ -59,6 +59,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                       <Link
                         href={item.href}
                         className="flex items-center space-x-3 px-3 py-2 rounded-md text-gray-700 hover:bg-oceanBlue-50 hover:text-oceanBlue-700 transition-colors"
+                        data-testid={`client-nav-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                       >
                         <Icon className="w-5 h-5" />
                         <span className="font-medium">{item.name}</span>

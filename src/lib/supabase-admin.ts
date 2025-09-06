@@ -562,4 +562,42 @@ export const bookingsAPI = {
       throw new Error(`Failed to delete booking: ${error.message}`);
     }
   },
+
+  async getByStatus(status: 'pending' | 'confirmed' | 'cancelled'): Promise<(Booking & { id: string })[]> {
+    if (!isSupabaseAvailable()) {
+      return handleSupabaseUnavailable('bookings.getByStatus', []);
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from(TABLES.BOOKINGS)
+      .select('*')
+      .eq('payment_status', status)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching bookings by status:', error);
+      return [];
+    }
+
+    return data?.map(convertToCamelCase) || [];
+  },
+
+  async getByClientId(clientId: string): Promise<(Booking & { id: string })[]> {
+    if (!isSupabaseAvailable()) {
+      return handleSupabaseUnavailable('bookings.getByClientId', []);
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from(TABLES.BOOKINGS)
+      .select('*')
+      .contains('client_ids', [clientId])
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching bookings by client ID:', error);
+      return [];
+    }
+
+    return data?.map(convertToCamelCase) || [];
+  },
 };

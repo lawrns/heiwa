@@ -111,7 +111,7 @@ export const authAPI = {
       await supabase.auth.signOut();
       // Redirect to login page
       if (typeof window !== 'undefined') {
-        window.location.href = '/admin/login';
+        window.location.href = '/login';
       }
     } catch (error) {
       console.error('Session expiry handling error:', error);

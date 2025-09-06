@@ -3,18 +3,35 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Only apply middleware to admin routes
-  if (!pathname.startsWith('/admin')) {
+  // Check for authentication token in cookies
+  const cookies = request.headers.get('cookie') || '';
+  const tokenMatch = cookies.match(/sb-[^=]+-auth-token=([^;]+)/);
+  const isAuthenticated = !!tokenMatch;
+
+  // Handle login route
+  if (pathname === '/login') {
+    if (isAuthenticated) {
+      // Authenticated user trying to access login, redirect to admin
+      console.log('Authenticated user accessing login, redirecting to admin');
+      return NextResponse.redirect(new URL('/admin', request.url));
+    }
+    // Unauthenticated user accessing login, allow
     return NextResponse.next();
   }
 
-  // Allow access to login page without authentication
-  if (pathname === '/admin/login') {
+  // Handle admin routes
+  if (pathname.startsWith('/admin')) {
+    if (!isAuthenticated) {
+      // No auth token found, redirect to login
+      console.log('No auth token found, redirecting to login');
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+    // Token exists, allow access
+    // Note: Token validation is handled by individual API endpoints
     return NextResponse.next();
   }
 
-  // TEMPORARY: Bypass authentication for testing
-  // TODO: Re-enable Supabase authentication for production
+  // All other routes
   return NextResponse.next();
 
   /* ORIGINAL AUTH CODE - COMMENTED OUT FOR TESTING
@@ -52,5 +69,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/admin/:path*',
+  matcher: ['/admin/:path*', '/login'],
 };

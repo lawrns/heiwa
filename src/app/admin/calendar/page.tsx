@@ -13,8 +13,46 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 // This page uses Supabase and should not be prerendered
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { SurfCamp, Booking } from '@/lib/schemas';
+import { Booking } from '@/lib/schemas';
+
+// Database surf camp type (matches the actual database structure)
+interface DatabaseSurfCamp {
+  id: string;
+  name: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  max_participants: number;
+  price: number;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'all';
+  includes: string[];
+  images: string[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Admin surf camp type (for the UI)
+interface AdminSurfCamp {
+  id: string;
+  name: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  maxParticipants: number;
+  price: number;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'all';
+  includes: string[];
+  images: string[];
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  // Legacy fields for compatibility
+  category?: 'FR' | 'HH';
+  occupancy?: number;
+}
 import { CalendarDays, Users, MapPin, Plus } from 'lucide-react';
+import { AddEventModal } from '@/components/admin/calendar/AddEventModal';
 
 // Setup the localizer for react-big-calendar
 const localizer = momentLocalizer(moment);
@@ -26,12 +64,14 @@ interface CalendarEvent {
   start: Date;
   end: Date;
   resource: {
-    type: 'surfCamp' | 'booking';
+    type: 'surfCamp' | 'booking' | 'custom';
     category?: 'FR' | 'HH';
     occupancy: number;
     capacity: number;
     status?: string;
     location?: string;
+    color?: string;
+    isAllDay?: boolean;
   };
 }
 
@@ -62,10 +102,14 @@ const EventComponent = ({ event }: { event: CalendarEvent }) => {
 export default function CalendarPage() {
   const router = useRouter();
   // State for data and loading
-  const [surfCamps, setSurfCamps] = useState<(SurfCamp & { id: string })[]>([]);
+  const [surfCamps, setSurfCamps] = useState<AdminSurfCamp[]>([]);
   const [bookings, setBookings] = useState<(Booking & { id: string })[]>([]);
+  const [customEvents, setCustomEvents] = useState<any[]>([]);
   const [loadingCamps, setLoadingCamps] = useState(true);
   const [loadingBookings, setLoadingBookings] = useState(true);
+  const [loadingCustomEvents, setLoadingCustomEvents] = useState(true);
+  const [showAddEventModal, setShowAddEventModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
   // Fetch surf camps from Supabase with caching
   const fetchSurfCamps = useCallback(async () => {
@@ -82,7 +126,7 @@ export default function CalendarPage() {
       }
 
       if (data) {
-        const formattedCamps = data.map(camp => ({
+        const formattedCamps = data.map((camp: DatabaseSurfCamp) => ({
           id: camp.id,
           name: camp.name,
           description: camp.description,
@@ -95,8 +139,11 @@ export default function CalendarPage() {
           images: camp.images || [],
           isActive: camp.is_active,
           createdAt: new Date(camp.created_at),
-          updatedAt: new Date(camp.updated_at)
-        }));
+          updatedAt: new Date(camp.updated_at),
+          // Legacy compatibility fields - derive category from name
+          category: (camp.name.toLowerCase().includes('frenchman') ? 'FR' : 'HH') as 'FR' | 'HH',
+          occupancy: camp.max_participants,
+        })) as AdminSurfCamp[];
         setSurfCamps(formattedCamps);
       }
     } catch (error) {
@@ -141,11 +188,36 @@ export default function CalendarPage() {
     }
   }, []);
 
+  // Fetch custom events from Supabase
+  const fetchCustomEvents = useCallback(async () => {
+    try {
+      setLoadingCustomEvents(true);
+      const { data, error } = await supabase
+        .from('custom_events')
+        .select('*')
+        .order('start_date', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching custom events:', error);
+        setCustomEvents([]);
+        return;
+      }
+
+      setCustomEvents(data || []);
+    } catch (error) {
+      console.error('Error fetching custom events:', error);
+      setCustomEvents([]);
+    } finally {
+      setLoadingCustomEvents(false);
+    }
+  }, []);
+
   // Load data on mount
   useEffect(() => {
     fetchSurfCamps();
     fetchBookings();
-  }, [fetchSurfCamps, fetchBookings]);
+    fetchCustomEvents();
+  }, [fetchSurfCamps, fetchBookings, fetchCustomEvents]);
 
   // Set up real-time subscriptions
   useEffect(() => {
@@ -173,12 +245,25 @@ export default function CalendarPage() {
       )
       .subscribe();
 
+    // Subscribe to custom events changes
+    const customEventsSubscription = supabase
+      .channel('custom_events_changes')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'custom_events' },
+        (payload) => {
+          console.log('Custom events change detected:', payload);
+          fetchCustomEvents(); // Refresh data when changes occur
+        }
+      )
+      .subscribe();
+
     // Cleanup subscriptions on unmount
     return () => {
       surfCampsSubscription.unsubscribe();
       bookingsSubscription.unsubscribe();
+      customEventsSubscription.unsubscribe();
     };
-  }, [fetchSurfCamps, fetchBookings]);
+  }, [fetchSurfCamps, fetchBookings, fetchCustomEvents]);
 
   // Create calendar events from surf camps and bookings (memoized for performance)
   const calendarEvents: CalendarEvent[] = useMemo(() => {
@@ -187,12 +272,12 @@ export default function CalendarPage() {
     // Add surf camp events
     surfCamps.forEach(camp => {
       if (camp.startDate && camp.endDate) {
-        const startDate = camp.startDate.toDate();
-        const endDate = camp.endDate.toDate();
+        const startDate = camp.startDate;
+        const endDate = camp.endDate;
 
         // Calculate current occupancy from bookings
         const campBookings = bookings.filter(booking =>
-          booking.items.some(item => item.type === 'surfCamp' && item.itemId === camp.id)
+          booking.items.some((item: any) => item.type === 'surfCamp' && item.itemId === camp.id)
         );
         const currentOccupancy = campBookings.reduce((total, booking) => total + booking.clientIds.length, 0);
 
@@ -205,8 +290,8 @@ export default function CalendarPage() {
             type: 'surfCamp',
             category: camp.category,
             occupancy: currentOccupancy,
-            capacity: camp.occupancy,
-            location: camp.category === 'FR' ? 'Frenchman&apos;s' : 'Honolua Bay',
+            capacity: camp.occupancy || camp.maxParticipants,
+            location: camp.category === 'FR' ? 'Frenchman\'s' : 'Honolua Bay',
           },
         });
       }
@@ -214,10 +299,30 @@ export default function CalendarPage() {
 
     // Add booking events (room bookings)
     bookings.forEach(booking => {
-      booking.items.forEach((item, index) => {
+      booking.items.forEach((item: any, index) => {
         if (item.type === 'room' && item.dates) {
-          const startDate = item.dates.checkIn.toDate();
-          const endDate = item.dates.checkOut.toDate();
+          // Handle different date formats
+          let startDate: Date, endDate: Date;
+
+          if (item.dates.checkIn instanceof Date) {
+            startDate = item.dates.checkIn;
+          } else if (typeof item.dates.checkIn === 'string') {
+            startDate = new Date(item.dates.checkIn);
+          } else if (item.dates.checkIn?.toDate) {
+            startDate = item.dates.checkIn.toDate();
+          } else {
+            return; // Skip if date format is unknown
+          }
+
+          if (item.dates.checkOut instanceof Date) {
+            endDate = item.dates.checkOut;
+          } else if (typeof item.dates.checkOut === 'string') {
+            endDate = new Date(item.dates.checkOut);
+          } else if (item.dates.checkOut?.toDate) {
+            endDate = item.dates.checkOut.toDate();
+          } else {
+            return; // Skip if date format is unknown
+          }
 
           events.push({
             id: `booking-${booking.id}-${index}`,
@@ -235,8 +340,25 @@ export default function CalendarPage() {
       });
     });
 
+    // Add custom events
+    customEvents.forEach(event => {
+      events.push({
+        id: `custom-${event.id}`,
+        title: event.title,
+        start: new Date(event.start_date),
+        end: new Date(event.end_date),
+        resource: {
+          type: 'custom' as any,
+          occupancy: 0,
+          capacity: 0,
+          color: event.color,
+          isAllDay: event.is_all_day,
+        },
+      });
+    });
+
     return events;
-  }, [surfCamps, bookings]);
+  }, [surfCamps, bookings, customEvents]);
 
   // Event styling function
   const eventStyleGetter = useCallback((event: CalendarEvent) => {
@@ -246,6 +368,8 @@ export default function CalendarPage() {
       backgroundColor = event.resource.category === 'FR' ? '#f97316' : '#3b82f6';
     } else if (event.resource.type === 'booking') {
       backgroundColor = '#4b5563'; // Darker gray for bookings
+    } else if (event.resource.type === 'custom') {
+      backgroundColor = event.resource.color || '#6b7280';
     }
 
     return {
@@ -268,6 +392,26 @@ export default function CalendarPage() {
       router.push(`/admin/bookings`);
     }
   }, [router]);
+
+  // Handle calendar slot selection (clicking on empty dates)
+  const handleSelectSlot = useCallback((slotInfo: { start: Date; end: Date }) => {
+    setSelectedDate(slotInfo.start);
+    setShowAddEventModal(true);
+  }, []);
+
+  // Handle Add Event button click
+  const handleAddEventClick = useCallback(() => {
+    setSelectedDate(undefined);
+    setShowAddEventModal(true);
+  }, []);
+
+  // Handle successful event creation
+  const handleEventCreated = useCallback(() => {
+    // Refresh the calendar data
+    fetchSurfCamps();
+    fetchBookings();
+    fetchCustomEvents();
+  }, [fetchSurfCamps, fetchBookings, fetchCustomEvents]);
 
 
   // Custom toolbar
@@ -314,7 +458,7 @@ export default function CalendarPage() {
     </div>
   );
 
-  if (loadingCamps || loadingBookings) {
+  if (loadingCamps || loadingBookings || loadingCustomEvents) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-lg text-gray-600">Loading calendar...</div>
@@ -353,7 +497,7 @@ export default function CalendarPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Button>
+          <Button onClick={handleAddEventClick}>
             <Plus className="w-4 h-4 mr-2" />
             Add Event
           </Button>
@@ -403,6 +547,7 @@ export default function CalendarPage() {
                 style={{ height: '100%' }}
                 eventPropGetter={eventStyleGetter}
                 onSelectEvent={handleEventClick}
+                onSelectSlot={handleSelectSlot}
                 components={{
                   event: EventComponent,
                   toolbar: CustomToolbar,
@@ -475,6 +620,14 @@ export default function CalendarPage() {
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Add Event Modal */}
+      <AddEventModal
+        isOpen={showAddEventModal}
+        onClose={() => setShowAddEventModal(false)}
+        onSuccess={handleEventCreated}
+        selectedDate={selectedDate}
+      />
     </motion.div>
   );
 }

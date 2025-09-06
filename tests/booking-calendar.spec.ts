@@ -480,4 +480,20 @@ test.describe('Booking Calendar View (BOOK-003)', () => {
 
     await expect(page.locator('body')).toHaveScreenshot('booking-calendar-mobile.png');
   });
+
+  // Test Add Event functionality on main calendar page
+  test('should have Add Event button on main calendar page', async ({ page }) => {
+    await page.goto('/admin/calendar');
+    await page.waitForLoadState('networkidle');
+
+    // Check that Add Event button exists
+    await expect(page.getByRole('button', { name: /add event/i })).toBeVisible();
+
+    // Click the button to open modal
+    await page.getByRole('button', { name: /add event/i }).click();
+
+    // Check that modal opens
+    await expect(page.getByRole('dialog', { name: /add new event/i })).toBeVisible();
+    await expect(page.getByText('Create a new event on your calendar')).toBeVisible();
+  });
 });

@@ -34,7 +34,7 @@ test.beforeEach(async ({ page }) => {
       }
 
       // Mock booking creation with email trigger
-      if (url.includes('/api/firebase-bookings') && options?.method === 'POST') {
+      if (url.includes('/api/bookings') && options?.method === 'POST') {
         return {
           ok: true,
           json: async () => ({

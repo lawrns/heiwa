@@ -64,13 +64,18 @@ class SimpleEmailService implements EmailService {
   }
 
   private generateBookingConfirmationHTML(booking: Booking & { id: string }, client: Client): string {
-    const checkInDate = booking.items[0]?.dates?.checkIn
-      ? new Date(booking.items[0].dates.checkIn.seconds * 1000).toLocaleDateString()
-      : 'TBD';
+    const bookingDate = booking.createdAt
+      ? new Date(booking.createdAt).toLocaleDateString()
+      : new Date().toLocaleDateString();
 
-    const checkOutDate = booking.items[0]?.dates?.checkOut
-      ? new Date(booking.items[0].dates.checkOut.seconds * 1000).toLocaleDateString()
-      : 'TBD';
+    const formatItemType = (type: string) => {
+      switch (type) {
+        case 'room': return '🏠 Room';
+        case 'surfCamp': return '🏄‍♂️ Surf Camp';
+        case 'addOn': return '🎯 Add-on';
+        default: return type;
+      }
+    };
 
     return `
       <!DOCTYPE html>
@@ -101,17 +106,24 @@ class SimpleEmailService implements EmailService {
               <div class="booking-details">
                 <h3>📅 Booking Information</h3>
                 <p><strong>Booking ID:</strong> ${booking.id}</p>
-                <p><strong>Check-in:</strong> ${checkInDate}</p>
-                <p><strong>Check-out:</strong> ${checkOutDate}</p>
+                <p><strong>Booking Date:</strong> ${bookingDate}</p>
                 <p><strong>Guests:</strong> ${booking.clientIds.length}</p>
+                <p><strong>Payment Status:</strong> ${booking.paymentStatus}</p>
               </div>
 
               <div class="booking-details">
-                <h3>🏠 Accommodation</h3>
+                <h3>🛍️ Booked Items</h3>
                 ${booking.items.map(item => `
-                  <p><strong>${item.type}:</strong> ${item.itemId}</p>
-                  <p><strong>Quantity:</strong> ${item.quantity}</p>
-                  <p><strong>Price:</strong> $${item.unitPrice.toFixed(2)}</p>
+                  <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                    <p><strong>${formatItemType(item.type)}:</strong> ${item.name}</p>
+                    <p><strong>Quantity:</strong> ${item.quantity}</p>
+                    <p><strong>Unit Price:</strong> $${item.unitPrice.toFixed(2)}</p>
+                    <p><strong>Total:</strong> $${item.totalPrice.toFixed(2)}</p>
+                    ${item.startDate ? `<p><strong>Start Date:</strong> ${new Date(item.startDate).toLocaleDateString()}</p>` : ''}
+                    ${item.endDate ? `<p><strong>End Date:</strong> ${new Date(item.endDate).toLocaleDateString()}</p>` : ''}
+                    ${item.nights ? `<p><strong>Nights:</strong> ${item.nights}</p>` : ''}
+                    ${item.participants ? `<p><strong>Participants:</strong> ${item.participants}</p>` : ''}
+                  </div>
                 `).join('')}
               </div>
 
@@ -119,11 +131,12 @@ class SimpleEmailService implements EmailService {
                 Total Amount: $${booking.totalAmount.toFixed(2)}
               </div>
 
-              <div class="booking-details">
-                <h3>📝 Additional Information</h3>
-                <p><strong>Payment Status:</strong> ${booking.paymentStatus}</p>
-                ${booking.notes ? `<p><strong>Notes:</strong> ${booking.notes}</p>` : ''}
-              </div>
+              ${booking.notes ? `
+                <div class="booking-details">
+                  <h3>📝 Additional Notes</h3>
+                  <p>${booking.notes}</p>
+                </div>
+              ` : ''}
 
               <p>If you have any questions or need to make changes to your booking, please contact us at:</p>
               <p>📧 Email: info@heiwahouse.com</p>
@@ -199,8 +212,109 @@ class SimpleEmailService implements EmailService {
 // Export singleton instance
 export const emailService = new SimpleEmailService();
 
-// Helper functions for common email operations
+// Email queue for reliable delivery
+interface EmailQueueItem {
+  id: string;
+  type: 'booking_confirmation' | 'booking_notification';
+  booking: Booking & { id: string };
+  client: Client;
+  attempts: number;
+  maxAttempts: number;
+  createdAt: Date;
+  nextRetry?: Date;
+}
+
+class EmailQueue {
+  private queue: EmailQueueItem[] = [];
+  private processing = false;
+
+  async addToQueue(
+    type: 'booking_confirmation' | 'booking_notification',
+    booking: Booking & { id: string },
+    client: Client
+  ): Promise<void> {
+    const item: EmailQueueItem = {
+      id: `${type}_${booking.id}_${Date.now()}`,
+      type,
+      booking,
+      client,
+      attempts: 0,
+      maxAttempts: 3,
+      createdAt: new Date(),
+    };
+
+    this.queue.push(item);
+
+    if (!this.processing) {
+      this.processQueue();
+    }
+  }
+
+  private async processQueue(): Promise<void> {
+    if (this.processing || this.queue.length === 0) return;
+
+    this.processing = true;
+
+    while (this.queue.length > 0) {
+      const item = this.queue.shift();
+      if (!item) continue;
+
+      // Check if we should retry this item
+      if (item.nextRetry && item.nextRetry > new Date()) {
+        this.queue.push(item); // Put it back at the end
+        continue;
+      }
+
+      try {
+        if (item.type === 'booking_confirmation') {
+          await emailService.sendBookingConfirmation(item.booking, item.client);
+        } else if (item.type === 'booking_notification') {
+          await emailService.sendBookingNotification(item.booking, item.client);
+        }
+
+        console.log(`✅ Email sent successfully: ${item.type} for booking ${item.booking.id}`);
+      } catch (error) {
+        console.error(`❌ Failed to send email: ${item.type} for booking ${item.booking.id}`, error);
+
+        item.attempts++;
+
+        if (item.attempts < item.maxAttempts) {
+          // Schedule retry with exponential backoff
+          const retryDelay = Math.pow(2, item.attempts) * 1000; // 2s, 4s, 8s
+          item.nextRetry = new Date(Date.now() + retryDelay);
+          this.queue.push(item);
+          console.log(`📧 Scheduling retry ${item.attempts}/${item.maxAttempts} for ${item.type} in ${retryDelay}ms`);
+        } else {
+          console.error(`💀 Max attempts reached for ${item.type}, giving up`);
+        }
+      }
+
+      // Small delay between processing items
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    this.processing = false;
+  }
+}
+
+const emailQueue = new EmailQueue();
+
+// Enhanced helper functions for common email operations
 export const sendBookingEmails = async (booking: Booking & { id: string }, client: Client) => {
+  try {
+    // Add emails to queue for reliable delivery
+    await emailQueue.addToQueue('booking_confirmation', booking, client);
+    await emailQueue.addToQueue('booking_notification', booking, client);
+
+    console.log('✅ Booking emails queued successfully');
+  } catch (error) {
+    console.error('❌ Failed to queue booking emails:', error);
+    throw error;
+  }
+};
+
+// Send immediate booking emails (without queue)
+export const sendBookingEmailsImmediate = async (booking: Booking & { id: string }, client: Client) => {
   try {
     // Send confirmation to client
     await emailService.sendBookingConfirmation(booking, client);
@@ -208,9 +322,9 @@ export const sendBookingEmails = async (booking: Booking & { id: string }, clien
     // Send notification to admin
     await emailService.sendBookingNotification(booking, client);
 
-    console.log('✅ Booking emails sent successfully');
+    console.log('✅ Booking emails sent immediately');
   } catch (error) {
-    console.error('❌ Failed to send booking emails:', error);
+    console.error('❌ Failed to send booking emails immediately:', error);
     throw error;
   }
 };

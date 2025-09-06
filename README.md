@@ -128,14 +128,13 @@ admin-dashboard/
 
 3. **Set Environment Variables** in Netlify Dashboard:
    - Go to Site Settings > Environment Variables
-   - Add all Firebase environment variables:
-     - `NEXT_PUBLIC_FIREBASE_API_KEY`
-     - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-     - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-     - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
-     - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
-     - `NEXT_PUBLIC_FIREBASE_APP_ID`
-     - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
+   - Add all Supabase environment variables:
+     - `NEXT_PUBLIC_SUPABASE_URL`
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+     - `SUPABASE_SERVICE_ROLE_KEY`
+     - `STRIPE_SECRET_KEY`
+     - `STRIPE_PUBLISHABLE_KEY`
+     - `STRIPE_WEBHOOK_SECRET`
 
 4. **Deploy**:
    - Netlify will automatically deploy when you push changes to the main branch
@@ -166,14 +165,13 @@ vercel --prod
 3. **Set Environment Variables in Vercel Dashboard**:
    - Go to your Vercel project dashboard
    - Navigate to Project Settings > Environment Variables
-   - Add all Firebase environment variables:
-     - `NEXT_PUBLIC_FIREBASE_API_KEY`
-     - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-     - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-     - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
-     - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
-     - `NEXT_PUBLIC_FIREBASE_APP_ID`
-     - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
+   - Add all Supabase environment variables:
+     - `NEXT_PUBLIC_SUPABASE_URL`
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+     - `SUPABASE_SERVICE_ROLE_KEY`
+     - `STRIPE_SECRET_KEY`
+     - `STRIPE_PUBLISHABLE_KEY`
+     - `STRIPE_WEBHOOK_SECRET`
 
 4. **Update Admin Emails**:
    - Modify `src/lib/auth.ts` to include your admin email addresses
@@ -195,7 +193,7 @@ npm install
 3. **Configure environment**:
 ```bash
 cp .env.example .env.local
-# Edit .env.local with your Firebase keys
+# Edit .env.local with your Supabase keys
 ```
 
 4. **Test locally**:
@@ -230,15 +228,15 @@ npm start
 
 ### Common Issues
 
-1. **Firebase Configuration Errors**
+1. **Supabase Configuration Errors**
    - Ensure all environment variables are set correctly
-   - Check that Firebase project has Authentication and Firestore enabled
+   - Check that Supabase project has Authentication and Database enabled
    - Verify admin emails are added to the whitelist in `src/lib/auth.ts`
 
 2. **Authentication Issues**
    - Make sure the user email is in the admin whitelist
-   - Check Firebase Authentication console for user creation
-   - Verify Firebase security rules allow admin access
+   - Check Supabase Authentication console for user creation
+   - Verify Row Level Security (RLS) policies allow admin access
 
 3. **Build Errors**
    - Run `npm install` to ensure all dependencies are installed
@@ -247,9 +245,9 @@ npm start
 
 ### Development Tips
 
-- Use Firebase emulators for local development
+- Use Supabase local development setup for testing
 - Check browser console for detailed error messages
-- Monitor Firebase console for authentication and database activity
+- Monitor Supabase dashboard for authentication and database activity
 - Use the Network tab to debug API calls
 
 ## Contributing
@@ -268,6 +266,6 @@ This project is licensed under the MIT License.
 
 For issues or questions:
 - Check the troubleshooting section above
-- Review Firebase documentation
+- Review Supabase documentation
 - Check the original project documentation
 - Create an issue in the repository

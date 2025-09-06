@@ -28,6 +28,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { Booking } from '@/lib/schemas';
+import { CreateBookingModal } from '@/components/admin/bookings/CreateBookingModal';
+import { useRequireAdmin } from '@/hooks/useAuth';
 
 interface BookingWithClients extends Booking {
   id: string;
@@ -35,6 +37,9 @@ interface BookingWithClients extends Booking {
 }
 
 export default function BookingsPage() {
+  // Require admin authentication
+  const user = useRequireAdmin();
+
   const [bookings, setBookings] = useState<BookingWithClients[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<BookingWithClients[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,9 +51,10 @@ export default function BookingsPage() {
   const itemsPerPage = 10;
 
   // Fetch bookings from Supabase
-  const fetchBookings = useCallback(async () => {
+  const fetchBookings = useCallback(async (showLoading = true) => {
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
+
       const { data, error } = await supabase
         .from('bookings')
         .select('*')
@@ -80,8 +86,20 @@ export default function BookingsPage() {
       console.error('Error fetching bookings:', error);
       toast.error('Failed to load bookings');
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
+  }, []);
+
+  // Add optimistic update for new bookings
+  const addOptimisticBooking = useCallback((newBooking: BookingWithClients) => {
+    setBookings(prev => [newBooking, ...prev]);
+    setFilteredBookings(prev => [newBooking, ...prev]);
+  }, []);
+
+  // Remove optimistic booking if creation fails
+  const removeOptimisticBooking = useCallback((bookingId: string) => {
+    setBookings(prev => prev.filter(b => b.id !== bookingId));
+    setFilteredBookings(prev => prev.filter(b => b.id !== bookingId));
   }, []);
 
   // Filter bookings based on search and status
@@ -111,9 +129,80 @@ export default function BookingsPage() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedBookings = filteredBookings.slice(startIndex, startIndex + itemsPerPage);
 
-  // Load data on component mount
+  // Load data on component mount and set up real-time subscription
   useEffect(() => {
     fetchBookings();
+
+    // Set up real-time subscription for bookings
+    const subscription = supabase
+      .channel('bookings-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'bookings'
+        },
+        (payload) => {
+          console.log('Real-time booking change:', payload);
+
+          if (payload.eventType === 'INSERT') {
+            // New booking created
+            const newBooking: BookingWithClients = {
+              id: payload.new.id,
+              clientIds: payload.new.client_ids || [],
+              items: payload.new.items || [],
+              totalAmount: payload.new.total_amount,
+              paymentStatus: payload.new.payment_status,
+              paymentMethod: payload.new.payment_method,
+              notes: payload.new.notes || '',
+              createdAt: new Date(payload.new.created_at),
+              updatedAt: new Date(payload.new.updated_at),
+              clientNames: []
+            };
+
+            setBookings(prev => {
+              // Check if booking already exists (avoid duplicates)
+              if (prev.some(b => b.id === newBooking.id)) return prev;
+              return [newBooking, ...prev];
+            });
+
+            toast.success('New booking received!', {
+              position: 'top-right',
+              autoClose: 3000,
+            });
+          } else if (payload.eventType === 'UPDATE') {
+            // Booking updated
+            setBookings(prev => prev.map(booking =>
+              booking.id === payload.new.id
+                ? {
+                    ...booking,
+                    clientIds: payload.new.client_ids || [],
+                    items: payload.new.items || [],
+                    totalAmount: payload.new.total_amount,
+                    paymentStatus: payload.new.payment_status,
+                    paymentMethod: payload.new.payment_method,
+                    notes: payload.new.notes || '',
+                    updatedAt: new Date(payload.new.updated_at),
+                  }
+                : booking
+            ));
+          } else if (payload.eventType === 'DELETE') {
+            // Booking deleted
+            setBookings(prev => prev.filter(booking => booking.id !== payload.old.id));
+            toast.info('Booking was deleted', {
+              position: 'top-right',
+              autoClose: 3000,
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [fetchBookings]);
 
   // Handle booking deletion
@@ -383,6 +472,20 @@ export default function BookingsPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Create Booking Modal */}
+      <CreateBookingModal
+        isOpen={isCreateDialogOpen}
+        onClose={() => setIsCreateDialogOpen(false)}
+        onSuccess={() => {
+          // Real-time subscription will handle the update automatically
+          // Just show a success message
+          toast.success('Booking created successfully! It will appear in the list momentarily.', {
+            position: 'top-right',
+            autoClose: 4000,
+          });
+        }}
+      />
     </div>
   );
 }

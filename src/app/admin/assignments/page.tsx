@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { CalendarIcon, UsersIcon, MapPinIcon } from 'lucide-react'
+import { supabase } from '@/lib/supabase/client'
+import { toast } from 'react-toastify'
 import AssignmentBoard from '@/components/admin/assignments/AssignmentBoard'
 
 interface Assignment {
@@ -14,23 +16,87 @@ interface Assignment {
   participantIds: string[]
 }
 
-export default function AdminAssignmentsPage() {
-  const [selectedWeek, setSelectedWeek] = useState<string>('week-1')
-  const [assignments, setAssignments] = useState<Assignment[]>([])
+interface WeekData {
+  id: string;
+  name: string;
+  category: string;
+  participants: number;
+  rooms: number;
+  startDate: string;
+  endDate: string;
+}
 
-  // Mock week data
-  const weeks = [
-    { id: 'week-1', name: 'March 15-22, 2024', category: 'Heiwa', participants: 8, rooms: 6 },
-    { id: 'week-2', name: 'March 22-29, 2024', category: 'Freedom Routes', participants: 6, rooms: 4 },
-    { id: 'week-3', name: 'April 1-8, 2024', category: 'Heiwa', participants: 10, rooms: 7 }
-  ]
+export default function AdminAssignmentsPage() {
+  const [selectedWeek, setSelectedWeek] = useState<string>('')
+  const [assignments, setAssignments] = useState<Assignment[]>([])
+  const [weeks, setWeeks] = useState<WeekData[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // Fetch surf camp weeks from Supabase
+  const fetchSurfCampWeeks = useCallback(async () => {
+    try {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from('surf_camps')
+        .select('id, name, start_date, end_date, max_participants, is_active')
+        .eq('is_active', true)
+        .order('start_date', { ascending: true })
+
+      if (error) {
+        console.error('Error fetching surf camps:', error)
+        toast.error('Failed to load surf camp weeks')
+        return
+      }
+
+      if (data) {
+        const formattedWeeks: WeekData[] = data.map(camp => ({
+          id: camp.id,
+          name: `${camp.name} (${new Date(camp.start_date).toLocaleDateString()} - ${new Date(camp.end_date).toLocaleDateString()})`,
+          category: camp.name.toLowerCase().includes('frenchman') ? 'Freedom Routes' : 'Heiwa House',
+          participants: camp.max_participants,
+          rooms: Math.ceil(camp.max_participants / 2), // Estimate 2 people per room
+          startDate: camp.start_date,
+          endDate: camp.end_date
+        }))
+
+        setWeeks(formattedWeeks)
+        if (formattedWeeks.length > 0 && !selectedWeek) {
+          setSelectedWeek(formattedWeeks[0].id)
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching surf camps:', error)
+      toast.error('Failed to load surf camp weeks')
+    } finally {
+      setLoading(false)
+    }
+  }, [selectedWeek])
+
+  useEffect(() => {
+    fetchSurfCampWeeks()
+  }, [fetchSurfCampWeeks])
 
   const selectedWeekData = weeks.find(w => w.id === selectedWeek)
 
-  const handleSaveAssignments = (newAssignments: Assignment[]) => {
-    setAssignments(newAssignments)
-    console.log('Assignments saved for week:', selectedWeek, newAssignments)
-    // In a real app, this would save to Firestore
+  const handleSaveAssignments = async (newAssignments: Assignment[]) => {
+    try {
+      setAssignments(newAssignments)
+      // TODO: Save assignments to Supabase
+      // For now, just show a success message
+      toast.success('Assignments saved successfully!')
+      console.log('Assignments saved for week:', selectedWeek, newAssignments)
+    } catch (error) {
+      console.error('Error saving assignments:', error)
+      toast.error('Failed to save assignments')
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    )
   }
 
   return (

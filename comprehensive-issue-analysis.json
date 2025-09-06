@@ -141,10 +141,10 @@
     }
   },
   "dependency_analysis": {
-    "firebase": {
+    "supabase": {
       "version": "latest",
       "status": "PROPERLY_CONFIGURED",
-      "initialization": "FAILED"
+      "initialization": "SUCCESS"
     },
     "radix_ui": {
       "status": "INSTALLED_BUT_BUILD_ERROR",
@@ -152,7 +152,7 @@
     },
     "nextjs": {
       "version": "15.4.4",
-      "ssr_compatibility": "ISSUES_WITH_FIREBASE"
+      "ssr_compatibility": "COMPATIBLE_WITH_SUPABASE"
     },
     "playwright": {
       "status": "INSTALLED",

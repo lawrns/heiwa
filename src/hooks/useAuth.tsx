@@ -10,7 +10,7 @@ export function useRequireAuth(): AuthUser {
     if (!loading && !user) {
       // Redirect to login if not authenticated (only once when conditions are met)
       if (typeof window !== 'undefined') {
-        window.location.href = '/admin/login';
+        window.location.href = '/login';
       }
     }
   }, [user, loading]); // Include both dependencies
@@ -30,7 +30,7 @@ export function useRequireAdmin(): AuthUser {
     if (user && !user.isAdmin) {
       // Redirect to login if not admin (only once when conditions are met)
       if (typeof window !== 'undefined') {
-        window.location.href = '/admin/login';
+        window.location.href = '/login';
       }
     }
   }, [user]); // Include user dependency

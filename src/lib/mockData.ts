@@ -332,7 +332,7 @@ export const mockBookings: (Booking & { id: string })[] = [
   },
 ];
 
-// Mock API functions that simulate Firebase operations
+// Mock API functions that simulate Supabase operations
 export const mockClientsAPI = {
   async getAll(): Promise<(Client & { id: string })[]> {
     // Simulate network delay

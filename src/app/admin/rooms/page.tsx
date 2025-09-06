@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 
 // Disable prerendering for this page since it uses Supabase
 export const dynamic = 'force-dynamic';
@@ -168,7 +168,7 @@ export default function RoomsPage() {
   const [errorRooms, setErrorRooms] = useState<string | null>(null);
 
   // Fetch rooms from Supabase
-  const fetchRooms = async () => {
+  const fetchRooms = useCallback(async () => {
     try {
       setLoadingRooms(true);
       setErrorRooms(null);
@@ -193,19 +193,35 @@ export default function RoomsPage() {
 
       if (data && data.length > 0) {
         // Convert snake_case to camelCase for compatibility
-        const formattedRooms = data.map(room => ({
-          id: room.id,
-          name: room.name,
-          capacity: room.capacity,
-          bookingType: room.booking_type,
-          pricing: room.pricing,
-          description: room.description,
-          images: room.images || [],
-          amenities: room.amenities || [],
-          isActive: room.is_active,
-          createdAt: new Date(room.created_at),
-          updatedAt: new Date(room.updated_at)
-        }));
+        const formattedRooms = data.map(room => {
+          // Normalize pricing structure to handle different formats
+          let normalizedPricing = { standard: 0, offSeason: 0, camp: {} };
+
+          if (room.pricing) {
+            // Handle different pricing formats that might exist in the database
+            if (typeof room.pricing === 'object') {
+              normalizedPricing = {
+                standard: room.pricing.standard || room.pricing.basePrice || room.pricing.base_price || 0,
+                offSeason: room.pricing.offSeason || room.pricing.off_season || room.pricing.lowSeason || 0,
+                camp: room.pricing.camp || {}
+              };
+            }
+          }
+
+          return {
+            id: room.id,
+            name: room.name || 'Unnamed Room',
+            capacity: room.capacity || 1,
+            bookingType: room.booking_type || 'whole',
+            pricing: normalizedPricing,
+            description: room.description || '',
+            images: room.images || [],
+            amenities: room.amenities || [],
+            isActive: room.is_active !== false, // Default to true if undefined
+            createdAt: new Date(room.created_at || Date.now()),
+            updatedAt: new Date(room.updated_at || Date.now())
+          };
+        });
         setRooms(formattedRooms);
       } else {
         // No data, use demo data
@@ -220,11 +236,27 @@ export default function RoomsPage() {
     } finally {
       setLoadingRooms(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchRooms();
-  }, []);
+
+    // Set up real-time subscription for rooms
+    const roomsSubscription = supabase
+      .channel('rooms_changes_admin')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'rooms' },
+        (payload) => {
+          console.log('Rooms change detected in admin:', payload);
+          fetchRooms(); // Refresh data when changes occur
+        }
+      )
+      .subscribe();
+
+    return () => {
+      roomsSubscription.unsubscribe();
+    };
+  }, [fetchRooms]);
 
   // Form for creating/editing rooms
   const form = useForm<RoomFormData>({
@@ -368,7 +400,7 @@ export default function RoomsPage() {
   if (errorRooms) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-        Failed to load rooms: {errorRooms.message}
+        Failed to load rooms: {errorRooms}
       </div>
     );
   }
@@ -677,21 +709,21 @@ export default function RoomsPage() {
                           <span className="text-gray-600">Capacity:</span>
                           <span className="font-medium flex items-center">
                             <Users className="w-4 h-4 mr-1" />
-                            {room.capacity}
+                            {room.capacity || 0}
                           </span>
                         </div>
 
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-600">Type:</span>
                           <Badge variant="outline">
-                            {room.bookingType === 'whole' ? 'Whole Room' : 'Per Bed'}
+                            {(room.bookingType || 'whole') === 'whole' ? 'Whole Room' : 'Per Bed'}
                           </Badge>
                         </div>
 
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-600">Standard Price:</span>
                           <span className="font-medium text-green-600">
-                            ${room.pricing.standard.toFixed(2)}
+                            ${room.pricing?.standard ? room.pricing.standard.toFixed(2) : '0.00'}
                           </span>
                         </div>
 

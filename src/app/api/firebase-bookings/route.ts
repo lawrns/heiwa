@@ -46,22 +46,18 @@ export async function POST(request: NextRequest) {
     if (booking) {
       // Send booking confirmation emails asynchronously
       // We don't await this to avoid blocking the response
-      sendBookingEmails(booking, {
-        id: booking.clientIds[0], // Use first client ID for now
-        name: 'Client', // This should be fetched from client data
-        email: 'client@example.com', // This should be fetched from client data
-        phone: '',
-        brand: 'Heiwa House',
-        status: 'Active',
-        lastBookingDate: null,
-        registrationDate: new Date(),
-        notes: '',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }).catch(error => {
-        console.error('Failed to send booking emails:', error);
-        // Don't fail the booking creation if emails fail
-      });
+      (async () => {
+        try {
+          // Fetch client data for the first client
+          const primaryClient = await clientsAPI.getById(booking.clientIds[0]);
+          if (primaryClient) {
+            await sendBookingEmails(booking, primaryClient);
+          }
+        } catch (error) {
+          console.error('Failed to send booking emails:', error);
+          // Don't fail the booking creation if emails fail
+        }
+      })();
     }
 
     return NextResponse.json({ booking }, { status: 201 });

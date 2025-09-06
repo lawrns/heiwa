@@ -103,8 +103,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     setIsClient(true);
   }, []);
 
-  // Show loading state while during SSR only
-  if (!isClient) {
+  // Redirect unauthenticated users to login
+  useEffect(() => {
+    if (isClient && !loading && !user) {
+      router.replace('/login');
+    }
+  }, [isClient, loading, user, router]);
+
+  // Show loading state during SSR or auth check
+  if (!isClient || loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -116,10 +123,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     );
   }
 
+  // Don't render admin layout if user is not authenticated or not admin
+  if (!user || !user.isAdmin) {
+    return null;
+  }
+
   const handleLogout = async () => {
     try {
       await signOut();
-      router.push('/admin/login');
+      router.push('/login');
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -135,6 +147,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               onClick={() => setSidebarOpen(true)}
               className="md:hidden text-gray-500 hover:text-gray-700"
               aria-label="Open sidebar"
+              data-testid="sidebar-open-button"
             >
               <Bars3Icon className="h-6 w-6" />
             </button>
@@ -177,7 +190,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
           {/* Sidebar */}
           <aside className={`
-            fixed md:relative inset-y-0 left-0 z-40 md:z-auto
+            fixed md:sticky inset-y-0 md:top-0 left-0 z-40 md:z-auto
             bg-white shadow-lg md:shadow-none
             transform transition-transform duration-300 ease-in-out
             ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -187,6 +200,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             flex flex-col
             border-r border-gray-200 md:border-r-0
             mt-0 md:mt-0
+            md:h-screen md:overflow-hidden
           `}>
             {/* Sidebar header */}
             <div className="flex items-center justify-between h-16 px-4 bg-blue-600 border-b border-blue-700">
@@ -201,12 +215,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                   className="hidden md:block text-white hover:text-gray-200 p-1 rounded transition-colors"
                   title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                  data-testid="sidebar-toggle"
                 >
-                  <Bars3Icon className={`h-5 w-5 transition-transform duration-200 ${sidebarCollapsed ? 'rotate-180' : ''}`} />
+                  {!sidebarCollapsed && (
+                    <Bars3Icon className="h-5 w-5 transition-transform duration-200" />
+                  )}
                 </button>
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="md:hidden text-white hover:text-gray-200 p-1 rounded transition-colors"
+                  data-testid="sidebar-close-button"
                 >
                   <XMarkIcon className="h-6 w-6" />
                 </button>
@@ -214,7 +232,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 mt-8 px-4 md:px-4 overflow-y-auto" aria-label="Navigation menu">
+            <nav className="flex-1 mt-8 px-4 md:px-4 overflow-y-auto md:max-h-[calc(100vh-4rem)]" aria-label="Navigation menu" data-testid="sidebar-nav">
               <div className={`${sidebarCollapsed ? 'px-2' : 'px-0'} space-y-2`}>
                 {navigationItems.map((item) => (
                   <Link
@@ -228,6 +246,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     `}
                     onClick={() => setSidebarOpen(false)}
                     title={sidebarCollapsed ? item.name : ""}
+                    data-testid={`sidebar-nav-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                   >
                     <item.icon className={`${sidebarCollapsed ? 'h-6 w-6' : 'mr-3 h-5 w-5'} flex-shrink-0`} />
                     {!sidebarCollapsed && <span className="truncate">{item.name}</span>}

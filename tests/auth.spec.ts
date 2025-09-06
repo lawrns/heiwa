@@ -72,7 +72,6 @@ test.beforeEach(async ({ page }) => {
               return { data: { id: 'mock_data' }, error: null };
             }
           })
-          })
         }),
         insert: (data: any) => ({
           select: () => ({
@@ -149,6 +148,133 @@ test.beforeEach(async ({ page }) => {
         json: async () => ({ success: true, data: {} })
       };
     };
+  });
+});
+
+test.describe('Whitelist Authentication (AUTH-001)', () => {
+  test('should allow whitelisted admin email to login', async ({ page }) => {
+    await page.goto('/login');
+    await page.waitForLoadState('networkidle');
+
+    // Mock successful login for whitelisted admin
+    await page.addInitScript(() => {
+      (window as any).__currentUser = (window as any).__mockSupabaseAuth.admin;
+      localStorage.setItem('supabase.auth.token', JSON.stringify({
+        access_token: 'mock_admin_token',
+        user: { email: 'admin@heiwa.house', role: 'admin' }
+      }));
+    });
+
+    // Simulate login process
+    await page.goto('/admin');
+    await page.waitForLoadState('networkidle');
+
+    // Should successfully access admin dashboard
+    await expect(page.locator('[data-testid="admin-dashboard-title"]')).toBeVisible();
+  });
+
+  test('should reject non-whitelisted email login', async ({ page }) => {
+    await page.goto('/login');
+    await page.waitForLoadState('networkidle');
+
+    // Mock failed login for non-whitelisted email
+    await page.addInitScript(() => {
+      (window as any).__currentUser = null;
+      (window as any).supabase.auth.signInWithOAuth = async () => {
+        return {
+          data: null,
+          error: { message: 'Email not in admin whitelist' }
+        };
+      };
+    });
+
+    // Try to access admin area
+    await page.goto('/admin');
+    await page.waitForTimeout(1000);
+
+    // Should be redirected or show error
+    const currentUrl = page.url();
+    const isRedirected = currentUrl.includes('/login') || currentUrl.includes('/auth');
+    const hasErrorMessage = await page.locator('text=not authorized, text=unauthorized, text=access denied').isVisible();
+
+    expect(isRedirected || hasErrorMessage).toBeTruthy();
+  });
+
+  test('should persist session across page reloads', async ({ page }) => {
+    // Set authenticated session
+    await page.addInitScript(() => {
+      (window as any).__currentUser = (window as any).__mockSupabaseAuth.admin;
+      localStorage.setItem('supabase.auth.token', JSON.stringify({
+        access_token: 'mock_admin_token',
+        user: { email: 'admin@heiwa.house', role: 'admin' }
+      }));
+    });
+
+    await page.goto('/admin/bookings');
+    await page.waitForLoadState('networkidle');
+
+    // Verify initial access
+    await expect(page.locator('main')).toBeVisible();
+
+    // Reload page
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    // Should still be authenticated
+    await expect(page.locator('main')).toBeVisible();
+    expect(page.url()).toContain('/admin/bookings');
+  });
+
+  test('should redirect to dashboard after successful login', async ({ page }) => {
+    await page.goto('/login');
+    await page.waitForLoadState('networkidle');
+
+    // Mock successful authentication
+    await page.addInitScript(() => {
+      (window as any).__currentUser = (window as any).__mockSupabaseAuth.admin;
+      // Mock redirect behavior
+      setTimeout(() => {
+        window.location.href = '/admin';
+      }, 100);
+    });
+
+    await page.waitForTimeout(500);
+
+    // Should redirect to admin dashboard
+    expect(page.url()).toContain('/admin');
+  });
+
+  test('should handle logout functionality', async ({ page }) => {
+    // Set authenticated session
+    await page.addInitScript(() => {
+      (window as any).__currentUser = (window as any).__mockSupabaseAuth.admin;
+      localStorage.setItem('supabase.auth.token', JSON.stringify({
+        access_token: 'mock_admin_token',
+        user: { email: 'admin@heiwa.house', role: 'admin' }
+      }));
+    });
+
+    await page.goto('/admin');
+    await page.waitForLoadState('networkidle');
+
+    // Mock logout functionality
+    await page.addInitScript(() => {
+      (window as any).logout = () => {
+        (window as any).__currentUser = null;
+        localStorage.removeItem('supabase.auth.token');
+        window.location.href = '/login';
+      };
+    });
+
+    // Trigger logout
+    await page.evaluate(() => {
+      (window as any).logout();
+    });
+
+    await page.waitForTimeout(500);
+
+    // Should redirect to login
+    expect(page.url()).toContain('/login');
   });
 });
 

@@ -179,16 +179,156 @@ test.describe('Bookings CRUD and Routing (BOOK-001)', () => {
     }
   });
 
-  test('should open create booking dialog', async ({ page }) => {
+  test('should open create booking wizard', async ({ page }) => {
     await page.goto('/admin/bookings');
     await page.waitForLoadState('networkidle');
 
     // Click create booking button
-    await page.locator('[data-testid="create-booking"]').click();
-    
-    // Dialog should open (this would need to be implemented in the component)
-    // For now, just verify the button is clickable
-    await expect(page.locator('[data-testid="create-booking"]')).toBeVisible();
+    const createButton = page.locator('[data-testid="create-booking"], button:has-text("New Booking"), button:has-text("Create Booking")').first();
+    await createButton.click();
+
+    // Verify booking wizard opens
+    await expect(page.locator('.wizard, .modal, [role="dialog"], [data-testid*="booking-wizard"]')).toBeVisible();
+
+    // Verify wizard steps are present
+    await expect(page.locator('.step-1, [data-testid="step-1"], .wizard-step')).toBeVisible();
+  });
+
+  test('should complete booking wizard flow', async ({ page }) => {
+    await page.goto('/admin/bookings');
+    await page.waitForLoadState('networkidle');
+
+    // Open booking wizard
+    const createButton = page.locator('[data-testid="create-booking"], button:has-text("New Booking")').first();
+    await createButton.click();
+
+    // Step 1: Select client
+    await page.locator('select[name="client"], [data-testid*="client-select"]').first().selectOption('client_001');
+    await page.locator('button:has-text("Next"), [data-testid="next-step"]').first().click();
+
+    // Step 2: Select dates
+    await page.locator('input[type="date"], [data-testid*="check-in"]').first().fill('2024-06-01');
+    await page.locator('input[type="date"], [data-testid*="check-out"]').first().fill('2024-06-07');
+    await page.locator('button:has-text("Next"), [data-testid="next-step"]').first().click();
+
+    // Step 3: Select room/camp
+    await page.locator('[data-testid*="room-select"], .room-option').first().click();
+    await page.locator('button:has-text("Next"), [data-testid="next-step"]').first().click();
+
+    // Step 4: Review and confirm
+    await expect(page.locator('.booking-summary, [data-testid*="summary"]')).toBeVisible();
+    await page.locator('button:has-text("Confirm"), button:has-text("Create Booking")').first().click();
+
+    // Verify booking creation success
+    await page.waitForTimeout(1000);
+    await expect(page.locator('.success, [data-testid*="success"]')).toBeVisible();
+  });
+
+  test('should validate room availability during booking', async ({ page }) => {
+    await page.goto('/admin/bookings');
+    await page.waitForLoadState('networkidle');
+
+    // Mock room availability check
+    await page.addInitScript(() => {
+      (window as any).checkRoomAvailability = (roomId: string, checkIn: string, checkOut: string) => {
+        // Mock unavailable room
+        if (roomId === 'room_unavailable') {
+          return { available: false, reason: 'Room fully booked for selected dates' };
+        }
+        return { available: true };
+      };
+    });
+
+    // Open booking wizard
+    const createButton = page.locator('[data-testid="create-booking"], button:has-text("New Booking")').first();
+    await createButton.click();
+
+    // Navigate to room selection
+    await page.locator('select[name="client"]').first().selectOption('client_001');
+    await page.locator('button:has-text("Next")').first().click();
+    await page.locator('input[type="date"]').first().fill('2024-06-01');
+    await page.locator('input[type="date"]').last().fill('2024-06-07');
+    await page.locator('button:has-text("Next")').first().click();
+
+    // Try to select unavailable room
+    const unavailableRoom = page.locator('[data-testid="room-unavailable"], .room-unavailable').first();
+    if (await unavailableRoom.isVisible()) {
+      await expect(unavailableRoom).toHaveClass(/disabled|unavailable/);
+      await expect(page.locator('text=fully booked, text=unavailable')).toBeVisible();
+    }
+  });
+
+  test('should prevent overbooking', async ({ page }) => {
+    await page.goto('/admin/bookings');
+    await page.waitForLoadState('networkidle');
+
+    // Mock overbooking scenario
+    await page.addInitScript(() => {
+      (window as any).checkCapacity = (roomId: string, guests: number) => {
+        const roomCapacities = { 'room_001': 2, 'room_002': 4 };
+        const currentBookings = { 'room_001': 1, 'room_002': 3 };
+
+        const available = (roomCapacities[roomId] || 0) - (currentBookings[roomId] || 0);
+        return available >= guests;
+      };
+    });
+
+    // Open booking wizard and try to book more guests than available
+    const createButton = page.locator('[data-testid="create-booking"], button:has-text("New Booking")').first();
+    await createButton.click();
+
+    // Fill booking details that would cause overbooking
+    await page.locator('select[name="client"]').first().selectOption('client_001');
+    await page.locator('input[name="guests"], input[type="number"]').first().fill('5'); // More than room capacity
+
+    // Should show overbooking warning
+    await expect(page.locator('.warning, .error, text=capacity exceeded')).toBeVisible();
+  });
+
+  test('should integrate with calendar for date selection', async ({ page }) => {
+    await page.goto('/admin/bookings');
+    await page.waitForLoadState('networkidle');
+
+    // Open booking wizard
+    const createButton = page.locator('[data-testid="create-booking"], button:has-text("New Booking")').first();
+    await createButton.click();
+
+    // Navigate to date selection step
+    await page.locator('select[name="client"]').first().selectOption('client_001');
+    await page.locator('button:has-text("Next")').first().click();
+
+    // Verify calendar widget is present
+    await expect(page.locator('.calendar, [data-testid*="calendar"], .date-picker')).toBeVisible();
+
+    // Test date selection
+    const dateInput = page.locator('input[type="date"], [data-testid*="check-in"]').first();
+    await dateInput.fill('2024-06-01');
+
+    // Verify date is selected
+    await expect(dateInput).toHaveValue('2024-06-01');
+
+    // Test that unavailable dates are disabled
+    const unavailableDate = page.locator('.date-unavailable, [data-disabled="true"]').first();
+    if (await unavailableDate.isVisible()) {
+      await expect(unavailableDate).toHaveClass(/disabled|unavailable/);
+    }
+  });
+
+  test('should show booking conflicts in calendar', async ({ page }) => {
+    await page.goto('/admin/calendar');
+    await page.waitForLoadState('networkidle');
+
+    // Verify calendar loads
+    await expect(page.locator('.calendar-grid, [data-testid*="calendar"]')).toBeVisible();
+
+    // Verify existing bookings are displayed
+    await expect(page.locator('.booking-event, .calendar-event')).toBeVisible();
+
+    // Test that conflicting dates are highlighted
+    const conflictDate = page.locator('.conflict, .double-booked').first();
+    if (await conflictDate.isVisible()) {
+      await expect(conflictDate).toHaveClass(/conflict|warning/);
+    }
   });
 
   test('should handle booking actions (view, edit, delete)', async ({ page }) => {

@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
+import { supabase } from '@/lib/supabase/client'
 import {
   CalendarIcon,
   BedIcon,
@@ -14,7 +16,69 @@ import {
   BarChart3Icon
 } from 'lucide-react'
 
+interface DashboardStats {
+  totalClients: number;
+  totalBookings: number;
+  availableRooms: number;
+  totalRevenue: number;
+  activeSurfCamps: number;
+}
+
 export default function AdminDashboard() {
+  const [stats, setStats] = useState<DashboardStats>({
+    totalClients: 0,
+    totalBookings: 0,
+    availableRooms: 0,
+    totalRevenue: 0,
+    activeSurfCamps: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardStats = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch all data in parallel
+        const [clientsResult, bookingsResult, roomsResult, surfCampsResult] = await Promise.all([
+          supabase.from('clients').select('id', { count: 'exact' }),
+          supabase.from('bookings').select('id, total_amount', { count: 'exact' }),
+          supabase.from('rooms').select('id, is_available', { count: 'exact' }),
+          supabase.from('surf_camps').select('id, is_active', { count: 'exact' })
+        ]);
+
+        // Calculate stats
+        const totalClients = clientsResult.count || 0;
+        const totalBookings = bookingsResult.count || 0;
+        const availableRooms = roomsResult.data?.filter(room => room.is_available).length || 0;
+        const totalRevenue = bookingsResult.data?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0;
+        const activeSurfCamps = surfCampsResult.data?.filter(camp => camp.is_active).length || 0;
+
+        setStats({
+          totalClients,
+          totalBookings,
+          availableRooms,
+          totalRevenue,
+          activeSurfCamps,
+        });
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-6">
       {/* Dashboard Header */}
@@ -31,19 +95,19 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow" data-testid="total-clients-metric">
           <h3 className="text-lg font-semibold text-gray-900">Total Clients</h3>
-          <p className="text-3xl font-bold text-blue-600" data-testid="total-clients-value">0</p>
+          <p className="text-3xl font-bold text-blue-600" data-testid="total-clients-value">{stats.totalClients}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow" data-testid="total-bookings-metric">
           <h3 className="text-lg font-semibold text-gray-900">Total Bookings</h3>
-          <p className="text-3xl font-bold text-green-600" data-testid="total-bookings-value">0</p>
+          <p className="text-3xl font-bold text-green-600" data-testid="total-bookings-value">{stats.totalBookings}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow" data-testid="available-rooms-metric">
           <h3 className="text-lg font-semibold text-gray-900">Available Rooms</h3>
-          <p className="text-3xl font-bold text-purple-600" data-testid="available-rooms-value">0</p>
+          <p className="text-3xl font-bold text-purple-600" data-testid="available-rooms-value">{stats.availableRooms}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow" data-testid="revenue-metric">
           <h3 className="text-lg font-semibold text-gray-900">Revenue</h3>
-          <p className="text-3xl font-bold text-orange-600" data-testid="revenue-value">$0</p>
+          <p className="text-3xl font-bold text-orange-600" data-testid="revenue-value">${stats.totalRevenue.toFixed(2)}</p>
         </div>
       </div>
 
@@ -54,14 +118,14 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-blue-500/50 transition-colors h-full flex flex-col">
+          <Card className="bg-white border-gray-200 hover:border-blue-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-bookings">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
                   <CalendarIcon className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <CardTitle className="text-gray-900 text-lg">Bookings Management</CardTitle>
+                  <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-bookings-title">Bookings Management</CardTitle>
                 </div>
               </div>
             </CardHeader>
@@ -71,7 +135,7 @@ export default function AdminDashboard() {
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                <span className="text-gray-700 text-sm">~ 12 Active Bookings</span>
+                <span className="text-gray-700 text-sm">{stats.totalBookings} Active Bookings</span>
               </div>
               <Link href="/admin/bookings" className="mt-auto">
                 <Button
@@ -91,14 +155,14 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-green-500/50 transition-colors h-full flex flex-col">
+          <Card className="bg-white border-gray-200 hover:border-green-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-rooms">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-green-500/10 rounded-lg border border-green-500/20">
                   <BedIcon className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <CardTitle className="text-gray-900 text-lg">Rooms Management</CardTitle>
+                  <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-rooms-title">Rooms Management</CardTitle>
                 </div>
               </div>
             </CardHeader>
@@ -108,7 +172,7 @@ export default function AdminDashboard() {
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                <span className="text-gray-700 text-sm">~ 8 Available Rooms</span>
+                <span className="text-gray-700 text-sm">{stats.availableRooms} Available Rooms</span>
               </div>
               <Link href="/admin/rooms" className="mt-auto">
                 <Button
@@ -128,14 +192,14 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-teal-500/50 transition-colors h-full flex flex-col">
+          <Card className="bg-white border-gray-200 hover:border-teal-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-surf-camps">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-teal-500/10 rounded-lg border border-teal-500/20">
                   <Waves className="w-6 h-6 text-teal-600" />
                 </div>
                 <div>
-                  <CardTitle className="text-gray-900 text-lg">Surf Camps</CardTitle>
+                  <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-surf-camps-title">Surf Camps</CardTitle>
                 </div>
               </div>
             </CardHeader>
@@ -145,7 +209,7 @@ export default function AdminDashboard() {
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-2 h-2 bg-teal-600 rounded-full"></div>
-                <span className="text-gray-700 text-sm">~ 3 Active Camps</span>
+                <span className="text-gray-700 text-sm">{stats.activeSurfCamps} Active Camps</span>
               </div>
               <Link href="/admin/surfcamps" className="mt-auto">
                 <Button
@@ -165,14 +229,14 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-purple-500/50 transition-colors h-full flex flex-col">
+          <Card className="bg-white border-gray-200 hover:border-purple-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-clients">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-purple-500/10 rounded-lg border border-purple-500/20">
                   <UsersIcon className="w-6 h-6 text-purple-600" />
                 </div>
                 <div>
-                  <CardTitle className="text-gray-900 text-lg">Clients</CardTitle>
+                  <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-clients-title">Clients</CardTitle>
                 </div>
               </div>
             </CardHeader>
@@ -182,7 +246,7 @@ export default function AdminDashboard() {
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
                 <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                <span className="text-gray-700 text-sm">~ 45 Total Clients</span>
+                <span className="text-gray-700 text-sm">{stats.totalClients} Total Clients</span>
               </div>
               <Link href="/admin/clients" className="mt-auto">
                 <Button
@@ -202,14 +266,14 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-orange-500/50 transition-colors h-full flex flex-col">
+          <Card className="bg-white border-gray-200 hover:border-orange-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-calendar">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-orange-500/10 rounded-lg border border-orange-500/20">
                   <Calendar className="w-6 h-6 text-orange-600" />
                 </div>
                 <div>
-                  <CardTitle className="text-gray-900 text-lg">Calendar</CardTitle>
+                  <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-calendar-title">Calendar</CardTitle>
                 </div>
               </div>
             </CardHeader>
@@ -225,6 +289,7 @@ export default function AdminDashboard() {
                 <Button
                   className="w-full bg-orange-600 hover:bg-orange-700 text-white"
                   aria-label="View Calendar"
+                  data-testid="view-calendar-button"
                 >
                   View Calendar
                 </Button>
@@ -238,14 +303,14 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-gray-500/50 transition-colors h-full flex flex-col">
+          <Card className="bg-white border-gray-200 hover:border-gray-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-analytics">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-gray-500/10 rounded-lg border border-gray-500/20">
                   <BarChart3Icon className="w-6 h-6 text-gray-600" />
                 </div>
                 <div>
-                  <CardTitle className="text-gray-900 text-lg">Analytics</CardTitle>
+                  <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-analytics-title">Analytics</CardTitle>
                 </div>
               </div>
             </CardHeader>

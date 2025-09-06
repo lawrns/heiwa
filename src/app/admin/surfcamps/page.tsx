@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 // Disable prerendering for this page since it uses Firebase
 export const dynamic = 'force-dynamic';
@@ -24,8 +24,46 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { SurfCamp, Room, Client } from '@/lib/schemas';
+import { Room, Client, Booking } from '@/lib/schemas';
 import { Plus, Edit, Trash2, Users, MapPin, BarChart3 } from 'lucide-react';
+
+// Database surf camp type (matches the actual database structure)
+interface DatabaseSurfCamp {
+  id: string;
+  name: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+  max_participants: number;
+  price: number;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'all';
+  includes: string[];
+  images: string[];
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// Admin surf camp type (for the UI)
+interface AdminSurfCamp {
+  id: string;
+  name: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  maxParticipants: number;
+  price: number;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'all';
+  includes: string[];
+  images: string[];
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  // Legacy fields for compatibility
+  category?: 'FR' | 'HH';
+  availableRooms?: string[];
+  occupancy?: number;
+}
 
 // Form schema for surf camp creation/editing
 const SurfCampFormSchema = z.object({
@@ -34,6 +72,14 @@ const SurfCampFormSchema = z.object({
   endDate: z.date(),
   availableRooms: z.array(z.string()).min(1, 'At least one room is required'),
   occupancy: z.number().min(1, 'Occupancy must be at least 1'),
+  name: z.string().min(1, 'Name is required').optional(),
+  description: z.string().optional(),
+  maxParticipants: z.number().min(1, 'Max participants must be at least 1').optional(),
+  price: z.number().min(0, 'Price must be non-negative').optional(),
+  level: z.enum(['beginner', 'intermediate', 'advanced', 'all']).optional(),
+  includes: z.array(z.string()).optional(),
+  images: z.array(z.string()).optional(),
+  isActive: z.boolean().optional(),
 });
 
 type SurfCampFormData = z.infer<typeof SurfCampFormSchema>;
@@ -141,16 +187,16 @@ const DropZone: React.FC<DropZoneProps> = ({ onDrop, children, className = '' })
 export default function SurfCampsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [selectedCamp, setSelectedCamp] = useState<(SurfCamp & { id: string }) | null>(null);
+  const [selectedCamp, setSelectedCamp] = useState<AdminSurfCamp | null>(null);
   const [assignedClients, setAssignedClients] = useState<string[]>([]);
   const [assignedRooms, setAssignedRooms] = useState<string[]>([]);
   // Supabase data fetching
-  const [surfCamps, setSurfCamps] = useState<(SurfCamp & { id: string })[]>([]);
+  const [surfCamps, setSurfCamps] = useState<AdminSurfCamp[]>([]);
   const [rooms, setRooms] = useState<(Room & { id: string })[]>([]);
   const [clients, setClients] = useState<(Client & { id: string })[]>([]);
   const [bookings] = useState<(Booking & { id: string })[]>([]);
   const [loadingCamps, setLoadingCamps] = useState(true);
-  const [loadingRooms] = useState(true);
+  const [loadingRooms, setLoadingRooms] = useState(true);
   const [loadingClients, setLoadingClients] = useState(true);
   const [errorCamps, setErrorCamps] = useState<string | null>(null);
   const [errorRooms, setErrorRooms] = useState<string | null>(null);
@@ -165,8 +211,7 @@ export default function SurfCampsPage() {
   }, [errorCamps]);
 
   // Supabase data fetching
-  useEffect(() => {
-    const fetchSurfCamps = async () => {
+  const fetchSurfCamps = useCallback(async () => {
       try {
         setLoadingCamps(true);
         const { data, error } = await supabase
@@ -176,7 +221,7 @@ export default function SurfCampsPage() {
 
         if (error) throw error;
 
-        const formattedCamps = data?.map(item => ({
+        const formattedCamps = data?.map((item: DatabaseSurfCamp) => ({
           id: item.id,
           name: item.name,
           description: item.description,
@@ -184,13 +229,17 @@ export default function SurfCampsPage() {
           endDate: new Date(item.end_date),
           maxParticipants: item.max_participants,
           price: item.price,
-          level: item.level as SurfCamp['level'],
+          level: item.level,
           includes: item.includes || [],
           images: item.images || [],
           isActive: item.is_active,
           createdAt: new Date(item.created_at),
-          updatedAt: new Date(item.updated_at)
-        })) as (SurfCamp & { id: string })[];
+          updatedAt: new Date(item.updated_at),
+          // Legacy compatibility fields - derive category from name
+          category: (item.name.toLowerCase().includes('frenchman') ? 'FR' : 'HH') as 'FR' | 'HH',
+          availableRooms: [], // Would need to be fetched separately or stored
+          occupancy: item.max_participants, // Use max_participants as occupancy
+        })) as AdminSurfCamp[];
 
         setSurfCamps(formattedCamps || []);
       } catch (error) {
@@ -199,9 +248,9 @@ export default function SurfCampsPage() {
       } finally {
         setLoadingCamps(false);
       }
-    };
+    }, []);
 
-    const fetchRooms = async () => {
+    const fetchRooms = useCallback(async () => {
       try {
         setLoadingRooms(true);
         const { data, error } = await supabase
@@ -232,9 +281,9 @@ export default function SurfCampsPage() {
       } finally {
         setLoadingRooms(false);
       }
-    };
+    }, []);
 
-    const fetchClients = async () => {
+    const fetchClients = useCallback(async () => {
       try {
         setLoadingClients(true);
         const { data, error } = await supabase
@@ -262,12 +311,29 @@ export default function SurfCampsPage() {
       } finally {
         setLoadingClients(false);
       }
-    };
+    }, []);
 
-    fetchSurfCamps();
+    useEffect(() => {
+      fetchSurfCamps();
     fetchRooms();
     fetchClients();
-  }, []);
+
+    // Set up real-time subscription for surf camps
+    const surfCampsSubscription = supabase
+      .channel('surf_camps_changes_admin')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'surf_camps' },
+        (payload) => {
+          console.log('Surf camps change detected in admin:', payload);
+          fetchSurfCamps(); // Refresh data when changes occur
+        }
+      )
+      .subscribe();
+
+    return () => {
+      surfCampsSubscription.unsubscribe();
+    };
+  }, [fetchSurfCamps, fetchRooms, fetchClients]);
 
   // Use Supabase state directly
 
@@ -296,6 +362,14 @@ export default function SurfCampsPage() {
       endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       availableRooms: [],
       occupancy: 1,
+      name: '',
+      description: '',
+      maxParticipants: 12,
+      price: 599,
+      level: 'all',
+      includes: [],
+      images: [],
+      isActive: true,
     },
   });
 
@@ -315,7 +389,7 @@ export default function SurfCampsPage() {
         camp.category === data.category &&
         camp.startDate && camp.endDate &&
         (
-          (camp.startDate.toDate() <= data.endDate && camp.endDate.toDate() >= data.startDate)
+          (camp.startDate <= data.endDate && camp.endDate >= data.startDate)
         )
       );
 
@@ -324,19 +398,23 @@ export default function SurfCampsPage() {
         return;
       }
 
+      // Generate default name if not provided
+      const categoryName = data.category === 'FR' ? 'Frenchman\'s' : 'Honolua Bay';
+      const defaultName = data.name || `${categoryName} Surf Camp - ${data.startDate.toLocaleDateString()}`;
+
       const { error } = await supabase
         .from('surf_camps')
         .insert({
-          name: data.name,
-          description: data.description,
+          name: defaultName,
+          description: data.description || `${categoryName} surf camp session`,
           start_date: data.startDate.toISOString(),
           end_date: data.endDate.toISOString(),
-          max_participants: data.maxParticipants,
-          price: data.price,
-          level: data.level,
-          includes: data.includes,
-          images: data.images,
-          is_active: data.isActive,
+          max_participants: data.maxParticipants || data.occupancy,
+          price: data.price || (data.category === 'FR' ? 799.00 : 599.00),
+          level: data.level || 'all',
+          includes: data.includes || ['Daily surf lessons', 'Equipment rental', 'Breakfast'],
+          images: data.images || [],
+          is_active: data.isActive !== undefined ? data.isActive : true,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         });
@@ -405,10 +483,10 @@ export default function SurfCampsPage() {
       // Check for conflicts with other surf camps during the same period
       const conflictingCamp = surfCamps.find(camp =>
         camp.id !== selectedCamp?.id &&
-        camp.availableRooms.some(roomId => assignedRooms.includes(roomId)) &&
+        camp.availableRooms?.some(roomId => assignedRooms.includes(roomId)) &&
         camp.startDate && camp.endDate && selectedCamp?.startDate && selectedCamp?.endDate &&
         (
-          (camp.startDate.toDate() <= selectedCamp.endDate.toDate() && camp.endDate.toDate() >= selectedCamp.startDate.toDate())
+          (camp.startDate <= selectedCamp.endDate && camp.endDate >= selectedCamp.startDate)
         )
       );
 
@@ -427,10 +505,10 @@ export default function SurfCampsPage() {
       // Check for room conflicts with other surf camps
       const conflictingCamp = surfCamps.find(camp =>
         camp.id !== selectedCamp?.id &&
-        camp.availableRooms.includes(item.id) &&
+        camp.availableRooms?.includes(item.id) &&
         camp.startDate && camp.endDate && selectedCamp?.startDate && selectedCamp?.endDate &&
         (
-          (camp.startDate.toDate() <= selectedCamp.endDate.toDate() && camp.endDate.toDate() >= selectedCamp.startDate.toDate())
+          (camp.startDate <= selectedCamp.endDate && camp.endDate >= selectedCamp.startDate)
         )
       );
 
@@ -451,34 +529,37 @@ export default function SurfCampsPage() {
     }
   };
 
-  const openDetailsModal = (camp: SurfCamp & { id: string }) => {
+  const openDetailsModal = (camp: AdminSurfCamp) => {
     setSelectedCamp(camp);
     setAssignedClients([]);
-    setAssignedRooms(camp.availableRooms);
+    setAssignedRooms(camp.availableRooms || []);
     setShowDetailsModal(true);
   };
 
   const formatDate = (timestamp: Date | string | null | undefined) => {
     if (!timestamp) return 'N/A';
     try {
-      return timestamp.toDate().toLocaleDateString();
+      if (timestamp instanceof Date) {
+        return timestamp.toLocaleDateString();
+      }
+      return new Date(timestamp).toLocaleDateString();
     } catch {
       return 'Invalid date';
     }
   };
 
-  if (loadingCamps) {
+  if (loadingCamps || loadingRooms || loadingClients) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-lg text-gray-600">Loading surf camps...</div>
+        <div className="text-lg text-gray-600">Loading...</div>
       </div>
     );
   }
 
-  if (errorCamps) {
+  if (errorCamps || errorRooms || errorClients) {
     return (
       <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-        Failed to load surf camps: {errorCamps.message}
+        Failed to load data: {errorCamps || errorRooms || errorClients}
       </div>
     );
   }
@@ -597,7 +678,7 @@ export default function SurfCampsPage() {
                       <FormItem>
                         <FormLabel>Available Rooms</FormLabel>
                         <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
-                          {rooms.map((room) => (
+                          {rooms?.map((room) => (
                             <div key={room.id} className="flex items-center space-x-2">
                               <Checkbox
                                 id={room.id}
@@ -643,7 +724,7 @@ export default function SurfCampsPage() {
             ) : (
               surfCamps.map((camp) => {
                 const occupancy = getCampOccupancy(camp.id);
-                const occupancyPercentage = (occupancy / camp.occupancy) * 100;
+                const occupancyPercentage = (occupancy / (camp.occupancy || camp.maxParticipants)) * 100;
 
                 return (
                   <motion.div
@@ -691,7 +772,7 @@ export default function SurfCampsPage() {
                         <div className="space-y-3">
                           <div className="flex items-center justify-between text-sm text-gray-600">
                             <span>Signed up:</span>
-                            <span className="font-medium">{occupancy}/{camp.occupancy}</span>
+                            <span className="font-medium">{occupancy}/{camp.occupancy || camp.maxParticipants}</span>
                           </div>
 
                           {/* Occupancy Bar */}
@@ -714,7 +795,7 @@ export default function SurfCampsPage() {
 
                           <div className="flex items-center justify-between text-sm text-gray-600">
                             <span>Rooms:</span>
-                            <span className="font-medium">{camp.availableRooms.length}</span>
+                            <span className="font-medium">{camp.availableRooms?.length || 0}</span>
                           </div>
 
                           <Button
@@ -759,7 +840,7 @@ export default function SurfCampsPage() {
                       className="border-2 border-dashed border-gray-300 rounded-lg p-4 min-h-[200px]"
                     >
                       <div className="space-y-2">
-                        {clients.map((client) => (
+                        {clients?.map((client) => (
                           <DraggableClient
                             key={client.id}
                             client={client}
@@ -778,7 +859,7 @@ export default function SurfCampsPage() {
                       className="border-2 border-dashed border-gray-300 rounded-lg p-4 min-h-[200px]"
                     >
                       <div className="space-y-2">
-                        {rooms.map((room) => (
+                        {rooms?.map((room) => (
                           <DraggableRoom
                             key={room.id}
                             room={room}
@@ -870,7 +951,9 @@ export default function SurfCampsPage() {
                   <div className="flex justify-end space-x-2">
                     <Button
                       onClick={() => {
-                        handleUpdateCamp(selectedCamp.id, { availableRooms: assignedRooms });
+                        // TODO: Implement room assignments storage
+                        // For now, just close the modal
+                        toast.info('Room assignments feature coming soon');
                         setShowDetailsModal(false);
                       }}
                     >

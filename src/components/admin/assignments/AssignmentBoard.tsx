@@ -184,6 +184,7 @@ const DroppableRoom: React.FC<DroppableRoomProps> = ({
                 size="sm"
                 onClick={() => onRemove(participant.id)}
                 className="text-red-600 hover:text-red-700"
+                data-testid={`remove-participant-${participant.id}`}
               >
                 ×
               </Button>
@@ -333,7 +334,7 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
             <p className="text-gray-600">Drag participants to assign them to rooms for Week {weekId}</p>
           </div>
           <div className="flex items-center space-x-2">
-            <Button variant="outline">
+            <Button variant="outline" data-testid="refresh-assignments-button">
               <RefreshIcon className="w-4 h-4 mr-2" />
               Refresh
             </Button>

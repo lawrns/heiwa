@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, UserCheck, UserPlus } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { supabase } from '@/lib/supabase/client';
 
 // Import our new components
 import { ClientsToolbar } from '@/components/admin/clients/ClientsToolbar';
@@ -20,74 +21,17 @@ import { NoClientsState, NoSearchResultsState, LoadingState } from '@/components
 import { Client, CreateClient, UpdateClient } from '@/lib/clients/schema';
 import { exportToCSV, importClientsFromCSV, ImportResult } from '@/lib/clients/csv';
 
-// Mock data - in production this would come from API
-const MOCK_CLIENTS: Client[] = [
-  {
-    id: '1',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@email.com',
-    phone: '+1 (555) 123-4567',
-    brand: 'Heiwa House',
-    status: 'Active',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 7, nanoseconds: 0 },
-    registrationDate: { seconds: Date.now() / 1000 - 86400 * 30, nanoseconds: 0 },
-    notes: 'VIP client, prefers ocean view rooms. Allergic to shellfish.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 30, nanoseconds: 0 },
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 7, nanoseconds: 0 }
-  },
-  {
-    id: '2',
-    name: 'Marcus Rodriguez',
-    email: 'marcus.r@surfmail.com',
-    phone: '+1 (555) 987-6543',
-    brand: 'Freedom Routes',
-    status: 'Active',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 3, nanoseconds: 0 },
-    registrationDate: { seconds: Date.now() / 1000 - 86400 * 90, nanoseconds: 0 },
-    notes: 'Professional surfer, books extended stays. Requires early check-in.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 90, nanoseconds: 0 },
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 3, nanoseconds: 0 }
-  },
-  {
-    id: '3',
-    name: 'Emily Chen',
-    email: 'emily.chen.travel@gmail.com',
-    phone: '+1 (555) 456-7890',
-    brand: 'Heiwa House',
-    status: 'Active',
-    lastBookingDate: null,
-    registrationDate: { seconds: Date.now() / 1000 - 86400 * 5, nanoseconds: 0 },
-    notes: 'First-time visitor, interested in beginner surf lessons.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 5, nanoseconds: 0 },
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 5, nanoseconds: 0 }
-  },
-  {
-    id: '4',
-    name: 'David Thompson',
-    email: 'dthompson@corporate.com',
-    phone: '+1 (555) 234-5678',
-    brand: 'Freedom Routes',
-    status: 'Active',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 14, nanoseconds: 0 },
-    registrationDate: { seconds: Date.now() / 1000 - 86400 * 180, nanoseconds: 0 },
-    notes: 'Corporate bookings for team retreats. Needs group discounts and meeting facilities.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 180, nanoseconds: 0 },
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 14, nanoseconds: 0 }
-  },
-  {
-    id: '5',
-    name: 'Isabella Martinez',
-    email: 'bella.martinez@hotmail.com',
-    phone: '+1 (555) 345-6789',
-    brand: 'Heiwa House',
-    status: 'Active',
-    lastBookingDate: { seconds: Date.now() / 1000 - 86400 * 1, nanoseconds: 0 },
-    registrationDate: { seconds: Date.now() / 1000 - 86400 * 60, nanoseconds: 0 },
-    notes: 'Yoga instructor, books monthly wellness retreats.',
-    createdAt: { seconds: Date.now() / 1000 - 86400 * 60, nanoseconds: 0 },
-    updatedAt: { seconds: Date.now() / 1000 - 86400 * 1, nanoseconds: 0 }
-  },
-];
+// Database client type (matches the actual database structure)
+interface DatabaseClient {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  last_booking_date?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export default function AdminClientsPage() {
   const searchParams = useSearchParams();
@@ -175,10 +119,68 @@ export default function AdminClientsPage() {
     }
   }, [clients, filteredData]);
 
-  // Load clients on mount
+  // Define loadClients function first
+  const loadClients = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const { data, error } = await supabase
+        .from('clients')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      // Convert database format to Client format
+      const formattedClients = data?.map((client: DatabaseClient) => ({
+        id: client.id,
+        name: client.name,
+        email: client.email,
+        phone: client.phone,
+        brand: 'Heiwa House', // Default brand, could be stored in database
+        status: 'Active', // Default status, could be stored in database
+        lastBookingDate: client.last_booking_date
+          ? { seconds: new Date(client.last_booking_date).getTime() / 1000, nanoseconds: 0 }
+          : null,
+        registrationDate: { seconds: new Date(client.created_at).getTime() / 1000, nanoseconds: 0 },
+        notes: client.notes || '',
+        createdAt: { seconds: new Date(client.created_at).getTime() / 1000, nanoseconds: 0 },
+        updatedAt: { seconds: new Date(client.updated_at).getTime() / 1000, nanoseconds: 0 }
+      })) as Client[];
+
+      setClients(formattedClients || []);
+    } catch (err: any) {
+      setError('Failed to load clients. Please try again.');
+      console.error('Load clients error:', err);
+      toast.error(`Failed to load clients: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Load clients on mount and set up real-time subscriptions
   useEffect(() => {
     loadClients();
-  }, []);
+
+    // Set up real-time subscription for clients
+    const clientsSubscription = supabase
+      .channel('clients_changes_admin')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'clients' },
+        (payload) => {
+          console.log('Clients change detected in admin:', payload);
+          loadClients(); // Refresh data when changes occur
+        }
+      )
+      .subscribe();
+
+    return () => {
+      clientsSubscription.unsubscribe();
+    };
+  }, [loadClients]);
 
   // Update URL when filters change
   const updateURL = useCallback((params: Record<string, string>) => {
@@ -260,23 +262,7 @@ export default function AdminClientsPage() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [dialogOpen, handleAddClient]);
 
-  const loadClients = async () => {
-    try {
-      setLoading(true);
-      setError('');
-      const response = await fetch('/api/firebase-clients');
-      if (!response.ok) {
-        throw new Error('Failed to fetch clients');
-      }
-      const data = await response.json();
-      setClients(data.clients || []);
-    } catch (err) {
-      setError('Failed to load clients. Please try again.');
-      console.error('Load clients error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   // Statistics
   const statistics = useMemo(() => {
@@ -305,57 +291,82 @@ export default function AdminClientsPage() {
     // TODO: Implement view client details
   }, []);
 
-  const handleArchiveClient = useCallback((client: Client) => {
-    toast.info(`Archiving ${client.name}`);
-    // TODO: Implement archive functionality
+  const handleArchiveClient = useCallback(async (client: Client) => {
+    try {
+      // For now, we'll update the status to 'Inactive' since there's no status field in DB
+      // In a real implementation, you might add a status field or use a separate archived table
+      toast.info(`Archive functionality not yet implemented for ${client.name}`);
+    } catch (err: any) {
+      toast.error(`Failed to archive client: ${err.message}`);
+    }
   }, []);
 
-  const handleDeleteClient = useCallback((client: Client) => {
-    toast.info(`Deleting ${client.name}`);
-    // TODO: Implement delete functionality
-  }, []);
+  const handleDeleteClient = useCallback(async (client: Client) => {
+    if (!confirm(`Are you sure you want to delete ${client.name}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('clients')
+        .delete()
+        .eq('id', client.id);
+
+      if (error) throw error;
+
+      toast.success(`${client.name} deleted successfully`);
+      loadClients(); // Refresh the list
+    } catch (err: any) {
+      toast.error(`Failed to delete client: ${err.message}`);
+    }
+  }, [loadClients]);
 
   const handleSaveClient = useCallback(async (data: CreateClient | UpdateClient) => {
     setSaving(true);
     try {
-      const method = editingClient ? 'PUT' : 'POST';
-      const body = editingClient ? { id: editingClient.id, ...data } : data;
-
-      const response = await fetch('/api/firebase-clients', {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save client');
-      }
-
-      const result = await response.json();
-
       if (editingClient) {
         // Update existing client
-        setClients(prev => prev.map(c =>
-          c.id === editingClient.id ? result.client : c
-        ));
+        const { error } = await supabase
+          .from('clients')
+          .update({
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            notes: data.notes || '',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', editingClient.id);
+
+        if (error) throw error;
         toast.success('Client updated successfully');
       } else {
-        // Add new client
-        setClients(prev => [...prev, result.client]);
+        // Create new client
+        const { error } = await supabase
+          .from('clients')
+          .insert({
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            notes: data.notes || '',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+
+        if (error) throw error;
         toast.success('Client added successfully');
       }
 
+      // Refresh the clients list
+      loadClients();
       setDialogOpen(false);
       setEditingClient(null);
-    } catch (err) {
-      toast.error('Failed to save client');
+    } catch (err: any) {
+      toast.error(`Failed to save client: ${err.message}`);
       throw err;
     } finally {
       setSaving(false);
     }
-  }, [editingClient]);
+  }, [editingClient, loadClients]);
 
   const handleImport = useCallback(async (file: File) => {
     setIsImporting(true);
@@ -391,19 +402,41 @@ export default function AdminClientsPage() {
     }
   }, []);
 
-  const handleBulkArchive = useCallback(() => {
+  const handleBulkArchive = useCallback(async () => {
     const selectedIds = Object.keys(rowSelection);
-    toast.info(`Archiving ${selectedIds.length} clients`);
-    // TODO: Implement bulk archive
-    setRowSelection({});
+    if (selectedIds.length === 0) return;
+
+    try {
+      toast.info(`Bulk archive functionality not yet implemented for ${selectedIds.length} clients`);
+      setRowSelection({});
+    } catch (err: any) {
+      toast.error(`Failed to archive clients: ${err.message}`);
+    }
   }, [rowSelection]);
 
-  const handleBulkDelete = useCallback(() => {
+  const handleBulkDelete = useCallback(async () => {
     const selectedIds = Object.keys(rowSelection);
-    toast.info(`Deleting ${selectedIds.length} clients`);
-    // TODO: Implement bulk delete
-    setRowSelection({});
-  }, [rowSelection]);
+    if (selectedIds.length === 0) return;
+
+    if (!confirm(`Are you sure you want to delete ${selectedIds.length} clients? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('clients')
+        .delete()
+        .in('id', selectedIds);
+
+      if (error) throw error;
+
+      toast.success(`${selectedIds.length} clients deleted successfully`);
+      setRowSelection({});
+      loadClients(); // Refresh the list
+    } catch (err: any) {
+      toast.error(`Failed to delete clients: ${err.message}`);
+    }
+  }, [rowSelection, loadClients]);
 
   const handleBulkExport = useCallback(() => {
     const selectedIds = Object.keys(rowSelection);
