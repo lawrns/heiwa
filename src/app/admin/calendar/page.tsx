@@ -176,6 +176,7 @@ export default function CalendarPage() {
           paymentStatus: booking.payment_status,
           paymentMethod: booking.payment_method,
           notes: booking.notes,
+          source: booking.source || 'dashboard',
           createdAt: new Date(booking.created_at),
           updatedAt: new Date(booking.updated_at)
         }));

@@ -113,7 +113,7 @@ const DraggableClient: React.FC<DraggableClientProps> = ({ client, isAssigned })
 
   return (
     <div
-      ref={drag as React.RefObject<HTMLDivElement>}
+      ref={drag as any}
       className={`p-2 mb-2 border rounded cursor-move transition-colors ${
         isAssigned ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
       } ${isDragging ? 'opacity-50' : 'opacity-100'}`}
@@ -144,7 +144,7 @@ const DraggableRoom: React.FC<DraggableRoomProps> = ({ room, isAssigned }) => {
 
   return (
     <div
-      ref={drag as React.RefObject<HTMLDivElement>}
+      ref={drag as any}
       className={`p-2 mb-2 border rounded cursor-move transition-colors ${
         isAssigned ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
       } ${isDragging ? 'opacity-50' : 'opacity-100'}`}
@@ -176,7 +176,7 @@ const DropZone: React.FC<DropZoneProps> = ({ onDrop, children, className = '' })
 
   return (
     <div
-      ref={drop as React.RefObject<HTMLDivElement>}
+      ref={drop as any}
       className={`${className} ${isOver ? 'bg-blue-50 border-blue-300' : ''}`}
     >
       {children}

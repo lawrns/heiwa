@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
         `Special requests: ${bookingData.special_requests || 'None'}`,
         `Participants: ${bookingData.participants.map((p: any) => `${p.name} (${p.email})`).join(', ')}`
       ].join('\n'),
-      source: 'wordpress', // Add source tracking
+      source: 'wordpress' as const, // Add source tracking with proper typing
       wordpress_meta: {
         site_url: bookingData.source_url,
         widget_version: bookingData.widget_version || '1.0',

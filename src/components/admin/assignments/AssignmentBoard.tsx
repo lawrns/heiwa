@@ -67,7 +67,7 @@ const DraggableParticipant: React.FC<DraggableParticipantProps> = memo(({ partic
 
   return (
     <div
-      ref={drag}
+      ref={drag as any}
       className={`p-3 bg-white border rounded-lg cursor-move transition-all ${
         isDragging ? 'opacity-50 shadow-lg' : 'hover:shadow-md'
       }`}

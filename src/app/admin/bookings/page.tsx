@@ -75,6 +75,7 @@ export default function BookingsPage() {
           paymentStatus: booking.payment_status,
           paymentMethod: booking.payment_method,
           notes: booking.notes || '',
+          source: booking.source || 'dashboard',
           createdAt: new Date(booking.created_at),
           updatedAt: new Date(booking.updated_at),
           clientNames: [] // Will be populated by fetching client names
@@ -156,6 +157,7 @@ export default function BookingsPage() {
               paymentStatus: payload.new.payment_status,
               paymentMethod: payload.new.payment_method,
               notes: payload.new.notes || '',
+              source: payload.new.source || 'dashboard',
               createdAt: new Date(payload.new.created_at),
               updatedAt: new Date(payload.new.updated_at),
               clientNames: []
