@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+// CORS headers for WordPress integration
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, X-Heiwa-API-Key',
+  'Access-Control-Max-Age': '86400',
+};
+
 // Temporarily use service role for testing WordPress widget
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,12 +35,15 @@ export async function GET(request: NextRequest) {
     
     if (!apiKey || !validApiKey || apiKey !== validApiKey) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Unauthorized',
           message: 'Invalid or missing API key'
-        }, 
-        { status: 401 }
+        },
+        {
+          status: 401,
+          headers: corsHeaders
+        }
       );
     }
 
@@ -50,7 +61,10 @@ export async function GET(request: NextRequest) {
           error: 'Missing required parameters',
           message: 'camp_id, start_date, and end_date are required'
         },
-        { status: 400 }
+        {
+          status: 400,
+          headers: corsHeaders
+        }
       );
     }
 
@@ -65,7 +79,10 @@ export async function GET(request: NextRequest) {
           error: 'Invalid date format',
           message: 'Dates must be in valid ISO format'
         },
-        { status: 400 }
+        {
+          status: 400,
+          headers: corsHeaders
+        }
       );
     }
 
@@ -76,7 +93,10 @@ export async function GET(request: NextRequest) {
           error: 'Invalid date range',
           message: 'End date must be after start date'
         },
-        { status: 400 }
+        {
+          status: 400,
+          headers: corsHeaders
+        }
       );
     }
 
@@ -104,7 +124,10 @@ export async function GET(request: NextRequest) {
           error: 'Camp not found',
           message: 'The requested surf camp was not found or is not active'
         },
-        { status: 404 }
+        {
+          status: 404,
+          headers: corsHeaders
+        }
       );
     }
 
@@ -129,6 +152,8 @@ export async function GET(request: NextRequest) {
             camp_end: camp.end_date
           }
         }
+      }, {
+        headers: corsHeaders
       });
     }
 
@@ -215,17 +240,22 @@ export async function GET(request: NextRequest) {
         checked_at: new Date().toISOString(),
         cache_expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString() // 15 minutes
       }
+    }, {
+      headers: corsHeaders
     });
 
   } catch (error: any) {
     console.error('WordPress availability endpoint error:', error);
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Internal server error',
         message: 'Failed to check availability'
-      }, 
-      { status: 500 }
+      },
+      {
+        status: 500,
+        headers: corsHeaders
+      }
     );
   }
 }
@@ -314,11 +344,6 @@ function isWithinBookingWindow(startDate: string): boolean {
 export async function OPTIONS(request: NextRequest) {
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, X-Heiwa-API-Key',
-      'Access-Control-Max-Age': '86400',
-    },
+    headers: corsHeaders,
   });
 }

@@ -4,6 +4,14 @@ import { bookingsAPI, clientsAPI } from '@/lib/supabase-admin';
 import { CreateBookingSchema } from '@/lib/schemas';
 import { sendBookingEmails } from '@/lib/email-service';
 
+// CORS headers for WordPress integration
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, X-Heiwa-API-Key',
+  'Access-Control-Max-Age': '86400',
+};
+
 // Temporarily use service role for testing WordPress widget
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,12 +35,15 @@ export async function POST(request: NextRequest) {
     
     if (!apiKey || !validApiKey || apiKey !== validApiKey) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Unauthorized',
           message: 'Invalid or missing API key'
-        }, 
-        { status: 401 }
+        },
+        {
+          status: 401,
+          headers: corsHeaders
+        }
       );
     }
 
@@ -46,7 +57,10 @@ export async function POST(request: NextRequest) {
           error: 'Invalid booking data',
           message: 'camp_id and participants array are required'
         },
-        { status: 400 }
+        {
+          status: 400,
+          headers: corsHeaders
+        }
       );
     }
 
@@ -59,7 +73,10 @@ export async function POST(request: NextRequest) {
             error: 'Invalid participant data',
             message: 'Each participant must have name and email'
           },
-          { status: 400 }
+          {
+            status: 400,
+            headers: corsHeaders
+          }
         );
       }
     }
@@ -79,7 +96,10 @@ export async function POST(request: NextRequest) {
           error: 'Camp not found',
           message: 'The selected surf camp is not available'
         },
-        { status: 404 }
+        {
+          status: 404,
+          headers: corsHeaders
+        }
       );
     }
 
@@ -124,7 +144,10 @@ export async function POST(request: NextRequest) {
               error: 'Failed to create client',
               message: `Could not create client record for ${participant.email}`
             },
-            { status: 500 }
+            {
+              status: 500,
+              headers: corsHeaders
+            }
           );
         }
 
@@ -187,7 +210,10 @@ export async function POST(request: NextRequest) {
           error: 'Booking creation failed',
           message: 'Booking was created but could not be retrieved'
         },
-        { status: 500 }
+        {
+          status: 500,
+          headers: corsHeaders
+        }
       );
     }
 
@@ -250,6 +276,8 @@ export async function POST(request: NextRequest) {
         source: 'wordpress_widget',
         booking_reference: `WP-${bookingId.substring(0, 8).toUpperCase()}`
       }
+    }, {
+      headers: corsHeaders
     });
 
   } catch (error: any) {
@@ -263,17 +291,23 @@ export async function POST(request: NextRequest) {
           error: 'Validation error',
           message: error.message
         },
-        { status: 400 }
+        {
+          status: 400,
+          headers: corsHeaders
+        }
       );
     }
 
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Internal server error',
         message: 'Failed to create booking'
-      }, 
-      { status: 500 }
+      },
+      {
+        status: 500,
+        headers: corsHeaders
+      }
     );
   }
 }
@@ -339,11 +373,6 @@ export async function GET(request: NextRequest) {
 export async function OPTIONS(request: NextRequest) {
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, X-Heiwa-API-Key',
-      'Access-Control-Max-Age': '86400',
-    },
+    headers: corsHeaders,
   });
 }

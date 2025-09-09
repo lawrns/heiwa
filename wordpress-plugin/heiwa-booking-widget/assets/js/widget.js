@@ -69,10 +69,14 @@
      * Bind event handlers
      */
     function bindEvents() {
+        console.log('Heiwa Booking Widget: Binding events...');
+
         // Widget toggle - use the correct class names from shortcode
         $(document).on('click', '.heiwa-booking-trigger', toggleWidget);
         $(document).on('click', '.heiwa-booking-close', closeWidget);
         $(document).on('click', '.heiwa-booking-overlay', closeWidget);
+
+        console.log('Heiwa Booking Widget: Events bound successfully');
 
         // Navigation between steps
         $(document).on('click', '.heiwa-back-button', function() {
@@ -103,7 +107,12 @@
     /**
      * Toggle widget visibility
      */
-    function toggleWidget() {
+    function toggleWidget(e) {
+        if (e) {
+            e.preventDefault();
+        }
+        console.log('Heiwa Booking Widget: Toggle widget called, isOpen:', isWidgetOpen);
+
         if (isWidgetOpen) {
             closeWidget();
         } else {
@@ -529,9 +538,35 @@
         }
     };
 
-    // Initialize when document is ready
-    $(document).ready(function() {
-        initBookingWidget();
-    });
+    // Initialize when document is ready - multiple fallbacks for WordPress compatibility
+    function initializeWidget() {
+        if (typeof jQuery !== 'undefined') {
+            console.log('Heiwa Booking Widget: Initializing...');
+            initBookingWidget();
+        } else {
+            console.error('Heiwa Booking Widget: jQuery not available');
+        }
+    }
+
+    // Multiple initialization methods for WordPress compatibility
+    if (document.readyState === 'loading') {
+        // Document still loading
+        $(document).ready(initializeWidget);
+    } else {
+        // Document already loaded
+        initializeWidget();
+    }
+
+    // Fallback initialization after a short delay
+    setTimeout(function() {
+        if (!isWidgetOpen && $('.heiwa-booking-trigger').length > 0) {
+            // Check if events are bound
+            const triggerElement = $('.heiwa-booking-trigger')[0];
+            if (triggerElement && !jQuery._data(triggerElement, 'events')) {
+                console.log('Heiwa Booking Widget: Fallback initialization');
+                initBookingWidget();
+            }
+        }
+    }, 1000);
 
 })(jQuery || window.jQuery);
