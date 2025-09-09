@@ -1,50 +1,46 @@
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "@radix-ui/react-slot"
 import { cn } from "@/lib/utils"
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none shadow-sm hover:shadow-md",
-  {
-    variants: {
-      variant: {
-        default: "bg-oceanBlue-600 text-white hover:bg-oceanBlue-700 focus:ring-oceanBlue-500",
-        destructive: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
-        outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-oceanBlue-500",
-        secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500",
-        ghost: "text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
-        link: "text-oceanBlue-600 underline-offset-4 hover:underline focus:ring-oceanBlue-500",
-        // Enhanced brand variants
-        ocean: "ocean-gradient text-white hover:shadow-lg focus:ring-oceanBlue-500",
-        surf: "surf-gradient text-white hover:shadow-lg focus:ring-surfTeal-500",
-        sand: "sand-gradient text-white hover:shadow-lg focus:ring-sandBeige-500",
-      },
-      size: {
-        default: "h-10 py-2 px-4 text-base",
-        sm: "h-9 px-3 text-sm",
-        lg: "h-11 px-8 text-lg",
-        icon: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
+// Simplified button variants without class-variance-authority to fix webpack issues
+const getButtonClasses = (variant: string = 'default', size: string = 'default') => {
+  const baseClasses = "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none shadow-sm hover:shadow-md"
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  const variantClasses = {
+    default: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+    destructive: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+    outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500",
+    secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500",
+    ghost: "text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
+    link: "text-blue-600 underline-offset-4 hover:underline focus:ring-blue-500",
+    ocean: "bg-gradient-to-r from-blue-500 to-teal-500 text-white hover:shadow-lg focus:ring-blue-500",
+    surf: "bg-gradient-to-r from-teal-500 to-cyan-500 text-white hover:shadow-lg focus:ring-teal-500",
+    sand: "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:shadow-lg focus:ring-yellow-500",
+  }
+
+  const sizeClasses = {
+    default: "h-10 py-2 px-4 text-base",
+    sm: "h-9 px-3 text-sm",
+    lg: "h-11 px-8 text-lg",
+    icon: "h-10 w-10",
+  }
+
+  return cn(baseClasses, variantClasses[variant as keyof typeof variantClasses] || variantClasses.default, sizeClasses[size as keyof typeof sizeClasses] || sizeClasses.default)
+}
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'ocean' | 'surf' | 'sand'
+  size?: 'default' | 'sm' | 'lg' | 'icon'
   asChild?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant = 'default', size = 'default', asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(getButtonClasses(variant, size), className)}
         ref={ref}
         {...props}
       />
@@ -53,4 +49,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+export { Button }

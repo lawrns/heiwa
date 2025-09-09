@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -245,14 +245,14 @@ export function ClientsToolbar({
           </SelectTrigger>
           <SelectContent>
             {SORT_OPTIONS.map((option) => (
-              <>
-                <SelectItem key={`${option.value}:asc`} value={`${option.value}:asc`}>
+              <React.Fragment key={option.value}>
+                <SelectItem value={`${option.value}:asc`}>
                   {option.label} ↑
                 </SelectItem>
-                <SelectItem key={`${option.value}:desc`} value={`${option.value}:desc`}>
+                <SelectItem value={`${option.value}:desc`}>
                   {option.label} ↓
                 </SelectItem>
-              </>
+              </React.Fragment>
             ))}
           </SelectContent>
         </Select>

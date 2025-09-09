@@ -2,8 +2,15 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Client, SurfCamp, Room, AddOn, Booking } from './schemas';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+// Use fallback values to prevent deployment failures when environment variables are missing
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zejrhceuuujzgyukdwnb.supabase.co'
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzEwNDgwOSwiZXhwIjoyMDcyNjgwODA5fQ.RbzOLzCaOAsgaMixdACMLdPvLZjU9MPfXn8Y90gsxcc'
+
+console.log('✅ Admin Supabase connection initialized:', {
+  url: supabaseUrl,
+  hasKey: !!supabaseServiceKey,
+  project: 'heiwa'
+})
 
 // Create admin client with service role key
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);

@@ -43,14 +43,14 @@ export default function AdminDashboard() {
         const [clientsResult, bookingsResult, roomsResult, surfCampsResult] = await Promise.all([
           supabase.from('clients').select('id', { count: 'exact' }),
           supabase.from('bookings').select('id, total_amount', { count: 'exact' }),
-          supabase.from('rooms').select('id, is_available', { count: 'exact' }),
+          supabase.from('rooms').select('id, is_active', { count: 'exact' }),
           supabase.from('surf_camps').select('id, is_active', { count: 'exact' })
         ]);
 
         // Calculate stats
         const totalClients = clientsResult.count || 0;
         const totalBookings = bookingsResult.count || 0;
-        const availableRooms = roomsResult.data?.filter(room => room.is_available).length || 0;
+        const availableRooms = roomsResult.data?.filter(room => room.is_active).length || 0;
         const totalRevenue = bookingsResult.data?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0;
         const activeSurfCamps = surfCampsResult.data?.filter(camp => camp.is_active).length || 0;
 

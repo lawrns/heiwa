@@ -1,20 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    // Disable ESLint during builds to allow deployment
+    // Warning: This allows production builds with ESLint errors.
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Disable type checking during builds to allow deployment
+    // Warning: This allows production builds with type errors.
     ignoreBuildErrors: true,
   },
   webpack: (config, { isServer }) => {
-    if (isServer) {
+    // Fix for webpack 5 and Node.js modules in client-side code
+    if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
+        fs: false,
         net: false,
         tls: false,
-        fs: false,
         crypto: false,
         stream: false,
         http: false,
@@ -24,6 +25,13 @@ const nextConfig = {
         os: false,
       };
     }
+
+    // Handle ESM modules that might cause issues
+    config.experiments = {
+      ...config.experiments,
+      topLevelAwait: true,
+    };
+
     return config;
   },
   images: {
