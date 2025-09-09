@@ -333,7 +333,15 @@ export default function BookingWizard({ weekId, onComplete, onCancel }: BookingW
 
             <RoomGrid
               rooms={availableRooms}
-              participants={bookingData.participants}
+              participants={bookingData.participants.map(p => ({
+                id: p.id,
+                firstName: p.firstName,
+                lastName: p.lastName,
+                email: p.email,
+                phone: p.phone,
+                surfLevel: p.surfLevel,
+                specialRequests: p.specialRequests
+              }))}
               selectedRooms={[]} // TODO: Implement room selection state
               onRoomSelection={(selection) => {
                 // TODO: Handle room selection

@@ -37,7 +37,12 @@ interface Room {
 
 interface Participant {
   id: string
-  name: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  surfLevel: string
+  specialRequests: string
 }
 
 interface RoomSelection {
@@ -141,7 +146,7 @@ export default function RoomGrid({
   // Get participant name by ID
   const getParticipantName = (id: string) => {
     const participant = participants.find(p => p.id === id)
-    return participant ? participant.name : 'Unknown'
+    return participant ? `${participant.firstName} ${participant.lastName}` : 'Unknown'
   }
 
   // Get available participants for assignment
