@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
+import { Calendar, momentLocalizer, Views, View, NavigateAction } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { motion } from 'framer-motion';
@@ -415,7 +415,7 @@ export default function CalendarPage() {
 
 
   // Custom toolbar
-  const CustomToolbar = ({ label, onNavigate, onView }: { label: string; onNavigate: (action: string) => void; onView: (view: string) => void }) => (
+  const CustomToolbar = ({ label, onNavigate, onView, view }: { label: string; onNavigate: (action: NavigateAction) => void; onView: (view: View) => void; view: View }) => (
     <div className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg">
       <div className="flex items-center space-x-4">
         <Button variant="outline" size="sm" onClick={() => onNavigate('PREV')}>
@@ -431,7 +431,7 @@ export default function CalendarPage() {
       <h2 className="text-xl font-semibold text-gray-900">{label}</h2>
       <div className="flex items-center space-x-2 flex-wrap">
         <Button
-          variant={onView === 'month' ? 'default' : 'outline'}
+          variant={view === 'month' ? 'default' : 'outline'}
           size="sm"
           onClick={() => onView('month')}
           className="text-xs sm:text-sm"
@@ -439,7 +439,7 @@ export default function CalendarPage() {
           Month
         </Button>
         <Button
-          variant={onView === 'week' ? 'default' : 'outline'}
+          variant={view === 'week' ? 'default' : 'outline'}
           size="sm"
           onClick={() => onView('week')}
           className="text-xs sm:text-sm"
@@ -447,7 +447,7 @@ export default function CalendarPage() {
           Week
         </Button>
         <Button
-          variant={onView === 'day' ? 'default' : 'outline'}
+          variant={view === 'day' ? 'default' : 'outline'}
           size="sm"
           onClick={() => onView('day')}
           className="text-xs sm:text-sm"

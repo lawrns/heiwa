@@ -355,7 +355,7 @@ export default function BookingsPage() {
                       {booking.id.slice(0, 8)}...
                     </TableCell>
                     <TableCell>
-                      {booking.createdAt.toLocaleDateString()}
+                      {new Date(booking.createdAt instanceof Date ? booking.createdAt : typeof booking.createdAt === 'string' ? booking.createdAt : booking.createdAt.seconds * 1000).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">

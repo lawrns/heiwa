@@ -55,10 +55,9 @@ export default defineConfig({
 
   expect: {
     // Visual regression testing configuration
-    toMatchSnapshot: { threshold: 0.2, mode: 'pixel' },
+    toMatchSnapshot: { threshold: 0.2 },
     toHaveScreenshot: {
       threshold: 0.2,
-      mode: 'css',
       animations: 'disabled',
       caret: 'hide',
     },

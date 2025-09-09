@@ -12,12 +12,8 @@ export const ClientSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email format'),
   phone: z.string().min(1, 'Phone is required'),
-  brand: z.enum(['Heiwa House', 'Freedom Routes'], {
-    errorMap: () => ({ message: 'Brand must be Heiwa House or Freedom Routes' })
-  }),
-  status: z.enum(['Active', 'Inactive'], {
-    errorMap: () => ({ message: 'Status must be Active or Inactive' })
-  }),
+  brand: z.enum(['Heiwa House', 'Freedom Routes']).transform((val) => val as 'Heiwa House' | 'Freedom Routes'),
+  status: z.enum(['Active', 'Inactive']).transform((val) => val as 'Active' | 'Inactive'),
   lastBookingDate: TimestampSchema.nullable(),
   registrationDate: TimestampSchema,
   notes: z.string().optional(),
@@ -41,8 +37,8 @@ export const ImportRowSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email format'),
   phone: z.string().optional(),
-  brand: z.enum(['Heiwa House', 'Freedom Routes']).optional(),
-  status: z.enum(['Active', 'Inactive']).optional(),
+  brand: z.enum(['Heiwa House', 'Freedom Routes']).transform((val) => val as 'Heiwa House' | 'Freedom Routes').optional(),
+  status: z.enum(['Active', 'Inactive']).transform((val) => val as 'Active' | 'Inactive').optional(),
   lastBookingDate: z.string().optional(), // ISO date string
   registrationDate: z.string().optional(), // ISO date string
   notes: z.string().optional(),

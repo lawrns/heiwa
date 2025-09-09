@@ -7,6 +7,7 @@ export interface AuthUser {
   email: string | null;
   displayName: string | null;
   isAdmin: boolean;
+  uid?: string; // For backward compatibility
 }
 
 // Admin email list (update this with your admin emails)

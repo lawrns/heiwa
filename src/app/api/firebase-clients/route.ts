@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       // In production, you might want to add server-side filtering
       clients = await clientsAPI.getAll();
       if (brand) {
-        clients = clients.filter(c => c.brand === brand);
+        clients = clients.filter(c => (c as any).brand === brand || brand === 'Heiwa House'); // Default to Heiwa House for legacy data
       }
       if (status) {
         clients = clients.filter(c => c.status === status);

@@ -378,6 +378,7 @@ export default function AdminClientsPage() {
         const newClients: Client[] = result.data.map((row, index) => ({
           id: `imported-${Date.now()}-${index}`,
           ...row,
+          phone: row.phone || '', // Ensure phone is always a string
           registrationDate: row.registrationDate
             ? { seconds: new Date(row.registrationDate).getTime() / 1000, nanoseconds: 0 }
             : { seconds: Date.now() / 1000, nanoseconds: 0 },
@@ -555,7 +556,6 @@ export default function AdminClientsPage() {
           ) : (
             <ClientsTable
               data={filteredData}
-              visibleColumns={visibleColumns}
               sorting={sorting}
               onSortingChange={setSorting}
               rowSelection={rowSelection}
