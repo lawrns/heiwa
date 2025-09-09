@@ -106,12 +106,37 @@ curl -H "X-Heiwa-API-Key: your_api_key" \
   "https://your-heiwa-app.vercel.app/api/wordpress/availability?camp_id=uuid&start_date=2024-06-01&end_date=2024-06-07&participants=2"
 ```
 
+## WordPress Plugin
+
+The complete WordPress plugin is located in `wordpress-plugin/heiwa-booking-widget/` and includes:
+
+### Plugin Structure
+- **Main Plugin File:** `heiwa-booking-widget.php` - Plugin initialization and core functionality
+- **API Connector:** `includes/class-api-connector.php` - Handles communication with Heiwa backend
+- **Widget Display:** `includes/class-widget.php` - Renders the booking widget on WordPress sites
+- **Shortcode Handler:** `includes/class-shortcode.php` - Provides `[heiwa_booking]` shortcode
+- **Admin Settings:** `admin/class-settings.php` - WordPress admin configuration interface
+- **Styles:** `assets/css/widget.css` - Complete responsive styling with Heiwa design tokens
+
+### Installation
+1. Upload the `heiwa-booking-widget` folder to your WordPress `/wp-content/plugins/` directory
+2. Activate the plugin in WordPress admin
+3. Configure API settings in **Settings > Heiwa Booking**
+4. Add the `[heiwa_booking]` shortcode to any page or post
+
+### Configuration
+- **API Endpoint:** Your Heiwa backend URL (e.g., `https://your-app.vercel.app`)
+- **API Key:** The WordPress API key from your environment variables
+- **Widget Position:** Choose trigger button position (right, left, bottom)
+- **Trigger Text:** Customize the booking button text
+- **Primary Color:** Match your site's branding
+
 ## Next Steps
 
 1. Add the `WORDPRESS_API_KEY` to your environment variables
 2. Deploy the updated backend with the new API endpoints
 3. Test the API endpoints using the examples above
-4. Create the WordPress plugin to consume these endpoints
+4. Install and configure the WordPress plugin on client sites
 
 ## Admin Dashboard Integration
 
