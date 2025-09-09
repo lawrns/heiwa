@@ -116,6 +116,7 @@ export const BookingSchema = z.object({
   paymentStatus: z.enum(['pending', 'confirmed', 'cancelled']),
   paymentMethod: z.enum(['stripe', 'cash', 'transfer', 'other']).optional(),
   notes: z.string().optional().default(''),
+  source: z.enum(['dashboard', 'wordpress', 'api']).optional().default('dashboard'),
   createdAt: TimestampSchema,
   updatedAt: TimestampSchema,
 });
