@@ -458,7 +458,8 @@ class Heiwa_Booking_Settings {
         $sanitized['trigger_text'] = sanitize_text_field($input['trigger_text'] ?? 'BOOK NOW');
         $sanitized['primary_color'] = sanitize_hex_color($input['primary_color'] ?? '#2563eb');
         $sanitized['auto_inject'] = !empty($input['auto_inject']);
-        $sanitized['enabled_pages'] = is_array($input['enabled_pages'] ?? array()) ? array_map('sanitize_text_field', $input['enabled_pages']) : array();
+        $enabled_pages = $input['enabled_pages'] ?? array();
+        $sanitized['enabled_pages'] = is_array($enabled_pages) ? array_map('sanitize_text_field', $enabled_pages) : array();
 
         return $sanitized;
     }

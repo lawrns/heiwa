@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@supabase/supabase-js';
+
+// Temporarily use service role for testing WordPress widget
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 /**
  * WordPress API Surf Camps Endpoint
@@ -18,14 +24,21 @@ export async function GET(request: NextRequest) {
     const validApiKey = process.env.WORDPRESS_API_KEY;
     
     if (!apiKey || !validApiKey || apiKey !== validApiKey) {
-      return NextResponse.json(
-        { 
-          success: false, 
+      const response = NextResponse.json(
+        {
+          success: false,
           error: 'Unauthorized',
           message: 'Invalid or missing API key'
-        }, 
+        },
         { status: 401 }
       );
+
+      // Add CORS headers
+      response.headers.set('Access-Control-Allow-Origin', '*');
+      response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
+
+      return response;
     }
 
     // Get query parameters for filtering
@@ -47,10 +60,9 @@ export async function GET(request: NextRequest) {
         level,
         includes,
         images,
-        created_at
+        created_at,
+        is_active
       `)
-      .eq('is_active', true)
-      .gte('end_date', new Date().toISOString()) // Only future or current camps
       .order('start_date', { ascending: true });
 
     // Apply filters if provided
@@ -60,16 +72,26 @@ export async function GET(request: NextRequest) {
 
     const { data: surfCamps, error } = await query;
 
+    console.log('WordPress surf camps query result:', { surfCamps, error, count: surfCamps?.length });
+
     if (error) {
       console.error('Error fetching surf camps for WordPress:', error);
-      return NextResponse.json(
-        { 
-          success: false, 
+      const response = NextResponse.json(
+        {
+          success: false,
           error: 'Database error',
-          message: 'Failed to fetch surf camps'
-        }, 
+          message: 'Failed to fetch surf camps',
+          debug: { error: error.message, code: error.code }
+        },
         { status: 500 }
       );
+
+      // Add CORS headers
+      response.headers.set('Access-Control-Allow-Origin', '*');
+      response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
+
+      return response;
     }
 
     // Transform data for WordPress widget consumption
@@ -113,7 +135,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: {
         surf_camps: filteredCamps,
@@ -130,16 +152,30 @@ export async function GET(request: NextRequest) {
       }
     });
 
+    // Add CORS headers
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
+
+    return response;
+
   } catch (error: any) {
     console.error('WordPress surf-camps endpoint error:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
+    const response = NextResponse.json(
+      {
+        success: false,
         error: 'Internal server error',
         message: 'Failed to process surf camps request'
-      }, 
+      },
       { status: 500 }
     );
+
+    // Add CORS headers
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
+
+    return response;
   }
 }
 

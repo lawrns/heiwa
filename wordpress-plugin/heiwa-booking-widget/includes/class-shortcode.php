@@ -341,9 +341,38 @@ class Heiwa_Booking_Widget_Shortcode {
 
         if ($has_shortcode) {
             // Enqueue the same assets as the main widget
-            $widget = new Heiwa_Booking_Widget();
-            $widget->enqueue_frontend_assets();
+            $this->enqueue_assets();
         }
+    }
+
+    /**
+     * Enqueue widget assets
+     */
+    private function enqueue_assets() {
+        // Enqueue CSS
+        wp_enqueue_style(
+            'heiwa-booking-widget',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/widget.css',
+            array(),
+            HEIWA_BOOKING_VERSION
+        );
+
+        // Enqueue JavaScript
+        wp_enqueue_script(
+            'heiwa-booking-widget',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/js/widget.js',
+            array('jquery'),
+            HEIWA_BOOKING_VERSION,
+            true
+        );
+
+        // Localize script with AJAX URL and nonce
+        wp_localize_script('heiwa-booking-widget', 'heiwa_booking_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('heiwa_booking_nonce'),
+            'api_endpoint' => get_option('heiwa_booking_settings')['api_endpoint'] ?? '',
+            'api_key' => get_option('heiwa_booking_settings')['api_key'] ?? ''
+        ));
     }
 
     /**

@@ -139,7 +139,12 @@ class Heiwa_Booking_Widget {
         
         // Initialize components
         new Heiwa_Booking_Widget_Shortcode();
-        
+
+        // Initialize admin settings
+        if (is_admin()) {
+            new Heiwa_Booking_Settings();
+        }
+
         // Initialize widget if settings are configured
         $settings = get_option('heiwa_booking_settings', array());
         if (!empty($settings['api_endpoint']) && !empty($settings['api_key'])) {
@@ -151,9 +156,7 @@ class Heiwa_Booking_Widget {
      * Admin initialization
      */
     public function admin_init() {
-        if (is_admin()) {
-            new Heiwa_Booking_Settings();
-        }
+        // Admin initialization tasks can go here
     }
 
     /**

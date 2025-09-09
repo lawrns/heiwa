@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@supabase/supabase-js';
 import { bookingsAPI, clientsAPI } from '@/lib/supabase-admin';
 import { CreateBookingSchema } from '@/lib/schemas';
 import { sendBookingEmails } from '@/lib/email-service';
+
+// Temporarily use service role for testing WordPress widget
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 /**
  * WordPress API Bookings Endpoint
