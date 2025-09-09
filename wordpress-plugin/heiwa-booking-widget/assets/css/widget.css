@@ -3,6 +3,10 @@
  * Based on Heiwa House design tokens and responsive design principles
  */
 
+/* ===========================================
+   HEIWA BOOKING WIDGET - ENHANCED DESIGN SYSTEM
+   =========================================== */
+
 /* CSS Custom Properties (Design Tokens) */
 :root {
   /* Ocean Blue - Primary brand color */
@@ -41,13 +45,84 @@
   --heiwa-sand-beige-800: #854d0e;
   --heiwa-sand-beige-900: #713f12;
 
+  /* Neutral Gray Scale */
+  --heiwa-neutral-50: #fafafa;
+  --heiwa-neutral-100: #f5f5f5;
+  --heiwa-neutral-200: #e5e5e5;
+  --heiwa-neutral-300: #d4d4d4;
+  --heiwa-neutral-400: #a3a3a3;
+  --heiwa-neutral-500: #737373;
+  --heiwa-neutral-600: #525252;
+  --heiwa-neutral-700: #404040;
+  --heiwa-neutral-800: #262626;
+  --heiwa-neutral-900: #171717;
+
   /* Default colors (can be overridden by widget settings) */
   --heiwa-primary-color: var(--heiwa-ocean-blue-600);
   --heiwa-primary-hover: var(--heiwa-ocean-blue-700);
   --heiwa-primary-light: var(--heiwa-ocean-blue-100);
+  --heiwa-accent-color: var(--heiwa-surf-teal-500);
+  --heiwa-accent-hover: var(--heiwa-surf-teal-600);
 
   /* Typography */
-  --heiwa-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --heiwa-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+  /* Typography Scale */
+  --heiwa-text-xs: 0.75rem;    /* 12px */
+  --heiwa-text-sm: 0.875rem;   /* 14px */
+  --heiwa-text-base: 1rem;     /* 16px */
+  --heiwa-text-lg: 1.125rem;   /* 18px */
+  --heiwa-text-xl: 1.25rem;    /* 20px */
+  --heiwa-text-2xl: 1.5rem;    /* 24px */
+  --heiwa-text-3xl: 1.875rem;  /* 30px */
+  --heiwa-text-4xl: 2.25rem;   /* 36px */
+
+  /* Font Weights */
+  --heiwa-font-light: 300;
+  --heiwa-font-normal: 400;
+  --heiwa-font-medium: 500;
+  --heiwa-font-semibold: 600;
+  --heiwa-font-bold: 700;
+  --heiwa-font-extrabold: 800;
+
+  /* Spacing Scale */
+  --heiwa-space-1: 0.25rem;   /* 4px */
+  --heiwa-space-2: 0.5rem;    /* 8px */
+  --heiwa-space-3: 0.75rem;   /* 12px */
+  --heiwa-space-4: 1rem;      /* 16px */
+  --heiwa-space-5: 1.25rem;   /* 20px */
+  --heiwa-space-6: 1.5rem;    /* 24px */
+  --heiwa-space-8: 2rem;      /* 32px */
+  --heiwa-space-10: 2.5rem;   /* 40px */
+  --heiwa-space-12: 3rem;     /* 48px */
+  --heiwa-space-16: 4rem;     /* 64px */
+
+  /* Border Radius */
+  --heiwa-radius-sm: 0.25rem;  /* 4px */
+  --heiwa-radius-md: 0.5rem;   /* 8px */
+  --heiwa-radius-lg: 0.75rem;  /* 12px */
+  --heiwa-radius-xl: 1rem;     /* 16px */
+  --heiwa-radius-2xl: 1.5rem;  /* 24px */
+
+  /* Shadows */
+  --heiwa-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --heiwa-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --heiwa-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --heiwa-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --heiwa-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --heiwa-transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --heiwa-transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-index scale */
+  --heiwa-z-dropdown: 1000;
+  --heiwa-z-sticky: 1020;
+  --heiwa-z-fixed: 1030;
+  --heiwa-z-modal-backdrop: 1040;
+  --heiwa-z-modal: 1050;
+  --heiwa-z-popover: 1060;
+  --heiwa-z-tooltip: 1070;
   --heiwa-font-size-xs: 0.75rem;
   --heiwa-font-size-sm: 0.875rem;
   --heiwa-font-size-base: 1rem;
@@ -179,24 +254,211 @@ body.heiwa-modal-open {
   right: var(--heiwa-space-6);
 }
 
-/* Widget Panel */
+/* ===========================================
+   MODAL SYSTEM - ENHANCED
+   =========================================== */
+
+/* Modal Backdrop */
+.heiwa-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--heiwa-z-modal-backdrop);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--heiwa-transition-normal);
+}
+
+.heiwa-modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal Container */
+.heiwa-modal-container {
+  background: white;
+  border-radius: var(--heiwa-radius-2xl);
+  box-shadow: var(--heiwa-shadow-xl);
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 640px;
+  overflow: hidden;
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+  transition: all var(--heiwa-transition-normal);
+  position: relative;
+  z-index: var(--heiwa-z-modal);
+}
+
+.heiwa-modal-container.active {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Wave Pattern Background */
+.heiwa-modal-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(135deg, var(--heiwa-primary-color) 0%, var(--heiwa-accent-color) 100%);
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.heiwa-modal-container::after {
+  content: '🌊';
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: var(--heiwa-text-3xl);
+  opacity: 0.1;
+  z-index: 0;
+}
+
+/* Modal Header */
+.heiwa-modal-header {
+  background: linear-gradient(135deg, var(--heiwa-primary-color) 0%, var(--heiwa-accent-color) 100%);
+  color: white;
+  padding: var(--heiwa-space-6) var(--heiwa-space-8);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.heiwa-modal-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+}
+
+.heiwa-modal-title {
+  font-size: var(--heiwa-text-2xl);
+  font-weight: var(--heiwa-font-bold);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-3);
+  z-index: 1;
+  position: relative;
+}
+
+.heiwa-modal-title::before {
+  content: '🏄‍♂️';
+  font-size: var(--heiwa-text-xl);
+  animation: heiwa-wave 2s ease-in-out infinite;
+}
+
+.heiwa-modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: var(--heiwa-text-xl);
+  cursor: pointer;
+  padding: var(--heiwa-space-2);
+  border-radius: var(--heiwa-radius-lg);
+  transition: all var(--heiwa-transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  z-index: 1;
+  position: relative;
+}
+
+.heiwa-modal-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
+
+.heiwa-modal-close:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+}
+
+.heiwa-modal-close:active {
+  transform: scale(0.95);
+}
+
+/* Modal Body */
+.heiwa-modal-body {
+  padding: var(--heiwa-space-8);
+  max-height: calc(90vh - 140px);
+  overflow-y: auto;
+  z-index: 1;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--heiwa-neutral-300) transparent;
+}
+
+.heiwa-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.heiwa-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.heiwa-modal-body::-webkit-scrollbar-thumb {
+  background: var(--heiwa-neutral-300);
+  border-radius: 3px;
+}
+
+.heiwa-modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--heiwa-neutral-400);
+}
+
+/* Modal Footer */
+.heiwa-modal-footer {
+  padding: var(--heiwa-space-6) var(--heiwa-space-8);
+  background: var(--heiwa-neutral-50);
+  border-top: 1px solid var(--heiwa-neutral-200);
+  display: flex;
+  gap: var(--heiwa-space-3);
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+  position: relative;
+}
+
+.heiwa-modal-footer .heiwa-btn {
+  min-width: 140px;
+}
+
+/* Legacy Panel Support (for backward compatibility) */
 .heiwa-booking-panel {
   position: fixed !important;
   top: 50% !important;
   left: 50% !important;
-  width: 500px;
+  transform: translate(-50%, -50%) !important;
+  width: 640px;
   max-width: 90vw;
-  height: 80vh;
-  max-height: 700px;
+  height: auto;
+  max-height: 90vh;
   background: white;
-  border-radius: var(--heiwa-radius-xl);
+  border-radius: var(--heiwa-radius-2xl);
   box-shadow: var(--heiwa-shadow-xl);
-  display: none; /* Hidden by default */
-  flex-direction: column;
-  z-index: 9999 !important;
-  transform: translate(-50%, -50%) scale(0.9) !important;
-  transition: all var(--heiwa-transition-normal);
-  opacity: 0;
+  display: none;
+  z-index: var(--heiwa-z-modal);
 }
 
 .heiwa-booking-panel.heiwa-open {
@@ -401,61 +663,203 @@ body.heiwa-modal-open {
 }
 
 .heiwa-destination-card {
-  border: 2px solid #e5e7eb;
-  border-radius: var(--heiwa-radius-lg);
-  padding: var(--heiwa-space-4);
+  border: 2px solid var(--heiwa-neutral-200);
+  border-radius: var(--heiwa-radius-xl);
+  overflow: hidden;
   cursor: pointer;
-  transition: all var(--heiwa-transition-fast);
+  transition: all var(--heiwa-transition-normal);
   background: white;
+  position: relative;
+  transform: translateY(0);
+  box-shadow: var(--heiwa-shadow-sm);
 }
 
 .heiwa-destination-card:hover {
   border-color: var(--heiwa-primary-color);
-  box-shadow: var(--heiwa-shadow-md);
+  box-shadow: var(--heiwa-shadow-lg);
+  transform: translateY(-4px);
+}
+
+.heiwa-destination-card:active {
   transform: translateY(-2px);
+  box-shadow: var(--heiwa-shadow-md);
 }
 
 .heiwa-destination-card.heiwa-selected {
   border-color: var(--heiwa-primary-color);
-  background-color: var(--heiwa-primary-light);
+  box-shadow: 0 0 0 3px var(--heiwa-primary-light);
+  transform: translateY(-2px);
+}
+
+.heiwa-destination-card.heiwa-selected::after {
+  content: '🏄‍♂️';
+  position: absolute;
+  top: var(--heiwa-space-3);
+  right: var(--heiwa-space-3);
+  width: 32px;
+  height: 32px;
+  background: var(--heiwa-primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--heiwa-text-lg);
+  z-index: 2;
+  animation: heiwa-bounce-in 0.5s ease-out;
 }
 
 .heiwa-destination-image {
   width: 100%;
-  height: 120px;
+  height: 180px;
   object-fit: cover;
-  border-radius: var(--heiwa-radius-base);
-  margin-bottom: var(--heiwa-space-3);
+  transition: transform var(--heiwa-transition-normal);
+  position: relative;
+}
+
+.heiwa-destination-card:hover .heiwa-destination-image {
+  transform: scale(1.05);
+}
+
+.heiwa-destination-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0) 0%, rgba(37, 99, 235, 0.1) 100%);
+  opacity: 0;
+  transition: opacity var(--heiwa-transition-normal);
+}
+
+.heiwa-destination-card:hover .heiwa-destination-image::after {
+  opacity: 1;
+}
+
+.heiwa-destination-content {
+  padding: var(--heiwa-space-5);
 }
 
 .heiwa-destination-name {
-  font-size: var(--heiwa-font-size-lg);
-  font-weight: 600;
-  margin-bottom: var(--heiwa-space-2);
+  font-size: var(--heiwa-text-xl);
+  font-weight: var(--heiwa-font-bold);
+  margin: 0 0 var(--heiwa-space-2) 0;
+  color: var(--heiwa-neutral-900);
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-2);
+}
+
+.heiwa-destination-name::before {
+  content: '🏄‍♂️';
+  font-size: var(--heiwa-text-lg);
+  opacity: 0.8;
+}
+
+.heiwa-destination-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-3);
+  margin-bottom: var(--heiwa-space-3);
+}
+
+.heiwa-destination-level {
+  background: var(--heiwa-neutral-100);
+  color: var(--heiwa-neutral-700);
+  padding: var(--heiwa-space-1) var(--heiwa-space-3);
+  border-radius: var(--heiwa-radius-lg);
+  font-size: var(--heiwa-text-xs);
+  font-weight: var(--heiwa-font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--heiwa-neutral-200);
 }
 
 .heiwa-destination-description {
-  font-size: var(--heiwa-font-size-sm);
-  color: #6b7280;
-  margin-bottom: var(--heiwa-space-3);
-  line-height: 1.4;
+  font-size: var(--heiwa-text-sm);
+  color: var(--heiwa-neutral-600);
+  margin: 0 0 var(--heiwa-space-4) 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.heiwa-destination-details {
+.heiwa-destination-footer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
+  margin-top: auto;
 }
 
 .heiwa-destination-price {
-  font-size: var(--heiwa-font-size-lg);
-  font-weight: 600;
+  font-size: var(--heiwa-text-2xl);
+  font-weight: var(--heiwa-font-bold);
   color: var(--heiwa-primary-color);
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--heiwa-space-1);
+}
+
+.heiwa-destination-price .currency {
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-normal);
+  color: var(--heiwa-neutral-500);
 }
 
 .heiwa-destination-dates {
-  font-size: var(--heiwa-font-size-sm);
-  color: #6b7280;
+  font-size: var(--heiwa-text-xs);
+  color: var(--heiwa-neutral-500);
+  background: var(--heiwa-neutral-50);
+  padding: var(--heiwa-space-1) var(--heiwa-space-2);
+  border-radius: var(--heiwa-radius-md);
+  border: 1px solid var(--heiwa-neutral-200);
+}
+
+/* Enhanced responsive design for destination cards */
+@media (max-width: 768px) {
+  .heiwa-destination-grid {
+    grid-template-columns: 1fr;
+    gap: var(--heiwa-space-3);
+  }
+
+  .heiwa-destination-card {
+    max-width: 100%;
+  }
+
+  .heiwa-destination-image {
+    height: 160px;
+  }
+
+  .heiwa-destination-content {
+    padding: var(--heiwa-space-4);
+  }
+
+  .heiwa-destination-name {
+    font-size: var(--heiwa-text-lg);
+  }
+
+  .heiwa-destination-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--heiwa-space-2);
+  }
+}
+
+@media (min-width: 768px) {
+  .heiwa-destination-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .heiwa-destination-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
 }
 
 /* Form Styles */
@@ -468,37 +872,71 @@ body.heiwa-modal-open {
 .heiwa-form-section {
   display: flex;
   flex-direction: column;
-  gap: var(--heiwa-space-4);
+  gap: var(--heiwa-space-6);
+  position: relative;
 }
 
 .heiwa-form-section h5 {
-  font-size: var(--heiwa-font-size-base);
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: var(--heiwa-space-2);
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-neutral-900);
+  margin: 0 0 var(--heiwa-space-4) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-2);
+}
+
+.heiwa-form-section h5::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--heiwa-primary-color), var(--heiwa-accent-color));
+  border-radius: var(--heiwa-radius-sm);
 }
 
 .heiwa-form-group {
   display: flex;
   flex-direction: column;
   gap: var(--heiwa-space-2);
+  position: relative;
 }
 
 .heiwa-form-group label {
-  font-size: var(--heiwa-font-size-sm);
-  font-weight: 500;
-  color: #374151;
+  font-size: var(--heiwa-text-sm);
+  font-weight: var(--heiwa-font-medium);
+  color: var(--heiwa-neutral-700);
+  transition: color var(--heiwa-transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-1);
+}
+
+.heiwa-form-group label.required::before {
+  content: '*';
+  color: #ef4444;
+  font-weight: var(--heiwa-font-bold);
 }
 
 .heiwa-form-group input,
 .heiwa-form-group select,
 .heiwa-form-group textarea {
-  padding: var(--heiwa-space-3);
-  border: 1px solid #d1d5db;
-  border-radius: var(--heiwa-radius-base);
-  font-size: var(--heiwa-font-size-base);
+  width: 100%;
+  padding: var(--heiwa-space-4) var(--heiwa-space-4);
+  border: 2px solid var(--heiwa-neutral-300);
+  border-radius: var(--heiwa-radius-lg);
+  font-size: var(--heiwa-text-base);
   font-family: var(--heiwa-font-family);
-  transition: border-color var(--heiwa-transition-fast);
+  background: white;
+  color: var(--heiwa-neutral-900);
+  transition: all var(--heiwa-transition-fast);
+  position: relative;
+  min-height: 48px;
+}
+
+.heiwa-form-group input::placeholder,
+.heiwa-form-group textarea::placeholder {
+  color: var(--heiwa-neutral-400);
+  opacity: 0.7;
 }
 
 .heiwa-form-group input:focus,
@@ -506,7 +944,97 @@ body.heiwa-modal-open {
 .heiwa-form-group textarea:focus {
   outline: none;
   border-color: var(--heiwa-primary-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--heiwa-primary-light);
+  transform: translateY(-1px);
+}
+
+.heiwa-form-group input:hover:not(:focus),
+.heiwa-form-group textarea:hover:not(:focus) {
+  border-color: var(--heiwa-neutral-400);
+}
+
+.heiwa-form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+
+.heiwa-form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right var(--heiwa-space-4) center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: var(--heiwa-space-10);
+}
+
+/* Enhanced validation states */
+.heiwa-form-group.error .heiwa-form-input,
+.heiwa-form-group.error .heiwa-form-textarea,
+.heiwa-form-group.error .heiwa-form-select {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  animation: heiwa-shake 0.5s ease-in-out;
+}
+
+.heiwa-form-group.success .heiwa-form-input,
+.heiwa-form-group.success .heiwa-form-textarea,
+.heiwa-form-group.success .heiwa-form-select {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.heiwa-form-group.warning .heiwa-form-input,
+.heiwa-form-group.warning .heiwa-form-textarea,
+.heiwa-form-group.warning .heiwa-form-select {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Error and help messages */
+.heiwa-form-message {
+  font-size: var(--heiwa-text-sm);
+  margin-top: var(--heiwa-space-1);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--heiwa-space-2);
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: heiwa-slide-up 0.3s ease-out forwards;
+}
+
+.heiwa-form-message.error {
+  color: #ef4444;
+}
+
+.heiwa-form-message.error::before {
+  content: '⚠️';
+  font-size: var(--heiwa-text-base);
+}
+
+.heiwa-form-message.success {
+  color: #10b981;
+}
+
+.heiwa-form-message.success::before {
+  content: '✅';
+  font-size: var(--heiwa-text-base);
+}
+
+.heiwa-form-message.info {
+  color: var(--heiwa-neutral-600);
+}
+
+.heiwa-form-message.info::before {
+  content: 'ℹ️';
+  font-size: var(--heiwa-text-base);
+}
+
+/* Shake animation for errors */
+@keyframes heiwa-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 
 /* Participant Counter */
@@ -840,4 +1368,206 @@ body.heiwa-modal-open {
 .heiwa-booking-widget textarea:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* ===========================================
+   ANIMATIONS & ENHANCED INTERACTIONS
+   =========================================== */
+
+/* Wave animation for brand personality */
+@keyframes heiwa-wave {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-3px) rotate(-5deg); }
+  50% { transform: translateY(0px) rotate(0deg); }
+  75% { transform: translateY(-1px) rotate(3deg); }
+}
+
+/* Bounce in animation for cards */
+@keyframes heiwa-bounce-in {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Slide up animation */
+@keyframes heiwa-slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Pulse animation for loading states */
+@keyframes heiwa-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Shimmer effect for loading cards */
+@keyframes heiwa-shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Enhanced button interactions */
+.heiwa-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.heiwa-btn-primary:hover::before {
+  left: 100%;
+}
+
+/* Enhanced card animations */
+.heiwa-destination-card {
+  animation: heiwa-bounce-in 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.heiwa-destination-card:nth-child(1) { animation-delay: 0.1s; }
+.heiwa-destination-card:nth-child(2) { animation-delay: 0.2s; }
+.heiwa-destination-card:nth-child(3) { animation-delay: 0.3s; }
+.heiwa-destination-card:nth-child(4) { animation-delay: 0.4s; }
+.heiwa-destination-card:nth-child(5) { animation-delay: 0.5s; }
+
+/* Loading skeleton */
+.heiwa-loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: heiwa-shimmer 1.5s infinite;
+}
+
+/* Enhanced form validation */
+.heiwa-form-group.error .heiwa-form-input,
+.heiwa-form-group.error .heiwa-form-textarea,
+.heiwa-form-group.error .heiwa-form-select {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.heiwa-form-group.success .heiwa-form-input,
+.heiwa-form-group.success .heiwa-form-textarea,
+.heiwa-form-group.success .heiwa-form-select {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Progressive enhancement */
+.no-js .heiwa-booking-widget {
+  display: none;
+}
+
+.no-js .heiwa-fallback-message {
+  display: block;
+  padding: var(--heiwa-space-4);
+  background: var(--heiwa-primary-light);
+  color: var(--heiwa-primary-color);
+  border-radius: var(--heiwa-radius-lg);
+  text-align: center;
+}
+
+.heiwa-fallback-message {
+  display: none;
+}
+
+/* ===========================================
+   ACCESSIBILITY ENHANCEMENTS
+   =========================================== */
+
+/* Screen reader utilities */
+.heiwa-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .heiwa-modal-container {
+    border: 2px solid var(--heiwa-primary-color);
+  }
+
+  .heiwa-destination-card {
+    border-width: 2px;
+  }
+
+  .heiwa-form-input,
+  .heiwa-form-textarea,
+  .heiwa-form-select {
+    border-width: 2px;
+  }
+
+  .heiwa-btn {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .heiwa-modal-container,
+  .heiwa-modal-backdrop,
+  .heiwa-destination-card,
+  .heiwa-btn,
+  .heiwa-form-input,
+  .heiwa-form-textarea,
+  .heiwa-form-select,
+  .heiwa-modal-title::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ===========================================
+   UTILITY CLASSES
+   =========================================== */
+
+.heiwa-text-gradient {
+  background: linear-gradient(135deg, var(--heiwa-primary-color), var(--heiwa-accent-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heiwa-shadow-glow {
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.15);
+}
+
+.heiwa-bg-wave {
+  background-image: url("data:image/svg+xml,%3csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3e%3cg fill='none' fill-rule='evenodd'%3e%3cg fill='%23e5e7eb' fill-opacity='0.1'%3e%3cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e");
 }
