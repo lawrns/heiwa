@@ -724,6 +724,11 @@ body.heiwa-modal-open {
   z-index: 2;
 }
 
+/* Hide summary cart on booking type selection step */
+.heiwa-booking-step-content[data-step="booking-type"] ~ .heiwa-booking-summary {
+  display: none;
+}
+
 .heiwa-summary-content {
   display: grid;
   gap: 8px;
@@ -2597,6 +2602,537 @@ body.heiwa-modal-open {
   .heiwa-modal-title::before {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* ===========================================
+   BOOKING TYPE SELECTOR STYLES
+   =========================================== */
+
+.heiwa-booking-type-selector {
+  padding: var(--heiwa-space-6) 0;
+}
+
+.heiwa-booking-type-header {
+  text-align: center;
+  margin-bottom: var(--heiwa-space-8);
+}
+
+.heiwa-booking-type-title {
+  font-size: var(--heiwa-text-3xl);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-neutral-900);
+  margin: 0 0 var(--heiwa-space-3) 0;
+}
+
+.heiwa-booking-type-subtitle {
+  font-size: var(--heiwa-text-lg);
+  color: var(--heiwa-neutral-600);
+  margin: 0;
+}
+
+.heiwa-booking-type-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--heiwa-space-4);
+}
+
+.heiwa-booking-option-card {
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-4);
+  padding: var(--heiwa-space-6);
+  border: 2px solid var(--heiwa-neutral-200);
+  border-radius: var(--heiwa-radius-xl);
+  background: white;
+  cursor: pointer;
+  transition: all var(--heiwa-transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.heiwa-booking-option-card:hover {
+  border-color: var(--heiwa-primary-color);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+  transform: translateY(-2px);
+}
+
+.heiwa-booking-option-card.selected {
+  border-color: var(--heiwa-primary-color);
+  background: var(--heiwa-primary-light);
+  box-shadow: 0 0 0 3px var(--heiwa-primary-light);
+}
+
+.heiwa-booking-option-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: var(--heiwa-space-4);
+  right: var(--heiwa-space-4);
+  width: 32px;
+  height: 32px;
+  background: var(--heiwa-primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-bold);
+  animation: heiwa-bounce-in 0.5s ease-out;
+}
+
+.heiwa-booking-option-icon {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--heiwa-radius-lg);
+  overflow: hidden;
+  transition: all var(--heiwa-transition-fast);
+}
+
+.heiwa-booking-option-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--heiwa-radius-lg);
+}
+
+.heiwa-booking-option-card:hover .heiwa-booking-option-icon {
+  transform: scale(1.05);
+}
+
+.heiwa-booking-option-card:hover .heiwa-booking-option-icon img {
+  transform: scale(1.1);
+}
+
+.heiwa-booking-option-content {
+  flex: 1;
+}
+
+.heiwa-booking-option-title {
+  font-size: var(--heiwa-text-xl);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-neutral-900);
+  margin: 0 0 var(--heiwa-space-2) 0;
+}
+
+.heiwa-booking-option-subtitle {
+  font-size: var(--heiwa-text-base);
+  color: var(--heiwa-neutral-700);
+  margin: 0 0 var(--heiwa-space-1) 0;
+  font-weight: var(--heiwa-font-medium);
+}
+
+.heiwa-booking-option-description {
+  font-size: var(--heiwa-text-sm);
+  color: var(--heiwa-neutral-600);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.heiwa-booking-option-arrow {
+  flex-shrink: 0;
+  color: var(--heiwa-neutral-400);
+  transition: all var(--heiwa-transition-fast);
+}
+
+.heiwa-booking-option-card:hover .heiwa-booking-option-arrow {
+  color: var(--heiwa-primary-color);
+  transform: translateX(4px);
+}
+
+.heiwa-booking-option-card:focus {
+  outline: 2px solid var(--heiwa-primary-color);
+  outline-offset: 2px;
+}
+
+.heiwa-booking-option-card:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ===========================================
+   SURF WEEKS STYLES
+   =========================================== */
+
+.heiwa-surf-week-list {
+  padding: var(--heiwa-space-4) 0;
+}
+
+.heiwa-surf-week-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--heiwa-space-6);
+}
+
+.heiwa-surf-week-title {
+  font-size: var(--heiwa-text-2xl);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-neutral-900);
+  margin: 0;
+}
+
+.heiwa-surf-week-grid {
+  display: grid;
+  gap: var(--heiwa-space-4);
+}
+
+.heiwa-surf-week-item {
+  border: 2px solid var(--heiwa-neutral-200);
+  border-radius: var(--heiwa-radius-xl);
+  background: white;
+  cursor: pointer;
+  transition: all var(--heiwa-transition-normal);
+  overflow: hidden;
+}
+
+.heiwa-surf-week-item:hover {
+  border-color: var(--heiwa-primary-color);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+  transform: translateY(-2px);
+}
+
+.heiwa-surf-week-item.selected {
+  border-color: var(--heiwa-primary-color);
+  background: var(--heiwa-primary-light);
+  box-shadow: 0 0 0 3px var(--heiwa-primary-light);
+}
+
+.heiwa-surf-week-content {
+  padding: var(--heiwa-space-6);
+}
+
+.heiwa-surf-week-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--heiwa-space-3);
+}
+
+.heiwa-surf-week-name {
+  font-size: var(--heiwa-text-xl);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-neutral-900);
+  margin: 0;
+}
+
+.heiwa-surf-week-category {
+  padding: var(--heiwa-space-1) var(--heiwa-space-3);
+  border-radius: var(--heiwa-radius-lg);
+  font-size: var(--heiwa-text-xs);
+  font-weight: var(--heiwa-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.heiwa-category-international {
+  background: var(--heiwa-surf-teal-100);
+  color: var(--heiwa-surf-teal-800);
+}
+
+.heiwa-category-freedom-route {
+  background: var(--heiwa-sand-beige-100);
+  color: var(--heiwa-sand-beige-800);
+}
+
+.heiwa-surf-week-dates {
+  margin-bottom: var(--heiwa-space-3);
+}
+
+.heiwa-surf-week-date-range {
+  font-size: var(--heiwa-text-base);
+  font-weight: var(--heiwa-font-medium);
+  color: var(--heiwa-neutral-900);
+}
+
+.heiwa-surf-week-description {
+  font-size: var(--heiwa-text-sm);
+  color: var(--heiwa-neutral-600);
+  line-height: 1.5;
+  margin-bottom: var(--heiwa-space-4);
+}
+
+.heiwa-surf-week-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heiwa-surf-week-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.heiwa-price-amount {
+  font-size: var(--heiwa-text-xl);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-primary-color);
+}
+
+.heiwa-price-label {
+  font-size: var(--heiwa-text-sm);
+  color: var(--heiwa-neutral-500);
+}
+
+.heiwa-surf-week-spots {
+  text-align: right;
+}
+
+.heiwa-spots-available {
+  font-size: var(--heiwa-text-sm);
+  color: var(--heiwa-neutral-600);
+}
+
+/* ===========================================
+   ROOM BOOKING STYLES
+   =========================================== */
+
+.heiwa-room-calendar {
+  padding: var(--heiwa-space-6) 0;
+}
+
+.heiwa-calendar-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--heiwa-space-6);
+}
+
+.heiwa-room-selection {
+  padding: var(--heiwa-space-4) 0;
+}
+
+.heiwa-room-grid {
+  display: grid;
+  gap: var(--heiwa-space-4);
+}
+
+.heiwa-room-card {
+  border: 2px solid var(--heiwa-neutral-200);
+  border-radius: var(--heiwa-radius-xl);
+  background: white;
+  cursor: pointer;
+  transition: all var(--heiwa-transition-normal);
+  overflow: hidden;
+}
+
+.heiwa-room-card:hover {
+  border-color: var(--heiwa-primary-color);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+  transform: translateY(-2px);
+}
+
+.heiwa-room-card.selected {
+  border-color: var(--heiwa-primary-color);
+  background: var(--heiwa-primary-light);
+  box-shadow: 0 0 0 3px var(--heiwa-primary-light);
+}
+
+.heiwa-room-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: var(--heiwa-space-4);
+  right: var(--heiwa-space-4);
+  width: 32px;
+  height: 32px;
+  background: var(--heiwa-primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-bold);
+  animation: heiwa-bounce-in 0.5s ease-out;
+  z-index: 2;
+}
+
+.heiwa-room-image {
+  position: relative;
+  height: 120px;
+  background: var(--heiwa-neutral-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heiwa-room-image-placeholder {
+  color: var(--heiwa-neutral-400);
+}
+
+/* Ensure room images display correctly */
+.heiwa-room-image img.heiwa-room-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-left-radius: var(--heiwa-radius-lg);
+  border-top-right-radius: var(--heiwa-radius-lg);
+}
+
+.heiwa-room-content {
+  padding: var(--heiwa-space-4);
+}
+
+.heiwa-room-name {
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-neutral-900);
+  margin: 0 0 var(--heiwa-space-3) 0;
+}
+
+.heiwa-room-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--heiwa-space-3);
+}
+
+.heiwa-room-capacity {
+  font-size: var(--heiwa-text-sm);
+  color: var(--heiwa-neutral-600);
+}
+
+.heiwa-room-price {
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-primary-color);
+}
+
+.heiwa-room-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.heiwa-amenity {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.heiwa-amenity svg {
+  flex-shrink: 0;
+}
+
+.heiwa-amenity-more {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.heiwa-amenity-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  padding: 3px 6px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+
+.heiwa-amenity-tag svg {
+  flex-shrink: 0;
+}
+
+.heiwa-destination-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.heiwa-amenity {
+  padding: var(--heiwa-space-1) var(--heiwa-space-2);
+  background: var(--heiwa-neutral-100);
+  color: var(--heiwa-neutral-700);
+  border-radius: var(--heiwa-radius-md);
+  font-size: var(--heiwa-text-xs);
+  font-weight: var(--heiwa-font-medium);
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN FOR NEW COMPONENTS
+   =========================================== */
+
+@media (max-width: 768px) {
+  .heiwa-booking-option-card {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--heiwa-space-3);
+  }
+
+  .heiwa-booking-option-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .heiwa-booking-option-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .heiwa-surf-week-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .heiwa-room-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .heiwa-surf-week-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--heiwa-space-3);
+  }
+
+  .heiwa-surf-week-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--heiwa-space-2);
+  }
+
+  .heiwa-room-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--heiwa-space-2);
+  }
+}
+
+/* Keep booking type options vertically stacked on all screen sizes */
+@media (min-width: 769px) {
+  .heiwa-booking-type-options {
+    flex-direction: column;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .heiwa-surf-week-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .heiwa-room-grid {
+    grid-template-columns: 1fr;
   }
 }
 

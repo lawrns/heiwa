@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('HEIWA_BOOKING_VERSION', '1.0.0');
+define('HEIWA_BOOKING_VERSION', '1.0.5');
 define('HEIWA_BOOKING_PLUGIN_FILE', __FILE__);
 define('HEIWA_BOOKING_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('HEIWA_BOOKING_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -201,6 +201,12 @@ class Heiwa_Booking_Widget {
                 'error' => __('An error occurred. Please try again.', 'heiwa-booking-widget'),
                 'close' => __('Close', 'heiwa-booking-widget'),
             )
+        ));
+
+        // Expose API endpoint and key for the front-end widget (expected by widget.js)
+        wp_localize_script('heiwa-booking-widget', 'heiwa_booking_ajax', array(
+            'api_endpoint' => $settings['api_endpoint'],
+            'api_key' => $settings['api_key'],
         ));
     }
 

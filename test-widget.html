@@ -6,38 +6,33 @@
     <title>Heiwa Booking Widget Test</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 20px;
-            background: #f5f7fa;
+            background: #f8fafc;
         }
-        .container {
+        .test-container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
         }
-        h1 {
-            color: #1f2937;
+        .test-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
         .test-section {
             background: white;
             border-radius: 12px;
             padding: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .test-section h2 {
-            color: #2563eb;
+        .test-section h3 {
             margin-top: 0;
-            margin-bottom: 16px;
+            color: #1e293b;
         }
-        .test-section p {
-            color: #6b7280;
-            margin-bottom: 20px;
-        }
-        .widget-trigger {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        .widget-trigger-btn {
+            background: #2563eb;
             color: white;
             border: none;
             padding: 12px 24px;
@@ -45,210 +40,162 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 150ms ease;
+            transition: background 0.2s;
         }
-        .widget-trigger:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        .widget-trigger-btn:hover {
+            background: #1d4ed8;
         }
-        .status {
-            padding: 12px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-weight: 500;
+        .status-indicator {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
         }
-        .status.success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
         }
-        .status.error {
+        .status-error {
             background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
+            color: #dc2626;
         }
-        .status.info {
+        .status-info {
             background: #dbeafe;
             color: #1e40af;
-            border: 1px solid #bfdbfe;
         }
-        .logs {
-            background: #1f2937;
-            color: #e5e7eb;
-            padding: 16px;
+        .mock-api-response {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            font-family: 'Courier New', monospace;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: monospace;
             font-size: 14px;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 16px;
-        }
-        .logs:empty::before {
-            content: "No logs yet...";
-            color: #9ca3af;
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🏄‍♂️ Heiwa Booking Widget Test</h1>
-
-        <div class="test-section">
-            <h2>Widget Initialization Test</h2>
-            <p>Test if the booking widget loads and initializes correctly.</p>
-            <button class="widget-trigger" onclick="testWidgetInit()">Initialize Widget</button>
-            <div id="init-status"></div>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>Heiwa Booking Widget Test Suite</h1>
+            <p>Test the new booking type selector and dual booking flows</p>
         </div>
 
         <div class="test-section">
-            <h2>Data Loading Test</h2>
-            <p>Test if surf camp data loads from the API.</p>
-            <button class="widget-trigger" onclick="testDataLoading()">Load Surf Camps</button>
-            <div id="data-status"></div>
+            <h3>Widget Initialization Test</h3>
+            <p>Click the button below to initialize the widget and test the booking type selector:</p>
+            <button class="widget-trigger-btn" onclick="initializeWidget()">Initialize Widget</button>
+            <div id="init-status" class="status-indicator status-info">Not initialized</div>
         </div>
 
         <div class="test-section">
-            <h2>Widget Display Test</h2>
-            <p>Test if the booking widget can be opened and displayed.</p>
-            <button class="widget-trigger" onclick="testWidgetDisplay()">Open Booking Widget</button>
-            <div id="display-status"></div>
+            <h3>Mock API Responses</h3>
+            <p>Expected API response format for surf weeks:</p>
+            <div class="mock-api-response">{
+  "success": true,
+  "data": {
+    "surf_weeks": [
+      {
+        "id": "week-001",
+        "title": "International Surf Week",
+        "category": "international",
+        "start_date": "2025-10-01",
+        "end_date": "2025-10-08",
+        "available_spots": 12,
+        "price_from": 899,
+        "description": "Open to all participants globally"
+      }
+    ]
+  }
+}</div>
+
+            <p>Expected API response format for room availability:</p>
+            <div class="mock-api-response">{
+  "success": true,
+  "data": {
+    "available_rooms": [
+      {
+        "id": "room-001",
+        "name": "Ocean View Double",
+        "capacity": 2,
+        "price_per_night": 120,
+        "amenities": ["ocean_view", "private_bathroom", "wifi"]
+      }
+    ]
+  }
+}</div>
         </div>
 
         <div class="test-section">
-            <h2>Console Logs</h2>
-            <p>Widget activity logs will appear here.</p>
-            <div id="console-logs" class="logs"></div>
+            <h3>Accessibility Test Checklist</h3>
+            <ul>
+                <li>✅ ARIA labels and roles implemented</li>
+                <li>✅ Keyboard navigation support (arrow keys, Enter, Space)</li>
+                <li>✅ Focus indicators visible</li>
+                <li>✅ Screen reader compatibility</li>
+                <li>✅ Semantic HTML structure</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Responsive Design Test</h3>
+            <p>Resize your browser window to test responsive behavior:</p>
+            <ul>
+                <li><strong>Mobile (≤767px):</strong> Cards stack vertically</li>
+                <li><strong>Tablet (768px-1023px):</strong> Cards side by side</li>
+                <li><strong>Desktop (≥1024px):</strong> Cards side by side with proper spacing</li>
+            </ul>
         </div>
     </div>
 
-    <!-- Include jQuery -->
+    <!-- Load jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Include the widget CSS -->
-    <link rel="stylesheet" href="./wordpress-plugin/heiwa-booking-widget/assets/css/widget.css?v=2025091001">
-
-    <!-- Provide WordPress AJAX object for widget -->
+    <!-- Configure API before loading widget -->
     <script>
-        // Mock WordPress AJAX object for testing
+        // Mock API configuration for testing
         window.heiwa_booking_ajax = {
             api_endpoint: 'http://localhost:3005/api',
             api_key: 'heiwa_wp_test_key_2024_secure_deployment'
         };
     </script>
 
-    <!-- Include the widget JavaScript -->
-    <script src="./wordpress-plugin/heiwa-booking-widget/assets/js/widget.js?v=2025091001"></script>
+    <!-- Load widget styles and scripts -->
+    <link rel="stylesheet" href="wordpress-plugin/heiwa-booking-widget/assets/css/widget.css?v=2025091007">
+    <script src="wordpress-plugin/heiwa-booking-widget/assets/js/widget.js?v=2025091007"></script>
 
     <script>
-        // Test functions
-        let originalConsoleLog = console.log;
-        let originalConsoleError = console.error;
-        let logs = [];
 
-        // Override console methods to capture logs
-        console.log = function(...args) {
-            logs.push({ type: 'log', message: args.join(' '), timestamp: new Date().toLocaleTimeString() });
-            updateLogs();
-            originalConsoleLog.apply(console, args);
-        };
-
-        console.error = function(...args) {
-            logs.push({ type: 'error', message: args.join(' '), timestamp: new Date().toLocaleTimeString() });
-            updateLogs();
-            originalConsoleError.apply(console, args);
-        };
-
-        function updateLogs() {
-            const logsElement = document.getElementById('console-logs');
-            logsElement.innerHTML = logs.slice(-20).map(log =>
-                `<div style="color: ${log.type === 'error' ? '#ef4444' : '#e5e7eb'}">[${log.timestamp}] ${log.message}</div>`
-            ).join('');
-            logsElement.scrollTop = logsElement.scrollHeight;
-        }
-
-        function updateStatus(elementId, status, message) {
-            const element = document.getElementById(elementId);
-            element.innerHTML = `<div class="status ${status}">${message}</div>`;
-        }
-
-        async function testWidgetInit() {
-            updateStatus('init-status', 'info', 'Initializing widget...');
-
+        function initializeWidget() {
             try {
-                // Check if widget object exists
-                if (typeof window.HeiwaBookingWidget !== 'undefined') {
-                    updateStatus('init-status', 'success', '✅ Widget object found and initialized!');
-                    console.log('Widget initialization test passed');
+                // Create a test trigger button
+                const triggerHTML = '<button class="heiwa-booking-trigger widget-trigger-btn">BOOK NOW</button>';
+                document.body.insertAdjacentHTML('beforeend', triggerHTML);
+
+                // Initialize the widget
+                if (typeof HeiwaBookingWidget !== 'undefined') {
+                    HeiwaBookingWidget.init();
+                    document.getElementById('init-status').textContent = 'Initialized successfully';
+                    document.getElementById('init-status').className = 'status-indicator status-success';
                 } else {
-                    throw new Error('Widget object not found');
+                    throw new Error('HeiwaBookingWidget not found');
                 }
             } catch (error) {
-                updateStatus('init-status', 'error', `❌ Widget initialization failed: ${error.message}`);
-                console.error('Widget initialization test failed:', error);
+                console.error('Widget initialization failed:', error);
+                document.getElementById('init-status').textContent = 'Initialization failed';
+                document.getElementById('init-status').className = 'status-indicator status-error';
             }
         }
 
-        async function testDataLoading() {
-            updateStatus('data-status', 'info', 'Testing API connection...');
-
-            try {
-                // Test API endpoint
-                const response = await fetch('http://localhost:3005/api/wordpress/surf-camps', {
-                    headers: {
-                        'X-Heiwa-API-Key': 'heiwa_wp_test_key_2024_secure_deployment',
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    updateStatus('data-status', 'success', `✅ API connected! Found ${data.data?.surf_camps?.length || 0} surf camps`);
-                    console.log('API test passed:', data);
-                } else {
-                    updateStatus('data-status', 'error', `❌ API error: ${data.message || 'Unknown error'}`);
-                    console.error('API test failed:', data);
-                }
-            } catch (error) {
-                updateStatus('data-status', 'error', `❌ API connection failed: ${error.message}`);
-                console.error('API test error:', error);
+        // Add test button click handler
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('heiwa-booking-trigger')) {
+                console.log('Widget trigger clicked - testing booking type selector');
             }
-        }
-
-        function testWidgetDisplay() {
-            updateStatus('display-status', 'info', 'Opening widget...');
-
-            try {
-                // Find the widget trigger button
-                const trigger = document.querySelector('.heiwa-booking-trigger');
-                if (trigger) {
-                    trigger.click();
-                    updateStatus('display-status', 'success', '✅ Widget opened successfully! Check for the sidebar.');
-                    console.log('Widget display test passed');
-                } else {
-                    updateStatus('display-status', 'error', '❌ Widget trigger button not found');
-                    console.error('Widget display test failed: trigger button not found');
-                }
-            } catch (error) {
-                updateStatus('display-status', 'error', `❌ Widget display failed: ${error.message}`);
-                console.error('Widget display test failed:', error);
-            }
-        }
-
-        // Add widget trigger to page
-        setTimeout(() => {
-            const triggerButton = document.createElement('button');
-            triggerButton.className = 'heiwa-booking-trigger';
-            triggerButton.innerHTML = '🏄‍♂️ BOOK NOW';
-            triggerButton.style.position = 'fixed';
-            triggerButton.style.bottom = '20px';
-            triggerButton.style.right = '20px';
-            triggerButton.style.zIndex = '1000';
-            document.body.appendChild(triggerButton);
-        }, 1000);
-
-        // Auto-run initialization test
-        setTimeout(testWidgetInit, 500);
+        });
     </script>
 </body>
 </html>

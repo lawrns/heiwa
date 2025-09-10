@@ -18,18 +18,24 @@
 
     // Widget state
     let isWidgetOpen = false;
-    let currentStep = 'destination';
+    let currentStep = 'booking-type';
     let selectedCamp = null;
     let availabilityData = null;
     let surfCamps = [];
+    let surfWeeks = [];
+    let selectedSurfWeek = null;
+    let bookingType = null; // 'room' or 'surf-week'
     let bookingData = {
         destination: null,
+        bookingType: null,
         dates: { start: null, end: null },
         participants: 1,
         participantDetails: [],
         addons: [],
         specialRequests: '',
-        dietaryRequirements: ''
+        dietaryRequirements: '',
+        selectedRoom: null,
+        selectedSurfWeek: null
     };
 
     // Lucide icon helper function
@@ -40,24 +46,69 @@
             'calendar': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
             'users': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
             'dollar-sign': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
-            'party-popper': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12v0c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11v0c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98v0C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/></svg>`
+            'party-popper': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12v0c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11v0c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98v0C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/></svg>`,
+            'bath': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6 6.5 3.5a1.5 1.5 0 0 0-1-.5C4.683 3 4 3.683 4 4.5V17a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"></path><line x1="10" y1="5" x2="8" y2="7"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="7" y1="19" x2="7" y2="21"></line><line x1="17" y1="19" x2="17" y2="21"></line></svg>`,
+            'wifi': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><point cx="12" cy="20"></point></svg>`,
+            'tree': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13v8"></path><path d="M12 3v3"></path><path d="M18 6a6 6 0 0 1-6 6 6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6Z"></path></svg>`,
+            'grid': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6"></rect><rect x="15" y="3" width="6" height="6"></rect><rect x="3" y="15" width="6" height="6"></rect><rect x="15" y="15" width="6" height="6"></rect></svg>`,
+            'bed': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"></path><path d="M2 8h18a2 2 0 0 1 2 2v10"></path><path d="M2 17h20"></path><path d="M6 8V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"></path></svg>`,
+            'maximize': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>`,
+            'wind': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"></path><path d="M9.6 4.6A2 2 0 1 1 11 8H2"></path><path d="M12.6 19.4A2 2 0 1 0 14 16H2"></path></svg>`,
+            'home': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9,22 9,12 15,12 15,22"></polyline></svg>`,
+            'chef': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path><line x1="6" y1="17" x2="18" y2="17"></line></svg>`,
+            'check': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"></polyline></svg>`
         };
         return icons[iconName] || '';
     }
 
+    /**
+     * Get amenity icon and label
+     */
+    function getAmenityIcon(amenity) {
+        const amenityMap = {
+            'private-bathroom': { icon: 'bath', label: 'Private Bathroom' },
+            'shared-bathroom': { icon: 'users', label: 'Shared Bathroom' },
+            'wooden-furniture': { icon: 'tree', label: 'Wooden Furniture' },
+            'traditional-tiles': { icon: 'grid', label: 'Traditional Tiles' },
+            'queen-bed': { icon: 'bed', label: 'Queen Bed' },
+            'twin-beds': { icon: 'bed', label: 'Twin Beds' },
+            'bunk-beds': { icon: 'bed', label: 'Bunk Beds' },
+            'spacious': { icon: 'maximize', label: 'Spacious' },
+            'community': { icon: 'users', label: 'Community Space' },
+            'wifi': { icon: 'wifi', label: 'Wi-Fi' },
+            'air-conditioning': { icon: 'wind', label: 'Air Conditioning' },
+            'sea-view': { icon: 'waves', label: 'Sea View' },
+            'balcony': { icon: 'home', label: 'Balcony' },
+            'kitchen': { icon: 'chef', label: 'Kitchen' }
+        };
+        return amenityMap[amenity] || { icon: 'check', label: amenity };
+    }
+
     // Step configuration
     const STEPS = [
-        { id: 'destination', title: 'Choose Your Destination', label: 'Destination' },
+        { id: 'booking-type', title: 'Choose Booking Type', label: 'Type' },
+        { id: 'surf-weeks', title: 'Available Surf Weeks', label: 'Surf Weeks' },
+        { id: 'room-calendar', title: 'Select Dates & Room', label: 'Dates' },
+        { id: 'room-selection', title: 'Choose Your Room', label: 'Room' },
         { id: 'dates_participants', title: 'Select Dates & Participants', label: 'Dates' },
         { id: 'form_addons', title: 'Your Details & Add-ons', label: 'Details' },
         { id: 'confirmation', title: 'Review & Confirm', label: 'Confirm' }
     ];
 
-    // API configuration
-    const API_CONFIG = {
-        endpoint: heiwa_booking_ajax.api_endpoint || 'http://localhost:3005/api',
-        apiKey: heiwa_booking_ajax.api_key || 'heiwa_wp_test_key_2024_secure_deployment'
-    };
+    // API configuration - lazy loaded to avoid initialization errors
+    function getAPIConfig() {
+        if (typeof window.heiwa_booking_ajax !== 'undefined') {
+            return {
+                endpoint: window.heiwa_booking_ajax.api_endpoint || 'http://localhost:3005/api',
+                apiKey: window.heiwa_booking_ajax.api_key || 'heiwa_wp_test_key_2024_secure_deployment'
+            };
+        }
+        // Fallback configuration
+        return {
+            endpoint: 'http://localhost:3005/api',
+            apiKey: 'heiwa_wp_test_key_2024_secure_deployment'
+        };
+    }
 
     /**
      * Initialize the booking widget
@@ -77,21 +128,36 @@
      * Make API request to backend
      */
     function makeAPIRequest(endpoint, options = {}) {
-        const url = `${API_CONFIG.endpoint}${endpoint}`;
+        const apiConfig = getAPIConfig();
+        const url = `${apiConfig.endpoint}${endpoint}`;
+        console.log('Heiwa Booking Widget: Making API request', { endpoint, url, apiConfig });
+
         const defaultOptions = {
             method: 'GET',
             headers: {
-                'X-Heiwa-API-Key': API_CONFIG.apiKey,
+                'X-Heiwa-API-Key': apiConfig.apiKey,
                 'Content-Type': 'application/json'
             }
         };
 
-        return fetch(url, { ...defaultOptions, ...options })
+        const finalOptions = { ...defaultOptions, ...options };
+        console.log('Heiwa Booking Widget: Request options:', finalOptions);
+
+        return fetch(url, finalOptions)
             .then(response => {
+                console.log('Heiwa Booking Widget: API response status:', response.status, response.statusText);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
+            })
+            .then(data => {
+                console.log('Heiwa Booking Widget: API response data:', data);
+                return data;
+            })
+            .catch(error => {
+                console.error('Heiwa Booking Widget: API request failed:', error);
+                throw error;
             });
     }
 
@@ -145,13 +211,8 @@
         $('.heiwa-booking-drawer').addClass('active');
         isWidgetOpen = true;
 
-        // Show the first step and load data if not already loaded
-        showStep('destination');
-        if (surfCamps.length === 0) {
-            loadSurfCamps();
-        } else {
-            renderDestinations();
-        }
+        // Show the first step (booking type selector)
+        showStep('booking-type');
 
         // Update progress indicator
         updateProgressIndicator();
@@ -203,7 +264,6 @@
                 <div class="heiwa-booking-content">
                     ${STEPS.map(step => `
                         <div class="heiwa-booking-step-content" data-step="${step.id}">
-                            <h3 class="heiwa-booking-step-title">${step.title}</h3>
                             <div class="heiwa-step-${step.id}"></div>
                         </div>
                     `).join('')}
@@ -249,6 +309,9 @@
      * Show a specific step
      */
     function showStep(stepId) {
+        console.log('Heiwa Booking Widget: showStep called with stepId:', stepId);
+        console.log('Heiwa Booking Widget: Current availabilityData before step change:', availabilityData);
+
         currentStep = stepId;
 
         // Hide all step content
@@ -256,6 +319,13 @@
 
         // Show current step content
         $(`.heiwa-booking-step-content[data-step="${stepId}"]`).addClass('active');
+
+        // Show/hide summary cart based on step
+        if (stepId === 'booking-type') {
+            $('.heiwa-booking-summary').hide();
+        } else {
+            $('.heiwa-booking-summary').show();
+        }
 
         // Update progress indicator
         updateProgressIndicator();
@@ -265,6 +335,8 @@
 
         // Render step content
         renderStepContent(stepId);
+
+        console.log('Heiwa Booking Widget: showStep completed for stepId:', stepId);
     }
 
     /**
@@ -350,6 +422,14 @@
      */
     function validateCurrentStep() {
         switch (currentStep) {
+            case 'booking-type':
+                return bookingData.bookingType !== null;
+            case 'surf-weeks':
+                return bookingData.selectedSurfWeek !== null;
+            case 'room-calendar':
+                return bookingData.dates.start && bookingData.dates.end;
+            case 'room-selection':
+                return bookingData.selectedRoom !== null;
             case 'destination':
                 return bookingData.destination !== null;
             case 'dates_participants':
@@ -369,6 +449,18 @@
      */
     function renderStepContent(stepId) {
         switch (stepId) {
+            case 'booking-type':
+                renderBookingTypeSelector();
+                break;
+            case 'surf-weeks':
+                renderSurfWeekList();
+                break;
+            case 'room-calendar':
+                renderRoomCalendar();
+                break;
+            case 'room-selection':
+                renderRoomSelection();
+                break;
             case 'destination':
                 renderDestinations();
                 break;
@@ -381,6 +473,139 @@
             case 'confirmation':
                 renderConfirmation();
                 break;
+        }
+    }
+
+    /**
+     * Render booking type selector
+     */
+    function renderBookingTypeSelector() {
+        const $container = $('.heiwa-step-booking-type');
+
+        const bookingTypeHTML = `
+            <div class="heiwa-booking-type-selector">
+                <div class="heiwa-booking-type-header">
+                    <h2 class="heiwa-booking-type-title">Book Your Adventure</h2>
+                    <p class="heiwa-booking-type-subtitle">Choose how you'd like to experience Heiwa House</p>
+                </div>
+
+                <div class="heiwa-booking-type-options" role="radiogroup" aria-label="Select booking type">
+                    <div class="heiwa-booking-option-card"
+                         data-booking-type="room"
+                         role="radio"
+                         aria-checked="${bookingData.bookingType === 'room' ? 'true' : 'false'}"
+                         tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}"
+                         aria-label="Book a room - Choose your dates and accommodation">
+                        <div class="heiwa-booking-option-icon" aria-hidden="true">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNreUdyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM4N0NFRUIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjBGOUZGIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIFNreSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI3NreUdyYWRpZW50KSIvPgogIDwhLS0gQmVkIC0tPgogIDxyZWN0IHg9IjUwIiB5PSIxMjAiIHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiNGRkZGRkYiIHJ4PSI4Ii8+CiAgPHJlY3QgeD0iNjAiIHk9IjEwMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzNCODJGNiIgcng9IjQiLz4KICA8IS0tIFBpbGxvd3MgLS0+CiAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjEwNSIgcng9IjI1IiByeT0iMTUiIGZpbGw9IiNGM0Y0RjYiLz4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTA1IiByeD0iMjUiIHJ5PSIxNSIgZmlsbD0iI0YzRjRGNiIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iMTkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2QjczODAiPkNvbWZvcnRhYmxlIFJvb21zPC90ZXh0Pgo8L3N2Zz4=" alt="Room booking" />
+                        </div>
+                        <div class="heiwa-booking-option-content">
+                            <h3 class="heiwa-booking-option-title">Book a Room</h3>
+                            <p class="heiwa-booking-option-subtitle">Choose your dates and accommodation</p>
+                            <p class="heiwa-booking-option-description">Direct booking for rooms with flexible dates</p>
+                        </div>
+                        <div class="heiwa-booking-option-arrow" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="heiwa-booking-option-card"
+                         data-booking-type="surf-week"
+                         role="radio"
+                         aria-checked="${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}"
+                         tabindex="${bookingData.bookingType === 'surf-week' ? '0' : '-1'}"
+                         aria-label="All-inclusive surf week - Join our structured surf camp programs">
+                        <div class="heiwa-booking-option-icon" aria-hidden="true">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9Im9jZWFuR3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBEOTJGNCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMzY5QTEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDwhLS0gT2NlYW4gQmFja2dyb3VuZCAtLT4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNvY2VhbkdyYWRpZW50KSIvPgogIDwhLS0gV2F2ZXMgLS0+CiAgPHBhdGggZD0iTTAgMTIwIFE3NSAxMDAgMTUwIDEyMCBUIDMwMCAxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIzIiBvcGFjaXR5PSIwLjgiLz4KICA8cGF0aCBkPSJNMCAxNDAgUTc1IDEyMCAxNTAgMTQwIFQgMzAwIDE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNiIvPgogIDxwYXRoIGQ9Ik0wIDE2MCBRNTM1IDE0MCAxNTAgMTYwIFQgMzAwIDE2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC40Ii8+CiAgPCEtLSBTdXJmYm9hcmQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEzMCIgcng9IjQwIiByeT0iOCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC45Ii8+CiAgPHRleHQgeD0iMTUwIiB5PSIxOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI0ZGRkZGRiI+U3VyZiBXZWVrczwvdGV4dD4KPC9zdmc+" alt="Surf week booking" />
+                        </div>
+                        <div class="heiwa-booking-option-content">
+                            <h3 class="heiwa-booking-option-title">All-Inclusive Surf Week</h3>
+                            <p class="heiwa-booking-option-subtitle">Join our structured surf camp programs</p>
+                            <p class="heiwa-booking-option-description">Pre-scheduled weeks with accommodation, meals, and surf lessons</p>
+                        </div>
+                        <div class="heiwa-booking-option-arrow" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $container.html(bookingTypeHTML);
+
+        // Bind click and keyboard events
+        $('.heiwa-booking-option-card').on('click', function() {
+            const bookingType = $(this).data('booking-type');
+            selectBookingType(bookingType);
+        });
+
+        // Add keyboard navigation support
+        $('.heiwa-booking-option-card').on('keydown', function(e) {
+            const $current = $(this);
+            const $options = $('.heiwa-booking-option-card');
+            const currentIndex = $options.index($current);
+
+            switch(e.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                    e.preventDefault();
+                    const nextIndex = (currentIndex + 1) % $options.length;
+                    $options.eq(nextIndex).focus();
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    e.preventDefault();
+                    const prevIndex = currentIndex === 0 ? $options.length - 1 : currentIndex - 1;
+                    $options.eq(prevIndex).focus();
+                    break;
+                case 'Enter':
+                case ' ':
+                    e.preventDefault();
+                    const bookingType = $current.data('booking-type');
+                    selectBookingType(bookingType);
+                    break;
+            }
+        });
+    }
+
+    /**
+     * Select booking type and navigate to appropriate flow
+     */
+    function selectBookingType(type) {
+        console.log('Heiwa Booking Widget: selectBookingType called with type:', type);
+        bookingData.bookingType = type;
+        bookingType = type;
+
+        // Update ARIA attributes and visual feedback
+        $('.heiwa-booking-option-card').each(function() {
+            const $card = $(this);
+            const cardType = $card.data('booking-type');
+
+            if (cardType === type) {
+                $card.addClass('selected')
+                     .attr('aria-checked', 'true')
+                     .attr('tabindex', '0');
+            } else {
+                $card.removeClass('selected')
+                     .attr('aria-checked', 'false')
+                     .attr('tabindex', '-1');
+            }
+        });
+
+        // Navigate to appropriate next step
+        if (type === 'room') {
+            console.log('Heiwa Booking Widget: Navigating to room-calendar step');
+            setTimeout(() => showStep('room-calendar'), 300);
+        } else if (type === 'surf-week') {
+            console.log('Heiwa Booking Widget: Navigating to surf-weeks step');
+            // Load surf weeks and then show the list
+            loadSurfWeeks().then(() => {
+                setTimeout(() => showStep('surf-weeks'), 300);
+            });
         }
     }
 
@@ -739,19 +964,53 @@
             </div>
 
             <div class="heiwa-confirmation-content">
-                <!-- Destination Details -->
+                <!-- Booking Details -->
                 <div class="heiwa-confirmation-section">
-                    <h4 class="heiwa-section-title">${getLucideIcon('waves', 18)} Surf Camp Details</h4>
-                    <div class="heiwa-destination-summary">
-                        <div class="heiwa-destination-info">
-                            <h5>${bookingData.destination?.name || 'Not selected'}</h5>
-                            <p class="heiwa-destination-description">${bookingData.destination?.description || 'Perfect surf adventure awaits!'}</p>
-                            <div class="heiwa-destination-meta">
-                                <span class="heiwa-skill-level">${bookingData.destination?.skill_level || 'All levels'}</span>
-                                <span class="heiwa-location">${bookingData.destination?.location || 'Mexico'}</span>
+                    ${bookingData.bookingType === 'surf-week' ? `
+                        <h4 class="heiwa-section-title">${getLucideIcon('waves', 18)} Surf Week Details</h4>
+                        <div class="heiwa-destination-summary">
+                            <div class="heiwa-destination-info">
+                                <h5>${bookingData.selectedSurfWeek?.title || 'Not selected'}</h5>
+                                <p class="heiwa-destination-description">${bookingData.selectedSurfWeek?.description || 'Perfect surf adventure awaits!'}</p>
+                                <div class="heiwa-destination-meta">
+                                    <span class="heiwa-skill-level">${bookingData.selectedSurfWeek?.category.replace('_', ' ').toUpperCase() || 'All levels'}</span>
+                                    <span class="heiwa-location">${formatDate(bookingData.selectedSurfWeek?.start_date)} - ${formatDate(bookingData.selectedSurfWeek?.end_date)}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ` : bookingData.bookingType === 'room' ? `
+                        <h4 class="heiwa-section-title">${getLucideIcon('calendar', 18)} Room Details</h4>
+                        <div class="heiwa-destination-summary">
+                            <div class="heiwa-destination-info">
+                                <h5>${bookingData.selectedRoom?.name || 'Not selected'}</h5>
+                                <div class="heiwa-destination-amenities">
+                                    ${bookingData.selectedRoom?.amenities ? bookingData.selectedRoom.amenities.slice(0, 6).map(amenity => {
+                                        const amenityInfo = getAmenityIcon(amenity);
+                                        return `<span class="heiwa-amenity-tag">
+                                            ${getLucideIcon(amenityInfo.icon, 12)}
+                                            ${amenityInfo.label}
+                                        </span>`;
+                                    }).join('') : '<p class="heiwa-destination-description">Comfortable accommodation awaits!</p>'}
+                                </div>
+                                <div class="heiwa-destination-meta">
+                                    <span class="heiwa-skill-level">${bookingData.selectedRoom?.capacity || '2'} guests</span>
+                                    <span class="heiwa-location">€${bookingData.selectedRoom?.price_per_night || '0'}/night</span>
+                                </div>
+                            </div>
+                        </div>
+                    ` : `
+                        <h4 class="heiwa-section-title">${getLucideIcon('waves', 18)} Surf Camp Details</h4>
+                        <div class="heiwa-destination-summary">
+                            <div class="heiwa-destination-info">
+                                <h5>${bookingData.destination?.name || 'Not selected'}</h5>
+                                <p class="heiwa-destination-description">${bookingData.destination?.description || 'Perfect surf adventure awaits!'}</p>
+                                <div class="heiwa-destination-meta">
+                                    <span class="heiwa-skill-level">${bookingData.destination?.skill_level || 'All levels'}</span>
+                                    <span class="heiwa-location">${bookingData.destination?.location || 'Mexico'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `}
                 </div>
 
                 <!-- Dates & Duration -->
@@ -853,10 +1112,18 @@
      * Calculate total price
      */
     function calculateTotal() {
-        if (!bookingData.destination) return 0;
+        if (bookingData.bookingType === 'surf-week' && bookingData.selectedSurfWeek) {
+            return bookingData.selectedSurfWeek.price_from * bookingData.participants;
+        } else if (bookingData.bookingType === 'room' && bookingData.selectedRoom && bookingData.dates.start && bookingData.dates.end) {
+            const nights = calculateDuration();
+            return bookingData.selectedRoom.price_per_night * bookingData.participants * nights;
+        } else if (bookingData.destination) {
+            // Fallback for legacy surf camp booking
+            const basePrice = bookingData.destination.price || 599;
+            return basePrice * bookingData.participants;
+        }
 
-        const basePrice = bookingData.destination.price || 599;
-        return basePrice * bookingData.participants;
+        return 0;
     }
 
     /**
@@ -894,10 +1161,17 @@
      * Update summary in footer
      */
     function updateSummary() {
-        $('[data-summary="destination"]').text(bookingData.destination?.name || 'Not selected');
+        // Update based on booking type
+        if (bookingData.bookingType === 'surf-week') {
+            $('[data-summary="destination"]').text(bookingData.selectedSurfWeek?.title || 'Not selected');
+        } else if (bookingData.bookingType === 'room') {
+            $('[data-summary="destination"]').text(bookingData.selectedRoom?.name || 'Not selected');
+        } else {
+            $('[data-summary="destination"]').text('Not selected');
+        }
 
         const dateText = bookingData.dates.start && bookingData.dates.end ?
-            `${bookingData.dates.start} to ${bookingData.dates.end}` : 'Not selected';
+            `${formatDate(bookingData.dates.start)} to ${formatDate(bookingData.dates.end)}` : 'Not selected';
         $('[data-summary="dates"]').text(dateText);
 
         $('[data-summary="participants"]').text(bookingData.participants);
@@ -920,25 +1194,61 @@
             surf_level: participant.surfLevel || 'beginner'
         }));
 
-        // Prepare booking data for submission
-        const submissionData = {
-            camp_id: bookingData.destination?.id,
-            start_date: bookingData.dates.start,
-            end_date: bookingData.dates.end,
-            participants: participants,
-            special_requests: bookingData.specialRequests || '',
-            total_price: calculateTotal(),
-            source_url: window.location.href,
-            widget_version: '1.0'
-        };
+        // Prepare booking data for submission based on booking type
+        let submissionData;
+        let apiEndpoint;
 
-        console.log('Heiwa Booking Widget: Submitting booking data:', submissionData);
+        if (bookingData.bookingType === 'surf-week') {
+            apiEndpoint = '/wordpress/bookings';
+            submissionData = {
+                booking_type: 'surf_week',
+                camp_id: bookingData.selectedSurfWeek?.id,
+                start_date: bookingData.selectedSurfWeek?.start_date,
+                end_date: bookingData.selectedSurfWeek?.end_date,
+                participants: participants,
+                special_requests: bookingData.specialRequests || '',
+                total_price: calculateTotal(),
+                source_url: window.location.href,
+                widget_version: '1.0'
+            };
+        } else if (bookingData.bookingType === 'room') {
+            apiEndpoint = '/wordpress/room-bookings';
+            submissionData = {
+                booking_type: 'room',
+                room_id: bookingData.selectedRoom?.id,
+                start_date: bookingData.dates.start,
+                end_date: bookingData.dates.end,
+                participants: participants,
+                special_requests: bookingData.specialRequests || '',
+                total_price: calculateTotal(),
+                source_url: window.location.href,
+                widget_version: '1.0'
+            };
+        } else {
+            // Legacy surf camp booking
+            apiEndpoint = '/wordpress/bookings';
+            submissionData = {
+                booking_type: 'surf_camp',
+                camp_id: bookingData.destination?.id,
+                start_date: bookingData.dates.start,
+                end_date: bookingData.dates.end,
+                participants: participants,
+                special_requests: bookingData.specialRequests || '',
+                total_price: calculateTotal(),
+                source_url: window.location.href,
+                widget_version: '1.0'
+            };
+        }
 
-        makeAPIRequest('/wordpress/bookings', {
+        console.log('Heiwa Booking Widget: Submitting booking data to:', apiEndpoint);
+        console.log('Heiwa Booking Widget: Booking data:', submissionData);
+
+        const apiConfig = getAPIConfig();
+        makeAPIRequest(apiEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Heiwa-API-Key': API_CONFIG.apiKey
+                'X-Heiwa-API-Key': apiConfig.apiKey
             },
             body: JSON.stringify(submissionData)
         })
@@ -1047,6 +1357,376 @@
     }
 
 
+
+    /**
+     * Load surf weeks from API
+     */
+    function loadSurfWeeks() {
+        console.log('Heiwa Booking Widget: Loading surf weeks...');
+
+        return makeAPIRequest('/wordpress/surf-camps')
+            .then(response => {
+                console.log('Heiwa Booking Widget: Surf weeks API response:', response);
+
+                if (response.success && response.data) {
+                    const rawCamps = response.data.surf_camps || [];
+                    // Transform surf camps data to match widget expectations
+                    surfWeeks = rawCamps.map(camp => ({
+                        id: camp.id,
+                        title: camp.name,
+                        category: camp.details?.skill_level || 'all',
+                        start_date: camp.dates?.start_date || camp.start_date,
+                        end_date: camp.dates?.end_date || camp.end_date,
+                        description: camp.description,
+                        price_from: camp.pricing?.base_price || camp.price || 599,
+                        available_spots: camp.details?.available_spots || camp.details?.max_participants || 12
+                    }));
+                    console.log('Heiwa Booking Widget: Loaded', surfWeeks.length, 'surf weeks');
+                    return surfWeeks;
+                } else {
+                    throw new Error(response.message || 'Failed to load surf weeks');
+                }
+            })
+            .catch(error => {
+                console.error('Heiwa Booking Widget: Error loading surf weeks:', error);
+                // Show error state if we're on the surf-weeks step
+                if (isWidgetOpen && currentStep === 'surf-weeks') {
+                    const $container = $('.heiwa-step-surf-weeks');
+                    $container.html(`
+                        <div class="heiwa-error-state">
+                            <h4>Unable to load surf weeks</h4>
+                            <p>Please check your connection and try again.</p>
+                            <button class="heiwa-retry-button" onclick="window.HeiwaBookingWidget.retryLoadSurfWeeks()">Retry</button>
+                        </div>
+                    `);
+                }
+                throw error;
+            });
+    }
+
+    /**
+     * Render surf week list
+     */
+    function renderSurfWeekList() {
+        const $container = $('.heiwa-step-surf-weeks');
+
+        if (surfWeeks.length === 0) {
+            $container.html('<div class="heiwa-loading">Loading surf weeks...</div>');
+            return;
+        }
+
+        const surfWeeksHTML = `
+            <div class="heiwa-surf-week-list">
+                <div class="heiwa-surf-week-header">
+                    <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
+                        ← Back to Booking Type
+                    </button>
+                    <h3 class="heiwa-surf-week-title">Available Surf Weeks</h3>
+                </div>
+
+                <div class="heiwa-surf-week-grid">
+                    ${surfWeeks.map(week => `
+                        <div class="heiwa-surf-week-item ${bookingData.selectedSurfWeek?.id === week.id ? 'selected' : ''}"
+                             data-week-id="${week.id}">
+                            <div class="heiwa-surf-week-content">
+                                <div class="heiwa-surf-week-header">
+                                    <h4 class="heiwa-surf-week-name">${week.title}</h4>
+                                    <span class="heiwa-surf-week-category heiwa-category-${week.category.toLowerCase().replace('_', '-')}">
+                                        ${week.category.replace('_', ' ').toUpperCase()}
+                                    </span>
+                                </div>
+
+                                <div class="heiwa-surf-week-dates">
+                                    <span class="heiwa-surf-week-date-range">
+                                        ${formatDate(week.start_date)} - ${formatDate(week.end_date)}
+                                    </span>
+                                </div>
+
+                                <div class="heiwa-surf-week-description">
+                                    ${week.description}
+                                </div>
+
+                                <div class="heiwa-surf-week-footer">
+                                    <div class="heiwa-surf-week-price">
+                                        <span class="heiwa-price-amount">€${week.price_from}</span>
+                                        <span class="heiwa-price-label">per person</span>
+                                    </div>
+                                    <div class="heiwa-surf-week-spots">
+                                        <span class="heiwa-spots-available">${week.available_spots} spots left</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        $container.html(surfWeeksHTML);
+
+        // Bind click events
+        $('.heiwa-surf-week-item').on('click', function() {
+            const weekId = $(this).data('week-id');
+            selectSurfWeek(weekId);
+        });
+    }
+
+    /**
+     * Select surf week
+     */
+    function selectSurfWeek(weekId) {
+        const week = surfWeeks.find(w => w.id === weekId);
+        if (week) {
+            bookingData.selectedSurfWeek = week;
+            selectedSurfWeek = week;
+
+            // Update UI
+            $('.heiwa-surf-week-item').removeClass('selected');
+            $(`.heiwa-surf-week-item[data-week-id="${weekId}"]`).addClass('selected');
+
+            // Update summary
+            updateSummary();
+
+            // Auto-advance to next step after a brief delay
+            setTimeout(() => {
+                showStep('dates_participants');
+            }, 500);
+        }
+    }
+
+    /**
+     * Render room calendar for room booking
+     */
+    function renderRoomCalendar() {
+        console.log('Heiwa Booking Widget: renderRoomCalendar called');
+        const $container = $('.heiwa-step-room-calendar');
+        console.log('Heiwa Booking Widget: Room calendar container found:', $container.length);
+
+        const roomCalendarHTML = `
+            <div class="heiwa-room-calendar">
+                <div class="heiwa-step-header">
+                    <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
+                        ← Back to Booking Type
+                    </button>
+                    <h3 class="heiwa-booking-step-title">Select Your Dates</h3>
+                </div>
+
+                <div class="heiwa-calendar-section">
+                    <div class="heiwa-form-group">
+                        <label class="heiwa-form-label">Check-in Date</label>
+                        <input type="date" class="heiwa-form-input heiwa-date-picker" id="room-checkin-date"
+                               value="${bookingData.dates.start || ''}"
+                               min="${new Date().toISOString().split('T')[0]}"
+                               autocomplete="off">
+                    </div>
+
+                    <div class="heiwa-form-group">
+                        <label class="heiwa-form-label">Check-out Date</label>
+                        <input type="date" class="heiwa-form-input heiwa-date-picker" id="room-checkout-date"
+                               value="${bookingData.dates.end || ''}"
+                               min="${new Date().toISOString().split('T')[0]}"
+                               autocomplete="off">
+                    </div>
+
+                    <div class="heiwa-form-group">
+                        <label class="heiwa-form-label">Number of Participants</label>
+                        <div class="heiwa-participant-counter">
+                            <button type="button" class="heiwa-counter-button" data-action="decrease" ${bookingData.participants <= 1 ? 'disabled' : ''}>−</button>
+                            <span class="heiwa-counter-value">${bookingData.participants}</span>
+                            <button type="button" class="heiwa-counter-button" data-action="increase" ${bookingData.participants >= 8 ? 'disabled' : ''}>+</button>
+                        </div>
+                    </div>
+
+                    <button class="heiwa-cta-button heiwa-check-availability-btn" id="check-room-availability">
+                        Check Room Availability
+                    </button>
+                </div>
+            </div>
+        `;
+
+        $container.html(roomCalendarHTML);
+
+        // Bind events
+        $('#room-checkin-date, #room-checkout-date').on('change', updateRoomDates);
+        $('.heiwa-counter-button').on('click', updateParticipantCount);
+        $('#check-room-availability').on('click', checkRoomAvailability);
+
+        // Setup date pickers
+        setupDatePickers();
+    }
+
+    /**
+     * Update room booking dates
+     */
+    function updateRoomDates() {
+        bookingData.dates.start = $('#room-checkin-date').val();
+        bookingData.dates.end = $('#room-checkout-date').val();
+
+        updateSummary();
+        updateCTAButton();
+    }
+
+    /**
+     * Check room availability
+     */
+    function checkRoomAvailability() {
+        console.log('Heiwa Booking Widget: checkRoomAvailability called');
+
+        const startDate = $('#room-checkin-date').val();
+        const endDate = $('#room-checkout-date').val();
+
+        console.log('Heiwa Booking Widget: Selected dates:', { startDate, endDate });
+
+        if (!startDate || !endDate) {
+            console.error('Heiwa Booking Widget: Missing dates');
+            showError('Please select both check-in and check-out dates.');
+            return;
+        }
+
+        if (new Date(startDate) >= new Date(endDate)) {
+            console.error('Heiwa Booking Widget: Invalid date range');
+            showError('Check-out date must be after check-in date.');
+            return;
+        }
+
+        // Show loading state
+        const $button = $('#check-room-availability');
+        $button.text('Checking...').prop('disabled', true);
+
+        // Make API request for room availability
+        const params = new URLSearchParams({
+            start_date: startDate,
+            end_date: endDate
+        });
+
+        const apiUrl = `/wordpress/rooms/availability?${params}`;
+        console.log('Heiwa Booking Widget: Making API request to:', apiUrl);
+
+        makeAPIRequest(apiUrl)
+            .then(response => {
+                console.log('Heiwa Booking Widget: Room availability API response:', response);
+                $button.text('Check Room Availability').prop('disabled', false);
+
+                if (response.success && response.data) {
+                    console.log('Heiwa Booking Widget: Available rooms:', response.data.available_rooms);
+
+                    // Store availability data
+                    availabilityData = response.data;
+                    console.log('Heiwa Booking Widget: Stored availabilityData:', availabilityData);
+
+                    // Navigate to room selection
+                    showStep('room-selection');
+                } else {
+                    console.error('Heiwa Booking Widget: API response indicates failure:', response);
+                    throw new Error(response.message || 'No rooms available for selected dates');
+                }
+            })
+            .catch(error => {
+                console.error('Heiwa Booking Widget: Room availability API error:', error);
+                $button.text('Check Room Availability').prop('disabled', false);
+                showError(error.message || 'Failed to check room availability. Please try again.');
+            });
+    }
+
+    /**
+     * Render room selection
+     */
+    function renderRoomSelection() {
+        console.log('Heiwa Booking Widget: renderRoomSelection called');
+        console.log('Heiwa Booking Widget: Current availabilityData:', availabilityData);
+
+        const $container = $('.heiwa-step-room-selection');
+
+        if (!availabilityData || !availabilityData.available_rooms) {
+            console.error('Heiwa Booking Widget: No room data available', {
+                availabilityData: availabilityData,
+                hasAvailabilityData: !!availabilityData,
+                hasAvailableRooms: !!(availabilityData && availabilityData.available_rooms),
+                availableRoomsLength: availabilityData && availabilityData.available_rooms ? availabilityData.available_rooms.length : 'N/A'
+            });
+            $container.html('<div class="heiwa-error-state"><h4>No room data available</h4><p>Please go back and check availability again.</p></div>');
+            return;
+        }
+
+        console.log('Heiwa Booking Widget: Rendering', availabilityData.available_rooms.length, 'rooms');
+
+        const roomSelectionHTML = `
+            <div class="heiwa-room-selection">
+                <div class="heiwa-step-header">
+                    <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
+                        ← Back to Dates
+                    </button>
+                    <h3 class="heiwa-booking-step-title">Choose Your Room</h3>
+                </div>
+
+                <div class="heiwa-room-grid">
+                    ${availabilityData.available_rooms.map(room => `
+                        <div class="heiwa-room-card ${bookingData.selectedRoom?.id === room.id ? 'selected' : ''}"
+                             data-room-id="${room.id}">
+                            <div class="heiwa-room-image">
+                                ${room.featured_image ? `
+                                    <img src="${room.featured_image}" alt="${room.name}" class="heiwa-room-img"
+                                         onerror="this.style.display='none';this.parentElement.querySelector('.heiwa-room-image-placeholder').style.display='flex';" />
+                                ` : ''}
+                                <div class="heiwa-room-image-placeholder" style="${room.featured_image ? 'display:none;' : ''}">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="heiwa-room-content">
+                                <h4 class="heiwa-room-name">${room.name}</h4>
+                                <div class="heiwa-room-details">
+                                    <span class="heiwa-room-capacity">👥 ${room.capacity} guests</span>
+                                    <span class="heiwa-room-price">€${room.price_per_night}/night</span>
+                                </div>
+                                <div class="heiwa-room-amenities">
+                                    ${room.amenities ? room.amenities.slice(0, 4).map(amenity => {
+                                        const amenityInfo = getAmenityIcon(amenity);
+                                        return `<span class="heiwa-amenity">
+                                            ${getLucideIcon(amenityInfo.icon, 14)}
+                                            ${amenityInfo.label}
+                                        </span>`;
+                                    }).join('') : ''}
+                                    ${room.amenities && room.amenities.length > 4 ? `<span class="heiwa-amenity-more">+${room.amenities.length - 4} more</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+
+        $container.html(roomSelectionHTML);
+
+        // Bind click events
+        $('.heiwa-room-card').on('click', function() {
+            const roomId = $(this).data('room-id');
+            selectRoom(roomId);
+        });
+    }
+
+    /**
+     * Select room
+     */
+    function selectRoom(roomId) {
+        const room = availabilityData.available_rooms.find(r => r.id === roomId);
+        if (room) {
+            bookingData.selectedRoom = room;
+
+            // Update UI
+            $('.heiwa-room-card').removeClass('selected');
+            $(`.heiwa-room-card[data-room-id="${roomId}"]`).addClass('selected');
+
+            // Update summary
+            updateSummary();
+
+            // Auto-advance to next step
+            setTimeout(() => {
+                showStep('form_addons');
+            }, 500);
+        }
+    }
 
     /**
      * Load surf camps from API
@@ -1354,7 +2034,8 @@
      * Reset widget to initial state
      */
     function resetWidget() {
-        currentStep = 'destinations';
+        console.log('Heiwa Booking Widget: resetWidget called');
+        currentStep = 'booking-type';
         selectedCamp = null;
         availabilityData = null;
 
@@ -1435,6 +2116,9 @@
         },
         retryLoadSurfCamps: function() {
             loadSurfCamps();
+        },
+        retryLoadSurfWeeks: function() {
+            loadSurfWeeks();
         },
         goToPreviousStep: function() {
             goToPreviousStep();
