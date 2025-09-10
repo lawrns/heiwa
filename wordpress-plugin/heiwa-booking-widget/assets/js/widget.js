@@ -145,18 +145,36 @@
 
         return fetch(url, finalOptions)
             .then(response => {
-                console.log('Heiwa Booking Widget: API response status:', response.status, response.statusText);
+                console.log('Heiwa Booking Widget: API response received:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    ok: response.ok,
+                    url: response.url,
+                    headers: Object.fromEntries(response.headers.entries())
+                });
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
                 }
                 return response.json();
             })
             .then(data => {
-                console.log('Heiwa Booking Widget: API response data:', data);
+                console.log('Heiwa Booking Widget: API response data parsed:', {
+                    data: data,
+                    type: typeof data,
+                    keys: Object.keys(data || {}),
+                    success: data?.success,
+                    hasData: !!data?.data
+                });
                 return data;
             })
             .catch(error => {
-                console.error('Heiwa Booking Widget: API request failed:', error);
+                console.error('Heiwa Booking Widget: API request failed:', {
+                    error: error,
+                    message: error.message,
+                    stack: error.stack,
+                    url: url,
+                    options: finalOptions
+                });
                 throw error;
             });
     }
@@ -1484,12 +1502,16 @@
             $('.heiwa-surf-week-item').removeClass('selected');
             $(`.heiwa-surf-week-item[data-week-id="${weekId}"]`).addClass('selected');
 
+            // Set the surf week dates in booking data
+            bookingData.dates.start = week.start_date;
+            bookingData.dates.end = week.end_date;
+
             // Update summary
             updateSummary();
 
-            // Auto-advance to next step after a brief delay
+            // Auto-advance directly to participant details (skip date selection for surf weeks)
             setTimeout(() => {
-                showStep('dates_participants');
+                showStep('form_addons');
             }, 500);
         }
     }
@@ -1596,7 +1618,8 @@
         // Make API request for room availability
         const params = new URLSearchParams({
             start_date: startDate,
-            end_date: endDate
+            end_date: endDate,
+            participants: bookingData.participants || 1
         });
 
         const apiUrl = `/wordpress/rooms/availability?${params}`;
@@ -1605,19 +1628,37 @@
         makeAPIRequest(apiUrl)
             .then(response => {
                 console.log('Heiwa Booking Widget: Room availability API response:', response);
+                console.log('Heiwa Booking Widget: Response type:', typeof response);
+                console.log('Heiwa Booking Widget: Response keys:', Object.keys(response || {}));
+                console.log('Heiwa Booking Widget: Response.success:', response?.success);
+                console.log('Heiwa Booking Widget: Response.data:', response?.data);
+                console.log('Heiwa Booking Widget: Available rooms:', response?.data?.available_rooms);
+                console.log('Heiwa Booking Widget: Available rooms length:', response?.data?.available_rooms?.length);
+
                 $button.text('Check Room Availability').prop('disabled', false);
 
-                if (response.success && response.data) {
-                    console.log('Heiwa Booking Widget: Available rooms:', response.data.available_rooms);
+                if (response && response.success && response.data && response.data.available_rooms) {
+                    console.log('Heiwa Booking Widget: SUCCESS - Available rooms found:', response.data.available_rooms.length);
 
                     // Store availability data
                     availabilityData = response.data;
                     console.log('Heiwa Booking Widget: Stored availabilityData:', availabilityData);
 
+                    // Update booking data with selected dates
+                    bookingData.dates.start = startDate;
+                    bookingData.dates.end = endDate;
+                    console.log('Heiwa Booking Widget: Updated bookingData with dates:', bookingData);
+
                     // Navigate to room selection
                     showStep('room-selection');
                 } else {
-                    console.error('Heiwa Booking Widget: API response indicates failure:', response);
+                    console.error('Heiwa Booking Widget: API response indicates failure or missing data:', {
+                        response: response,
+                        hasResponse: !!response,
+                        hasSuccess: !!(response && response.success),
+                        hasData: !!(response && response.data),
+                        hasAvailableRooms: !!(response && response.data && response.data.available_rooms)
+                    });
                     throw new Error(response.message || 'No rooms available for selected dates');
                 }
             })
@@ -1638,12 +1679,41 @@
         const $container = $('.heiwa-step-room-selection');
 
         if (!availabilityData || !availabilityData.available_rooms) {
-            console.error('Heiwa Booking Widget: No room data available', {
-                availabilityData: availabilityData,
-                hasAvailabilityData: !!availabilityData,
-                hasAvailableRooms: !!(availabilityData && availabilityData.available_rooms),
-                availableRoomsLength: availabilityData && availabilityData.available_rooms ? availabilityData.available_rooms.length : 'N/A'
+            console.warn('Heiwa Booking Widget: No room data in memory. Attempting fallback fetch using bookingData.dates...', {
+                bookingDates: bookingData.dates,
+                participants: bookingData.participants
             });
+
+            // Fallback: if we have dates, try fetching availability again
+            if (bookingData.dates.start && bookingData.dates.end) {
+                $container.html('<div class="heiwa-loading">Loading rooms...</div>');
+                const params = new URLSearchParams({
+                    start_date: bookingData.dates.start,
+                    end_date: bookingData.dates.end,
+                    participants: bookingData.participants || 1
+                });
+                const url = `/wordpress/rooms/availability?${params}`;
+                makeAPIRequest(url)
+                  .then((resp) => {
+                      console.log('Heiwa Booking Widget: Fallback availability fetch response:', resp);
+                      if (resp && resp.success && resp.data && Array.isArray(resp.data.available_rooms) && resp.data.available_rooms.length > 0) {
+                          availabilityData = resp.data;
+                          console.log('Heiwa Booking Widget: Fallback fetch succeeded. availabilityData restored:', availabilityData);
+                          // Re-render now that we have data
+                          renderRoomSelection();
+                      } else {
+                          console.error('Heiwa Booking Widget: Fallback fetch returned no rooms. Showing error.', resp);
+                          $container.html('<div class="heiwa-error-state"><h4>No room data available</h4><p>Please go back and check availability again.</p></div>');
+                      }
+                  })
+                  .catch((err) => {
+                      console.error('Heiwa Booking Widget: Fallback availability fetch failed:', err);
+                      $container.html('<div class="heiwa-error-state"><h4>No room data available</h4><p>Please go back and check availability again.</p></div>');
+                  });
+                return;
+            }
+
+            // No dates either: show error
             $container.html('<div class="heiwa-error-state"><h4>No room data available</h4><p>Please go back and check availability again.</p></div>');
             return;
         }
