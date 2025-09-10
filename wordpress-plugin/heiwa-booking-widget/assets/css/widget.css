@@ -255,11 +255,11 @@ body.heiwa-modal-open {
 }
 
 /* ===========================================
-   MODAL SYSTEM - ENHANCED
+   SIDEBAR BOOKING FLOW - NEW DESIGN SYSTEM
    =========================================== */
 
-/* Modal Backdrop */
-.heiwa-modal-backdrop {
+/* Sidebar Backdrop */
+.heiwa-booking-backdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -268,18 +268,676 @@ body.heiwa-modal-open {
   background: rgba(17, 24, 39, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: var(--heiwa-z-modal-backdrop);
   opacity: 0;
   visibility: hidden;
-  transition: all var(--heiwa-transition-normal);
+  transition: all 250ms ease-out;
+  pointer-events: none;
 }
 
-.heiwa-modal-backdrop.active {
+.heiwa-booking-backdrop.active {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
+}
+
+/* Sidebar Drawer Container */
+.heiwa-booking-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 520px;
+  background: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  transform: translateX(100%);
+  transition: transform 250ms ease-out;
+  z-index: var(--heiwa-z-modal);
+  display: flex;
+  flex-direction: column;
+  font-family: Inter, system-ui, sans-serif;
+  pointer-events: auto;
+}
+
+.heiwa-booking-drawer.active {
+  transform: translateX(0);
+}
+
+/* Drawer Header */
+.heiwa-booking-drawer-header {
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  position: relative;
+  z-index: 1;
+}
+
+.heiwa-booking-drawer-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.heiwa-booking-drawer-close {
+  background: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #4b5563;
+  transition: all 150ms ease;
+}
+
+.heiwa-booking-drawer-close:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.heiwa-booking-drawer-close:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* Progress Indicator */
+.heiwa-booking-progress {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.heiwa-booking-stepper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.heiwa-booking-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  position: relative;
+}
+
+.heiwa-booking-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 20px;
+  background: #d1d5db;
+}
+
+.heiwa-booking-step-number {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 150ms ease;
+}
+
+.heiwa-booking-step.current .heiwa-booking-step-number {
+  background: #2563eb;
+  color: white;
+}
+
+.heiwa-booking-step.completed .heiwa-booking-step-number {
+  background: #10b981;
+  color: white;
+}
+
+.heiwa-booking-step.upcoming .heiwa-booking-step-number {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.heiwa-booking-step-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.heiwa-booking-step.current .heiwa-booking-step-label {
+  color: #2563eb;
+}
+
+.heiwa-booking-step.completed .heiwa-booking-step-label {
+  color: #10b981;
+}
+
+/* Step Content Container */
+.heiwa-booking-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.heiwa-booking-step-content {
+  display: none;
+}
+
+.heiwa-booking-step-content.active {
+  display: block;
+}
+
+.heiwa-booking-step-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 24px 0;
+}
+
+/* Destination Cards */
+.heiwa-destination-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.heiwa-destination-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 150ms ease;
+  background: white;
+}
+
+.heiwa-destination-card:hover {
+  border-color: #2563eb;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transform: scale(1.01);
+}
+
+.heiwa-destination-card.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+.heiwa-destination-card-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.heiwa-destination-card-content {
+  padding: 16px;
+}
+
+.heiwa-destination-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.heiwa-destination-card-description {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.heiwa-destination-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heiwa-destination-card-price {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.heiwa-destination-card-level {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* Express Booking */
+.heiwa-express-booking {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+  margin-top: 16px;
+}
+
+.heiwa-express-booking:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Loading and Error States */
+.heiwa-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.heiwa-loading::before {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: heiwa-spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.heiwa-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: #374151;
+}
+
+.heiwa-error-state h4 {
+  color: #dc2626;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.heiwa-error-state p {
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.heiwa-retry-button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.heiwa-retry-button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Form Components */
+.heiwa-form-group {
+  margin-bottom: 16px;
+}
+
+.heiwa-form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.heiwa-form-input,
+.heiwa-form-select,
+.heiwa-form-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 150ms ease;
+  background: white;
+}
+
+.heiwa-form-input:focus,
+.heiwa-form-select:focus,
+.heiwa-form-textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.heiwa-form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Participant Counter */
+.heiwa-participant-counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.heiwa-counter-button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4b5563;
+  transition: all 150ms ease;
+}
+
+.heiwa-counter-button:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.heiwa-counter-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.heiwa-counter-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Participant Accordion */
+.heiwa-participant-accordion {
+  margin-top: 16px;
+}
+
+.heiwa-participant-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.heiwa-participant-header {
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heiwa-participant-content {
+  padding: 16px;
+  display: none;
+}
+
+.heiwa-participant-content.expanded {
+  display: block;
+}
+
+.heiwa-participant-fields {
+  display: grid;
+  gap: 12px;
+}
+
+/* Mini Summary (Sticky Footer) */
+.heiwa-booking-summary {
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  padding: 16px 24px;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+
+.heiwa-summary-content {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.heiwa-summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.heiwa-summary-label {
+  color: #6b7280;
+}
+
+.heiwa-summary-value {
+  font-weight: 500;
+  color: #111827;
+}
+
+.heiwa-summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #d1d5db;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.heiwa-summary-total-label {
+  color: #111827;
+}
+
+.heiwa-summary-total-value {
+  color: #2563eb;
+  font-size: 18px;
+}
+
+/* Primary CTA Button */
+.heiwa-cta-button {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+  margin-top: 16px;
+}
+
+.heiwa-cta-button:hover {
+  background: #1d4ed8;
+}
+
+.heiwa-cta-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.heiwa-cta-button.loading {
+  position: relative;
+  color: transparent;
+}
+
+.heiwa-cta-button.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .heiwa-booking-drawer {
+    width: 100vw;
+    height: 100vh;
+    transform: translateY(100%);
+  }
+
+  .heiwa-booking-drawer.active {
+    transform: translateY(0);
+  }
+
+  .heiwa-booking-stepper {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .heiwa-booking-step {
+    flex-shrink: 0;
+    min-width: 120px;
+  }
+
+  .heiwa-booking-step-label {
+    display: none;
+  }
+
+  .heiwa-destination-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .heiwa-booking-content {
+    padding: 16px;
+  }
+
+  .heiwa-booking-summary {
+    padding: 16px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .heiwa-booking-drawer {
+    width: 420px;
+  }
+
+  .heiwa-destination-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1025px) {
+  .heiwa-destination-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Trust Signals */
+.heiwa-trust-signals {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 12px;
+  background: #f0f9ff;
+  border-radius: 8px;
+  border: 1px solid #bae6fd;
+}
+
+.heiwa-trust-icon {
+  width: 20px;
+  height: 20px;
+  color: #0284c7;
+}
+
+.heiwa-trust-text {
+  font-size: 14px;
+  color: #0c4a6e;
+  font-weight: 500;
+}
+
+/* Add-on Cards */
+.heiwa-addon-grid {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.heiwa-addon-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.heiwa-addon-card:hover {
+  border-color: #2563eb;
+  background: #f8fafc;
+}
+
+.heiwa-addon-card.selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.heiwa-addon-icon {
+  width: 24px;
+  height: 24px;
+  color: #2563eb;
+}
+
+.heiwa-addon-content {
+  flex: 1;
+}
+
+.heiwa-addon-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.heiwa-addon-price {
+  font-size: 12px;
+  color: #6b7280;
 }
 
 /* Modal Container */
@@ -296,6 +954,7 @@ body.heiwa-modal-open {
   transition: all var(--heiwa-transition-normal);
   position: relative;
   z-index: var(--heiwa-z-modal);
+  pointer-events: auto;
 }
 
 .heiwa-modal-container.active {
@@ -459,6 +1118,7 @@ body.heiwa-modal-open {
   box-shadow: var(--heiwa-shadow-xl);
   display: none;
   z-index: var(--heiwa-z-modal);
+  pointer-events: auto;
 }
 
 .heiwa-booking-panel.heiwa-open {
@@ -536,14 +1196,16 @@ body.heiwa-modal-open {
   opacity: 0;
   visibility: hidden;
   transition: all var(--heiwa-transition-normal);
-  z-index: 9998 !important;
+  z-index: var(--heiwa-z-modal-backdrop) !important;
   display: none;
+  pointer-events: none;
 }
 
 .heiwa-booking-overlay.heiwa-open {
   opacity: 1 !important;
   visibility: visible !important;
   display: block !important;
+  pointer-events: auto;
 }
 
 /* Loading State */
