@@ -6,7 +6,8 @@
     "description": "Comprehensive documentation of the WordPress booking widget's styling system, designed for maximum compatibility with WordPress themes and optimal user experience.",
     "file_location": "wordpress-plugin/heiwa-booking-widget/assets/css/widget.css",
     "total_lines": "~800 lines of CSS",
-    "browser_support": ["Chrome 60+", "Firefox 55+", "Safari 12+", "Edge 79+"]
+    "browser_support": ["Chrome 60+", "Firefox 55+", "Safari 12+", "Edge 79+"],
+    "icon_system": "Lucide icons only - no emoticons or emoji characters should be used"
   },
   
   "css_architecture": {

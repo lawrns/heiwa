@@ -424,6 +424,7 @@ body.heiwa-modal-open {
   flex: 1;
   overflow-y: auto;
   padding: 24px;
+  min-height: 0;
 }
 
 .heiwa-booking-step-content {
@@ -599,7 +600,7 @@ body.heiwa-modal-open {
 
 /* Form Components */
 .heiwa-form-group {
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .heiwa-form-label {
@@ -607,19 +608,20 @@ body.heiwa-modal-open {
   font-size: 14px;
   font-weight: 500;
   color: #374151;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .heiwa-form-input,
 .heiwa-form-select,
 .heiwa-form-textarea {
   width: 100%;
-  padding: 12px;
+  padding: 16px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 16px;
   transition: all 150ms ease;
   background: white;
+  box-sizing: border-box;
 }
 
 .heiwa-form-input:focus,
@@ -804,6 +806,366 @@ body.heiwa-modal-open {
   border-top: 2px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+/* Back Button */
+.heiwa-back-button {
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+  margin-bottom: 16px;
+}
+
+.heiwa-back-button:hover {
+  background: #f9fafb;
+  color: #374151;
+  border-color: #9ca3af;
+}
+
+/* Step Header */
+.heiwa-step-header {
+  margin-bottom: 24px;
+}
+
+.heiwa-step-header .heiwa-booking-step-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Date and Participant Selection Specific Styling */
+.heiwa-date-participant-section {
+  padding: 20px 0;
+}
+
+.heiwa-date-participant-section .heiwa-form-group {
+  margin-bottom: 32px;
+}
+
+.heiwa-participant-counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.heiwa-participant-counter .heiwa-counter-display {
+  min-width: 40px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Fix bottom white space */
+.heiwa-modal-content {
+  padding-bottom: 0;
+}
+
+.heiwa-booking-summary {
+  margin-bottom: 0;
+  padding-bottom: 24px;
+}
+
+/* Confirmation Step Styles */
+.heiwa-confirmation-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.heiwa-confirmation-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.heiwa-section-title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.heiwa-destination-summary h5 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.heiwa-destination-description {
+  margin: 0 0 12px 0;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.heiwa-destination-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.heiwa-skill-level,
+.heiwa-location {
+  padding: 4px 12px;
+  background: #dbeafe;
+  color: #1e40af;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.heiwa-dates-summary {
+  text-align: center;
+}
+
+.heiwa-date-range {
+  font-size: 18px;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.heiwa-duration {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.heiwa-participants-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.heiwa-participant-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.heiwa-participant-number {
+  width: 32px;
+  height: 32px;
+  background: #2563eb;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.heiwa-participant-name {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.heiwa-participant-email {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.heiwa-special-requests {
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.heiwa-pricing-breakdown {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.heiwa-pricing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.heiwa-pricing-row:last-child {
+  border-bottom: none;
+}
+
+.heiwa-pricing-row.subtotal {
+  background: #f8fafc;
+  font-weight: 500;
+}
+
+.heiwa-pricing-row.total {
+  background: #2563eb;
+  color: white;
+  font-size: 18px;
+}
+
+.heiwa-trust-signals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.heiwa-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #059669;
+  font-size: 14px;
+}
+
+.heiwa-trust-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Enhanced Date Picker Styles */
+.heiwa-date-picker {
+  cursor: pointer;
+}
+
+/* Ensure native date picker functionality works properly */
+.heiwa-date-picker::-webkit-inner-spin-button,
+.heiwa-date-picker::-webkit-clear-button {
+  display: none;
+}
+
+/* Firefox date picker styling */
+.heiwa-date-picker::-moz-focus-inner {
+  border: 0;
+}
+
+/* Success Message Styles */
+.heiwa-success-message {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.heiwa-success-header {
+  margin-bottom: 32px;
+}
+
+.heiwa-success-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.heiwa-success-message h3 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #059669;
+}
+
+.heiwa-booking-number {
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.heiwa-success-content {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.heiwa-success-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  color: #059669;
+  font-weight: 500;
+}
+
+.heiwa-success-check {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.heiwa-success-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.heiwa-payment-button {
+  background: #059669 !important;
+}
+
+.heiwa-payment-button:hover {
+  background: #047857 !important;
+}
+
+.heiwa-secondary-button {
+  background: #6b7280 !important;
+  color: white !important;
+}
+
+.heiwa-secondary-button:hover {
+  background: #4b5563 !important;
+}
+
+/* Error Message Styles */
+.heiwa-error-message {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.heiwa-error-header {
+  margin-bottom: 24px;
+}
+
+.heiwa-error-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.heiwa-error-message h3 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.heiwa-error-content {
+  margin-bottom: 32px;
+  color: #374151;
+}
+
+.heiwa-error-content p {
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.heiwa-error-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 @keyframes spin {
@@ -1273,11 +1635,34 @@ body.heiwa-modal-open {
   display: block;
 }
 
-/* Hide other steps by default */
-.heiwa-step-dates,
-.heiwa-step-booking,
-.heiwa-step-confirmation {
-  display: none;
+/* Step containers are shown/hidden via .heiwa-booking-step-content.active */
+/* Removed legacy hiding of specific step containers to avoid conflicts */
+
+/* Lucide icon styling */
+.heiwa-destination-card-title svg,
+.heiwa-section-title svg,
+.heiwa-express-booking svg,
+.heiwa-success-icon svg {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+  color: currentColor;
+}
+
+.heiwa-destination-card-title svg {
+  color: #0ea5e9;
+}
+
+.heiwa-section-title svg {
+  color: #0ea5e9;
+}
+
+.heiwa-express-booking svg {
+  color: #ffffff;
+}
+
+.heiwa-success-icon svg {
+  color: #10b981;
 }
 
 /* Loading and error states */

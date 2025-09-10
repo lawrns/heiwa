@@ -32,6 +32,19 @@
         dietaryRequirements: ''
     };
 
+    // Lucide icon helper function
+    function getLucideIcon(iconName, size = 20) {
+        const icons = {
+            'waves': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.5 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.5 0 2.5 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.5 0 2.5 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>`,
+            'zap': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/></svg>`,
+            'calendar': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+            'users': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+            'dollar-sign': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+            'party-popper': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12v0c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11v0c-.11.7-.72 1.22-1.43 1.22H17"/><path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98v0C9.52 4.9 9 5.52 9 6.23V7"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/></svg>`
+        };
+        return icons[iconName] || '';
+    }
+
     // Step configuration
     const STEPS = [
         { id: 'destination', title: 'Choose Your Destination', label: 'Destination' },
@@ -321,6 +334,18 @@
     }
 
     /**
+     * Go to previous step
+     */
+    function goToPreviousStep() {
+        const currentIndex = STEPS.findIndex(step => step.id === currentStep);
+
+        if (currentIndex > 0) {
+            const previousStep = STEPS[currentIndex - 1];
+            showStep(previousStep.id);
+        }
+    }
+
+    /**
      * Validate current step
      */
     function validateCurrentStep() {
@@ -375,26 +400,27 @@
                 ${surfCamps.map(camp => `
                     <div class="heiwa-destination-card ${bookingData.destination?.id === camp.id ? 'selected' : ''}"
                          data-camp-id="${camp.id}">
-                        <img src="${camp.image || 'https://via.placeholder.com/300x120/2563eb/ffffff?text=🏄‍♂️+Surf+Camp'}"
+                        <img src="${camp.media?.featured_image || camp.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDMwMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDM5NEQ5O3N0b3Atb3BhY2l0eToxIiAvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzAyNTFBMztzdG9wLW9wYWNpdHk6MSIgLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0idXJsKCNncmFkKSIvPjx0ZXh0IHg9IjE1MCIgeT0iNTAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNVUkY8L3RleHQ+PHRleHQgeD0iMTUwIiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjZjNmNGY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DQU1QPC90ZXh0Pjwvc3ZnPg=='}"
                              alt="${camp.name}"
-                             class="heiwa-destination-card-image">
+                             class="heiwa-destination-card-image"
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDMwMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMyNTYzZWIiLz48dGV4dCB4PSIxNTAiIHk9IjY1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNVUkYgQ0FNUDU8L3RleHQ+PC9zdmc+'">
                         <div class="heiwa-destination-card-content">
                             <h4 class="heiwa-destination-card-title">
-                                🏄‍♂️ ${camp.name}
+                                ${getLucideIcon('waves', 18)} ${camp.name}
                             </h4>
                             <p class="heiwa-destination-card-description">
                                 ${camp.description || 'Amazing surf experience awaits!'}
                             </p>
                             <div class="heiwa-destination-card-footer">
-                                <span class="heiwa-destination-card-price">€${camp.price || 599}</span>
-                                <span class="heiwa-destination-card-level">${camp.level || 'All Levels'}</span>
+                                <span class="heiwa-destination-card-price">${camp.pricing?.display_price || '€' + (camp.price || 599)}</span>
+                                <span class="heiwa-destination-card-level">${camp.details?.skill_level || camp.level || 'All Levels'}</span>
                             </div>
                         </div>
                     </div>
                 `).join('')}
             </div>
             <button class="heiwa-express-booking">
-                🚀 Quick Book: Most Popular Camp
+                ${getLucideIcon('zap', 18)} Quick Book: Most Popular Camp
             </button>
         `;
 
@@ -461,15 +487,25 @@
         const $container = $('.heiwa-step-dates_participants');
 
         const datesHTML = `
+            <div class="heiwa-step-header">
+                <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
+                    ← Back
+                </button>
+                <h3 class="heiwa-booking-step-title">Select Dates & Participants</h3>
+            </div>
             <div class="heiwa-form-group">
                 <label class="heiwa-form-label">Start Date</label>
-                <input type="date" class="heiwa-form-input" id="start-date"
-                       value="${bookingData.dates.start || ''}" min="${new Date().toISOString().split('T')[0]}">
+                <input type="date" class="heiwa-form-input heiwa-date-picker" id="start-date"
+                       value="${bookingData.dates.start || ''}"
+                       min="${new Date().toISOString().split('T')[0]}"
+                       autocomplete="off">
             </div>
             <div class="heiwa-form-group">
                 <label class="heiwa-form-label">End Date</label>
-                <input type="date" class="heiwa-form-input" id="end-date"
-                       value="${bookingData.dates.end || ''}" min="${new Date().toISOString().split('T')[0]}">
+                <input type="date" class="heiwa-form-input heiwa-date-picker" id="end-date"
+                       value="${bookingData.dates.end || ''}"
+                       min="${new Date().toISOString().split('T')[0]}"
+                       autocomplete="off">
             </div>
 
             <div class="heiwa-form-group">
@@ -487,6 +523,64 @@
         // Bind events
         $('#start-date, #end-date').on('change', updateDates);
         $('.heiwa-counter-button').on('click', updateParticipantCount);
+
+        // Enhanced date picker functionality
+        setupDatePickers();
+    }
+
+    /**
+     * Setup enhanced date picker functionality
+     */
+    function setupDatePickers() {
+        // Ensure date inputs automatically show calendar on focus/click
+        $('.heiwa-date-picker').each(function() {
+            const $input = $(this);
+
+            // Auto-open calendar on click/focus
+            $input.on('click focus', function() {
+                // For browsers that support it, trigger the date picker
+                if (this.showPicker) {
+                    try {
+                        this.showPicker();
+                    } catch (e) {
+                        // Fallback for browsers that don't support showPicker
+                        console.log('showPicker not supported, using native behavior');
+                    }
+                }
+            });
+
+            // Prevent manual typing and force calendar usage
+            $input.on('keydown', function(e) {
+                // Allow tab, escape, enter, and delete keys
+                if ([9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                    // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    (e.keyCode === 65 && e.ctrlKey === true) ||
+                    (e.keyCode === 67 && e.ctrlKey === true) ||
+                    (e.keyCode === 86 && e.ctrlKey === true) ||
+                    (e.keyCode === 88 && e.ctrlKey === true)) {
+                    return;
+                }
+                // Prevent all other key input to force calendar usage
+                e.preventDefault();
+            });
+
+            // Remove any custom tooltip to keep it clean
+            $input.removeAttr('title');
+        });
+
+        // Auto-set end date when start date is selected
+        $('#start-date').on('change', function() {
+            const startDate = new Date($(this).val());
+            const endDate = $('#end-date').val();
+
+            if (!endDate || new Date(endDate) <= startDate) {
+                // Auto-set end date to 7 days after start date
+                const suggestedEndDate = new Date(startDate);
+                suggestedEndDate.setDate(suggestedEndDate.getDate() + 7);
+                $('#end-date').val(suggestedEndDate.toISOString().split('T')[0]);
+                updateDates();
+            }
+        });
     }
 
     /**
@@ -533,7 +627,19 @@
     function renderFormAddons() {
         const $container = $('.heiwa-step-form_addons');
 
+        // Ensure participant details array is properly initialized
+        while (bookingData.participantDetails.length < bookingData.participants) {
+            bookingData.participantDetails.push({ firstName: '', lastName: '', email: '' });
+        }
+        bookingData.participantDetails = bookingData.participantDetails.slice(0, bookingData.participants);
+
         const formHTML = `
+            <div class="heiwa-step-header">
+                <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
+                    ← Back
+                </button>
+                <h3 class="heiwa-booking-step-title">Your Details & Add-ons</h3>
+            </div>
             <div class="heiwa-participant-accordion">
                 ${bookingData.participantDetails.map((participant, index) => `
                     <div class="heiwa-participant-item">
@@ -621,26 +727,120 @@
         const $container = $('.heiwa-step-confirmation');
 
         const total = calculateTotal();
+        const duration = calculateDuration();
+        const basePrice = bookingData.destination?.price || 599;
 
         const confirmationHTML = `
-            <div class="heiwa-booking-summary-card">
-                <h4>Booking Summary</h4>
-                <div class="heiwa-summary-details">
-                    <div class="heiwa-summary-row">
-                        <span>Destination:</span>
-                        <span>${bookingData.destination?.name || 'Not selected'}</span>
+            <div class="heiwa-step-header">
+                <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
+                    ← Back
+                </button>
+                <h3 class="heiwa-booking-step-title">Review & Confirm</h3>
+            </div>
+
+            <div class="heiwa-confirmation-content">
+                <!-- Destination Details -->
+                <div class="heiwa-confirmation-section">
+                    <h4 class="heiwa-section-title">${getLucideIcon('waves', 18)} Surf Camp Details</h4>
+                    <div class="heiwa-destination-summary">
+                        <div class="heiwa-destination-info">
+                            <h5>${bookingData.destination?.name || 'Not selected'}</h5>
+                            <p class="heiwa-destination-description">${bookingData.destination?.description || 'Perfect surf adventure awaits!'}</p>
+                            <div class="heiwa-destination-meta">
+                                <span class="heiwa-skill-level">${bookingData.destination?.skill_level || 'All levels'}</span>
+                                <span class="heiwa-location">${bookingData.destination?.location || 'Mexico'}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="heiwa-summary-row">
-                        <span>Dates:</span>
-                        <span>${bookingData.dates.start} to ${bookingData.dates.end}</span>
+                </div>
+
+                <!-- Dates & Duration -->
+                <div class="heiwa-confirmation-section">
+                    <h4 class="heiwa-section-title">${getLucideIcon('calendar', 18)} Trip Dates</h4>
+                    <div class="heiwa-dates-summary">
+                        <div class="heiwa-date-range">
+                            <strong>${formatDate(bookingData.dates.start)} - ${formatDate(bookingData.dates.end)}</strong>
+                        </div>
+                        <div class="heiwa-duration">
+                            ${duration} days of epic surfing
+                        </div>
                     </div>
-                    <div class="heiwa-summary-row">
-                        <span>Participants:</span>
-                        <span>${bookingData.participants}</span>
+                </div>
+
+                <!-- Participants -->
+                <div class="heiwa-confirmation-section">
+                    <h4 class="heiwa-section-title">${getLucideIcon('users', 18)} Participants (${bookingData.participants})</h4>
+                    <div class="heiwa-participants-summary">
+                        ${bookingData.participantDetails.map((participant, index) => `
+                            <div class="heiwa-participant-summary">
+                                <div class="heiwa-participant-number">${index + 1}</div>
+                                <div class="heiwa-participant-info">
+                                    <div class="heiwa-participant-name">${participant.firstName} ${participant.lastName}</div>
+                                    <div class="heiwa-participant-email">${participant.email}</div>
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
-                    <div class="heiwa-summary-row total">
-                        <span>Total:</span>
-                        <span>€${total}</span>
+                </div>
+
+                ${bookingData.specialRequests ? `
+                    <!-- Special Requests -->
+                    <div class="heiwa-confirmation-section">
+                        <h4 class="heiwa-section-title">📝 Special Requests</h4>
+                        <div class="heiwa-special-requests">
+                            ${bookingData.specialRequests}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Pricing Breakdown -->
+                <div class="heiwa-confirmation-section">
+                    <h4 class="heiwa-section-title">${getLucideIcon('dollar-sign', 18)} Pricing Breakdown</h4>
+                    <div class="heiwa-pricing-breakdown">
+                        <div class="heiwa-pricing-row">
+                            <span>Base price per person</span>
+                            <span>€${basePrice}</span>
+                        </div>
+                        <div class="heiwa-pricing-row">
+                            <span>Number of participants</span>
+                            <span>×${bookingData.participants}</span>
+                        </div>
+                        <div class="heiwa-pricing-row">
+                            <span>Duration</span>
+                            <span>${duration} days</span>
+                        </div>
+                        <div class="heiwa-pricing-row subtotal">
+                            <span>Subtotal</span>
+                            <span>€${total}</span>
+                        </div>
+                        <div class="heiwa-pricing-row total">
+                            <span><strong>Total Amount</strong></span>
+                            <span><strong>€${total}</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trust Signals -->
+                <div class="heiwa-confirmation-section">
+                    <div class="heiwa-trust-signals">
+                        <div class="heiwa-trust-item">
+                            <svg class="heiwa-trust-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                            <span>Secure booking with instant confirmation</span>
+                        </div>
+                        <div class="heiwa-trust-item">
+                            <svg class="heiwa-trust-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            <span>Confirmation email sent immediately</span>
+                        </div>
+                        <div class="heiwa-trust-item">
+                            <svg class="heiwa-trust-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                            </svg>
+                            <span>Flexible payment options available</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -656,10 +856,38 @@
         if (!bookingData.destination) return 0;
 
         const basePrice = bookingData.destination.price || 599;
-        const days = bookingData.dates.start && bookingData.dates.end ?
-            Math.ceil((new Date(bookingData.dates.end) - new Date(bookingData.dates.start)) / (1000 * 60 * 60 * 24)) : 7;
-
         return basePrice * bookingData.participants;
+    }
+
+    /**
+     * Calculate trip duration in days
+     */
+    function calculateDuration() {
+        if (!bookingData.dates.start || !bookingData.dates.end) return 7;
+
+        const startDate = new Date(bookingData.dates.start);
+        const endDate = new Date(bookingData.dates.end);
+        const diffTime = Math.abs(endDate - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return diffDays || 7;
+    }
+
+    /**
+     * Format date for display
+     */
+    function formatDate(dateString) {
+        if (!dateString) return '';
+
+        const date = new Date(dateString);
+        const options = {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        };
+
+        return date.toLocaleDateString('en-US', options);
     }
 
     /**
@@ -682,16 +910,29 @@
     function completeBooking() {
         const $button = $('.heiwa-cta-button');
         $button.addClass('loading').prop('disabled', true);
+        $button.text('Processing...');
+
+        // Transform participant data to match API expectations
+        const participants = bookingData.participantDetails.map(participant => ({
+            name: `${participant.firstName} ${participant.lastName}`.trim(),
+            email: participant.email,
+            phone: participant.phone || '',
+            surf_level: participant.surfLevel || 'beginner'
+        }));
 
         // Prepare booking data for submission
         const submissionData = {
             camp_id: bookingData.destination?.id,
             start_date: bookingData.dates.start,
             end_date: bookingData.dates.end,
-            participants: bookingData.participantDetails,
-            special_requests: bookingData.specialRequests,
-            total_price: calculateTotal()
+            participants: participants,
+            special_requests: bookingData.specialRequests || '',
+            total_price: calculateTotal(),
+            source_url: window.location.href,
+            widget_version: '1.0'
         };
+
+        console.log('Heiwa Booking Widget: Submitting booking data:', submissionData);
 
         makeAPIRequest('/wordpress/bookings', {
             method: 'POST',
@@ -702,32 +943,105 @@
             body: JSON.stringify(submissionData)
         })
         .then(response => {
+            console.log('Heiwa Booking Widget: Booking response:', response);
+
             if (response.success) {
-                // Show success message
-                showSuccessMessage();
+                // Show success message with booking details
+                showSuccessMessage(response.data);
             } else {
-                throw new Error(response.message || 'Booking failed');
+                throw new Error(response.message || response.error || 'Booking failed');
             }
         })
         .catch(error => {
             console.error('Booking error:', error);
-            alert('Booking failed. Please try again.');
+            showErrorMessage(error.message || 'Booking failed. Please try again.');
         })
         .finally(() => {
             $button.removeClass('loading').prop('disabled', false);
+            $button.text('Complete Booking');
         });
     }
 
     /**
      * Show success message
      */
-    function showSuccessMessage() {
+    function showSuccessMessage(bookingData) {
         const $content = $('.heiwa-booking-content');
+        const bookingNumber = bookingData?.booking?.booking_number || 'N/A';
+        const paymentLink = bookingData?.payment?.payment_link;
+
         $content.html(`
             <div class="heiwa-success-message">
-                <h3>🎉 Booking Confirmed!</h3>
-                <p>Your surf adventure is booked! You'll receive a confirmation email shortly.</p>
-                <button class="heiwa-cta-button" onclick="location.reload()">Book Another Trip</button>
+                <div class="heiwa-success-header">
+                    <div class="heiwa-success-icon">${getLucideIcon('party-popper', 24)}</div>
+                    <h3>Booking Confirmed!</h3>
+                    <p class="heiwa-booking-number">Booking #${bookingNumber}</p>
+                </div>
+
+                <div class="heiwa-success-content">
+                    <div class="heiwa-success-item">
+                        <svg class="heiwa-success-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Your surf adventure is confirmed!</span>
+                    </div>
+
+                    <div class="heiwa-success-item">
+                        <svg class="heiwa-success-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <span>Confirmation email sent to all participants</span>
+                    </div>
+
+                    ${paymentLink ? `
+                        <div class="heiwa-success-item">
+                            <svg class="heiwa-success-check" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <span>Payment link will be sent separately</span>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="heiwa-success-actions">
+                    ${paymentLink ? `
+                        <a href="${paymentLink}" class="heiwa-cta-button heiwa-payment-button" target="_blank">
+                            Complete Payment
+                        </a>
+                    ` : ''}
+                    <button class="heiwa-cta-button heiwa-secondary-button" onclick="window.HeiwaBookingWidget.closeWidget()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        `);
+    }
+
+    /**
+     * Show error message
+     */
+    function showErrorMessage(message) {
+        const $content = $('.heiwa-booking-content');
+        $content.html(`
+            <div class="heiwa-error-message">
+                <div class="heiwa-error-header">
+                    <div class="heiwa-error-icon">❌</div>
+                    <h3>Booking Failed</h3>
+                </div>
+
+                <div class="heiwa-error-content">
+                    <p>${message}</p>
+                    <p>Please try again or contact support if the problem persists.</p>
+                </div>
+
+                <div class="heiwa-error-actions">
+                    <button class="heiwa-cta-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
+                        Try Again
+                    </button>
+                    <button class="heiwa-cta-button heiwa-secondary-button" onclick="window.HeiwaBookingWidget.closeWidget()">
+                        Close
+                    </button>
+                </div>
             </div>
         `);
     }
@@ -1072,6 +1386,47 @@
         console.log('Success:', message);
     }
 
+    /**
+     * Validation functions for hardening
+     */
+    function validateConfirmationStepVisibility() {
+        if (currentStep === 'confirmation') {
+            const $stepContent = $(`.heiwa-booking-step-content[data-step="confirmation"]`);
+            const $confirmationContainer = $('.heiwa-step-confirmation');
+
+            const isStepVisible = $stepContent.hasClass('active') && $stepContent.is(':visible');
+            const hasContent = $confirmationContainer.children().length > 0;
+
+            if (!isStepVisible) {
+                console.warn('Heiwa Booking Widget: Confirmation step container is not visible');
+                return false;
+            }
+
+            if (!hasContent) {
+                console.warn('Heiwa Booking Widget: Confirmation step has no content');
+                return false;
+            }
+
+            console.log('Heiwa Booking Widget: Confirmation step validation passed');
+            return true;
+        }
+        return true;
+    }
+
+    function preventStepHidingConflicts() {
+        // Check for CSS rules that might hide step containers
+        const $confirmationStep = $('.heiwa-step-confirmation');
+        if ($confirmationStep.length > 0) {
+            const computedStyle = window.getComputedStyle($confirmationStep[0]);
+
+            if (computedStyle.display === 'none' && currentStep === 'confirmation') {
+                console.error('Heiwa Booking Widget: CSS conflict detected - confirmation step is hidden by display:none');
+                // Force show the step
+                $confirmationStep.css('display', 'block');
+            }
+        }
+    }
+
     // Global widget object for external access
     window.HeiwaBookingWidget = {
         init: function(widgetId, settings) {
@@ -1080,7 +1435,13 @@
         },
         retryLoadSurfCamps: function() {
             loadSurfCamps();
-        }
+        },
+        goToPreviousStep: function() {
+            goToPreviousStep();
+        },
+        // Validation methods for testing
+        validateConfirmationStepVisibility: validateConfirmationStepVisibility,
+        preventStepHidingConflicts: preventStepHidingConflicts
     };
 
     // Initialize when document is ready - multiple fallbacks for WordPress compatibility
