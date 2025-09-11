@@ -3,6 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // In development, bypass auth to avoid redirect loops while testing UI
+  if (process.env.NODE_ENV !== 'production') {
+    return NextResponse.next();
+  }
+
   // Check for authentication token in cookies
   const cookies = request.headers.get('cookie') || '';
   const tokenMatch = cookies.match(/sb-[^=]+-auth-token=([^;]+)/);

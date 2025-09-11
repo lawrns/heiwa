@@ -84,7 +84,7 @@ export const exportToCSV = (
   clients: Client[],
   config: ExportConfig = {
     filename: `clients_${new Date().toISOString().split('T')[0]}.csv`,
-    columns: ['name', 'email', 'phone', 'brand', 'status', 'lastBookingDate', 'registrationDate', 'notes'],
+    columns: ['name', 'email', 'phone', 'brand', 'lastBookingDate', 'registrationDate', 'notes'],
     includeHeaders: true,
   }
 ): void => {
@@ -187,7 +187,11 @@ export const importRowToCreateClient = (row: ImportRow): Partial<Client> => {
     email: row.email,
     phone: row.phone || '',
     brand: row.brand || 'Heiwa House',
-    status: row.status || 'Active',
+    socials: {
+      instagram: (row as any).instagram || '',
+      facebook: (row as any).facebook || '',
+      twitter: (row as any).twitter || '',
+    },
     notes: row.notes || '',
   };
 
@@ -259,7 +263,9 @@ export const generateCSVTemplate = (): string => {
       email: 'john.doe@example.com',
       phone: '+1 (555) 123-4567',
       brand: 'Heiwa House',
-      status: 'Active',
+      instagram: '@johndoe',
+      facebook: 'https://facebook.com/johndoe',
+      twitter: '@doeX',
       lastBookingDate: '2024-01-15',
       registrationDate: '2023-12-01',
       notes: 'VIP client, prefers ocean view',

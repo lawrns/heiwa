@@ -34,8 +34,6 @@ export interface ClientsToolbarProps {
   // Filters
   brandFilter: string;
   onBrandFilterChange: (value: string) => void;
-  statusFilter: string;
-  onStatusFilterChange: (value: string) => void;
 
   // Column visibility
   visibleColumns: string[];
@@ -66,11 +64,7 @@ const BRAND_OPTIONS = [
   { value: 'Freedom Routes', label: 'Freedom Routes' },
 ];
 
-const STATUS_OPTIONS = [
-  { value: 'All', label: 'All Statuses' },
-  { value: 'Active', label: 'Active' },
-  { value: 'Inactive', label: 'Inactive' },
-];
+
 
 const SORT_OPTIONS = [
   { value: 'name', label: 'Name' },
@@ -78,7 +72,6 @@ const SORT_OPTIONS = [
   { value: 'lastBookingDate', label: 'Last Booking' },
   { value: 'registrationDate', label: 'Registration Date' },
   { value: 'brand', label: 'Brand' },
-  { value: 'status', label: 'Status' },
 ];
 
 const COLUMN_OPTIONS = [
@@ -87,7 +80,7 @@ const COLUMN_OPTIONS = [
   { id: 'phone', label: 'Phone', required: false },
   { id: 'lastBookingDate', label: 'Last Booking', required: false },
   { id: 'brand', label: 'Brand', required: false },
-  { id: 'status', label: 'Status', required: false },
+  { id: 'socials', label: 'Socials', required: false },
   { id: 'registrationDate', label: 'Registration Date', required: false },
 ];
 
@@ -96,8 +89,6 @@ export function ClientsToolbar({
   onSearchChange,
   brandFilter,
   onBrandFilterChange,
-  statusFilter,
-  onStatusFilterChange,
   visibleColumns,
   onColumnVisibilityChange,
   sortBy,
@@ -220,19 +211,7 @@ export function ClientsToolbar({
           </SelectContent>
         </Select>
 
-        {/* Status filter */}
-        <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-          <SelectTrigger className="w-40" aria-label="Filter by status">
-            <SelectValue placeholder="All Statuses" />
-          </SelectTrigger>
-          <SelectContent>
-            {STATUS_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+
 
         {/* Sort dropdown */}
         <Select

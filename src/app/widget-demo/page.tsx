@@ -8,7 +8,7 @@ export default function WidgetDemoPage() {
     // Configure API for the widget
     if (typeof window !== 'undefined') {
       (window as any).heiwa_booking_ajax = {
-        api_endpoint: 'https://heiwahouse.netlify.app/api',
+        api_endpoint: `${window.location.origin}/api`,
         api_key: 'heiwa_wp_test_key_2024_secure_deployment'
       }
     }
@@ -25,20 +25,24 @@ export default function WidgetDemoPage() {
       {/* Load widget styles */}
       <link 
         rel="stylesheet" 
-        href="/wordpress-plugin/heiwa-booking-widget/assets/css/widget.css?v=2025091007"
+        href="/wordpress-plugin/heiwa-booking-widget/assets/css/widget.css?v=2025091101"
       />
       
       {/* Load widget scripts */}
       <Script 
-        src="/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js?v=2025091007"
+        src="/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js?v=2025091101"
         strategy="afterInteractive"
         onLoad={() => {
           // Auto-initialize widget after script loads
-          setTimeout(() => {
-            if (typeof (window as any).HeiwaBookingWidget !== 'undefined') {
-              (window as any).HeiwaBookingWidget.init()
-            }
-          }, 1000)
+          try {
+            setTimeout(() => {
+              if (typeof (window as any).HeiwaBookingWidget !== 'undefined') {
+                (window as any).HeiwaBookingWidget.init()
+              }
+            }, 300)
+          } catch (e) {
+            console.error('HeiwaBookingWidget init failed:', e)
+          }
         }}
       />
 
@@ -131,7 +135,7 @@ export default function WidgetDemoPage() {
         `}</style>
 
         <div className="hero-section">
-          <h1>🏄‍♂️ Heiwa House Booking Widget</h1>
+          <h1>Heiwa House Booking Widget</h1>
           <p>Experience our premium surf camp booking system in action</p>
         </div>
 
@@ -141,7 +145,7 @@ export default function WidgetDemoPage() {
           
           <div style={{ textAlign: 'center', margin: '30px 0' }}>
             <button className="heiwa-booking-trigger booking-trigger">
-              🌊 Book Your Surf Adventure
+              Book Your Surf Adventure
             </button>
           </div>
 
@@ -161,32 +165,32 @@ export default function WidgetDemoPage() {
           <h2>Widget Features</h2>
           <div className="features-grid">
             <div className="feature-card">
-              <div className="feature-icon">🎨</div>
+              <div className="feature-icon">Design</div>
               <h3>Premium Design</h3>
               <p>Surf-themed styling with wave patterns and ocean gradients</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">📱</div>
+              <div className="feature-icon">Mobile</div>
               <h3>Mobile Responsive</h3>
               <p>Perfect experience on all devices and screen sizes</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">🏠</div>
+              <div className="feature-icon">Rooms</div>
               <h3>Real Room Data</h3>
               <p>Authentic Heiwa House rooms with images and amenities</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">⚡</div>
+              <div className="feature-icon">Fast</div>
               <h3>Fast & Smooth</h3>
               <p>Optimized performance with smooth animations</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">🔒</div>
+              <div className="feature-icon">Secure</div>
               <h3>Secure Booking</h3>
               <p>Safe and secure booking process with validation</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">♿</div>
+              <div className="feature-icon">A11y</div>
               <h3>Accessible</h3>
               <p>Full keyboard navigation and screen reader support</p>
             </div>

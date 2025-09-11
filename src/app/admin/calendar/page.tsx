@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { Calendar, momentLocalizer, Views, View, NavigateAction } from 'react-big-calendar';
+import YearView from '@/components/admin/calendar/YearView';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { motion } from 'framer-motion';
@@ -110,6 +111,8 @@ export default function CalendarPage() {
   const [loadingCustomEvents, setLoadingCustomEvents] = useState(true);
   const [showAddEventModal, setShowAddEventModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  // Control the current calendar view explicitly to support custom 'year' view
+  const [currentView, setCurrentView] = useState<any>(Views.MONTH);
 
   // Fetch surf camps from Supabase with caching
   const fetchSurfCamps = useCallback(async () => {
@@ -416,7 +419,7 @@ export default function CalendarPage() {
 
 
   // Custom toolbar
-  const CustomToolbar = ({ label, onNavigate, onView, view }: { label: string; onNavigate: (action: NavigateAction) => void; onView: (view: View) => void; view: View }) => (
+  const CustomToolbar = ({ label, onNavigate, onView, view }: { label: string; onNavigate: (action: NavigateAction) => void; onView: (view: any) => void; view: any }) => (
     <div className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg">
       <div className="flex items-center space-x-4">
         <Button variant="outline" size="sm" onClick={() => onNavigate('PREV')}>
@@ -454,6 +457,14 @@ export default function CalendarPage() {
           className="text-xs sm:text-sm"
         >
           Day
+        </Button>
+        <Button
+          variant={view === 'year' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => onView('year')}
+          className="text-xs sm:text-sm"
+        >
+          Year
         </Button>
       </div>
     </div>
@@ -553,7 +564,9 @@ export default function CalendarPage() {
                   event: EventComponent,
                   toolbar: CustomToolbar,
                 }}
-                views={[Views.MONTH, Views.WEEK, Views.DAY]}
+                views={{ month: true, week: true, day: true, year: YearView as any } as any}
+                view={currentView}
+                onView={(v: any) => setCurrentView(v)}
                 defaultView={Views.MONTH}
                 popup
                 selectable

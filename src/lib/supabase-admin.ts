@@ -28,6 +28,7 @@ export const TABLES = {
   INVOICES: 'invoices',
   AUTOMATIONS: 'automations',
   EXTERNAL_CALENDAR_EVENTS: 'external_calendar_events',
+  CUSTOM_EVENTS: 'custom_events',
   FEATURE_FLAGS: 'feature_flags',
 } as const;
 

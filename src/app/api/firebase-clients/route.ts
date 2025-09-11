@@ -10,19 +10,13 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const brand = searchParams.get('brand');
-    const status = searchParams.get('status');
 
     let clients;
-    if (brand || status) {
+    if (brand) {
       // Get all clients and filter client-side for now
       // In production, you might want to add server-side filtering
       clients = await clientsAPI.getAll();
-      if (brand) {
-        clients = clients.filter(c => (c as any).brand === brand || brand === 'Heiwa House'); // Default to Heiwa House for legacy data
-      }
-      if (status) {
-        clients = clients.filter(c => c.status === status);
-      }
+      clients = clients.filter(c => (c as any).brand === brand || brand === 'Heiwa House'); // Default to Heiwa House for legacy data
     } else {
       clients = await clientsAPI.getAll();
     }
@@ -45,7 +39,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = CreateClientSchema.parse(body);
 
-    const clientId = await clientsAPI.create(validatedData);
+    const payload = { ...validatedData, notes: validatedData.notes ?? '' } as any;
+    const clientId = await clientsAPI.create(payload);
     const client = await clientsAPI.getById(clientId);
 
     return NextResponse.json({ client }, { status: 201 });
@@ -74,7 +69,11 @@ export async function PUT(request: NextRequest) {
     }
 
     const validatedUpdates = UpdateClientSchema.parse(updates);
-    await clientsAPI.update(id, validatedUpdates);
+    if ((validatedUpdates as any).lastBookingDate === null) {
+      delete (validatedUpdates as any).lastBookingDate;
+    }
+    const updatePayload = { ...validatedUpdates, notes: validatedUpdates.notes ?? '' } as any;
+    await clientsAPI.update(id, updatePayload);
 
     const client = await clientsAPI.getById(id);
     return NextResponse.json({ client });

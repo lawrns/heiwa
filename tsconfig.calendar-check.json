@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "src/app/admin/calendar/page.tsx",
+    "src/components/admin/calendar/YearView.tsx",
+    "src/lib/supabase/client.ts",
+    "src/lib/schemas.ts"
+  ],
+  "exclude": ["node_modules"]
+}
+

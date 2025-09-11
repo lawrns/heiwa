@@ -1,6 +1,6 @@
 -- Create custom_events table for calendar events
 CREATE TABLE custom_events (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title TEXT NOT NULL,
     description TEXT,
     start_date TIMESTAMPTZ NOT NULL,
@@ -26,9 +26,9 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER update_custom_events_updated_at 
-    BEFORE UPDATE ON custom_events 
-    FOR EACH ROW 
+CREATE TRIGGER update_custom_events_updated_at
+    BEFORE UPDATE ON custom_events
+    FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
 -- Add RLS policies for custom events
@@ -36,13 +36,9 @@ ALTER TABLE custom_events ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Admin users can do everything
 CREATE POLICY "Admin users can manage custom events" ON custom_events
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM user_roles 
-            WHERE user_id = auth.uid() 
-            AND role IN ('admin', 'super_admin')
-        )
-    );
+    FOR ALL
+    USING (is_admin_user())
+    WITH CHECK (is_admin_user());
 
 -- Policy: Users can view custom events (for calendar display)
 CREATE POLICY "Users can view custom events" ON custom_events

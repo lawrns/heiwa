@@ -46,10 +46,7 @@ const BRAND_OPTIONS = [
   { value: 'Freedom Routes', label: 'Freedom Routes' },
 ];
 
-const STATUS_OPTIONS = [
-  { value: 'Active', label: 'Active' },
-  { value: 'Inactive', label: 'Inactive' },
-];
+
 
 export function ClientDialog({
   isOpen,
@@ -68,8 +65,7 @@ export function ClientDialog({
       email: '',
       phone: '',
       brand: 'Heiwa House',
-      status: 'Active',
-      lastBookingDate: undefined,
+      socials: { instagram: '', facebook: '', twitter: '' },
       notes: '',
     },
   });
@@ -84,8 +80,11 @@ export function ClientDialog({
           email: client.email,
           phone: client.phone || '',
           brand: client.brand,
-          status: client.status,
-          lastBookingDate: client.lastBookingDate ? new Date(client.lastBookingDate.seconds * 1000).toISOString().split('T')[0] : undefined,
+          socials: {
+            instagram: (client as any).socials?.instagram || '',
+            facebook: (client as any).socials?.facebook || '',
+            twitter: (client as any).socials?.twitter || '',
+          },
           notes: client.notes || '',
         });
       } else {
@@ -95,8 +94,7 @@ export function ClientDialog({
           email: '',
           phone: '',
           brand: 'Heiwa House',
-          status: 'Active',
-          lastBookingDate: undefined,
+          socials: { instagram: '', facebook: '', twitter: '' },
           notes: '',
         });
       }
@@ -230,53 +228,52 @@ export function ClientDialog({
               )}
             />
 
-            {/* Status Field */}
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status *</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger aria-label="Select status">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {STATUS_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            {/* Last Booking Date Field */}
-            <FormField
-              control={form.control}
-              name="lastBookingDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Booking Date</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      {...field}
-                      aria-label="Last booking date"
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Optional: Date of client&apos;s last booking
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Socials Fields */}
+            <div className="grid grid-cols-1 gap-4">
+              <FormField
+                control={form.control}
+                name="socials.instagram"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Instagram</FormLabel>
+                    <FormControl>
+                      <Input placeholder="@handle or URL" {...field} aria-label="Instagram" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="socials.facebook"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Facebook</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Profile/Page URL" {...field} aria-label="Facebook" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="socials.twitter"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Twitter/X</FormLabel>
+                    <FormControl>
+                      <Input placeholder="@handle or URL" {...field} aria-label="Twitter" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+
+
 
             {/* Notes Field */}
             <FormField

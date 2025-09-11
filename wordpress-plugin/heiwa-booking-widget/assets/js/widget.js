@@ -56,7 +56,8 @@
             'wind': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"></path><path d="M9.6 4.6A2 2 0 1 1 11 8H2"></path><path d="M12.6 19.4A2 2 0 1 0 14 16H2"></path></svg>`,
             'home': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9,22 9,12 15,12 15,22"></polyline></svg>`,
             'chef': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path><line x1="6" y1="17" x2="18" y2="17"></line></svg>`,
-            'check': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"></polyline></svg>`
+            'check': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20,6 9,17 4,12"></polyline></svg>`,
+            'arrow-left': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>`
         };
         return icons[iconName] || '';
     }
@@ -111,9 +112,43 @@
     }
 
     /**
+     * Ensure the widget stylesheet is loaded (works in Next.js and WordPress)
+     */
+    function ensureWidgetStylesLoaded() {
+        try {
+            // If stylesheet already present, do nothing
+            if (document.querySelector('link[rel="stylesheet"][href*="heiwa-booking-widget/assets/css/widget.css"]')) {
+                console.log('Heiwa Booking Widget: Stylesheet already present');
+                return;
+            }
+            // Try to derive CSS path from the script tag that loaded this file
+            const scriptEl = Array.from(document.scripts || []).find(s => s.src && s.src.includes('heiwa-booking-widget/assets/js/widget.js'));
+            let cssHref = '/wordpress-plugin/heiwa-booking-widget/assets/css/widget.css';
+            if (scriptEl && scriptEl.src) {
+                const src = scriptEl.src;
+                const base = src.replace(/assets\/js\/widget\.js(?:\?.*)?$/, 'assets/css/widget.css');
+                // Preserve cache-busting version if present
+                const vMatch = src.match(/[?&]v=([0-9]+)/);
+                cssHref = base + (vMatch ? ('?v=' + vMatch[1]) : '');
+            }
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = cssHref;
+            link.onload = () => console.log('Heiwa Booking Widget: Stylesheet loaded', cssHref);
+            link.onerror = () => console.warn('Heiwa Booking Widget: Failed to load stylesheet', cssHref);
+            document.head.appendChild(link);
+        } catch (e) {
+            console.warn('Heiwa Booking Widget: ensureWidgetStylesLoaded error', e);
+        }
+    }
+
+    /**
      * Initialize the booking widget
      */
     function initBookingWidget() {
+        // Ensure styles are present before rendering
+        ensureWidgetStylesLoaded();
+
         // Bind event handlers
         bindEvents();
 
@@ -256,57 +291,59 @@
      */
     function createSidebarBooking() {
         const sidebarHTML = `
-            <div class="heiwa-booking-backdrop"></div>
-            <div class="heiwa-booking-drawer" role="dialog" aria-label="Booking Flow">
-                <div class="heiwa-booking-drawer-header">
-                    <h2 class="heiwa-booking-drawer-title">Book Your Surf Adventure</h2>
-                    <button class="heiwa-booking-drawer-close" aria-label="Close booking">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                </div>
+            <div class="heiwa-booking-widget">
+                <div class="heiwa-booking-backdrop"></div>
+                <div class="heiwa-booking-drawer" role="dialog" aria-label="Booking Flow">
+                    <div class="heiwa-booking-drawer-header">
+                        <h2 class="heiwa-booking-drawer-title">Book Your Surf Adventure</h2>
+                        <button class="heiwa-booking-drawer-close" aria-label="Close booking">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
 
-                <div class="heiwa-booking-progress">
-                    <div class="heiwa-booking-stepper">
-                        ${STEPS.map((step, index) => `
-                            <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-step="${step.id}">
-                                <div class="heiwa-booking-step-number">${index + 1}</div>
-                                <div class="heiwa-booking-step-label">${step.label}</div>
+                    <div class="heiwa-booking-progress">
+                        <div class="heiwa-booking-stepper">
+                            ${STEPS.map((step, index) => `
+                                <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-step="${step.id}">
+                                    <div class="heiwa-booking-step-number">${index + 1}</div>
+                                    <div class="heiwa-booking-step-label">${step.label}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="heiwa-booking-content">
+                        ${STEPS.map(step => `
+                            <div class="heiwa-booking-step-content" data-step="${step.id}">
+                                <div class="heiwa-step-${step.id}"></div>
                             </div>
                         `).join('')}
                     </div>
-                </div>
 
-                <div class="heiwa-booking-content">
-                    ${STEPS.map(step => `
-                        <div class="heiwa-booking-step-content" data-step="${step.id}">
-                            <div class="heiwa-step-${step.id}"></div>
+                    <div class="heiwa-booking-summary compact">
+                        <div class="heiwa-summary-content">
+                            <div class="heiwa-summary-item">
+                                <span class="heiwa-summary-label">Destination:</span>
+                                <span class="heiwa-summary-value" data-summary="destination">Not selected</span>
+                            </div>
+                            <div class="heiwa-summary-item">
+                                <span class="heiwa-summary-label">Dates:</span>
+                                <span class="heiwa-summary-value" data-summary="dates">Not selected</span>
+                            </div>
+                            <div class="heiwa-summary-item">
+                                <span class="heiwa-summary-label">Participants:</span>
+                                <span class="heiwa-summary-value" data-summary="participants">1</span>
+                            </div>
                         </div>
-                    `).join('')}
-                </div>
-
-                <div class="heiwa-booking-summary">
-                    <div class="heiwa-summary-content">
-                        <div class="heiwa-summary-item">
-                            <span class="heiwa-summary-label">Destination:</span>
-                            <span class="heiwa-summary-value" data-summary="destination">Not selected</span>
+                        <div class="heiwa-summary-total">
+                            <span class="heiwa-summary-total-label">Total:</span>
+                            <span class="heiwa-summary-total-value" data-summary="total">€0</span>
                         </div>
-                        <div class="heiwa-summary-item">
-                            <span class="heiwa-summary-label">Dates:</span>
-                            <span class="heiwa-summary-value" data-summary="dates">Not selected</span>
-                        </div>
-                        <div class="heiwa-summary-item">
-                            <span class="heiwa-summary-label">Participants:</span>
-                            <span class="heiwa-summary-value" data-summary="participants">1</span>
-                        </div>
+                        <button class="heiwa-cta-button" data-action="next-step">Continue</button>
                     </div>
-                    <div class="heiwa-summary-total">
-                        <span class="heiwa-summary-total-label">Total:</span>
-                        <span class="heiwa-summary-total-value" data-summary="total">€0</span>
-                    </div>
-                    <button class="heiwa-cta-button" data-action="next-step">Continue</button>
                 </div>
             </div>
         `;
@@ -350,7 +387,8 @@
 
         // Update CTA button
         updateCTAButton();
-
+        // Update step summaries (accordion for completed steps)
+        updateStepSummaries();
         // Render step content
         renderStepContent(stepId);
 
@@ -732,7 +770,7 @@
         const datesHTML = `
             <div class="heiwa-step-header">
                 <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
-                    ← Back
+                    ${getLucideIcon('arrow-left', 16)} Back
                 </button>
                 <h3 class="heiwa-booking-step-title">Select Dates & Participants</h3>
             </div>
@@ -879,7 +917,7 @@
         const formHTML = `
             <div class="heiwa-step-header">
                 <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
-                    ← Back
+                    ${getLucideIcon('arrow-left', 16)} Back
                 </button>
                 <h3 class="heiwa-booking-step-title">Your Details & Add-ons</h3>
             </div>
@@ -976,7 +1014,7 @@
         const confirmationHTML = `
             <div class="heiwa-step-header">
                 <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
-                    ← Back
+                    ${getLucideIcon('arrow-left', 16)} Back
                 </button>
                 <h3 class="heiwa-booking-step-title">Review & Confirm</h3>
             </div>
@@ -1194,7 +1232,94 @@
 
         $('[data-summary="participants"]').text(bookingData.participants);
         $('[data-summary="total"]').text(`€${calculateTotal()}`);
+        // Also refresh the step summaries when any summary data changes
+        updateStepSummaries();
     }
+
+    /**
+     * Ensure step summaries container exists and return it
+     */
+    function ensureStepSummariesContainer() {
+        const $content = $('.heiwa-booking-content');
+        if (!$content.find('.heiwa-step-summaries').length) {
+            $content.prepend('<div class="heiwa-step-summaries"></div>');
+        }
+        return $content.find('.heiwa-step-summaries');
+    }
+
+    /**
+     * Update accordion-style summaries for completed steps
+     */
+    function updateStepSummaries() {
+        const $wrap = ensureStepSummariesContainer();
+        const currentIndex = STEPS.findIndex(s => s.id === currentStep);
+        const items = [];
+
+        function addItem(stepId, title, detailsHtml) {
+            items.push(`
+                <div class="heiwa-step-summary" data-step="${stepId}">
+                    <div class="heiwa-step-summary-header">
+                        <div class="heiwa-step-summary-title">${title}</div>
+                        <button type="button" class="heiwa-step-summary-edit" data-target-step="${stepId}">Edit</button>
+                    </div>
+                    ${detailsHtml ? `<div class="heiwa-step-summary-content">${detailsHtml}</div>` : ''}
+                </div>
+            `);
+        }
+
+        // booking-type
+        if (STEPS.findIndex(s => s.id === 'booking-type') < currentIndex && bookingData.bookingType) {
+            addItem('booking-type', `${getLucideIcon('check', 14)} Booking Type`,
+                bookingData.bookingType === 'surf-week' ? 'All-Inclusive Surf Week' : 'Room Booking');
+        }
+
+        // surf-weeks
+        if (STEPS.findIndex(s => s.id === 'surf-weeks') < currentIndex && bookingData.selectedSurfWeek) {
+            const w = bookingData.selectedSurfWeek;
+            addItem('surf-weeks', `${getLucideIcon('waves', 14)} Surf Week`,
+                `${w.title || ''}<br>${formatDate(w.start_date)} – ${formatDate(w.end_date)}`);
+        }
+
+        // room-calendar / dates_participants (dates)
+        if ((STEPS.findIndex(s => s.id === 'room-calendar') < currentIndex ||
+             STEPS.findIndex(s => s.id === 'dates_participants') < currentIndex) &&
+            bookingData.dates.start && bookingData.dates.end) {
+            addItem('room-calendar', `${getLucideIcon('calendar', 14)} Dates`,
+                `${formatDate(bookingData.dates.start)} – ${formatDate(bookingData.dates.end)}`);
+        }
+
+        // room-selection
+        if (STEPS.findIndex(s => s.id === 'room-selection') < currentIndex && bookingData.selectedRoom) {
+            const r = bookingData.selectedRoom;
+            addItem('room-selection', `${getLucideIcon('bed', 14)} Room`,
+                `${r.name || ''}<br>€${r.price_per_night || 0}/night`);
+        }
+
+        // dates_participants (participants)
+        if (STEPS.findIndex(s => s.id === 'dates_participants') < currentIndex && bookingData.participants) {
+            addItem('dates_participants', `${getLucideIcon('users', 14)} Participants`,
+                `${bookingData.participants} traveller(s)`);
+        }
+
+        // form_addons
+        if (STEPS.findIndex(s => s.id === 'form_addons') < currentIndex && bookingData.participantDetails?.length) {
+            const filled = bookingData.participantDetails.filter(p => (p.firstName||p.lastName||p.email)).length;
+            addItem('form_addons', `${getLucideIcon('check', 14)} Details`, `${filled}/${bookingData.participants} completed`);
+        }
+
+        $wrap.html(items.join(''));
+
+        // Bind navigation from summaries
+        $wrap.find('.heiwa-step-summary-edit').off('click').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const target = $(this).data('target-step');
+            if (target) {
+                showStep(target);
+            }
+        });
+    }
+
 
     /**
      * Complete booking
@@ -1724,7 +1849,7 @@
             <div class="heiwa-room-selection">
                 <div class="heiwa-step-header">
                     <button class="heiwa-back-button" onclick="window.HeiwaBookingWidget.goToPreviousStep()">
-                        ← Back to Dates
+                        ${getLucideIcon('arrow-left', 16)} Back to Dates
                     </button>
                     <h3 class="heiwa-booking-step-title">Choose Your Room</h3>
                 </div>
@@ -1747,7 +1872,7 @@
                             <div class="heiwa-room-content">
                                 <h4 class="heiwa-room-name">${room.name}</h4>
                                 <div class="heiwa-room-details">
-                                    <span class="heiwa-room-capacity">👥 ${room.capacity} guests</span>
+                                    <span class="heiwa-room-capacity">${getLucideIcon('users', 14)} ${room.capacity} guests</span>
                                     <span class="heiwa-room-price">€${room.price_per_night}/night</span>
                                 </div>
                                 <div class="heiwa-room-amenities">

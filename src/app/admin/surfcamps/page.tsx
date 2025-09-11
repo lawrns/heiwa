@@ -42,6 +42,10 @@ interface DatabaseSurfCamp {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  // New/optional fields
+  category?: string;
+  food_preferences?: string[];
+  allergies_info?: string[];
 }
 
 // Admin surf camp type (for the UI)
@@ -63,6 +67,9 @@ interface AdminSurfCamp {
   category?: 'FR' | 'HH';
   availableRooms?: string[];
   occupancy?: number;
+  // New/optional fields surfaced in UI (not yet deeply integrated)
+  foodPreferences?: string[];
+  allergiesInfo?: string[];
 }
 
 // Form schema for surf camp creation/editing
@@ -80,9 +87,12 @@ const SurfCampFormSchema = z.object({
   includes: z.array(z.string()).optional(),
   images: z.array(z.string()).optional(),
   isActive: z.boolean().optional(),
+  // New dietary fields
+  foodPreferences: z.array(z.string()).default([]),
+  allergiesInfo: z.array(z.string()).default([]),
 });
 
-type SurfCampFormData = z.infer<typeof SurfCampFormSchema>;
+type SurfCampFormData = Omit<z.infer<typeof SurfCampFormSchema>, 'foodPreferences' | 'allergiesInfo'> & { foodPreferences?: string[]; allergiesInfo?: string[] };
 
 // Drag and Drop item types
 const ItemTypes = {
@@ -235,10 +245,17 @@ export default function SurfCampsPage() {
           isActive: item.is_active,
           createdAt: new Date(item.created_at),
           updatedAt: new Date(item.updated_at),
-          // Legacy compatibility fields - derive category from name
-          category: (item.name.toLowerCase().includes('frenchman') ? 'FR' : 'HH') as 'FR' | 'HH',
+          // Persisted category (full name) mapped back to code; fallback to legacy name-derived behavior
+          category: (
+            item.category
+              ? (item.category.toLowerCase().startsWith('freedom') ? 'FR' : 'HH')
+              : (item.name.toLowerCase().includes('frenchman') ? 'FR' : 'HH')
+          ) as 'FR' | 'HH',
           availableRooms: [], // Would need to be fetched separately or stored
           occupancy: item.max_participants, // Use max_participants as occupancy
+          // Surface dietary fields if present
+          foodPreferences: (item.food_preferences as string[] | undefined) || [],
+          allergiesInfo: (item.allergies_info as string[] | undefined) || [],
         })) as AdminSurfCamp[];
 
         setSurfCamps(formattedCamps || []);
@@ -370,6 +387,8 @@ export default function SurfCampsPage() {
       includes: [],
       images: [],
       isActive: true,
+      foodPreferences: [],
+      allergiesInfo: [],
     },
   });
 
@@ -410,11 +429,15 @@ export default function SurfCampsPage() {
           start_date: data.startDate.toISOString(),
           end_date: data.endDate.toISOString(),
           max_participants: data.maxParticipants || data.occupancy,
-          price: data.price || (data.category === 'FR' ? 799.00 : 599.00),
+          price: data.price || (data.category === 'FR' ? 799.0 : 599.0),
           level: data.level || 'all',
           includes: data.includes || ['Daily surf lessons', 'Equipment rental', 'Breakfast'],
           images: data.images || [],
           is_active: data.isActive !== undefined ? data.isActive : true,
+          // New fields
+          category: data.category === 'FR' ? 'Freedom Routes' : 'Heiwa House',
+          food_preferences: data.foodPreferences || [],
+          allergies_info: data.allergiesInfo || [],
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         });
@@ -444,6 +467,10 @@ export default function SurfCampsPage() {
       if (data.includes !== undefined) updateData.includes = data.includes;
       if (data.images !== undefined) updateData.images = data.images;
       if (data.isActive !== undefined) updateData.is_active = data.isActive;
+      // New fields
+      if (data.category !== undefined) updateData.category = data.category === 'FR' ? 'Freedom Routes' : 'Heiwa House';
+      if (data.foodPreferences !== undefined) updateData.food_preferences = data.foodPreferences;
+      if (data.allergiesInfo !== undefined) updateData.allergies_info = data.allergiesInfo;
 
       const { error } = await supabase
         .from('surf_camps')
@@ -697,6 +724,56 @@ export default function SurfCampsPage() {
                             </div>
                           ))}
                         </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Dietary Preferences */}
+                  <FormField
+                    control={form.control}
+                    name="foodPreferences"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dietary Preferences (comma-separated)</FormLabel>
+                        <FormControl>
+                          <Input
+                            value={(field.value || []).join(', ')}
+                            onChange={(e) => {
+                              const parts = e.target.value
+                                .split(',')
+                                .map((s) => s.trim())
+                                .filter(Boolean);
+                              field.onChange(parts);
+                            }}
+                            placeholder="vegetarian, vegan, gluten-free"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Allergies */}
+                  <FormField
+                    control={form.control}
+                    name="allergiesInfo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Allergies (comma-separated)</FormLabel>
+                        <FormControl>
+                          <Input
+                            value={(field.value || []).join(', ')}
+                            onChange={(e) => {
+                              const parts = e.target.value
+                                .split(',')
+                                .map((s) => s.trim())
+                                .filter(Boolean);
+                              field.onChange(parts);
+                            }}
+                            placeholder="peanuts, shellfish"
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

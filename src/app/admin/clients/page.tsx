@@ -45,7 +45,7 @@ export default function AdminClientsPage() {
   // UI state with URL persistence
   const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
   const [brandFilter, setBrandFilter] = useState(searchParams.get('brand') || 'All');
-  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'All');
+
   const [sorting, setSorting] = useState<SortingState>([{
     id: searchParams.get('sort') || 'name',
     desc: searchParams.get('order') === 'desc'
@@ -57,7 +57,7 @@ export default function AdminClientsPage() {
     phone: true,
     lastBookingDate: true,
     brand: true,
-    status: true,
+    socials: false,
     registrationDate: false, // Hidden by default
   });
 
@@ -95,13 +95,10 @@ export default function AdminClientsPage() {
       filtered = filtered.filter(client => client.brand === brandFilter);
     }
 
-    // Apply status filter
-    if (statusFilter !== 'All') {
-      filtered = filtered.filter(client => client.status === statusFilter);
-    }
+
 
     return filtered;
-  }, [clients, searchValue, brandFilter, statusFilter]);
+  }, [clients, searchValue, brandFilter]);
 
   const handleExport = useCallback(async (selectedIds?: string[]) => {
     setIsExporting(true);
@@ -135,13 +132,13 @@ export default function AdminClientsPage() {
       }
 
       // Convert database format to Client format
-      const formattedClients = data?.map((client: DatabaseClient) => ({
+      const formattedClients = data?.map((client: any) => ({
         id: client.id,
         name: client.name,
         email: client.email,
         phone: client.phone,
         brand: 'Heiwa House', // Default brand, could be stored in database
-        status: 'Active', // Default status, could be stored in database
+        socials: client.socials || {},
         lastBookingDate: client.last_booking_date
           ? { seconds: new Date(client.last_booking_date).getTime() / 1000, nanoseconds: 0 }
           : null,
@@ -205,11 +202,10 @@ export default function AdminClientsPage() {
     updateURL({
       q: searchValue,
       brand: brandFilter,
-      status: statusFilter,
       sort: sorting[0]?.id || 'name',
       order: sorting[0]?.desc ? 'desc' : 'asc',
     });
-  }, [searchValue, brandFilter, statusFilter, sorting, updateURL]);
+  }, [searchValue, brandFilter, sorting, updateURL]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -332,6 +328,7 @@ export default function AdminClientsPage() {
             name: data.name,
             email: data.email,
             phone: data.phone,
+            socials: (data as any).socials || {},
             notes: data.notes || '',
             updated_at: new Date().toISOString()
           })
@@ -347,6 +344,7 @@ export default function AdminClientsPage() {
             name: data.name,
             email: data.email,
             phone: data.phone,
+            socials: (data as any).socials || {},
             notes: data.notes || '',
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
@@ -377,13 +375,22 @@ export default function AdminClientsPage() {
         // Convert valid rows to clients and add them
         const newClients: Client[] = result.data.map((row, index) => ({
           id: `imported-${Date.now()}-${index}`,
-          ...row,
-          phone: row.phone || '', // Ensure phone is always a string
-          brand: row.brand || 'Heiwa House', // Ensure brand is always set
-          status: row.status || 'Active', // Ensure status is always set
+          name: row.name,
+          email: row.email,
+          phone: row.phone || '',
+          brand: row.brand || 'Heiwa House',
+          socials: {
+            instagram: (row as any).instagram || '',
+            facebook: (row as any).facebook || '',
+            twitter: (row as any).twitter || '',
+          },
+          lastBookingDate: row.lastBookingDate
+            ? { seconds: new Date(row.lastBookingDate).getTime() / 1000, nanoseconds: 0 }
+            : null,
           registrationDate: row.registrationDate
             ? { seconds: new Date(row.registrationDate).getTime() / 1000, nanoseconds: 0 }
             : { seconds: Date.now() / 1000, nanoseconds: 0 },
+          notes: row.notes || '',
           createdAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
           updatedAt: { seconds: Date.now() / 1000, nanoseconds: 0 },
         }));
@@ -504,12 +511,10 @@ export default function AdminClientsPage() {
           onSearchChange={setSearchValue}
           brandFilter={brandFilter}
           onBrandFilterChange={setBrandFilter}
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
           visibleColumns={visibleColumns}
           onColumnVisibilityChange={(columns) => {
             const newVisibility: VisibilityState = {};
-            ['name', 'email', 'phone', 'lastBookingDate', 'brand', 'status', 'registrationDate'].forEach(col => {
+            ['name', 'email', 'phone', 'lastBookingDate', 'brand', 'socials', 'registrationDate'].forEach(col => {
               newVisibility[col] = columns.includes(col);
             });
             setColumnVisibility(newVisibility);

@@ -33,7 +33,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Client } from '@/lib/clients/schema';
-import { BrandBadge, StatusBadge } from './BrandBadge';
+import { BrandBadge } from './BrandBadge';
 import { cn } from '@/lib/utils';
 
 export interface ClientsTableProps {
@@ -215,24 +215,25 @@ export function ClientsTable({
       ),
       size: 120,
     },
-    // Status column
+    // Socials column
     {
-      accessorKey: 'status',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="h-auto p-0 font-semibold hover:bg-transparent"
-        >
-          Status
-          <SortIcon isSorted={column.getIsSorted()} />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <StatusBadge status={row.getValue('status')} />
-      ),
-      size: 100,
+      id: 'socials',
+      header: 'Socials',
+      cell: ({ row }) => {
+        const s = (row.original as any).socials || {};
+        const parts = [] as string[];
+        if (s.instagram) parts.push('IG');
+        if (s.facebook) parts.push('FB');
+        if (s.twitter) parts.push('X');
+        return parts.length ? (
+          <div className="text-xs text-gray-600">{parts.join(' · ')}</div>
+        ) : (
+          <span className="text-gray-400">-</span>
+        );
+      },
+      size: 140,
     },
+
     // Registration Date column (hidden by default)
     {
       accessorKey: 'registrationDate',

@@ -25,9 +25,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { CreateRoomSchema, Room } from '@/lib/schemas';
 
-type RoomFormData = z.infer<typeof CreateRoomSchema>;
+type RoomFormData = Omit<z.infer<typeof CreateRoomSchema>, 'bedTypes'> & { bedTypes?: ('single' | 'double' | 'bunk')[] };
 import { Plus, Edit, Trash2, Upload, Image as ImageIcon, Bed, Users, Wifi, Eye, Coffee, Bath, TreePine, Grid3x3, Maximize, Wind, Home, ChefHat } from 'lucide-react';
 import { ImageUpload } from '@/components/ui/image-upload';
+
+
+// Fallback demo rooms (empty by default to avoid type errors)
+const DEMO_ROOMS: any[] = [];
+
+const BED_TYPE_OPTIONS = ['single', 'double', 'bunk'] as const;
 
 // Amenity icon mapping for better UX
 const AMENITY_ICONS = {
@@ -158,6 +164,7 @@ export default function RoomsPage() {
             description: room.description || '',
             images: room.images || [],
             amenities: room.amenities || [],
+            bedTypes: room.bed_types || [],
             isActive: room.is_active !== false, // Default to true if undefined
             createdAt: new Date(room.created_at || Date.now()),
             updatedAt: new Date(room.updated_at || Date.now())
@@ -214,6 +221,7 @@ export default function RoomsPage() {
       description: '',
       images: [],
       amenities: [],
+      bedTypes: [],
       isActive: true,
     },
   });
@@ -240,6 +248,7 @@ export default function RoomsPage() {
         description: data.description,
         images: data.images || [],
         amenities: data.amenities || [],
+        bed_types: data.bedTypes || [],
         is_active: data.isActive
       };
 
@@ -272,6 +281,7 @@ export default function RoomsPage() {
       if (data.description !== undefined) updateData.description = data.description;
       if (data.images !== undefined) updateData.images = data.images;
       if (data.amenities !== undefined) updateData.amenities = data.amenities;
+      if (data.bedTypes !== undefined) updateData.bed_types = data.bedTypes;
       if (data.isActive !== undefined) updateData.is_active = data.isActive;
 
       const { error } = await supabase
@@ -320,6 +330,7 @@ export default function RoomsPage() {
       description: room.description || '',
       images: room.images || [],
       amenities: room.amenities || [],
+      bedTypes: room.bedTypes || [],
       isActive: room.isActive,
     });
     setShowEditModal(true);
@@ -519,6 +530,9 @@ export default function RoomsPage() {
                       <FormLabel>Room Images</FormLabel>
                       <FormControl>
                         <ImageUpload
+
+
+
                           value={field.value || []}
                           onChange={(urls) => field.onChange(urls)}
                           storagePath={`rooms/${Date.now()}`}
@@ -557,6 +571,37 @@ export default function RoomsPage() {
                           </div>
                         ))}
                       </div>
+
+                {/* Bed Types */}
+                <FormField
+                  control={form.control}
+                  name="bedTypes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bed Types</FormLabel>
+                      <div className="flex flex-wrap gap-3">
+                        {BED_TYPE_OPTIONS.map((bt) => (
+                          <div key={bt} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`bt-${bt}`}
+                              checked={field.value?.includes(bt)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  field.onChange([...(field.value || []), bt]);
+                                } else {
+                                  field.onChange((field.value || []).filter((v: string) => v !== bt));
+                                }
+                              }}
+                            />
+                            <label htmlFor={`bt-${bt}`} className="text-sm capitalize">{bt}</label>
+                          </div>
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -628,7 +673,7 @@ export default function RoomsPage() {
                       {room.images && room.images.length > 0 ? (
                         <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
                           <Slider {...sliderSettings}>
-                            {room.images.map((imageUrl, index) => (
+                            {room.images.map((imageUrl: string, index: number) => (
                               <div key={index} className="aspect-video">
                                 <img
                                   src={imageUrl}
@@ -668,15 +713,29 @@ export default function RoomsPage() {
                           </span>
                         </div>
 
+
+                        {room.bedTypes && room.bedTypes.length > 0 && (
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-600">Bed Types:</span>
+                            <span className="font-medium">
+                              {room.bedTypes.map((bt: string) => bt.charAt(0).toUpperCase() + bt.slice(1)).join(', ')}
+                            </span>
+                          </div>
+                        )}
+
                         {room.description && (
+
+
                           <p className="text-sm text-gray-600 line-clamp-2">
+
+
                             {room.description}
                           </p>
                         )}
 
                         {room.amenities && room.amenities.length > 0 && (
                           <div className="flex flex-wrap gap-1">
-                            {room.amenities.slice(0, 3).map((amenityId) => {
+                            {room.amenities.slice(0, 3).map((amenityId: string) => {
                               const IconComponent = getAmenityIcon(amenityId);
                               return (
                                 <Badge key={amenityId} variant="secondary" className="text-xs">
@@ -879,6 +938,37 @@ export default function RoomsPage() {
                   </FormItem>
                 )}
               />
+
+              {/* Bed Types */}
+              <FormField
+                control={form.control}
+                name="bedTypes"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bed Types</FormLabel>
+                    <div className="flex flex-wrap gap-3">
+                      {BED_TYPE_OPTIONS.map((bt) => (
+                        <div key={bt} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`edit-bt-${bt}`}
+                            checked={field.value?.includes(bt)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.onChange([...(field.value || []), bt]);
+                              } else {
+                                field.onChange((field.value || []).filter((v: string) => v !== bt));
+                              }
+                            }}
+                          />
+                          <label htmlFor={`edit-bt-${bt}`} className="text-sm capitalize">{bt}</label>
+                        </div>
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
 
               <FormField
                 control={form.control}

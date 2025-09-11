@@ -13,6 +13,13 @@ export const ClientSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email format'),
   phone: z.string().min(1, 'Phone is required'),
+  socials: z
+    .object({
+      instagram: z.string().optional(),
+      facebook: z.string().optional(),
+      twitter: z.string().optional(),
+    })
+    .optional(),
   lastBookingDate: TimestampSchema.optional(),
   notes: z.string().optional().default(''),
   createdAt: TimestampSchema,
@@ -69,6 +76,7 @@ export const RoomSchema = z.object({
   bookingType: z.enum(['whole', 'perBed']),
   pricing: RoomPricingSchema,
   amenities: z.array(z.string()).default([]),
+  bedTypes: z.array(z.enum(['single', 'double', 'bunk'])).default([]),
   description: z.string().optional().default(''),
   images: z.array(z.string()).default([]),
   isActive: z.boolean().default(true),
@@ -153,6 +161,7 @@ export const CreateRoomSchema = z.object({
   bookingType: z.enum(['whole', 'perBed']),
   pricing: RoomPricingSchema,
   amenities: z.array(z.string()),
+  bedTypes: z.array(z.enum(['single', 'double', 'bunk'])).default([]),
   description: z.string(),
   images: z.array(z.string()),
   isActive: z.boolean(),

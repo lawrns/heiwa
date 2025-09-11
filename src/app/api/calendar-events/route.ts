@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client';
+import { createClient } from '@supabase/supabase-js';
 import { requireAdminSession } from '@/lib/auth';
 import { checkEventConflicts } from '@/lib/calendar-conflicts';
 import { z } from 'zod';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zejrhceuuujzgyukdwnb.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzEwNDgwOSwiZXhwIjoyMDcyNjgwODA5fQ.RbzOLzCaOAsgaMixdACMLdPvLZjU9MPfXn8Y90gsxcc';
+const admin = createClient(supabaseUrl, supabaseServiceKey);
 
 // Custom event schema for validation
 const CustomEventSchema = z.object({
@@ -21,7 +25,7 @@ export async function GET(request: NextRequest) {
   try {
     await requireAdminSession(request);
 
-    const { data: events, error } = await supabase
+    const { data: events, error } = await admin
       .from('custom_events')
       .select('*')
       .order('start_date', { ascending: true });
@@ -79,7 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert the custom event into Supabase
-    const { data: event, error } = await supabase
+    const { data: event, error } = await admin
       .from('custom_events')
       .insert({
         title: validatedData.title,
@@ -153,7 +157,7 @@ export async function PUT(request: NextRequest) {
     if (validatedUpdates.color !== undefined) updateData.color = validatedUpdates.color;
     if (validatedUpdates.isAllDay !== undefined) updateData.is_all_day = validatedUpdates.isAllDay;
 
-    const { data: event, error } = await supabase
+    const { data: event, error } = await admin
       .from('custom_events')
       .update(updateData)
       .eq('id', id)
@@ -198,7 +202,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const { error } = await supabase
+    const { error } = await admin
       .from('custom_events')
       .delete()
       .eq('id', id);

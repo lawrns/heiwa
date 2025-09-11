@@ -11,7 +11,7 @@ export default function TestWidgetPage() {
     // Configure API for the widget
     if (typeof window !== 'undefined') {
       (window as any).heiwa_booking_ajax = {
-        api_endpoint: 'https://heiwahouse.netlify.app/api',
+        api_endpoint: `${window.location.origin}/api`,
         api_key: 'heiwa_wp_test_key_2024_secure_deployment'
       }
     }

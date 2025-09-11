@@ -442,6 +442,51 @@ body.heiwa-modal-open {
   margin: 0 0 24px 0;
 }
 
+/* Step Summaries (accordion for completed steps) */
+.heiwa-step-summaries {
+  margin-bottom: 16px;
+}
+.heiwa-step-summary {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: #ffffff;
+}
+.heiwa-step-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: #f9fafb;
+}
+.heiwa-step-summary-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+.heiwa-step-summary-edit {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 6px 10px;
+  color: #374151;
+  cursor: pointer;
+}
+.heiwa-step-summary-edit:hover {
+  background: #f3f4f6;
+}
+.heiwa-step-summary-content {
+  padding: 10px 12px;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+
 /* Destination Cards */
 .heiwa-destination-grid {
   display: grid;
@@ -811,6 +856,36 @@ body.heiwa-modal-open {
   border-top: 2px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+
+/* Compact summary + CTA inside drawer */
+.heiwa-booking-summary.compact {
+  padding: 12px 14px;
+}
+.heiwa-booking-summary.compact .heiwa-summary-content {
+  gap: 6px;
+}
+.heiwa-booking-summary.compact .heiwa-summary-item {
+  padding: 6px 0;
+}
+.heiwa-booking-summary.compact .heiwa-summary-label {
+  font-size: 13px;
+}
+.heiwa-booking-summary.compact .heiwa-summary-value {
+  font-size: 13px;
+}
+.heiwa-booking-summary.compact .heiwa-summary-total {
+  padding-top: 8px;
+}
+.heiwa-booking-summary.compact .heiwa-summary-total-value {
+  font-size: 16px;
+}
+.heiwa-booking-summary.compact .heiwa-cta-button {
+  margin-top: 8px;
+  padding: 12px 16px;
+  min-height: 44px;
+  font-size: 15px;
 }
 
 /* Back Button */
@@ -1222,10 +1297,35 @@ body.heiwa-modal-open {
     width: 420px;
   }
 
-  .heiwa-destination-grid {
-    grid-template-columns: 1fr;
+
+/* Desktop: two-column layout with summary sidebar */
+@media (min-width: 1024px) {
+  .heiwa-booking-drawer {
+    width: 920px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto auto 1fr;
+    gap: 0 16px;
+  }
+  .heiwa-booking-drawer-header { grid-column: 1 / -1; }
+  .heiwa-booking-progress { grid-column: 1 / -1; }
+  .heiwa-booking-content { grid-column: 1 / 2; padding-right: 8px; }
+  .heiwa-booking-summary {
+    grid-column: 2 / 3;
+    position: sticky;
+    top: 96px;
+    align-self: start;
+    border-top: none;
+    background: #ffffff;
+    padding: 16px;
   }
 }
+
+/* Room card visual polish */
+.heiwa-room-image { height: 180px; }
+.heiwa-room-price { font-size: 18px; font-weight: 700; color: #1f2937; }
+.heiwa-room-card:hover .heiwa-room-price { color: #1d4ed8; }
+
 
 @media (min-width: 1025px) {
   .heiwa-destination-grid {
@@ -1344,7 +1444,7 @@ body.heiwa-modal-open {
 }
 
 .heiwa-modal-container::after {
-  content: '🌊';
+  content: '';
   position: absolute;
   top: 20px;
   right: 30px;
@@ -1388,7 +1488,7 @@ body.heiwa-modal-open {
 }
 
 .heiwa-modal-title::before {
-  content: '🏄‍♂️';
+  content: '';
   font-size: var(--heiwa-text-xl);
   animation: heiwa-wave 2s ease-in-out infinite;
 }
@@ -1744,7 +1844,7 @@ body.heiwa-modal-open {
 }
 
 .heiwa-destination-card.heiwa-selected::after {
-  content: '🏄‍♂️';
+  content: '';
   position: absolute;
   top: var(--heiwa-space-3);
   right: var(--heiwa-space-3);
@@ -1805,7 +1905,7 @@ body.heiwa-modal-open {
 }
 
 .heiwa-destination-name::before {
-  content: '🏄‍♂️';
+  content: '';
   font-size: var(--heiwa-text-lg);
   opacity: 0.8;
 }
@@ -2060,7 +2160,7 @@ body.heiwa-modal-open {
 }
 
 .heiwa-form-message.error::before {
-  content: '⚠️';
+  content: '';
   font-size: var(--heiwa-text-base);
 }
 
@@ -2069,7 +2169,7 @@ body.heiwa-modal-open {
 }
 
 .heiwa-form-message.success::before {
-  content: '✅';
+  content: '';
   font-size: var(--heiwa-text-base);
 }
 
@@ -2078,7 +2178,7 @@ body.heiwa-modal-open {
 }
 
 .heiwa-form-message.info::before {
-  content: 'ℹ️';
+  content: '';
   font-size: var(--heiwa-text-base);
 }
 
@@ -2664,7 +2764,7 @@ body.heiwa-modal-open {
 }
 
 .heiwa-booking-option-card.selected::after {
-  content: '✓';
+  content: '';
   position: absolute;
   top: var(--heiwa-space-4);
   right: var(--heiwa-space-4);
@@ -2932,7 +3032,7 @@ body.heiwa-modal-open {
 }
 
 .heiwa-room-card.selected::after {
-  content: '✓';
+  content: '';
   position: absolute;
   top: var(--heiwa-space-4);
   right: var(--heiwa-space-4);
@@ -3153,4 +3253,22 @@ body.heiwa-modal-open {
 
 .heiwa-bg-wave {
   background-image: url("data:image/svg+xml,%3csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3e%3cg fill='none' fill-rule='evenodd'%3e%3cg fill='%23e5e7eb' fill-opacity='0.1'%3e%3cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e");
+}
+
+
+/* --- Booking Type Selector polish & specificity overrides --- */
+/* Ensure arrows align to the right and card layout remains horizontal on all viewports */
+.heiwa-booking-widget .heiwa-booking-option-card { display:flex; align-items:center; }
+.heiwa-booking-widget .heiwa-booking-option-arrow { margin-left:auto; display:flex; align-items:center; color: var(--heiwa-neutral-400); transition: all var(--heiwa-transition-fast); }
+.heiwa-booking-widget .heiwa-booking-option-arrow svg { width:24px; height:24px; display:block; }
+.heiwa-booking-widget .heiwa-booking-option-card:hover .heiwa-booking-option-arrow { color: var(--heiwa-primary-color); transform: translateX(4px); }
+
+/* Strengthen container spacing and hierarchy */
+.heiwa-booking-widget .heiwa-booking-type-options { display:flex; flex-direction:column; gap: var(--heiwa-space-4); }
+
+/* Mobile: keep row layout so arrow stays to the right */
+@media (max-width: 768px) {
+  .heiwa-booking-widget .heiwa-booking-option-card { flex-direction: row !important; text-align: left !important; }
+  .heiwa-booking-widget .heiwa-booking-option-icon { width:64px; height:64px; }
+  .heiwa-booking-widget .heiwa-booking-option-content { text-align:left; }
 }
