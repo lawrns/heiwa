@@ -1,0 +1,144 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+// CORS headers for WordPress integration
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, X-Heiwa-API-Key',
+  'Access-Control-Max-Age': '86400',
+};
+
+// Supabase (service role for server-side queries)
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+/**
+ * WordPress Rooms Availability Endpoint
+ * Returns a list of available rooms between dates to power the WordPress widget room flow
+ *
+ * @route GET /api/wordpress/rooms/availability
+ * @auth  X-Heiwa-API-Key header required (must equal WORDPRESS_API_KEY)
+ * @query start_date - Required: Check-in date (YYYY-MM-DD)
+ * @query end_date   - Required: Check-out date (YYYY-MM-DD)
+ * @query participants - Optional: number of guests (default 1)
+ */
+export async function GET(request: NextRequest) {
+  try {
+    // Validate API key
+    const apiKey = request.headers.get('X-Heiwa-API-Key');
+    const validApiKey = process.env.WORDPRESS_API_KEY;
+    if (!apiKey || !validApiKey || apiKey !== validApiKey) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized', message: 'Invalid or missing API key' },
+        { status: 401, headers: corsHeaders }
+      );
+    }
+
+    // Params
+    const { searchParams } = new URL(request.url);
+    const startDate = searchParams.get('start_date');
+    const endDate = searchParams.get('end_date');
+    const participants = parseInt(searchParams.get('participants') || '1', 10);
+
+    if (!startDate || !endDate) {
+      return NextResponse.json(
+        { success: false, error: 'Missing required parameters', message: 'start_date and end_date are required' },
+        { status: 400, headers: corsHeaders }
+      );
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (isNaN(start.getTime()) || isNaN(end.getTime()) || start >= end) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid date range', message: 'Provide valid ISO dates and ensure end_date is after start_date' },
+        { status: 400, headers: corsHeaders }
+      );
+    }
+
+    // Fetch active rooms with all necessary fields
+    const { data: rooms, error: roomsError } = await supabase
+      .from('rooms')
+      .select('id, name, capacity, is_active, images, amenities, pricing, description, booking_type')
+      .eq('is_active', true);
+
+    if (roomsError) {
+      return NextResponse.json(
+        { success: false, error: 'Database error', message: 'Failed to fetch rooms' },
+        { status: 500, headers: corsHeaders }
+      );
+    }
+
+    // Fetch overlapping assignments to calculate availability
+    const { data: assignments, error: assignmentsError } = await supabase
+      .from('room_assignments')
+      .select('room_id, bed_number')
+      .or(`and(check_in_date.lte.${endDate},check_out_date.gte.${startDate})`);
+
+    if (assignmentsError) {
+      // Non-fatal: return no availability
+      return NextResponse.json(
+        { success: true, data: { available_rooms: [] } },
+        { headers: corsHeaders }
+      );
+    }
+
+    // Calculate free capacity per room
+    const occupiedBeds = new Map<string, number>();
+    assignments?.forEach((a: any) => {
+      occupiedBeds.set(a.room_id, (occupiedBeds.get(a.room_id) || 0) + 1);
+    });
+
+    // Build available rooms payload the widget expects
+    const fallbackImage =
+      'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMwMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAzOTREOSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAyNTFBMyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMTgwIiBmaWxsPSJ1cmwoI2dyYWQpIi8+PHRleHQgeD0iMTUwIiB5PSI5MCIgZmlsbD0iI2ZmZiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ST09NIFRIVU1CTkFJTDwvdGV4dD48L3N2Zz4=';
+
+    const available_rooms = (rooms || [])
+      .map((room: any) => {
+        const occupied = occupiedBeds.get(room.id) || 0;
+        const free = Math.max(0, (room.capacity || 0) - occupied);
+        return { room, free };
+      })
+      .filter(({ free }) => free > 0)
+      .filter(({ free }) => free >= participants)
+      .slice(0, 8) // limit result size
+      .map(({ room }) => ({
+        id: room.id,
+        name: room.name,
+        capacity: room.capacity || 2,
+        price_per_night: room.pricing?.standard || 80, // Use real pricing from Supabase
+        amenities: room.amenities || [],
+        featured_image: room.images && room.images.length > 0
+          ? (room.images[0].startsWith('http') ? room.images[0] : `http://localhost:3005${room.images[0]}`)
+          : fallbackImage,
+        description: room.description || '',
+        booking_type: room.booking_type || 'whole'
+      }));
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: { available_rooms }
+      },
+      { headers: corsHeaders }
+    );
+  } catch (error: any) {
+    console.error('Rooms availability error:', error);
+    return NextResponse.json(
+      { success: false, error: 'Internal server error', message: 'Failed to check room availability' },
+      { status: 500, headers: corsHeaders }
+    );
+  }
+}
+
+// Handle CORS preflight
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: corsHeaders,
+  });
+}
+

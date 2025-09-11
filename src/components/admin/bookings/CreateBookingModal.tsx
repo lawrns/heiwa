@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateBookingSchema, type Client, type Room, type SurfCamp, type AddOn } from '@/lib/schemas';
+import { CreateBookingFormSchema, type CreateBookingForm, type Client, type Room, type SurfCamp, type AddOn } from '@/lib/schemas';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,8 +26,7 @@ import {
   type BookingItem as CalculationBookingItem
 } from '@/lib/booking-calculations';
 
-const CreateBookingFormSchema = CreateBookingSchema;
-type CreateBookingForm = z.infer<typeof CreateBookingFormSchema>;
+// Remove local declarations since we're importing from schemas
 
 interface BookingItem {
   id: string;
@@ -67,6 +66,7 @@ export function CreateBookingModal({ isOpen, onClose, onSuccess }: CreateBooking
       paymentStatus: 'pending',
       paymentMethod: undefined,
       notes: '',
+      source: 'dashboard',
     },
   });
 

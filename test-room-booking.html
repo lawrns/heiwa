@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .test-button { padding: 10px 20px; margin: 5px; background: #007cba; color: white; border: none; cursor: pointer; }
+        .test-result { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Room Booking API Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Test API Connectivity</h2>
+        <button class="test-button" onclick="testAPIConnectivity()">Test API Connection</button>
+        <div id="api-result" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test Room Availability API</h2>
+        <button class="test-button" onclick="testRoomAvailability()">Test Room Availability</button>
+        <div id="room-result" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Test Widget JavaScript Functions</h2>
+        <button class="test-button" onclick="testWidgetFunctions()">Test Widget Functions</button>
+        <div id="widget-result" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Simulate Room Booking Flow</h2>
+        <button class="test-button" onclick="simulateRoomBooking()">Simulate Booking Flow</button>
+        <div id="booking-result" class="test-result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3005/api';
+        const API_KEY = 'heiwa_wp_test_key_2024_secure_deployment';
+        
+        function logResult(elementId, message, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = `test-result ${isSuccess ? 'success' : 'error'}`;
+        }
+        
+        async function testAPIConnectivity() {
+            try {
+                const response = await fetch(`${API_BASE}/wordpress/test`, {
+                    headers: { 'X-Heiwa-API-Key': API_KEY }
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    logResult('api-result', `✅ API Connection Successful: ${data.message}`, true);
+                } else {
+                    logResult('api-result', `❌ API Connection Failed: ${data.message || 'Unknown error'}`, false);
+                }
+            } catch (error) {
+                logResult('api-result', `❌ API Connection Error: ${error.message}`, false);
+            }
+        }
+        
+        async function testRoomAvailability() {
+            try {
+                const startDate = '2025-10-15';
+                const endDate = '2025-10-20';
+                const url = `${API_BASE}/wordpress/rooms/availability?start_date=${startDate}&end_date=${endDate}`;
+                
+                const response = await fetch(url, {
+                    headers: { 'X-Heiwa-API-Key': API_KEY }
+                });
+                const data = await response.json();
+                
+                if (response.ok && data.success && data.data.available_rooms) {
+                    const roomCount = data.data.available_rooms.length;
+                    const roomNames = data.data.available_rooms.map(r => r.name).join(', ');
+                    logResult('room-result', `✅ Room Availability Success: Found ${roomCount} rooms (${roomNames})`, true);
+                } else {
+                    logResult('room-result', `❌ Room Availability Failed: ${data.message || 'No rooms found'}`, false);
+                }
+            } catch (error) {
+                logResult('room-result', `❌ Room Availability Error: ${error.message}`, false);
+            }
+        }
+        
+        function testWidgetFunctions() {
+            try {
+                // Check if widget functions exist
+                const checks = [
+                    { name: 'jQuery', exists: typeof jQuery !== 'undefined' },
+                    { name: 'HeiwaBookingWidget', exists: typeof window.HeiwaBookingWidget !== 'undefined' },
+                    { name: 'heiwa_booking_ajax', exists: typeof window.heiwa_booking_ajax !== 'undefined' }
+                ];
+                
+                const results = checks.map(check => 
+                    `${check.exists ? '✅' : '❌'} ${check.name}: ${check.exists ? 'Available' : 'Missing'}`
+                ).join('<br>');
+                
+                const allPassed = checks.every(check => check.exists);
+                logResult('widget-result', results, allPassed);
+            } catch (error) {
+                logResult('widget-result', `❌ Widget Function Test Error: ${error.message}`, false);
+            }
+        }
+        
+        async function simulateRoomBooking() {
+            try {
+                logResult('booking-result', '🔄 Starting room booking simulation...', true);
+                
+                // Step 1: Test API configuration
+                if (typeof window.heiwa_booking_ajax === 'undefined') {
+                    throw new Error('Widget API configuration not found');
+                }
+                
+                // Step 2: Simulate API call like the widget does
+                const apiConfig = {
+                    endpoint: window.heiwa_booking_ajax.api_endpoint || API_BASE,
+                    apiKey: window.heiwa_booking_ajax.api_key || API_KEY
+                };
+                
+                const startDate = '2025-10-15';
+                const endDate = '2025-10-20';
+                const url = `${apiConfig.endpoint}/wordpress/rooms/availability?start_date=${startDate}&end_date=${endDate}`;
+                
+                const response = await fetch(url, {
+                    headers: { 
+                        'X-Heiwa-API-Key': apiConfig.apiKey,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.available_rooms) {
+                    const roomCount = data.data.available_rooms.length;
+                    const hasImages = data.data.available_rooms.every(room => room.featured_image);
+                    
+                    logResult('booking-result', 
+                        `✅ Room Booking Simulation Success!<br>` +
+                        `📊 Found ${roomCount} available rooms<br>` +
+                        `🖼️ All rooms have images: ${hasImages ? 'Yes' : 'No'}<br>` +
+                        `🔧 API Config: ${apiConfig.endpoint}<br>` +
+                        `🔑 API Key: ${apiConfig.apiKey.substring(0, 20)}...`, true);
+                } else {
+                    throw new Error('Invalid API response structure');
+                }
+                
+            } catch (error) {
+                logResult('booking-result', `❌ Room Booking Simulation Failed: ${error.message}`, false);
+            }
+        }
+        
+        // Auto-run tests on page load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                testAPIConnectivity();
+                setTimeout(() => testRoomAvailability(), 1000);
+                setTimeout(() => testWidgetFunctions(), 2000);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

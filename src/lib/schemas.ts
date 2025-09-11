@@ -116,6 +116,7 @@ export const BookingSchema = z.object({
   paymentStatus: z.enum(['pending', 'confirmed', 'cancelled']),
   paymentMethod: z.enum(['stripe', 'cash', 'transfer', 'other']).optional(),
   notes: z.string().optional().default(''),
+  source: z.enum(['dashboard', 'wordpress', 'api']).optional().default('dashboard'),
   createdAt: TimestampSchema,
   updatedAt: TimestampSchema,
 });
@@ -171,6 +172,13 @@ export const UpdateAddOnSchema = CreateAddOnSchema.partial();
 
 export const CreateBookingSchema = BookingSchema.omit({ id: true, createdAt: true, updatedAt: true });
 export const UpdateBookingSchema = CreateBookingSchema.partial();
+
+// Form schema for booking creation with proper defaults
+export const CreateBookingFormSchema = CreateBookingSchema.extend({
+  source: z.enum(['dashboard', 'wordpress', 'api']).default('dashboard'),
+});
+
+export type CreateBookingForm = z.infer<typeof CreateBookingFormSchema>;
 
 export const CreateCampWeekSchema = CampWeekSchema.omit({ id: true, createdAt: true, updatedAt: true });
 export const UpdateCampWeekSchema = CreateCampWeekSchema.partial();

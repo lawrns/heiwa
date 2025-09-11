@@ -379,6 +379,8 @@ export default function AdminClientsPage() {
           id: `imported-${Date.now()}-${index}`,
           ...row,
           phone: row.phone || '', // Ensure phone is always a string
+          brand: row.brand || 'Heiwa House', // Ensure brand is always set
+          status: row.status || 'Active', // Ensure status is always set
           registrationDate: row.registrationDate
             ? { seconds: new Date(row.registrationDate).getTime() / 1000, nanoseconds: 0 }
             : { seconds: Date.now() / 1000, nanoseconds: 0 },

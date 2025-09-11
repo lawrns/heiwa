@@ -26,114 +26,47 @@ import { Badge } from '@/components/ui/badge';
 import { CreateRoomSchema, Room } from '@/lib/schemas';
 
 type RoomFormData = z.infer<typeof CreateRoomSchema>;
-import { Plus, Edit, Trash2, Upload, Image as ImageIcon, Bed, Users, Wifi, Eye, Coffee } from 'lucide-react';
+import { Plus, Edit, Trash2, Upload, Image as ImageIcon, Bed, Users, Wifi, Eye, Coffee, Bath, TreePine, Grid3x3, Maximize, Wind, Home, ChefHat } from 'lucide-react';
 import { ImageUpload } from '@/components/ui/image-upload';
 
-// Demo data for rooms
-const DEMO_ROOMS: (Room & { id: string })[] = [
-  {
-    id: 'demo-room-1',
-    name: 'Ocean View Suite',
-    capacity: 4,
-    bookingType: 'whole',
-    pricing: {
-      standard: 299,
-      offSeason: 249,
-      camp: { 1: 199, 2: 179, 3: 169, 4: 159 },
-    },
-    description: 'Beautiful ocean view suite with private balcony',
-    images: [],
-    amenities: ['private-bathroom', 'sea-view', 'balcony'],
-    isActive: true,
-    createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-room-2',
-    name: 'Garden Bungalow',
-    capacity: 2,
-    bookingType: 'whole',
-    pricing: {
-      standard: 199,
-      offSeason: 159,
-      camp: { 1: 149, 2: 139 },
-    },
-    description: 'Cozy bungalow surrounded by tropical gardens',
-    images: [],
-    amenities: ['private-bathroom', 'kitchen'],
-    isActive: true,
-    createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-room-3',
-    name: 'Beachfront Dorm',
-    capacity: 8,
-    bookingType: 'perBed',
-    pricing: {
-      standard: 45,
-      offSeason: 35,
-      camp: { perBed: 32.5 },
-    },
-    description: 'Shared beachfront accommodation with bunk beds',
-    images: [],
-    amenities: ['wifi', 'air-conditioning'],
-    isActive: true,
-    createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-room-4',
-    name: 'Premium Villa',
-    capacity: 6,
-    bookingType: 'whole',
-    pricing: {
-      standard: 499,
-      offSeason: 399,
-      camp: { 1: 349, 2: 329, 3: 309, 4: 289, 5: 269, 6: 249 },
-    },
-    description: 'Luxury villa with ocean views and private pool',
-    images: [],
-    amenities: ['private-bathroom', 'sea-view', 'balcony', 'wifi', 'kitchen', 'air-conditioning'],
-    isActive: true,
-    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-room-5',
-    name: 'Standard Room',
-    capacity: 2,
-    bookingType: 'whole',
-    pricing: {
-      standard: 149,
-      offSeason: 119,
-      camp: { 1: 99, 2: 89 },
-    },
-    description: 'Comfortable standard room with garden views',
-    images: [],
-    amenities: ['private-bathroom', 'wifi'],
-    isActive: true,
-    createdAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: 'demo-room-6',
-    name: 'Deluxe Suite',
-    capacity: 4,
-    bookingType: 'whole',
-    pricing: {
-      standard: 399,
-      offSeason: 319,
-      camp: { 1: 279, 2: 269, 3: 259, 4: 249 },
-    },
-    description: 'Spacious deluxe suite with premium amenities',
-    images: [],
-    amenities: ['private-bathroom', 'sea-view', 'balcony', 'wifi', 'kitchen', 'air-conditioning'],
-    isActive: false, // Demo inactive room
-    createdAt: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
-  },
-];
+// Amenity icon mapping for better UX
+const AMENITY_ICONS = {
+  'private-bathroom': { icon: 'Bath', label: 'Private Bathroom' },
+  'shared-bathroom': { icon: 'Users', label: 'Shared Bathroom' },
+  'wooden-furniture': { icon: 'TreePine', label: 'Wooden Furniture' },
+  'traditional-tiles': { icon: 'Grid3x3', label: 'Traditional Tiles' },
+  'queen-bed': { icon: 'Bed', label: 'Queen Bed' },
+  'twin-beds': { icon: 'Bed', label: 'Twin Beds' },
+  'bunk-beds': { icon: 'Bed', label: 'Bunk Beds' },
+  'spacious': { icon: 'Maximize', label: 'Spacious' },
+  'community': { icon: 'Users', label: 'Community Space' },
+  'wifi': { icon: 'Wifi', label: 'WiFi' },
+  'air-conditioning': { icon: 'Wind', label: 'Air Conditioning' },
+  'sea-view': { icon: 'Eye', label: 'Sea View' },
+  'balcony': { icon: 'Home', label: 'Balcony' },
+  'kitchen': { icon: 'ChefHat', label: 'Kitchen' }
+};
+
+// Helper function to render amenity icons
+const renderAmenityIcon = (amenity: string) => {
+  const amenityConfig = AMENITY_ICONS[amenity as keyof typeof AMENITY_ICONS];
+  if (!amenityConfig) return null;
+
+  const iconMap = {
+    Bath, TreePine, Grid3x3, Bed, Users, Maximize, Wind, Wifi, Eye, Home, ChefHat
+  };
+
+  const IconComponent = iconMap[amenityConfig.icon as keyof typeof iconMap];
+
+  if (!IconComponent) return null;
+
+  return (
+    <div key={amenity} className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+      <IconComponent className="w-3 h-3" />
+      <span>{amenityConfig.label}</span>
+    </div>
+  );
+};
 
 // Slider settings for image previews
 const sliderSettings = {
@@ -149,14 +82,22 @@ const sliderSettings = {
 // Form schema for room creation/editing
 // RoomFormData is now defined above from CreateRoomSchema
 
-// Available amenities
+// Available amenities for Heiwa House rooms
 const AVAILABLE_AMENITIES = [
-  { id: 'private-bathroom', label: 'Private Bathroom', icon: Bed },
-  { id: 'sea-view', label: 'Sea View', icon: Eye },
+  { id: 'private-bathroom', label: 'Private Bathroom', icon: Bath },
+  { id: 'shared-bathroom', label: 'Shared Bathroom', icon: Users },
+  { id: 'wooden-furniture', label: 'Wooden Furniture', icon: TreePine },
+  { id: 'traditional-tiles', label: 'Traditional Tiles', icon: Grid3x3 },
+  { id: 'queen-bed', label: 'Queen Bed', icon: Bed },
+  { id: 'twin-beds', label: 'Twin Beds', icon: Bed },
+  { id: 'bunk-beds', label: 'Bunk Beds', icon: Bed },
+  { id: 'spacious', label: 'Spacious', icon: Maximize },
+  { id: 'community', label: 'Community Space', icon: Users },
   { id: 'wifi', label: 'Wi-Fi', icon: Wifi },
-  { id: 'kitchen', label: 'Kitchen', icon: Coffee },
-  { id: 'balcony', label: 'Balcony', icon: Eye },
-  { id: 'air-conditioning', label: 'Air Conditioning', icon: Coffee },
+  { id: 'air-conditioning', label: 'Air Conditioning', icon: Wind },
+  { id: 'sea-view', label: 'Sea View', icon: Eye },
+  { id: 'balcony', label: 'Balcony', icon: Home },
+  { id: 'kitchen', label: 'Kitchen', icon: ChefHat },
 ];
 
 export default function RoomsPage() {
@@ -224,8 +165,8 @@ export default function RoomsPage() {
         });
         setRooms(formattedRooms);
       } else {
-        // No data, use demo data
-        setRooms(DEMO_ROOMS);
+        // No data from Supabase
+        setRooms([]);
       }
     } catch (error: any) {
       console.error('Error fetching rooms:', error);
