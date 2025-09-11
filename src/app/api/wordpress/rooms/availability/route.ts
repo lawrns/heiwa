@@ -83,7 +83,6 @@ export async function GET(request: NextRequest) {
 
     if (roomsError) {
       // Graceful fallback with demo room data for testing environments
-      const origin = new URL(request.url).origin;
       const fallbackRooms = getFallbackRooms(origin);
       return NextResponse.json(
         { success: true, data: { available_rooms: fallbackRooms }, meta: { fallback: true } },
@@ -116,7 +115,6 @@ export async function GET(request: NextRequest) {
     const fallbackImage =
       'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMwMCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAzOTREOSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAyNTFBMyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMTgwIiBmaWxsPSJ1cmwoI2dyYWQpIi8+PHRleHQgeD0iMTUwIiB5PSI5MCIgZmlsbD0iI2ZmZiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5ST09NIFRIVU1CTkFJTDwvdGV4dD48L3N2Zz4=';
 
-    const origin = new URL(request.url).origin;
 
     let available_rooms = (rooms || [])
       .map((room: any) => {
