@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
 import { createClient } from '@supabase/supabase-js';
 
 // CORS headers for WordPress integration
@@ -12,11 +11,12 @@ const corsHeaders = {
   'Access-Control-Max-Age': '86400',
 };
 
-// Supabase (service role for server-side queries)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function createSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null as any;
+  return createClient(url, key);
+}
 
 /**
  * WordPress Rooms Availability Endpoint
@@ -63,8 +63,20 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const origin = new URL(request.url).origin;
+
+    // Initialize Supabase client safely; if unavailable, return fallback rooms
+    const supa = createSupabase();
+    if (!supa) {
+      const fallbackRooms = getFallbackRooms(origin);
+      return NextResponse.json(
+        { success: true, data: { available_rooms: fallbackRooms }, meta: { fallback: true } },
+        { headers: corsHeaders }
+      );
+    }
+
     // Fetch active rooms with all necessary fields
-    const { data: rooms, error: roomsError } = await supabase
+    const { data: rooms, error: roomsError } = await supa
       .from('rooms')
       .select('id, name, capacity, is_active, images, amenities, pricing, description, booking_type')
       .eq('is_active', true);
@@ -80,15 +92,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch overlapping assignments to calculate availability
-    const { data: assignments, error: assignmentsError } = await supabase
+    const { data: assignments, error: assignmentsError } = await supa
       .from('room_assignments')
       .select('room_id, bed_number')
       .or(`and(check_in_date.lte.${endDate},check_out_date.gte.${startDate})`);
 
     if (assignmentsError) {
-      // Non-fatal: return no availability
+      // Graceful fallback instead of empty
+      const fallbackRooms = getFallbackRooms(origin);
       return NextResponse.json(
-        { success: true, data: { available_rooms: [] } },
+        { success: true, data: { available_rooms: fallbackRooms }, meta: { fallback: true } },
         { headers: corsHeaders }
       );
     }
