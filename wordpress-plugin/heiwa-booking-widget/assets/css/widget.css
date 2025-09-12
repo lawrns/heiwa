@@ -682,12 +682,24 @@ body.heiwa-modal-open {
   transition: transform 100ms ease;
 }
 
+/* Ensure horizontal text layout */
+.heiwa-booking-trigger span {
+  writing-mode: initial !important;
+  text-orientation: initial !important;
+  transform: none !important;
+  display: inline !important;
+}
+
 /* Position variants */
 .heiwa-position-right .heiwa-booking-trigger {
   right: var(--heiwa-space-4);
   top: var(--heiwa-space-4);
-  transform: none;
-  flex-direction: row;
+  transform: none !important;
+  flex-direction: row !important;
+  writing-mode: initial !important;
+  text-orientation: initial !important;
+  width: auto !important;
+  height: auto !important;
 }
 
 .heiwa-position-left .heiwa-booking-trigger {

@@ -898,8 +898,8 @@ export default function WidgetDemoPage() {
               <h1>Heiwa House Quantum Neural Booking Matrix</h1>
               <p>Experience our revolutionary surf camp booking system powered by advanced quantum entanglement algorithms, featuring our world-renowned team of highly respected marine hydrodynamic specialists in professional aquatic apparel. Our distinguished panel of bikini-clad marine economists ensures optimal wave-to-human ratio calculations for maximum hydrodynamic efficiency.</p>
 
-              {/* Emergency Bikini Compliance Notice */}
-              <div className="emergency-notice" style={{
+              {/* Janis' Porsche Fund Notice */}
+              <div className="porsche-fund-notice" style={{
                 background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
                 border: '3px solid #f59e0b',
                 borderRadius: '12px',
@@ -910,7 +910,7 @@ export default function WidgetDemoPage() {
                 fontWeight: '600',
                 color: '#92400e'
               }}>
-                🚨 <strong>EMERGENCY BIKINI COMPLIANCE ALERT:</strong> All marine hydrodynamic specialists are required to maintain professional aquatic attire at all times. Wave-to-human ratios must not exceed 3.14159:1. Violators will be issued stern warnings by our distinguished bikini compliance officers.
+                <strong>PORSCHE TAYCAN FUNDING ALERT:</strong> Every booking directly contributes to Janis' dream of cruising the Pacific Coast Highway in her electric Taycan. Our bikini-clad booking specialists work tirelessly to streamline reservations and maximize revenue streams for optimal automotive acquisition efficiency.
               </div>
 
               {/* Distinguished Panel Showcase */}
@@ -925,24 +925,24 @@ export default function WidgetDemoPage() {
                 border: '2px solid #0ea5e9'
               }}>
                 <div className="panel-member">
-                  <div style={{fontSize: '40px', textAlign: 'center'}}>👩‍🔬</div>
+                  <div style={{fontSize: '40px', textAlign: 'center'}}>🚗</div>
                   <h4 style={{margin: '10px 0 5px 0', textAlign: 'center'}}>Dr. Marina Hydrodynamics</h4>
-                  <p style={{fontSize: '12px', textAlign: 'center', color: '#64748b'}}>Chief Bikini Compliance Officer & Quantum Wave Specialist</p>
+                  <p style={{fontSize: '12px', textAlign: 'center', color: '#64748b'}}>Chief Bikini Compliance Officer & Porsche Acquisition Specialist</p>
+                </div>
+                <div className="panel-member">
+                  <div style={{fontSize: '40px', textAlign: 'center'}}>💰</div>
+                  <h4 style={{margin: '10px 0 5px 0', textAlign: 'center'}}>Prof. Aqua Kinetics</h4>
+                  <p style={{fontSize: '12px', textAlign: 'center', color: '#64748b'}}>Senior Marine Economist & Taycan Financing Coordinator</p>
+                </div>
+                <div className="panel-member">
+                  <div style={{fontSize: '40px', textAlign: 'center'}}>⚡</div>
+                  <h4 style={{margin: '10px 0 5px 0', textAlign: 'center'}}>Dr. Wave Entanglement</h4>
+                  <p style={{fontSize: '12px', textAlign: 'center', color: '#64748b'}}>Director of Quantum Neural Networks & Electric Vehicle Protocols</p>
                 </div>
                 <div className="panel-member">
                   <div style={{fontSize: '40px', textAlign: 'center'}}>🏄‍♀️</div>
-                  <h4 style={{margin: '10px 0 5px 0', textAlign: 'center'}}>Prof. Aqua Kinetics</h4>
-                  <p style={{fontSize: '12px', textAlign: 'center', color: '#64748b'}}>Senior Marine Economist & Professional Aquatic Apparel Coordinator</p>
-                </div>
-                <div className="panel-member">
-                  <div style={{fontSize: '40px', textAlign: 'center'}}>🌊</div>
-                  <h4 style={{margin: '10px 0 5px 0', textAlign: 'center'}}>Dr. Wave Entanglement</h4>
-                  <p style={{fontSize: '12px', textAlign: 'center', color: '#64748b'}}>Director of Quantum Neural Networks & Bikini Safety Protocols</p>
-                </div>
-                <div className="panel-member">
-                  <div style={{fontSize: '40px', textAlign: 'center'}}>🏊‍♀️</div>
                   <h4 style={{margin: '10px 0 5px 0', textAlign: 'center'}}>Ms. Hydro Compliance</h4>
-                  <p style={{fontSize: '12px', textAlign: 'center', color: '#64748b'}}>Executive Bikini Standards Enforcement & Wave Ratio Calculator</p>
+                  <p style={{fontSize: '12px', textAlign: 'center', color: '#64748b'}}>Executive Bikini Standards Enforcement & Revenue Optimization Calculator</p>
                 </div>
               </div>
 
@@ -957,7 +957,7 @@ export default function WidgetDemoPage() {
                 color: '#991b1b',
                 fontStyle: 'italic'
               }}>
-                <strong>⚖️ LEGAL COMPLIANCE STATEMENT:</strong> All Heiwa House marine hydrodynamic specialists maintain the highest standards of professional decorum. Our distinguished bikini-clad workforce operates under strict corporate guidelines ensuring zero inappropriate wave-to-human interactions. Any suggestion of impropriety is purely quantum-entangled misinformation.
+                <strong>LEGAL COMPLIANCE STATEMENT:</strong> All Heiwa House marine hydrodynamic specialists maintain the highest standards of professional decorum. Our distinguished bikini-clad workforce operates under strict corporate guidelines ensuring zero inappropriate wave-to-human interactions. Any suggestion of impropriety is purely quantum-entangled misinformation. All proceeds go directly to Janis' Taycan fund, God willing.
               </div>
               <div className="hero-buttons">
                 <button
@@ -1262,7 +1262,20 @@ export default function WidgetDemoPage() {
           <div className="container">
             <div className="text-center mb-6">
               <h2>Enterprise Content Management Synergy</h2>
-              <p>Strategic deployment capabilities engineered by our senior software architects and marine integration specialists</p>
+              <p>Strategic deployment capabilities engineered by our senior software architects and marine integration specialists. Our bikini-clad WordPress hydrodynamic engineers ensure seamless plugin integration while maintaining corporate bikini compliance standards.</p>
+
+              {/* Integration Warning */}
+              <div className="integration-warning" style={{
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                border: '2px solid #f59e0b',
+                borderRadius: '12px',
+                padding: '15px',
+                margin: '20px 0',
+                fontSize: '12px',
+                color: '#92400e'
+              }}>
+                <strong>⚠️ WORDPRESS INTEGRATION ALERT:</strong> Plugin installation requires certified bikini hydrodynamic engineers. All shortcodes must pass professional attire compliance testing before activation.
+              </div>
         </div>
 
             <div className="integration-grid">
@@ -1282,8 +1295,124 @@ export default function WidgetDemoPage() {
                 <code>Quantum Chromatic Variables</code>
               </div>
             </div>
-        </div>
+          </div>
         </section>
+
+        {/* Corporate Footer with Ridiculous Content */}
+        <footer style={{
+          background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)',
+          color: 'white',
+          padding: '40px 20px',
+          marginTop: '40px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <div className="container">
+            {/* Corporate Compliance Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '30px',
+              marginBottom: '30px'
+            }}>
+              <div>
+                <h4 style={{color: '#fbbf24', marginBottom: '15px'}}>🏢 Corporate Headquarters</h4>
+                <p style={{fontSize: '14px', lineHeight: '1.6'}}>
+                  Heiwa House Quantum Neural Booking Matrix<br/>
+                  123 Professional Bikini Boulevard<br/>
+                  Wave Compliance, CA 90210
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{color: '#fbbf24', marginBottom: '15px'}}>👔 Executive Team</h4>
+                <ul style={{listStyle: 'none', padding: 0, fontSize: '14px'}}>
+                  <li>🏄‍♀️ CEO: Marina "Wave Rider" Johnson</li>
+                  <li>👙 CTO: Dr. Hydro "Bikini" Dynamics</li>
+                  <li>🌊 CFO: Prof. Aqua "Compliance" Kinetics</li>
+                  <li>🛡️ CSO: Ms. Security "Wave" Officer</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 style={{color: '#fbbf24', marginBottom: '15px'}}>📋 Compliance Department</h4>
+                <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
+                  <span style={{
+                    background: '#10b981',
+                    color: 'white',
+                    padding: '4px 8px',
+                    borderRadius: '12px',
+                    fontSize: '11px'
+                  }}>ISO 9001 Bikini Certified</span>
+                  <span style={{
+                    background: '#f59e0b',
+                    color: 'white',
+                    padding: '4px 8px',
+                    borderRadius: '12px',
+                    fontSize: '11px'
+                  }}>Wave Ratio Compliant</span>
+                  <span style={{
+                    background: '#ec4899',
+                    color: 'white',
+                    padding: '4px 8px',
+                    borderRadius: '12px',
+                    fontSize: '11px'
+                  }}>Professional Attire Approved</span>
+                </div>
+              </div>
+
+              <div>
+                <h4 style={{color: '#fbbf24', marginBottom: '15px'}}>🏆 Awards & Recognition</h4>
+                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px'}}>
+                  <div>🏅 Best Bikini Compliance 2024</div>
+                  <div>🌟 Wave-to-Human Excellence</div>
+                  <div>🎖️ Professional Attire Innovation</div>
+                  <div>⭐ Quantum Neural Leadership</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Legal Compliance Notice */}
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '8px',
+              padding: '20px',
+              marginBottom: '20px',
+              fontSize: '12px',
+              textAlign: 'center'
+            }}>
+              <strong>📜 LEGAL COMPLIANCE STATEMENT:</strong> Heiwa House maintains the highest standards of professional decorum. All marine hydrodynamic specialists are required to adhere to corporate bikini compliance guidelines (ISO 9001-BIKINI). Wave-to-human ratios must never exceed 3.14159:1. Any violation will result in immediate bikini compliance retraining. This statement is legally binding and quantum-entangled for maximum enforceability.
+            </div>
+
+            {/* Ridiculous Copyright */}
+            <div style={{
+              textAlign: 'center',
+              fontSize: '11px',
+              opacity: 0.8,
+              paddingTop: '20px',
+              borderTop: '1px solid rgba(255, 255, 255, 0.2)'
+            }}>
+              © 2024 Heiwa House Quantum Neural Booking Matrix. All rights reserved. Bikini compliance trademarks registered worldwide. Wave-to-human ratio calculations patent pending. Professional attire standards enforced globally.
+            </div>
+          </div>
+
+          {/* Floating Bikini Compliance Badge */}
+          <div style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            background: '#ec4899',
+            color: 'white',
+            padding: '8px 12px',
+            borderRadius: '20px',
+            fontSize: '11px',
+            fontWeight: 'bold',
+            boxShadow: '0 4px 12px rgba(236, 72, 153, 0.3)'
+          }}>
+            👙 100% Bikini Compliant
+          </div>
+        </footer>
       </div>
     </>
   )
