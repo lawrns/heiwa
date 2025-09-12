@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heiwa Surf-Themed Booking Widget Test</title>
+    <link rel="stylesheet" href="wordpress-plugin/heiwa-booking-widget/assets/css/widget.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(14, 165, 233, 0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .test-section h2 {
+            color: #0ea5e9;
+            margin-top: 0;
+        }
+        
+        .component-demo {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-success { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-error { background: #ef4444; }
+        
+        .improvement-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .improvement-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+        }
+        
+        .improvement-list li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🏄‍♂️ Heiwa Surf-Themed Booking Widget - UI/UX Improvements Test</h1>
+        
+        <div class="test-section">
+            <h2>✅ Implemented Improvements Summary</h2>
+            <ul class="improvement-list">
+                <li><span class="status-indicator status-success"></span>Wave pattern backgrounds and ocean gradients</li>
+                <li><span class="status-indicator status-success"></span>Custom surf-themed date picker with calendar dropdown</li>
+                <li><span class="status-indicator status-success"></span>Enhanced button designs with wave animations</li>
+                <li><span class="status-indicator status-success"></span>Fixed mobile responsive issues and touch interactions</li>
+                <li><span class="status-indicator status-success"></span>Premium loading states with ocean shimmer effects</li>
+                <li><span class="status-indicator status-success"></span>Improved accessibility and focus states</li>
+                <li><span class="status-indicator status-success"></span>Enhanced color scheme with ocean blue gradients</li>
+                <li><span class="status-indicator status-success"></span>Cross-browser date picker compatibility</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🎨 Visual Design Improvements</h2>
+            <div class="demo-grid">
+                <div class="component-demo">
+                    <h3>Enhanced Trigger Button</h3>
+                    <button class="heiwa-booking-trigger" style="position: static; transform: none;">
+                        🏄‍♂️ BOOK YOUR SURF ADVENTURE
+                    </button>
+                </div>
+                
+                <div class="component-demo">
+                    <h3>Premium CTA Button</h3>
+                    <button class="heiwa-cta-button">
+                        Continue to Next Step
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📅 Custom Date Picker Demo</h2>
+            <div class="component-demo">
+                <div class="heiwa-form-group">
+                    <label class="heiwa-form-label">Select Check-in Date</label>
+                    <input type="date" class="heiwa-date-picker" id="test-checkin" min="2024-01-01" placeholder="Select date">
+                </div>
+                <div class="heiwa-form-group">
+                    <label class="heiwa-form-label">Select Check-out Date</label>
+                    <input type="date" class="heiwa-date-picker" id="test-checkout" min="2024-01-01" placeholder="Select date">
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📱 Mobile Responsiveness Test</h2>
+            <p>Resize your browser window or test on mobile devices to verify:</p>
+            <ul>
+                <li>Touch targets are minimum 44px for accessibility</li>
+                <li>Date picker displays as full-screen modal on mobile</li>
+                <li>No conflicting transform directions</li>
+                <li>Proper touch feedback and animations</li>
+                <li>iOS zoom prevention with 16px font size</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🌊 Wave Animation Showcase</h2>
+            <div class="demo-grid">
+                <div class="component-demo heiwa-bg-wave">
+                    <h3>Wave Background Pattern</h3>
+                    <p>Subtle animated wave background</p>
+                </div>
+                
+                <div class="component-demo">
+                    <h3>Ocean Gradient Progress</h3>
+                    <div class="heiwa-booking-progress">
+                        <div class="heiwa-booking-stepper">
+                            <div class="heiwa-booking-step current">
+                                <div class="heiwa-booking-step-number">1</div>
+                                <div class="heiwa-booking-step-label">Current</div>
+                            </div>
+                            <div class="heiwa-booking-step completed">
+                                <div class="heiwa-booking-step-number">2</div>
+                                <div class="heiwa-booking-step-label">Completed</div>
+                            </div>
+                            <div class="heiwa-booking-step upcoming">
+                                <div class="heiwa-booking-step-number">3</div>
+                                <div class="heiwa-booking-step-label">Next</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎯 Destination Card Example</h2>
+            <div class="component-demo">
+                <div class="heiwa-destination-grid">
+                    <div class="heiwa-destination-card">
+                        <img src="public/room1.jpg" alt="Surf Camp" class="heiwa-destination-card-image" style="width: 100%; height: 120px; object-fit: cover; display: block;">
+                        <div class="heiwa-destination-card-content">
+                            <h3 class="heiwa-destination-card-title">
+                                🏄‍♂️ Premium Surf Week
+                            </h3>
+                            <p class="heiwa-destination-card-description">
+                                Experience the ultimate surf adventure with professional instructors and premium equipment.
+                            </p>
+                            <div class="heiwa-destination-card-footer">
+                                <div class="heiwa-destination-card-price">€599</div>
+                                <div class="heiwa-destination-card-level">Intermediate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>⚡ Loading States Demo</h2>
+            <div class="demo-grid">
+                <div class="component-demo">
+                    <h3>Enhanced Spinner</h3>
+                    <div class="heiwa-loading">
+                        <div class="heiwa-spinner"></div>
+                        <p>Loading your surf adventure...</p>
+                    </div>
+                </div>
+                
+                <div class="component-demo">
+                    <h3>Wave Spinner</h3>
+                    <div class="heiwa-loading">
+                        <div class="heiwa-wave-spinner"></div>
+                        <p>Preparing your booking...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Browser Compatibility Test</h2>
+            <p>The widget now includes:</p>
+            <ul>
+                <li>✅ Modern custom date picker for supported browsers</li>
+                <li>✅ Enhanced native date picker fallback for older browsers</li>
+                <li>✅ Cross-browser wave animations with fallbacks</li>
+                <li>✅ Progressive enhancement approach</li>
+                <li>✅ Touch device optimizations</li>
+            </ul>
+        </div>
+
+        <!-- Widget Integration Test -->
+        <div class="heiwa-booking-widget heiwa-position-right">
+            <!-- The actual widget trigger will be positioned fixed -->
+            <button class="heiwa-booking-trigger" onclick="alert('Widget would open here!')">
+                🏄‍♂️ BOOK NOW
+            </button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="wordpress-plugin/heiwa-booking-widget/assets/js/widget.js"></script>
+    <script>
+        // Initialize the widget for testing
+        $(document).ready(function() {
+            console.log('🏄‍♂️ Heiwa Surf-Themed Booking Widget Test Loaded');
+            
+            // Test custom date picker initialization
+            if (typeof setupDatePickers === 'function') {
+                setupDatePickers();
+                console.log('✅ Custom date pickers initialized');
+            }
+            
+            // Add some test data
+            window.heiwa_booking_ajax = {
+                api_endpoint: 'http://localhost:3005/api',
+                api_key: 'test_key'
+            };
+            
+            // Test browser compatibility
+            const isModernBrowser = typeof document.querySelector !== 'undefined' && 
+                                  typeof addEventListener !== 'undefined' &&
+                                  !/(MSIE|Trident)/.test(navigator.userAgent);
+            
+            console.log('🌊 Browser compatibility:', isModernBrowser ? 'Modern' : 'Legacy');
+            console.log('📱 Touch device:', 'ontouchstart' in window);
+            console.log('🎨 Reduced motion:', window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        });
+    </script>
+</body>
+</html>
