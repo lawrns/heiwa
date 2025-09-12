@@ -4572,5 +4572,17 @@ body.heiwa-modal-open {
 .heiwa-room-assign-btn { background:transparent; border:1px solid var(--heiwa-primary-color); color: var(--heiwa-primary-color); border-radius:8px; padding:8px 12px; cursor:pointer; }
 .heiwa-room-assign-btn:hover { background: var(--heiwa-primary-light); }
 
+/* Additional brand color conversions and badge/loader overrides */
+.heiwa-booking-widget .heiwa-skill-level,
+.heiwa-booking-widget .heiwa-location { background: var(--heiwa-ocean-blue-100) !important; color: var(--heiwa-ocean-blue-800) !important; }
+.heiwa-booking-widget .heiwa-destination-card-price { color: var(--heiwa-primary-color) !important; }
+.heiwa-booking-widget .heiwa-date-display.active .heiwa-date-icon,
+.heiwa-booking-widget .heiwa-date-display:hover .heiwa-date-icon { color: var(--heiwa-primary-color) !important; }
+.heiwa-booking-widget .heiwa-addon-card:hover,
+.heiwa-booking-widget .heiwa-addon-card.selected { border-color: var(--heiwa-primary-color) !important; background: var(--heiwa-ocean-blue-50) !important; }
+.heiwa-booking-widget .heiwa-addon-icon { color: var(--heiwa-primary-color) !important; }
+.heiwa-booking-widget .heiwa-loading .heiwa-wave-spinner { border-color: rgba(236,104,28,0.20) !important; border-top-color: var(--heiwa-primary-color) !important; border-right-color: var(--heiwa-primary-hover) !important; border-bottom-color: var(--heiwa-primary-color) !important; box-shadow: 0 4px 20px rgba(236,104,28,0.2) !important; }
+
+
 /* Ensure price accents use brand */
 .heiwa-price-amount { color: var(--heiwa-primary-color); font-weight:700; }
