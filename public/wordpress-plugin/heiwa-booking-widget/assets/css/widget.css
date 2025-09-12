@@ -192,16 +192,16 @@ body.heiwa-modal-open {
   display: flex;
   align-items: center;
   gap: var(--heiwa-space-2);
-  padding: var(--heiwa-space-4) var(--heiwa-space-5);
+  padding: var(--heiwa-space-3) var(--heiwa-space-4);
   background: linear-gradient(135deg, var(--heiwa-primary-color) 0%, var(--heiwa-primary-hover) 100%);
   color: white;
   border: none;
-  border-radius: var(--heiwa-radius-xl);
+  border-radius: var(--heiwa-radius-lg);
   font-family: var(--heiwa-font-family);
   font-size: var(--heiwa-font-size-sm);
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3), 0 8px 40px rgba(6, 182, 212, 0.15);
+  box-shadow: 0 4px 20px rgba(236, 104, 28, 0.3), 0 8px 40px rgba(237, 86, 0, 0.15);
   transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: var(--heiwa-z-fixed);
   overflow: hidden;
@@ -243,9 +243,9 @@ body.heiwa-modal-open {
 }
 
 .heiwa-booking-trigger:hover {
-  background: linear-gradient(135deg, #0284c7 0%, #0891b2 50%, #0d9488 100%);
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 32px rgba(14, 165, 233, 0.4), 0 12px 48px rgba(6, 182, 212, 0.2);
+  background: linear-gradient(135deg, var(--heiwa-primary-hover) 0%, #dc4a00 100%);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(236, 104, 28, 0.4), 0 12px 48px rgba(237, 86, 0, 0.2);
 }
 
 .heiwa-booking-trigger:hover::before {
@@ -259,9 +259,10 @@ body.heiwa-modal-open {
 
 /* Position variants */
 .heiwa-position-right .heiwa-booking-trigger {
-  right: var(--heiwa-space-6);
-  top: 50%;
-  transform: translateY(-50%);
+  right: var(--heiwa-space-4);
+  top: var(--heiwa-space-4);
+  transform: none;
+  flex-direction: row;
 }
 
 .heiwa-position-left .heiwa-booking-trigger {
