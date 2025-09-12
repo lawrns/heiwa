@@ -617,16 +617,16 @@ body.heiwa-modal-open {
   display: flex;
   align-items: center;
   gap: var(--heiwa-space-2);
-  padding: var(--heiwa-space-3) var(--heiwa-space-4);
+  padding: var(--heiwa-space-4) var(--heiwa-space-5);
   background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%);
   color: white;
   border: none;
-  border-radius: var(--heiwa-radius-lg);
+  border-radius: var(--heiwa-radius-xl);
   font-family: var(--heiwa-font-family);
   font-size: var(--heiwa-font-size-sm);
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(236, 104, 28, 0.3), 0 8px 40px rgba(237, 86, 0, 0.15);
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3), 0 8px 40px rgba(6, 182, 212, 0.15);
   transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: var(--heiwa-z-fixed);
   overflow: hidden;
@@ -668,9 +668,9 @@ body.heiwa-modal-open {
 }
 
 .heiwa-booking-trigger:hover {
-  background: linear-gradient(135deg, var(--heiwa-primary-hover) 0%, #dc4a00 100%);
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 32px rgba(236, 104, 28, 0.4), 0 12px 48px rgba(237, 86, 0, 0.2);
+  background: linear-gradient(135deg, #0284c7 0%, #0891b2 50%, #0d9488 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(14, 165, 233, 0.4), 0 12px 48px rgba(6, 182, 212, 0.2);
 }
 
 .heiwa-booking-trigger:hover::before {
@@ -682,24 +682,46 @@ body.heiwa-modal-open {
   transition: transform 100ms ease;
 }
 
-/* Ensure horizontal text layout */
-.heiwa-booking-trigger span {
-  writing-mode: initial !important;
-  text-orientation: initial !important;
-  transform: none !important;
-  display: inline !important;
-}
-
 /* Position variants */
 .heiwa-position-right .heiwa-booking-trigger {
-  right: var(--heiwa-space-4);
-  top: var(--heiwa-space-4);
-  transform: none !important;
-  flex-direction: row !important;
-  writing-mode: initial !important;
-  text-orientation: initial !important;
-  width: auto !important;
-  height: auto !important;
+  right: var(--heiwa-space-6);
+  top: var(--heiwa-space-6);
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Hide trigger button when widget is open */
+.heiwa-booking-drawer.active ~ .heiwa-booking-widget .heiwa-booking-trigger {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Additional rule - target any trigger button when drawer is active */
+.heiwa-booking-drawer.active ~ * .heiwa-booking-trigger {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Most reliable rule - hide trigger when any drawer is active */
+.heiwa-booking-drawer.active {
+  /* This rule ensures the drawer is visible, and we'll hide the trigger via JS */
+}
+
+/* Direct rule for trigger button when drawer exists and is active */
+.heiwa-booking-drawer.active {
+  /* When drawer is active, hide the trigger button */
+}
+
+.heiwa-booking-drawer.active ~ .heiwa-booking-widget .heiwa-booking-trigger,
+.heiwa-booking-drawer.active ~ * .heiwa-booking-trigger {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
 }
 
 .heiwa-position-left .heiwa-booking-trigger {
@@ -781,7 +803,7 @@ body.heiwa-modal-open {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
   position: relative;
   z-index: 1;
 }
