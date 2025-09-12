@@ -2,44 +2,12 @@
 
 ```yaml
 - generic [active] [ref=e1]:
-  - generic [ref=e2]:
-    - generic [ref=e3]:
-      - generic [ref=e4]:
-        - img [ref=e6]
-        - heading "Heiwa House" [level=1] [ref=e10]
-        - paragraph [ref=e11]: Admin Dashboard Login
-      - generic [ref=e12]:
-        - generic [ref=e13]:
-          - heading "Welcome Back" [level=3] [ref=e14]
-          - paragraph [ref=e15]: Sign in to access the admin dashboard
-        - generic [ref=e16]:
-          - generic [ref=e17]:
-            - generic [ref=e18]:
-              - generic [ref=e19]: Email Address
-              - generic [ref=e20]:
-                - img [ref=e21]
-                - textbox "Email Address" [ref=e24]
-            - generic [ref=e25]:
-              - generic [ref=e26]: Password
-              - generic [ref=e27]:
-                - img [ref=e28]
-                - textbox "Password" [ref=e31]
-                - button [ref=e32] [cursor=pointer]:
-                  - img [ref=e33] [cursor=pointer]
-            - button "Sign In" [ref=e36] [cursor=pointer]
-          - generic [ref=e37]:
-            - generic [ref=e38]:
-              - paragraph [ref=e39]: "Demo Credentials:"
-              - button "Fill Form" [ref=e40] [cursor=pointer]
-            - generic [ref=e41]:
-              - paragraph [ref=e42]:
-                - strong [ref=e43]: "Email:"
-                - text: admin@heiwa.house
-              - paragraph [ref=e44]:
-                - strong [ref=e45]: "Password:"
-                - text: admin123456
-      - paragraph [ref=e47]: © 2024 Heiwa House. All rights reserved.
-    - region "Notifications Alt+T"
+  - generic [ref=e3]:
+    - heading "404" [level=1] [ref=e4]
+    - heading "Page Not Found" [level=2] [ref=e5]
+    - paragraph [ref=e6]: The page you are looking for could not be found.
+    - link "Go to Admin Dashboard" [ref=e7] [cursor=pointer]:
+      - /url: /admin
   - region "Notifications Alt+T"
-  - alert [ref=e48]
+  - alert [ref=e8]
 ```

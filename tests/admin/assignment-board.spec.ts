@@ -46,8 +46,8 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
     // Verify assignment board components
     await expect(page.locator('[data-testid="unassigned-participants-card"]')).toBeVisible()
     await expect(page.locator('[data-testid="assignment-board-title"]')).toBeVisible()
-    // Verify room zones are present using data-testid
-    await expect(page.locator('[data-testid^="room-zone-"]')).toBeVisible()
+    // Verify room zones are present using data-testid (check that at least one exists)
+    await expect(page.locator('[data-testid^="room-zone-"]').first()).toBeVisible()
   })
 
   test('should allow week selection and update data accordingly', async ({ page }) => {
@@ -78,8 +78,8 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)
 
-    // Verify participants are loaded using data-testid
-    await expect(page.locator('[data-testid^="participant-card-"]')).toBeVisible()
+    // Verify participants are loaded using data-testid (check that at least one exists)
+    await expect(page.locator('[data-testid^="participant-card-"]').first()).toBeVisible()
 
     // Verify participant details are displayed
     await expect(page.locator('[data-testid^="participant-card-"] .badge, [data-testid^="participant-card-"] [class*="badge"]')).toBeVisible()
@@ -93,8 +93,8 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)
 
-    // Verify room zones are present using data-testid
-    await expect(page.locator('[data-testid^="room-zone-"]')).toBeVisible()
+    // Verify room zones are present using data-testid (check that at least one exists)
+    await expect(page.locator('[data-testid^="room-zone-"]').first()).toBeVisible()
 
     // Verify room badges and capacity indicators are displayed
     await expect(page.locator('[data-testid^="room-zone-"] .badge, [data-testid^="room-zone-"] [class*="badge"]')).toBeVisible()
@@ -117,6 +117,9 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   })
 
   test('should allow saving assignments', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)
@@ -140,6 +143,9 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   })
 
   test('should handle drag and drop functionality', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)
@@ -155,11 +161,14 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
     const participantCard = page.locator('[data-testid^="participant-card-"]').first()
     await expect(participantCard).toBeVisible()
 
-    // Test that room drop zones are visible
-    await expect(page.locator('[data-testid^="room-zone-"]')).toBeVisible()
+    // Test that room drop zones are visible (check that at least one exists)
+    await expect(page.locator('[data-testid^="room-zone-"]').first()).toBeVisible()
   })
 
   test('should validate room capacity constraints', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)
@@ -174,6 +183,9 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   })
 
   test('should show assignment progress and completion status', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)
@@ -191,6 +203,9 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   })
 
   test('should handle refresh functionality', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)

@@ -1,0 +1,60 @@
+{
+  "schema": "heiwa.uiux.guardrail.instructions.v1",
+  "meta": {
+    "purpose": "Enforce premium, token-driven UI/UX for the Heiwa booking widget.",
+    "owner": "Heiwa House Dev",
+    "last_updated": "2025-09-12T19:15:00Z"
+  },
+  "inputs": {
+    "prefix": "heiwa-",
+    "design_tokens_root": ":root",
+    "breakpoints": { "mobile": 768, "tablet": 1024 },
+    "modes": ["light", "dark"],
+    "min_touch_target_px": 44
+  },
+  "policies": {
+    "tokens_only": true,
+    "consistent_states": true,
+    "responsive_no_overflow": true,
+    "primitives_first": true,
+    "a11y_WCAG_AA": true,
+    "reduced_motion_supported": true
+  },
+  "selectors_must_exist": [
+    ".heiwa-booking-option-card",
+    ".heiwa-booking-option-content",
+    ".heiwa-booking-option-title",
+    ".heiwa-booking-option-subtitle",
+    ".heiwa-booking-option-description",
+    ".heiwa-booking-option-icon",
+    ".heiwa-booking-option-arrow",
+    ".heiwa-summary-total",
+    ".heiwa-summary-total-value"
+  ],
+  "forbid": {
+    "hex_colors": true,
+    "tailwind_scale_colors": true,
+    "unprefixed_classes": true
+  },
+  "checks": [
+    { "id": "tap-size", "rule": ">=44px", "targets": [".heiwa-booking-option-card", ".heiwa-cta-button"] },
+    { "id": "focus-visible", "rule": "outline-or-shadow", "targets": ["[role=button]", ".heiwa-cta-button", ".heiwa-booking-option-card"] },
+    { "id": "token-usage", "rule": "colors/spacing/radius/shadow must be var(--heiwa-…)" }
+  ],
+  "output_format": {
+    "report": {
+      "overall_grade": "A+..F",
+      "issues": [
+        { "id": "string", "severity": "critical|high|medium|low", "category": "visual|interaction|system|experience", "description": "string", "location": "file(s)", "fix": "string" }
+      ]
+    }
+  },
+  "pr_checklist": [
+    "Tokens only (no hardcoded values)",
+    "Tap targets ≥ 44px",
+    "Visible focus/hover/active/disabled",
+    "No overflow at mobile",
+    "Reduced motion respected",
+    "Only .heiwa-* selectors introduced"
+  ]
+}
