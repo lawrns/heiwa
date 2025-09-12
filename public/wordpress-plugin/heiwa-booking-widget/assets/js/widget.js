@@ -628,14 +628,138 @@
     }
 
     /**
+     * Analytics tracking for UX validation
+     */
+    function trackEvent(eventName, data = {}) {
+        try {
+            // Send to analytics service (Google Analytics, etc.)
+            if (window.gtag) {
+                window.gtag('event', eventName, {
+                    event_category: 'heiwa_booking_widget',
+                    ...data
+                });
+            }
+
+            // Log for development
+            console.log('Heiwa Widget Analytics:', eventName, data);
+
+            // Store in localStorage for development analysis
+            const events = JSON.parse(localStorage.getItem('heiwa_widget_events') || '[]');
+            events.push({
+                timestamp: new Date().toISOString(),
+                event: eventName,
+                data: data
+            });
+
+            // Keep only last 100 events
+            if (events.length > 100) {
+                events.shift();
+            }
+
+            localStorage.setItem('heiwa_widget_events', JSON.stringify(events));
+        } catch (e) {
+            console.warn('Analytics tracking failed:', e);
+        }
+    }
+
+    /**
+     * Error handling and resilience
+     */
+    function handleError(error, context = '') {
+        console.error('Heiwa Widget Error:', error, context);
+
+        // Track error for analytics
+        trackEvent('error_occurred', {
+            error_message: error.message || error,
+            context: context,
+            user_agent: navigator.userAgent,
+            url: window.location.href
+        });
+
+        // Show user-friendly error message
+        showErrorMessage('Something went wrong. Please try again or contact support.');
+
+        // Attempt recovery if possible
+        if (context === 'api_failure') {
+            // Retry logic could go here
+        }
+    }
+
+    /**
+     * Show error message to user
+     */
+    function showErrorMessage(message) {
+        const $container = $('.heiwa-step-content.active');
+        if ($container.length === 0) return;
+
+        // Remove any existing error messages
+        $container.find('.heiwa-error-state').remove();
+
+        const errorHTML = `
+            <div class="heiwa-error-state" role="alert" aria-live="assertive">
+                ${message}
+            </div>
+        `;
+
+        $container.prepend(errorHTML);
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            $container.find('.heiwa-error-state').fadeOut(() => {
+                $(this).remove();
+            });
+        }, 5000);
+    }
+
+    /**
      * Initialize the booking widget
      */
     function initBookingWidget() {
         // Ensure styles are present before rendering
         ensureWidgetStylesLoaded();
 
-        // Detect render mode (drawer vs inline)
-        detectRenderMode();
+    // Detect render mode (drawer vs inline)
+    detectRenderMode();
+
+    // Track widget initialization
+    trackEvent('widget_initialized', {
+        render_mode: $('.heiwa-booking-drawer').length > 0 ? 'drawer' : 'inline',
+        user_agent: navigator.userAgent,
+        viewport_width: window.innerWidth,
+        viewport_height: window.innerHeight,
+        touch_support: 'ontouchstart' in window
+    });
+
+    // Track scroll behavior on mobile
+    let scrollTimeout;
+    $(window).on('scroll', function() {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const scrollTop = $(window).scrollTop();
+            const widgetVisible = $('.heiwa-booking-widget').is(':visible');
+
+            if (widgetVisible) {
+                trackEvent('widget_scroll_interaction', {
+                    scroll_position: scrollTop,
+                    viewport_height: window.innerHeight,
+                    widget_in_view: isElementInViewport($('.heiwa-booking-widget')[0]),
+                    is_mobile: window.innerWidth < 768
+                });
+            }
+        }, 500);
+    });
+
+    // Helper function to check if element is in viewport
+    function isElementInViewport(el) {
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
 
         // Bind event handlers
         bindEvents();
@@ -910,7 +1034,7 @@
                         <div class="heiwa-booking-stepper">
                             ${STEPS.map((step, index) => `
                                 <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-step="${step.id}">
-                                    <div class="heiwa-booking-step-number">${index + 1}</div>
+                                    <div class="heiwa-booking-step-number" role="status" aria-label="Step ${index + 1}">${index + 1}</div>
                                     <div class="heiwa-booking-step-label">${step.label}</div>
                                 </div>
                             `).join('')}
@@ -1157,9 +1281,9 @@
                     <div class="heiwa-booking-option-card"
                          data-booking-type="room"
                          role="radio"
+                         aria-label="Book a room - Choose your dates and accommodation"
                          aria-checked="${bookingData.bookingType === 'room' ? 'true' : 'false'}"
-                         tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}"
-                         aria-label="Book a room - Choose your dates and accommodation">
+                         tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}">
                         <div class="heiwa-booking-option-icon" aria-hidden="true">
                             <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNreUdyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM4N0NFRUIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjBGOUZGIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIFNreSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI3NreUdyYWRpZW50KSIvPgogIDwhLS0gQmVkIC0tPgogIDxyZWN0IHg9IjUwIiB5PSIxMjAiIHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiNGRkZGRkYiIHJ4PSI4Ii8+CiAgPHJlY3QgeD0iNjAiIHk9IjEwMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzNCODJGNiIgcng9IjQiLz4KICA8IS0tIFBpbGxvd3MgLS0+CiAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjEwNSIgcng9IjI1IiByeT0iMTUiIGZpbGw9IiNGM0Y0RjYiLz4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTA1IiByeD0iMjUiIHJ5PSIxNSIgZmlsbD0iI0YzRjRGNiIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iMTkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2QjczODAiPkNvbWZvcnRhYmxlIFJvb21zPC90ZXh0Pgo8L3N2Zz4=" alt="Room booking" />
                         </div>
@@ -1178,9 +1302,7 @@
                     <div class="heiwa-booking-option-card"
                          data-booking-type="surf-week"
                          role="radio"
-                         aria-checked="${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}"
-                         tabindex="${bookingData.bookingType === 'surf-week' ? '0' : '-1'}"
-                         aria-label="All-inclusive surf week - Join our structured surf camp programs">
+                         aria-label="Book a surf week - Choose your dates and surf lessons"
                         <div class="heiwa-booking-option-icon" aria-hidden="true">
                             <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9Im9jZWFuR3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBEOTJGNCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMzY5QTEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDwhLS0gT2NlYW4gQmFja2dyb3VuZCAtLT4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNvY2VhbkdyYWRpZW50KSIvPgogIDwhLS0gV2F2ZXMgLS0+CiAgPHBhdGggZD0iTTAgMTIwIFE3NSAxMDAgMTUwIDEyMCBUIDMwMCAxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIzIiBvcGFjaXR5PSIwLjgiLz4KICA8cGF0aCBkPSJNMCAxNDAgUTc1IDEyMCAxNTAgMTQwIFQgMzAwIDE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNiIvPgogIDxwYXRoIGQ9Ik0wIDE2MCBRNTM1IDE0MCAxNTAgMTYwIFQgMzAwIDE2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC40Ii8+CiAgPCEtLSBTdXJmYm9hcmQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEzMCIgcng9IjQwIiByeT0iOCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC45Ii8+CiAgPHRleHQgeD0iMTUwIiB5PSIxOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI0ZGRkZGRiI+U3VyZiBXZWVrczwvdGV4dD4KPC9zdmc+" alt="Surf week booking" />
                         </div>
@@ -1204,6 +1326,14 @@
         // Bind click and keyboard events
         $('.heiwa-booking-option-card').on('click', function() {
             const bookingType = $(this).data('booking-type');
+
+            // Track booking type selection
+            trackEvent('booking_type_selected', {
+                booking_type: bookingType,
+                step: 'type_selection',
+                interaction: 'click'
+            });
+
             selectBookingType(bookingType);
         });
 
@@ -1212,6 +1342,16 @@
             const $current = $(this);
             const $options = $('.heiwa-booking-option-card');
             const currentIndex = $options.index($current);
+
+            // Track keyboard navigation
+            if (e.key === 'Enter' || e.key === ' ') {
+                const bookingType = $current.data('booking-type');
+                trackEvent('booking_type_selected', {
+                    booking_type: bookingType,
+                    step: 'type_selection',
+                    interaction: 'keyboard'
+                });
+            }
 
             switch(e.key) {
                 case 'ArrowRight':
@@ -1415,9 +1555,17 @@
             $('.heiwa-destination-card').removeClass('selected');
             $(`.heiwa-destination-card[data-camp-id="${campId}"]`).addClass('selected');
 
-            // Update summary
-            updateSummary();
-            updateCTAButton();
+        // Track stepper interaction
+        trackEvent('stepper_interaction', {
+            step_number: stepNumber,
+            step_name: STEPS[stepNumber - 1]?.label || 'unknown',
+            action: 'navigation',
+            total_steps: STEPS.length
+        });
+
+        // Update summary
+        updateSummary();
+        updateCTAButton();
 
             console.log('Heiwa Booking Widget: Advancing to next step...');
 
@@ -1798,13 +1946,9 @@
                             <span>Duration</span>
                             <span>${duration} days</span>
                         </div>
-                        <div class="heiwa-pricing-row subtotal">
-                            <span>Subtotal</span>
-                            <span>${heiwaFmt.format(total)}</span>
-                        </div>
-                        <div class="heiwa-pricing-row total">
-                            <span><strong>Total Amount</strong></span>
-                            <span><strong>€${total}</strong></span>
+                        <div class="heiwa-summary-total" role="region" aria-label="Booking Total">
+                            <span class="heiwa-summary-total-label">Total Amount:</span>
+                            <span class="heiwa-summary-total-value">${heiwaFmt.format(total)}</span>
                         </div>
                     </div>
                 </div>
@@ -1900,9 +2044,6 @@
 
         // Build summary HTML with collapsible structure
         let summaryHTML = `
-            <div class="heiwa-summary-sticky-total">
-                <strong>Total: ${heiwaFmt.format(total)}</strong>
-            </div>
             <div class="heiwa-summary-collapsible">
                 <div class="heiwa-summary-content">
         `;
@@ -1972,6 +2113,17 @@
         `;
 
         $summaryContainer.html(summaryHTML);
+
+        // Track total visibility for UX validation
+        if (total > 0) {
+            trackEvent('total_displayed', {
+                total_amount: total,
+                formatted_total: heiwaFmt.format(total),
+                has_gradient_styling: true,
+                display_location: 'summary',
+                booking_type: bookingData.bookingType
+            });
+        }
 
         // Bind collapsible toggle
         $summaryContainer.find('.heiwa-summary-toggle').on('click', function() {

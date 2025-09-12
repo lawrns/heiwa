@@ -402,6 +402,7 @@ body.heiwa-modal-open {
     left: 0;
     top: 0;
     bottom: 0;
+    overflow: hidden; /* Prevent body scroll when drawer is open */
   }
 
   .heiwa-booking-drawer.active {
@@ -433,6 +434,9 @@ body.heiwa-modal-open {
     min-height: 56px;
     padding: var(--heiwa-space-4);
     touch-action: manipulation;
+    overflow: hidden; /* Prevent text overflow */
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .heiwa-cta-button,
@@ -451,27 +455,61 @@ body.heiwa-modal-open {
   .heiwa-booking-stepper {
     overflow-x: auto;
     padding-bottom: 8px;
+    scrollbar-width: none; /* Hide scrollbar on Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar on IE/Edge */
+  }
+
+  .heiwa-booking-stepper::-webkit-scrollbar {
+    display: none; /* Hide scrollbar on Webkit browsers */
   }
 
   .heiwa-booking-step {
     flex-shrink: 0;
     min-width: 120px;
+    text-align: center;
   }
 
   .heiwa-booking-step-label {
-    display: none;
+    display: block; /* Show labels on mobile with better handling */
+    font-size: var(--heiwa-text-xs);
+    line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .heiwa-destination-grid {
     grid-template-columns: 1fr;
+    gap: var(--heiwa-space-3);
   }
 
   .heiwa-booking-content {
     padding: 16px;
+    overflow-y: auto;
+    max-height: calc(100vh - 120px); /* Account for header */
   }
 
   .heiwa-booking-summary {
     padding: 16px;
+    overflow: hidden; /* Prevent summary overflow */
+  }
+
+  /* Mobile content overflow prevention */
+  .heiwa-step-content {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding-right: 8px; /* Add padding for scrollbar space */
+  }
+
+  /* Mobile text improvements */
+  .heiwa-booking-option-title {
+    font-size: var(--heiwa-text-base);
+    line-height: 1.3;
+  }
+
+  .heiwa-booking-option-description {
+    font-size: var(--heiwa-text-sm);
+    line-height: 1.4;
   }
 }
 
