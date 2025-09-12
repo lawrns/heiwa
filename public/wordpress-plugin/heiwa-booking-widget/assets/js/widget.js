@@ -1185,7 +1185,26 @@
         const currentIndex = STEPS.findIndex(step => step.id === currentStep);
 
         if (currentIndex < STEPS.length - 1) {
-            const nextStep = STEPS[currentIndex + 1];
+            let nextStepIndex = currentIndex + 1;
+            let nextStep = STEPS[nextStepIndex];
+
+            // Skip assignment step for single participants in surf week bookings
+            if (nextStep.id === 'assignment' &&
+                bookingData.bookingType === 'surf-week' &&
+                bookingData.participants === 1) {
+
+                // Auto-assign single participant
+                autoAssignSingleParticipant();
+
+                // Skip to the step after assignment
+                nextStepIndex = currentIndex + 2;
+                if (nextStepIndex < STEPS.length) {
+                    nextStep = STEPS[nextStepIndex];
+                } else {
+                    return; // No more steps
+                }
+            }
+
             showStep(nextStep.id);
         }
     }
@@ -1197,7 +1216,23 @@
         const currentIndex = STEPS.findIndex(step => step.id === currentStep);
 
         if (currentIndex > 0) {
-            const previousStep = STEPS[currentIndex - 1];
+            let previousStepIndex = currentIndex - 1;
+            let previousStep = STEPS[previousStepIndex];
+
+            // Skip assignment step for single participants in surf week bookings
+            if (previousStep.id === 'assignment' &&
+                bookingData.bookingType === 'surf-week' &&
+                bookingData.participants === 1) {
+
+                // Skip back to the step before assignment
+                previousStepIndex = currentIndex - 2;
+                if (previousStepIndex >= 0) {
+                    previousStep = STEPS[previousStepIndex];
+                } else {
+                    return; // No previous steps
+                }
+            }
+
             showStep(previousStep.id);
         }
     }
@@ -1211,6 +1246,14 @@
                 return bookingData.bookingType !== null;
             case 'surf-weeks':
                 return bookingData.selectedSurfWeek !== null;
+            case 'assignment':
+                // Assignment step is valid when all participants are assigned
+                // For single participants, this is handled automatically
+                if (bookingData.participants === 1) {
+                    return true; // Single participants skip this step
+                }
+                const totalAssigned = bookingData.assignment?.assignments?.reduce((sum, a) => sum + a.participants, 0) || 0;
+                return totalAssigned >= bookingData.participants;
             case 'room-calendar':
                 return bookingData.dates.start && bookingData.dates.end;
             case 'room-selection':
@@ -2591,9 +2634,16 @@
             // Update summary
             updateSummary();
 
-            // Auto-advance to assignment step for surf weeks
+            // Auto-advance logic: skip assignment for single participants
             setTimeout(() => {
-                showStep('assignment');
+                if (bookingData.participants === 1) {
+                    // Single participant: auto-assign to best value room and skip to details
+                    autoAssignSingleParticipant();
+                    showStep('form_addons');
+                } else {
+                    // Multiple participants: proceed to assignment step
+                    showStep('assignment');
+                }
             }, 500);
         }
     }
@@ -2833,6 +2883,51 @@
                 </div>
             </div>
         `;
+    }
+
+    /**
+     * Auto-assign single participant to best value room
+     * Implements BL-001 fix: Skip assignment step for single participants
+     */
+    function autoAssignSingleParticipant() {
+        console.log('Heiwa Booking Widget: Auto-assigning single participant');
+
+        // Initialize assignment data structure
+        if (!bookingData.assignment) {
+            bookingData.assignment = {
+                assignments: [],
+                suggestions: []
+            };
+        }
+
+        // Generate room suggestions using existing logic
+        const suggestions = generateAssignmentSuggestions();
+
+        if (suggestions.length > 0) {
+            // Select the "value" suggestion (best balance of cost and comfort)
+            const bestSuggestion = suggestions.find(s => s.criteria === 'value') || suggestions[0];
+
+            // Apply the best suggestion automatically
+            bookingData.assignment.assignments = bestSuggestion.assignments;
+
+            console.log('Heiwa Booking Widget: Single participant auto-assigned:', {
+                suggestion: bestSuggestion.criteria,
+                assignments: bookingData.assignment.assignments
+            });
+
+            // Show success message
+            showToast('Room automatically assigned for single participant!', 'success');
+        } else {
+            console.warn('Heiwa Booking Widget: No room suggestions available for auto-assignment');
+            // Fallback: create a basic assignment to the first available room
+            bookingData.assignment.assignments = [{
+                roomId: 1, // Default to first room
+                participants: 1
+            }];
+        }
+
+        // Update summary to reflect the assignment
+        updateSummary();
     }
 
     /**
