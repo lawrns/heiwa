@@ -126,7 +126,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   // Don't render admin layout if user is not authenticated or not admin
   if (!user || !user.isAdmin) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Redirecting to login…</h2>
+          <p className="text-gray-600 mb-4">Admin access required.</p>
+          <Link href="/login" className="text-blue-600 underline">Go to Login</Link>
+          {/* Immediate client-side redirect to avoid empty render triggering 404 */}
+          <script dangerouslySetInnerHTML={{ __html: "window.location.replace('/login')" }} />
+        </div>
+      </div>
+    );
   }
 
   const handleLogout = async () => {
