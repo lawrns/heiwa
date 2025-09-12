@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { authenticateAsAdmin } from './helpers/auth';
 
 // Mock analytics data setup
 test.beforeEach(async ({ page }) => {
@@ -67,6 +68,9 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Analytics Dashboard (DASH-003)', () => {
   test('should render analytics dashboard with all charts', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/analytics');
     await page.waitForLoadState('networkidle');
 
@@ -87,6 +91,9 @@ test.describe('Analytics Dashboard (DASH-003)', () => {
   });
 
   test('should display and interact with filters', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/analytics');
     await page.waitForLoadState('networkidle');
 
@@ -112,6 +119,9 @@ test.describe('Analytics Dashboard (DASH-003)', () => {
   });
 
   test('should handle CSV export functionality', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/analytics');
     await page.waitForLoadState('networkidle');
 

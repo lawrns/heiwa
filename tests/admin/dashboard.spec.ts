@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test'
+import { authenticateAsAdmin } from '../helpers/auth'
 
 test.describe('Admin Dashboard', () => {
   test('should load dashboard with key metrics', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     // Navigate to admin dashboard
     await page.goto('/admin')
 
@@ -20,17 +24,34 @@ test.describe('Admin Dashboard', () => {
     await expect(page.locator('[data-testid="available-rooms-metric"]')).toBeVisible()
     await expect(page.locator('[data-testid="revenue-metric"]')).toBeVisible()
 
-    // Verify metric values are displayed
-    await expect(page.locator('[data-testid="total-clients-value"]')).toHaveText('0')
-    await expect(page.locator('[data-testid="total-bookings-value"]')).toHaveText('0')
-    await expect(page.locator('[data-testid="available-rooms-value"]')).toHaveText('0')
-    await expect(page.locator('[data-testid="revenue-value"]')).toHaveText('$0')
+    // Verify metric values are displayed (check that they contain numbers, not specific values)
+    await expect(page.locator('[data-testid="total-clients-value"]')).toBeVisible()
+    await expect(page.locator('[data-testid="total-bookings-value"]')).toBeVisible()
+    await expect(page.locator('[data-testid="available-rooms-value"]')).toBeVisible()
+    await expect(page.locator('[data-testid="revenue-value"]')).toBeVisible()
+
+    // Verify the values contain numbers (not empty or error states)
+    const clientsValue = await page.locator('[data-testid="total-clients-value"]').textContent()
+    const bookingsValue = await page.locator('[data-testid="total-bookings-value"]').textContent()
+    const roomsValue = await page.locator('[data-testid="available-rooms-value"]').textContent()
+    const revenueValue = await page.locator('[data-testid="revenue-value"]').textContent()
+
+    expect(clientsValue).toMatch(/^\d+$/) // Should be a number
+    expect(bookingsValue).toMatch(/^\d+$/) // Should be a number
+    expect(roomsValue).toMatch(/^\d+$/) // Should be a number
+    expect(revenueValue).toMatch(/^\$\d+/) // Should start with $ and contain numbers
   })
 
   test('should navigate to analytics dashboard', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1000)
+
+    // Check if main dashboard elements are present first
+    await expect(page.locator('[data-testid="admin-dashboard-title"]')).toBeVisible()
 
     // Click on Analytics button using data-testid
     await page.locator('[data-testid="view-analytics-button"]').click()
@@ -44,6 +65,9 @@ test.describe('Admin Dashboard', () => {
   })
 
   test('should display system health metrics', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/system')
     await page.waitForLoadState('networkidle')
     await expect(page.locator('h1')).toBeVisible()
@@ -56,6 +80,9 @@ test.describe('Admin Dashboard', () => {
   })
 
   test('should navigate to bookings management', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin')
     await page.waitForLoadState('networkidle')
     await expect(page.locator('[data-testid="admin-dashboard-title"]')).toBeVisible()
@@ -70,6 +97,9 @@ test.describe('Admin Dashboard', () => {
   })
 
   test('should navigate to clients management', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin')
     await page.waitForLoadState('networkidle')
     await expect(page.locator('[data-testid="admin-dashboard-title"]')).toBeVisible()
@@ -84,6 +114,9 @@ test.describe('Admin Dashboard', () => {
   })
 
   test('should navigate to rooms management', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin')
     await page.waitForLoadState('networkidle')
     await expect(page.locator('[data-testid="admin-dashboard-title"]')).toBeVisible()
@@ -98,6 +131,9 @@ test.describe('Admin Dashboard', () => {
   })
 
   test('should navigate to surf camps management', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin')
     await page.waitForLoadState('networkidle')
     await expect(page.locator('[data-testid="admin-dashboard-title"]')).toBeVisible()

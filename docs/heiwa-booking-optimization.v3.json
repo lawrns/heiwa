@@ -1,0 +1,257 @@
+{
+  "schema": "heiwa.booking.optimization.v3",
+  "meta": {
+    "generated_at": "2025-09-12T00:00:00Z",
+    "purpose": "Styling and UX implementation brief for Heiwa WordPress booking widget (premium surf-themed)",
+    "owners": ["frontend", "wordpress-plugin"],
+    "paths": {
+      "plugin_css": "wordpress-plugin/heiwa-booking-widget/assets/css/widget.css",
+      "plugin_js": "wordpress-plugin/heiwa-booking-widget/assets/js/widget.js",
+      "public_css": "public/wordpress-plugin/heiwa-booking-widget/assets/css/widget.css",
+      "public_js": "public/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js",
+      "shortcode_php": "wordpress-plugin/heiwa-booking-widget/includes/class-shortcode.php"
+    }
+  },
+  "design_system": {
+    "color_palette": {
+      "primary": "var(--heiwa-ocean-blue-600)",
+      "accent": "var(--heiwa-surf-teal-500)",
+      "sand": "var(--heiwa-sand-beige-100)",
+      "rules": [
+        "Replace any hard-coded light-blue hues (e.g., #2563eb/#1d4ed8) with CSS vars: primary/accent.",
+        "Leverage existing gradients and waves: .heiwa-ocean-gradient-* and .heiwa-wave-pattern-*.",
+        "Use sand beige for subtle backgrounds and dividers; avoid high-contrast light blue blocks.",
+        "Primary is used for emphasis (CTAs, focus, selected borders); accent for secondary highlights." 
+      ]
+    },
+    "visual_language": {
+      "wave_patterns": ["heiwa-wave-pattern-1", "heiwa-wave-pattern-2"],
+      "ocean_gradients": ["heiwa-ocean-gradient-1", "heiwa-ocean-gradient-2", "heiwa-ocean-gradient-3"],
+      "animations": ["heiwa-wave-flow", "heiwa-wave-gentle", "heiwa-ocean-shimmer"],
+      "typography": {
+        "title_weight": 700,
+        "section_title_weight": 600,
+        "body_weight": 400,
+        "use_font_family_var": "var(--heiwa-font-family)"
+      },
+      "components_to_skin": [
+        ".heiwa-booking-drawer",
+        ".heiwa-booking-stepper",
+        ".heiwa-surf-week-item",
+        ".heiwa-room-card",
+        ".heiwa-cta-button",
+        ".heiwa-booking-summary",
+        ".heiwa-form-group",
+        ".heiwa-calendar-dropdown",
+        ".heiwa-date-picker-native"
+      ]
+    }
+  },
+  "technical_context": {
+    "architecture": "heiwa-booking-drawer (sidebar/bottom-sheet) with stepper and summary; supports inline variant",
+    "render_modes": {
+      "drawer": {
+        "selector": ".heiwa-booking-drawer",
+        "note": "Default for fixed trigger; two-column desktop layout with sticky summary"
+      },
+      "inline": {
+        "selector": ".heiwa-inline",
+        "note": "Mount same premium UI inside shortcode container"
+      }
+    },
+    "asset_sync": {
+      "description": "Keep plugin and public assets in lockstep to prevent styling regressions.",
+      "actions": [
+        "Unify templates in JS: render same step containers for both drawer and inline.",
+        "Export shared helpers (icons, calendar, step renderer) and reuse in both bundles.",
+        "Add small CI check to compare file hashes or key sections across paths."
+      ]
+    },
+    "calendar": {
+      "custom_dropdown": true,
+      "native_fallback": true,
+      "css_classes": [".heiwa-calendar-dropdown", ".heiwa-date-display", ".heiwa-date-picker-native"],
+      "behavior": [
+        "If custom dropdown available, render ocean-themed calendar with gradients and wave header.",
+        "Always keep native <input type=\"date\"> visible as fallback using .heiwa-date-picker-native.",
+        "On focus/click, call input.showPicker() when supported; otherwise rely on native.",
+        "Do not set opacity:0/pointer-events:none on fallback inputs when custom calendar is absent."
+      ]
+    },
+    "regression_note": "Premium CSS exists but was not applied consistently because the inline/panel shortcode markup was not hydrated by the new drawer-based JS and the public JS initially lacked custom calendar logic. Solution: hydrate both drawer and inline modes with same renderer and keep the calendar fallback enabled.",
+    "css_specificity": {
+      "strategy": [
+        "Scope all widget styles under .heiwa-booking-widget to avoid theme collisions.",
+        "Use minimal !important; prefer more specific BEM-like chains: .heiwa-booking-widget .heiwa-room-card:hover",
+        "Expose color via CSS vars so merchants can theme from shortcode attributes if needed."
+      ]
+    }
+  },
+  "flows": {
+    "room_booking": {
+      "purpose": "Flexible accommodation booking by dates with explicit room selection",
+      "steps": [
+        {"id": "booking-type", "title": "Choose Booking Type", "next": "room-calendar"},
+        {"id": "room-calendar", "title": "Select Dates & Guests", "next": "room-selection"},
+        {"id": "room-selection", "title": "Choose Your Room", "next": "form-addons"},
+        {"id": "form-addons", "title": "Your Details & Add-ons", "next": "confirmation"},
+        {"id": "confirmation", "title": "Review & Confirm"}
+      ],
+      "recommendations": {
+        "wizard-stepper": {
+          "desc": "Use the existing .heiwa-booking-stepper with current/upcoming/completed states. Compress labels to icons on mobile.",
+          "styling": {
+            "active_circle_gradient": "linear-gradient(135deg, var(--heiwa-ocean-blue-600), var(--heiwa-surf-teal-500))",
+            "completed_circle_gradient": "linear-gradient(135deg, var(--heiwa-surf-teal-500), #0d9488)"
+          }
+        },
+        "persistent-summary": {
+          "desc": "Sticky summary shows Dates, Nights, Guests, Selected Room, Price x nights, Fees/Taxes, and Total.",
+          "behavior": [
+            "Desktop: sticky sidebar in drawer grid (column 2).",
+            "Mobile: collapsible section above sticky CTA with key totals and expand for breakdown."
+          ],
+          "colors": {"bg": "var(--heiwa-sand-beige-100)", "accent": "var(--heiwa-ocean-blue-600)"}
+        },
+        "sticky-cta": {
+          "desc": "Primary CTA fixed at bottom of drawer on mobile; right-aligned on desktop under summary.",
+          "label_logic": [
+            "Before dates: 'Continue'",
+            "After dates + room: 'Continue – €{total}'",
+            "On confirmation: 'Complete Booking'"
+          ]
+        },
+        "room-card-clarity": {
+          "desc": "Room cards (.heiwa-room-card) show hero image, capacity, amenities, price/night, refundable badge.",
+          "interactions": [
+            "Hover/selected border uses var(--heiwa-primary-color).",
+            "On select, animate checkmark pill in top-right; scroll to summary update."
+          ]
+        },
+        "accordion-summaries": {
+          "desc": "For completed steps, render compact accordion with edit links; mobile default collapsed."
+        },
+        "form-grouping": {
+          "desc": "Group guest/contact fields by participant; use .heiwa-form-section titles with colored left rule.",
+          "validation": [
+            "Inline error messaging with .heiwa-form-message.error",
+            "Email pattern validation + country-aware phone formatting (lenient)."
+          ]
+        },
+        "responsive-layout": {
+          "desc": "Drawer becomes bottom-sheet at <=768px; stepper scrolls horizontally; avoid layout shift.",
+          "grid": {"desktop": "2fr 1fr", "tablet": "640px drawer", "mobile": "full-width bottom-sheet"}
+        }
+      },
+      "pricing": {
+        "display": "€{price_per_night} / night, x {nights} nights → subtotal; fees/taxes; final total.",
+        "update_triggers": ["date change", "guest count", "room selection"]
+      },
+      "summary_fields": ["Check-in", "Check-out", "Nights", "Guests", "Room", "Subtotal", "Fees/Taxes", "Total"],
+      "mobile_considerations": [
+        "Collapse summary by default with total prominently visible.",
+        "Use touch targets >=44px for calendar days and nav buttons.",
+        "Sticky CTA with gradient background for contrast over content."
+      ]
+    },
+    "surf_camp_booking": {
+      "purpose": "Structured surf week programs with intelligent room/bed assignment",
+      "steps": [
+        {"id": "booking-type", "title": "Choose Booking Type", "next": "surf-weeks"},
+        {"id": "surf-weeks", "title": "Select Surf Week", "next": "assignment"},
+        {"id": "assignment", "title": "Assign Rooms/Beds", "next": "details"},
+        {"id": "details", "title": "Guest Details & Add-ons", "next": "confirmation"},
+        {"id": "confirmation", "title": "Review & Confirm"}
+      ],
+      "recommendations": {
+        "guest_details_validation": {
+          "desc": "Collect guest info early if helpful for assignment (name, email, gender for dorm pairing).",
+          "smart_validation": ["email format", "duplicate emails warning", "optional dietary/preferences"]
+        },
+        "intelligent_room_assignment": {
+          "desc": "Auto-assign optimal rooms/beds given participant count, preferences, and week availability.",
+          "algo": [
+            "Objective toggles: minimize price vs maximize privacy vs minimize room count.",
+            "Respect gendered dorm rules if provided; avoid splitting group unless necessary."
+          ]
+        },
+        "visual_room_picker": {
+          "desc": "Grid of room tiles with capacity chips and occupancy meters; dorm beds show spots grid.",
+          "states": ["available", "partially_available", "full", "selected"],
+          "icons": ["users", "bed", "lock for private"]
+        },
+        "dynamic_pricing": {
+          "desc": "Update total instantly on assignment edits; per-person vs per-room pricing clearly labeled.",
+          "rules": ["Private rooms priced per room; dorm per bed/person.", "Show price deltas when changing assignment."]
+        },
+        "auto_suggestion_engine": {
+          "desc": "Show 1-3 recommended combinations (Best value, Most privacy, Lowest cost).",
+          "action": "Accept suggestion → apply assignment and continue"
+        },
+        "participant_assignment_flow": {
+          "desc": "Stepper inside assignment: Assign each participant sequentially with avatar/initials; toast feedback.",
+          "undo": true
+        },
+        "smart_room_options_display": {
+          "desc": "List options like 'Private room (2)', 'Private room (3)', 'Dorm (x beds left)' with badges.",
+          "badges": ["New", "Limited", "Popular"],
+          "availability_copy": "{spots} spots left"
+        },
+        "wizard-stepper": {
+          "desc": "Reuse main stepper with 'Assignment' icon; completed step shows compact summary with 'Edit'."
+        },
+        "persistent-summary": {
+          "desc": "Show Week, Guests, Assigned rooms/beds, Per-person price, Subtotal, Fees/Taxes, Total.",
+          "mobile": "Collapsible; show count of unassigned participants in a warning badge"
+        }
+      },
+      "summary_fields": ["Week", "Guests", "Assignments", "Per-person", "Subtotal", "Fees/Taxes", "Total"],
+      "mobile_considerations": [
+        "Two-pane becomes single-column; room picker lists vertically with sticky CTA.",
+        "Ensure drag/scroll in bed grids is performant; prefer tap toggles.",
+        "Show 'Unassigned: N' sticky chip until all assigned."
+      ]
+    }
+  },
+  "implementation_priority": {
+    "high": [
+      "Unify JS rendering for drawer + inline; hydrate shortcode containers with the same UI",
+      "Restore custom calendar dropdown in public JS while keeping native date fallback",
+      "Persistent summary + sticky CTA across both flows",
+      "Room card and surf-week card premium states (hover/selected borders, badges, shadows)"
+    ],
+    "medium": [
+      "Surf-camp intelligent assignment with visual picker",
+      "Auto-suggestion engine for optimal room combos",
+      "Accordion step summaries with edit links"
+    ],
+    "low": [
+      "Fine-tune animations (reduced-motion support already present)",
+      "Theme overrides via shortcode attributes (primary color)"
+    ],
+    "milestones": [
+      {"name": "Parity + Fixes", "items": ["Calendar parity", "Inline hydration", "Summary/CTA sticky" ]},
+      {"name": "Surf Camp Assignment", "items": ["Room picker", "Auto-suggest", "Dynamic pricing"]},
+      {"name": "Polish", "items": ["Micro-interactions", "Docs + CI asset sync"]}
+    ]
+  },
+  "acceptance_criteria": {
+    "visual": [
+      "Primary accents use --heiwa-ocean-blue-600; secondary uses --heiwa-surf-teal-500; sand beige backgrounds appear in summary blocks.",
+      "Hover/selected borders and badges appear on surf-week and room cards; wave patterns visible but subtle.",
+      "Typography hierarchy: titles >=18px bold; labels 14px medium; body 16px regular."
+    ],
+    "ux": [
+      "Calendar opens on focus/click; native fallback visible on unsupported browsers.",
+      "Persistent summary updates instantly and collapses on mobile.",
+      "Surf camp assignment prevents advancing until all participants assigned or a suggestion accepted."
+    ],
+    "a11y": [
+      "Focusable controls with 2px outline using primary color; roles and ARIA labels on stepper and accordions.",
+      "Reduced-motion respected; touch targets >=44px on mobile."
+    ],
+    "browser_support": ["Last 2 versions modern browsers", "Safari iOS 15+", "Edge Chromium"],
+    "non_goals": ["Legacy IE support"]
+  }
+}
+

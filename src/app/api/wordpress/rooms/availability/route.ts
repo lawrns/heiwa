@@ -122,10 +122,10 @@ export async function GET(request: NextRequest) {
         const free = Math.max(0, (room.capacity || 0) - occupied);
         return { room, free };
       })
-      .filter(({ free }) => free > 0)
-      .filter(({ free }) => free >= participants)
+      .filter(({ free }: { free: number }) => free > 0)
+      .filter(({ free }: { free: number }) => free >= participants)
       .slice(0, 8) // limit result size
-      .map(({ room }) => ({
+      .map(({ room }: { room: any }) => ({
         id: room.id,
         name: room.name,
         capacity: room.capacity || 2,

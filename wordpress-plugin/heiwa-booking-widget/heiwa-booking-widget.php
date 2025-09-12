@@ -25,6 +25,7 @@ if (!defined('ABSPATH')) {
 
 // Define plugin constants
 define('HEIWA_BOOKING_VERSION', '1.0.8');
+define('HEIWA_WIDGET_BUILD_ID', '20250912-05');
 define('HEIWA_BOOKING_PLUGIN_FILE', __FILE__);
 define('HEIWA_BOOKING_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('HEIWA_BOOKING_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -78,6 +79,9 @@ class Heiwa_Booking_Widget {
         
         // Add settings link to plugin page
         add_filter('plugin_action_links_' . HEIWA_BOOKING_PLUGIN_BASENAME, array($this, 'add_settings_link'));
+
+        // Add cache control headers for widget assets
+        add_action('wp_headers', array($this, 'add_cache_headers'));
     }
 
     /**
@@ -105,7 +109,7 @@ class Heiwa_Booking_Widget {
             'api_key' => '',
             'widget_position' => 'right',
             'trigger_text' => 'BOOK NOW',
-            'primary_color' => '#2563eb',
+            'primary_color' => '#ec681c',
             'auto_inject' => false,
             'enabled_pages' => array(),
         );
@@ -139,6 +143,7 @@ class Heiwa_Booking_Widget {
         
         // Initialize components
         new Heiwa_Booking_Widget_Shortcode();
+        new Heiwa_Booking_API_Connector();
 
         // Initialize admin settings
         if (is_admin()) {
@@ -160,6 +165,21 @@ class Heiwa_Booking_Widget {
     }
 
     /**
+     * Add cache control headers for widget assets
+     */
+    public function add_cache_headers() {
+        // Only add headers for widget asset requests
+        if (isset($_SERVER['REQUEST_URI'])) {
+            $uri = $_SERVER['REQUEST_URI'];
+            if (strpos($uri, '/wp-content/plugins/heiwa-booking-widget/assets/') !== false) {
+                header('Cache-Control: no-cache, no-store, must-revalidate');
+                header('Pragma: no-cache');
+                header('Expires: 0');
+            }
+        }
+    }
+
+    /**
      * Enqueue frontend assets
      */
     public function enqueue_frontend_assets() {
@@ -170,20 +190,44 @@ class Heiwa_Booking_Widget {
             return;
         }
 
-        // Enqueue widget styles
+        // Enqueue widget styles - modular CSS architecture
         wp_enqueue_style(
-            'heiwa-booking-widget',
-            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/widget.css',
+            'heiwa-booking-base',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/base.css',
             array(),
-            HEIWA_BOOKING_VERSION
+            HEIWA_WIDGET_BUILD_ID
         );
+
+        wp_enqueue_style(
+            'heiwa-booking-components',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/components.css',
+            array('heiwa-booking-base'),
+            HEIWA_WIDGET_BUILD_ID
+        );
+
+        wp_enqueue_style(
+            'heiwa-booking-layout',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/layout.css',
+            array('heiwa-booking-base', 'heiwa-booking-components'),
+            HEIWA_WIDGET_BUILD_ID
+        );
+
+        wp_enqueue_style(
+            'heiwa-booking-utilities',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/utilities.css',
+            array('heiwa-booking-base', 'heiwa-booking-components', 'heiwa-booking-layout'),
+            HEIWA_WIDGET_BUILD_ID
+        );
+
+        // Note: Modular CSS architecture is now complete with the 4 files above
+        // No additional widget.css needed - utilities.css is the final layer
 
         // Enqueue widget script
         wp_enqueue_script(
             'heiwa-booking-widget',
             HEIWA_BOOKING_PLUGIN_URL . 'assets/js/widget.js',
             array('jquery'),
-            HEIWA_BOOKING_VERSION,
+            HEIWA_WIDGET_BUILD_ID,
             true
         );
 
@@ -203,10 +247,11 @@ class Heiwa_Booking_Widget {
             )
         ));
 
-        // Expose API endpoint and key for the front-end widget (expected by widget.js)
+        // Expose REST API base and build ID for the front-end widget (no API key exposed)
         wp_localize_script('heiwa-booking-widget', 'heiwa_booking_ajax', array(
-            'api_endpoint' => $settings['api_endpoint'],
-            'api_key' => $settings['api_key'],
+            'rest_base' => esc_url_raw(rest_url('heiwa/v1')),
+            'nonce' => wp_create_nonce('wp_rest'),
+            'build_id' => HEIWA_WIDGET_BUILD_ID,
         ));
     }
 
