@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { authenticateAsAdmin } from '../helpers/auth'
 
 // Mock data setup
 test.beforeEach(async ({ page }) => {
@@ -22,6 +23,9 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   test('should load assignment board with participants and rooms', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     // Navigate directly to assignments page
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
@@ -47,6 +51,9 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   })
 
   test('should allow week selection and update data accordingly', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)
@@ -64,6 +71,9 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   })
 
   test('should display participant information correctly', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)
@@ -76,6 +86,9 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   })
 
   test('should display room information and capacity', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)
@@ -89,6 +102,9 @@ test.describe('Admin Assignment Board (ASSIGN-001)', () => {
   })
 
   test('should show occupancy statistics', async ({ page }) => {
+    // Authenticate as admin first
+    await authenticateAsAdmin(page);
+
     await page.goto('/admin/assignments')
     await page.waitForLoadState('networkidle')
     await page.waitForTimeout(1500)

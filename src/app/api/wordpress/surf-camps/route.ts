@@ -131,7 +131,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data for WordPress widget consumption
-    const wordpressCamps = surfCamps?.map(camp => ({
+    const wordpressCamps = surfCamps?.map((camp: any) => ({
       id: camp.id,
       name: camp.name,
       description: camp.description,
@@ -165,7 +165,7 @@ export async function GET(request: NextRequest) {
     // Filter by location if specified (client-side filtering for now)
     let filteredCamps = wordpressCamps;
     if (locationFilter) {
-      filteredCamps = wordpressCamps.filter(camp =>
+      filteredCamps = wordpressCamps.filter((camp: any) =>
         camp.destination.toLowerCase().includes(locationFilter.toLowerCase()) ||
         camp.name.toLowerCase().includes(locationFilter.toLowerCase())
       );

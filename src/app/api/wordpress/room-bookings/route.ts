@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 
 // CORS headers for WordPress integration
 const corsHeaders = {
@@ -100,7 +99,7 @@ export async function POST(request: NextRequest) {
 
     const mockRoomData = {
       id: bookingData.room_id,
-      name: bookingData.room_id.replace('room-', '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      name: bookingData.room_id.replace('room-', '').replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
       price_per_night: 150, // Mock price
     };
 

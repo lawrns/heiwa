@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 
 // Define plugin constants
 define('HEIWA_BOOKING_VERSION', '1.0.8');
-define('HEIWA_WIDGET_BUILD_ID', '20250911-01');
+define('HEIWA_WIDGET_BUILD_ID', '20250912-05');
 define('HEIWA_BOOKING_PLUGIN_FILE', __FILE__);
 define('HEIWA_BOOKING_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('HEIWA_BOOKING_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -219,13 +219,8 @@ class Heiwa_Booking_Widget {
             HEIWA_WIDGET_BUILD_ID
         );
 
-        // Main widget stylesheet (for backward compatibility)
-        wp_enqueue_style(
-            'heiwa-booking-widget',
-            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/utilities.css',
-            array('heiwa-booking-utilities'),
-            HEIWA_WIDGET_BUILD_ID
-        );
+        // Note: Modular CSS architecture is now complete with the 4 files above
+        // No additional widget.css needed - utilities.css is the final layer
 
         // Enqueue widget script
         wp_enqueue_script(

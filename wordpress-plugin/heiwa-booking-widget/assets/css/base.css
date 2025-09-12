@@ -33,6 +33,7 @@
   --heiwa-primary-light: rgba(236, 104, 28, 0.1);
   --heiwa-accent-color: var(--heiwa-primary-500);
   --heiwa-accent-hover: var(--heiwa-primary-600);
+  --heiwa-orange: var(--heiwa-primary-color); /* Alias for UX improvements */
 
   /* Semantic Status Colors */
   --heiwa-success: #10b981;

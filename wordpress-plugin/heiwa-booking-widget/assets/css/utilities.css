@@ -597,3 +597,19 @@
    - Mobile responsive utilities
    - Accessibility support
    =========================================== */
+
+/* ===========================================
+   UX IMPROVEMENTS - Phase 2: Eliminate Duplicate Totals
+   =========================================== */
+
+/* Hide duplicate total label to prevent "Total:" appearing twice */
+.heiwa-booking-summary .heiwa-summary-total-label {
+    display: none !important;
+}
+
+/* Ensure the total value is prominently displayed */
+.heiwa-booking-summary .heiwa-summary-total-value {
+    font-size: var(--heiwa-text-2xl) !important;
+    font-weight: 700 !important;
+    color: var(--heiwa-orange) !important;
+}

@@ -574,31 +574,54 @@
     }
 
     /**
-     * Ensure the widget stylesheet is loaded (works in Next.js and WordPress)
+     * Ensure the widget stylesheets are loaded (modular CSS architecture)
+     * Loads all four layers in dependency order: base, components, layout, utilities
      */
     function ensureWidgetStylesLoaded() {
         try {
-            // If stylesheet already present, do nothing
-            if (document.querySelector('link[rel="stylesheet"][href*="heiwa-booking-widget/assets/css/widget.css"]')) {
-                console.log('Heiwa Booking Widget: Stylesheet already present');
+            // If all modular CSS are already present, skip
+            const requiredFiles = ['base.css','components.css','layout.css','utilities.css'];
+            const allPresent = requiredFiles.every(f => document.querySelector(`link[rel="stylesheet"][href*="heiwa-booking-widget/assets/css/${f}"]`));
+            if (allPresent) {
+                console.log('Heiwa Booking Widget: Modular CSS already present');
                 return;
             }
-            // Try to derive CSS path from the script tag that loaded this file
+
+            // Derive base path and version param from the script tag that loaded this file
             const scriptEl = Array.from(document.scripts || []).find(s => s.src && s.src.includes('heiwa-booking-widget/assets/js/widget.js'));
-            let cssHref = '/wordpress-plugin/heiwa-booking-widget/assets/css/widget.css';
+            const defaultBase = '/wordpress-plugin/heiwa-booking-widget/assets/css/';
+            let basePath = defaultBase;
+            let versionParam = '';
             if (scriptEl && scriptEl.src) {
                 const src = scriptEl.src;
-                const base = src.replace(/assets\/js\/widget\.js(?:\?.*)?$/, 'assets/css/widget.css');
-                // Preserve cache-busting version if present
-                const vMatch = src.match(/[?&]v=([0-9]+)/);
-                cssHref = base + (vMatch ? ('?v=' + vMatch[1]) : '');
+                basePath = src.replace(/assets\/js\/widget\.js(?:\?.*)?$/, 'assets/css/');
+                const vMatch = src.match(/[?&]v=([0-9\-]+)/);
+                versionParam = vMatch ? (`?v=${vMatch[1]}`) : '';
             }
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = cssHref;
-            link.onload = () => console.log('Heiwa Booking Widget: Stylesheet loaded', cssHref);
-            link.onerror = () => console.warn('Heiwa Booking Widget: Failed to load stylesheet', cssHref);
-            document.head.appendChild(link);
+
+            const hrefs = requiredFiles.map(f => `${basePath}${f}${versionParam}`);
+
+            // Helper to append a stylesheet and resolve when loaded
+            const loadStylesheet = (href) => new Promise((resolve, reject) => {
+                // Avoid duplicate if exact href already present
+                if (document.querySelector(`link[rel="stylesheet"][href="${href}"]`)) return resolve();
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = href;
+                link.setAttribute('data-heiwa-style', href.split('/').pop());
+                link.onload = () => resolve();
+                link.onerror = (e) => reject(new Error(`Failed to load ${href}`));
+                document.head.appendChild(link);
+            });
+
+            // Load sequentially to preserve cascade order
+            hrefs.reduce((p, href) => p.then(() => loadStylesheet(href)), Promise.resolve())
+                .then(() => {
+                    console.log('Heiwa Booking Widget: Modular CSS loaded successfully', hrefs);
+                })
+                .catch((err) => {
+                    console.warn('Heiwa Booking Widget: One or more CSS files failed to load', err);
+                });
         } catch (e) {
             console.warn('Heiwa Booking Widget: ensureWidgetStylesLoaded error', e);
         }
@@ -964,6 +987,9 @@
         // Update progress indicator
         updateProgressIndicator();
 
+        // Update modal header based on booking type
+        updateModalHeader();
+
         // Update CTA button
         updateCTAButton();
         // Update step summaries (accordion for completed steps)
@@ -1211,12 +1237,73 @@
     }
 
     /**
+     * Clear state when switching booking types to prevent cross-contamination
+     */
+    function resetStateForBookingType(type) {
+        console.log('Heiwa Booking Widget: resetStateForBookingType called with type:', type);
+
+        if (type === 'room') {
+            // Clear surf week specific data
+            bookingData.selectedSurfWeek = null;
+            selectedSurfWeek = null;
+            bookingData.assignment = null;
+        } else if (type === 'surf-week') {
+            // Clear room specific data
+            bookingData.selectedRoom = null;
+            bookingData.dates = { start: null, end: null };
+            availabilityData = null;
+        }
+
+        // Clear shared state that should reset on type change
+        bookingData.addons = [];
+        bookingData.specialRequests = '';
+        bookingData.participantDetails = [];
+
+        // Update summary to reflect cleared state
+        updateSummary();
+    }
+
+    /**
+     * Update modal header based on current booking type
+     */
+    function updateModalHeader() {
+        const type = bookingData.bookingType;
+        const $header = $('.heiwa-booking-drawer-title');
+
+        if (type === 'room') {
+            $header.text('Book Your Room');
+        } else if (type === 'surf-week') {
+            $header.text('Book Your Surf Adventure');
+        } else {
+            $header.text('Book Your Surf Adventure');
+        }
+    }
+
+    /**
      * Select booking type and navigate to appropriate flow
      */
     function selectBookingType(type) {
         console.log('Heiwa Booking Widget: selectBookingType called with type:', type);
         bookingData.bookingType = type;
         bookingType = type;
+
+        // Clear state for the new booking type
+        try {
+            console.log('Heiwa Booking Widget: About to call resetStateForBookingType');
+            resetStateForBookingType(type);
+            console.log('Heiwa Booking Widget: resetStateForBookingType completed');
+        } catch (error) {
+            console.error('Heiwa Booking Widget: Error in resetStateForBookingType:', error);
+        }
+
+        // Update modal header
+        try {
+            console.log('Heiwa Booking Widget: About to call updateModalHeader');
+            updateModalHeader();
+            console.log('Heiwa Booking Widget: updateModalHeader completed');
+        } catch (error) {
+            console.error('Heiwa Booking Widget: Error in updateModalHeader:', error);
+        }
 
         // Update ARIA attributes and visual feedback
         $('.heiwa-booking-option-card').each(function() {
