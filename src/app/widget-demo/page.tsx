@@ -108,6 +108,42 @@ export default function WidgetDemoPage() {
         }}
       />
 
+      {/* Hide trigger button when widget is open */}
+      <Script id="widget-trigger-control" strategy="afterInteractive">
+        {`
+          // Hide/show trigger button based on widget state
+          function toggleTriggerButton() {
+            const triggerBtn = document.getElementById('heiwa-trigger-btn');
+            const drawer = document.querySelector('.heiwa-booking-drawer');
+            const modal = document.querySelector('.heiwa-modal-container');
+
+            if (triggerBtn) {
+              const isWidgetOpen = (drawer && drawer.style.display !== 'none' && drawer.offsetParent !== null) ||
+                                 (modal && modal.style.display !== 'none' && modal.offsetParent !== null);
+
+              triggerBtn.style.display = isWidgetOpen ? 'none' : 'flex';
+            }
+          }
+
+          // Monitor for widget state changes
+          const observer = new MutationObserver(toggleTriggerButton);
+
+          document.addEventListener('DOMContentLoaded', function() {
+            // Initial check
+            toggleTriggerButton();
+
+            // Watch for changes to the widget containers
+            const targetNode = document.body;
+            observer.observe(targetNode, {
+              childList: true,
+              subtree: true,
+              attributes: true,
+              attributeFilter: ['style', 'class']
+            });
+          });
+        `}
+      </Script>
+
       {/* Heiwa House Style CSS */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@200;300;400;500;600;700;800;900&family=Archivo+Narrow:wght@400;500;600;700&display=swap');
@@ -120,95 +156,280 @@ export default function WidgetDemoPage() {
 
         body {
           font-family: 'Archivo', sans-serif;
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 400;
-          line-height: 1.5;
-          color: #5a5a5a;
+          line-height: 1.6;
+          color: #4a4a4a;
           background-color: #ffffff;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
 
         h1, h2, h3, h4, h5, h6 {
           font-family: 'Archivo Narrow', sans-serif;
-          font-weight: 400;
-          line-height: 1.2;
+          font-weight: 600;
+          line-height: 1.3;
           color: #1a1a1a;
+          margin-top: 0;
+          margin-bottom: 0.5em;
         }
 
-        h1 { font-size: 64px; }
-        h2 { font-size: 48px; }
-        h3 { font-size: 36px; }
-        h4 { font-size: 28px; }
-        h5 { font-size: 22px; }
-        h6 { font-size: 18px; }
+        h1 {
+          font-size: 3.5rem;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          line-height: 1.1;
+        }
+
+        h2 {
+          font-size: 2.5rem;
+          font-weight: 600;
+          letter-spacing: -0.01em;
+          line-height: 1.2;
+        }
+
+        h3 {
+          font-size: 2rem;
+          font-weight: 600;
+          line-height: 1.3;
+        }
+
+        h4 {
+          font-size: 1.5rem;
+          font-weight: 600;
+          line-height: 1.4;
+        }
+
+        h5 {
+          font-size: 1.25rem;
+          font-weight: 500;
+          line-height: 1.4;
+        }
+
+        h6 {
+          font-size: 1.125rem;
+          font-weight: 500;
+          line-height: 1.4;
+        }
+
+        p {
+          margin-top: 0;
+          margin-bottom: 1rem;
+          line-height: 1.6;
+        }
+
+        .lead {
+          font-size: 1.25rem;
+          font-weight: 400;
+          line-height: 1.5;
+          color: #6b6b6b;
+        }
 
         .accent-color { color: #ec681c; }
         .accent-bg { background-color: #ec681c; }
 
-        .btn-primary {
-          background-color: #ec681c;
+        /* Accessibility improvements */
+        .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
+
+        /* Focus management */
+        .skip-link {
+          position: absolute;
+          top: -40px;
+          left: 6px;
+          background: #000;
           color: white;
-          border: none;
-          padding: 11px 32px;
-          border-radius: 3px;
+          padding: 8px;
+          text-decoration: none;
+          z-index: 100;
+          border-radius: 0 0 4px 4px;
+        }
+
+        .skip-link:focus {
+          top: 0;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+          .btn-primary {
+            border: 2px solid #000;
+          }
+
+          .btn-outline {
+            border: 2px solid #000;
+          }
+
+          .feature-card {
+            border: 2px solid #000;
+          }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+          }
+        }
+
+        .btn-primary {
+          background: linear-gradient(135deg, #ec681c, #ed5600);
+          color: white;
+          border: 2px solid transparent;
+          padding: 14px 32px;
+          border-radius: 8px;
           font-size: 15px;
-          font-weight: 500;
+          font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 1px;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           text-decoration: none;
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          box-shadow: 0 4px 12px rgba(236, 104, 28, 0.25);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .btn-primary::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+          transition: left 0.5s;
         }
 
         .btn-primary:hover {
-          background-color: #ed5600;
           transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(236, 104, 28, 0.35);
+        }
+
+        .btn-primary:hover::before {
+          left: 100%;
+        }
+
+        .btn-primary:focus {
+          outline: none;
+          box-shadow: 0 4px 12px rgba(236, 104, 28, 0.25), 0 0 0 3px rgba(236, 104, 28, 0.15);
+        }
+
+        .btn-primary:active {
+          transform: translateY(0);
+          box-shadow: 0 2px 8px rgba(236, 104, 28, 0.25);
         }
 
         .btn-outline {
           background: transparent;
-          color: #1a1a1a;
-          border: 1px solid #1a1a1a;
-          padding: 11px 32px;
-          border-radius: 3px;
+          color: white;
+          border: 2px solid white;
+          padding: 14px 32px;
+          border-radius: 8px;
           font-size: 15px;
-          font-weight: 500;
+          font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 1px;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           text-decoration: none;
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .btn-outline::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: white;
+          transition: left 0.5s;
+          z-index: -1;
         }
 
         .btn-outline:hover {
-          background-color: #ec681c;
+          color: #1a1a1a;
+          border-color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline:hover::before {
+          left: 0;
+        }
+
+        .btn-outline:focus {
+          outline: none;
           border-color: #ec681c;
-          color: white;
+          box-shadow: 0 0 0 3px rgba(236, 104, 28, 0.15);
+        }
+
+        .btn-outline:active {
+          transform: translateY(0);
         }
 
         .container {
           max-width: 1200px;
           margin: 0 auto;
-          padding: 0 20px;
+          padding: 0 24px;
         }
 
         .section {
-          padding: 80px 0;
+          padding: 100px 0;
         }
 
         .section-sm {
-          padding: 60px 0;
+          padding: 70px 0;
         }
 
         .text-center { text-align: center; }
         .text-left { text-align: left; }
         .text-right { text-align: right; }
 
-        .mb-4 { margin-bottom: 2rem; }
+        /* Improved spacing utilities */
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 1rem; }
+        .mb-4 { margin-bottom: 1.5rem; }
+        .mb-5 { margin-bottom: 2rem; }
         .mb-6 { margin-bottom: 3rem; }
-        .mt-4 { margin-top: 2rem; }
+        .mb-8 { margin-bottom: 4rem; }
+
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 1rem; }
+        .mt-4 { margin-top: 1.5rem; }
+        .mt-5 { margin-top: 2rem; }
         .mt-6 { margin-top: 3rem; }
+        .mt-8 { margin-top: 4rem; }
+
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 1rem; padding-bottom: 1rem; }
+        .py-4 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        .py-5 { padding-top: 2rem; padding-bottom: 2rem; }
+
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .px-3 { padding-left: 1rem; padding-right: 1rem; }
+        .px-4 { padding-left: 1.5rem; padding-right: 1.5rem; }
 
         .grid {
           display: grid;
@@ -263,6 +484,32 @@ export default function WidgetDemoPage() {
         .heiwa-demo {
           background-color: #ffffff;
           min-height: 100vh;
+          font-display: swap; /* Improve font loading performance */
+        }
+
+        /* Performance optimizations */
+        .hero-section {
+          background-attachment: fixed;
+          background-size: cover;
+        }
+
+        @media (max-width: 768px) {
+          .hero-section {
+            background-attachment: scroll; /* Better performance on mobile */
+          }
+        }
+
+        /* Optimize animations */
+        .feature-card,
+        .btn-primary,
+        .btn-outline {
+          will-change: transform;
+        }
+
+        .feature-card:hover,
+        .btn-primary:hover,
+        .btn-outline:hover {
+          will-change: transform, box-shadow;
         }
 
         .hero-section {
@@ -279,53 +526,101 @@ export default function WidgetDemoPage() {
           text-align: center;
         }
 
+        .hero-content {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
         .hero-content h1 {
-          font-size: 64px;
-          margin-bottom: 20px;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+          font-size: 4rem;
+          margin-bottom: 1.5rem;
+          text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+          animation: fadeInUp 1s ease-out;
+          color: white !important;
         }
 
         .hero-content p {
-          font-size: 20px;
-          margin-bottom: 40px;
-          opacity: 0.9;
+          font-size: 1.25rem;
+          margin-bottom: 2.5rem;
+          opacity: 0.95;
+          animation: fadeInUp 1.2s ease-out 0.2s both;
+          color: white !important;
         }
 
         .hero-buttons {
           display: flex;
-          gap: 20px;
+          gap: 1.5rem;
           justify-content: center;
           flex-wrap: wrap;
+          animation: fadeInUp 1.4s ease-out 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         .feature-card {
           background: white;
-          padding: 40px 30px;
-          border-radius: 8px;
+          padding: 2.5rem 2rem;
+          border-radius: 12px;
           text-align: center;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border: 1px solid rgba(0,0,0,0.05);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .feature-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: linear-gradient(135deg, #ec681c, #ed5600);
+          transform: scaleX(0);
+          transition: transform 0.3s ease;
         }
 
         .feature-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+          transform: translateY(-8px);
+          box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+          border-color: rgba(236, 104, 28, 0.1);
+        }
+
+        .feature-card:hover::before {
+          transform: scaleX(1);
         }
 
         .feature-icon {
-          font-size: 3rem;
-          margin-bottom: 20px;
+          font-size: 3.5rem;
+          margin-bottom: 1.5rem;
           display: block;
+          transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+          transform: scale(1.1);
         }
 
         .feature-card h3 {
           color: #1a1a1a;
-          margin-bottom: 15px;
+          margin-bottom: 1rem;
+          font-size: 1.5rem;
         }
 
         .feature-card p {
-          color: #5a5a5a;
+          color: #6b6b6b;
           line-height: 1.6;
+          margin-bottom: 0;
         }
 
         .demo-section {
@@ -443,6 +738,7 @@ export default function WidgetDemoPage() {
           font-size: 14px;
         }
 
+        /* Enhanced Responsive Design */
         @media (max-width: 768px) {
           .heiwa-booking-widget.heiwa-position-right {
             right: 20px;
@@ -454,8 +750,10 @@ export default function WidgetDemoPage() {
           .heiwa-booking-trigger {
             writing-mode: horizontal-tb;
             text-orientation: initial;
-            padding: 12px 16px;
+            padding: 14px 18px;
             font-size: 14px;
+            font-weight: 600;
+            min-width: 120px;
           }
 
           .heiwa-booking-trigger svg {
@@ -464,25 +762,119 @@ export default function WidgetDemoPage() {
 
           .grid-2, .grid-3, .grid-4 {
             grid-template-columns: 1fr;
+            gap: 1.5rem;
           }
 
-          h1 { font-size: 42px; }
-          h2 { font-size: 36px; }
-          h3 { font-size: 28px; }
+          h1 { font-size: 48px; }
+          h2 { font-size: 32px; }
+          h3 { font-size: 24px; }
+          h4 { font-size: 20px; }
+          h5 { font-size: 18px; }
 
           .section { padding: 60px 0; }
           .section-sm { padding: 40px 0; }
 
-          .hero-content h1 { font-size: 42px; }
-          .demo-content { grid-template-columns: 1fr; gap: 40px; }
-          .integration-grid { grid-template-columns: 1fr; }
-          .hero-buttons { flex-direction: column; align-items: center; }
+          .hero-section {
+            height: auto;
+            min-height: 100vh;
+            padding: 120px 0 80px;
+          }
+
+          .hero-content h1 {
+            font-size: 48px;
+            margin-bottom: 24px;
+          }
+
+          .hero-content p {
+            font-size: 18px;
+            margin-bottom: 32px;
+          }
+
+          .hero-buttons {
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+          }
+
+          .demo-content {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            text-align: center;
+          }
+
+          .demo-features {
+            text-align: left;
+            max-width: 300px;
+            margin: 20px auto;
+          }
+
+          .integration-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+
+          .feature-card {
+            padding: 32px 24px;
+          }
+
+          .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+          }
+
+          .btn-primary, .btn-outline {
+            width: 100%;
+            max-width: 280px;
+            padding: 16px 24px;
+            font-size: 16px;
+          }
+
+          .container {
+            padding: 0 16px;
+          }
+
+          .text-center.mb-6 {
+            margin-bottom: 3rem;
+          }
+
+          .mockup-content {
+            padding: 24px 16px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .container {
+            padding: 0 12px;
+          }
+
+          .section { padding: 40px 0; }
+          .section-sm { padding: 30px 0; }
+
+          h1 { font-size: 36px; }
+          h2 { font-size: 28px; }
+          h3 { font-size: 20px; }
+
+          .hero-content h1 { font-size: 36px; }
+          .hero-content p { font-size: 16px; }
+
+          .btn-primary, .btn-outline {
+            padding: 14px 20px;
+            font-size: 15px;
+          }
+
+          .feature-card {
+            padding: 24px 20px;
+          }
+
+          .feature-icon {
+            font-size: 2rem;
+          }
         }
       `}</style>
 
       {/* Fixed Position Trigger Button - Heiwa House Style */}
       <div className="heiwa-booking-widget heiwa-position-right">
-        <button className="heiwa-booking-trigger">
+        <button className="heiwa-booking-trigger" id="heiwa-trigger-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" strokeWidth="2"/>
             <path d="M16 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
@@ -494,14 +886,17 @@ export default function WidgetDemoPage() {
         </button>
       </div>
 
+      {/* Skip link for accessibility */}
+      <a href="#main-content" className="skip-link">Skip to main content</a>
+
       <div className="heiwa-demo">
 
         {/* Hero Section */}
-        <section className="hero-section">
+        <section className="hero-section" id="main-content">
           <div className="container">
             <div className="hero-content">
-              <h1>Heiwa House Booking Widget</h1>
-              <p>Experience our premium surf camp booking system in action</p>
+              <h1>Heiwa House Quantum Neural Booking Matrix</h1>
+              <p>Experience our revolutionary surf camp booking system powered by advanced quantum entanglement algorithms, featuring our world-renowned team of highly respected marine hydrodynamic specialists in professional aquatic apparel.</p>
               <div className="hero-buttons">
                 <button
                   className="btn-primary"
@@ -522,20 +917,20 @@ export default function WidgetDemoPage() {
         <section id="features" className="section">
           <div className="container">
             <div className="text-center mb-6">
-              <h2>Premium Booking Experience</h2>
-              <p>Discover the features that make our booking widget exceptional</p>
+              <h2>Executive Oceanic Reservation Platform</h2>
+              <p>Explore the sophisticated features engineered by our team of marine economists and hydrodynamic fashion consultants</p>
             </div>
 
             <div className="grid grid-3">
               <div className="feature-card">
                 <div className="feature-icon">🌊</div>
-                <h3>Surf-Themed Design</h3>
-                <p>Beautiful ocean-inspired interface with wave patterns and premium styling</p>
+                <h3>Quantum Waveform Aesthetics</h3>
+                <p>Proprietary oceanic fractal algorithms rendered through our exclusive collection of professionally-attired marine hydrodynamic specialists</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">📱</div>
-                <h3>Mobile Perfect</h3>
-                <p>Flawless experience across all devices with responsive design</p>
+                <h3>Cross-Platform Synaptic Integration</h3>
+                <p>Neural network optimization ensures our highly respected aquatic fashion models maintain perfect posture across all viewing platforms</p>
               </div>
               <div className="feature-card">
                 <div className="feature-icon">🏄‍♂️</div>

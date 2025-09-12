@@ -343,7 +343,7 @@ body.heiwa-modal-open {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: white;
   position: relative;
   z-index: 1;
 }
@@ -393,7 +393,7 @@ body.heiwa-modal-open {
 .heiwa-booking-progress {
   padding: 16px 24px;
   border-bottom: none;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdfa 100%);
+  background: #f8fafc;
   position: relative;
 }
 
@@ -963,10 +963,10 @@ body.heiwa-modal-open {
   gap: 12px;
 }
 
-/* Enhanced Summary with Ocean Gradient */
+/* Enhanced Summary */
 .heiwa-booking-summary {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdfa 100%);
-  border-top: none;
+  background: white;
+  border-top: 1px solid #e5e7eb;
   padding: 16px 24px;
   position: sticky;
   bottom: 0;
@@ -4737,3 +4737,28 @@ body.heiwa-modal-open {
 .heiwa-booking-widget .heiwa-addon-card.selected { border-color: var(--heiwa-primary-color) !important; background: var(--heiwa-ocean-blue-50) !important; }
 .heiwa-booking-widget .heiwa-addon-icon { color: var(--heiwa-primary-color) !important; }
 .heiwa-booking-widget .heiwa-loading .heiwa-wave-spinner { border-color: rgba(236,104,28,0.20) !important; border-top-color: var(--heiwa-primary-color) !important; border-right-color: var(--heiwa-primary-hover) !important; border-bottom-color: var(--heiwa-primary-color) !important; box-shadow: 0 4px 20px rgba(236,104,28,0.2) !important; }
+
+/* Enhanced price prominence */
+.heiwa-booking-widget .heiwa-price-amount,
+.heiwa-booking-widget .heiwa-destination-card-price,
+.heiwa-booking-widget .heiwa-room-price,
+.heiwa-booking-widget .heiwa-summary-total-value {
+  font-size: var(--heiwa-text-xl) !important;
+  font-weight: var(--heiwa-font-bold) !important;
+  color: var(--heiwa-primary-color) !important;
+  background: linear-gradient(135deg, var(--heiwa-primary-color), var(--heiwa-primary-hover)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  text-shadow: none !important;
+}
+
+/* Price containers with better visibility */
+.heiwa-booking-widget .heiwa-price-container,
+.heiwa-booking-widget .heiwa-destination-card-footer,
+.heiwa-booking-widget .heiwa-summary-total {
+  background: rgba(236, 104, 28, 0.05) !important;
+  border-radius: var(--heiwa-radius-lg) !important;
+  padding: var(--heiwa-space-3) !important;
+  border: 1px solid rgba(236, 104, 28, 0.15) !important;
+}

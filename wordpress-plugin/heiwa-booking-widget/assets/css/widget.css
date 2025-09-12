@@ -67,15 +67,14 @@
   /* Typography */
   --heiwa-font-family: 'Archivo', 'Archivo Narrow', Arial, sans-serif;
 
-  /* Typography Scale */
-  --heiwa-text-xs: 0.75rem;    /* 12px */
-  --heiwa-text-sm: 0.875rem;   /* 14px */
-  --heiwa-text-base: 1rem;     /* 16px */
-  --heiwa-text-lg: 1.125rem;   /* 18px */
-  --heiwa-text-xl: 1.25rem;    /* 20px */
-  --heiwa-text-2xl: 1.5rem;    /* 24px */
-  --heiwa-text-3xl: 1.875rem;  /* 30px */
-  --heiwa-text-4xl: 2.25rem;   /* 36px */
+  /* Typography Scale - Final Semantic Scale */
+  --heiwa-text-small: 0.75rem;    /* 12px - Small text, captions */
+  --heiwa-text-caption: 0.875rem; /* 14px - Captions, labels */
+  --heiwa-text-body: 1rem;        /* 16px - Body text */
+  --heiwa-text-h4: 1.125rem;      /* 18px - H4 headings */
+  --heiwa-text-h3: 1.25rem;       /* 20px - H3 headings */
+  --heiwa-text-h2: 1.5rem;        /* 24px - H2 headings */
+  --heiwa-text-h1: 1.875rem;      /* 30px - H1 headings */
 
   /* Font Weights */
   --heiwa-font-light: 300;
@@ -85,17 +84,15 @@
   --heiwa-font-bold: 700;
   --heiwa-font-extrabold: 800;
 
-  /* Spacing Scale */
-  --heiwa-space-1: 0.25rem;   /* 4px */
-  --heiwa-space-2: 0.5rem;    /* 8px */
-  --heiwa-space-3: 0.75rem;   /* 12px */
-  --heiwa-space-4: 1rem;      /* 16px */
-  --heiwa-space-5: 1.25rem;   /* 20px */
-  --heiwa-space-6: 1.5rem;    /* 24px */
-  --heiwa-space-8: 2rem;      /* 32px */
-  --heiwa-space-10: 2.5rem;   /* 40px */
-  --heiwa-space-12: 3rem;     /* 48px */
-  --heiwa-space-16: 4rem;     /* 64px */
+  /* Spacing Scale - Semantic Names */
+  --heiwa-space-tight: 0.25rem;     /* 4px - Tight spacing */
+  --heiwa-space-normal: 0.5rem;     /* 8px - Normal spacing */
+  --heiwa-space-comfortable: 1rem;  /* 16px - Comfortable spacing */
+  --heiwa-space-loose: 1.5rem;      /* 24px - Loose spacing */
+  --heiwa-space-spacious: 2rem;     /* 32px - Spacious spacing */
+  --heiwa-space-xl: 2.5rem;         /* 40px - Extra large spacing */
+  --heiwa-space-2xl: 3rem;          /* 48px - Double extra large */
+  --heiwa-space-3xl: 4rem;          /* 64px - Triple extra large */
 
   /* Border Radius */
   --heiwa-radius-sm: 0.25rem;  /* 4px */
@@ -154,11 +151,439 @@
 /* Widget Container */
 .heiwa-booking-widget {
   font-family: var(--heiwa-font-family);
-  font-size: var(--heiwa-font-size-base);
+  font-size: var(--heiwa-text-body);
   line-height: 1.5;
   color: #1f2937;
   position: relative;
   z-index: var(--heiwa-z-modal);
+}
+
+/* ===========================================
+   SEMANTIC TYPOGRAPHY CLASSES
+   =========================================== */
+
+/* Heading Hierarchy */
+.heiwa-heading-1 {
+  font-size: var(--heiwa-text-h1);
+  font-weight: var(--heiwa-font-bold);
+  line-height: 1.2;
+  margin-bottom: var(--heiwa-space-comfortable);
+}
+
+.heiwa-heading-2 {
+  font-size: var(--heiwa-text-h2);
+  font-weight: var(--heiwa-font-semibold);
+  line-height: 1.25;
+  margin-bottom: var(--heiwa-space-comfortable);
+}
+
+.heiwa-heading-3 {
+  font-size: var(--heiwa-text-h3);
+  font-weight: var(--heiwa-font-semibold);
+  line-height: 1.3;
+  margin-bottom: var(--heiwa-space-normal);
+}
+
+.heiwa-heading-4 {
+  font-size: var(--heiwa-text-h4);
+  font-weight: var(--heiwa-font-medium);
+  line-height: 1.4;
+  margin-bottom: var(--heiwa-space-normal);
+}
+
+/* Body Text */
+.heiwa-body {
+  font-size: var(--heiwa-text-body);
+  font-weight: var(--heiwa-font-normal);
+  line-height: 1.5;
+  margin-bottom: var(--heiwa-space-normal);
+}
+
+.heiwa-body-large {
+  font-size: var(--heiwa-text-h4);
+  font-weight: var(--heiwa-font-normal);
+  line-height: 1.5;
+  margin-bottom: var(--heiwa-space-normal);
+}
+
+/* Caption and Small Text */
+.heiwa-caption {
+  font-size: var(--heiwa-text-caption);
+  font-weight: var(--heiwa-font-normal);
+  line-height: 1.4;
+  color: var(--heiwa-neutral-600);
+  margin-bottom: var(--heiwa-space-tight);
+}
+
+.heiwa-small {
+  font-size: var(--heiwa-text-small);
+  font-weight: var(--heiwa-font-normal);
+  line-height: 1.4;
+  color: var(--heiwa-neutral-500);
+  margin-bottom: var(--heiwa-space-tight);
+}
+
+/* ===========================================
+   UNIFIED CARD COMPONENT SYSTEM
+   =========================================== */
+
+/* Base Card Component */
+.heiwa-card {
+  background: #ffffff;
+  border: 1px solid var(--heiwa-neutral-200);
+  border-radius: var(--heiwa-radius-lg);
+  overflow: hidden;
+  transition: all var(--heiwa-transition-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.heiwa-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--heiwa-neutral-300);
+  transform: translateY(-2px);
+}
+
+/* Card Content Hierarchy */
+.heiwa-card-content {
+  padding: var(--heiwa-space-comfortable);
+}
+
+.heiwa-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.heiwa-card-title {
+  font-size: var(--heiwa-text-h3);
+  font-weight: var(--heiwa-font-semibold);
+  margin: 0 0 var(--heiwa-space-tight) 0;
+  color: var(--heiwa-neutral-900);
+  line-height: 1.3;
+}
+
+.heiwa-card-description {
+  font-size: var(--heiwa-text-body);
+  color: var(--heiwa-neutral-600);
+  line-height: 1.5;
+  margin: 0 0 var(--heiwa-space-comfortable) 0;
+}
+
+.heiwa-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--heiwa-space-comfortable);
+  padding-top: var(--heiwa-space-comfortable);
+  border-top: 1px solid var(--heiwa-neutral-100);
+}
+
+.heiwa-card-price {
+  font-size: var(--heiwa-text-h4);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-primary-color);
+  margin: 0;
+}
+
+.heiwa-card-action {
+  margin-top: var(--heiwa-space-comfortable);
+}
+
+/* Card Variants */
+.heiwa-card.room {
+  /* Room cards have square aspect ratio */
+}
+
+.heiwa-card.room .heiwa-card-image {
+  aspect-ratio: 1;
+  height: auto;
+}
+
+.heiwa-card.destination {
+  /* Destination cards are more horizontal */
+}
+
+.heiwa-card.destination .heiwa-card-image {
+  height: 160px;
+}
+
+.heiwa-card.suggestion {
+  background: linear-gradient(135deg, #f0f9ff 0%, #fefefe 100%);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+}
+
+.heiwa-card.suggestion:hover {
+  border-color: rgba(14, 165, 233, 0.4);
+}
+
+/* Fallback for browsers without aspect-ratio support */
+@supports not (aspect-ratio: 1) {
+  .heiwa-card.room .heiwa-card-image {
+    height: 200px;
+  }
+}
+
+/* ===========================================
+   VISUAL HIERARCHY ENHANCEMENT
+   =========================================== */
+
+/* Enhanced Price Display - Most Important Element */
+.heiwa-price-primary {
+  font-size: var(--heiwa-text-h2);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-primary-color);
+  line-height: 1.2;
+  margin: var(--heiwa-space-normal) 0;
+  text-shadow: 0 1px 2px rgba(236, 104, 28, 0.2);
+}
+
+.heiwa-price-secondary {
+  font-size: var(--heiwa-text-h3);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-primary-color);
+  line-height: 1.3;
+  margin: var(--heiwa-space-tight) 0;
+}
+
+.heiwa-price-tertiary {
+  font-size: var(--heiwa-text-h4);
+  font-weight: var(--heiwa-font-medium);
+  color: var(--heiwa-neutral-700);
+  line-height: 1.4;
+  margin: var(--heiwa-space-tight) 0;
+}
+
+/* Enhanced CTA Button Hierarchy */
+.heiwa-cta-primary {
+  background: linear-gradient(135deg, var(--heiwa-primary-color) 0%, #ed5600 100%);
+  color: white;
+  border: none;
+  padding: var(--heiwa-space-comfortable) var(--heiwa-space-loose);
+  border-radius: var(--heiwa-radius-lg);
+  font-size: var(--heiwa-text-body);
+  font-weight: var(--heiwa-font-semibold);
+  cursor: pointer;
+  transition: all var(--heiwa-transition-fast);
+  box-shadow: 0 4px 12px rgba(236, 104, 28, 0.3);
+  margin-top: var(--heiwa-space-loose);
+  width: 100%;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.heiwa-cta-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s;
+}
+
+.heiwa-cta-primary:hover::before {
+  left: 100%;
+}
+
+.heiwa-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(236, 104, 28, 0.4);
+  background: linear-gradient(135deg, #ed5600 0%, var(--heiwa-primary-color) 100%);
+}
+
+.heiwa-cta-secondary {
+  background: transparent;
+  color: var(--heiwa-primary-color);
+  border: 2px solid var(--heiwa-primary-color);
+  padding: var(--heiwa-space-normal) var(--heiwa-space-comfortable);
+  border-radius: var(--heiwa-radius-lg);
+  font-size: var(--heiwa-text-body);
+  font-weight: var(--heiwa-font-medium);
+  cursor: pointer;
+  transition: all var(--heiwa-transition-fast);
+  margin-top: var(--heiwa-space-normal);
+}
+
+.heiwa-cta-secondary:hover {
+  background: var(--heiwa-primary-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(236, 104, 28, 0.2);
+}
+
+/* Enhanced Heading Hierarchy */
+.heiwa-section-title {
+  font-size: var(--heiwa-text-h2);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-neutral-900);
+  margin: 0 0 var(--heiwa-space-loose) 0;
+  line-height: 1.25;
+}
+
+.heiwa-subsection-title {
+  font-size: var(--heiwa-text-h3);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-neutral-800);
+  margin: 0 0 var(--heiwa-space-comfortable) 0;
+  line-height: 1.3;
+}
+
+/* ===========================================
+   INTERACTIVE STATE POLISH
+   =========================================== */
+
+/* Consistent Transition Standards */
+.heiwa-interactive {
+  transition: all var(--heiwa-transition-fast);
+}
+
+.heiwa-interactive:hover {
+  transform: translateY(-1px);
+}
+
+.heiwa-interactive:active {
+  transform: translateY(0);
+  transition-duration: 50ms;
+}
+
+/* Enhanced Focus States for Accessibility */
+.heiwa-focus-ring {
+  outline: 2px solid var(--heiwa-primary-color);
+  outline-offset: 2px;
+  border-radius: var(--heiwa-radius-md);
+}
+
+.heiwa-button:focus-visible,
+.heiwa-card:focus-visible,
+.heiwa-interactive:focus-visible {
+  outline: 2px solid var(--heiwa-primary-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(236, 104, 28, 0.2);
+}
+
+/* Unified Badge System */
+.heiwa-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--heiwa-space-tight) var(--heiwa-space-normal);
+  border-radius: var(--heiwa-radius-lg);
+  font-size: var(--heiwa-text-small);
+  font-weight: var(--heiwa-font-medium);
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.heiwa-badge.primary {
+  background: var(--heiwa-primary-color);
+  color: white;
+}
+
+.heiwa-badge.secondary {
+  background: var(--heiwa-neutral-100);
+  color: var(--heiwa-neutral-700);
+  border: 1px solid var(--heiwa-neutral-200);
+}
+
+.heiwa-badge.success {
+  background: #10b981;
+  color: white;
+}
+
+.heiwa-badge.warning {
+  background: #f59e0b;
+  color: white;
+}
+
+.heiwa-badge.error {
+  background: #ef4444;
+  color: white;
+}
+
+/* Loading States */
+.heiwa-loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--heiwa-neutral-200);
+  border-top: 2px solid var(--heiwa-primary-color);
+  border-radius: 50%;
+  animation: heiwa-spin 1s linear infinite;
+  display: inline-block;
+  margin-right: var(--heiwa-space-tight);
+}
+
+@keyframes heiwa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.heiwa-button.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.heiwa-button.loading::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  margin-left: var(--heiwa-space-tight);
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: heiwa-spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* Enhanced Hover States */
+.heiwa-hover-lift {
+  transition: transform var(--heiwa-transition-fast), box-shadow var(--heiwa-transition-fast);
+}
+
+.heiwa-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.heiwa-hover-scale {
+  transition: transform var(--heiwa-transition-fast);
+}
+
+.heiwa-hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Micro-interactions */
+.heiwa-pulse {
+  animation: heiwa-pulse-animation 2s infinite;
+}
+
+@keyframes heiwa-pulse-animation {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.heiwa-bounce {
+  animation: heiwa-bounce-animation 0.6s ease-out;
+}
+
+@keyframes heiwa-bounce-animation {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 /* Prevent body scroll when modal is open */
@@ -338,12 +763,12 @@ body.heiwa-modal-open {
 
 /* Enhanced Drawer Header */
 .heiwa-booking-drawer-header {
-  padding: 24px;
+  padding: var(--heiwa-space-loose);
   border-bottom: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: white;
   position: relative;
   z-index: 1;
 }
@@ -359,8 +784,8 @@ body.heiwa-modal-open {
 }
 
 .heiwa-booking-drawer-title {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: var(--heiwa-text-h3);
+  font-weight: var(--heiwa-font-semibold);
   color: #111827;
   margin: 0;
 }
@@ -439,8 +864,8 @@ body.heiwa-modal-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--heiwa-text-small);
+  font-weight: var(--heiwa-font-semibold);
   transition: all 150ms ease;
 }
 
@@ -493,7 +918,7 @@ body.heiwa-modal-open {
 .heiwa-booking-content {
   flex: 1;
   overflow-y: auto;
-  padding: 32px;
+  padding: var(--heiwa-space-spacious);
   min-height: 0;
   background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
   position: relative;
