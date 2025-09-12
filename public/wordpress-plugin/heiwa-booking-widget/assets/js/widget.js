@@ -546,14 +546,14 @@
         updateCTAButton();
     }
 
-    // Step configuration
+    // Step configuration - UX-002 Fix: Clarified step labels to prevent confusion
     const STEPS = [
         { id: 'booking-type', title: 'Choose Booking Type', label: 'Type' },
         { id: 'surf-weeks', title: 'Available Surf Weeks', label: 'Surf Weeks' },
         { id: 'assignment', title: 'Assign Rooms & Beds', label: 'Assignment' },
-        { id: 'room-calendar', title: 'Select Dates & Room', label: 'Dates' },
+        { id: 'room-calendar', title: 'Select Dates & Room', label: 'Check-in' },
         { id: 'room-selection', title: 'Choose Your Room', label: 'Room' },
-        { id: 'dates_participants', title: 'Select Dates & Participants', label: 'Dates' },
+        { id: 'dates_participants', title: 'Select Dates & Participants', label: 'Travelers' },
         { id: 'form_addons', title: 'Your Details & Add-ons', label: 'Details' },
         { id: 'confirmation', title: 'Review & Confirm', label: 'Confirm' }
     ];
