@@ -16,8 +16,10 @@
         $ = jQuery;
     }
 
-    // Widget state
+    // Widget state with improved state management
     let isWidgetOpen = false;
+    let isToggling = false; // Prevent rapid state changes
+    let toggleTimeout = null; // Debounce timeout
     let currentStep = 'booking-type';
     let selectedCamp = null;
     let availabilityData = null;
@@ -962,54 +964,128 @@
     }
 
     /**
-     * Toggle widget visibility
+     * Toggle widget visibility with improved state management
+     * Implements TI-003 fix: Prevent rapid state changes and animation glitches
      */
     function toggleWidget(e) {
         if (e) {
             e.preventDefault();
         }
+
+        // Prevent rapid toggling
+        if (isToggling) {
+            console.log('Heiwa Booking Widget: Toggle ignored - already toggling');
+            return;
+        }
+
+        // Clear any existing timeout
+        if (toggleTimeout) {
+            clearTimeout(toggleTimeout);
+        }
+
         console.log('Heiwa Booking Widget: Toggle widget called, isOpen:', isWidgetOpen);
 
+        // Set toggling state
+        isToggling = true;
+
+        // Validate current state against DOM
+        const backdropExists = $('.heiwa-booking-backdrop').length > 0;
+        const backdropActive = $('.heiwa-booking-backdrop').hasClass('active');
+
+        // Sync state if inconsistent
+        if (isWidgetOpen !== backdropActive) {
+            console.warn('Heiwa Booking Widget: State inconsistency detected, syncing...', {
+                isWidgetOpen,
+                backdropActive
+            });
+            isWidgetOpen = backdropActive;
+        }
+
+        // Perform toggle
         if (isWidgetOpen) {
             closeWidget();
         } else {
             openWidget();
         }
+
+        // Reset toggling state after animation completes
+        toggleTimeout = setTimeout(() => {
+            isToggling = false;
+            toggleTimeout = null;
+        }, 350); // Slightly longer than CSS transition (300ms)
     }
 
     /**
-     * Open the widget
+     * Open the widget with improved state management
      */
     function openWidget() {
+        console.log('Heiwa Booking Widget: Opening widget...');
+
+        // Prevent opening if already open
+        if (isWidgetOpen) {
+            console.log('Heiwa Booking Widget: Widget already open, ignoring');
+            return;
+        }
+
         // Create sidebar if it doesn't exist
         if (!$('.heiwa-booking-backdrop').length) {
             createSidebarBooking();
         }
 
-        $('.heiwa-booking-backdrop').addClass('active');
-        $('.heiwa-booking-drawer').addClass('active');
-        isWidgetOpen = true;
+        // Apply classes with proper timing
+        const $backdrop = $('.heiwa-booking-backdrop');
+        const $drawer = $('.heiwa-booking-drawer');
 
-        // Show the first step (booking type selector)
-        showStep('booking-type');
+        if ($backdrop.length && $drawer.length) {
+            $backdrop.addClass('active');
+            $drawer.addClass('active');
+            isWidgetOpen = true;
 
-        // Update progress indicator
-        updateProgressIndicator();
+            // Show the first step (booking type selector)
+            showStep('booking-type');
 
-        // Prevent body scroll
-        $('body').addClass('heiwa-modal-open');
+            // Update progress indicator
+            updateProgressIndicator();
+
+            // Prevent body scroll
+            $('body').addClass('heiwa-modal-open');
+
+            console.log('Heiwa Booking Widget: Widget opened successfully');
+        } else {
+            console.error('Heiwa Booking Widget: Failed to find widget elements');
+        }
     }
 
     /**
-     * Close the widget
+     * Close the widget with improved state management
      */
     function closeWidget() {
-        $('.heiwa-booking-backdrop').removeClass('active');
-        $('.heiwa-booking-drawer').removeClass('active');
-        isWidgetOpen = false;
+        console.log('Heiwa Booking Widget: Closing widget...');
 
-        // Re-enable body scroll
-        $('body').removeClass('heiwa-modal-open');
+        // Prevent closing if already closed
+        if (!isWidgetOpen) {
+            console.log('Heiwa Booking Widget: Widget already closed, ignoring');
+            return;
+        }
+
+        const $backdrop = $('.heiwa-booking-backdrop');
+        const $drawer = $('.heiwa-booking-drawer');
+
+        if ($backdrop.length && $drawer.length) {
+            $backdrop.removeClass('active');
+            $drawer.removeClass('active');
+            isWidgetOpen = false;
+
+            // Re-enable body scroll
+            $('body').removeClass('heiwa-modal-open');
+
+            console.log('Heiwa Booking Widget: Widget closed successfully');
+        } else {
+            // Force state sync even if elements don't exist
+            isWidgetOpen = false;
+            $('body').removeClass('heiwa-modal-open');
+            console.warn('Heiwa Booking Widget: Widget elements not found, forced state sync');
+        }
     }
 
     /**
