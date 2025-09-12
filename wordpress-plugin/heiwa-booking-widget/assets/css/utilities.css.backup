@@ -209,8 +209,8 @@
 
 .heiwa-suggestion-card {
   border: 1px solid var(--heiwa-neutral-200);
-  border-radius: var(--heiwa-radius-lg);
-  padding: var(--heiwa-space-3) var(--heiwa-space-3);
+  border-radius: 12px;
+  padding: 12px 14px;
   background: #fff;
   transition: all 150ms ease;
 }
@@ -230,18 +230,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--heiwa-space-2);
-  margin-bottom: var(--heiwa-space-1);
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .heiwa-suggestion-title {
-  font-size: var(--heiwa-text-base);
-  font-weight: var(--heiwa-font-bold);
+  font-size: 15px;
+  font-weight: 700;
   color: var(--heiwa-neutral-900);
 }
 
 .heiwa-suggestion-badge {
-  font-size: var(--heiwa-text-xs);
+  font-size: 12px;
   color: var(--heiwa-neutral-600);
 }
 
@@ -249,7 +249,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: var(--heiwa-space-2);
+  margin-top: 8px;
 }
 
 .heiwa-suggestion-price {
@@ -261,8 +261,8 @@
   background: linear-gradient(135deg, var(--heiwa-primary-color), var(--heiwa-primary-hover));
   color: #fff;
   border: none;
-  border-radius: var(--heiwa-radius-md);
-  padding: var(--heiwa-space-2) var(--heiwa-space-3);
+  border-radius: 8px;
+  padding: 8px 12px;
   cursor: pointer;
 }
 
@@ -272,27 +272,27 @@
   display: flex;
   align-items: center;
   color: var(--heiwa-neutral-600);
-  font-size: var(--heiwa-text-sm);
+  font-size: 14px;
 }
 
 .heiwa-assignment-participants {
   background: #fff;
   border: 1px solid var(--heiwa-neutral-200);
-  border-radius: var(--heiwa-radius-lg);
-  padding: var(--heiwa-space-3);
+  border-radius: 12px;
+  padding: 12px;
 }
 
 .heiwa-participants-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--heiwa-space-2);
+  gap: 8px;
 }
 
 .heiwa-assignment-rooms {
   background: #fff;
   border: 1px solid var(--heiwa-neutral-200);
-  border-radius: var(--heiwa-radius-lg);
-  padding: var(--heiwa-space-3);
+  border-radius: 12px;
+  padding: 12px;
 }
 
 .heiwa-room-picker-grid {
@@ -569,21 +569,6 @@
 }
 
 /* ===========================================
-   ACCESSIBILITY SUPPORT
-   =========================================== */
-
-/* Reduced Motion Support */
-@media (prefers-reduced-motion: reduce) {
-  .heiwa-booking-widget *,
-  .heiwa-booking-widget *::before,
-  .heiwa-booking-widget *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ===========================================
    END OF UTILITIES
    ===========================================
 
@@ -595,5 +580,4 @@
    - Loading skeletons
    - Legacy compatibility overrides
    - Mobile responsive utilities
-   - Accessibility support
    =========================================== */

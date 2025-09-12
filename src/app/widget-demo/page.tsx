@@ -23,10 +23,22 @@ export default function WidgetDemoPage() {
         strategy="beforeInteractive"
       />
       
-      {/* Load widget styles */}
+      {/* Load modular widget styles in correct dependency order */}
       <link
         rel="stylesheet"
-        href="/wordpress-plugin/heiwa-booking-widget/assets/css/widget.css?v=20250912-02"
+        href="/wordpress-plugin/heiwa-booking-widget/assets/css/base.css?v=20250912-02"
+      />
+      <link
+        rel="stylesheet"
+        href="/wordpress-plugin/heiwa-booking-widget/assets/css/components.css?v=20250912-02"
+      />
+      <link
+        rel="stylesheet"
+        href="/wordpress-plugin/heiwa-booking-widget/assets/css/layout.css?v=20250912-02"
+      />
+      <link
+        rel="stylesheet"
+        href="/wordpress-plugin/heiwa-booking-widget/assets/css/utilities.css?v=20250912-02"
       />
 
 

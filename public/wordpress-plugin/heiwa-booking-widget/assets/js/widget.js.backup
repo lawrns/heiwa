@@ -2798,7 +2798,7 @@
      */
     function showToast(message, type = 'info') {
         const toastHTML = `
-            <div class="heiwa-toast heiwa-toast-${type}" style="position: fixed; top: 20px; right: 20px; z-index: 10000; padding: 12px 16px; background: ${type === 'success' ? 'var(--heiwa-success)' : type === 'warning' ? 'var(--heiwa-warning)' : 'var(--heiwa-muted)'}; color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: heiwa-slide-down 0.3s ease-out;">
+            <div class="heiwa-toast heiwa-toast-${type}" style="position: fixed; top: 20px; right: 20px; z-index: 10000; padding: 12px 16px; background: ${type === 'success' ? '#10b981' : type === 'warning' ? '#f59e0b' : '#6b7280'}; color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: heiwa-slide-down 0.3s ease-out;">
                 ${message}
             </div>
         `;
