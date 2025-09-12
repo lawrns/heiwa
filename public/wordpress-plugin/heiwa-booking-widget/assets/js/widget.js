@@ -198,7 +198,8 @@
             inlineContainer.html(inlineStructure);
         }
 
-        // Show initial step for inline mode
+        // Render initial step navigation and show first step for inline mode
+        renderStepNavigation();
         showStep('booking-type');
     }
 
@@ -546,17 +547,43 @@
         updateCTAButton();
     }
 
-    // Step configuration - UX-002 Fix: Clarified step labels to prevent confusion
-    const STEPS = [
-        { id: 'booking-type', title: 'Choose Booking Type', label: 'Type' },
-        { id: 'surf-weeks', title: 'Available Surf Weeks', label: 'Surf Weeks' },
-        { id: 'assignment', title: 'Assign Rooms & Beds', label: 'Assignment' },
-        { id: 'room-calendar', title: 'Select Dates & Room', label: 'Check-in' },
-        { id: 'room-selection', title: 'Choose Your Room', label: 'Room' },
-        { id: 'dates_participants', title: 'Select Dates & Participants', label: 'Travelers' },
-        { id: 'form_addons', title: 'Your Details & Add-ons', label: 'Details' },
-        { id: 'confirmation', title: 'Review & Confirm', label: 'Confirm' }
+    // Step configuration - MAJOR UX OVERHAUL: Dynamic step filtering for simplified flows
+    const ALL_STEPS = [
+        { id: 'booking-type', title: 'Choose Booking Type', label: 'Type', flows: ['room', 'surf-week'] },
+        { id: 'surf-weeks', title: 'Available Surf Weeks', label: 'Surf Weeks', flows: ['surf-week'] },
+        { id: 'assignment', title: 'Assign Rooms & Beds', label: 'Assignment', flows: ['surf-week'], requiresMultiple: true },
+        { id: 'room-calendar', title: 'Select Dates & Room', label: 'Check-in', flows: ['room'] },
+        { id: 'room-selection', title: 'Choose Your Room', label: 'Room', flows: ['room'] },
+        { id: 'dates_participants', title: 'Select Dates & Participants', label: 'Travelers', flows: ['surf-week'] },
+        { id: 'form_addons', title: 'Your Details & Add-ons', label: 'Details', flows: ['room', 'surf-week'] },
+        { id: 'confirmation', title: 'Review & Confirm', label: 'Confirm', flows: ['room', 'surf-week'] }
     ];
+
+    /**
+     * Get filtered steps based on current booking context
+     * Implements dynamic step navigation for simplified UX
+     */
+    function getActiveSteps() {
+        const currentFlow = bookingData.bookingType || 'room';
+        const participantCount = bookingData.participants || 1;
+
+        return ALL_STEPS.filter(step => {
+            // Must be part of current flow
+            if (!step.flows.includes(currentFlow)) return false;
+
+            // Skip assignment step for single participants in surf-week flow
+            if (step.id === 'assignment' && currentFlow === 'surf-week' && participantCount === 1) {
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    // Legacy compatibility - use dynamic steps
+    function getSTEPS() {
+        return getActiveSteps();
+    }
 
     // API configuration - lazy loaded to avoid initialization errors
     function getAPIConfig() {
@@ -915,7 +942,8 @@
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 const stepId = $(this).data('step');
-                if (stepId && STEPS.find(s => s.id === stepId)) {
+                const activeSteps = getActiveSteps();
+                if (stepId && activeSteps.find(s => s.id === stepId)) {
                     showStep(stepId);
                 }
             }
@@ -1041,6 +1069,9 @@
             $drawer.addClass('active');
             isWidgetOpen = true;
 
+            // Render initial step navigation
+            renderStepNavigation();
+
             // Show the first step (booking type selector)
             showStep('booking-type');
 
@@ -1107,18 +1138,13 @@
                     </div>
 
                     <div class="heiwa-booking-progress">
-                        <div class="heiwa-booking-stepper">
-                            ${STEPS.map((step, index) => `
-                                <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-step="${step.id}">
-                                    <div class="heiwa-booking-step-number" role="status" aria-label="Step ${index + 1}">${index + 1}</div>
-                                    <div class="heiwa-booking-step-label">${step.label}</div>
-                                </div>
-                            `).join('')}
+                        <div class="heiwa-booking-stepper" id="heiwa-dynamic-stepper">
+                            <!-- Dynamic steps will be rendered here -->
                         </div>
                     </div>
 
                     <div class="heiwa-booking-content">
-                        ${STEPS.map(step => `
+                        ${ALL_STEPS.map(step => `
                             <div class="heiwa-booking-step-content" data-step="${step.id}">
                                 <div class="heiwa-step-${step.id}"></div>
                             </div>
@@ -1201,12 +1227,33 @@
     }
 
     /**
-     * Update progress indicator
+     * Render dynamic step navigation based on current booking context
+     * MAJOR UX IMPROVEMENT: Shows only relevant steps for current flow
+     */
+    function renderStepNavigation() {
+        const activeSteps = getActiveSteps();
+        const $stepper = $('#heiwa-dynamic-stepper');
+
+        const stepperHTML = activeSteps.map((step, index) => `
+            <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-step="${step.id}">
+                <div class="heiwa-booking-step-number" role="status" aria-label="Step ${index + 1}">${index + 1}</div>
+                <div class="heiwa-booking-step-label">${step.label}</div>
+            </div>
+        `).join('');
+
+        $stepper.html(stepperHTML);
+        console.log(`Heiwa Booking Widget: Rendered ${activeSteps.length} steps for ${bookingData.bookingType || 'unknown'} flow`);
+    }
+
+    /**
+     * Update progress indicator based on current step
+     * Updated to work with dynamic step navigation
      */
     function updateProgressIndicator() {
-        const currentIndex = STEPS.findIndex(step => step.id === currentStep);
+        const activeSteps = getActiveSteps();
+        const currentIndex = activeSteps.findIndex(step => step.id === currentStep);
 
-        STEPS.forEach((step, index) => {
+        activeSteps.forEach((step, index) => {
             const $stepElement = $(`.heiwa-booking-step[data-step="${step.id}"]`);
 
             $stepElement.removeClass('current completed upcoming');
@@ -1223,12 +1270,14 @@
 
     /**
      * Update CTA button based on current step
+     * Updated to work with dynamic step navigation
      */
     function updateCTAButton() {
         const $button = $('.heiwa-cta-button');
-        const stepIndex = STEPS.findIndex(step => step.id === currentStep);
+        const activeSteps = getActiveSteps();
+        const stepIndex = activeSteps.findIndex(step => step.id === currentStep);
 
-        if (stepIndex === STEPS.length - 1) {
+        if (stepIndex === activeSteps.length - 1) {
             $button.text('Complete Booking');
             $button.attr('data-action', 'complete-booking');
         } else {
@@ -1256,59 +1305,28 @@
 
     /**
      * Go to next step
+     * Updated to work with dynamic step navigation - logic simplified since steps are pre-filtered
      */
     function goToNextStep() {
-        const currentIndex = STEPS.findIndex(step => step.id === currentStep);
+        const activeSteps = getActiveSteps();
+        const currentIndex = activeSteps.findIndex(step => step.id === currentStep);
 
-        if (currentIndex < STEPS.length - 1) {
-            let nextStepIndex = currentIndex + 1;
-            let nextStep = STEPS[nextStepIndex];
-
-            // Skip assignment step for single participants in surf week bookings
-            if (nextStep.id === 'assignment' &&
-                bookingData.bookingType === 'surf-week' &&
-                bookingData.participants === 1) {
-
-                // Auto-assign single participant
-                autoAssignSingleParticipant();
-
-                // Skip to the step after assignment
-                nextStepIndex = currentIndex + 2;
-                if (nextStepIndex < STEPS.length) {
-                    nextStep = STEPS[nextStepIndex];
-                } else {
-                    return; // No more steps
-                }
-            }
-
+        if (currentIndex < activeSteps.length - 1) {
+            const nextStep = activeSteps[currentIndex + 1];
             showStep(nextStep.id);
         }
     }
 
     /**
      * Go to previous step
+     * Updated to work with dynamic step navigation
      */
     function goToPreviousStep() {
-        const currentIndex = STEPS.findIndex(step => step.id === currentStep);
+        const activeSteps = getActiveSteps();
+        const currentIndex = activeSteps.findIndex(step => step.id === currentStep);
 
         if (currentIndex > 0) {
-            let previousStepIndex = currentIndex - 1;
-            let previousStep = STEPS[previousStepIndex];
-
-            // Skip assignment step for single participants in surf week bookings
-            if (previousStep.id === 'assignment' &&
-                bookingData.bookingType === 'surf-week' &&
-                bookingData.participants === 1) {
-
-                // Skip back to the step before assignment
-                previousStepIndex = currentIndex - 2;
-                if (previousStepIndex >= 0) {
-                    previousStep = STEPS[previousStepIndex];
-                } else {
-                    return; // No previous steps
-                }
-            }
-
+            const previousStep = activeSteps[currentIndex - 1];
             showStep(previousStep.id);
         }
     }
@@ -1545,6 +1563,9 @@
         console.log('Heiwa Booking Widget: selectBookingType called with type:', type);
         bookingData.bookingType = type;
         bookingType = type;
+
+        // Re-render step navigation for the new booking type
+        renderStepNavigation();
 
         // Clear state for the new booking type
         try {
@@ -1838,6 +1859,9 @@
             bookingData.participantDetails.push({ firstName: '', lastName: '', email: '' });
         }
         bookingData.participantDetails = bookingData.participantDetails.slice(0, bookingData.participants);
+
+        // Re-render step navigation since participant count affects which steps are shown
+        renderStepNavigation();
 
         updateSummary();
         updateCTAButton();
@@ -2279,10 +2303,12 @@
 
     /**
      * Update accordion-style summaries for completed steps
+     * Updated to work with dynamic step navigation
      */
     function updateStepSummaries() {
         const $wrap = ensureStepSummariesContainer();
-        const currentIndex = STEPS.findIndex(s => s.id === currentStep);
+        const activeSteps = getActiveSteps();
+        const currentIndex = activeSteps.findIndex(s => s.id === currentStep);
         const items = [];
 
         function addItem(stepId, title, detailsHtml, isExpanded = false) {
@@ -2309,20 +2335,20 @@
         }
 
         // booking-type
-        if (STEPS.findIndex(s => s.id === 'booking-type') < currentIndex && bookingData.bookingType) {
+        if (activeSteps.findIndex(s => s.id === 'booking-type') < currentIndex && bookingData.bookingType) {
             addItem('booking-type', `${getLucideIcon('check', 14)} Booking Type`,
                 bookingData.bookingType === 'surf-week' ? 'All-Inclusive Surf Week' : 'Room Booking');
         }
 
         // surf-weeks
-        if (STEPS.findIndex(s => s.id === 'surf-weeks') < currentIndex && bookingData.selectedSurfWeek) {
+        if (activeSteps.findIndex(s => s.id === 'surf-weeks') < currentIndex && bookingData.selectedSurfWeek) {
             const w = bookingData.selectedSurfWeek;
             addItem('surf-weeks', `${getLucideIcon('waves', 14)} Surf Week`,
                 `${w.title || ''}<br>${formatDate(w.start_date)} – ${formatDate(w.end_date)}`);
         }
 
         // assignment
-        if (STEPS.findIndex(s => s.id === 'assignment') < currentIndex && bookingData.assignment?.assignments?.length) {
+        if (activeSteps.findIndex(s => s.id === 'assignment') < currentIndex && bookingData.assignment?.assignments?.length) {
             const totalAssigned = bookingData.assignment.assignments.reduce((sum, a) => sum + a.participants, 0);
             const roomCount = bookingData.assignment.assignments.length;
             addItem('assignment', `${getLucideIcon('bed', 14)} Room Assignment`,
@@ -2330,28 +2356,28 @@
         }
 
         // room-calendar / dates_participants (dates)
-        if ((STEPS.findIndex(s => s.id === 'room-calendar') < currentIndex ||
-             STEPS.findIndex(s => s.id === 'dates_participants') < currentIndex) &&
+        if ((activeSteps.findIndex(s => s.id === 'room-calendar') < currentIndex ||
+             activeSteps.findIndex(s => s.id === 'dates_participants') < currentIndex) &&
             bookingData.dates.start && bookingData.dates.end) {
             addItem('room-calendar', `${getLucideIcon('calendar', 14)} Dates`,
                 `${formatDate(bookingData.dates.start)} – ${formatDate(bookingData.dates.end)}`);
         }
 
         // room-selection
-        if (STEPS.findIndex(s => s.id === 'room-selection') < currentIndex && bookingData.selectedRoom) {
+        if (activeSteps.findIndex(s => s.id === 'room-selection') < currentIndex && bookingData.selectedRoom) {
             const r = bookingData.selectedRoom;
             addItem('room-selection', `${getLucideIcon('bed', 14)} Room`,
                 `${r.name || ''}<br>${heiwaFmt.format(r.price_per_night || 0)}/night`);
         }
 
         // dates_participants (participants)
-        if (STEPS.findIndex(s => s.id === 'dates_participants') < currentIndex && bookingData.participants) {
+        if (activeSteps.findIndex(s => s.id === 'dates_participants') < currentIndex && bookingData.participants) {
             addItem('dates_participants', `${getLucideIcon('users', 14)} Participants`,
                 `${bookingData.participants} traveller(s)`);
         }
 
         // form_addons
-        if (STEPS.findIndex(s => s.id === 'form_addons') < currentIndex && bookingData.participantDetails?.length) {
+        if (activeSteps.findIndex(s => s.id === 'form_addons') < currentIndex && bookingData.participantDetails?.length) {
             const filled = bookingData.participantDetails.filter(p => (p.firstName||p.lastName||p.email)).length;
             addItem('form_addons', `${getLucideIcon('check', 14)} Details`, `${filled}/${bookingData.participants} completed`);
         }
