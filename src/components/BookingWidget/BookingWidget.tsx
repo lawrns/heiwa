@@ -5,8 +5,8 @@ import { X, Calendar } from 'lucide-react';
 import { useBookingFlow } from './hooks/useBookingFlow';
 import { ProgressIndicator } from './ui/ProgressIndicator';
 import { ExperienceSelection } from './steps/ExperienceSelection';
-import { DatesAndGuests } from './steps/DatesAndGuests';
 import { OptionSelection } from './steps/OptionSelection';
+import { AddOnsSelection } from './steps/AddOnsSelection';
 import { GuestDetails } from './steps/GuestDetails';
 import { ReviewAndPay } from './steps/ReviewAndPay';
 import './styles/surf-enhancements.css';
@@ -39,8 +39,8 @@ export function BookingWidget({ className = '' }: BookingWidgetProps) {
   const renderCurrentStep = () => {
     const stepComponents = {
       1: <ExperienceSelection state={state} actions={actions} />,
-      2: <DatesAndGuests state={state} actions={actions} />,
-      3: <OptionSelection state={state} actions={actions} />,
+      2: <OptionSelection state={state} actions={actions} />,
+      3: <AddOnsSelection state={state} actions={actions} />,
       4: <GuestDetails state={state} actions={actions} />,
       5: <ReviewAndPay state={state} actions={actions} onComplete={closeWidget} />,
     };

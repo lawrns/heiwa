@@ -7,8 +7,8 @@ interface ProgressIndicatorProps {
 
 const steps = [
   { id: 1, label: 'Experience', title: 'Choose Experience' },
-  { id: 2, label: 'Dates', title: 'Dates & Guests' },
-  { id: 3, label: 'Options', title: 'Select Option' },
+  { id: 2, label: 'Options', title: 'Select Dates & Options' },
+  { id: 3, label: 'Add-ons', title: 'Enhance Your Stay' },
   { id: 4, label: 'Details', title: 'Guest Details' },
   { id: 5, label: 'Review', title: 'Review & Pay' },
 ];
