@@ -19,6 +19,8 @@ const experiences = [
     gradient: 'from-blue-500 to-cyan-500',
     features: ['Flexible dates', 'Choose your room', 'Self-guided experience'],
     priceFrom: 45,
+    backgroundImage: '/room2.webp',
+    surfPattern: 'gentle-waves',
   },
   {
     id: 'surf-week',
@@ -29,6 +31,8 @@ const experiences = [
     gradient: 'from-orange-500 to-red-500',
     features: ['Professional coaching', 'All meals included', 'Structured program'],
     priceFrom: 599,
+    backgroundImage: '/room1.jpg',
+    surfPattern: 'dynamic-waves',
   },
 ];
 
@@ -64,24 +68,56 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
               key={experience.id}
               onClick={() => handleSelection(experience.type)}
               className={`
-                w-full p-6 rounded-xl border-2 text-left
-                transition-all duration-500 ease-out
+                relative w-full p-6 rounded-xl border-2 text-left overflow-hidden
+                transition-all duration-700 ease-out
                 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1
                 focus:outline-none focus:ring-4 focus:ring-orange-500/30
                 animate-in fade-in-0 slide-in-from-bottom-4 duration-700
                 ${isSelected
-                  ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
-                  : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50'
+                  ? 'border-orange-500 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
+                  : 'border-gray-200 hover:border-orange-300'
                 }
               `}
-              style={{ animationDelay: `${index * 150}ms` }}
+              style={{
+                animationDelay: `${index * 150}ms`,
+                backgroundImage: `
+                  linear-gradient(135deg,
+                    ${experience.type === 'surf-week'
+                      ? 'rgba(236, 104, 28, 0.9) 0%, rgba(236, 104, 28, 0.7) 100%'
+                      : 'rgba(59, 130, 246, 0.9) 0%, rgba(59, 130, 246, 0.7) 100%'
+                    }
+                  ),
+                  url('${experience.backgroundImage}')
+                `,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
             >
+              {/* Surf Pattern Overlay */}
+              <div
+                className={`
+                  absolute inset-0 opacity-10 pointer-events-none
+                  ${experience.surfPattern === 'dynamic-waves'
+                    ? 'bg-gradient-to-r from-transparent via-white to-transparent animate-pulse'
+                    : 'bg-gradient-to-b from-transparent via-white/20 to-transparent'
+                  }
+                `}
+                style={{
+                  backgroundImage: experience.surfPattern === 'dynamic-waves'
+                    ? `url("data:image/svg+xml,%3csvg width='120' height='40' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,20 C30,5 60,35 90,20 C105,12.5 120,27.5 120,20 L120,40 L0,40 Z' fill='rgba(255,255,255,0.1)'/%3e%3cpath d='M0,25 C40,10 80,40 120,25 L120,40 L0,40 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/svg%3e")`
+                    : `url("data:image/svg+xml,%3csvg width='60' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,10 C15,2 30,18 45,10 C52.5,6 60,14 60,10 L60,20 L0,20 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/svg%3e")`,
+                  backgroundRepeat: 'repeat-x',
+                  backgroundPosition: 'bottom'
+                }}
+              />
               {/* Card Header */}
-              <div className="flex items-start gap-4">
+              <div className="relative z-10 flex items-start gap-4">
                 {/* Icon */}
                 <div className={`
                   p-3 rounded-lg bg-gradient-to-br ${experience.gradient}
-                  text-white shadow-lg
+                  text-white shadow-lg backdrop-blur-sm
+                  border border-white/20
                 `}>
                   <Icon size={24} />
                 </div>
@@ -89,18 +125,18 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                 {/* Content */}
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-lg font-semibold text-gray-900">
+                    <h4 className="text-lg font-semibold text-white drop-shadow-lg">
                       {experience.title}
                     </h4>
                     <div className="text-right">
-                      <div className="text-sm text-gray-500">From</div>
-                      <div className="text-lg font-bold text-orange-600">
+                      <div className="text-sm text-white/80 drop-shadow">From</div>
+                      <div className="text-lg font-bold text-white drop-shadow-lg bg-black/20 px-2 py-1 rounded-lg backdrop-blur-sm">
                         €{experience.priceFrom}
                       </div>
                     </div>
                   </div>
 
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-white/90 text-sm leading-relaxed drop-shadow">
                     {experience.description}
                   </p>
 
@@ -111,7 +147,9 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                         key={index}
                         className="
                           px-2 py-1 text-xs font-medium
-                          bg-gray-100 text-gray-700 rounded-full
+                          bg-white/20 text-white rounded-full
+                          backdrop-blur-sm border border-white/30
+                          drop-shadow
                         "
                       >
                         {feature}
@@ -123,9 +161,11 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
 
               {/* Selection Indicator */}
               {isSelected && (
-                <div className="mt-4 flex items-center gap-2 text-orange-600">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium">Selected</span>
+                <div className="relative z-10 mt-4 flex items-center gap-2 text-white">
+                  <div className="w-2 h-2 bg-white rounded-full animate-pulse drop-shadow" />
+                  <span className="text-sm font-medium drop-shadow bg-black/20 px-2 py-1 rounded-full backdrop-blur-sm">
+                    Selected
+                  </span>
                 </div>
               )}
             </button>

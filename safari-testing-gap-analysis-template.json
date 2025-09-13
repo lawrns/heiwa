@@ -3,7 +3,7 @@
     "test_metadata": {
       "test_date": "2025-09-12",
       "browser": "Safari (macOS)",
-      "test_url": "http://localhost:3005/widget-demo",
+      "test_url": "http://localhost:3005/",
       "css_architecture": "Modular (base.css, components.css, layout.css, utilities.css)",
       "test_scope": "End-to-end CSS modularization verification"
     },

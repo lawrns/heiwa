@@ -47,8 +47,12 @@ export function useSurfCamps(): UseSurfCampsResult {
           includes: camp.details.includes,
           images: camp.media.images || [],
           isActive: true, // All returned camps are active
+          // Enhanced fields
+          priceFrom: camp.pricing?.price_from ?? camp.pricing?.base_price,
+          confirmedBooked: camp.details?.confirmed_booked ?? 0,
+          availableSpots: camp.details?.available_spots ?? camp.details?.max_participants
         }));
-        
+
         setSurfCamps(transformedCamps);
       } else {
         // Fallback to mock data if API fails

@@ -2,7 +2,7 @@
   "heiwa_booking_widget_ux_testing_report": {
     "test_metadata": {
       "test_date": "2025-09-12",
-      "test_url": "http://localhost:3005/widget-demo",
+      "test_url": "http://localhost:3005/",
       "browser": "Playwright (Chromium)",
       "test_scope": "Comprehensive UX Testing and Visual Quality Assurance",
       "css_architecture_status": "FAILED - Modular CSS not loading",
@@ -20,7 +20,7 @@
         "user_experience_impact": "No immediate visual impact as fallback CSS works, but defeats the purpose of modularization",
         "steps_to_reproduce": [
           "1. Open browser developer tools",
-          "2. Navigate to http://localhost:3005/widget-demo",
+          "2. Navigate to http://localhost:3005/",
           "3. Check Network tab for CSS file loading",
           "4. Observe 404 errors for modular CSS files"
         ],

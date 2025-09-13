@@ -5,7 +5,7 @@
     "analyst": "AI Assistant (Incompetent)",
     "severity": "CATASTROPHIC_UI_REGRESSION",
     "context": "Post-CSS modularization implementation disaster",
-    "test_url": "http://localhost:3005/widget-demo",
+    "test_url": "http://localhost:3005/",
     "regression_scope": "MASSIVE - UI completely broken despite technical fixes working"
   },
   

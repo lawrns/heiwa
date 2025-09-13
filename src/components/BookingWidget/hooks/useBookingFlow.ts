@@ -10,6 +10,7 @@ const initialState: BookingState = {
   },
   guests: 1,
   selectedOption: null,
+  selectedSurfWeek: null,
   guestDetails: [],
   pricing: {
     basePrice: 0,
@@ -50,7 +51,10 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
     
     case 'SET_SELECTED_OPTION':
       return { ...state, selectedOption: action.payload };
-    
+
+    case 'SET_SURF_WEEK':
+      return { ...state, selectedSurfWeek: action.payload };
+
     case 'ADD_GUEST_DETAILS':
       const existingIndex = state.guestDetails.findIndex(g => g.id === action.payload.id);
       const updatedDetails = existingIndex >= 0 
@@ -114,6 +118,10 @@ export function useBookingFlow() {
     dispatch({ type: 'SET_SELECTED_OPTION', payload: optionId });
   }, []);
 
+  const setSurfWeek = useCallback((surfWeekId: string) => {
+    dispatch({ type: 'SET_SURF_WEEK', payload: surfWeekId });
+  }, []);
+
   const updateGuestDetails = useCallback((guest: GuestInfo) => {
     dispatch({ type: 'ADD_GUEST_DETAILS', payload: guest });
   }, []);
@@ -143,11 +151,14 @@ export function useBookingFlow() {
       case 1:
         return state.experienceType !== null;
       case 2:
+        if (state.experienceType === 'surf-week') {
+          return state.selectedSurfWeek !== null && state.guests > 0;
+        }
         return state.dates.checkIn && state.dates.checkOut && state.guests > 0;
       case 3:
         return state.selectedOption !== null;
       case 4:
-        return state.guestDetails.length === state.guests && 
+        return state.guestDetails.length === state.guests &&
                state.guestDetails.every(g => g.firstName && g.lastName && g.email);
       case 5:
         return true; // Review step, always can proceed to payment
@@ -165,6 +176,7 @@ export function useBookingFlow() {
       setDates,
       setGuests,
       selectOption,
+      setSurfWeek,
       updateGuestDetails,
       updatePricing,
       setLoading,

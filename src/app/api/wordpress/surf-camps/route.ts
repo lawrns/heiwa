@@ -133,37 +133,112 @@ export async function GET(request: NextRequest) {
       return response;
     }
 
-    // Transform data for WordPress widget consumption
-    const wordpressCamps = surfCamps?.map((camp: any) => ({
-      id: camp.id,
-      name: camp.name,
-      description: camp.description,
-      destination: extractDestination(camp.name, camp.description),
-      dates: {
-        start_date: camp.start_date,
-        end_date: camp.end_date,
-        formatted_dates: formatDateRange(camp.start_date, camp.end_date)
-      },
-      pricing: {
-        base_price: parseFloat(camp.price.toString()),
-        currency: 'EUR', // Default currency, could be configurable
-        display_price: `€${camp.price}`
-      },
-      details: {
-        max_participants: camp.max_participants,
-        skill_level: camp.level,
-        includes: camp.includes || [],
-        available_spots: camp.max_participants // Will be calculated in availability endpoint
-      },
-      media: {
-        images: camp.images || [],
-        featured_image: camp.images?.[0] || null
-      },
-      booking_info: {
-        duration_days: calculateDurationDays(camp.start_date, camp.end_date),
-        booking_deadline: calculateBookingDeadline(camp.start_date)
+    // Compute real-time occupancy and price_from
+    // 1) Fetch confirmed bookings (items JSONB) and reduce by campId
+    let confirmedByCamp: Record<string, number> = {};
+    try {
+      const { data: bookingsData, error: bookingsError } = await client
+        .from('bookings')
+        .select('items, payment_status')
+        .eq('payment_status', 'confirmed');
+      if (bookingsError) {
+        console.warn('WP surf-camps: bookings fetch error', bookingsError);
+      } else if (Array.isArray(bookingsData)) {
+        for (const b of bookingsData as any[]) {
+          let items: any[] = [];
+
+          // Handle both array and JSONB string formats
+          if (Array.isArray(b.items)) {
+            items = b.items;
+          } else if (typeof b.items === 'string') {
+            try {
+              items = JSON.parse(b.items);
+            } catch (e) {
+              console.warn('Failed to parse booking items JSON:', b.items);
+              continue;
+            }
+          } else if (b.items && typeof b.items === 'object') {
+            // Already parsed JSONB object
+            items = Array.isArray(b.items) ? b.items : [b.items];
+          }
+
+          for (const it of items) {
+            if (it && it.type === 'surfCamp' && it.itemId) {
+              const qty = typeof it.quantity === 'number' && it.quantity > 0 ? it.quantity : 1;
+              confirmedByCamp[it.itemId] = (confirmedByCamp[it.itemId] || 0) + qty;
+            }
+          }
+        }
       }
-    })) || [];
+    } catch (e) {
+      console.warn('WP surf-camps: error computing confirmedByCamp', e);
+    }
+
+    // 2) Compute global min dorm/per-bed price as fallback for price_from
+    let globalMinDormPrice: number | null = null;
+    try {
+      const { data: roomsData, error: roomsError } = await client
+        .from('rooms')
+        .select('pricing, booking_type, is_active, name')
+        .eq('is_active', true);
+      if (roomsError) {
+        console.warn('WP surf-camps: rooms fetch error', roomsError);
+      } else if (Array.isArray(roomsData)) {
+        for (const r of roomsData as any[]) {
+          const pricing = r?.pricing || {};
+          const perBed = pricing?.camp?.perBed;
+          let candidate: number | null = null;
+          if (typeof perBed === 'number' && perBed > 0) candidate = perBed;
+          else if ((r?.booking_type === 'perBed') || (typeof r?.name === 'string' && r.name.toLowerCase().includes('dorm')))
+            candidate = typeof pricing?.standard === 'number' ? pricing.standard : null;
+          if (typeof candidate === 'number') {
+            if (globalMinDormPrice == null || candidate < globalMinDormPrice) globalMinDormPrice = candidate;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('WP surf-camps: error computing globalMinDormPrice', e);
+    }
+
+    // Transform data for WordPress widget consumption, adding occupancy and price_from
+    const wordpressCamps = (surfCamps || []).map((camp: any) => {
+      const basePrice = parseFloat(camp.price.toString());
+      const confirmed = confirmedByCamp[camp.id] || 0;
+      const available = Math.max(0, (camp.max_participants || 0) - confirmed);
+      const priceFrom = globalMinDormPrice ?? basePrice;
+      return {
+        id: camp.id,
+        name: camp.name,
+        description: camp.description,
+        destination: extractDestination(camp.name, camp.description),
+        dates: {
+          start_date: camp.start_date,
+          end_date: camp.end_date,
+          formatted_dates: formatDateRange(camp.start_date, camp.end_date)
+        },
+        pricing: {
+          base_price: basePrice,
+          currency: 'EUR',
+          display_price: `€${basePrice}`,
+          price_from: priceFrom
+        },
+        details: {
+          max_participants: camp.max_participants,
+          skill_level: camp.level,
+          includes: camp.includes || [],
+          available_spots: available,
+          confirmed_booked: confirmed
+        },
+        media: {
+          images: camp.images || [],
+          featured_image: camp.images?.[0] || null
+        },
+        booking_info: {
+          duration_days: calculateDurationDays(camp.start_date, camp.end_date),
+          booking_deadline: calculateBookingDeadline(camp.start_date)
+        }
+      };
+    });
 
     // Filter by location if specified (client-side filtering for now)
     let filteredCamps = wordpressCamps;
@@ -281,13 +356,15 @@ function getFallbackCamps(origin: string) {
       pricing: {
         base_price: price,
         currency: 'EUR',
-        display_price: `€${price}`
+        display_price: `€${price}`,
+        price_from: price
       },
       details: {
         max_participants: 12,
         skill_level: level,
         includes: ['coaching', 'equipment', 'breakfast'],
-        available_spots: 12
+        available_spots: 12,
+        confirmed_booked: 0
       },
       media: {
         images: imgs,

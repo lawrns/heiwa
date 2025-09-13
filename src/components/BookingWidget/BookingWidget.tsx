@@ -9,6 +9,7 @@ import { DatesAndGuests } from './steps/DatesAndGuests';
 import { OptionSelection } from './steps/OptionSelection';
 import { GuestDetails } from './steps/GuestDetails';
 import { ReviewAndPay } from './steps/ReviewAndPay';
+import './styles/surf-enhancements.css';
 
 interface BookingWidgetProps {
   className?: string;

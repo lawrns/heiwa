@@ -3,7 +3,7 @@
 
 **Test Date:** 2025-09-12  
 **Browser:** Safari (macOS)  
-**Test URL:** http://localhost:3005/widget-demo  
+**Test URL:** http://localhost:3005/
 **Tester:** AI Assistant  
 
 ---

@@ -109,6 +109,79 @@ test.describe('New Booking Widget - Complete Flow', () => {
     await expect(page.locator('[data-testid="pricing-breakdown-title"]')).toBeVisible();
   });
 
+  test('should verify occupancy updates in real-time', async ({ page }) => {
+    // Clean up any existing test bookings first
+    await fetch('http://localhost:3005/api/test/create-booking', { method: 'DELETE' });
+
+    // Get initial surf camps data
+    const initialResponse = await fetch('http://localhost:3005/api/wordpress/surf-camps', {
+      headers: { 'X-Heiwa-API-Key': 'heiwa_wp_test_key_2024_secure_deployment' }
+    });
+    const initialData = await initialResponse.json();
+    const firstCamp = initialData.data?.surf_camps?.[0];
+
+    if (!firstCamp) {
+      throw new Error('No surf camps available for testing');
+    }
+
+    const initialBooked = firstCamp.details?.confirmed_booked || 0;
+    const initialAvailable = firstCamp.details?.available_spots || firstCamp.details?.max_participants || 0;
+
+    // Create a test booking
+    const bookingResponse = await fetch('http://localhost:3005/api/test/create-booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        surfCampId: firstCamp.id,
+        participants: 2,
+        clientEmail: 'test-occupancy@example.com'
+      })
+    });
+    const bookingResult = await bookingResponse.json();
+    expect(bookingResult.success).toBe(true);
+
+    // Verify occupancy changed
+    const updatedResponse = await fetch('http://localhost:3005/api/wordpress/surf-camps', {
+      headers: { 'X-Heiwa-API-Key': 'heiwa_wp_test_key_2024_secure_deployment' }
+    });
+    const updatedData = await updatedResponse.json();
+    const updatedCamp = updatedData.data?.surf_camps?.find((c: any) => c.id === firstCamp.id);
+
+    expect(updatedCamp).toBeDefined();
+    expect(updatedCamp.details.confirmed_booked).toBeGreaterThan(initialBooked);
+    expect(updatedCamp.details.available_spots).toBeLessThan(initialAvailable);
+
+    // Clean up test booking
+    await fetch('http://localhost:3005/api/test/create-booking', { method: 'DELETE' });
+  });
+
+  test('should test surf week selection step 2', async ({ page }) => {
+    // Open widget
+    const bookBtn = page.locator('button:has-text("Book Now")');
+    await bookBtn.click();
+    await page.waitForTimeout(1500);
+
+    // Step 1: Select surf week experience
+    const surfWeekOption = page.locator('button:has-text("All-Inclusive Surf Week")');
+    await expect(surfWeekOption).toBeVisible();
+    await surfWeekOption.click({ force: true });
+    await page.waitForTimeout(1000);
+
+    // Step 2: Should show surf week selection instead of date pickers
+    await expect(page.locator('text=When & How Many?')).toBeVisible();
+    await expect(page.locator('h4:has-text("Choose Your Surf Week")')).toBeVisible();
+
+    // Wait for surf weeks to load
+    await page.waitForTimeout(3000);
+
+    // Check if surf week options are displayed
+    const surfWeekOptions = page.locator('[data-testid="surf-week-option"]');
+    await expect(surfWeekOptions.first()).toBeVisible({ timeout: 10000 });
+
+    // Take a screenshot for debugging
+    await page.screenshot({ path: 'surf-week-step2.png' });
+  });
+
   test('should complete surf week booking flow', async ({ page }) => {
     // Open widget
     const bookBtn = page.locator('button:has-text("Book Now")');
@@ -121,16 +194,19 @@ test.describe('New Booking Widget - Complete Flow', () => {
     await surfWeekOption.click({ force: true });
     await page.waitForTimeout(1000);
 
-    // Step 2: Select dates and guests
+    // Step 2: Select surf week and guests (new flow)
     await expect(page.locator('text=When & How Many?')).toBeVisible();
 
-    // Set start date
-    const startDateInput = page.locator('input[type="date"]').first();
-    await startDateInput.fill('2024-04-15');
+    // Wait for surf weeks to load
+    await page.waitForTimeout(3000);
 
-    // Set end date
-    const endDateInput = page.locator('input[type="date"]').nth(1);
-    await endDateInput.fill('2024-04-22');
+    // Validate surf week options are displayed
+    const surfWeekOptions = page.locator('[data-testid="surf-week-option"]');
+    await expect(surfWeekOptions.first()).toBeVisible({ timeout: 10000 });
+
+    // Select first surf week option
+    await surfWeekOptions.first().click();
+    await page.waitForTimeout(1000);
 
     // Set guests to 2 - use more specific selector
     const increaseGuests = page.locator('button[aria-label="Increase guest count"]');
@@ -141,18 +217,13 @@ test.describe('New Booking Widget - Complete Flow', () => {
     await nextBtn.click();
     await page.waitForTimeout(1500);
 
-    // Step 3: Select surf week option
+    // Step 3: Should show selected surf week details (auto-selected)
     await expect(page.locator('text=Choose Your Surf Week')).toBeVisible();
 
-    // Wait for API data to load
+    // Wait for API data to load and auto-selection
     await page.waitForTimeout(3000);
 
-    // Select first surf week option - updated to use actual API surf camp names
-    const surfWeekCard = page.locator('button').filter({ hasText: 'Beginner Surf Week - Costa Rica' }).first();
-    await expect(surfWeekCard).toBeVisible({ timeout: 10000 });
-    await surfWeekCard.click();
-
-    // Click Next
+    // Click Next (surf week should be auto-selected)
     await nextBtn.click();
     await page.waitForTimeout(1500);
 
