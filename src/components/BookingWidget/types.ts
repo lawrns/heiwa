@@ -8,6 +8,9 @@ export interface BookingState {
   guests: number;
   selectedOption: string | null;
   selectedSurfWeek: string | null;
+  selectedAddOns: AddOnSelection[];
+  paymentMethod: 'card_stripe' | 'bank_wire' | null;
+  bankWireDetails?: BankWireDetails;
   guestDetails: GuestInfo[];
   pricing: PricingBreakdown;
   isLoading: boolean;
@@ -26,10 +29,27 @@ export interface GuestInfo {
 
 export interface PricingBreakdown {
   basePrice: number;
+  addOnsSubtotal: number;
   taxes: number;
   fees: number;
   total: number;
   currency: string;
+}
+
+export interface AddOnSelection {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  category: string;
+}
+
+export interface BankWireDetails {
+  accountName?: string;
+  iban?: string;
+  swift?: string;
+  reference?: string;
 }
 
 export interface SurfWeek {
@@ -79,6 +99,9 @@ export type BookingAction =
   | { type: 'SET_GUESTS'; payload: number }
   | { type: 'SET_SELECTED_OPTION'; payload: string }
   | { type: 'SET_SURF_WEEK'; payload: string }
+  | { type: 'SET_ADD_ONS'; payload: AddOnSelection[] }
+  | { type: 'SET_PAYMENT_METHOD'; payload: 'card_stripe' | 'bank_wire' }
+  | { type: 'SET_BANK_WIRE_DETAILS'; payload: BankWireDetails }
   | { type: 'ADD_GUEST_DETAILS'; payload: GuestInfo }
   | { type: 'UPDATE_PRICING'; payload: PricingBreakdown }
   | { type: 'SET_LOADING'; payload: boolean }

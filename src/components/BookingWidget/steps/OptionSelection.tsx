@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MapPin, Users, Star, Check, Clock, Wifi, Car, Utensils } from 'lucide-react';
+import { MapPin, Users, Star, Check, Clock, Wifi, Car, Utensils, Calendar, Minus, Plus } from 'lucide-react';
 import { BookingState } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
@@ -8,6 +8,8 @@ interface OptionSelectionProps {
   state: BookingState;
   actions: {
     selectOption: (optionId: string) => void;
+    setDates: (checkIn: Date, checkOut: Date) => void;
+    setGuests: (count: number) => void;
   };
 }
 
@@ -19,6 +21,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   });
   const { surfCamps, loading: campsLoading, error: campsError } = useSurfCamps();
   const [selectedOption, setSelectedOption] = useState<string | null>(state.selectedOption);
+
+  // Local state for room booking dates
+  const [checkInDate, setCheckInDate] = useState(
+    state.dates.checkIn?.toISOString().split('T')[0] || ''
+  );
+  const [checkOutDate, setCheckOutDate] = useState(
+    state.dates.checkOut?.toISOString().split('T')[0] || ''
+  );
 
   // For surf weeks, if a surf week was already selected in step 2, auto-select it here
   if (state.experienceType === 'surf-week' && state.selectedSurfWeek && !state.selectedOption) {
@@ -32,6 +42,33 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const handleOptionSelect = (optionId: string) => {
     setSelectedOption(optionId);
     actions.selectOption(optionId);
+  };
+
+  const handleCheckInChange = (dateStr: string) => {
+    setCheckInDate(dateStr);
+    if (dateStr && checkOutDate) {
+      const checkIn = new Date(dateStr);
+      const checkOut = new Date(checkOutDate);
+      if (checkIn < checkOut) {
+        actions.setDates(checkIn, checkOut);
+      }
+    }
+  };
+
+  const handleCheckOutChange = (dateStr: string) => {
+    setCheckOutDate(dateStr);
+    if (checkInDate && dateStr) {
+      const checkIn = new Date(checkInDate);
+      const checkOut = new Date(dateStr);
+      if (checkIn < checkOut) {
+        actions.setDates(checkIn, checkOut);
+      }
+    }
+  };
+
+  const adjustGuests = (delta: number) => {
+    const newCount = Math.max(1, Math.min(12, state.guests + delta));
+    actions.setGuests(newCount);
   };
 
   const getAmenityIcon = (amenity: string) => {
@@ -105,12 +142,110 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
         </h3>
         <p className="text-gray-600">
-          {state.experienceType === 'room' 
-            ? `Available rooms for ${state.guests} ${state.guests === 1 ? 'guest' : 'guests'}`
+          {state.experienceType === 'room'
+            ? 'Select your dates and find the perfect room'
             : 'Select your perfect surf adventure'
           }
         </p>
       </div>
+
+      {/* Inline Date Picker and Guest Counter for Rooms */}
+      {state.experienceType === 'room' && (
+        <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-4">
+          {/* Date Selection */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <Calendar size={20} className="text-orange-500" />
+              Select Dates
+            </h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="check-in" className="block text-sm font-medium text-gray-700">
+                  Check-in
+                </label>
+                <input
+                  id="check-in"
+                  type="date"
+                  value={checkInDate}
+                  min={new Date().toISOString().split('T')[0]}
+                  onChange={(e) => handleCheckInChange(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="check-out" className="block text-sm font-medium text-gray-700">
+                  Check-out
+                </label>
+                <input
+                  id="check-out"
+                  type="date"
+                  value={checkOutDate}
+                  min={checkInDate || new Date().toISOString().split('T')[0]}
+                  onChange={(e) => handleCheckOutChange(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Guest Counter */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <Users size={20} className="text-orange-500" />
+              Number of Guests
+            </h4>
+
+            <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+              <div>
+                <div className="font-medium text-gray-900">Guests</div>
+                <div className="text-sm text-gray-600">How many people will be staying?</div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => adjustGuests(-1)}
+                  disabled={state.guests <= 1}
+                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                  aria-label="Decrease guest count"
+                >
+                  <Minus size={16} />
+                </button>
+
+                <span className="w-12 text-center text-lg font-semibold text-gray-900">
+                  {state.guests}
+                </span>
+
+                <button
+                  onClick={() => adjustGuests(1)}
+                  disabled={state.guests >= 12}
+                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                  aria-label="Increase guest count"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Date Summary */}
+          {state.dates.checkIn && state.dates.checkOut && (
+            <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-orange-800">
+                  Duration: {Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} nights
+                </span>
+                <span className="text-sm text-orange-600">
+                  {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Options Grid */}
       {state.experienceType === 'surf-week' ? (

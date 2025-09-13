@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2, ShoppingBag } from 'lucide-react';
 import { BookingState, PricingBreakdown } from '../types';
+import { PaymentMethodSelector } from '../components/PaymentMethodSelector';
+import { BankWireInstructions } from '../components/BankWireInstructions';
 
 interface ReviewAndPayProps {
   state: BookingState;
   actions: {
     updatePricing: (pricing: PricingBreakdown) => void;
+    setPaymentMethod: (method: 'card_stripe' | 'bank_wire') => void;
   };
   onComplete: () => void;
 }
@@ -21,7 +24,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       if (!state.selectedOption) return;
 
       let basePrice = 0;
-      
+
       if (state.experienceType === 'room' && state.dates.checkIn && state.dates.checkOut) {
         // For rooms: price per night × number of nights
         const nights = Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24));
@@ -31,12 +34,18 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         basePrice = 899 * state.guests; // Mock price - would come from selected surf week
       }
 
-      const taxes = Math.round(basePrice * 0.1); // 10% tax
-      const fees = Math.round(basePrice * 0.05); // 5% service fee
-      const total = basePrice + taxes + fees;
+      const addOnsSubtotal = state.selectedAddOns.reduce((total, addOn) => {
+        return total + (addOn.price * addOn.quantity);
+      }, 0);
+
+      const subtotal = basePrice + addOnsSubtotal;
+      const taxes = Math.round(subtotal * 0.1); // 10% tax
+      const fees = Math.round(subtotal * 0.05); // 5% service fee
+      const total = subtotal + taxes + fees;
 
       const newPricing: PricingBreakdown = {
         basePrice,
+        addOnsSubtotal,
         taxes,
         fees,
         total,
@@ -48,7 +57,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
     };
 
     calculatePricing();
-  }, [state.selectedOption, state.experienceType, state.dates, state.guests, actions]);
+  }, [state.selectedOption, state.experienceType, state.dates, state.guests, state.selectedAddOns, actions]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-EU', {
@@ -186,15 +195,47 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         </div>
       </div>
 
+      {/* Add-ons Summary */}
+      {state.selectedAddOns.length > 0 && (
+        <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <ShoppingBag size={20} className="text-gray-600" />
+            Selected Add-ons
+          </h4>
+
+          <div className="space-y-3">
+            {state.selectedAddOns.map((addOn) => (
+              <div key={addOn.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                <div>
+                  <div className="font-medium text-gray-900">{addOn.name}</div>
+                  <div className="text-sm text-gray-600">
+                    {formatPrice(addOn.price)} × {addOn.quantity}
+                  </div>
+                </div>
+                <div className="font-medium text-gray-900">
+                  {formatPrice(addOn.price * addOn.quantity)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Pricing Breakdown */}
       <div className="bg-orange-50 rounded-xl p-6 border border-orange-200">
         <h4 className="text-lg font-semibold text-orange-900 mb-4" data-testid="pricing-breakdown-title">Pricing Breakdown</h4>
-        
+
         <div className="space-y-3">
           <div className="flex justify-between items-center">
             <span className="text-gray-700">Base Price</span>
             <span className="font-medium">{formatPrice(pricing.basePrice)}</span>
           </div>
+          {pricing.addOnsSubtotal > 0 && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-700">Add-ons</span>
+              <span className="font-medium">{formatPrice(pricing.addOnsSubtotal)}</span>
+            </div>
+          )}
           <div className="flex justify-between items-center">
             <span className="text-gray-700">Taxes (10%)</span>
             <span className="font-medium">{formatPrice(pricing.taxes)}</span>
@@ -243,43 +284,68 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         </div>
       </div>
 
-      {/* Payment Button */}
-      <div className="space-y-4">
-        <button
-          onClick={handlePayment}
-          disabled={isProcessing}
-          className="
-            w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600
-            hover:from-orange-600 hover:to-orange-700
-            disabled:from-gray-300 disabled:to-gray-400
-            text-white font-semibold text-lg rounded-lg
-            shadow-lg hover:shadow-xl
-            transition-all duration-300 ease-out
-            hover:scale-[1.02] disabled:hover:scale-100
-            focus:outline-none focus:ring-4 focus:ring-orange-500/30
-            disabled:cursor-not-allowed
-            flex items-center justify-center gap-3
-          "
-        >
-          {isProcessing ? (
-            <>
-              <Loader2 size={20} className="animate-spin" />
-              Processing Payment...
-            </>
-          ) : (
-            <>
-              <CreditCard size={20} />
-              Pay {formatPrice(pricing.total)} Now
-            </>
-          )}
-        </button>
+      {/* Payment Method Selection */}
+      <PaymentMethodSelector
+        selectedMethod={state.paymentMethod}
+        onMethodChange={actions.setPaymentMethod}
+      />
 
-        <div className="text-center">
-          <p className="text-xs text-gray-500">
-            Secure payment powered by Stripe • Your payment information is encrypted and secure
-          </p>
+      {/* Bank Wire Instructions */}
+      {state.paymentMethod === 'bank_wire' && (
+        <BankWireInstructions
+          totalAmount={pricing.total}
+          currency={pricing.currency}
+          bookingReference={`HW-${Date.now().toString().slice(-6)}`}
+        />
+      )}
+
+      {/* Payment Button */}
+      {state.paymentMethod && (
+        <div className="space-y-4">
+          <button
+            onClick={handlePayment}
+            disabled={isProcessing}
+            className="
+              w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600
+              hover:from-orange-600 hover:to-orange-700
+              disabled:from-gray-300 disabled:to-gray-400
+              text-white font-semibold text-lg rounded-lg
+              shadow-lg hover:shadow-xl
+              transition-all duration-300 ease-out
+              hover:scale-[1.02] disabled:hover:scale-100
+              focus:outline-none focus:ring-4 focus:ring-orange-500/30
+              disabled:cursor-not-allowed
+              flex items-center justify-center gap-3
+            "
+          >
+            {isProcessing ? (
+              <>
+                <Loader2 size={20} className="animate-spin" />
+                Processing...
+              </>
+            ) : state.paymentMethod === 'card_stripe' ? (
+              <>
+                <CreditCard size={20} />
+                Pay {formatPrice(pricing.total)} Now
+              </>
+            ) : (
+              <>
+                <CheckCircle size={20} />
+                Confirm Booking - Pay Later
+              </>
+            )}
+          </button>
+
+          <div className="text-center">
+            <p className="text-xs text-gray-500">
+              {state.paymentMethod === 'card_stripe'
+                ? 'Secure payment powered by Stripe • Your payment information is encrypted and secure'
+                : 'Your booking will be confirmed. Complete the bank transfer to secure your reservation.'
+              }
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

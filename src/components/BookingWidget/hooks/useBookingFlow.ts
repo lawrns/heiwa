@@ -1,5 +1,5 @@
 import { useReducer, useCallback } from 'react';
-import { BookingState, BookingAction, GuestInfo, PricingBreakdown } from '../types';
+import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelection, BankWireDetails } from '../types';
 
 const initialState: BookingState = {
   currentStep: 1,
@@ -11,9 +11,13 @@ const initialState: BookingState = {
   guests: 1,
   selectedOption: null,
   selectedSurfWeek: null,
+  selectedAddOns: [],
+  paymentMethod: null,
+  bankWireDetails: undefined,
   guestDetails: [],
   pricing: {
     basePrice: 0,
+    addOnsSubtotal: 0,
     taxes: 0,
     fees: 0,
     total: 0,
@@ -54,6 +58,15 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
 
     case 'SET_SURF_WEEK':
       return { ...state, selectedSurfWeek: action.payload };
+
+    case 'SET_ADD_ONS':
+      return { ...state, selectedAddOns: action.payload };
+
+    case 'SET_PAYMENT_METHOD':
+      return { ...state, paymentMethod: action.payload };
+
+    case 'SET_BANK_WIRE_DETAILS':
+      return { ...state, bankWireDetails: action.payload };
 
     case 'ADD_GUEST_DETAILS':
       const existingIndex = state.guestDetails.findIndex(g => g.id === action.payload.id);
@@ -122,6 +135,18 @@ export function useBookingFlow() {
     dispatch({ type: 'SET_SURF_WEEK', payload: surfWeekId });
   }, []);
 
+  const setAddOns = useCallback((addOns: AddOnSelection[]) => {
+    dispatch({ type: 'SET_ADD_ONS', payload: addOns });
+  }, []);
+
+  const setPaymentMethod = useCallback((method: 'card_stripe' | 'bank_wire') => {
+    dispatch({ type: 'SET_PAYMENT_METHOD', payload: method });
+  }, []);
+
+  const setBankWireDetails = useCallback((details: BankWireDetails) => {
+    dispatch({ type: 'SET_BANK_WIRE_DETAILS', payload: details });
+  }, []);
+
   const updateGuestDetails = useCallback((guest: GuestInfo) => {
     dispatch({ type: 'ADD_GUEST_DETAILS', payload: guest });
   }, []);
@@ -150,18 +175,18 @@ export function useBookingFlow() {
     switch (state.currentStep) {
       case 1:
         return state.experienceType !== null;
-      case 2:
+      case 2: // OptionSelection (now includes dates for rooms)
         if (state.experienceType === 'surf-week') {
-          return state.selectedSurfWeek !== null && state.guests > 0;
+          return state.selectedOption !== null;
         }
-        return state.dates.checkIn && state.dates.checkOut && state.guests > 0;
-      case 3:
-        return state.selectedOption !== null;
-      case 4:
+        return state.dates.checkIn && state.dates.checkOut && state.guests > 0 && state.selectedOption !== null;
+      case 3: // AddOnsSelection (always optional)
+        return true;
+      case 4: // GuestDetails
         return state.guestDetails.length === state.guests &&
                state.guestDetails.every(g => g.firstName && g.lastName && g.email);
-      case 5:
-        return true; // Review step, always can proceed to payment
+      case 5: // ReviewAndPay
+        return state.paymentMethod !== null;
       default:
         return false;
     }
@@ -177,6 +202,9 @@ export function useBookingFlow() {
       setGuests,
       selectOption,
       setSurfWeek,
+      setAddOns,
+      setPaymentMethod,
+      setBankWireDetails,
       updateGuestDetails,
       updatePricing,
       setLoading,
