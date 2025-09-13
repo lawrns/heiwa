@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Plus, Minus, ShoppingBag, Utensils, Car, Wrench, Users } from 'lucide-react';
 import { BookingState, AddOnSelection } from '../types';
 import { useAddOns } from '../hooks/useAddOns';
@@ -13,16 +13,20 @@ interface AddOnsSelectionProps {
 
 export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
   const { addOns, loading, error, selectedAddOns, updateAddOnQuantity, getAddOnSubtotal } = useAddOns();
+  const basePriceRef = useRef(state.pricing.basePrice);
 
-  // Sync selected add-ons with booking state
+  // Update base price ref when it changes
   useEffect(() => {
-    actions.setAddOns(selectedAddOns);
-  }, [selectedAddOns, actions]);
+    basePriceRef.current = state.pricing.basePrice;
+  }, [state.pricing.basePrice]);
+
+  // Add-ons are managed locally in this component
+  // They will be synced to the parent state when the user proceeds to the next step
 
   // Update pricing when add-ons change
   useEffect(() => {
     const addOnsSubtotal = getAddOnSubtotal();
-    const basePrice = state.pricing.basePrice;
+    const basePrice = basePriceRef.current;
     const taxes = Math.round((basePrice + addOnsSubtotal) * 0.1);
     const fees = Math.round((basePrice + addOnsSubtotal) * 0.05);
     const total = basePrice + addOnsSubtotal + taxes + fees;
@@ -34,7 +38,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
       fees,
       total,
     });
-  }, [selectedAddOns, state.pricing.basePrice, actions, getAddOnSubtotal]);
+  }, [selectedAddOns, getAddOnSubtotal]); // Removed actions from dependencies
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
