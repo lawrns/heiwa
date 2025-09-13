@@ -38,9 +38,10 @@ export async function GET(request: NextRequest) {
       );
 
       // Add CORS headers
-      response.headers.set('Access-Control-Allow-Origin', '*');
+      response.headers.set('Access-Control-Allow-Origin', 'https://heiwahouse.com');
       response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
       response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
+      response.headers.set('Access-Control-Allow-Credentials', 'true');
 
       return response;
     }
@@ -69,9 +70,10 @@ export async function GET(request: NextRequest) {
           fallback: true
         }
       });
-      response.headers.set('Access-Control-Allow-Origin', '*');
+      response.headers.set('Access-Control-Allow-Origin', 'https://heiwahouse.com');
       response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
       response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
+      response.headers.set('Access-Control-Allow-Credentials', 'true');
       return response;
     }
 
@@ -123,9 +125,10 @@ export async function GET(request: NextRequest) {
       });
 
       // Add CORS headers
-      response.headers.set('Access-Control-Allow-Origin', '*');
+      response.headers.set('Access-Control-Allow-Origin', 'https://heiwahouse.com');
       response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
       response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
+      response.headers.set('Access-Control-Allow-Credentials', 'true');
 
       return response;
     }
@@ -343,9 +346,10 @@ export async function OPTIONS(request: NextRequest) {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': 'https://heiwahouse.com',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, X-Heiwa-API-Key',
+      'Access-Control-Allow-Credentials': 'true',
       'Access-Control-Max-Age': '86400',
     },
   });

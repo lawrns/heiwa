@@ -55,7 +55,7 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
 
       {/* Experience Options */}
       <div className="space-y-4">
-        {experiences.map((experience) => {
+        {experiences.map((experience, index) => {
           const Icon = experience.icon;
           const isSelected = state.experienceType === experience.type;
 
@@ -65,14 +65,16 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
               onClick={() => handleSelection(experience.type)}
               className={`
                 w-full p-6 rounded-xl border-2 text-left
-                transition-all duration-300 ease-out
-                hover:scale-[1.02] hover:shadow-xl
+                transition-all duration-500 ease-out
+                hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1
                 focus:outline-none focus:ring-4 focus:ring-orange-500/30
+                animate-in fade-in-0 slide-in-from-bottom-4 duration-700
                 ${isSelected
-                  ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20'
+                  ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
                   : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50'
                 }
               `}
+              style={{ animationDelay: `${index * 150}ms` }}
             >
               {/* Card Header */}
               <div className="flex items-start gap-4">

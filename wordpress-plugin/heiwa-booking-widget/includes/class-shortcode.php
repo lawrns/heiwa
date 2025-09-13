@@ -349,11 +349,32 @@ class Heiwa_Booking_Widget_Shortcode {
      * Enqueue widget assets
      */
     private function enqueue_assets() {
-        // Enqueue CSS
+        // Enqueue modular CSS architecture (matching main plugin file)
         wp_enqueue_style(
-            'heiwa-booking-widget',
-            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/widget.css',
+            'heiwa-booking-base',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/base.css',
             array(),
+            HEIWA_BOOKING_VERSION
+        );
+
+        wp_enqueue_style(
+            'heiwa-booking-components',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/components.css',
+            array('heiwa-booking-base'),
+            HEIWA_BOOKING_VERSION
+        );
+
+        wp_enqueue_style(
+            'heiwa-booking-layout',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/layout.css',
+            array('heiwa-booking-base', 'heiwa-booking-components'),
+            HEIWA_BOOKING_VERSION
+        );
+
+        wp_enqueue_style(
+            'heiwa-booking-utilities',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/utilities.css',
+            array('heiwa-booking-base', 'heiwa-booking-components', 'heiwa-booking-layout'),
             HEIWA_BOOKING_VERSION
         );
 

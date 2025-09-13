@@ -6,9 +6,10 @@ import { sendBookingEmails } from '@/lib/email-service';
 
 // CORS headers for WordPress integration
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://heiwahouse.com',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, X-Heiwa-API-Key',
+  'Access-Control-Allow-Credentials': 'true',
   'Access-Control-Max-Age': '86400',
 };
 

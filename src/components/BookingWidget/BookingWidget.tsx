@@ -36,20 +36,22 @@ export function BookingWidget({ className = '' }: BookingWidgetProps) {
   };
 
   const renderCurrentStep = () => {
-    switch (state.currentStep) {
-      case 1:
-        return <ExperienceSelection state={state} actions={actions} />;
-      case 2:
-        return <DatesAndGuests state={state} actions={actions} />;
-      case 3:
-        return <OptionSelection state={state} actions={actions} />;
-      case 4:
-        return <GuestDetails state={state} actions={actions} />;
-      case 5:
-        return <ReviewAndPay state={state} actions={actions} onComplete={closeWidget} />;
-      default:
-        return null;
-    }
+    const stepComponents = {
+      1: <ExperienceSelection state={state} actions={actions} />,
+      2: <DatesAndGuests state={state} actions={actions} />,
+      3: <OptionSelection state={state} actions={actions} />,
+      4: <GuestDetails state={state} actions={actions} />,
+      5: <ReviewAndPay state={state} actions={actions} onComplete={closeWidget} />,
+    };
+
+    return (
+      <div 
+        key={state.currentStep}
+        className="animate-in fade-in-0 slide-in-from-right-4 duration-500 ease-out"
+      >
+        {stepComponents[state.currentStep as keyof typeof stepComponents]}
+      </div>
+    );
   };
 
   return (
@@ -67,12 +69,16 @@ export function BookingWidget({ className = '' }: BookingWidgetProps) {
           transition-all duration-300 ease-out
           hover:scale-105 hover:-translate-y-0.5
           focus:outline-none focus:ring-4 focus:ring-orange-500/30
+          animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-300
           ${className}
         `}
         aria-label="Open booking widget"
       >
-        <Calendar size={18} />
-        <span>Book Now</span>
+        <Calendar size={18} className="transition-transform duration-300 group-hover:rotate-12" />
+        <span className="relative">
+          Book Now
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+        </span>
       </button>
 
       {/* Widget Modal */}
@@ -91,9 +97,10 @@ export function BookingWidget({ className = '' }: BookingWidgetProps) {
           <div className="
             relative w-full max-w-md h-full
             bg-white shadow-2xl
-            animate-in slide-in-from-right duration-400 ease-out
+            animate-in slide-in-from-right duration-500 ease-out
             flex flex-col
             sm:max-w-lg lg:max-w-xl
+            transform-gpu
           ">
             {/* Header */}
             <div className="

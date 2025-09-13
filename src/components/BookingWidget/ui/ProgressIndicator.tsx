@@ -15,7 +15,7 @@ const steps = [
 export function ProgressIndicator({ currentStep }: ProgressIndicatorProps) {
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between relative">
+      <div className="heiwa-booking-stepper flex items-center justify-between relative">
         {steps.map((step, index) => {
           const isCompleted = currentStep > step.id;
           const isCurrent = currentStep === step.id;
@@ -39,12 +39,12 @@ export function ProgressIndicator({ currentStep }: ProgressIndicatorProps) {
               {/* Step Circle */}
               <div className={`
                 relative z-10 w-10 h-10 rounded-full flex items-center justify-center
-                transition-all duration-300 ease-out
+                transition-all duration-500 ease-out
                 ${isCompleted 
-                  ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30' 
+                  ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30 animate-in zoom-in-50 duration-300' 
                   : isCurrent 
-                    ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/40 scale-110' 
-                    : 'bg-white border-2 border-gray-300 text-gray-500'
+                    ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/40 scale-110 animate-pulse' 
+                    : 'bg-white border-2 border-gray-300 text-gray-500 hover:border-orange-300 hover:scale-105'
                 }
               `}>
                 {isCompleted ? (
