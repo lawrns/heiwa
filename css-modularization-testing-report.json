@@ -2,7 +2,7 @@
   "css_modularization_testing_report": {
     "test_date": "2025-09-12",
     "test_environment": {
-      "url": "http://localhost:3005/widget-demo",
+      "url": "http://localhost:3005/",
       "browser": "Chromium (Playwright)",
       "viewport_desktop": "1280x720",
       "viewport_mobile": "375x667"
@@ -138,7 +138,7 @@
       "resolved_issues": [
         {
           "issue": "Demo page was loading monolithic widget.css",
-          "resolution": "Updated widget-demo page to load modular CSS files",
+          "resolution": "Updated booking widget to use modular CSS architecture",
           "status": "✅ RESOLVED"
         }
       ]
@@ -172,7 +172,7 @@
       "recommendation": "APPROVED FOR PRODUCTION DEPLOYMENT"
     },
     "screenshots_captured": [
-      "widget-demo-initial-state.png",
+      "booking-widget-initial-state.png",
       "widget-booking-modal-opened.png",
       "widget-surf-weeks-selection.png",
       "widget-mobile-responsive.png",

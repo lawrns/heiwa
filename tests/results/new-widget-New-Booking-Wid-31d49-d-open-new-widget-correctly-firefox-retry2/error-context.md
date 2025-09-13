@@ -1,0 +1,63 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e5]
+      - generic [ref=e8]:
+        - heading "Experience the UltimateSurf Adventure" [level=1] [ref=e9]:
+          - text: Experience the Ultimate
+          - generic [ref=e10]: Surf Adventure
+        - paragraph [ref=e11]: Join our world-class surf camps in stunning locations around the world. From beginner-friendly waves to advanced surf coaching, we have the perfect experience for every level.
+        - generic [ref=e12]:
+          - generic [ref=e13]:
+            - img [ref=e15]
+            - heading "Expert Coaching" [level=3] [ref=e17]
+            - paragraph [ref=e18]: Professional surfers with decades of experience
+          - generic [ref=e19]:
+            - img [ref=e21]
+            - heading "Perfect Waves" [level=3] [ref=e23]
+            - paragraph [ref=e24]: World-famous breaks with consistent, quality waves
+          - generic [ref=e25]:
+            - img [ref=e27]
+            - heading "Amazing Community" [level=3] [ref=e29]
+            - paragraph [ref=e30]: Connect with fellow surfers from around the world
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - heading "Our Surf Destinations" [level=2] [ref=e34]
+        - paragraph [ref=e35]: Discover amazing surf spots around the world
+      - generic [ref=e36]:
+        - generic [ref=e38]:
+          - generic [ref=e40]: Costa Rica
+          - generic [ref=e41]:
+            - heading "Nosara Beach Camp" [level=3] [ref=e42]
+            - paragraph [ref=e43]: Perfect waves for all levels with stunning beachfront accommodation
+            - generic [ref=e44]:
+              - generic [ref=e45]: €899
+              - generic [ref=e46]: 7 days
+        - generic [ref=e48]:
+          - generic [ref=e50]: Morocco
+          - generic [ref=e51]:
+            - heading "Taghazout Surf Camp" [level=3] [ref=e52]
+            - paragraph [ref=e53]: North African adventure with consistent Atlantic waves
+            - generic [ref=e54]:
+              - generic [ref=e55]: €799
+              - generic [ref=e56]: 7 days
+        - generic [ref=e58]:
+          - generic [ref=e60]: Portugal
+          - generic [ref=e61]:
+            - heading "Ericeira Surf Week" [level=3] [ref=e62]
+            - paragraph [ref=e63]: European surf paradise with world-class coaching
+            - generic [ref=e64]:
+              - generic [ref=e65]: €899
+              - generic [ref=e66]: 7 days
+    - generic [ref=e68]:
+      - heading "Ready for Your Surf Adventure?" [level=2] [ref=e69]
+      - paragraph [ref=e70]: Book your perfect surf experience today
+      - generic [ref=e71]: Click the "Book Now" button in the top-right corner to get started!
+    - button "Open booking widget" [active] [ref=e72]:
+      - img [ref=e73]
+      - generic [ref=e78]: Book Now
+  - region "Notifications Alt+T"
+```

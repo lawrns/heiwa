@@ -1,34 +1,38 @@
-# Heiwa Booking Widget Demo
+# Heiwa Booking Widget
 
-This directory contains a comprehensive demo page for the Heiwa Booking Widget, showcasing its full functionality and providing a testing environment.
+This directory contains the enhanced Heiwa Booking Widget implementation with modern React components and improved user experience.
 
 ## Overview
 
-The widget demo page (`/widget`) simulates a real-world surf camp website where users can interact with the Heiwa Booking Widget. It includes:
+The widget page (`/widget`) redirects to the main application where users can interact with the enhanced Heiwa Booking Widget. The new implementation features:
 
-- A professional landing page design
-- A prominent "Book Now" button in the top navigation
-- Complete booking widget integration
+- Modern React-based booking flow
+- Enhanced surf week selection with fixed date periods
+- Real-time occupancy tracking and pricing
 - Responsive design for all devices
 
-## Features Demonstrated
+## Features
 
-### 🎨 Design System
-- Modern, mobile-first responsive design
-- Professional surf camp branding
-- Clean typography and spacing
-- Interactive UI components
+### 🎨 Enhanced Design System
+- Modern React-based components with Tailwind CSS
+- Professional surf-themed design with orange/teal colors
+- Responsive layout optimized for all devices
+- Accessible UI components with proper ARIA support
 
-### 📱 Booking Widget
-- **Step-by-step booking flow**:
-  1. Booking type selection (Room vs Surf Week)
-  2. Date and participant selection
-  3. Personal details collection
-  4. Booking confirmation
+### 📱 Enhanced Booking Widget
+- **5-step booking flow**:
+  1. Experience type selection (Room vs Surf Week)
+  2. Enhanced surf week selection with fixed date periods OR date/guest selection for rooms
+  3. Room/option selection with real-time availability
+  4. Guest details collection with validation
+  5. Review and secure payment processing
 
-- **Interactive features**:
-  - Visual feedback on selection
-  - Smooth transitions between steps
+- **Advanced features**:
+  - Real-time occupancy tracking ("5/12 booked")
+  - Dynamic pricing display ("from €X")
+  - Horizontal surf week cards with date ranges
+  - Responsive design with mobile optimization
+  - Accessibility compliance (ARIA, keyboard navigation)
   - Form validation
   - Success confirmation
 
@@ -142,41 +146,43 @@ src/app/widget/
 
 ### Technical Stack
 - **Framework**: Next.js 14 with App Router
-- **Styling**: Tailwind CSS + Custom CSS Modules
+- **Frontend**: React 18 with TypeScript
+- **Styling**: Tailwind CSS with custom design system
+- **State Management**: React hooks and context
 - **Testing**: Playwright for E2E testing
-- **JavaScript**: ES6+ with TypeScript support
-- **Widget**: jQuery-based interactive components
+- **Backend**: Supabase with real-time data
+- **Payment**: Stripe integration
 
-### Widget Implementation
-- **Modal System**: Fixed positioning with backdrop overlay
-- **State Management**: Client-side JavaScript state tracking
-- **Form Handling**: Progressive enhancement with validation
-- **Accessibility**: ARIA attributes and keyboard navigation
-- **Responsive**: Mobile-first design with breakpoint adaptations
+### Implementation Details
+- **Component Architecture**: Modular React components with proper separation of concerns
+- **State Management**: Custom hooks for booking flow state management
+- **API Integration**: Real-time data fetching from Supabase and WordPress APIs
+- **Accessibility**: Full ARIA support and keyboard navigation
+- **Responsive Design**: Mobile-first approach with Tailwind breakpoints
 
 ## Development
 
-### Adding New Test Scenarios
+### Adding New Features
 
-1. Create new test functions in `tests/widget-e2e.test.ts`
-2. Follow the existing patterns for setup and assertions
-3. Use descriptive test names that explain the scenario
-4. Include proper error handling and timeouts
+1. Create new React components in `src/components/BookingWidget/`
+2. Follow the existing patterns for hooks and state management
+3. Update TypeScript interfaces in `types.ts`
+4. Add comprehensive E2E tests in `tests/new-widget.test.ts`
 
-### Modifying the Demo Page
+### Modifying the Booking Flow
 
-1. Edit `page.tsx` to update the demo content
-2. Maintain the existing structure for widget integration
-3. Update tests accordingly if functionality changes
-4. Ensure responsive design remains intact
+1. Edit step components in `src/components/BookingWidget/steps/`
+2. Update the booking flow hook in `hooks/useBookingFlow.ts`
+3. Ensure proper state management and validation
+4. Test changes across all device sizes
 
 ### Widget Customization
 
-The demo widget can be customized by modifying:
-- CSS variables in the loaded stylesheets
-- JavaScript behavior in the initialization script
-- HTML structure in the widget template
-- Form fields and validation logic
+The enhanced widget can be customized by modifying:
+- Tailwind CSS classes and design tokens
+- React component props and state management
+- API endpoints and data fetching logic
+- Form validation and business logic
 
 ## Performance
 
