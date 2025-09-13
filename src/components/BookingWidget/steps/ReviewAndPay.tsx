@@ -57,7 +57,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
     };
 
     calculatePricing();
-  }, [state.selectedOption, state.experienceType, state.dates, state.guests, state.selectedAddOns, actions]);
+  }, [state.selectedOption, state.experienceType, state.dates, state.guests, state.selectedAddOns]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-EU', {

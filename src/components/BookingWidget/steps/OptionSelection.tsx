@@ -8,6 +8,7 @@ interface OptionSelectionProps {
   state: BookingState;
   actions: {
     selectOption: (optionId: string) => void;
+    setSurfWeek: (surfWeekId: string) => void;
     setDates: (checkIn: Date, checkOut: Date) => void;
     setGuests: (count: number) => void;
   };
@@ -42,6 +43,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const handleOptionSelect = (optionId: string) => {
     setSelectedOption(optionId);
     actions.selectOption(optionId);
+
+    // For surf weeks, also set the surf week state
+    if (state.experienceType === 'surf-week') {
+      actions.setSurfWeek(optionId);
+    }
   };
 
   const handleCheckInChange = (dateStr: string) => {
