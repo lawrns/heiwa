@@ -94,7 +94,7 @@ export default function WidgetDemoPage() {
           pointer-events: none !important;
         }
 
-        /* Style the BOOK NOW button */
+        /* Style the BOOK NOW button - FIXED: Horizontal layout */
         .heiwa-booking-widget.heiwa-position-right .heiwa-booking-trigger {
           background: linear-gradient(135deg, #ec681c, #ed5600) !important;
           color: white !important;
@@ -105,10 +105,24 @@ export default function WidgetDemoPage() {
           font-size: 14px !important;
           cursor: pointer !important;
           display: flex !important;
+          flex-direction: row !important;
           align-items: center !important;
+          justify-content: center !important;
           gap: 8px !important;
           box-shadow: 0 4px 12px rgba(236, 104, 28, 0.3) !important;
           transition: all 0.2s ease !important;
+          white-space: nowrap !important;
+          min-width: auto !important;
+          width: auto !important;
+        }
+
+        /* FIXED: Hide button when drawer is active */
+        .heiwa-booking-backdrop.active ~ .heiwa-booking-widget .heiwa-booking-trigger,
+        .heiwa-booking-drawer.active ~ .heiwa-booking-widget .heiwa-booking-trigger {
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+          transform: scale(0.8) !important;
         }
 
         .heiwa-booking-widget.heiwa-position-right .heiwa-booking-trigger:hover {
