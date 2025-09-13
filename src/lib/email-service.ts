@@ -65,7 +65,7 @@ class SimpleEmailService implements EmailService {
 
   private generateBookingConfirmationHTML(booking: Booking & { id: string }, client: Client): string {
     const bookingDate = booking.createdAt
-      ? new Date(booking.createdAt).toLocaleDateString()
+      ? new Date(booking.createdAt as any).toLocaleDateString()
       : new Date().toLocaleDateString();
 
     const formatItemType = (type: string) => {
@@ -113,18 +113,22 @@ class SimpleEmailService implements EmailService {
 
               <div class="booking-details">
                 <h3>🛍️ Booked Items</h3>
-                ${booking.items.map(item => `
+                ${booking.items.map(item => {
+                  const checkIn = item.dates?.checkIn;
+                  const checkOut = item.dates?.checkOut;
+                  const nights = checkIn && checkOut ? Math.ceil((new Date(checkOut as any).getTime() - new Date(checkIn as any).getTime()) / (1000 * 60 * 60 * 24)) : null;
+
+                  return `
                   <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px;">
-                    <p><strong>${formatItemType(item.type)}:</strong> ${item.name}</p>
+                    <p><strong>${formatItemType(item.type)}:</strong> ${item.itemId}</p>
                     <p><strong>Quantity:</strong> ${item.quantity}</p>
                     <p><strong>Unit Price:</strong> $${item.unitPrice.toFixed(2)}</p>
                     <p><strong>Total:</strong> $${item.totalPrice.toFixed(2)}</p>
-                    ${item.startDate ? `<p><strong>Start Date:</strong> ${new Date(item.startDate).toLocaleDateString()}</p>` : ''}
-                    ${item.endDate ? `<p><strong>End Date:</strong> ${new Date(item.endDate).toLocaleDateString()}</p>` : ''}
-                    ${item.nights ? `<p><strong>Nights:</strong> ${item.nights}</p>` : ''}
-                    ${item.participants ? `<p><strong>Participants:</strong> ${item.participants}</p>` : ''}
+                    ${checkIn ? `<p><strong>Check-in:</strong> ${new Date(checkIn as any).toLocaleDateString()}</p>` : ''}
+                    ${checkOut ? `<p><strong>Check-out:</strong> ${new Date(checkOut as any).toLocaleDateString()}</p>` : ''}
+                    ${nights ? `<p><strong>Nights:</strong> ${nights}</p>` : ''}
                   </div>
-                `).join('')}
+                `}).join('')}
               </div>
 
               <div class="total">

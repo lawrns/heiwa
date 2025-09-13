@@ -1,4 +1,4 @@
-import { db } from '@/lib/supabase'
+import { db } from '../../../lib/supabase'
 
 export interface AuditLogEntry {
   id?: string
@@ -105,7 +105,7 @@ export async function getAuditLogs(
       return []
     }
 
-    return (data || []).map(item => ({
+    return (data || []).map((item: any) => ({
       id: item.id,
       timestamp: new Date(item.timestamp),
       userId: item.userId,

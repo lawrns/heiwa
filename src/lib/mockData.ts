@@ -1,5 +1,5 @@
 // Mock data for development and demo purposes
-// Firebase import removed - using Supabase
+// Using Supabase
 import type { Client, Booking, BookingItem } from './schemas';
 
 // Mock Clients Data
@@ -147,8 +147,9 @@ export const mockBookings: (Booking & { id: string })[] = [
     paymentStatus: 'confirmed',
     paymentMethod: 'stripe',
     notes: 'Ocean view room requested',
-    createdAt: Timestamp.fromDate(new Date('2024-01-10')),
-    updatedAt: Timestamp.fromDate(new Date('2024-01-15')),
+    source: 'dashboard',
+    createdAt: new Date('2024-01-10'),
+    updatedAt: new Date('2024-01-15'),
   },
   {
     id: 'booking_002',
@@ -170,8 +171,9 @@ export const mockBookings: (Booking & { id: string })[] = [
     paymentStatus: 'confirmed',
     paymentMethod: 'cash',
     notes: 'Beginner surf camp',
-    createdAt: Timestamp.fromDate(new Date('2024-01-18')),
-    updatedAt: Timestamp.fromDate(new Date('2024-01-20')),
+    source: 'dashboard',
+    createdAt: new Date('2024-01-18'),
+    updatedAt: new Date('2024-01-20'),
   },
   {
     id: 'booking_003',
@@ -200,8 +202,9 @@ export const mockBookings: (Booking & { id: string })[] = [
     paymentStatus: 'confirmed',
     paymentMethod: 'transfer',
     notes: 'Family booking for 4 people',
-    createdAt: Timestamp.fromDate(new Date('2023-12-05')),
-    updatedAt: Timestamp.fromDate(new Date('2023-12-10')),
+    source: 'dashboard',
+    createdAt: new Date('2023-12-05'),
+    updatedAt: new Date('2023-12-10'),
   },
   {
     id: 'booking_004',
@@ -222,8 +225,9 @@ export const mockBookings: (Booking & { id: string })[] = [
     totalAmount: 200,
     paymentStatus: 'pending',
     notes: 'Corporate booking - awaiting payment',
-    createdAt: Timestamp.fromDate(new Date('2024-01-22')),
-    updatedAt: Timestamp.fromDate(new Date('2024-01-25')),
+    source: 'dashboard',
+    createdAt: new Date('2024-01-22'),
+    updatedAt: new Date('2024-01-25'),
   },
   {
     id: 'booking_005',
@@ -252,8 +256,9 @@ export const mockBookings: (Booking & { id: string })[] = [
     paymentStatus: 'confirmed',
     paymentMethod: 'stripe',
     notes: 'Vegetarian meal plan requested',
-    createdAt: Timestamp.fromDate(new Date('2023-11-25')),
-    updatedAt: Timestamp.fromDate(new Date('2023-11-30')),
+    source: 'dashboard',
+    createdAt: new Date('2023-11-25'),
+    updatedAt: new Date('2023-11-30'),
   },
   {
     id: 'booking_006',
@@ -275,8 +280,9 @@ export const mockBookings: (Booking & { id: string })[] = [
     paymentStatus: 'confirmed',
     paymentMethod: 'stripe',
     notes: 'Advanced surf camp for experienced surfer',
-    createdAt: Timestamp.fromDate(new Date('2024-01-05')),
-    updatedAt: Timestamp.fromDate(new Date('2024-01-08')),
+    source: 'dashboard',
+    createdAt: new Date('2024-01-05'),
+    updatedAt: new Date('2024-01-08'),
   },
   {
     id: 'booking_007',
@@ -305,8 +311,9 @@ export const mockBookings: (Booking & { id: string })[] = [
     paymentStatus: 'confirmed',
     paymentMethod: 'cash',
     notes: 'Anniversary celebration - special setup requested',
-    createdAt: Timestamp.fromDate(new Date('2023-12-18')),
-    updatedAt: Timestamp.fromDate(new Date('2023-12-22')),
+    source: 'dashboard',
+    createdAt: new Date('2023-12-18'),
+    updatedAt: new Date('2023-12-22'),
   },
   {
     id: 'booking_008',
@@ -327,8 +334,9 @@ export const mockBookings: (Booking & { id: string })[] = [
     totalAmount: 170,
     paymentStatus: 'pending',
     notes: 'Return visit - preferred customer',
-    createdAt: Timestamp.fromDate(new Date('2024-01-30')),
-    updatedAt: Timestamp.fromDate(new Date('2024-02-01')),
+    source: 'dashboard',
+    createdAt: new Date('2024-01-30'),
+    updatedAt: new Date('2024-02-01'),
   },
 ];
 
