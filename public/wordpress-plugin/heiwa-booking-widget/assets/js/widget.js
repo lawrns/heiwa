@@ -1081,6 +1081,9 @@
             // Prevent body scroll
             $('body').addClass('heiwa-modal-open');
 
+            // Hide the BOOK NOW button when widget is open
+            $('.heiwa-booking-trigger').addClass('heiwa-hidden');
+
             console.log('Heiwa Booking Widget: Widget opened successfully');
         } else {
             console.error('Heiwa Booking Widget: Failed to find widget elements');
@@ -1109,6 +1112,9 @@
 
             // Re-enable body scroll
             $('body').removeClass('heiwa-modal-open');
+
+            // Show the BOOK NOW button when widget is closed
+            $('.heiwa-booking-trigger').removeClass('heiwa-hidden');
 
             console.log('Heiwa Booking Widget: Widget closed successfully');
         } else {
@@ -1409,11 +1415,6 @@
 
         const bookingTypeHTML = `
             <div class="heiwa-booking-type-selector">
-                <div class="heiwa-booking-type-header">
-                    <h2 class="heiwa-booking-type-title">Book Your Adventure</h2>
-                    <p class="heiwa-booking-type-subtitle">Choose how you'd like to experience Heiwa House</p>
-                </div>
-
                 <div class="heiwa-booking-type-options" role="radiogroup" aria-label="Select booking type">
                     <div class="heiwa-booking-option-card"
                          data-booking-type="room"
@@ -2245,13 +2246,8 @@
             </button>
         `;
 
-        // CTA Container
+        // Close summary container (removed duplicate Continue button)
         summaryHTML += `
-            <div class="heiwa-summary-cta-container">
-                <button class="heiwa-cta-button" type="button">
-                    Continue
-                </button>
-            </div>
         </div>
         `;
 

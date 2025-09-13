@@ -1228,8 +1228,15 @@
 }
 
 /* ===========================================
-   11. ROOM CARDS
+   11. ROOM CARDS & GRID
    =========================================== */
+
+.heiwa-room-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--heiwa-space-4);
+  margin-top: var(--heiwa-space-4);
+}
 
 .heiwa-room-card {
   border: 2px solid var(--heiwa-neutral-200);
@@ -1263,6 +1270,82 @@
 
 .heiwa-room-card:hover .heiwa-room-price {
   color: var(--heiwa-primary-color);
+}
+
+/* Room card content layout */
+.heiwa-room-content {
+  padding: var(--heiwa-space-4);
+}
+
+.heiwa-room-name {
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-neutral-900);
+  margin: 0 0 var(--heiwa-space-2) 0;
+}
+
+.heiwa-room-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--heiwa-space-3);
+}
+
+.heiwa-room-capacity {
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-1);
+  font-size: var(--heiwa-text-sm);
+  color: var(--heiwa-neutral-600);
+}
+
+.heiwa-room-price {
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-primary-color);
+}
+
+.heiwa-room-amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--heiwa-space-2);
+}
+
+.heiwa-amenity {
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-1);
+  font-size: var(--heiwa-text-xs);
+  color: var(--heiwa-neutral-600);
+  background: var(--heiwa-neutral-100);
+  padding: var(--heiwa-space-1) var(--heiwa-space-2);
+  border-radius: var(--heiwa-radius-md);
+}
+
+.heiwa-amenity-more {
+  font-size: var(--heiwa-text-xs);
+  color: var(--heiwa-neutral-500);
+  font-style: italic;
+}
+
+/* Room image */
+.heiwa-room-image {
+  height: 120px;
+  background: var(--heiwa-neutral-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heiwa-room-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heiwa-room-image-placeholder {
+  color: var(--heiwa-neutral-400);
 }
 
 /* === Booking Type Selector Cards =============================== */
@@ -1329,6 +1412,9 @@
   font-weight: var(--heiwa-font-semibold);
   color: var(--heiwa-neutral-900);
   line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .heiwa-booking-option-subtitle {
@@ -1340,6 +1426,10 @@
 .heiwa-booking-option-description {
   font-size: var(--heiwa-text-sm);
   color: var(--heiwa-neutral-600);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.4;
 }
 
 /* arrow affordance */
