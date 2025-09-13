@@ -1428,12 +1428,18 @@
                          aria-label="Book a room - Choose your dates and accommodation"
                          aria-checked="${bookingData.bookingType === 'room' ? 'true' : 'false'}"
                          tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}">
-                        <div class="heiwa-booking-option-icon">${getLucideIcon('home', 24)}</div>
                         <div class="heiwa-booking-option-content">
-                            <div class="heiwa-booking-option-title">Book a Room</div>
-                            <div class="heiwa-booking-option-description">Choose your dates and accommodation</div>
+                            <div class="heiwa-booking-option-header">
+                                <div class="heiwa-booking-option-title">Flexible Room Stays</div>
+                                <div class="heiwa-booking-option-subtitle">Choose your own adventure</div>
+                            </div>
+                            <div class="heiwa-booking-option-footer">
+                                <div class="heiwa-booking-option-description">Book accommodation only and create your own schedule with optional add-ons</div>
+                                <button class="heiwa-booking-option-cta" type="button">
+                                    Explore Rooms ${getLucideIcon('arrow-right', 16)}
+                                </button>
+                            </div>
                         </div>
-                        <div class="heiwa-booking-option-arrow">${getLucideIcon('chevron-right', 20)}</div>
                     </div>
 
                     <!-- SURF WEEK BOOKING CARD -->
@@ -1443,12 +1449,18 @@
                          aria-label="Book a surf week - Choose your dates and surf lessons"
                          aria-checked="${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}"
                          tabindex="${bookingData.bookingType === 'surf-week' ? '0' : '-1'}">
-                        <div class="heiwa-booking-option-icon">${getLucideIcon('waves', 24)}</div>
                         <div class="heiwa-booking-option-content">
-                            <div class="heiwa-booking-option-title">All-Inclusive Surf Week</div>
-                            <div class="heiwa-booking-option-description">Join our structured surf camp programs</div>
+                            <div class="heiwa-booking-option-header">
+                                <div class="heiwa-booking-option-title">All-Inclusive Surf Weeks</div>
+                                <div class="heiwa-booking-option-subtitle">Complete surf camp experience</div>
+                            </div>
+                            <div class="heiwa-booking-option-footer">
+                                <div class="heiwa-booking-option-description">Join our structured programs with accommodation, meals, and professional surf instruction</div>
+                                <button class="heiwa-booking-option-cta" type="button">
+                                    Explore Surf Weeks ${getLucideIcon('waves', 16)}
+                                </button>
+                            </div>
                         </div>
-                        <div class="heiwa-booking-option-arrow">${getLucideIcon('chevron-right', 20)}</div>
                     </div>
                 </div>
             </div>
@@ -1457,8 +1469,12 @@
         $container.html(bookingTypeHTML);
 
         // Bind click and keyboard events
-        $('.heiwa-booking-option-card').on('click', function() {
-            const bookingType = $(this).data('booking-type');
+        $('.heiwa-booking-option-card, .heiwa-booking-option-cta').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const $card = $(this).closest('.heiwa-booking-option-card');
+            const bookingType = $card.data('booking-type');
 
             // Track booking type selection
             trackEvent('booking_type_selected', {
