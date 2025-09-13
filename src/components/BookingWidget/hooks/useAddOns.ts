@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AddOnSelection } from '../types';
 
 interface AddOn {
@@ -36,15 +36,14 @@ export function useAddOns(): UseAddOnsReturn {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('/api/add-ons');
+        const response = await fetch('/api/public/add-ons');
         if (!response.ok) {
           throw new Error(`Failed to fetch add-ons: ${response.status}`);
         }
-        
-        const data = await response.json();
-        // Filter only active add-ons
-        const activeAddOns = data.filter((addOn: AddOn) => addOn.isActive);
-        setAddOns(activeAddOns);
+
+        const json = await response.json();
+        const list: AddOn[] = Array.isArray(json?.addOns) ? json.addOns : [];
+        setAddOns(list);
       } catch (err) {
         console.error('Error fetching add-ons:', err);
         setError(err instanceof Error ? err.message : 'Failed to load add-ons');
@@ -95,11 +94,11 @@ export function useAddOns(): UseAddOnsReturn {
   };
 
   // Calculate subtotal for all selected add-ons
-  const getAddOnSubtotal = () => {
+  const getAddOnSubtotal = useCallback(() => {
     return selectedAddOns.reduce((total, addOn) => {
       return total + (addOn.price * addOn.quantity);
     }, 0);
-  };
+  }, [selectedAddOns]);
 
   // Clear all selections
   const clearSelections = () => {
