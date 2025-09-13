@@ -2007,7 +2007,7 @@
                                 <p class="heiwa-destination-description">${heiwaSanitize(bookingData.selectedSurfWeek?.description) || 'Perfect surf adventure awaits!'}</p>
                                 <div class="heiwa-destination-meta">
                                     <span class="heiwa-skill-level">${bookingData.selectedSurfWeek?.category.replace('_', ' ').toUpperCase() || 'All levels'}</span>
-                                    <span class="heiwa-location">${formatDate(bookingData.selectedSurfWeek?.start_date)} - ${formatDate(bookingData.selectedSurfWeek?.end_date)}</span>
+                                    <span class="heiwa-location">${formatDateForDisplay(bookingData.selectedSurfWeek?.start_date)} - ${formatDateForDisplay(bookingData.selectedSurfWeek?.end_date)}</span>
                                 </div>
                             </div>
                         </div>
@@ -2051,7 +2051,7 @@
                     <h4 class="heiwa-section-title">${getLucideIcon('calendar', 18)} Trip Dates</h4>
                     <div class="heiwa-dates-summary">
                         <div class="heiwa-date-range">
-                            <strong>${formatDate(bookingData.dates.start)} - ${formatDate(bookingData.dates.end)}</strong>
+                            <strong>${formatDateForDisplay(bookingData.dates.start)} - ${formatDateForDisplay(bookingData.dates.end)}</strong>
                         </div>
                         <div class="heiwa-duration">
                             ${duration} days of epic surfing
@@ -2222,7 +2222,7 @@
 
         // Dates
         if (bookingData.dates.start && bookingData.dates.end) {
-            const dateText = `${formatDate(bookingData.dates.start)} to ${formatDate(bookingData.dates.end)}`;
+            const dateText = `${formatDateForDisplay(bookingData.dates.start)} to ${formatDateForDisplay(bookingData.dates.end)}`;
             summaryHTML += `
                 <div class="heiwa-summary-item">
                     <span class="heiwa-summary-label">Dates:</span>
@@ -2351,7 +2351,7 @@
         if (activeSteps.findIndex(s => s.id === 'surf-weeks') < currentIndex && bookingData.selectedSurfWeek) {
             const w = bookingData.selectedSurfWeek;
             addItem('surf-weeks', `${getLucideIcon('waves', 14)} Surf Week`,
-                `${w.title || ''}<br>${formatDate(w.start_date)} – ${formatDate(w.end_date)}`);
+                `${w.title || ''}<br>${formatDateForDisplay(w.start_date)} – ${formatDateForDisplay(w.end_date)}`);
         }
 
         // assignment
@@ -2367,7 +2367,7 @@
              activeSteps.findIndex(s => s.id === 'dates_participants') < currentIndex) &&
             bookingData.dates.start && bookingData.dates.end) {
             addItem('room-calendar', `${getLucideIcon('calendar', 14)} Dates`,
-                `${formatDate(bookingData.dates.start)} – ${formatDate(bookingData.dates.end)}`);
+                `${formatDateForDisplay(bookingData.dates.start)} – ${formatDateForDisplay(bookingData.dates.end)}`);
         }
 
         // room-selection
@@ -2728,7 +2728,7 @@
                                 </div>
                                 <div class="heiwa-surf-week-meta">
                                     <div class="heiwa-surf-week-dates">
-                                        ${getLucideIcon('calendar', 14)} ${formatDate(week.start_date)} - ${formatDate(week.end_date)}
+                                        ${getLucideIcon('calendar', 14)} ${formatDateForDisplay(week.start_date)} - ${formatDateForDisplay(week.end_date)}
                                     </div>
                                     <div class="heiwa-surf-week-description">
                                         ${heiwaSanitize(week.description)}
