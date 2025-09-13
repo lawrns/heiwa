@@ -45,13 +45,13 @@
 
 /* Room booking card background */
 .heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"]::before {
-  background-image: url('../../../room2.webp') !important;
+  background-image: url('/room2.webp') !important;
   background-color: var(--heiwa-sand-beige-200) !important; /* fallback */
 }
 
 /* Surf week booking card background */
 .heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="surf-week"]::before {
-  background-image: url('../../../room1.jpg') !important;
+  background-image: url('/room1.jpg') !important;
   background-color: var(--heiwa-surf-teal-200) !important; /* fallback */
 }
 
