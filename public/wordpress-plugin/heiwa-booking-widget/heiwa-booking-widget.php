@@ -190,13 +190,37 @@ class Heiwa_Booking_Widget {
             return;
         }
 
-        // Enqueue widget styles
+        // Enqueue widget styles - modular CSS architecture
         wp_enqueue_style(
-            'heiwa-booking-widget',
-            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/widget.css',
+            'heiwa-booking-base',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/base.css',
             array(),
             HEIWA_WIDGET_BUILD_ID
         );
+
+        wp_enqueue_style(
+            'heiwa-booking-components',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/components.css',
+            array('heiwa-booking-base'),
+            HEIWA_WIDGET_BUILD_ID
+        );
+
+        wp_enqueue_style(
+            'heiwa-booking-layout',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/layout.css',
+            array('heiwa-booking-base', 'heiwa-booking-components'),
+            HEIWA_WIDGET_BUILD_ID
+        );
+
+        wp_enqueue_style(
+            'heiwa-booking-utilities',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/css/utilities.css',
+            array('heiwa-booking-base', 'heiwa-booking-components', 'heiwa-booking-layout'),
+            HEIWA_WIDGET_BUILD_ID
+        );
+
+        // Note: Modular CSS architecture is now complete with the 4 files above
+        // No additional widget.css needed - utilities.css is the final layer
 
         // Enqueue widget script
         wp_enqueue_script(

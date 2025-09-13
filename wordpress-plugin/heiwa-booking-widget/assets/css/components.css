@@ -14,20 +14,19 @@
    1. CARD COMPONENT SYSTEM
    =========================================== */
 
-/* Base Card Component */
+/* Base Card Component - Updated per UI/UX Addendum */
 .heiwa-card {
   background: #ffffff;
-  border: 1px solid var(--heiwa-neutral-200);
-  border-radius: var(--heiwa-radius-lg);
+  border-radius: var(--heiwa-radius-xl);
   overflow: hidden;
-  transition: all var(--heiwa-transition-fast);
-  box-shadow: var(--heiwa-shadow-sm);
+  transition: all var(--heiwa-normal) var(--heiwa-ease);
+  box-shadow: var(--heiwa-shadow-md);
+  position: relative;
 }
 
 .heiwa-card:hover {
-  box-shadow: var(--heiwa-shadow-md);
-  border-color: var(--heiwa-neutral-300);
-  transform: translateY(-2px);
+  box-shadow: var(--heiwa-shadow-lg);
+  transform: scale(1.02);
 }
 
 /* Card Content Areas */
@@ -47,17 +46,87 @@
   padding: 0 var(--heiwa-space-4);
 }
 
-/* Card Media */
+/* Card Media - 16:9 aspect ratio with fallback */
 .heiwa-card-image {
   width: 100%;
-  height: 200px;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;
-  transition: transform var(--heiwa-transition-normal);
+  transition: transform var(--heiwa-normal) var(--heiwa-ease);
+}
+
+/* Fallback for browsers that don't support aspect-ratio */
+@supports not (aspect-ratio: 16 / 9) {
+  .heiwa-card-image {
+    height: 200px;
+  }
 }
 
 .heiwa-card:hover .heiwa-card-image {
   transform: scale(1.02);
+}
+
+/* Booking Type Cards - Updated per UI/UX Addendum */
+.heiwa-booking-type-card {
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: var(--heiwa-radius-xl);
+  box-shadow: var(--heiwa-shadow-md);
+  transition: all var(--heiwa-normal) var(--heiwa-ease);
+  min-height: 44px; /* Ensure minimum touch target */
+}
+
+.heiwa-booking-type-card:hover {
+  box-shadow: var(--heiwa-shadow-lg);
+  transform: scale(1.02);
+}
+
+.heiwa-booking-type-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.heiwa-booking-type-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.35) 100%);
+  z-index: 2;
+}
+
+.heiwa-booking-type-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--heiwa-space-6);
+  z-index: 3;
+  color: white;
+}
+
+.heiwa-booking-type-title {
+  font-size: var(--heiwa-text-2xl);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: var(--heiwa-line-height-heading);
+  margin: 0 0 var(--heiwa-space-2) 0;
+}
+
+.heiwa-booking-type-subtitle {
+  font-size: var(--heiwa-text-base);
+  opacity: 0.9;
+  line-height: var(--heiwa-line-height-body);
+  margin: 0;
 }
 
 /* Card Typography */
@@ -100,6 +169,161 @@
 /* Card Variants */
 .heiwa-card-compact {
   padding: var(--heiwa-space-3);
+}
+
+/* ===========================================
+   2. STEPPER COMPONENT SYSTEM
+   =========================================== */
+
+/* Stepper Component - Updated per UI/UX Addendum */
+.heiwa-stepper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--heiwa-space-4);
+  margin-bottom: var(--heiwa-space-6);
+}
+
+.heiwa-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--heiwa-space-2);
+  min-width: 60px;
+}
+
+.heiwa-step-indicator {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--heiwa-radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--heiwa-font-bold);
+  font-size: var(--heiwa-text-sm);
+  transition: all var(--heiwa-fast) var(--heiwa-ease);
+  position: relative;
+}
+
+.heiwa-step-indicator[data-state="pending"] {
+  background: var(--heiwa-neutral-50);
+  color: var(--heiwa-neutral-600);
+  border: 2px solid var(--heiwa-neutral-200);
+}
+
+.heiwa-step-indicator[data-state="current"] {
+  background: var(--heiwa-primary);
+  color: var(--heiwa-primary-contrast);
+  border: 2px solid var(--heiwa-primary);
+  box-shadow: var(--heiwa-shadow-md);
+}
+
+.heiwa-step-indicator[data-state="completed"] {
+  background: var(--heiwa-success);
+  color: white;
+  border: 2px solid var(--heiwa-success);
+}
+
+.heiwa-step-label {
+  font-size: var(--heiwa-text-xs);
+  font-weight: var(--heiwa-font-medium);
+  color: var(--heiwa-neutral-600);
+  text-align: center;
+  line-height: var(--heiwa-line-height-body);
+}
+
+.heiwa-step[data-state="current"] .heiwa-step-label {
+  color: var(--heiwa-primary);
+  font-weight: var(--heiwa-font-semibold);
+}
+
+.heiwa-step[data-state="completed"] .heiwa-step-label {
+  color: var(--heiwa-success);
+}
+
+/* ===========================================
+   3. SUMMARY COMPONENT SYSTEM
+   =========================================== */
+
+/* Summary Component - Updated per UI/UX Addendum */
+.heiwa-summary {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border-radius: var(--heiwa-radius-xl);
+  padding: var(--heiwa-space-4);
+  box-shadow: var(--heiwa-shadow-lg);
+  position: sticky;
+  top: var(--heiwa-space-4);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.heiwa-summary-section {
+  margin-bottom: var(--heiwa-space-4);
+}
+
+.heiwa-summary-section:last-child {
+  margin-bottom: 0;
+}
+
+.heiwa-summary-title {
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-neutral-900);
+  margin-bottom: var(--heiwa-space-3);
+}
+
+.heiwa-summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--heiwa-space-2) 0;
+  border-bottom: 1px solid var(--heiwa-neutral-100);
+}
+
+.heiwa-summary-item:last-child {
+  border-bottom: none;
+}
+
+.heiwa-summary-label {
+  font-size: var(--heiwa-text-base);
+  color: var(--heiwa-neutral-700);
+}
+
+.heiwa-summary-value {
+  font-size: var(--heiwa-text-base);
+  font-weight: var(--heiwa-font-medium);
+  color: var(--heiwa-neutral-900);
+  text-align: right;
+}
+
+.heiwa-summary-total {
+  border-top: 2px solid var(--heiwa-neutral-200);
+  padding-top: var(--heiwa-space-3);
+  margin-top: var(--heiwa-space-3);
+}
+
+.heiwa-summary-total .heiwa-summary-label {
+  font-size: var(--heiwa-text-lg);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-neutral-900);
+}
+
+.heiwa-summary-total .heiwa-summary-value {
+  font-size: var(--heiwa-text-xl);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-primary);
+}
+
+/* Single source of truth for total - ensure only one exists */
+.heiwa-summary-total-value {
+  font-size: var(--heiwa-text-xl);
+  font-weight: var(--heiwa-font-bold);
+  color: var(--heiwa-primary);
+  background: linear-gradient(135deg, var(--heiwa-primary), var(--heiwa-ocean-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .heiwa-card-compact .heiwa-card-content {

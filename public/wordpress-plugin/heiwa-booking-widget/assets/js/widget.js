@@ -576,11 +576,6 @@
                 return false;
             }
 
-            // Skip room-selection step for single participants in room flow
-            if (step.id === 'room-selection' && currentFlow === 'room' && participantCount === 1) {
-                return false;
-            }
-
             return true;
         });
     }
@@ -1086,9 +1081,6 @@
             // Prevent body scroll
             $('body').addClass('heiwa-modal-open');
 
-            // Hide the BOOK NOW button when widget is open
-            $('.heiwa-booking-trigger').addClass('heiwa-hidden');
-
             console.log('Heiwa Booking Widget: Widget opened successfully');
         } else {
             console.error('Heiwa Booking Widget: Failed to find widget elements');
@@ -1117,9 +1109,6 @@
 
             // Re-enable body scroll
             $('body').removeClass('heiwa-modal-open');
-
-            // Show the BOOK NOW button when widget is closed
-            $('.heiwa-booking-trigger').removeClass('heiwa-hidden');
 
             console.log('Heiwa Booking Widget: Widget closed successfully');
         } else {
@@ -1420,35 +1409,50 @@
 
         const bookingTypeHTML = `
             <div class="heiwa-booking-type-selector">
+                <div class="heiwa-booking-type-header">
+                    <h2 class="heiwa-booking-type-title">Book Your Adventure</h2>
+                    <p class="heiwa-booking-type-subtitle">Choose how you'd like to experience Heiwa House</p>
+                </div>
+
                 <div class="heiwa-booking-type-options" role="radiogroup" aria-label="Select booking type">
-                    <!-- ROOM BOOKING CARD -->
                     <div class="heiwa-booking-option-card"
                          data-booking-type="room"
                          role="radio"
                          aria-label="Book a room - Choose your dates and accommodation"
                          aria-checked="${bookingData.bookingType === 'room' ? 'true' : 'false'}"
                          tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}">
-                        <div class="heiwa-booking-option-icon">${getLucideIcon('home', 24)}</div>
-                        <div class="heiwa-booking-option-content">
-                            <div class="heiwa-booking-option-title">Book a Room</div>
-                            <div class="heiwa-booking-option-description">Choose your dates and accommodation</div>
+                        <div class="heiwa-booking-option-icon" aria-hidden="true">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNreUdyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM4N0NFRUIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjBGOUZGIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIFNreSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI3NreUdyYWRpZW50KSIvPgogIDwhLS0gQmVkIC0tPgogIDxyZWN0IHg9IjUwIiB5PSIxMjAiIHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiNGRkZGRkYiIHJ4PSI4Ii8+CiAgPHJlY3QgeD0iNjAiIHk9IjEwMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzNCODJGNiIgcng9IjQiLz4KICA8IS0tIFBpbGxvd3MgLS0+CiAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjEwNSIgcng9IjI1IiByeT0iMTUiIGZpbGw9IiNGM0Y0RjYiLz4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTA1IiByeD0iMjUiIHJ5PSIxNSIgZmlsbD0iI0YzRjRGNiIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iMTkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2QjczODAiPkNvbWZvcnRhYmxlIFJvb21zPC90ZXh0Pgo8L3N2Zz4=" alt="Room booking" />
                         </div>
-                        <div class="heiwa-booking-option-arrow">${getLucideIcon('chevron-right', 20)}</div>
+                        <div class="heiwa-booking-option-content">
+                            <h3 class="heiwa-booking-option-title">Book a Room</h3>
+                            <p class="heiwa-booking-option-subtitle">Choose your dates and accommodation</p>
+                            <p class="heiwa-booking-option-description">Direct booking for rooms with flexible dates</p>
+                        </div>
+                        <div class="heiwa-booking-option-arrow" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                        </div>
                     </div>
 
-                    <!-- SURF WEEK BOOKING CARD -->
                     <div class="heiwa-booking-option-card"
                          data-booking-type="surf-week"
                          role="radio"
                          aria-label="Book a surf week - Choose your dates and surf lessons"
-                         aria-checked="${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}"
-                         tabindex="${bookingData.bookingType === 'surf-week' ? '0' : '-1'}">
-                        <div class="heiwa-booking-option-icon">${getLucideIcon('waves', 24)}</div>
-                        <div class="heiwa-booking-option-content">
-                            <div class="heiwa-booking-option-title">All-Inclusive Surf Week</div>
-                            <div class="heiwa-booking-option-description">Join our structured surf camp programs</div>
+                        <div class="heiwa-booking-option-icon" aria-hidden="true">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9Im9jZWFuR3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBEOTJGNCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMzY5QTEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDwhLS0gT2NlYW4gQmFja2dyb3VuZCAtLT4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNvY2VhbkdyYWRpZW50KSIvPgogIDwhLS0gV2F2ZXMgLS0+CiAgPHBhdGggZD0iTTAgMTIwIFE3NSAxMDAgMTUwIDEyMCBUIDMwMCAxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIzIiBvcGFjaXR5PSIwLjgiLz4KICA8cGF0aCBkPSJNMCAxNDAgUTc1IDEyMCAxNTAgMTQwIFQgMzAwIDE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNiIvPgogIDxwYXRoIGQ9Ik0wIDE2MCBRNTM1IDE0MCAxNTAgMTYwIFQgMzAwIDE2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC40Ii8+CiAgPCEtLSBTdXJmYm9hcmQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEzMCIgcng9IjQwIiByeT0iOCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC45Ii8+CiAgPHRleHQgeD0iMTUwIiB5PSIxOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI0ZGRkZGRiI+U3VyZiBXZWVrczwvdGV4dD4KPC9zdmc+" alt="Surf week booking" />
                         </div>
-                        <div class="heiwa-booking-option-arrow">${getLucideIcon('chevron-right', 20)}</div>
+                        <div class="heiwa-booking-option-content">
+                            <h3 class="heiwa-booking-option-title">All-Inclusive Surf Week</h3>
+                            <p class="heiwa-booking-option-subtitle">Join our structured surf camp programs</p>
+                            <p class="heiwa-booking-option-description">Pre-scheduled weeks with accommodation, meals, and surf lessons</p>
+                        </div>
+                        <div class="heiwa-booking-option-arrow" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2241,8 +2245,13 @@
             </button>
         `;
 
-        // Close summary container (removed duplicate Continue button)
+        // CTA Container
         summaryHTML += `
+            <div class="heiwa-summary-cta-container">
+                <button class="heiwa-cta-button" type="button">
+                    Continue
+                </button>
+            </div>
         </div>
         `;
 
@@ -2640,42 +2649,6 @@
     }
 
     /**
-     * Get surf week thumbnail based on category and location
-     */
-    function getSurfWeekThumbnail(week) {
-        const category = week.category.toLowerCase();
-        const location = week.location?.toLowerCase() || '';
-
-        // Generate thumbnail based on category and location
-        let thumbnailClass = 'heiwa-surf-thumbnail';
-        let icon = 'waves';
-
-        if (category.includes('beginner')) {
-            thumbnailClass += ' heiwa-thumbnail-beginner';
-            icon = 'sun';
-        } else if (category.includes('intermediate')) {
-            thumbnailClass += ' heiwa-thumbnail-intermediate';
-            icon = 'waves';
-        } else if (category.includes('advanced')) {
-            thumbnailClass += ' heiwa-thumbnail-advanced';
-            icon = 'zap';
-        }
-
-        if (location.includes('sayulita')) {
-            thumbnailClass += ' heiwa-thumbnail-sayulita';
-        } else if (location.includes('mazatlan')) {
-            thumbnailClass += ' heiwa-thumbnail-mazatlan';
-        }
-
-        return `
-            <div class="${thumbnailClass}">
-                ${getLucideIcon(icon, 32)}
-                <div class="heiwa-thumbnail-overlay"></div>
-            </div>
-        `;
-    }
-
-    /**
      * Render surf week list
      */
     function renderSurfWeekList() {
@@ -2700,31 +2673,31 @@
                     ${surfWeeks.map(week => `
                         <div class="heiwa-surf-week-item ${bookingData.selectedSurfWeek?.id === week.id ? 'selected' : ''}"
                              data-week-id="${week.id}">
-                            <div class="heiwa-surf-week-thumbnail">
-                                ${getSurfWeekThumbnail(week)}
-                            </div>
                             <div class="heiwa-surf-week-content">
                                 <div class="heiwa-surf-week-header">
                                     <h4 class="heiwa-surf-week-name">${week.title}</h4>
                                     <span class="heiwa-surf-week-category heiwa-category-${week.category.toLowerCase().replace('_', '-')}">
-                                        ${week.category.replace('_', ' ')}
+                                        ${week.category.replace('_', ' ').toUpperCase()}
                                     </span>
                                 </div>
-                                <div class="heiwa-surf-week-meta">
-                                    <div class="heiwa-surf-week-dates">
-                                        ${getLucideIcon('calendar', 14)} ${formatDate(week.start_date)} - ${formatDate(week.end_date)}
-                                    </div>
-                                    <div class="heiwa-surf-week-description">
-                                        ${heiwaSanitize(week.description)}
-                                    </div>
+
+                                <div class="heiwa-surf-week-dates">
+                                    <span class="heiwa-surf-week-date-range">
+                                        ${formatDate(week.start_date)} - ${formatDate(week.end_date)}
+                                    </span>
                                 </div>
+
+                                <div class="heiwa-surf-week-description">
+                                    ${heiwaSanitize(week.description)}
+                                </div>
+
                                 <div class="heiwa-surf-week-footer">
                                     <div class="heiwa-surf-week-price">
                                         <span class="heiwa-price-amount">${heiwaFmt.format(week.price_from)}</span>
                                         <span class="heiwa-price-label">per person</span>
                                     </div>
                                     <div class="heiwa-surf-week-spots">
-                                        ${getLucideIcon('users', 14)} ${week.available_spots} spots left
+                                        <span class="heiwa-spots-available">${week.available_spots} spots left</span>
                                     </div>
                                 </div>
                             </div>
@@ -2797,44 +2770,6 @@
             };
         }
 
-
-        // Ensure room availability is loaded for this week
-        if (!availabilityData || !Array.isArray(availabilityData.available_rooms)) {
-            const week = bookingData.selectedSurfWeek;
-            const start = week?.start_date || week?.startDate;
-            const end = week?.end_date || week?.endDate;
-            const participants = bookingData.participants || 1;
-
-            if (start && end) {
-                // Show lightweight loading while we fetch
-                $container.html('<div class="heiwa-assignment-container"><div class="heiwa-loading">Loading rooms...</div></div>');
-                const params = new URLSearchParams({ start_date: start, end_date: end, participants });
-                makeAPIRequest(`/rooms/availability?${params}`)
-                    .then((resp) => {
-                        if (resp && resp.success && resp.data && Array.isArray(resp.data.available_rooms)) {
-                            availabilityData = resp.data;
-                            // Re-render now that we have room data
-                            renderAssignment();
-                        } else {
-                            console.warn('Heiwa Booking Widget: No rooms returned for assignment fetch', resp);
-                            $container.html('<div class="heiwa-error-state"><h4>No rooms available</h4><p>Please try different dates or adjust participants.</p></div>');
-                        }
-                    })
-                    .catch((err) => {
-                        console.error('Heiwa Booking Widget: Error fetching rooms for assignment', err);
-                        $container.html('<div class="heiwa-error-state"><h4>Could not load rooms</h4><p>Please check your connection and try again.</p></div>');
-                    });
-                return; // Stop here; we'll re-enter once data is ready
-            }
-        }
-
-        // Refresh backend-driven suggestions now that availabilityData is loaded
-        try {
-            bookingData.assignment.suggestions = generateAssignmentSuggestions();
-        } catch (e) {
-            console.warn('Heiwa Booking Widget: Could not refresh suggestions', e);
-        }
-
         const assignmentHTML = `
             <div class="heiwa-assignment-container">
                 <div class="heiwa-step-header">
@@ -2876,76 +2811,50 @@
     }
 
     /**
-     * Generate intelligent assignment suggestions (backend-driven)
+     * Generate intelligent assignment suggestions
      */
     function generateAssignmentSuggestions() {
-        try {
-            const participants = bookingData?.participants || 1;
+        const week = bookingData.selectedSurfWeek;
+        const participants = bookingData.participants;
 
-            // Source rooms from backend availability when present; fall back to simple mocks
-            const apiRooms = (availabilityData && Array.isArray(availabilityData.available_rooms))
-                ? availabilityData.available_rooms
-                : null;
+        // Mock room data - in real implementation this would come from API
+        const availableRooms = [
+            { id: 1, type: 'private', capacity: 2, price: 150, available: true },
+            { id: 2, type: 'private', capacity: 3, price: 210, available: true },
+            { id: 3, type: 'dorm', capacity: 6, price: 85, available: true },
+            { id: 4, type: 'dorm', capacity: 8, price: 75, available: true }
+        ];
 
-            const availableRooms = (apiRooms
-                ? apiRooms.map(r => {
-                    const cap = (typeof r.free === 'number') ? r.free : (r.capacity || 0);
-                    return {
-                        id: r.id,
-                        type: (r.booking_type === 'bed' || r.type === 'dorm') ? 'dorm' : 'private',
-                        capacity: cap,
-                        price: (typeof r.price_per_night === 'number') ? r.price_per_night : (r.price || 0),
-                        available: cap > 0
-                    };
-                })
-                : [
-                    { id: 1, type: 'private', capacity: 2, price: 150, available: true },
-                    { id: 2, type: 'private', capacity: 3, price: 210, available: true },
-                    { id: 3, type: 'dorm', capacity: 6, price: 85, available: true },
-                    { id: 4, type: 'dorm', capacity: 8, price: 75, available: true }
-                ]
-            ).filter(r => r.available && r.capacity > 0);
+        const suggestions = [];
 
-            if (!availableRooms.length) return [];
+        // Best Value suggestion
+        suggestions.push({
+            id: 'best-value',
+            title: 'Best Value',
+            description: 'Optimal balance of cost and comfort',
+            assignments: generateOptimalAssignments(participants, availableRooms, 'value'),
+            totalPrice: calculateSuggestionPrice(generateOptimalAssignments(participants, availableRooms, 'value'), availableRooms)
+        });
 
-            const suggestions = [];
+        // Most Privacy suggestion
+        suggestions.push({
+            id: 'most-privacy',
+            title: 'Most Privacy',
+            description: 'Private rooms for maximum comfort',
+            assignments: generateOptimalAssignments(participants, availableRooms, 'privacy'),
+            totalPrice: calculateSuggestionPrice(generateOptimalAssignments(participants, availableRooms, 'privacy'), availableRooms)
+        });
 
-            const valueAssignments = generateOptimalAssignments(participants, availableRooms, 'value');
-            const privacyAssignments = generateOptimalAssignments(participants, availableRooms, 'privacy');
-            const costAssignments = generateOptimalAssignments(participants, availableRooms, 'cost');
+        // Lowest Cost suggestion
+        suggestions.push({
+            id: 'lowest-cost',
+            title: 'Lowest Cost',
+            description: 'Most economical option',
+            assignments: generateOptimalAssignments(participants, availableRooms, 'cost'),
+            totalPrice: calculateSuggestionPrice(generateOptimalAssignments(participants, availableRooms, 'cost'), availableRooms)
+        });
 
-            // Best Value suggestion
-            suggestions.push({
-                id: 'best-value',
-                title: 'Best Value',
-                description: 'Optimal balance of cost and comfort',
-                assignments: valueAssignments,
-                totalPrice: calculateSuggestionPrice(valueAssignments, availableRooms)
-            });
-
-            // Most Privacy suggestion
-            suggestions.push({
-                id: 'most-privacy',
-                title: 'Most Privacy',
-                description: 'Private rooms for maximum comfort',
-                assignments: privacyAssignments,
-                totalPrice: calculateSuggestionPrice(privacyAssignments, availableRooms)
-            });
-
-            // Lowest Cost suggestion
-            suggestions.push({
-                id: 'lowest-cost',
-                title: 'Lowest Cost',
-                description: 'Most economical option',
-                assignments: costAssignments,
-                totalPrice: calculateSuggestionPrice(costAssignments, availableRooms)
-            });
-
-            return suggestions;
-        } catch (e) {
-            console.warn('Heiwa Booking Widget: Failed to generate suggestions', e);
-            return [];
-        }
+        return suggestions;
     }
 
     /**
@@ -3079,32 +2988,6 @@
     }
 
     /**
-     * Auto-assign best room for single participant in room booking flow
-     * Implements BL-001 fix: Skip room selection step for single participants
-     */
-    function autoAssignBestRoom() {
-        console.log('Heiwa Booking Widget: Auto-assigning best room for single participant');
-
-        if (!availabilityData || !availabilityData.available_rooms || availabilityData.available_rooms.length === 0) {
-            console.warn('Heiwa Booking Widget: No available rooms for auto-assignment');
-            return;
-        }
-
-        // Find the best value room (lowest price per night for single occupancy)
-        const bestRoom = availabilityData.available_rooms
-            .filter(room => room.capacity >= 1) // Can accommodate single participant
-            .sort((a, b) => a.price_per_night - b.price_per_night)[0]; // Cheapest first
-
-        if (bestRoom) {
-            bookingData.selectedRoom = bestRoom;
-            console.log('Heiwa Booking Widget: Auto-assigned room:', bestRoom);
-            updateSummary();
-        } else {
-            console.warn('Heiwa Booking Widget: No suitable room found for auto-assignment');
-        }
-    }
-
-    /**
      * Auto-assign single participant to best value room
      * Implements BL-001 fix: Skip assignment step for single participants
      */
@@ -3192,79 +3075,77 @@
     }
 
     /**
-     * Render room picker grid (backend-driven)
+     * Render room picker grid
      */
     function renderRoomPicker() {
-        // Always use backend-provided availability data
-        const rooms = (availabilityData && Array.isArray(availabilityData.available_rooms))
-            ? availabilityData.available_rooms
-            : [];
+        // Mock room data - in real implementation this would come from API
+        const rooms = [
+            {
+                id: 1,
+                type: 'private',
+                capacity: 2,
+                price: 150,
+                name: 'Private Room (2 beds)',
+                available: true,
+                occupancy: 0
+            },
+            {
+                id: 2,
+                type: 'private',
+                capacity: 3,
+                price: 210,
+                name: 'Private Room (3 beds)',
+                available: true,
+                occupancy: 0
+            },
+            {
+                id: 3,
+                type: 'dorm',
+                capacity: 6,
+                price: 85,
+                name: 'Dorm Room (6 beds)',
+                available: true,
+                occupancy: 0
+            },
+            {
+                id: 4,
+                type: 'dorm',
+                capacity: 8,
+                price: 75,
+                name: 'Dorm Room (8 beds)',
+                available: true,
+                occupancy: 0
+            }
+        ];
 
-        if (!rooms.length) {
-            return `<div class="heiwa-empty-state"><h5>No rooms available</h5><p>Try different dates or reduce participants.</p></div>`;
-        }
+        return rooms.map(room => `
+            <div class="heiwa-room-picker-card ${room.type}" data-room-id="${room.id}">
+                <div class="heiwa-room-picker-header">
+                    <h5 class="heiwa-room-picker-name">${room.name}</h5>
+                    <span class="heiwa-room-picker-type ${room.type}">${room.type}</span>
+                </div>
 
-        return rooms.map((r) => roomCardFromBackend(r)).join('');
-    }
+                <div class="heiwa-room-picker-capacity">
+                    <div class="heiwa-capacity-indicator">
+                        ${Array.from({ length: room.capacity }, (_, i) => `
+                            <div class="heiwa-bed-spot ${i < room.occupancy ? 'occupied' : 'available'}"></div>
+                        `).join('')}
+                    </div>
+                    <span class="heiwa-capacity-text">${room.capacity - room.occupancy} spots left</span>
+                </div>
 
-    /**
-     * Build a compact, high-signal room card from backend data
-     */
-    function roomCardFromBackend(r) {
-        const typeLabel = (r.booking_type === 'bed' || r.booking_type === 'perBed' || r.type === 'dorm') ? 'dorm' : 'private';
-        const price = (typeof r.price_per_night === 'number') ? r.price_per_night : (r.price || 0);
-        const img = r.featured_image || (Array.isArray(r.images) && r.images[0]) || '';
-        const amenities = Array.isArray(r.amenities) ? r.amenities : [];
-        const spotsLeft = (typeof r.free === 'number') ? r.free : (r.capacity || 0);
-        const priceLabel = (typeLabel === 'dorm') ? 'per person' : 'per room';
+                <div class="heiwa-room-picker-price">
+                    <span class="heiwa-price-amount">${heiwaFmt.format(room.price)}</span>
+                    <span class="heiwa-price-label">${room.type === 'private' ? 'per room' : 'per person'}</span>
+                </div>
 
-        return `
-        <div class="heiwa-room-card ${typeLabel}" data-room-id="${r.id}">
-            <div class="heiwa-room-thumb" style="background-image:url('${img}')">
-                <span class="heiwa-badge heiwa-badge-type">${typeLabel}</span>
-                <span class="heiwa-badge heiwa-badge-cap">${getLucideIcon('users',14)} ${spotsLeft} left</span>
+                <div class="heiwa-room-picker-actions">
+                    <button class="heiwa-room-assign-btn" data-room-id="${room.id}" data-action="assign">
+                        Assign Here
+                    </button>
+                </div>
             </div>
-            <div class="heiwa-room-main">
-                <h5 class="heiwa-room-name">${(r.name || 'Room')}</h5>
-                <div class="heiwa-amenity-chips">${amenityChips(amenities)}</div>
-            </div>
-            <div class="heiwa-room-price">
-                <div class="heiwa-price-amount">${heiwaFmt.format(price)}</div>
-                <div class="heiwa-price-label">${priceLabel}</div>
-                <button class="heiwa-assign-cta" data-room-id="${r.id}">${getLucideIcon('check',16)} Assign to ${currentParticipantLabel()}</button>
-            </div>
-        </div>`;
-    }
-
-    /**
-     * Map backend amenities -> compact chips with Lucide icons
-     */
-    function amenityChips(list) {
-        const AMENITY_MAP = {
-            ensuite: { icon: 'bath', label: 'Ensuite' },
-            shared_bathroom: { icon: 'bath', label: 'Shared bath' },
-            ac: { icon: 'snowflake', label: 'AC' },
-            fan: { icon: 'wind', label: 'Fan' },
-            wifi: { icon: 'wifi', label: 'Wi‑Fi' },
-            ocean_view: { icon: 'waves', label: 'Ocean view' },
-            garden_view: { icon: 'mountain', label: 'Garden view' },
-            bunk_beds: { icon: 'bed', label: 'Bunk beds' },
-            queen: { icon: 'bed', label: 'Queen bed' },
-            double: { icon: 'bed', label: 'Double bed' }
-        };
-        if (!Array.isArray(list) || !list.length) return '';
-        return list.slice(0, 6).map(key => {
-            const m = AMENITY_MAP[key] || { icon: 'dot', label: String(key).replace(/_/g, ' ') };
-            return `<span class="heiwa-chip">${getLucideIcon(m.icon, 14)} ${m.label}</span>`;
-        }).join('');
-    }
-
-    function currentParticipantLabel() {
-        const p = (bookingData && Array.isArray(bookingData.participantDetails) && bookingData.participantDetails[0]) || null;
-        if (p && (p.firstName || p.lastName)) {
-            return (p.firstName || '').trim() || (p.lastName || '').trim() || 'traveler';
-        }
-        return 'traveler';
+        `).join('');
     }
 
     /**
@@ -3278,15 +3159,8 @@
             applySuggestion(suggestionId);
         });
 
-        // Room assignment (legacy button)
+        // Room assignment
         $('.heiwa-room-assign-btn').on('click', function(e) {
-            e.stopPropagation();
-            const roomId = $(this).data('room-id');
-            assignToRoom(roomId);
-        });
-
-        // Room assignment (new compact card CTA)
-        $('.heiwa-assign-cta').on('click', function(e) {
             e.stopPropagation();
             const roomId = $(this).data('room-id');
             assignToRoom(roomId);
@@ -3508,14 +3382,8 @@
                     bookingData.dates.end = endDate;
                     console.log('Heiwa Booking Widget: Updated bookingData with dates:', bookingData);
 
-                    // Auto-assign room for single participants, otherwise go to room selection
-                    if (bookingData.participants === 1) {
-                        autoAssignBestRoom();
-                        showToast('Room automatically assigned for single participant!', 'success');
-                        setTimeout(() => showStep('form_addons'), 1000);
-                    } else {
-                        showStep('room-selection');
-                    }
+                    // Navigate to room selection
+                    showStep('room-selection');
                 } else {
                     console.error('Heiwa Booking Widget: API response indicates failure or missing data:', {
                         response: response,

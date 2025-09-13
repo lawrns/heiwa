@@ -8,13 +8,12 @@
  * - Booking flow management
  */
 
-(function($) {
+// Wait for jQuery to be available before initializing
+(function() {
     'use strict';
 
-    // Ensure $ is available for our code
-    if (typeof $ === 'undefined' && typeof jQuery !== 'undefined') {
-        $ = jQuery;
-    }
+    function initializeWidget($) {
+        // jQuery is now available as $ parameter
 
     // Widget state
     let isWidgetOpen = false;
@@ -630,7 +629,7 @@
     /**
      * Initialize the booking widget
      */
-    function initBookingWidget() {
+    function initBookingWidget($) {
         // Ensure styles are present before rendering
         ensureWidgetStylesLoaded();
 
@@ -3583,13 +3582,9 @@
     };
 
     // Initialize when document is ready - multiple fallbacks for WordPress compatibility
-    function initializeWidget() {
-        if (typeof jQuery !== 'undefined') {
-            console.log('Heiwa Booking Widget: Initializing...');
-            initBookingWidget();
-        } else {
-            console.error('Heiwa Booking Widget: jQuery not available');
-        }
+    function initializeWidget($) {
+        console.log('Heiwa Booking Widget: Initializing...');
+        initBookingWidget($);
 
         // Runtime version badge for debugging
         if (typeof window.heiwa_booking_ajax !== 'undefined' && window.heiwa_booking_ajax.build_id) {
@@ -3600,25 +3595,45 @@
         }
     }
 
-    // Multiple initialization methods for WordPress compatibility
-    if (document.readyState === 'loading') {
-        // Document still loading
-        $(document).ready(initializeWidget);
-    } else {
-        // Document already loaded
-        initializeWidget();
+    // Wait for jQuery to be available
+    function waitForjQuery(callback) {
+        if (typeof window.jQuery !== 'undefined' || typeof window.$ !== 'undefined') {
+            const $ = window.jQuery || window.$;
+            callback($);
+        } else {
+            console.log('Heiwa Booking Widget: Waiting for jQuery...');
+            setTimeout(function() {
+                waitForjQuery(callback);
+            }, 50);
+        }
     }
 
-    // Fallback initialization after a short delay
-    setTimeout(function() {
-        if (!isWidgetOpen && $('.heiwa-booking-trigger').length > 0) {
-            // Check if events are bound
-            const triggerElement = $('.heiwa-booking-trigger')[0];
-            if (triggerElement && !jQuery._data(triggerElement, 'events')) {
-                console.log('Heiwa Booking Widget: Fallback initialization');
-                initBookingWidget();
-            }
-        }
-    }, 1000);
+    // Initialize when jQuery is available
+    waitForjQuery(function($) {
+        console.log('Heiwa Booking Widget: jQuery available, initializing...');
 
-})(jQuery || window.jQuery);
+        // Multiple initialization methods for WordPress compatibility
+        if (document.readyState === 'loading') {
+            // Document still loading
+            $(document).ready(function() {
+                initializeWidget($);
+            });
+        } else {
+            // Document already loaded
+            initializeWidget($);
+        }
+
+        // Fallback initialization after a short delay
+        setTimeout(function() {
+            if (!isWidgetOpen && $('.heiwa-booking-trigger').length > 0) {
+                // Check if events are bound
+                const triggerElement = $('.heiwa-booking-trigger')[0];
+                if (triggerElement && !$.data(triggerElement, 'events')) {
+                    console.log('Heiwa Booking Widget: Fallback initialization');
+                    initBookingWidget($);
+                }
+            }
+        }, 1000);
+    });
+
+})();

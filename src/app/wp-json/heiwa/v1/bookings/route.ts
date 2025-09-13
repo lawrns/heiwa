@@ -23,9 +23,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(data, { 
       status: response.status,
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://heiwahouse.com',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, X-WP-Nonce'
+        'Access-Control-Allow-Headers': 'Content-Type, X-WP-Nonce',
+        'Access-Control-Allow-Credentials': 'true'
       }
     });
 
@@ -42,9 +43,10 @@ export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': 'https://heiwahouse.com',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, X-WP-Nonce',
+      'Access-Control-Allow-Credentials': 'true',
     }
   });
 }

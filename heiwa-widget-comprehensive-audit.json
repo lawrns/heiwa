@@ -90,7 +90,11 @@
         "current_behavior": "Desktop-optimized layout that breaks on mobile",
         "expected_behavior": "Mobile-first responsive design with clear information hierarchy",
         "solution": "Redesign card layout for mobile with stacked information",
-        "css_fix": "@media (max-width: 768px) { flex-direction: column; gap: 1rem; }"
+        "css_fix": "@media (max-width: 768px) { flex-direction: column; gap: 1rem; }",
+        "status": "Resolved",
+        "resolution_commits": ["386338a"],
+        "resolution_notes": "Implemented compact grid card with stacked mobile layout; badges, price, and CTA aligned for readability.",
+        "implemented_css": ".heiwa-room-card{display:grid;grid-template-columns:84px 1fr auto} @media (max-width:420px){.heiwa-room-card{grid-template-columns:1fr}}"
       }
     ]
   },
@@ -106,7 +110,10 @@
         "optimized_flow": "Type → Surf Weeks → Dates → Details → Confirm (for single participants)",
         "business_impact": "Reduces conversion by adding friction to single-person bookings",
         "solution": "Skip assignment step when participant count = 1, auto-assign to best value room",
-        "implementation": "Add conditional logic in showStep() function to bypass assignment for single participants"
+        "implementation": "Add conditional logic in showStep() function to bypass assignment for single participants",
+        "status": "Resolved",
+        "resolution_commits": ["386338a", "cd6606a"],
+        "resolution_notes": "Auto-assigns single participant and skips assignment step to details; preserves BL-001 behavior."
       }
     ],
 
@@ -161,7 +168,10 @@
       "business_impact": "Unnecessary friction reduces conversion rates for solo travelers",
       "solution": "Add participant count check before assignment step",
       "code_location": "showStep() function in widget.js",
-      "fix": "if (participantCount === 1) { autoAssignBestValue(); skipToNextStep(); }"
+      "fix": "if (participantCount === 1) { autoAssignBestValue(); skipToNextStep(); }",
+      "status": "Resolved",
+      "resolution_commits": ["386338a", "cd6606a"],
+      "resolution_notes": "Implemented autoAssignSingleParticipant() and step skip to details for participantCount===1; verified backend-driven suggestions compatibility."
     },
     {
       "issue_id": "BL-002",
@@ -351,5 +361,80 @@
     "user_experience_metrics": "Reduce average booking time by 30%",
     "technical_performance": "Achieve 95+ Lighthouse performance score",
     "accessibility_compliance": "Meet WCAG AA standards across all components"
-  }
+  },
+
+  "applied_changes": [
+    {
+      "id": "UI-ROOM-CARDS",
+      "summary": "Backend-driven room cards with thumbnails/amenities, Lucide icons, compact layout",
+      "files": [
+        "public/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js",
+        "public/wordpress-plugin/heiwa-booking-widget/assets/css/utilities.css"
+      ],
+      "commits": ["386338a"],
+      "details": {
+        "cards": "thumbnail + type/spots badges + amenity chips + price label + context-aware CTA",
+        "data_source": "WP availability endpoint (no mocks)",
+        "mobile": "media-style grid; stacked at small widths"
+      }
+    },
+    {
+      "id": "FLOW-ASSIGNMENT-FETCH",
+      "summary": "Ensure assignment step fetches availability for surf-week flow when missing",
+      "files": [
+        "public/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js"
+      ],
+      "commits": ["386338a"],
+      "details": {
+        "when": "Entering assignment without availabilityData",
+        "action": "Fetch /rooms/availability with start/end/participants; re-render on success"
+      }
+    },
+    {
+      "id": "UX-SUGGESTIONS-BACKEND",
+      "summary": "Generate 'Recommended Assignments' from backend rooms",
+      "files": [
+        "public/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js"
+      ],
+      "commits": ["cd6606a"],
+      "details": {
+        "criteria": ["value", "privacy", "cost"],
+        "mapping": "booking_type + free/capacity to internal model",
+        "refresh": "Suggestions recalculated after availability loads"
+      }
+    }
+  ],
+
+  "next_steps": [
+    {
+      "area": "Assignment suggestions UI",
+      "proposal": "Style suggestion cards for clearer selection; keep compact",
+      "impact": "Medium",
+      "effort": "Low"
+    },
+    {
+      "area": "Filter/Sort strip",
+      "proposal": "Private/Dorm filter and Sort by Best fit/Price",
+      "impact": "Medium",
+      "effort": "Low"
+    },
+    {
+      "area": "Shared availability helper",
+      "proposal": "getAvailability({start_date,end_date,participants}) and reuse",
+      "impact": "Low",
+      "effort": "Low"
+    },
+    {
+      "area": "Loading/empty states",
+      "proposal": "Skeleton cards and branded empty-state",
+      "impact": "Low",
+      "effort": "Low"
+    },
+    {
+      "area": "Accessibility",
+      "proposal": "ARIA labels for room cards and CTAs",
+      "impact": "Medium",
+      "effort": "Low"
+    }
+  ]
 }

@@ -4,26 +4,38 @@
   "last_updated": "2024-09-09",
   "overview": {
     "description": "Comprehensive documentation of the WordPress booking widget's styling system, designed for maximum compatibility with WordPress themes and optimal user experience.",
-    "file_location": "wordpress-plugin/heiwa-booking-widget/assets/css/widget.css",
-    "total_lines": "~800 lines of CSS",
+    "architecture": "Modular CSS system with 4 core files: base.css, components.css, layout.css, utilities.css",
+    "file_location": "wordpress-plugin/heiwa-booking-widget/assets/css/",
+    "total_lines": "~1200+ lines of CSS (distributed across 4 modular files)",
     "browser_support": ["Chrome 60+", "Firefox 55+", "Safari 12+", "Edge 79+"],
     "icon_system": "Lucide icons only - no emoticons or emoji characters should be used"
   },
   
   "css_architecture": {
+    "modular_system": {
+      "description": "Four-layer CSS architecture for better maintainability and performance",
+      "layers": {
+        "base.css": "Foundation layer - CSS custom properties, reset, typography, color palette",
+        "components.css": "Component layer - buttons, cards, forms, interactive elements",
+        "layout.css": "Layout layer - modal positioning, grid systems, responsive containers",
+        "utilities.css": "Utilities layer - final overrides, theme compatibility, animations"
+      },
+      "loading_order": "base.css → components.css → layout.css → utilities.css",
+      "benefits": ["Better maintainability", "Faster development", "Reduced CSS conflicts", "Easier debugging"]
+    },
     "organization": {
       "structure": "Component-based architecture with clear separation of concerns",
       "naming_convention": "BEM-inspired with 'heiwa-' prefix for namespace isolation",
       "sections": [
-        "1. Base Variables and Reset",
-        "2. Core Widget Container",
-        "3. Modal Overlay and Positioning", 
-        "4. Header and Navigation",
-        "5. Content Sections (Destinations, Forms, etc.)",
-        "6. Interactive Elements (Buttons, Cards)",
-        "7. Responsive Design",
-        "8. Animation and Transitions",
-        "9. WordPress Theme Overrides"
+        "1. Base Variables and Reset (base.css)",
+        "2. Core Widget Container (layout.css)",
+        "3. Modal Overlay and Positioning (layout.css)",
+        "4. Header and Navigation (components.css)",
+        "5. Content Sections (components.css)",
+        "6. Interactive Elements (components.css)",
+        "7. Responsive Design (all files)",
+        "8. Animation and Transitions (utilities.css)",
+        "9. WordPress Theme Overrides (utilities.css)"
       ]
     },
     "specificity_strategy": {
@@ -257,9 +269,10 @@
   },
 
   "maintenance_notes": {
-    "version_compatibility": "This documentation is for widget version 1.0.0",
+    "version_compatibility": "This documentation is for widget version 2.0.0 with modular CSS architecture",
+    "architecture_changes": "Migrated from single widget.css to 4-file modular system (base.css, components.css, layout.css, utilities.css)",
     "update_frequency": "Review and update with each major widget release",
-    "breaking_changes": "Any modifications to core positioning or display properties should be documented here",
+    "breaking_changes": "Modular architecture change in v2.0.0 - single widget.css replaced with 4 modular files",
     "performance_monitoring": "Monitor Core Web Vitals impact when making styling changes"
   }
 }

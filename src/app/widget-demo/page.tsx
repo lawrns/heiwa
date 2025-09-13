@@ -125,6 +125,17 @@ export default function WidgetDemoPage() {
           transform: scale(0.8) !important;
         }
 
+        /* PIXEL PERFECT: Enhanced button positioning and styling */
+        .heiwa-booking-widget.heiwa-position-right .heiwa-booking-trigger {
+          position: fixed !important;
+          top: 24px !important;
+          right: 24px !important;
+          z-index: 10001 !important;
+          box-shadow: 0 4px 20px rgba(236, 104, 28, 0.4), 0 8px 40px rgba(236, 104, 28, 0.2) !important;
+          backdrop-filter: blur(10px) !important;
+          -webkit-backdrop-filter: blur(10px) !important;
+        }
+
         .heiwa-booking-widget.heiwa-position-right .heiwa-booking-trigger:hover {
           background: linear-gradient(135deg, #ed5600, #ec681c) !important;
           transform: translateY(-2px) !important;
@@ -163,6 +174,32 @@ export default function WidgetDemoPage() {
         .heiwa-booking-widget .heiwa-booking-option-card.selected {
           border-color: #ec681c !important;
           box-shadow: 0 10px 30px rgba(236,104,28,0.15) !important;
+        }
+
+        /* PIXEL PERFECT: Enhanced drawer styling */
+        .heiwa-booking-drawer {
+          box-shadow: 
+            0 25px 50px -12px rgba(0, 0, 0, 0.25),
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            0 0 40px rgba(14, 165, 233, 0.15) !important;
+          backdrop-filter: blur(20px) !important;
+          -webkit-backdrop-filter: blur(20px) !important;
+        }
+
+        /* PIXEL PERFECT: Progress indicator enhancements */
+        .heiwa-booking-progress {
+          background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%) !important;
+          border-bottom: 1px solid rgba(236, 104, 28, 0.1) !important;
+        }
+
+        .heiwa-booking-step-number {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .heiwa-booking-step.current .heiwa-booking-step-number {
+          box-shadow: 0 6px 20px rgba(236, 104, 28, 0.4) !important;
+          transform: scale(1.1) !important;
         }
       `}</style>
 

@@ -1,0 +1,347 @@
+{
+  "title": "Heiwa Booking Widget - Spacing & Overflow Analysis",
+  "version": "2.0.0",
+  "analysis_date": "2024-12-15",
+  "overview": {
+    "description": "Comprehensive analysis of spacing inconsistencies, overflow issues, and padding problems in the Heiwa Booking Widget across different breakpoints and components.",
+    "scope": "Modular CSS architecture (base.css, components.css, layout.css, utilities.css)",
+    "total_issues_identified": 12,
+    "severity_breakdown": {
+      "critical": 2,
+      "high": 4,
+      "medium": 4,
+      "low": 2
+    }
+  },
+
+  "spacing_system_analysis": {
+    "current_state": {
+      "design_tokens": {
+        "space_scale": [
+          "--heiwa-space-1: 0.25rem (4px)",
+          "--heiwa-space-2: 0.5rem (8px)",
+          "--heiwa-space-3: 0.75rem (12px)",
+          "--heiwa-space-4: 1rem (16px)",
+          "--heiwa-space-5: 1.25rem (20px)",
+          "--heiwa-space-6: 1.5rem (24px)",
+          "--heiwa-space-8: 2rem (32px)",
+          "--heiwa-space-10: 2.5rem (40px)"
+        ],
+        "semantic_aliases": [
+          "--heiwa-space-tight: var(--heiwa-space-1)",
+          "--heiwa-space-normal: var(--heiwa-space-2)",
+          "--heiwa-space-comfortable: var(--heiwa-space-4)",
+          "--heiwa-space-loose: var(--heiwa-space-6)"
+        ]
+      },
+      "inconsistencies_found": {
+        "mixed_variable_usage": [
+          "utilities.css uses --heiwa-spacing-xs/md/lg",
+          "components.css uses --heiwa-space-X format",
+          "layout.css mixes both formats"
+        ],
+        "inconsistent_spacing_patterns": [
+          "Card padding varies between 4px and 16px inconsistently",
+          "Form margins use different scales",
+          "Button padding not standardized across variants"
+        ]
+      }
+    }
+  },
+
+  "critical_issues": [
+    {
+      "id": "CRIT-001",
+      "component": "Drawer Content",
+      "issue": "Overflow-y: auto without max-height constraint",
+      "location": "layout.css:245",
+      "description": "Drawer content can grow infinitely, causing layout breaks on mobile",
+      "impact": "Content overflows viewport on mobile devices",
+      "current_code": ".heiwa-booking-content { flex: 1; overflow-y: auto; padding: var(--heiwa-space-6); }",
+      "solution": {
+        "code": ".heiwa-booking-content { flex: 1; overflow-y: auto; padding: var(--heiwa-space-6); max-height: calc(100vh - 120px); }",
+        "rationale": "Constrain height to prevent overflow while maintaining scrollability"
+      }
+    },
+    {
+      "id": "CRIT-002",
+      "component": "Mobile Drawer",
+      "issue": "Full viewport height without safe area considerations",
+      "location": "layout.css:261-271",
+      "description": "Mobile drawer covers entire viewport including system UI areas",
+      "impact": "Content hidden behind notches, navigation bars",
+      "current_code": "@media (max-width: 768px) { .heiwa-booking-drawer { width: 100vw; height: 100vh; ... } }",
+      "solution": {
+        "code": "@media (max-width: 768px) { .heiwa-booking-drawer { width: 100vw; height: 100dvh; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); } }",
+        "rationale": "Use dynamic viewport height and safe area insets for modern mobile devices"
+      }
+    }
+  ],
+
+  "high_priority_issues": [
+    {
+      "id": "HIGH-001",
+      "component": "Booking Option Cards",
+      "issue": "Inconsistent internal spacing and content overflow",
+      "location": "utilities.css:322-344",
+      "description": "Card content can overflow on smaller screens, inconsistent padding",
+      "impact": "Text and buttons overflow card boundaries",
+      "current_code": ".heiwa-booking-option-card { display: flex; align-items: center; }",
+      "solution": {
+        "code": ".heiwa-booking-option-card { display: flex; align-items: center; min-height: 200px; padding: var(--heiwa-space-6); overflow: hidden; } .heiwa-booking-option-content { flex: 1; min-width: 0; }",
+        "rationale": "Add minimum height, proper padding, and flex overflow handling"
+      }
+    },
+    {
+      "id": "HIGH-002",
+      "component": "Form Elements",
+      "issue": "Input padding inconsistent with design system",
+      "location": "components.css:365-378",
+      "description": "Form inputs use different padding than other components",
+      "impact": "Inconsistent visual rhythm throughout forms",
+      "current_code": ".heiwa-form-input { padding: var(--heiwa-space-3) var(--heiwa-space-4); }",
+      "solution": {
+        "code": ".heiwa-form-input { padding: var(--heiwa-space-4); }",
+        "rationale": "Standardize to match card and button padding patterns"
+      }
+    },
+    {
+      "id": "HIGH-003",
+      "component": "Calendar Grid",
+      "issue": "Calendar days can overflow container on small screens",
+      "location": "layout.css:318",
+      "description": "Horizontal scroll without proper responsive handling",
+      "impact": "Poor UX on mobile devices",
+      "current_code": ".heiwa-calendar-grid { overflow-x: auto; }",
+      "solution": {
+        "code": ".heiwa-calendar-grid { overflow-x: auto; -webkit-overflow-scrolling: touch; } @media (max-width: 640px) { .heiwa-calendar-grid { display: block; white-space: nowrap; } .heiwa-calendar-week { display: inline-block; width: 100%; } }",
+        "rationale": "Add touch scrolling and responsive grid adaptation"
+      }
+    },
+    {
+      "id": "HIGH-004",
+      "component": "Typography Hierarchy",
+      "issue": "Heading margins inconsistent across components",
+      "location": "base.css:182-244",
+      "description": "Different margin patterns for similar heading levels",
+      "impact": "Inconsistent vertical rhythm",
+      "current_code": "h1 { margin: 0; } h2 { margin-bottom: var(--heiwa-space-4); } h3 { margin-bottom: var(--heiwa-space-4); }",
+      "solution": {
+        "code": ".heiwa-booking-widget h1, .heiwa-booking-widget h2, .heiwa-booking-widget h3, .heiwa-booking-widget h4 { margin: 0 0 var(--heiwa-space-4) 0; line-height: 1.3; } .heiwa-booking-widget h1 { margin-bottom: var(--heiwa-space-6); }",
+        "rationale": "Standardize heading margins and improve vertical rhythm"
+      }
+    }
+  ],
+
+  "medium_priority_issues": [
+    {
+      "id": "MED-001",
+      "component": "Button Components",
+      "issue": "Inconsistent padding across button variants",
+      "location": "components.css:150-220",
+      "description": "Primary, secondary, and CTA buttons use different padding",
+      "impact": "Visual inconsistency in button hierarchy",
+      "current_code": ".heiwa-btn-primary { padding: var(--heiwa-space-3) var(--heiwa-space-6); } .heiwa-btn-secondary { padding: var(--heiwa-space-3) var(--heiwa-space-5); }",
+      "solution": {
+        "code": ".heiwa-btn { padding: var(--heiwa-space-4) var(--heiwa-space-6); } .heiwa-btn-sm { padding: var(--heiwa-space-2) var(--heiwa-space-4); } .heiwa-btn-lg { padding: var(--heiwa-space-5) var(--heiwa-space-8); }",
+        "rationale": "Create consistent button padding scale with size modifiers"
+      }
+    },
+    {
+      "id": "MED-002",
+      "component": "Card Spacing",
+      "issue": "Card content areas use inconsistent padding",
+      "location": "components.css:34-48",
+      "description": "Card header, body, and footer have different spacing patterns",
+      "impact": "Inconsistent content density within cards",
+      "current_code": ".heiwa-card-content { padding: var(--heiwa-space-4); } .heiwa-card-header { padding: var(--heiwa-space-4) var(--heiwa-space-4) 0 var(--heiwa-space-4); }",
+      "solution": {
+        "code": ".heiwa-card-content { padding: var(--heiwa-space-6); } .heiwa-card-header { padding-bottom: var(--heiwa-space-4); } .heiwa-card-body { padding: var(--heiwa-space-4) 0; } .heiwa-card-footer { padding-top: var(--heiwa-space-4); }",
+        "rationale": "Standardize card spacing with consistent base padding and internal spacing"
+      }
+    },
+    {
+      "id": "MED-003",
+      "component": "Modal Positioning",
+      "issue": "Modal overlay doesn't account for content overflow",
+      "location": "layout.css:130-150",
+      "description": "Modal can extend beyond viewport on small screens",
+      "impact": "Content inaccessible on mobile devices",
+      "current_code": ".heiwa-booking-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; }",
+      "solution": {
+        "code": ".heiwa-booking-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; padding: var(--heiwa-space-4); display: flex; align-items: center; justify-content: center; } .heiwa-booking-panel { max-height: calc(100vh - 2 * var(--heiwa-space-4)); overflow-y: auto; }",
+        "rationale": "Add viewport constraints and proper centering with overflow handling"
+      }
+    },
+    {
+      "id": "MED-004",
+      "component": "Responsive Spacing",
+      "issue": "Spacing doesn't scale properly on smaller screens",
+      "location": "layout.css:260+",
+      "description": "Desktop spacing too large for mobile, no responsive scaling",
+      "impact": "Poor space utilization on mobile devices",
+      "current_code": "@media (max-width: 768px) { /* Limited responsive spacing rules */ }",
+      "solution": {
+        "code": "@media (max-width: 768px) { .heiwa-booking-content { padding: var(--heiwa-space-4); } .heiwa-card { margin-bottom: var(--heiwa-space-3); } .heiwa-form-group { margin-bottom: var(--heiwa-space-3); } } @media (max-width: 480px) { .heiwa-booking-content { padding: var(--heiwa-space-3); } .heiwa-card { margin-bottom: var(--heiwa-space-2); } }",
+        "rationale": "Progressive spacing reduction for better mobile experience"
+      }
+    }
+  ],
+
+  "low_priority_issues": [
+    {
+      "id": "LOW-001",
+      "component": "Variable Naming",
+      "issue": "Mixed spacing variable naming conventions",
+      "location": "Multiple files",
+      "description": "--heiwa-space-X vs --heiwa-spacing-X inconsistency",
+      "impact": "Maintenance overhead and confusion",
+      "current_code": "Mixed usage across files",
+      "solution": {
+        "code": "Standardize on --heiwa-space-X format throughout all CSS files",
+        "rationale": "Consistent naming convention improves maintainability"
+      }
+    },
+    {
+      "id": "LOW-002",
+      "component": "Animation Performance",
+      "issue": "Some transforms lack will-change optimization",
+      "location": "components.css:30, 214, 316",
+      "description": "Hover animations could be smoother with GPU acceleration hints",
+      "impact": "Minor performance improvement opportunity",
+      "current_code": ".heiwa-card:hover { transform: translateY(-2px); }",
+      "solution": {
+        "code": ".heiwa-card { will-change: transform; } .heiwa-card:hover { transform: translateY(-2px); transition: transform 0.2s ease; }",
+        "rationale": "Optimize animations for better performance"
+      }
+    }
+  ],
+
+  "responsive_breakdown": {
+    "mobile_portrait": {
+      "viewport": "320px - 480px",
+      "issues": ["Drawer overflow", "Card content overflow", "Form input spacing", "Button touch targets"],
+      "recommended_spacing": "--heiwa-space-2 to --heiwa-space-4"
+    },
+    "mobile_landscape": {
+      "viewport": "481px - 767px",
+      "issues": ["Calendar grid overflow", "Modal positioning"],
+      "recommended_spacing": "--heiwa-space-3 to --heiwa-space-5"
+    },
+    "tablet": {
+      "viewport": "768px - 1023px",
+      "issues": ["Content density", "Card layout"],
+      "recommended_spacing": "--heiwa-space-4 to --heiwa-space-6"
+    },
+    "desktop": {
+      "viewport": "1024px+",
+      "issues": ["Large spacing optimization"],
+      "recommended_spacing": "--heiwa-space-5 to --heiwa-space-8"
+    }
+  },
+
+  "implementation_plan": {
+    "phase_1_critical": {
+      "duration": "2-3 hours",
+      "tasks": ["Fix drawer content overflow", "Implement safe area insets"],
+      "files": ["layout.css"],
+      "testing": ["Mobile drawer functionality", "iPhone notch compatibility"]
+    },
+    "phase_2_high": {
+      "duration": "4-5 hours",
+      "tasks": ["Standardize card spacing", "Fix form input padding", "Improve calendar overflow", "Normalize typography margins"],
+      "files": ["utilities.css", "components.css", "base.css"],
+      "testing": ["Cross-browser compatibility", "Mobile responsiveness"]
+    },
+    "phase_3_medium": {
+      "duration": "3-4 hours",
+      "tasks": ["Standardize button padding", "Improve card content spacing", "Enhance modal positioning", "Add responsive spacing"],
+      "files": ["components.css", "layout.css"],
+      "testing": ["Visual consistency", "Touch target accessibility"]
+    },
+    "phase_4_optimization": {
+      "duration": "1-2 hours",
+      "tasks": ["Variable naming cleanup", "Animation performance optimization"],
+      "files": ["All CSS files"],
+      "testing": ["Performance metrics", "Code maintainability"]
+    }
+  },
+
+  "testing_checklist": {
+    "visual_consistency": [
+      "Button padding uniformity across variants",
+      "Card spacing consistency",
+      "Form input alignment",
+      "Typography hierarchy spacing"
+    ],
+    "responsive_behavior": [
+      "Mobile drawer functionality (iOS/Android)",
+      "Calendar grid scrolling",
+      "Modal positioning on all screen sizes",
+      "Touch target minimum sizes (44px)"
+    ],
+    "overflow_prevention": [
+      "Content doesn't overflow containers",
+      "Scroll areas work properly",
+      "Safe area considerations on mobile",
+      "Text doesn't break layout on small screens"
+    ],
+    "performance": [
+      "Smooth animations (60fps)",
+      "No layout thrashing",
+      "Optimized CSS delivery",
+      "Minimal repaint/reflow"
+    ]
+  },
+
+  "recommendations": {
+    "immediate_actions": [
+      "Fix drawer overflow issue (CRIT-001)",
+      "Implement mobile safe areas (CRIT-002)",
+      "Standardize form input padding (HIGH-002)"
+    ],
+    "architectural_improvements": [
+      "Create responsive spacing utility classes",
+      "Implement consistent spacing scale across all components",
+      "Add overflow detection utilities for development"
+    ],
+    "maintenance": [
+      "Document spacing system clearly",
+      "Add CSS custom property linter rules",
+      "Create spacing audit checklist for future updates"
+    ]
+  },
+
+  "estimated_effort": {
+    "total_hours": "10-14 hours",
+    "breakdown": {
+      "critical_fixes": "3 hours",
+      "high_priority": "5 hours",
+      "medium_priority": "4 hours",
+      "low_priority_optimization": "2 hours"
+    },
+    "testing_time": "2-3 hours",
+    "documentation": "1 hour"
+  },
+
+  "success_criteria": {
+    "visual": [
+      "Consistent spacing throughout all components",
+      "No content overflow on any screen size",
+      "Proper touch targets on mobile",
+      "Smooth animations and transitions"
+    ],
+    "technical": [
+      "No horizontal scroll on mobile",
+      "Proper viewport handling",
+      "Optimized CSS performance",
+      "Cross-browser compatibility"
+    ],
+    "user_experience": [
+      "Intuitive spacing and layout",
+      "Accessible on all devices",
+      "Consistent interaction patterns",
+      "Professional appearance"
+    ]
+  }
+}

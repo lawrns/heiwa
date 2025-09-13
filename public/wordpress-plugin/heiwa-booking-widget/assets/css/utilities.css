@@ -186,34 +186,6 @@
   animation: heiwa-wave-flow 20s linear infinite reverse;
 }
 
-/* Premium Wave Patterns */
-.heiwa-wave-pattern-1 {
-  background-image: url("data:image/svg+xml,%3csvg width='100' height='2' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,1 C25,0 50,2 75,1 C87.5,0.5 100,1.5 100,1' stroke='%23ec681c' stroke-width='0.5' fill='none'/%3e%3c/svg%3e");
-  background-repeat: repeat-x;
-  background-position: bottom;
-  animation: heiwa-wave-flow 6s linear infinite;
-}
-
-.heiwa-wave-pattern-2 {
-  background-image: url("data:image/svg+xml,%3csvg width='100' height='4' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,2 C25,0 50,4 75,2 C87.5,1 100,3 100,2' stroke='rgba(236,104,28,0.4)' stroke-width='1' fill='none'/%3e%3c/svg%3e");
-  background-repeat: repeat-x;
-  background-position: bottom;
-  animation: heiwa-wave-flow 8s linear infinite reverse;
-}
-
-/* Premium Ocean Gradients */
-.heiwa-ocean-gradient-1 {
-  background: linear-gradient(135deg, var(--heiwa-primary-color) 0%, var(--heiwa-primary-hover) 50%, var(--heiwa-primary-color) 100%);
-}
-
-.heiwa-ocean-gradient-2 {
-  background: linear-gradient(45deg, #b34711 0%, var(--heiwa-primary-color) 50%, var(--heiwa-primary-hover) 100%);
-}
-
-.heiwa-ocean-gradient-3 {
-  background: linear-gradient(180deg, var(--heiwa-ocean-blue-50) 0%, var(--heiwa-ocean-blue-100) 50%, var(--heiwa-ocean-blue-200) 100%);
-}
-
 /* ===========================================
    3. ASSIGNMENT & BOOKING STEP COMPONENTS
    =========================================== */
@@ -346,31 +318,123 @@
    4. ENHANCED INTERACTIONS & POLISH
    =========================================== */
 
-/* Legacy booking option overrides (removed - now handled in components.css) */
-
-/* Booking Type Header and Container Styling */
-.heiwa-booking-type-selector {
-  padding: var(--heiwa-space-6);
+/* Booking Type Selector overrides */
+.heiwa-booking-widget .heiwa-booking-option-card {
+  display: flex;
+  align-items: center;
 }
 
-.heiwa-booking-type-header {
-  text-align: center;
-  margin-bottom: var(--heiwa-space-8);
+/* Beautiful room backdrop for Flexible Room Stays card */
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"] {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg,
+    rgba(236, 106, 28, 0.9) 0%,
+    rgba(236, 106, 28, 0.7) 100%),
+    url('images/room2.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: var(--heiwa-radius-xl);
+  box-shadow: 0 20px 40px rgba(236, 106, 28, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(1px);
 }
 
-.heiwa-booking-type-title {
-  font-size: var(--heiwa-text-3xl);
-  font-weight: var(--heiwa-font-bold);
-  color: var(--heiwa-neutral-900);
-  margin: 0 0 var(--heiwa-space-3) 0;
-  line-height: 1.2;
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"]:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px rgba(236, 106, 28, 0.4);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
-.heiwa-booking-type-subtitle {
-  font-size: var(--heiwa-text-lg);
-  color: var(--heiwa-neutral-600);
-  margin: 0;
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.3) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"] .heiwa-booking-option-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"] .heiwa-booking-option-title {
+  color: white;
+  font-weight: 700;
+  font-size: var(--heiwa-font-size-xl);
+  margin-bottom: var(--heiwa-spacing-xs);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"] .heiwa-booking-option-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: var(--heiwa-font-size-base);
+  margin-bottom: var(--heiwa-spacing-md);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"] .heiwa-booking-option-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--heiwa-font-size-sm);
   line-height: 1.5;
+  margin-bottom: var(--heiwa-spacing-lg);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"] .heiwa-booking-option-cta {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-weight: 600;
+  padding: var(--heiwa-spacing-sm) var(--heiwa-spacing-lg);
+  border-radius: var(--heiwa-radius-md);
+  transition: all var(--heiwa-transition-normal);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="room"] .heiwa-booking-option-cta:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.heiwa-booking-widget .heiwa-booking-option-arrow {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  color: var(--heiwa-neutral-400);
+  transition: all var(--heiwa-transition-fast);
+}
+
+.heiwa-booking-widget .heiwa-booking-option-arrow svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.heiwa-booking-widget .heiwa-booking-option-card:hover .heiwa-booking-option-arrow {
+  color: var(--heiwa-primary-color);
+  transform: translateX(4px);
+}
+
+/* Container spacing and hierarchy */
+.heiwa-booking-widget .heiwa-booking-type-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--heiwa-space-4);
 }
 
 /* Enhanced drawer polish */
@@ -636,24 +700,3 @@
     font-weight: 700 !important;
     color: var(--heiwa-orange) !important;
 }
-
-
-/* Compact room cards for assignment step */
-.heiwa-room-card { display: grid; grid-template-columns: 84px 1fr auto; gap: var(--heiwa-space-3); align-items: start; border: 1px solid var(--heiwa-neutral-200); border-radius: var(--heiwa-radius-lg); padding: var(--heiwa-space-3); background: #fff; }
-.heiwa-room-thumb { width: 84px; height: 84px; border-radius: var(--heiwa-radius-md); background: #eef center/cover; position: relative; overflow: hidden; }
-.heiwa-badge { position: absolute; left: 6px; padding: 2px 6px; border-radius: 8px; font-size: var(--heiwa-text-xs); background: rgba(255,255,255,0.9); color: var(--heiwa-neutral-800); }
-.heiwa-badge-type { top: 6px; }
-.heiwa-badge-cap { bottom: 6px; }
-.heiwa-room-name { margin: 0 0 6px 0; font-size: var(--heiwa-text-sm); font-weight: var(--heiwa-font-semibold); color: var(--heiwa-neutral-900); }
-.heiwa-amenity-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.heiwa-chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; background: var(--heiwa-neutral-100); color: var(--heiwa-neutral-700); font-size: var(--heiwa-text-xs); }
-.heiwa-room-price { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 132px; }
-.heiwa-price-amount { color: var(--heiwa-primary-color); font-weight: var(--heiwa-font-bold); }
-.heiwa-price-label { color: var(--heiwa-neutral-500); font-size: var(--heiwa-text-xs); }
-.heiwa-assign-cta { background: transparent; border: 1px solid var(--heiwa-primary-color); color: var(--heiwa-primary-color); border-radius: var(--heiwa-radius-md); padding: 6px 10px; cursor: pointer; }
-.heiwa-assign-cta:hover { background: var(--heiwa-primary-50); }
-
-/* Sticky step header for better context while scrolling */
-.heiwa-step-header { position: sticky; top: 0; z-index: 10; background: #fff; padding-top: var(--heiwa-space-2); margin-top: calc(-1 * var(--heiwa-space-2)); }
-
-@media (max-width: 420px) { .heiwa-room-card { grid-template-columns: 1fr; } .heiwa-room-price { align-items: flex-start; } }

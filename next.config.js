@@ -55,6 +55,16 @@ const nextConfig = {
     ]
   },
 
+  // Handle favicon requests
+  async rewrites() {
+    return [
+      {
+        source: '/favicon.ico',
+        destination: '/favicon.svg',
+      },
+    ]
+  },
+
 
   // Force dynamic rendering for admin routes to prevent SSR issues
   generateBuildId: async () => {
