@@ -1416,44 +1416,34 @@
         const bookingTypeHTML = `
             <div class="heiwa-booking-type-selector">
                 <div class="heiwa-booking-type-options" role="radiogroup" aria-label="Select booking type">
+                    <!-- ROOM BOOKING CARD -->
                     <div class="heiwa-booking-option-card"
                          data-booking-type="room"
                          role="radio"
                          aria-label="Book a room - Choose your dates and accommodation"
                          aria-checked="${bookingData.bookingType === 'room' ? 'true' : 'false'}"
                          tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}">
-                        <div class="heiwa-booking-option-icon" aria-hidden="true">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNreUdyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM4N0NFRUIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjBGOUZGIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIFNreSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI3NreUdyYWRpZW50KSIvPgogIDwhLS0gQmVkIC0tPgogIDxyZWN0IHg9IjUwIiB5PSIxMjAiIHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiNGRkZGRkYiIHJ4PSI4Ii8+CiAgPHJlY3QgeD0iNjAiIHk9IjEwMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzNCODJGNiIgcng9IjQiLz4KICA8IS0tIFBpbGxvd3MgLS0+CiAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjEwNSIgcng9IjI1IiByeT0iMTUiIGZpbGw9IiNGM0Y0RjYiLz4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTA1IiByeD0iMjUiIHJ5PSIxNSIgZmlsbD0iI0YzRjRGNiIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iMTkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2QjczODAiPkNvbWZvcnRhYmxlIFJvb21zPC90ZXh0Pgo8L3N2Zz4=" alt="Room booking" />
-                        </div>
+                        <div class="heiwa-booking-option-icon">🏠</div>
                         <div class="heiwa-booking-option-content">
-                            <h3 class="heiwa-booking-option-title">Book a Room</h3>
-                            <p class="heiwa-booking-option-subtitle">Choose your dates and accommodation</p>
-                            <p class="heiwa-booking-option-description">Direct booking for rooms with flexible dates</p>
+                            <div class="heiwa-booking-option-title">Book a Room</div>
+                            <div class="heiwa-booking-option-description">Choose your dates and accommodation</div>
                         </div>
-                        <div class="heiwa-booking-option-arrow" aria-hidden="true">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M9 18l6-6-6-6"/>
-                            </svg>
-                        </div>
+                        <div class="heiwa-booking-option-arrow">→</div>
                     </div>
 
+                    <!-- SURF WEEK BOOKING CARD -->
                     <div class="heiwa-booking-option-card"
                          data-booking-type="surf-week"
                          role="radio"
                          aria-label="Book a surf week - Choose your dates and surf lessons"
-                        <div class="heiwa-booking-option-icon" aria-hidden="true">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9Im9jZWFuR3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBEOTJGNCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMzY5QTEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDwhLS0gT2NlYW4gQmFja2dyb3VuZCAtLT4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNvY2VhbkdyYWRpZW50KSIvPgogIDwhLS0gV2F2ZXMgLS0+CiAgPHBhdGggZD0iTTAgMTIwIFE3NSAxMDAgMTUwIDEyMCBUIDMwMCAxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIzIiBvcGFjaXR5PSIwLjgiLz4KICA8cGF0aCBkPSJNMCAxNDAgUTc1IDEyMCAxNTAgMTQwIFQgMzAwIDE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNiIvPgogIDxwYXRoIGQ9Ik0wIDE2MCBRNTM1IDE0MCAxNTAgMTYwIFQgMzAwIDE2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC40Ii8+CiAgPCEtLSBTdXJmYm9hcmQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEzMCIgcng9IjQwIiByeT0iOCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC45Ii8+CiAgPHRleHQgeD0iMTUwIiB5PSIxOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI0ZGRkZGRiI+U3VyZiBXZWVrczwvdGV4dD4KPC9zdmc+" alt="Surf week booking" />
-                        </div>
+                         aria-checked="${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}"
+                         tabindex="${bookingData.bookingType === 'surf-week' ? '0' : '-1'}">
+                        <div class="heiwa-booking-option-icon">🏄‍♂️</div>
                         <div class="heiwa-booking-option-content">
-                            <h3 class="heiwa-booking-option-title">All-Inclusive Surf Week</h3>
-                            <p class="heiwa-booking-option-subtitle">Join our structured surf camp programs</p>
-                            <p class="heiwa-booking-option-description">Pre-scheduled weeks with accommodation, meals, and surf lessons</p>
+                            <div class="heiwa-booking-option-title">All-Inclusive Surf Week</div>
+                            <div class="heiwa-booking-option-description">Join our structured surf camp programs</div>
                         </div>
-                        <div class="heiwa-booking-option-arrow" aria-hidden="true">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M9 18l6-6-6-6"/>
-                            </svg>
-                        </div>
+                        <div class="heiwa-booking-option-arrow">→</div>
                     </div>
                 </div>
             </div>
