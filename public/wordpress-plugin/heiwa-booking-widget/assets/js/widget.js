@@ -2131,10 +2131,23 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Complete Booking CTA -->
+                <div class="heiwa-confirmation-actions">
+                    <button class="heiwa-cta-button heiwa-complete-booking-btn" data-action="complete-booking" type="button">
+                        ${getLucideIcon('check-circle', 18)} Complete Booking
+                    </button>
+                    <div class="heiwa-booking-notice">
+                        By completing this booking, you agree to our terms and conditions.
+                    </div>
+                </div>
             </div>
         `;
 
         $container.html(confirmationHTML);
+
+        // Bind the complete booking button
+        $container.find('.heiwa-complete-booking-btn').on('click', handleCTAClick);
     }
 
     /**
