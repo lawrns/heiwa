@@ -1148,19 +1148,23 @@
   gap: var(--heiwa-space-4);
 }
 
-/* Enhanced surf week items with premium styling */
+/* COMPACT SURF WEEK CARDS - REDESIGNED */
 .heiwa-booking-widget .heiwa-surf-week-item,
 .heiwa-booking-drawer .heiwa-surf-week-item {
-  border: 2px solid var(--heiwa-neutral-200);
-  border-radius: var(--heiwa-radius-xl);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--heiwa-space-3);
+  border: 1px solid var(--heiwa-neutral-200);
+  border-radius: var(--heiwa-radius-lg);
   background: white;
   cursor: pointer;
   transition: all var(--heiwa-transition-normal);
   overflow: hidden;
-  margin-bottom: var(--heiwa-space-4);
+  margin-bottom: var(--heiwa-space-3);
   position: relative;
   box-shadow: var(--heiwa-shadow-sm);
-  padding: var(--heiwa-space-5);
+  padding: var(--heiwa-space-3);
+  min-height: 80px;
 }
 
 .heiwa-booking-widget .heiwa-surf-week-item::before,
@@ -1207,24 +1211,146 @@
   animation: heiwa-ocean-shimmer 2s ease-in-out infinite;
 }
 
-.heiwa-booking-widget .heiwa-surf-week-item.selected::after,
-.heiwa-booking-drawer .heiwa-surf-week-item.selected::after {
-  content: '✓';
-  position: absolute;
-  top: var(--heiwa-space-4);
-  right: var(--heiwa-space-4);
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--heiwa-primary-color), var(--heiwa-accent-color));
-  color: white;
-  border-radius: 50%;
+/* Surf week thumbnails */
+.heiwa-surf-week-thumbnail {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--heiwa-radius-md);
+  overflow: hidden;
+  position: relative;
+}
+
+.heiwa-surf-thumbnail {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--heiwa-text-lg);
+  position: relative;
+  background: linear-gradient(135deg, var(--heiwa-primary-100), var(--heiwa-primary-200));
+  color: var(--heiwa-primary-color);
+}
+
+.heiwa-thumbnail-beginner {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #d97706;
+}
+
+.heiwa-thumbnail-intermediate {
+  background: linear-gradient(135deg, #dbeafe, #93c5fd);
+  color: #2563eb;
+}
+
+.heiwa-thumbnail-advanced {
+  background: linear-gradient(135deg, #fce7f3, #f9a8d4);
+  color: #be185d;
+}
+
+.heiwa-thumbnail-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+}
+
+/* Surf week content */
+.heiwa-surf-week-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--heiwa-space-2);
+}
+
+.heiwa-surf-week-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--heiwa-space-2);
+}
+
+.heiwa-surf-week-name {
+  font-size: var(--heiwa-text-sm);
+  font-weight: var(--heiwa-font-semibold);
+  color: var(--heiwa-neutral-900);
+  margin: 0;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.heiwa-surf-week-category {
+  font-size: var(--heiwa-text-xs);
+  font-weight: var(--heiwa-font-medium);
+  padding: 2px 6px;
+  border-radius: var(--heiwa-radius-sm);
+  background: var(--heiwa-neutral-100);
+  color: var(--heiwa-neutral-600);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.heiwa-surf-week-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--heiwa-space-1);
+}
+
+.heiwa-surf-week-dates {
+  font-size: var(--heiwa-text-xs);
+  color: var(--heiwa-neutral-600);
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-1);
+}
+
+.heiwa-surf-week-description {
+  font-size: var(--heiwa-text-xs);
+  color: var(--heiwa-neutral-500);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.heiwa-surf-week-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--heiwa-space-2);
+}
+
+.heiwa-surf-week-price {
+  display: flex;
+  align-items: baseline;
+  gap: var(--heiwa-space-1);
+}
+
+.heiwa-price-amount {
+  font-size: var(--heiwa-text-sm);
   font-weight: var(--heiwa-font-bold);
-  box-shadow: 0 4px 12px rgba(236, 104, 28, 0.3);
-  animation: heiwa-bounce 0.6s ease-out;
+  color: var(--heiwa-primary-color);
+}
+
+.heiwa-price-label {
+  font-size: var(--heiwa-text-xs);
+  color: var(--heiwa-neutral-500);
+}
+
+.heiwa-surf-week-spots {
+  font-size: var(--heiwa-text-xs);
+  color: var(--heiwa-neutral-600);
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-1);
+}
+
+/* Selected state */
+.heiwa-booking-widget .heiwa-surf-week-item.selected,
+.heiwa-booking-drawer .heiwa-surf-week-item.selected {
+  border-color: var(--heiwa-primary-color);
+  background: var(--heiwa-primary-50);
+  box-shadow: 0 0 0 2px var(--heiwa-primary-100);
 }
 
 /* ===========================================

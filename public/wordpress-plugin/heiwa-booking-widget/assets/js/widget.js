@@ -576,6 +576,11 @@
                 return false;
             }
 
+            // Skip room-selection step for single participants in room flow
+            if (step.id === 'room-selection' && currentFlow === 'room' && participantCount === 1) {
+                return false;
+            }
+
             return true;
         });
     }
@@ -1423,12 +1428,12 @@
                          aria-label="Book a room - Choose your dates and accommodation"
                          aria-checked="${bookingData.bookingType === 'room' ? 'true' : 'false'}"
                          tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}">
-                        <div class="heiwa-booking-option-icon">🏠</div>
+                        <div class="heiwa-booking-option-icon">${getLucideIcon('home', 24)}</div>
                         <div class="heiwa-booking-option-content">
                             <div class="heiwa-booking-option-title">Book a Room</div>
                             <div class="heiwa-booking-option-description">Choose your dates and accommodation</div>
                         </div>
-                        <div class="heiwa-booking-option-arrow">→</div>
+                        <div class="heiwa-booking-option-arrow">${getLucideIcon('chevron-right', 20)}</div>
                     </div>
 
                     <!-- SURF WEEK BOOKING CARD -->
@@ -1438,12 +1443,12 @@
                          aria-label="Book a surf week - Choose your dates and surf lessons"
                          aria-checked="${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}"
                          tabindex="${bookingData.bookingType === 'surf-week' ? '0' : '-1'}">
-                        <div class="heiwa-booking-option-icon">🏄‍♂️</div>
+                        <div class="heiwa-booking-option-icon">${getLucideIcon('waves', 24)}</div>
                         <div class="heiwa-booking-option-content">
                             <div class="heiwa-booking-option-title">All-Inclusive Surf Week</div>
                             <div class="heiwa-booking-option-description">Join our structured surf camp programs</div>
                         </div>
-                        <div class="heiwa-booking-option-arrow">→</div>
+                        <div class="heiwa-booking-option-arrow">${getLucideIcon('chevron-right', 20)}</div>
                     </div>
                 </div>
             </div>
@@ -2635,6 +2640,42 @@
     }
 
     /**
+     * Get surf week thumbnail based on category and location
+     */
+    function getSurfWeekThumbnail(week) {
+        const category = week.category.toLowerCase();
+        const location = week.location?.toLowerCase() || '';
+
+        // Generate thumbnail based on category and location
+        let thumbnailClass = 'heiwa-surf-thumbnail';
+        let icon = 'waves';
+
+        if (category.includes('beginner')) {
+            thumbnailClass += ' heiwa-thumbnail-beginner';
+            icon = 'sun';
+        } else if (category.includes('intermediate')) {
+            thumbnailClass += ' heiwa-thumbnail-intermediate';
+            icon = 'waves';
+        } else if (category.includes('advanced')) {
+            thumbnailClass += ' heiwa-thumbnail-advanced';
+            icon = 'zap';
+        }
+
+        if (location.includes('sayulita')) {
+            thumbnailClass += ' heiwa-thumbnail-sayulita';
+        } else if (location.includes('mazatlan')) {
+            thumbnailClass += ' heiwa-thumbnail-mazatlan';
+        }
+
+        return `
+            <div class="${thumbnailClass}">
+                ${getLucideIcon(icon, 32)}
+                <div class="heiwa-thumbnail-overlay"></div>
+            </div>
+        `;
+    }
+
+    /**
      * Render surf week list
      */
     function renderSurfWeekList() {
@@ -2659,31 +2700,31 @@
                     ${surfWeeks.map(week => `
                         <div class="heiwa-surf-week-item ${bookingData.selectedSurfWeek?.id === week.id ? 'selected' : ''}"
                              data-week-id="${week.id}">
+                            <div class="heiwa-surf-week-thumbnail">
+                                ${getSurfWeekThumbnail(week)}
+                            </div>
                             <div class="heiwa-surf-week-content">
                                 <div class="heiwa-surf-week-header">
                                     <h4 class="heiwa-surf-week-name">${week.title}</h4>
                                     <span class="heiwa-surf-week-category heiwa-category-${week.category.toLowerCase().replace('_', '-')}">
-                                        ${week.category.replace('_', ' ').toUpperCase()}
+                                        ${week.category.replace('_', ' ')}
                                     </span>
                                 </div>
-
-                                <div class="heiwa-surf-week-dates">
-                                    <span class="heiwa-surf-week-date-range">
-                                        ${formatDate(week.start_date)} - ${formatDate(week.end_date)}
-                                    </span>
+                                <div class="heiwa-surf-week-meta">
+                                    <div class="heiwa-surf-week-dates">
+                                        ${getLucideIcon('calendar', 14)} ${formatDate(week.start_date)} - ${formatDate(week.end_date)}
+                                    </div>
+                                    <div class="heiwa-surf-week-description">
+                                        ${heiwaSanitize(week.description)}
+                                    </div>
                                 </div>
-
-                                <div class="heiwa-surf-week-description">
-                                    ${heiwaSanitize(week.description)}
-                                </div>
-
                                 <div class="heiwa-surf-week-footer">
                                     <div class="heiwa-surf-week-price">
                                         <span class="heiwa-price-amount">${heiwaFmt.format(week.price_from)}</span>
                                         <span class="heiwa-price-label">per person</span>
                                     </div>
                                     <div class="heiwa-surf-week-spots">
-                                        <span class="heiwa-spots-available">${week.available_spots} spots left</span>
+                                        ${getLucideIcon('users', 14)} ${week.available_spots} spots left
                                     </div>
                                 </div>
                             </div>
@@ -2971,6 +3012,32 @@
                 </div>
             </div>
         `;
+    }
+
+    /**
+     * Auto-assign best room for single participant in room booking flow
+     * Implements BL-001 fix: Skip room selection step for single participants
+     */
+    function autoAssignBestRoom() {
+        console.log('Heiwa Booking Widget: Auto-assigning best room for single participant');
+
+        if (!availabilityData || !availabilityData.available_rooms || availabilityData.available_rooms.length === 0) {
+            console.warn('Heiwa Booking Widget: No available rooms for auto-assignment');
+            return;
+        }
+
+        // Find the best value room (lowest price per night for single occupancy)
+        const bestRoom = availabilityData.available_rooms
+            .filter(room => room.capacity >= 1) // Can accommodate single participant
+            .sort((a, b) => a.price_per_night - b.price_per_night)[0]; // Cheapest first
+
+        if (bestRoom) {
+            bookingData.selectedRoom = bestRoom;
+            console.log('Heiwa Booking Widget: Auto-assigned room:', bestRoom);
+            updateSummary();
+        } else {
+            console.warn('Heiwa Booking Widget: No suitable room found for auto-assignment');
+        }
     }
 
     /**
@@ -3368,8 +3435,14 @@
                     bookingData.dates.end = endDate;
                     console.log('Heiwa Booking Widget: Updated bookingData with dates:', bookingData);
 
-                    // Navigate to room selection
-                    showStep('room-selection');
+                    // Auto-assign room for single participants, otherwise go to room selection
+                    if (bookingData.participants === 1) {
+                        autoAssignBestRoom();
+                        showToast('Room automatically assigned for single participant!', 'success');
+                        setTimeout(() => showStep('form_addons'), 1000);
+                    } else {
+                        showStep('room-selection');
+                    }
                 } else {
                     console.error('Heiwa Booking Widget: API response indicates failure or missing data:', {
                         response: response,
