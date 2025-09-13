@@ -122,66 +122,75 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                 `}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="flex items-center justify-between">
+                {/* Mobile-responsive layout */}
+                <div className="space-y-3">
                   {/* Add-on Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
                       {getCategoryIcon(addOn.category)}
-                      <h4 className="text-lg font-semibold text-gray-900">
+                      <h4 className="text-base sm:text-lg font-semibold text-gray-900 flex-1 min-w-0">
                         {addOn.name}
                       </h4>
-                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full capitalize">
+                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full capitalize shrink-0">
                         {addOn.category}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600 mb-2">
                       {addOn.description}
                     </p>
-                    <div className="text-lg font-bold text-orange-600">
-                      {formatPrice(addOn.price)}
-                      {quantity > 0 && (
-                        <span className="text-sm text-gray-500 ml-2">
-                          × {quantity} = {formatPrice(addOn.price * quantity)}
-                        </span>
-                      )}
-                    </div>
                   </div>
 
-                  {/* Quantity Controls */}
-                  <div className="flex items-center gap-3 ml-4">
-                    <button
-                      onClick={() => updateAddOnQuantity(addOn.id, quantity - 1)}
-                      disabled={quantity === 0}
-                      className="
-                        w-10 h-10 rounded-full border border-gray-300
-                        flex items-center justify-center
-                        hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed
-                        transition-colors duration-200
-                        focus:outline-none focus:ring-2 focus:ring-orange-500/30
-                      "
-                      aria-label={`Decrease ${addOn.name} quantity`}
-                    >
-                      <Minus size={16} />
-                    </button>
+                  {/* Price and Controls Row */}
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="text-lg font-bold text-orange-600">
+                        {formatPrice(addOn.price)}
+                      </div>
+                      {quantity > 0 && (
+                        <div className="text-sm text-gray-500">
+                          × {quantity} = {formatPrice(addOn.price * quantity)}
+                        </div>
+                      )}
+                    </div>
 
-                    <span className="w-12 text-center text-lg font-semibold text-gray-900">
-                      {quantity}
-                    </span>
+                    {/* Quantity Controls */}
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => updateAddOnQuantity(addOn.id, quantity - 1)}
+                        disabled={quantity === 0}
+                        className="
+                          w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-gray-300
+                          flex items-center justify-center
+                          hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed
+                          transition-colors duration-200
+                          focus:outline-none focus:ring-2 focus:ring-orange-500/30
+                          touch-action: manipulation
+                        "
+                        aria-label={`Decrease ${addOn.name} quantity`}
+                      >
+                        <Minus size={14} />
+                      </button>
 
-                    <button
-                      onClick={() => updateAddOnQuantity(addOn.id, quantity + 1)}
-                      disabled={addOn.maxQuantity ? quantity >= addOn.maxQuantity : false}
-                      className="
-                        w-10 h-10 rounded-full border border-gray-300
-                        flex items-center justify-center
-                        hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed
-                        transition-colors duration-200
-                        focus:outline-none focus:ring-2 focus:ring-orange-500/30
-                      "
-                      aria-label={`Increase ${addOn.name} quantity`}
-                    >
-                      <Plus size={16} />
-                    </button>
+                      <span className="w-8 sm:w-12 text-center text-base sm:text-lg font-semibold text-gray-900">
+                        {quantity}
+                      </span>
+
+                      <button
+                        onClick={() => updateAddOnQuantity(addOn.id, quantity + 1)}
+                        disabled={addOn.maxQuantity ? quantity >= addOn.maxQuantity : false}
+                        className="
+                          w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-gray-300
+                          flex items-center justify-center
+                          hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed
+                          transition-colors duration-200
+                          focus:outline-none focus:ring-2 focus:ring-orange-500/30
+                          touch-action: manipulation
+                        "
+                        aria-label={`Increase ${addOn.name} quantity`}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

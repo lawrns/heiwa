@@ -6,6 +6,8 @@ import { useBookingFlow } from './hooks/useBookingFlow';
 import { ProgressIndicator } from './ui/ProgressIndicator';
 import { ExperienceSelection } from './steps/ExperienceSelection';
 import { OptionSelection } from './steps/OptionSelection';
+import { RoomAssignment } from './steps/RoomAssignment';
+import { SurfWeekRoomSelection } from './steps/SurfWeekRoomSelection';
 import { AddOnsSelection } from './steps/AddOnsSelection';
 import { GuestDetails } from './steps/GuestDetails';
 import { ReviewAndPay } from './steps/ReviewAndPay';
@@ -37,20 +39,28 @@ export function BookingWidget({ className = '' }: BookingWidgetProps) {
   };
 
   const renderCurrentStep = () => {
+    const currentStepType = computed.currentStepType;
+
     const stepComponents = {
-      1: <ExperienceSelection state={state} actions={actions} />,
-      2: <OptionSelection state={state} actions={actions} />,
-      3: <AddOnsSelection state={state} actions={actions} />,
-      4: <GuestDetails state={state} actions={actions} />,
-      5: <ReviewAndPay state={state} actions={actions} onComplete={closeWidget} />,
+      'experience': <ExperienceSelection state={state} actions={actions} />,
+      'options': <OptionSelection state={state} actions={actions} />,
+      'room-assignment': <RoomAssignment state={state} actions={actions} />,
+      'surf-week-room-selection': <SurfWeekRoomSelection state={state} actions={actions} />,
+      'add-ons': <AddOnsSelection state={state} actions={actions} />,
+      'guest-details': <GuestDetails state={state} actions={actions} />,
+      'review-pay': <ReviewAndPay state={state} actions={actions} onComplete={closeWidget} />,
     };
 
     return (
-      <div 
-        key={state.currentStep}
+      <div
+        key={`${state.currentStep}-${currentStepType}`}
         className="animate-in fade-in-0 slide-in-from-right-4 duration-500 ease-out"
       >
-        {stepComponents[state.currentStep as keyof typeof stepComponents]}
+        {stepComponents[currentStepType as keyof typeof stepComponents] || (
+          <div className="text-center text-red-600">
+            <p>Invalid step: {currentStepType}</p>
+          </div>
+        )}
       </div>
     );
   };
@@ -127,7 +137,11 @@ export function BookingWidget({ className = '' }: BookingWidgetProps) {
 
             {/* Progress Indicator */}
             <div className="px-6 py-4 bg-gray-50/50 border-b border-gray-100">
-              <ProgressIndicator currentStep={state.currentStep} />
+              <ProgressIndicator
+                currentStep={state.currentStep}
+                stepFlow={computed.stepFlow}
+                totalSteps={computed.totalSteps}
+              />
             </div>
 
             {/* Content */}
