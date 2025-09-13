@@ -174,13 +174,13 @@ body.heiwa-modal-open {
   pointer-events: auto;
 }
 
-/* Enhanced Sidebar Drawer with Surf Theme - VD-005 Fix: Improved animation */
+/* Enhanced Sidebar Drawer with Surf Theme - VD-002 Fix: Compact sidebar design */
 .heiwa-booking-drawer {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 640px;
+  width: 420px;
   background: #ffffff;
   box-shadow: 0 0 40px rgba(14, 165, 233, 0.15), 0 0 80px rgba(6, 182, 212, 0.1);
   transform: translateX(100%);
@@ -212,12 +212,12 @@ body.heiwa-modal-open {
   transform: translateX(0);
 }
 
-/* Drawer Header */
+/* Drawer Header - VD-002 Fix: Compact header for narrow drawer */
 .heiwa-booking-drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--heiwa-space-6);
+  padding: var(--heiwa-space-4) var(--heiwa-space-4);
   border-bottom: 1px solid var(--heiwa-neutral-100);
   background: linear-gradient(135deg, var(--heiwa-primary-color), var(--heiwa-primary-hover));
   color: white;
@@ -259,11 +259,11 @@ body.heiwa-modal-open {
   outline-offset: 2px;
 }
 
-/* Drawer Content */
+/* Drawer Content - VD-002 Fix: Optimized padding for compact width */
 .heiwa-booking-content {
   flex: 1;
   overflow-y: auto;
-  padding: var(--heiwa-space-6);
+  padding: var(--heiwa-space-4);
   background: #ffffff;
 }
 
@@ -301,14 +301,49 @@ body.heiwa-modal-open {
 .heiwa-step-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   margin-bottom: var(--heiwa-space-6);
+  padding: 0 var(--heiwa-space-4);
 }
 
 .heiwa-step-header .heiwa-booking-step-title {
   color: var(--heiwa-primary-color);
   font-size: var(--heiwa-text-2xl);
   font-weight: var(--heiwa-font-bold);
+  margin: 0;
+}
+
+.heiwa-back-button {
+  background: none;
+  border: none;
+  color: var(--heiwa-neutral-600);
+  font-size: var(--heiwa-text-sm);
+  cursor: pointer;
+  padding: var(--heiwa-space-2) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-1);
+  transition: color var(--heiwa-transition-fast);
+}
+
+.heiwa-back-button:hover {
+  color: var(--heiwa-primary-color);
+}
+
+/* Hidden utility class */
+.heiwa-hidden {
+  display: none !important;
+}
+
+/* BOOK NOW button improvements */
+.heiwa-booking-trigger {
+  transition: opacity var(--heiwa-transition-normal), transform var(--heiwa-transition-normal);
+}
+
+.heiwa-booking-trigger.heiwa-hidden {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
 }
 
 /* Enhanced Booking Summary */
@@ -523,14 +558,14 @@ body.heiwa-modal-open {
 /* Tablet styles */
 @media (min-width: 769px) and (max-width: 1024px) {
   .heiwa-booking-drawer {
-    width: 640px; /* Maintain consistent width on tablet */
+    width: 420px; /* Compact sidebar width on tablet */
   }
 }
 
 /* Desktop styles */
 @media (min-width: 1024px) {
   .heiwa-booking-drawer {
-    width: 800px; /* Maintain comfortable width */
+    width: 450px; /* Compact sidebar - much less intrusive */
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto 1fr;
