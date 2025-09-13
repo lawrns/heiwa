@@ -1,3 +1,4 @@
+import React from 'react';
 import { Check } from 'lucide-react';
 
 interface ProgressIndicatorProps {
@@ -82,7 +83,6 @@ export function ProgressIndicator({ currentStep }: ProgressIndicatorProps) {
                     }}
                   />
                 )}
-              </div>
                 {isCompleted ? (
                   <Check size={16} className="drop-shadow-sm" />
                 ) : (
