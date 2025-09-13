@@ -109,7 +109,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
       {/* Header */}
       <div className="text-center space-y-2">
         <h3 className="text-2xl font-bold text-gray-900">Guest Details</h3>
-        <p className="text-gray-600">
+        <p className="text-gray-600" data-testid="guest-count-instruction">
           Please provide details for all {state.guests} {state.guests === 1 ? 'guest' : 'guests'}
         </p>
       </div>
@@ -130,7 +130,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
             {/* Error Message */}
             {errors[`guest-${index}`] && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700" data-testid={`guest-${index}-error`}>
                 <AlertCircle size={16} />
                 <span className="text-sm">{errors[`guest-${index}`]}</span>
               </div>
@@ -262,7 +262,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
         <div className="flex items-center justify-between">
           <div>
             <h5 className="font-semibold text-orange-900">Guest Information Status</h5>
-            <p className="text-sm text-orange-700">
+            <p className="text-sm text-orange-700" data-testid="guest-completion-status">
               {state.guestDetails.length} of {state.guests} guests completed
             </p>
           </div>

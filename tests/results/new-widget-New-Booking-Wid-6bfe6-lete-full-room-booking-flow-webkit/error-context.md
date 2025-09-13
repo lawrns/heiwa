@@ -1,0 +1,93 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e5]
+      - generic [ref=e9]:
+        - heading "Experience the Ultimate Surf Adventure" [level=1] [ref=e10]:
+          - text: Experience the Ultimate
+          - generic [ref=e11]: Surf Adventure
+        - paragraph [ref=e12]: Join our world-class surf camps in stunning locations around the world. From beginner-friendly waves to advanced surf coaching, we have the perfect experience for every level.
+        - generic [ref=e13]:
+          - generic [ref=e14]:
+            - img [ref=e16]
+            - heading "Expert Coaching" [level=3] [ref=e18]
+            - paragraph [ref=e19]: Professional surfers with decades of experience
+          - generic [ref=e20]:
+            - img [ref=e22]
+            - heading "Perfect Waves" [level=3] [ref=e24]
+            - paragraph [ref=e25]: World-famous breaks with consistent, quality waves
+          - generic [ref=e26]:
+            - img [ref=e28]
+            - heading "Amazing Community" [level=3] [ref=e30]
+            - paragraph [ref=e31]: Connect with fellow surfers from around the world
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - heading "Our Surf Destinations" [level=2] [ref=e35]
+        - paragraph [ref=e36]: Discover amazing surf spots around the world
+      - generic [ref=e37]:
+        - generic [ref=e39] [cursor=pointer]:
+          - generic [ref=e41] [cursor=pointer]: Costa Rica
+          - generic [ref=e42] [cursor=pointer]:
+            - heading "Nosara Beach Camp" [level=3] [ref=e43] [cursor=pointer]
+            - paragraph [ref=e44] [cursor=pointer]: Perfect waves for all levels with stunning beachfront accommodation
+            - generic [ref=e45] [cursor=pointer]:
+              - generic [ref=e46] [cursor=pointer]: €899
+              - generic [ref=e47] [cursor=pointer]: 7 days
+        - generic [ref=e49] [cursor=pointer]:
+          - generic [ref=e51] [cursor=pointer]: Morocco
+          - generic [ref=e52] [cursor=pointer]:
+            - heading "Taghazout Surf Camp" [level=3] [ref=e53] [cursor=pointer]
+            - paragraph [ref=e54] [cursor=pointer]: North African adventure with consistent Atlantic waves
+            - generic [ref=e55] [cursor=pointer]:
+              - generic [ref=e56] [cursor=pointer]: €799
+              - generic [ref=e57] [cursor=pointer]: 7 days
+        - generic [ref=e59] [cursor=pointer]:
+          - generic [ref=e61] [cursor=pointer]: Portugal
+          - generic [ref=e62] [cursor=pointer]:
+            - heading "Ericeira Surf Week" [level=3] [ref=e63] [cursor=pointer]
+            - paragraph [ref=e64] [cursor=pointer]: European surf paradise with world-class coaching
+            - generic [ref=e65] [cursor=pointer]:
+              - generic [ref=e66] [cursor=pointer]: €899
+              - generic [ref=e67] [cursor=pointer]: 7 days
+    - generic [ref=e69]:
+      - heading "Ready for Your Surf Adventure?" [level=2] [ref=e70]
+      - paragraph [ref=e71]: Book your perfect surf experience today
+      - generic [ref=e72]: Click the "Book Now" button in the top-right corner to get started!
+    - button "Open booking widget" [ref=e73] [cursor=pointer]:
+      - img [ref=e74] [cursor=pointer]
+      - generic [ref=e76] [cursor=pointer]: Book Now
+    - generic [ref=e80]:
+      - generic [ref=e81]:
+        - heading "Book Your Surf Adventure" [level=2] [ref=e82]
+        - button "Close booking widget" [ref=e83] [cursor=pointer]:
+          - img [ref=e84] [cursor=pointer]
+      - generic [ref=e88]:
+        - generic [ref=e89]:
+          - generic [ref=e90]:
+            - img [ref=e94]
+            - generic [ref=e97]: Experience
+          - generic [ref=e98]:
+            - img [ref=e102]
+            - generic [ref=e105]: Dates
+          - generic [ref=e106]:
+            - generic [ref=e110]: "3"
+            - generic [ref=e112]: Options
+          - generic [ref=e113]:
+            - generic [ref=e117]: "4"
+            - generic [ref=e119]: Details
+          - generic [ref=e120]:
+            - generic [ref=e122]: "5"
+            - generic [ref=e124]: Review
+        - heading "Select Option" [level=3] [ref=e126]
+      - generic [ref=e131]:
+        - heading "Choose Your Room" [level=3] [ref=e132]
+        - paragraph [ref=e133]: Loading available options...
+      - generic [ref=e141]:
+        - button "Back" [ref=e142] [cursor=pointer]
+        - button "Next" [disabled] [ref=e144]
+  - region "Notifications Alt+T"
+  - alert [ref=e145]
+```

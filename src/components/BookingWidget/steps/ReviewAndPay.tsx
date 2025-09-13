@@ -89,13 +89,13 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h3 className="text-2xl font-bold text-gray-900">Review & Pay</h3>
+        <h3 className="text-2xl font-bold text-gray-900" data-testid="review-pay-title">Review & Pay</h3>
         <p className="text-gray-600">Confirm your booking details and complete payment</p>
       </div>
 
       {/* Booking Summary */}
       <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-        <h4 className="text-lg font-semibold text-gray-900 mb-4">Booking Summary</h4>
+        <h4 className="text-lg font-semibold text-gray-900 mb-4" data-testid="booking-summary-title">Booking Summary</h4>
         
         <div className="space-y-4">
           {/* Experience Type */}
@@ -188,7 +188,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
       {/* Pricing Breakdown */}
       <div className="bg-orange-50 rounded-xl p-6 border border-orange-200">
-        <h4 className="text-lg font-semibold text-orange-900 mb-4">Pricing Breakdown</h4>
+        <h4 className="text-lg font-semibold text-orange-900 mb-4" data-testid="pricing-breakdown-title">Pricing Breakdown</h4>
         
         <div className="space-y-3">
           <div className="flex justify-between items-center">

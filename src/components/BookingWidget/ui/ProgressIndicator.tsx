@@ -75,7 +75,7 @@ export function ProgressIndicator({ currentStep }: ProgressIndicatorProps) {
 
       {/* Current Step Title */}
       <div className="mt-4 text-center">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-gray-900" data-testid="progress-step-title">
           {steps.find(s => s.id === currentStep)?.title}
         </h3>
       </div>
