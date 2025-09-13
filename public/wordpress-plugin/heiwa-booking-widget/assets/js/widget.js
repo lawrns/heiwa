@@ -2828,6 +2828,13 @@
             }
         }
 
+        // Refresh backend-driven suggestions now that availabilityData is loaded
+        try {
+            bookingData.assignment.suggestions = generateAssignmentSuggestions();
+        } catch (e) {
+            console.warn('Heiwa Booking Widget: Could not refresh suggestions', e);
+        }
+
         const assignmentHTML = `
             <div class="heiwa-assignment-container">
                 <div class="heiwa-step-header">
@@ -2869,50 +2876,76 @@
     }
 
     /**
-     * Generate intelligent assignment suggestions
+     * Generate intelligent assignment suggestions (backend-driven)
      */
     function generateAssignmentSuggestions() {
-        const week = bookingData.selectedSurfWeek;
-        const participants = bookingData.participants;
+        try {
+            const participants = bookingData?.participants || 1;
 
-        // Mock room data - in real implementation this would come from API
-        const availableRooms = [
-            { id: 1, type: 'private', capacity: 2, price: 150, available: true },
-            { id: 2, type: 'private', capacity: 3, price: 210, available: true },
-            { id: 3, type: 'dorm', capacity: 6, price: 85, available: true },
-            { id: 4, type: 'dorm', capacity: 8, price: 75, available: true }
-        ];
+            // Source rooms from backend availability when present; fall back to simple mocks
+            const apiRooms = (availabilityData && Array.isArray(availabilityData.available_rooms))
+                ? availabilityData.available_rooms
+                : null;
 
-        const suggestions = [];
+            const availableRooms = (apiRooms
+                ? apiRooms.map(r => {
+                    const cap = (typeof r.free === 'number') ? r.free : (r.capacity || 0);
+                    return {
+                        id: r.id,
+                        type: (r.booking_type === 'bed' || r.type === 'dorm') ? 'dorm' : 'private',
+                        capacity: cap,
+                        price: (typeof r.price_per_night === 'number') ? r.price_per_night : (r.price || 0),
+                        available: cap > 0
+                    };
+                })
+                : [
+                    { id: 1, type: 'private', capacity: 2, price: 150, available: true },
+                    { id: 2, type: 'private', capacity: 3, price: 210, available: true },
+                    { id: 3, type: 'dorm', capacity: 6, price: 85, available: true },
+                    { id: 4, type: 'dorm', capacity: 8, price: 75, available: true }
+                ]
+            ).filter(r => r.available && r.capacity > 0);
 
-        // Best Value suggestion
-        suggestions.push({
-            id: 'best-value',
-            title: 'Best Value',
-            description: 'Optimal balance of cost and comfort',
-            assignments: generateOptimalAssignments(participants, availableRooms, 'value'),
-            totalPrice: calculateSuggestionPrice(generateOptimalAssignments(participants, availableRooms, 'value'), availableRooms)
-        });
+            if (!availableRooms.length) return [];
 
-        // Most Privacy suggestion
-        suggestions.push({
-            id: 'most-privacy',
-            title: 'Most Privacy',
-            description: 'Private rooms for maximum comfort',
-            assignments: generateOptimalAssignments(participants, availableRooms, 'privacy'),
-            totalPrice: calculateSuggestionPrice(generateOptimalAssignments(participants, availableRooms, 'privacy'), availableRooms)
-        });
+            const suggestions = [];
 
-        // Lowest Cost suggestion
-        suggestions.push({
-            id: 'lowest-cost',
-            title: 'Lowest Cost',
-            description: 'Most economical option',
-            assignments: generateOptimalAssignments(participants, availableRooms, 'cost'),
-            totalPrice: calculateSuggestionPrice(generateOptimalAssignments(participants, availableRooms, 'cost'), availableRooms)
-        });
+            const valueAssignments = generateOptimalAssignments(participants, availableRooms, 'value');
+            const privacyAssignments = generateOptimalAssignments(participants, availableRooms, 'privacy');
+            const costAssignments = generateOptimalAssignments(participants, availableRooms, 'cost');
 
-        return suggestions;
+            // Best Value suggestion
+            suggestions.push({
+                id: 'best-value',
+                title: 'Best Value',
+                description: 'Optimal balance of cost and comfort',
+                assignments: valueAssignments,
+                totalPrice: calculateSuggestionPrice(valueAssignments, availableRooms)
+            });
+
+            // Most Privacy suggestion
+            suggestions.push({
+                id: 'most-privacy',
+                title: 'Most Privacy',
+                description: 'Private rooms for maximum comfort',
+                assignments: privacyAssignments,
+                totalPrice: calculateSuggestionPrice(privacyAssignments, availableRooms)
+            });
+
+            // Lowest Cost suggestion
+            suggestions.push({
+                id: 'lowest-cost',
+                title: 'Lowest Cost',
+                description: 'Most economical option',
+                assignments: costAssignments,
+                totalPrice: calculateSuggestionPrice(costAssignments, availableRooms)
+            });
+
+            return suggestions;
+        } catch (e) {
+            console.warn('Heiwa Booking Widget: Failed to generate suggestions', e);
+            return [];
+        }
     }
 
     /**
