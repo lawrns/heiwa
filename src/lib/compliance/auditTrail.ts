@@ -1,4 +1,4 @@
-import { db } from '@/lib/supabase'
+import { db } from '../../../lib/supabase'
 
 export interface AuditEntry {
   id?: string
@@ -8,8 +8,8 @@ export interface AuditEntry {
   actionType: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' | 'EXPORT' | 'ERASURE'
   entity: 'client' | 'booking' | 'room' | 'surfcamp' | 'addon' | 'admin' | 'consent' | 'system'
   entityId: string
-  previousData?: DocumentData
-  newData?: DocumentData
+  previousData?: Record<string, any>
+  newData?: Record<string, any>
   diff?: Record<string, { old: any, new: any }>
   ipAddress?: string
   userAgent?: string
@@ -57,8 +57,8 @@ export async function logAuditEntry(
   userId: string,
   userEmail: string,
   options: {
-    previousData?: DocumentData
-    newData?: DocumentData
+    previousData?: Record<string, any>
+    newData?: Record<string, any>
     dataSubjectId?: string
     legalBasis?: 'consent' | 'contract' | 'legitimate_interest' | 'legal_obligation'
     metadata?: Record<string, any>
@@ -112,7 +112,7 @@ export async function logAuditEntry(
 }
 
 // Calculate diff between two objects
-function calculateDiff(oldData: DocumentData, newData: DocumentData): Record<string, { old: any, new: any }> {
+function calculateDiff(oldData: Record<string, any>, newData: Record<string, any>): Record<string, { old: any, new: any }> {
   const diff: Record<string, { old: any, new: any }> = {}
 
   // Get all keys from both objects
@@ -169,69 +169,69 @@ export async function getAuditEntries(
 ): Promise<AuditEntry[]> {
   try {
     if (!db) {
-      console.warn('Cannot fetch audit entries: Firestore not available')
+      console.warn('Cannot fetch audit entries: Supabase not available')
       return []
     }
 
-    let q = query(
-      collection(db, 'auditLogs'),
-      orderBy('timestamp', 'desc'),
-      limit(options.limitCount || 50)
-    )
+    let query = db.from('audit_logs').select('*').order('timestamp', { ascending: false }).limit(options.limitCount || 50)
 
     // Add filters
-    const constraints = []
-
     if (options.adminId) {
-      constraints.push(where('adminId', '==', options.adminId))
+      query = query.eq('adminId', options.adminId)
     }
 
     if (options.actionType) {
-      constraints.push(where('actionType', '==', options.actionType))
+      query = query.eq('actionType', options.actionType)
     }
 
     if (options.entity) {
-      constraints.push(where('entity', '==', options.entity))
+      query = query.eq('entity', options.entity)
     }
 
     if (options.entityId) {
-      constraints.push(where('entityId', '==', options.entityId))
+      query = query.eq('entityId', options.entityId)
     }
 
     if (options.dataSubjectId) {
-      constraints.push(where('compliance.dataSubjectId', '==', options.dataSubjectId))
+      query = query.eq('compliance->>dataSubjectId', options.dataSubjectId)
     }
 
     if (options.gdprRelevantOnly) {
-      constraints.push(where('compliance.gdprRelevant', '==', true))
+      query = query.eq('compliance->>gdprRelevant', 'true')
     }
 
-    if (constraints.length > 0) {
-      q = query(collection(db, 'auditLogs'), ...constraints, orderBy('timestamp', 'desc'), limit(options.limitCount || 50))
+    if (options.startDate) {
+      query = query.gte('timestamp', options.startDate.toISOString())
     }
 
-    const querySnapshot = await getDocs(q)
+    if (options.endDate) {
+      query = query.lte('timestamp', options.endDate.toISOString())
+    }
 
-    return querySnapshot.docs.map(doc => {
-      const data = doc.data()
-      return {
-        id: doc.id,
-        timestamp: data.timestamp.toDate(),
-        adminId: data.adminId,
-        adminEmail: data.adminEmail,
-        actionType: data.actionType,
-        entity: data.entity,
-        entityId: data.entityId,
-        previousData: data.previousData,
-        newData: data.newData,
-        diff: data.diff,
-        ipAddress: data.ipAddress,
-        userAgent: data.userAgent,
-        sessionId: data.sessionId,
-        compliance: data.compliance,
-        metadata: data.metadata
-      } as AuditEntry
-    })
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Failed to fetch audit entries:', error)
+      return []
+    }
+
+    return (data || []).map((item: any) => ({
+      id: item.id,
+      timestamp: new Date(item.timestamp),
+      adminId: item.adminId,
+      adminEmail: item.adminEmail,
+      actionType: item.actionType,
+      entity: item.entity,
+      entityId: item.entityId,
+      previousData: item.previousData,
+      newData: item.newData,
+      diff: item.diff,
+      ipAddress: item.ipAddress,
+      userAgent: item.userAgent,
+      sessionId: item.sessionId,
+      compliance: item.compliance,
+      metadata: item.metadata
+    } as AuditEntry))
 
   } catch (error) {
     console.error('Failed to fetch audit entries:', error)
@@ -256,15 +256,15 @@ export function withAuditLogging<T extends any[], R>(
     entity: AuditEntity
     getEntityId: (args: T, result?: R) => string
     getDataSubjectId?: (args: T, result?: R) => string
-    getPreviousData?: (args: T) => DocumentData
-    getNewData?: (result: R) => DocumentData
+    getPreviousData?: (args: T) => Record<string, any>
+    getNewData?: (result: R) => Record<string, any>
     legalBasis?: 'consent' | 'contract' | 'legitimate_interest' | 'legal_obligation'
     getUserId?: (args: T) => string
     getUserEmail?: (args: T) => string
   }
 ) {
   return async (...args: T): Promise<R> => {
-    let previousData: DocumentData | undefined
+    let previousData: Record<string, any> | undefined
     let result: R
 
     const userId = options.getUserId?.(args) || 'system'
