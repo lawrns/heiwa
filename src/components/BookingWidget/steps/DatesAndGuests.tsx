@@ -88,13 +88,35 @@ export function DatesAndGuests({ state, actions }: DatesAndGuestsProps) {
           </h4>
 
           {surfCampsLoading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
-              <p className="text-gray-600 mt-2">Loading available surf weeks...</p>
+            <div className="text-center py-8 relative">
+              <div className="heiwa-surf-loading rounded-lg p-6 bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200">
+                <div className="relative">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
+                  <div
+                    className="absolute inset-0 opacity-20"
+                    style={{
+                      backgroundImage: `url("data:image/svg+xml,%3csvg width='60' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,10 C15,2 30,18 45,10 C52.5,6 60,14 60,10 L60,20 L0,20 Z' fill='rgba(14,165,233,0.1)'/%3e%3c/svg%3e")`,
+                      backgroundRepeat: 'repeat-x',
+                      backgroundPosition: 'bottom',
+                      animation: 'gentle-wave-flow 3s linear infinite'
+                    }}
+                  />
+                </div>
+                <p className="text-gray-700 mt-3 font-medium">Loading available surf weeks...</p>
+                <p className="text-gray-500 text-sm mt-1">Finding the perfect waves for you</p>
+              </div>
             </div>
           ) : surfCampsError ? (
             <div className="text-center py-8">
-              <p className="text-red-600">Error loading surf weeks: {surfCampsError}</p>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                <div className="text-red-600 mb-2">
+                  <svg className="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <p className="text-red-700 font-medium">Unable to load surf weeks</p>
+                <p className="text-red-600 text-sm mt-1">{surfCampsError}</p>
+              </div>
             </div>
           ) : (
             <div className="space-y-3">
@@ -126,33 +148,58 @@ export function DatesAndGuests({ state, actions }: DatesAndGuestsProps) {
                     onClick={() => handleSurfWeekSelect(surfWeek)}
                     data-testid="surf-week-option"
                     className={`
-                      w-full p-4 rounded-lg border-2 transition-all duration-300 text-left
+                      heiwa-surf-week-card relative w-full p-4 rounded-lg border-2 transition-all duration-300 text-left overflow-hidden
+                      hover:scale-[1.01] hover:shadow-xl hover:-translate-y-1
                       ${isSelected
-                        ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20'
-                        : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50'
+                        ? 'border-orange-500 shadow-lg shadow-orange-500/20'
+                        : 'border-gray-200 hover:border-orange-300'
                       }
                     `}
+                    style={{
+                      backgroundImage: `
+                        linear-gradient(135deg,
+                          rgba(236, 104, 28, ${isSelected ? '0.95' : '0.85'}) 0%,
+                          rgba(251, 146, 60, ${isSelected ? '0.9' : '0.8'}) 100%
+                        ),
+                        url('/room1.jpg')
+                      `,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat'
+                    }}
                   >
-                    <div className="flex justify-between items-start">
+                    {/* Surf Pattern Overlay */}
+                    <div
+                      className="absolute inset-0 opacity-20 pointer-events-none"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml,%3csvg width='120' height='40' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,20 C30,5 60,35 90,20 C105,12.5 120,27.5 120,20 L120,40 L0,40 Z' fill='rgba(255,255,255,0.1)'/%3e%3cpath d='M0,25 C40,10 80,40 120,25 L120,40 L0,40 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/svg%3e")`,
+                        backgroundRepeat: 'repeat-x',
+                        backgroundPosition: 'bottom',
+                        animation: 'surf-wave-flow 8s linear infinite'
+                      }}
+                    />
+                    <div className="relative z-10 flex justify-between items-start">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h5 className="text-lg font-semibold text-gray-900">{surfWeek.name}</h5>
-                          <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded-full">
+                          <h5 className="text-lg font-semibold text-white drop-shadow-lg">{surfWeek.name}</h5>
+                          <span className="px-2 py-1 bg-white/20 text-white text-xs font-medium rounded-full backdrop-blur-sm border border-white/30 drop-shadow">
                             {duration} days
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{dateRange}</p>
+                        <p className="text-sm text-white/90 mb-2 drop-shadow">{dateRange}</p>
                         <div className="flex items-center gap-4 text-sm">
-                          <span className="text-gray-500">{occupancyText}</span>
-                          <span className="text-orange-600 font-medium">
+                          <span className="text-white/80 drop-shadow bg-black/20 px-2 py-1 rounded-full backdrop-blur-sm">
+                            {occupancyText}
+                          </span>
+                          <span className="text-white font-medium drop-shadow-lg bg-black/20 px-2 py-1 rounded-lg backdrop-blur-sm">
                             from €{surfWeek.priceFrom || surfWeek.price}
                           </span>
                         </div>
                       </div>
                       {isSelected && (
                         <div className="flex-shrink-0 ml-4">
-                          <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <div className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center backdrop-blur-sm drop-shadow-lg">
+                            <svg className="w-4 h-4 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                           </div>
