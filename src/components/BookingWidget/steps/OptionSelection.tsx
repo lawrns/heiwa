@@ -20,6 +20,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const { surfCamps, loading: campsLoading, error: campsError } = useSurfCamps();
   const [selectedOption, setSelectedOption] = useState<string | null>(state.selectedOption);
 
+  // For surf weeks, if a surf week was already selected in step 2, auto-select it here
+  if (state.experienceType === 'surf-week' && state.selectedSurfWeek && !state.selectedOption) {
+    actions.selectOption(state.selectedSurfWeek);
+  }
+
   const loading = state.experienceType === 'room' ? roomsLoading : campsLoading;
   const error = state.experienceType === 'room' ? roomsError : campsError;
   const options = state.experienceType === 'room' ? rooms : surfCamps;
@@ -108,79 +113,132 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       </div>
 
       {/* Options Grid */}
-      <div className="space-y-4">
-        {options.map((option, index) => {
-          const isSelected = selectedOption === option.id;
-          const totalPrice = calculateTotalPrice(option);
-          const amenities = state.experienceType === 'room' ? option.amenities : option.includes;
+      {state.experienceType === 'surf-week' ? (
+        <div className="space-y-3">
+          {options.map((w: any, index: number) => {
+            const isSelected = selectedOption === w.id;
+            const from = typeof w.priceFrom === 'number' ? w.priceFrom : w.price;
+            const start = new Date(w.startDate);
+            const end = new Date(w.endDate);
+            const dateText = `${start.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} > ${end.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}`;
 
-          return (
-            <button
-              key={option.id}
-              onClick={() => handleOptionSelect(option.id)}
-              className={`
-                w-full p-6 rounded-xl border-2 text-left
-                transition-all duration-500 ease-out
-                hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1
-                focus:outline-none focus:ring-4 focus:ring-orange-500/30
-                animate-in fade-in-0 slide-in-from-bottom-4 duration-700
-                ${isSelected
-                  ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
-                  : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50'
-                }
-              `}
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <div className="flex gap-6">
-                {/* Image */}
-                <div className="flex-shrink-0">
-                  <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                    {option.images && option.images.length > 0 ? (
-                      <img 
-                        src={option.images[0]} 
-                        alt={option.name}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                    ) : (
-                      <div className="text-white text-2xl font-bold">
-                        {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
-                      </div>
-                    )}
+            // Enhanced occupancy display logic
+            let occupancyText = '';
+            if (typeof w.confirmedBooked === 'number' && typeof w.maxParticipants === 'number') {
+              occupancyText = `${w.confirmedBooked}/${w.maxParticipants} booked`;
+            } else if (typeof w.availableSpots === 'number') {
+              occupancyText = w.availableSpots > 0 ? `${w.availableSpots} spots left` : 'Fully booked';
+            }
+
+            const isFullyBooked = w.availableSpots === 0;
+
+            return (
+              <button
+                key={w.id}
+                data-testid="surf-week-row"
+                onClick={() => handleOptionSelect(w.id)}
+                className={`w-full flex items-center justify-between p-4 rounded-xl border-2 bg-white text-left transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50 relative
+                  ${isSelected ? 'border-orange-500 bg-orange-50 shadow-md ring-2 ring-orange-500/30' : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50/50'}
+                  ${isFullyBooked ? 'opacity-60 cursor-not-allowed' : ''}`}
+                style={{ animationDelay: `${index * 80}ms` }}
+                disabled={isFullyBooked}
+              >
+                <div className="min-w-[140px]" data-testid="surf-week-dates">
+                  <div className="text-lg font-bold text-gray-900">{dateText}</div>
+                </div>
+                <div className="flex-1 px-4">
+                  <div className="text-orange-500 font-extrabold uppercase tracking-wide text-sm" data-testid="surf-week-title">{w.name}</div>
+                  <div className={`text-xs mt-0.5 ${isFullyBooked ? 'text-red-500 font-medium' : 'text-gray-500'}`} data-testid="surf-week-occupancy">
+                    {occupancyText}
                   </div>
                 </div>
+                <div className="shrink-0" data-testid="surf-week-price">
+                  <span className={`inline-block rounded-full px-4 py-2 font-semibold shadow-sm ${isFullyBooked ? 'bg-gray-400 text-gray-200' : 'bg-orange-500 text-white'}`}>
+                    {`from €${Math.round(from)}`}
+                  </span>
+                </div>
+                {isSelected && (
+                  <div className="absolute top-2 right-2">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {(options as any[]).map((option: any, index: number) => {
+            const isSelected = selectedOption === option.id;
+            const totalPrice = calculateTotalPrice(option);
+            const amenities = option.amenities;
 
-                {/* Content */}
-                <div className="flex-1 space-y-3">
-                  {/* Title and Price */}
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                        {option.name}
-                      </h4>
-                      <p className="text-sm text-gray-600 line-clamp-2">
-                        {option.description}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-orange-600">
-                        {formatPrice(totalPrice)}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {state.experienceType === 'room' 
-                          ? `per ${state.dates.checkIn && state.dates.checkOut 
-                              ? Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))
-                              : 1} night${state.dates.checkIn && state.dates.checkOut 
-                                ? Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) > 1 ? 's' : ''
-                                : ''}`
-                          : 'per person'
-                        }
-                      </div>
+            return (
+              <button
+                key={option.id}
+                onClick={() => handleOptionSelect(option.id)}
+                className={`
+                  w-full p-6 rounded-xl border-2 text-left
+                  transition-all duration-300 ease-out
+                  hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1
+                  focus:outline-none focus:ring-4 focus:ring-orange-500/30
+                  animate-in fade-in-0 slide-in-from-bottom-4
+                  ${isSelected
+                    ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
+                    : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50'
+                  }
+                `}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="flex gap-6">
+                  {/* Image */}
+                  <div className="flex-shrink-0">
+                    <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                      {option.images && option.images.length > 0 ? (
+                        <img
+                          src={option.images[0]}
+                          alt={option.name}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className="text-white text-2xl font-bold">
+                          {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Details */}
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    {state.experienceType === 'room' ? (
+                  {/* Content */}
+                  <div className="flex-1 space-y-3">
+                    {/* Title and Price */}
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                          {option.name}
+                        </h4>
+                        <p className="text-sm text-gray-600 line-clamp-2">
+                          {option.description}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-orange-600">
+                          {formatPrice(totalPrice)}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {state.experienceType === 'room'
+                            ? `per ${state.dates.checkIn && state.dates.checkOut
+                                ? Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))
+                                : 1} night${state.dates.checkIn && state.dates.checkOut
+                                  ? Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) > 1 ? 's' : ''
+                                  : ''}`
+                            : 'per person'
+                          }
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
                       <>
                         <div className="flex items-center gap-1">
                           <Users size={14} />
@@ -191,59 +249,42 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                           <span className="capitalize">{option.type} room</span>
                         </div>
                       </>
-                    ) : (
-                      <>
-                        <div className="flex items-center gap-1">
-                          <Users size={14} />
-                          <span>Max {option.maxParticipants} participants</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Star size={14} />
-                          <span className="capitalize">{option.level} level</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock size={14} />
-                          <span>
-                            {new Date(option.startDate).toLocaleDateString()} - {new Date(option.endDate).toLocaleDateString()}
+                    </div>
+
+                    {/* Amenities/Includes */}
+                    {amenities && amenities.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {amenities.slice(0, 4).map((amenity: string, index: number) => (
+                          <span
+                            key={index}
+                            className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full"
+                          >
+                            {getAmenityIcon(amenity)}
+                            {amenity}
                           </span>
-                        </div>
-                      </>
+                        ))}
+                        {amenities.length > 4 && (
+                          <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full">
+                            +{amenities.length - 4} more
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
-
-                  {/* Amenities/Includes */}
-                  {amenities && amenities.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {amenities.slice(0, 4).map((amenity, index) => (
-                        <span
-                          key={index}
-                          className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full"
-                        >
-                          {getAmenityIcon(amenity)}
-                          {amenity}
-                        </span>
-                      ))}
-                      {amenities.length > 4 && (
-                        <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full">
-                          +{amenities.length - 4} more
-                        </span>
-                      )}
-                    </div>
-                  )}
                 </div>
-              </div>
 
-              {/* Selection Indicator */}
-              {isSelected && (
-                <div className="mt-4 flex items-center gap-2 text-orange-600">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium">Selected</span>
-                </div>
-              )}
-            </button>
-          );
-        })}
-      </div>
+                {/* Selection Indicator */}
+                {isSelected && (
+                  <div className="mt-4 flex items-center gap-2 text-orange-600">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                    <span className="text-sm font-medium">Selected</span>
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* No Options Message */}
       {options.length === 0 && (

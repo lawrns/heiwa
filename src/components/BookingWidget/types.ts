@@ -7,6 +7,7 @@ export interface BookingState {
   };
   guests: number;
   selectedOption: string | null;
+  selectedSurfWeek: string | null;
   guestDetails: GuestInfo[];
   pricing: PricingBreakdown;
   isLoading: boolean;
@@ -43,6 +44,10 @@ export interface SurfWeek {
   includes: string[];
   images: string[];
   isActive: boolean;
+  // Enhanced fields for occupancy and pricing (optional to avoid breaking existing code)
+  priceFrom?: number;
+  confirmedBooked?: number;
+  availableSpots?: number;
 }
 
 export interface Room {
@@ -67,12 +72,13 @@ export interface ExperienceOption {
   features: string[];
 }
 
-export type BookingAction = 
+export type BookingAction =
   | { type: 'SET_STEP'; payload: number }
   | { type: 'SET_EXPERIENCE_TYPE'; payload: 'room' | 'surf-week' }
   | { type: 'SET_DATES'; payload: { checkIn: Date; checkOut: Date } }
   | { type: 'SET_GUESTS'; payload: number }
   | { type: 'SET_SELECTED_OPTION'; payload: string }
+  | { type: 'SET_SURF_WEEK'; payload: string }
   | { type: 'ADD_GUEST_DETAILS'; payload: GuestInfo }
   | { type: 'UPDATE_PRICING'; payload: PricingBreakdown }
   | { type: 'SET_LOADING'; payload: boolean }
