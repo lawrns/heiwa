@@ -1,4 +1,4 @@
-// Firebase imports removed - using Supabase
+import { db } from '@/lib/supabase'
 
 export interface AuditLogEntry {
   id?: string
@@ -45,15 +45,15 @@ export async function logAuditEvent(
     }
 
     if (!db) {
-      console.warn('Cannot log audit event: Firestore not available')
+      console.warn('Cannot log audit event: Supabase not available')
       return
     }
 
-    const auditCollection = collection(db, 'auditLogs')
-    await addDoc(auditCollection, {
-      ...auditEntry,
-      timestamp: Timestamp.fromDate(auditEntry.timestamp)
-    })
+    const { error } = await db.from('audit_logs').insert(auditEntry)
+
+    if (error) {
+      console.error('Failed to insert audit log:', error)
+    }
 
   } catch (error) {
     console.error('Failed to log audit event:', error)
@@ -71,62 +71,54 @@ export async function getAuditLogs(
 ): Promise<AuditLogEntry[]> {
   try {
     if (!db) {
-      console.warn('Cannot fetch audit logs: Firestore not available')
+      console.warn('Cannot fetch audit logs: Supabase not available')
       return []
     }
 
-    let q = query(
-      collection(db, 'auditLogs'),
-      orderBy('timestamp', 'desc'),
-      limit(limitCount)
-    )
+    let query = db.from('audit_logs').select('*').order('timestamp', { ascending: false }).limit(limitCount)
 
     // Add filters
-    const constraints = []
-
     if (userId) {
-      constraints.push(where('userId', '==', userId))
+      query = query.eq('userId', userId)
     }
 
     if (action) {
-      constraints.push(where('action', '==', action))
+      query = query.eq('action', action)
     }
 
     if (resource) {
-      constraints.push(where('resource', '==', resource))
+      query = query.eq('resource', resource)
     }
 
     if (startDate) {
-      constraints.push(where('timestamp', '>=', Timestamp.fromDate(startDate)))
+      query = query.gte('timestamp', startDate.toISOString())
     }
 
     if (endDate) {
-      constraints.push(where('timestamp', '<=', Timestamp.fromDate(endDate)))
+      query = query.lte('timestamp', endDate.toISOString())
     }
 
-    if (constraints.length > 0) {
-      q = query(collection(db, 'auditLogs'), ...constraints, orderBy('timestamp', 'desc'), limit(limitCount))
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Failed to fetch audit logs:', error)
+      return []
     }
 
-    const querySnapshot = await getDocs(q)
-
-    return querySnapshot.docs.map(doc => {
-      const data = doc.data()
-      return {
-        id: doc.id,
-        timestamp: data.timestamp.toDate(),
-        userId: data.userId,
-        userEmail: data.userEmail,
-        action: data.action,
-        resource: data.resource,
-        resourceId: data.resourceId,
-        details: data.details,
-        ipAddress: data.ipAddress,
-        userAgent: data.userAgent,
-        success: data.success,
-        errorMessage: data.errorMessage
-      } as AuditLogEntry
-    })
+    return (data || []).map(item => ({
+      id: item.id,
+      timestamp: new Date(item.timestamp),
+      userId: item.userId,
+      userEmail: item.userEmail,
+      action: item.action,
+      resource: item.resource,
+      resourceId: item.resourceId,
+      details: item.details,
+      ipAddress: item.ipAddress,
+      userAgent: item.userAgent,
+      success: item.success,
+      errorMessage: item.errorMessage
+    } as AuditLogEntry))
 
   } catch (error) {
     console.error('Failed to fetch audit logs:', error)

@@ -1,4 +1,4 @@
-// Firebase imports removed - using Supabase
+import { db } from '@/lib/supabase'
 
 export interface AuditEntry {
   id?: string
@@ -96,15 +96,15 @@ export async function logAuditEntry(
     }
 
     if (!db) {
-      console.warn('Cannot log audit entry: Firestore not available')
+      console.warn('Cannot log audit entry: Supabase not available')
       return
     }
 
-    const auditCollection = collection(db, 'auditLogs')
-    await addDoc(auditCollection, {
-      ...auditEntry,
-      timestamp: Timestamp.fromDate(auditEntry.timestamp)
-    })
+    const { error } = await db.from('audit_logs').insert(auditEntry)
+
+    if (error) {
+      console.error('Failed to insert audit entry:', error)
+    }
 
   } catch (error) {
     console.error('Failed to log audit entry:', error)

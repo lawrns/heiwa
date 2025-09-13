@@ -74,6 +74,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
+    "@testing-library/jest-dom": "^6.8.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.19.9",
     "@types/papaparse": "^5.3.16",
