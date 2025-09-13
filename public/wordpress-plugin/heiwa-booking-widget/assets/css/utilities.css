@@ -636,3 +636,24 @@
     font-weight: 700 !important;
     color: var(--heiwa-orange) !important;
 }
+
+
+/* Compact room cards for assignment step */
+.heiwa-room-card { display: grid; grid-template-columns: 84px 1fr auto; gap: var(--heiwa-space-3); align-items: start; border: 1px solid var(--heiwa-neutral-200); border-radius: var(--heiwa-radius-lg); padding: var(--heiwa-space-3); background: #fff; }
+.heiwa-room-thumb { width: 84px; height: 84px; border-radius: var(--heiwa-radius-md); background: #eef center/cover; position: relative; overflow: hidden; }
+.heiwa-badge { position: absolute; left: 6px; padding: 2px 6px; border-radius: 8px; font-size: var(--heiwa-text-xs); background: rgba(255,255,255,0.9); color: var(--heiwa-neutral-800); }
+.heiwa-badge-type { top: 6px; }
+.heiwa-badge-cap { bottom: 6px; }
+.heiwa-room-name { margin: 0 0 6px 0; font-size: var(--heiwa-text-sm); font-weight: var(--heiwa-font-semibold); color: var(--heiwa-neutral-900); }
+.heiwa-amenity-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.heiwa-chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; background: var(--heiwa-neutral-100); color: var(--heiwa-neutral-700); font-size: var(--heiwa-text-xs); }
+.heiwa-room-price { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 132px; }
+.heiwa-price-amount { color: var(--heiwa-primary-color); font-weight: var(--heiwa-font-bold); }
+.heiwa-price-label { color: var(--heiwa-neutral-500); font-size: var(--heiwa-text-xs); }
+.heiwa-assign-cta { background: transparent; border: 1px solid var(--heiwa-primary-color); color: var(--heiwa-primary-color); border-radius: var(--heiwa-radius-md); padding: 6px 10px; cursor: pointer; }
+.heiwa-assign-cta:hover { background: var(--heiwa-primary-50); }
+
+/* Sticky step header for better context while scrolling */
+.heiwa-step-header { position: sticky; top: 0; z-index: 10; background: #fff; padding-top: var(--heiwa-space-2); margin-top: calc(-1 * var(--heiwa-space-2)); }
+
+@media (max-width: 420px) { .heiwa-room-card { grid-template-columns: 1fr; } .heiwa-room-price { align-items: flex-start; } }

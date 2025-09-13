@@ -2797,6 +2797,37 @@
             };
         }
 
+
+        // Ensure room availability is loaded for this week
+        if (!availabilityData || !Array.isArray(availabilityData.available_rooms)) {
+            const week = bookingData.selectedSurfWeek;
+            const start = week?.start_date || week?.startDate;
+            const end = week?.end_date || week?.endDate;
+            const participants = bookingData.participants || 1;
+
+            if (start && end) {
+                // Show lightweight loading while we fetch
+                $container.html('<div class="heiwa-assignment-container"><div class="heiwa-loading">Loading rooms...</div></div>');
+                const params = new URLSearchParams({ start_date: start, end_date: end, participants });
+                makeAPIRequest(`/rooms/availability?${params}`)
+                    .then((resp) => {
+                        if (resp && resp.success && resp.data && Array.isArray(resp.data.available_rooms)) {
+                            availabilityData = resp.data;
+                            // Re-render now that we have room data
+                            renderAssignment();
+                        } else {
+                            console.warn('Heiwa Booking Widget: No rooms returned for assignment fetch', resp);
+                            $container.html('<div class="heiwa-error-state"><h4>No rooms available</h4><p>Please try different dates or adjust participants.</p></div>');
+                        }
+                    })
+                    .catch((err) => {
+                        console.error('Heiwa Booking Widget: Error fetching rooms for assignment', err);
+                        $container.html('<div class="heiwa-error-state"><h4>Could not load rooms</h4><p>Please check your connection and try again.</p></div>');
+                    });
+                return; // Stop here; we'll re-enter once data is ready
+            }
+        }
+
         const assignmentHTML = `
             <div class="heiwa-assignment-container">
                 <div class="heiwa-step-header">
@@ -3128,77 +3159,79 @@
     }
 
     /**
-     * Render room picker grid
+     * Render room picker grid (backend-driven)
      */
     function renderRoomPicker() {
-        // Mock room data - in real implementation this would come from API
-        const rooms = [
-            {
-                id: 1,
-                type: 'private',
-                capacity: 2,
-                price: 150,
-                name: 'Private Room (2 beds)',
-                available: true,
-                occupancy: 0
-            },
-            {
-                id: 2,
-                type: 'private',
-                capacity: 3,
-                price: 210,
-                name: 'Private Room (3 beds)',
-                available: true,
-                occupancy: 0
-            },
-            {
-                id: 3,
-                type: 'dorm',
-                capacity: 6,
-                price: 85,
-                name: 'Dorm Room (6 beds)',
-                available: true,
-                occupancy: 0
-            },
-            {
-                id: 4,
-                type: 'dorm',
-                capacity: 8,
-                price: 75,
-                name: 'Dorm Room (8 beds)',
-                available: true,
-                occupancy: 0
-            }
-        ];
+        // Always use backend-provided availability data
+        const rooms = (availabilityData && Array.isArray(availabilityData.available_rooms))
+            ? availabilityData.available_rooms
+            : [];
 
-        return rooms.map(room => `
-            <div class="heiwa-room-picker-card ${room.type}" data-room-id="${room.id}">
-                <div class="heiwa-room-picker-header">
-                    <h5 class="heiwa-room-picker-name">${room.name}</h5>
-                    <span class="heiwa-room-picker-type ${room.type}">${room.type}</span>
-                </div>
+        if (!rooms.length) {
+            return `<div class="heiwa-empty-state"><h5>No rooms available</h5><p>Try different dates or reduce participants.</p></div>`;
+        }
 
-                <div class="heiwa-room-picker-capacity">
-                    <div class="heiwa-capacity-indicator">
-                        ${Array.from({ length: room.capacity }, (_, i) => `
-                            <div class="heiwa-bed-spot ${i < room.occupancy ? 'occupied' : 'available'}"></div>
-                        `).join('')}
-                    </div>
-                    <span class="heiwa-capacity-text">${room.capacity - room.occupancy} spots left</span>
-                </div>
+        return rooms.map((r) => roomCardFromBackend(r)).join('');
+    }
 
-                <div class="heiwa-room-picker-price">
-                    <span class="heiwa-price-amount">${heiwaFmt.format(room.price)}</span>
-                    <span class="heiwa-price-label">${room.type === 'private' ? 'per room' : 'per person'}</span>
-                </div>
+    /**
+     * Build a compact, high-signal room card from backend data
+     */
+    function roomCardFromBackend(r) {
+        const typeLabel = (r.booking_type === 'bed' || r.booking_type === 'perBed' || r.type === 'dorm') ? 'dorm' : 'private';
+        const price = (typeof r.price_per_night === 'number') ? r.price_per_night : (r.price || 0);
+        const img = r.featured_image || (Array.isArray(r.images) && r.images[0]) || '';
+        const amenities = Array.isArray(r.amenities) ? r.amenities : [];
+        const spotsLeft = (typeof r.free === 'number') ? r.free : (r.capacity || 0);
+        const priceLabel = (typeLabel === 'dorm') ? 'per person' : 'per room';
 
-                <div class="heiwa-room-picker-actions">
-                    <button class="heiwa-room-assign-btn" data-room-id="${room.id}" data-action="assign">
-                        Assign Here
-                    </button>
-                </div>
+        return `
+        <div class="heiwa-room-card ${typeLabel}" data-room-id="${r.id}">
+            <div class="heiwa-room-thumb" style="background-image:url('${img}')">
+                <span class="heiwa-badge heiwa-badge-type">${typeLabel}</span>
+                <span class="heiwa-badge heiwa-badge-cap">${getLucideIcon('users',14)} ${spotsLeft} left</span>
             </div>
-        `).join('');
+            <div class="heiwa-room-main">
+                <h5 class="heiwa-room-name">${(r.name || 'Room')}</h5>
+                <div class="heiwa-amenity-chips">${amenityChips(amenities)}</div>
+            </div>
+            <div class="heiwa-room-price">
+                <div class="heiwa-price-amount">${heiwaFmt.format(price)}</div>
+                <div class="heiwa-price-label">${priceLabel}</div>
+                <button class="heiwa-assign-cta" data-room-id="${r.id}">${getLucideIcon('check',16)} Assign to ${currentParticipantLabel()}</button>
+            </div>
+        </div>`;
+    }
+
+    /**
+     * Map backend amenities -> compact chips with Lucide icons
+     */
+    function amenityChips(list) {
+        const AMENITY_MAP = {
+            ensuite: { icon: 'bath', label: 'Ensuite' },
+            shared_bathroom: { icon: 'bath', label: 'Shared bath' },
+            ac: { icon: 'snowflake', label: 'AC' },
+            fan: { icon: 'wind', label: 'Fan' },
+            wifi: { icon: 'wifi', label: 'Wi‑Fi' },
+            ocean_view: { icon: 'waves', label: 'Ocean view' },
+            garden_view: { icon: 'mountain', label: 'Garden view' },
+            bunk_beds: { icon: 'bed', label: 'Bunk beds' },
+            queen: { icon: 'bed', label: 'Queen bed' },
+            double: { icon: 'bed', label: 'Double bed' }
+        };
+        if (!Array.isArray(list) || !list.length) return '';
+        return list.slice(0, 6).map(key => {
+            const m = AMENITY_MAP[key] || { icon: 'dot', label: String(key).replace(/_/g, ' ') };
+            return `<span class="heiwa-chip">${getLucideIcon(m.icon, 14)} ${m.label}</span>`;
+        }).join('');
+    }
+
+    function currentParticipantLabel() {
+        const p = (bookingData && Array.isArray(bookingData.participantDetails) && bookingData.participantDetails[0]) || null;
+        if (p && (p.firstName || p.lastName)) {
+            return (p.firstName || '').trim() || (p.lastName || '').trim() || 'traveler';
+        }
+        return 'traveler';
     }
 
     /**
@@ -3212,8 +3245,15 @@
             applySuggestion(suggestionId);
         });
 
-        // Room assignment
+        // Room assignment (legacy button)
         $('.heiwa-room-assign-btn').on('click', function(e) {
+            e.stopPropagation();
+            const roomId = $(this).data('room-id');
+            assignToRoom(roomId);
+        });
+
+        // Room assignment (new compact card CTA)
+        $('.heiwa-assign-cta').on('click', function(e) {
             e.stopPropagation();
             const roomId = $(this).data('room-id');
             assignToRoom(roomId);
