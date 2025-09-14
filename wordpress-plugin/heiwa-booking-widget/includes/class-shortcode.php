@@ -87,58 +87,119 @@ class Heiwa_Booking_Widget_Shortcode {
         // Generate unique widget ID
         $widget_id = 'heiwa-booking-widget-' . $widget_settings['id'];
 
+        // Check if React build is available
+        $react_build_dir = HEIWA_BOOKING_PLUGIN_PATH . 'assets/build/';
+        $use_react_widget = file_exists($react_build_dir . 'widget-entry.js') &&
+                           file_exists($react_build_dir . 'widget-styles.css');
+
         ob_start();
-        ?>
-        <!-- Heiwa Booking Widget (Shortcode) -->
-        <div id="<?php echo esc_attr($widget_id); ?>" class="heiwa-booking-widget heiwa-shortcode-widget <?php echo $widget_settings['inline'] ? 'heiwa-inline' : 'heiwa-position-' . esc_attr($widget_settings['position']); ?>" data-widget-id="<?php echo esc_attr($widget_settings['id']); ?>">
-            
-            <?php if ($widget_settings['inline']): ?>
-                <!-- Inline Widget -->
-                <div class="heiwa-booking-inline-container">
-                    <div class="heiwa-booking-inline-header">
-                        <h3><?php _e('Book Your Surf Adventure', 'heiwa-booking-widget'); ?></h3>
-                    </div>
-                    <div class="heiwa-booking-inline-content">
-                        <?php $this->render_widget_content($widget_settings); ?>
-                    </div>
-                </div>
-            <?php else: ?>
-                <!-- Fixed Position Widget -->
-                <!-- Trigger Button -->
-                <button class="heiwa-booking-trigger" style="background-color: <?php echo esc_attr($widget_settings['primary_color']); ?>;" data-widget-target="<?php echo esc_attr($widget_id); ?>">
-                    <svg class="heiwa-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2"/>
-                        <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M3 10H21" stroke="currentColor" stroke-width="2"/>
-                        <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    <span><?php echo esc_html($widget_settings['trigger_text']); ?></span>
-                </button>
 
-                <!-- Widget Panel -->
-                <div class="heiwa-booking-panel">
-                    <!-- Panel Header -->
-                    <div class="heiwa-booking-header">
-                        <h3><?php _e('Book Your Surf Adventure', 'heiwa-booking-widget'); ?></h3>
-                        <button class="heiwa-booking-close" data-widget-target="<?php echo esc_attr($widget_id); ?>">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </button>
-                    </div>
+        if ($use_react_widget) {
+            // Render React Widget Container
+            ?>
+            <!-- Heiwa React Booking Widget (Premium) -->
+            <div id="<?php echo esc_attr($widget_id); ?>"
+                 class="heiwa-react-widget-container heiwa-shortcode-widget <?php echo $widget_settings['inline'] ? 'heiwa-inline' : 'heiwa-position-' . esc_attr($widget_settings['position']); ?>"
+                 data-widget-id="<?php echo esc_attr($widget_settings['id']); ?>"
+                 data-build-id="<?php echo esc_attr($this->get_build_version()); ?>">
 
-                    <!-- Panel Content -->
-                    <div class="heiwa-booking-content">
-                        <?php $this->render_widget_content($widget_settings); ?>
-                    </div>
+                <!-- React widget will be rendered here by JavaScript -->
+                <div class="heiwa-widget-loading" style="padding: 20px; text-align: center; color: #6b7280;">
+                    <div style="width: 20px; height: 20px; border: 2px solid #e5e7eb; border-top: 2px solid #f97316; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px;"></div>
+                    <p style="margin: 0; font-size: 14px;">Loading Heiwa Booking Widget...</p>
                 </div>
 
-                <!-- Overlay -->
-                <div class="heiwa-booking-overlay" data-widget-target="<?php echo esc_attr($widget_id); ?>"></div>
-            <?php endif; ?>
-        </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    #<?php echo esc_attr($widget_id); ?> {
+                        --heiwa-primary-color: <?php echo esc_attr($widget_settings['primary_color']); ?>;
+                        --heiwa-primary-hover: <?php echo esc_attr($this->adjust_brightness($widget_settings['primary_color'], -20)); ?>;
+                    }
+                </style>
+            </div>
+
+            <script>
+                // Initialize React widget when ready
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (typeof window.initHeiwaWidget === 'function') {
+                        window.initHeiwaWidget('<?php echo esc_js($widget_id); ?>');
+                    } else {
+                        console.log('Heiwa Widget: Waiting for React widget to load...');
+                        // Retry initialization after a short delay
+                        setTimeout(function() {
+                            if (typeof window.initHeiwaWidget === 'function') {
+                                window.initHeiwaWidget('<?php echo esc_js($widget_id); ?>');
+                            }
+                        }, 1000);
+                    }
+                });
+            </script>
+            <?php
+        } else {
+            // Render Vanilla JavaScript Widget (Fallback)
+            ?>
+            <!-- Heiwa Booking Widget (Vanilla JS Fallback) -->
+            <div id="<?php echo esc_attr($widget_id); ?>" class="heiwa-booking-widget heiwa-shortcode-widget <?php echo $widget_settings['inline'] ? 'heiwa-inline' : 'heiwa-position-' . esc_attr($widget_settings['position']); ?>" data-widget-id="<?php echo esc_attr($widget_settings['id']); ?>">
+
+                <?php if ($widget_settings['inline']): ?>
+                    <!-- Inline Widget -->
+                    <div class="heiwa-booking-inline-container">
+                        <div class="heiwa-booking-inline-header">
+                            <h3><?php _e('Book Your Surf Adventure', 'heiwa-booking-widget'); ?></h3>
+                        </div>
+                        <div class="heiwa-booking-inline-content">
+                            <?php $this->render_widget_content($widget_settings); ?>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <!-- Fixed Position Widget -->
+                    <!-- Trigger Button -->
+                    <button class="heiwa-booking-trigger" style="background-color: <?php echo esc_attr($widget_settings['primary_color']); ?>;" data-widget-target="<?php echo esc_attr($widget_id); ?>">
+                        <svg class="heiwa-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M3 10H21" stroke="currentColor" stroke-width="2"/>
+                            <path d="M8 14H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span><?php echo esc_html($widget_settings['trigger_text']); ?></span>
+                    </button>
+
+                    <!-- Widget Panel -->
+                    <div class="heiwa-booking-panel">
+                        <!-- Panel Header -->
+                        <div class="heiwa-booking-header">
+                            <h3><?php _e('Book Your Surf Adventure', 'heiwa-booking-widget'); ?></h3>
+                            <button class="heiwa-booking-close" data-widget-target="<?php echo esc_attr($widget_id); ?>">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Panel Content -->
+                        <div class="heiwa-booking-content">
+                            <?php $this->render_widget_content($widget_settings); ?>
+                        </div>
+                    </div>
+
+                    <!-- Overlay -->
+                    <div class="heiwa-booking-overlay" data-widget-target="<?php echo esc_attr($widget_id); ?>"></div>
+                <?php endif; ?>
+            </div>
+
+            <style>
+                #<?php echo esc_attr($widget_id); ?> {
+                    --heiwa-primary-color: <?php echo esc_attr($widget_settings['primary_color']); ?>;
+                    --heiwa-primary-hover: <?php echo esc_attr($this->adjust_brightness($widget_settings['primary_color'], -20)); ?>;
+                }
+            </style>
+            <?php
+        }
 
         <style>
             #<?php echo esc_attr($widget_id); ?> {
@@ -349,6 +410,77 @@ class Heiwa_Booking_Widget_Shortcode {
      * Enqueue widget assets
      */
     private function enqueue_assets() {
+        // Check if React build files exist for premium widget
+        $react_build_dir = HEIWA_BOOKING_PLUGIN_PATH . 'assets/build/';
+        $use_react_widget = file_exists($react_build_dir . 'widget-entry.js') &&
+                           file_exists($react_build_dir . 'widget-styles.css');
+
+        if ($use_react_widget) {
+            $this->enqueue_react_assets();
+        } else {
+            $this->enqueue_vanilla_assets();
+        }
+    }
+
+    /**
+     * Enqueue React widget assets (Premium)
+     */
+    private function enqueue_react_assets() {
+        // Load React and ReactDOM from CDN for WordPress compatibility
+        wp_enqueue_script(
+            'react',
+            'https://unpkg.com/react@18/umd/react.production.min.js',
+            array(),
+            '18.2.0',
+            false
+        );
+
+        wp_enqueue_script(
+            'react-dom',
+            'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
+            array('react'),
+            '18.2.0',
+            false
+        );
+
+        // Enqueue React widget styles
+        wp_enqueue_style(
+            'heiwa-react-widget-styles',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/build/widget-styles.css',
+            array(),
+            $this->get_build_version()
+        );
+
+        // Enqueue React widget JavaScript
+        wp_enqueue_script(
+            'heiwa-react-widget',
+            HEIWA_BOOKING_PLUGIN_URL . 'assets/build/widget-entry.js',
+            array('react', 'react-dom'),
+            $this->get_build_version(),
+            true
+        );
+
+        // Configure React widget with WordPress data
+        wp_localize_script('heiwa-react-widget', 'heiwaWidgetConfig', array(
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('heiwa_booking_nonce'),
+            'restBase' => rest_url('heiwa/v1'),
+            'pluginUrl' => HEIWA_BOOKING_PLUGIN_URL,
+            'buildId' => $this->get_build_version(),
+            'settings' => array(
+                'apiEndpoint' => get_option('heiwa_booking_settings')['api_endpoint'] ?? '',
+                'apiKey' => get_option('heiwa_booking_settings')['api_key'] ?? '',
+                'position' => 'right',
+                'primaryColor' => '#f97316',
+                'triggerText' => 'BOOK NOW'
+            )
+        ));
+    }
+
+    /**
+     * Enqueue vanilla JavaScript assets (Fallback)
+     */
+    private function enqueue_vanilla_assets() {
         // Enqueue modular CSS architecture (matching main plugin file)
         wp_enqueue_style(
             'heiwa-booking-base',
@@ -394,6 +526,20 @@ class Heiwa_Booking_Widget_Shortcode {
             'api_endpoint' => get_option('heiwa_booking_settings')['api_endpoint'] ?? '',
             'api_key' => get_option('heiwa_booking_settings')['api_key'] ?? ''
         ));
+    }
+
+    /**
+     * Get build version from manifest or fallback to plugin version
+     */
+    private function get_build_version() {
+        $manifest_file = HEIWA_BOOKING_PLUGIN_PATH . 'assets/build/manifest.json';
+
+        if (file_exists($manifest_file)) {
+            $manifest = json_decode(file_get_contents($manifest_file), true);
+            return $manifest['buildId'] ?? HEIWA_BOOKING_VERSION;
+        }
+
+        return HEIWA_BOOKING_VERSION;
     }
 
     /**

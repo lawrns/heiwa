@@ -12,10 +12,7 @@
 (function() {
     'use strict';
 
-    function initializeWidget($) {
-        // jQuery is now available as $ parameter
-
-    // Widget state
+    // Widget state - moved to global scope
     let isWidgetOpen = false;
     let currentStep = 'booking-type';
     let selectedCamp = null;
@@ -34,10 +31,11 @@
         participantDetails: [],
         addons: [],
         specialRequests: '',
-        dietaryRequirements: '',
-        selectedRoom: null,
-        selectedSurfWeek: null
+        totalPrice: 0
     };
+
+    function initializeWidget($) {
+        // jQuery is now available as $ parameter
 
     // Currency formatter helper
     const heiwaFmt = new Intl.NumberFormat((navigator.language || 'en-US'), {
@@ -554,6 +552,35 @@
         { id: 'form_addons', title: 'Your Details & Add-ons', label: 'Details' },
         { id: 'confirmation', title: 'Review & Confirm', label: 'Confirm' }
     ];
+    // Display-step configuration to match React's 5-step flow
+    const DISPLAY_STEPS = [
+        { id: 'experience', title: 'Choose Experience', label: 'Experience' },
+        { id: 'options', title: 'Choose Options', label: 'Options' },
+        { id: 'addons', title: 'Add-ons', label: 'Add-ons' },
+        { id: 'details', title: 'Your Details', label: 'Details' },
+        { id: 'review', title: 'Review', label: 'Review' }
+    ];
+
+    function getDisplayIndexForStep(stepId) {
+        switch (stepId) {
+            case 'booking-type':
+                return 0; // Experience
+            case 'surf-weeks':
+            case 'assignment':
+            case 'room-calendar':
+            case 'room-selection':
+                return 1; // Options
+            case 'form_addons':
+                return 2; // Add-ons
+            case 'dates_participants':
+                return 3; // Details
+            case 'confirmation':
+                return 4; // Review
+            default:
+                return 0;
+        }
+    }
+
 
     // API configuration - lazy loaded to avoid initialization errors
     function getAPIConfig() {
@@ -907,8 +934,8 @@
 
                     <div class="heiwa-booking-progress">
                         <div class="heiwa-booking-stepper">
-                            ${STEPS.map((step, index) => `
-                                <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-step="${step.id}">
+                            ${DISPLAY_STEPS.map((step, index) => `
+                                <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-display-index="${index}">
                                     <div class="heiwa-booking-step-number">${index + 1}</div>
                                     <div class="heiwa-booking-step-label">${step.label}</div>
                                 </div>
@@ -1003,16 +1030,13 @@
      * Update progress indicator
      */
     function updateProgressIndicator() {
-        const currentIndex = STEPS.findIndex(step => step.id === currentStep);
-
-        STEPS.forEach((step, index) => {
-            const $stepElement = $(`.heiwa-booking-step[data-step="${step.id}"]`);
-
+        const displayIndex = getDisplayIndexForStep(currentStep);
+        DISPLAY_STEPS.forEach((step, index) => {
+            const $stepElement = $(`.heiwa-booking-step[data-display-index="${index}"]`);
             $stepElement.removeClass('current completed upcoming');
-
-            if (index < currentIndex) {
+            if (index < displayIndex) {
                 $stepElement.addClass('completed');
-            } else if (index === currentIndex) {
+            } else if (index === displayIndex) {
                 $stepElement.addClass('current');
             } else {
                 $stepElement.addClass('upcoming');
@@ -1148,8 +1172,8 @@
         const bookingTypeHTML = `
             <div class="heiwa-booking-type-selector">
                 <div class="heiwa-booking-type-header">
-                    <h2 class="heiwa-booking-type-title">Book Your Adventure</h2>
-                    <p class="heiwa-booking-type-subtitle">Choose how you'd like to experience Heiwa House</p>
+                    <h2 class="heiwa-booking-type-title">Choose Your Adventure</h2>
+                    <p class="heiwa-booking-type-subtitle">How would you like to experience Heiwa House?</p>
                 </div>
 
                 <div class="heiwa-booking-type-options" role="radiogroup" aria-label="Select booking type">
@@ -1159,13 +1183,16 @@
                          aria-checked="${bookingData.bookingType === 'room' ? 'true' : 'false'}"
                          tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}"
                          aria-label="Book a room - Choose your dates and accommodation">
-                        <div class="heiwa-booking-option-icon" aria-hidden="true">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNreUdyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM4N0NFRUIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjBGOUZGIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIFNreSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI3NreUdyYWRpZW50KSIvPgogIDwhLS0gQmVkIC0tPgogIDxyZWN0IHg9IjUwIiB5PSIxMjAiIHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiNGRkZGRkYiIHJ4PSI4Ii8+CiAgPHJlY3QgeD0iNjAiIHk9IjEwMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzNCODJGNiIgcng9IjQiLz4KICA8IS0tIFBpbGxvd3MgLS0+CiAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjEwNSIgcng9IjI1IiByeT0iMTUiIGZpbGw9IiNGM0Y0RjYiLz4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTA1IiByeD0iMjUiIHJ5PSIxNSIgZmlsbD0iI0YzRjRGNiIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iMTkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2QjczODAiPkNvbWZvcnRhYmxlIFJvb21zPC90ZXh0Pgo8L3N2Zz4=" alt="Room booking" />
-                        </div>
+                        <div class="heiwa-price-chip"><span>From</span><strong>€45</strong></div>
                         <div class="heiwa-booking-option-content">
                             <h3 class="heiwa-booking-option-title">Book a Room</h3>
-                            <p class="heiwa-booking-option-subtitle">Choose your dates and accommodation</p>
-                            <p class="heiwa-booking-option-description">Direct booking for rooms with flexible dates</p>
+                            <p class="heiwa-booking-option-subtitle">Choose your dates and accommodation. Perfect for flexible stays.</p>
+                            <div class="heiwa-booking-option-badges">
+                                <span class="heiwa-badge">Flexible dates</span>
+                                <span class="heiwa-badge">Choose your room</span>
+                                <span class="heiwa-badge">Self-guided experience</span>
+                            </div>
+                            <div class="heiwa-selected-badge">Selected</div>
                         </div>
                         <div class="heiwa-booking-option-arrow" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1180,13 +1207,15 @@
                          aria-checked="${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}"
                          tabindex="${bookingData.bookingType === 'surf-week' ? '0' : '-1'}"
                          aria-label="All-inclusive surf week - Join our structured surf camp programs">
-                        <div class="heiwa-booking-option-icon" aria-hidden="true">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9Im9jZWFuR3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBEOTJGNCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMzY5QTEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDwhLS0gT2NlYW4gQmFja2dyb3VuZCAtLT4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNvY2VhbkdyYWRpZW50KSIvPgogIDwhLS0gV2F2ZXMgLS0+CiAgPHBhdGggZD0iTTAgMTIwIFE3NSAxMDAgMTUwIDEyMCBUIDMwMCAxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIzIiBvcGFjaXR5PSIwLjgiLz4KICA8cGF0aCBkPSJNMCAxNDAgUTc1IDEyMCAxNTAgMTQwIFQgMzAwIDE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNiIvPgogIDxwYXRoIGQ9Ik0wIDE2MCBRNTM1IDE0MCAxNTAgMTYwIFQgMzAwIDE2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC40Ii8+CiAgPCEtLSBTdXJmYm9hcmQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEzMCIgcng9IjQwIiByeT0iOCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC45Ii8+CiAgPHRleHQgeD0iMTUwIiB5PSIxOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI0ZGRkZGRiI+U3VyZiBXZWVrczwvdGV4dD4KPC9zdmc+" alt="Surf week booking" />
-                        </div>
+                        <div class="heiwa-price-chip"><span>From</span><strong>€599</strong></div>
                         <div class="heiwa-booking-option-content">
                             <h3 class="heiwa-booking-option-title">All-Inclusive Surf Week</h3>
-                            <p class="heiwa-booking-option-subtitle">Join our structured surf camp programs</p>
-                            <p class="heiwa-booking-option-description">Pre-scheduled weeks with accommodation, meals, and surf lessons</p>
+                            <p class="heiwa-booking-option-subtitle">Join our structured surf camp programs with coaching and community.</p>
+                            <div class="heiwa-booking-option-badges">
+                                <span class="heiwa-badge">Professional coaching</span>
+                                <span class="heiwa-badge">All meals included</span>
+                                <span class="heiwa-badge">Structured program</span>
+                            </div>
                         </div>
                         <div class="heiwa-booking-option-arrow" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1194,6 +1223,13 @@
                             </svg>
                         </div>
                     </div>
+                </div>
+
+                <div class="heiwa-booking-type-help">
+                    <p class="heiwa-booking-type-help-text">
+                        Not sure which option? Our room booking offers more flexibility,
+                        while surf weeks provide a complete guided experience.
+                    </p>
                 </div>
             </div>
         `;
@@ -1233,6 +1269,23 @@
                     break;
             }
         });
+
+        // Auto-advance to next step after selection (React parity)
+        function selectBookingType(bookingType) {
+            // Update booking data
+            bookingData.bookingType = bookingType;
+
+            // Update UI state
+            $('.heiwa-booking-option-card').removeClass('selected').attr('aria-checked', 'false');
+            $(`.heiwa-booking-option-card[data-booking-type="${bookingType}"]`)
+                .addClass('selected')
+                .attr('aria-checked', 'true');
+
+            // Auto-advance after short delay
+            setTimeout(() => {
+                goToNextStep();
+            }, 300);
+        }
     }
 
     /**
@@ -3564,8 +3617,14 @@
     // Global widget object for external access
     window.HeiwaBookingWidget = {
         init: function(widgetId, settings) {
-            // Initialize specific widget instance
-            initBookingWidget();
+            // Initialize specific widget instance (jQuery-aware)
+            const $ = window.jQuery || window.$;
+            if ($) {
+                initializeWidget($);
+            } else {
+                // Final fallback if jQuery isn't ready yet
+                waitForjQuery(initializeWidget);
+            }
         },
         retryLoadSurfCamps: function() {
             loadSurfCamps();
@@ -3594,7 +3653,7 @@
             );
         }
     }
-
+    }
     // Wait for jQuery to be available
     function waitForjQuery(callback) {
         if (typeof window.jQuery !== 'undefined' || typeof window.$ !== 'undefined') {
@@ -3630,7 +3689,12 @@
                 const triggerElement = $('.heiwa-booking-trigger')[0];
                 if (triggerElement && !$.data(triggerElement, 'events')) {
                     console.log('Heiwa Booking Widget: Fallback initialization');
-                    initBookingWidget($);
+                    // Use the public API to avoid scoping issues
+                    if (window.HeiwaBookingWidget && typeof window.HeiwaBookingWidget.init === 'function') {
+                        window.HeiwaBookingWidget.init('auto-fallback', {});
+                    } else {
+                        initializeWidget($);
+                    }
                 }
             }
         }, 1000);

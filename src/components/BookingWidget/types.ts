@@ -8,6 +8,8 @@ export interface BookingState {
   guests: number;
   selectedOption: string | null;
   selectedSurfWeek: string | null;
+  selectedSurfWeekRoom: string | null; // For surf week room selection
+  roomAssignments: RoomAssignment[]; // For room assignment system
   selectedAddOns: AddOnSelection[];
   paymentMethod: 'card_stripe' | 'bank_wire' | null;
   bankWireDetails?: BankWireDetails;
@@ -82,6 +84,13 @@ export interface Room {
   isAvailable: boolean;
 }
 
+export interface RoomAssignment {
+  id: string;
+  roomId: string;
+  guestIds: string[];
+  bedNumber?: number; // For shared/dorm rooms
+}
+
 export interface ExperienceOption {
   id: string;
   type: 'room' | 'surf-week';
@@ -99,6 +108,10 @@ export type BookingAction =
   | { type: 'SET_GUESTS'; payload: number }
   | { type: 'SET_SELECTED_OPTION'; payload: string }
   | { type: 'SET_SURF_WEEK'; payload: string }
+  | { type: 'SET_SURF_WEEK_ROOM'; payload: string }
+  | { type: 'SET_ROOM_ASSIGNMENTS'; payload: RoomAssignment[] }
+  | { type: 'ADD_ROOM_ASSIGNMENT'; payload: RoomAssignment }
+  | { type: 'REMOVE_ROOM_ASSIGNMENT'; payload: string }
   | { type: 'SET_ADD_ONS'; payload: AddOnSelection[] }
   | { type: 'SET_PAYMENT_METHOD'; payload: 'card_stripe' | 'bank_wire' }
   | { type: 'SET_BANK_WIRE_DETAILS'; payload: BankWireDetails }

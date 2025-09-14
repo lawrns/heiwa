@@ -18,46 +18,27 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [pricing, setPricing] = useState<PricingBreakdown>(state.pricing);
 
-  // Calculate pricing when component mounts or state changes
+  // Calculate pricing from established base price and current add-ons
   useEffect(() => {
-    const calculatePricing = () => {
-      if (!state.selectedOption) return;
+    const basePrice = state.pricing.basePrice || 0;
+    const addOnsSubtotal = state.selectedAddOns.reduce((total, addOn) => total + addOn.price * addOn.quantity, 0);
+    const subtotal = basePrice + addOnsSubtotal;
+    const taxes = Math.round(subtotal * 0.1);
+    const fees = Math.round(subtotal * 0.05);
+    const total = subtotal + taxes + fees;
 
-      let basePrice = 0;
-
-      if (state.experienceType === 'room' && state.dates.checkIn && state.dates.checkOut) {
-        // For rooms: price per night × number of nights
-        const nights = Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24));
-        basePrice = 89 * nights; // Mock price - would come from selected room
-      } else if (state.experienceType === 'surf-week') {
-        // For surf weeks: price per person
-        basePrice = 899 * state.guests; // Mock price - would come from selected surf week
-      }
-
-      const addOnsSubtotal = state.selectedAddOns.reduce((total, addOn) => {
-        return total + (addOn.price * addOn.quantity);
-      }, 0);
-
-      const subtotal = basePrice + addOnsSubtotal;
-      const taxes = Math.round(subtotal * 0.1); // 10% tax
-      const fees = Math.round(subtotal * 0.05); // 5% service fee
-      const total = subtotal + taxes + fees;
-
-      const newPricing: PricingBreakdown = {
-        basePrice,
-        addOnsSubtotal,
-        taxes,
-        fees,
-        total,
-        currency: 'EUR',
-      };
-
-      setPricing(newPricing);
-      actions.updatePricing(newPricing);
+    const newPricing: PricingBreakdown = {
+      basePrice,
+      addOnsSubtotal,
+      taxes,
+      fees,
+      total,
+      currency: 'EUR',
     };
 
-    calculatePricing();
-  }, [state.selectedOption, state.experienceType, state.dates, state.guests, state.selectedAddOns, actions]);
+    setPricing(newPricing);
+    actions.updatePricing(newPricing);
+  }, [state.pricing.basePrice, state.selectedAddOns]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-EU', {
@@ -81,14 +62,58 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
     setPaymentError(null);
 
     try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock payment success
-      console.log('Payment processed successfully');
+      const participants = state.guestDetails.map(g => ({
+        name: `${g.firstName} ${g.lastName}`.trim(),
+        email: g.email,
+        phone: g.phone,
+      }));
+
+      let endpoint = '';
+      let payload: any = {};
+
+      if (state.experienceType === 'room' && state.dates.checkIn && state.dates.checkOut && state.selectedOption) {
+        endpoint = '/api/wordpress/room-bookings';
+        payload = {
+          room_id: state.selectedOption,
+          start_date: state.dates.checkIn.toISOString().split('T')[0],
+          end_date: state.dates.checkOut.toISOString().split('T')[0],
+          participants,
+          add_ons: state.selectedAddOns.map(a => ({ id: a.id, quantity: a.quantity, price: a.price })),
+          pricing: pricing,
+          guests: state.guests,
+          source_url: typeof window !== 'undefined' ? window.location.href : undefined,
+          widget_version: 'wp-widget-test'
+        };
+      } else if (state.experienceType === 'surf-week' && state.selectedOption) {
+        endpoint = '/api/wordpress/bookings';
+        payload = {
+          camp_id: state.selectedOption,
+          participants,
+          pricing: pricing,
+          source_url: typeof window !== 'undefined' ? window.location.href : undefined,
+          widget_version: 'wp-widget-test'
+        };
+      } else {
+        throw new Error('Missing required booking information');
+      }
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Heiwa-API-Key': 'heiwa_wp_test_key_2024_secure_deployment',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data?.success) {
+        throw new Error(data?.error || `Request failed (${res.status})`);
+      }
+
       onComplete();
-    } catch (error) {
-      setPaymentError('Payment failed. Please try again.');
+    } catch (error: any) {
+      setPaymentError(error?.message || 'Payment failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }

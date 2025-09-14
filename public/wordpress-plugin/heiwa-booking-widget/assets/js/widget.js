@@ -8,18 +8,12 @@
  * - Booking flow management
  */
 
-(function($) {
+// Wait for jQuery to be available before initializing
+(function() {
     'use strict';
 
-    // Ensure $ is available for our code
-    if (typeof $ === 'undefined' && typeof jQuery !== 'undefined') {
-        $ = jQuery;
-    }
-
-    // Widget state with improved state management
+    // Widget state - moved to global scope
     let isWidgetOpen = false;
-    let isToggling = false; // Prevent rapid state changes
-    let toggleTimeout = null; // Debounce timeout
     let currentStep = 'booking-type';
     let selectedCamp = null;
     let availabilityData = null;
@@ -37,10 +31,11 @@
         participantDetails: [],
         addons: [],
         specialRequests: '',
-        dietaryRequirements: '',
-        selectedRoom: null,
-        selectedSurfWeek: null
+        totalPrice: 0
     };
+
+    function initializeWidget($) {
+        // jQuery is now available as $ parameter
 
     // Currency formatter helper
     const heiwaFmt = new Intl.NumberFormat((navigator.language || 'en-US'), {
@@ -198,8 +193,7 @@
             inlineContainer.html(inlineStructure);
         }
 
-        // Render initial step navigation and show first step for inline mode
-        renderStepNavigation();
+        // Show initial step for inline mode
         showStep('booking-type');
     }
 
@@ -547,43 +541,46 @@
         updateCTAButton();
     }
 
-    // Step configuration - MAJOR UX OVERHAUL: Dynamic step filtering for simplified flows
-    const ALL_STEPS = [
-        { id: 'booking-type', title: 'Choose Booking Type', label: 'Type', flows: ['room', 'surf-week'] },
-        { id: 'surf-weeks', title: 'Available Surf Weeks', label: 'Surf Weeks', flows: ['surf-week'] },
-        { id: 'assignment', title: 'Assign Rooms & Beds', label: 'Assignment', flows: ['surf-week'], requiresMultiple: true },
-        { id: 'room-calendar', title: 'Select Dates & Room', label: 'Check-in', flows: ['room'] },
-        { id: 'room-selection', title: 'Choose Your Room', label: 'Room', flows: ['room'] },
-        { id: 'dates_participants', title: 'Select Dates & Participants', label: 'Travelers', flows: ['surf-week'] },
-        { id: 'form_addons', title: 'Your Details & Add-ons', label: 'Details', flows: ['room', 'surf-week'] },
-        { id: 'confirmation', title: 'Review & Confirm', label: 'Confirm', flows: ['room', 'surf-week'] }
+    // Step configuration
+    const STEPS = [
+        { id: 'booking-type', title: 'Choose Booking Type', label: 'Type' },
+        { id: 'surf-weeks', title: 'Available Surf Weeks', label: 'Surf Weeks' },
+        { id: 'assignment', title: 'Assign Rooms & Beds', label: 'Assignment' },
+        { id: 'room-calendar', title: 'Select Dates & Room', label: 'Dates' },
+        { id: 'room-selection', title: 'Choose Your Room', label: 'Room' },
+        { id: 'dates_participants', title: 'Select Dates & Participants', label: 'Dates' },
+        { id: 'form_addons', title: 'Your Details & Add-ons', label: 'Details' },
+        { id: 'confirmation', title: 'Review & Confirm', label: 'Confirm' }
+    ];
+    // Display-step configuration to match React's 5-step flow
+    const DISPLAY_STEPS = [
+        { id: 'experience', title: 'Choose Experience', label: 'Experience' },
+        { id: 'options', title: 'Choose Options', label: 'Options' },
+        { id: 'addons', title: 'Add-ons', label: 'Add-ons' },
+        { id: 'details', title: 'Your Details', label: 'Details' },
+        { id: 'review', title: 'Review', label: 'Review' }
     ];
 
-    /**
-     * Get filtered steps based on current booking context
-     * Implements dynamic step navigation for simplified UX
-     */
-    function getActiveSteps() {
-        const currentFlow = bookingData.bookingType || 'room';
-        const participantCount = bookingData.participants || 1;
-
-        return ALL_STEPS.filter(step => {
-            // Must be part of current flow
-            if (!step.flows.includes(currentFlow)) return false;
-
-            // Skip assignment step for single participants in surf-week flow
-            if (step.id === 'assignment' && currentFlow === 'surf-week' && participantCount === 1) {
-                return false;
-            }
-
-            return true;
-        });
+    function getDisplayIndexForStep(stepId) {
+        switch (stepId) {
+            case 'booking-type':
+                return 0; // Experience
+            case 'surf-weeks':
+            case 'assignment':
+            case 'room-calendar':
+            case 'room-selection':
+                return 1; // Options
+            case 'form_addons':
+                return 2; // Add-ons
+            case 'dates_participants':
+                return 3; // Details
+            case 'confirmation':
+                return 4; // Review
+            default:
+                return 0;
+        }
     }
 
-    // Legacy compatibility - use dynamic steps
-    function getSTEPS() {
-        return getActiveSteps();
-    }
 
     // API configuration - lazy loaded to avoid initialization errors
     function getAPIConfig() {
@@ -657,138 +654,14 @@
     }
 
     /**
-     * Analytics tracking for UX validation
-     */
-    function trackEvent(eventName, data = {}) {
-        try {
-            // Send to analytics service (Google Analytics, etc.)
-            if (window.gtag) {
-                window.gtag('event', eventName, {
-                    event_category: 'heiwa_booking_widget',
-                    ...data
-                });
-            }
-
-            // Log for development
-            console.log('Heiwa Widget Analytics:', eventName, data);
-
-            // Store in localStorage for development analysis
-            const events = JSON.parse(localStorage.getItem('heiwa_widget_events') || '[]');
-            events.push({
-                timestamp: new Date().toISOString(),
-                event: eventName,
-                data: data
-            });
-
-            // Keep only last 100 events
-            if (events.length > 100) {
-                events.shift();
-            }
-
-            localStorage.setItem('heiwa_widget_events', JSON.stringify(events));
-        } catch (e) {
-            console.warn('Analytics tracking failed:', e);
-        }
-    }
-
-    /**
-     * Error handling and resilience
-     */
-    function handleError(error, context = '') {
-        console.error('Heiwa Widget Error:', error, context);
-
-        // Track error for analytics
-        trackEvent('error_occurred', {
-            error_message: error.message || error,
-            context: context,
-            user_agent: navigator.userAgent,
-            url: window.location.href
-        });
-
-        // Show user-friendly error message
-        showErrorMessage('Something went wrong. Please try again or contact support.');
-
-        // Attempt recovery if possible
-        if (context === 'api_failure') {
-            // Retry logic could go here
-        }
-    }
-
-    /**
-     * Show error message to user
-     */
-    function showErrorMessage(message) {
-        const $container = $('.heiwa-step-content.active');
-        if ($container.length === 0) return;
-
-        // Remove any existing error messages
-        $container.find('.heiwa-error-state').remove();
-
-        const errorHTML = `
-            <div class="heiwa-error-state" role="alert" aria-live="assertive">
-                ${message}
-            </div>
-        `;
-
-        $container.prepend(errorHTML);
-
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            $container.find('.heiwa-error-state').fadeOut(() => {
-                $(this).remove();
-            });
-        }, 5000);
-    }
-
-    /**
      * Initialize the booking widget
      */
-    function initBookingWidget() {
+    function initBookingWidget($) {
         // Ensure styles are present before rendering
         ensureWidgetStylesLoaded();
 
-    // Detect render mode (drawer vs inline)
-    detectRenderMode();
-
-    // Track widget initialization
-    trackEvent('widget_initialized', {
-        render_mode: $('.heiwa-booking-drawer').length > 0 ? 'drawer' : 'inline',
-        user_agent: navigator.userAgent,
-        viewport_width: window.innerWidth,
-        viewport_height: window.innerHeight,
-        touch_support: 'ontouchstart' in window
-    });
-
-    // Track scroll behavior on mobile
-    let scrollTimeout;
-    $(window).on('scroll', function() {
-        if (scrollTimeout) clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            const scrollTop = $(window).scrollTop();
-            const widgetVisible = $('.heiwa-booking-widget').is(':visible');
-
-            if (widgetVisible) {
-                trackEvent('widget_scroll_interaction', {
-                    scroll_position: scrollTop,
-                    viewport_height: window.innerHeight,
-                    widget_in_view: isElementInViewport($('.heiwa-booking-widget')[0]),
-                    is_mobile: window.innerWidth < 768
-                });
-            }
-        }, 500);
-    });
-
-    // Helper function to check if element is in viewport
-    function isElementInViewport(el) {
-        if (!el) return false;
-        const rect = el.getBoundingClientRect();
-        return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-        );
-    }
+        // Detect render mode (drawer vs inline)
+        detectRenderMode();
 
         // Bind event handlers
         bindEvents();
@@ -942,8 +815,7 @@
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 const stepId = $(this).data('step');
-                const activeSteps = getActiveSteps();
-                if (stepId && activeSteps.find(s => s.id === stepId)) {
+                if (stepId && STEPS.find(s => s.id === stepId)) {
                     showStep(stepId);
                 }
             }
@@ -992,131 +864,54 @@
     }
 
     /**
-     * Toggle widget visibility with improved state management
-     * Implements TI-003 fix: Prevent rapid state changes and animation glitches
+     * Toggle widget visibility
      */
     function toggleWidget(e) {
         if (e) {
             e.preventDefault();
         }
-
-        // Prevent rapid toggling
-        if (isToggling) {
-            console.log('Heiwa Booking Widget: Toggle ignored - already toggling');
-            return;
-        }
-
-        // Clear any existing timeout
-        if (toggleTimeout) {
-            clearTimeout(toggleTimeout);
-        }
-
         console.log('Heiwa Booking Widget: Toggle widget called, isOpen:', isWidgetOpen);
 
-        // Set toggling state
-        isToggling = true;
-
-        // Validate current state against DOM
-        const backdropExists = $('.heiwa-booking-backdrop').length > 0;
-        const backdropActive = $('.heiwa-booking-backdrop').hasClass('active');
-
-        // Sync state if inconsistent
-        if (isWidgetOpen !== backdropActive) {
-            console.warn('Heiwa Booking Widget: State inconsistency detected, syncing...', {
-                isWidgetOpen,
-                backdropActive
-            });
-            isWidgetOpen = backdropActive;
-        }
-
-        // Perform toggle
         if (isWidgetOpen) {
             closeWidget();
         } else {
             openWidget();
         }
-
-        // Reset toggling state after animation completes
-        toggleTimeout = setTimeout(() => {
-            isToggling = false;
-            toggleTimeout = null;
-        }, 350); // Slightly longer than CSS transition (300ms)
     }
 
     /**
-     * Open the widget with improved state management
+     * Open the widget
      */
     function openWidget() {
-        console.log('Heiwa Booking Widget: Opening widget...');
-
-        // Prevent opening if already open
-        if (isWidgetOpen) {
-            console.log('Heiwa Booking Widget: Widget already open, ignoring');
-            return;
-        }
-
         // Create sidebar if it doesn't exist
         if (!$('.heiwa-booking-backdrop').length) {
             createSidebarBooking();
         }
 
-        // Apply classes with proper timing
-        const $backdrop = $('.heiwa-booking-backdrop');
-        const $drawer = $('.heiwa-booking-drawer');
+        $('.heiwa-booking-backdrop').addClass('active');
+        $('.heiwa-booking-drawer').addClass('active');
+        isWidgetOpen = true;
 
-        if ($backdrop.length && $drawer.length) {
-            $backdrop.addClass('active');
-            $drawer.addClass('active');
-            isWidgetOpen = true;
+        // Show the first step (booking type selector)
+        showStep('booking-type');
 
-            // Render initial step navigation
-            renderStepNavigation();
+        // Update progress indicator
+        updateProgressIndicator();
 
-            // Show the first step (booking type selector)
-            showStep('booking-type');
-
-            // Update progress indicator
-            updateProgressIndicator();
-
-            // Prevent body scroll
-            $('body').addClass('heiwa-modal-open');
-
-            console.log('Heiwa Booking Widget: Widget opened successfully');
-        } else {
-            console.error('Heiwa Booking Widget: Failed to find widget elements');
-        }
+        // Prevent body scroll
+        $('body').addClass('heiwa-modal-open');
     }
 
     /**
-     * Close the widget with improved state management
+     * Close the widget
      */
     function closeWidget() {
-        console.log('Heiwa Booking Widget: Closing widget...');
+        $('.heiwa-booking-backdrop').removeClass('active');
+        $('.heiwa-booking-drawer').removeClass('active');
+        isWidgetOpen = false;
 
-        // Prevent closing if already closed
-        if (!isWidgetOpen) {
-            console.log('Heiwa Booking Widget: Widget already closed, ignoring');
-            return;
-        }
-
-        const $backdrop = $('.heiwa-booking-backdrop');
-        const $drawer = $('.heiwa-booking-drawer');
-
-        if ($backdrop.length && $drawer.length) {
-            $backdrop.removeClass('active');
-            $drawer.removeClass('active');
-            isWidgetOpen = false;
-
-            // Re-enable body scroll
-            $('body').removeClass('heiwa-modal-open');
-
-            console.log('Heiwa Booking Widget: Widget closed successfully');
-        } else {
-            // Force state sync even if elements don't exist
-            isWidgetOpen = false;
-            $('body').removeClass('heiwa-modal-open');
-            console.warn('Heiwa Booking Widget: Widget elements not found, forced state sync');
-        }
+        // Re-enable body scroll
+        $('body').removeClass('heiwa-modal-open');
     }
 
     /**
@@ -1138,13 +933,18 @@
                     </div>
 
                     <div class="heiwa-booking-progress">
-                        <div class="heiwa-booking-stepper" id="heiwa-dynamic-stepper">
-                            <!-- Dynamic steps will be rendered here -->
+                        <div class="heiwa-booking-stepper">
+                            ${DISPLAY_STEPS.map((step, index) => `
+                                <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-display-index="${index}">
+                                    <div class="heiwa-booking-step-number">${index + 1}</div>
+                                    <div class="heiwa-booking-step-label">${step.label}</div>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
 
                     <div class="heiwa-booking-content">
-                        ${ALL_STEPS.map(step => `
+                        ${STEPS.map(step => `
                             <div class="heiwa-booking-step-content" data-step="${step.id}">
                                 <div class="heiwa-step-${step.id}"></div>
                             </div>
@@ -1227,40 +1027,16 @@
     }
 
     /**
-     * Render dynamic step navigation based on current booking context
-     * MAJOR UX IMPROVEMENT: Shows only relevant steps for current flow
-     */
-    function renderStepNavigation() {
-        const activeSteps = getActiveSteps();
-        const $stepper = $('#heiwa-dynamic-stepper');
-
-        const stepperHTML = activeSteps.map((step, index) => `
-            <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-step="${step.id}">
-                <div class="heiwa-booking-step-number" role="status" aria-label="Step ${index + 1}">${index + 1}</div>
-                <div class="heiwa-booking-step-label">${step.label}</div>
-            </div>
-        `).join('');
-
-        $stepper.html(stepperHTML);
-        console.log(`Heiwa Booking Widget: Rendered ${activeSteps.length} steps for ${bookingData.bookingType || 'unknown'} flow`);
-    }
-
-    /**
-     * Update progress indicator based on current step
-     * Updated to work with dynamic step navigation
+     * Update progress indicator
      */
     function updateProgressIndicator() {
-        const activeSteps = getActiveSteps();
-        const currentIndex = activeSteps.findIndex(step => step.id === currentStep);
-
-        activeSteps.forEach((step, index) => {
-            const $stepElement = $(`.heiwa-booking-step[data-step="${step.id}"]`);
-
+        const displayIndex = getDisplayIndexForStep(currentStep);
+        DISPLAY_STEPS.forEach((step, index) => {
+            const $stepElement = $(`.heiwa-booking-step[data-display-index="${index}"]`);
             $stepElement.removeClass('current completed upcoming');
-
-            if (index < currentIndex) {
+            if (index < displayIndex) {
                 $stepElement.addClass('completed');
-            } else if (index === currentIndex) {
+            } else if (index === displayIndex) {
                 $stepElement.addClass('current');
             } else {
                 $stepElement.addClass('upcoming');
@@ -1270,14 +1046,12 @@
 
     /**
      * Update CTA button based on current step
-     * Updated to work with dynamic step navigation
      */
     function updateCTAButton() {
         const $button = $('.heiwa-cta-button');
-        const activeSteps = getActiveSteps();
-        const stepIndex = activeSteps.findIndex(step => step.id === currentStep);
+        const stepIndex = STEPS.findIndex(step => step.id === currentStep);
 
-        if (stepIndex === activeSteps.length - 1) {
+        if (stepIndex === STEPS.length - 1) {
             $button.text('Complete Booking');
             $button.attr('data-action', 'complete-booking');
         } else {
@@ -1305,28 +1079,24 @@
 
     /**
      * Go to next step
-     * Updated to work with dynamic step navigation - logic simplified since steps are pre-filtered
      */
     function goToNextStep() {
-        const activeSteps = getActiveSteps();
-        const currentIndex = activeSteps.findIndex(step => step.id === currentStep);
+        const currentIndex = STEPS.findIndex(step => step.id === currentStep);
 
-        if (currentIndex < activeSteps.length - 1) {
-            const nextStep = activeSteps[currentIndex + 1];
+        if (currentIndex < STEPS.length - 1) {
+            const nextStep = STEPS[currentIndex + 1];
             showStep(nextStep.id);
         }
     }
 
     /**
      * Go to previous step
-     * Updated to work with dynamic step navigation
      */
     function goToPreviousStep() {
-        const activeSteps = getActiveSteps();
-        const currentIndex = activeSteps.findIndex(step => step.id === currentStep);
+        const currentIndex = STEPS.findIndex(step => step.id === currentStep);
 
         if (currentIndex > 0) {
-            const previousStep = activeSteps[currentIndex - 1];
+            const previousStep = STEPS[currentIndex - 1];
             showStep(previousStep.id);
         }
     }
@@ -1340,14 +1110,6 @@
                 return bookingData.bookingType !== null;
             case 'surf-weeks':
                 return bookingData.selectedSurfWeek !== null;
-            case 'assignment':
-                // Assignment step is valid when all participants are assigned
-                // For single participants, this is handled automatically
-                if (bookingData.participants === 1) {
-                    return true; // Single participants skip this step
-                }
-                const totalAssigned = bookingData.assignment?.assignments?.reduce((sum, a) => sum + a.participants, 0) || 0;
-                return totalAssigned >= bookingData.participants;
             case 'room-calendar':
                 return bookingData.dates.start && bookingData.dates.end;
             case 'room-selection':
@@ -1410,24 +1172,27 @@
         const bookingTypeHTML = `
             <div class="heiwa-booking-type-selector">
                 <div class="heiwa-booking-type-header">
-                    <h2 class="heiwa-booking-type-title">Book Your Adventure</h2>
-                    <p class="heiwa-booking-type-subtitle">Choose how you'd like to experience Heiwa House</p>
+                    <h2 class="heiwa-booking-type-title">Choose Your Adventure</h2>
+                    <p class="heiwa-booking-type-subtitle">How would you like to experience Heiwa House?</p>
                 </div>
 
                 <div class="heiwa-booking-type-options" role="radiogroup" aria-label="Select booking type">
                     <div class="heiwa-booking-option-card"
                          data-booking-type="room"
                          role="radio"
-                         aria-label="Book a room - Choose your dates and accommodation"
                          aria-checked="${bookingData.bookingType === 'room' ? 'true' : 'false'}"
-                         tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}">
-                        <div class="heiwa-booking-option-icon" aria-hidden="true">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9InNreUdyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM4N0NFRUIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjBGOUZGIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8IS0tIFNreSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI3NreUdyYWRpZW50KSIvPgogIDwhLS0gQmVkIC0tPgogIDxyZWN0IHg9IjUwIiB5PSIxMjAiIHdpZHRoPSIyMDAiIGhlaWdodD0iNjAiIGZpbGw9IiNGRkZGRkYiIHJ4PSI4Ii8+CiAgPHJlY3QgeD0iNjAiIHk9IjEwMCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzNCODJGNiIgcng9IjQiLz4KICA8IS0tIFBpbGxvd3MgLS0+CiAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjEwNSIgcng9IjI1IiByeT0iMTUiIGZpbGw9IiNGM0Y0RjYiLz4KICA8ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTA1IiByeD0iMjUiIHJ5PSIxNSIgZmlsbD0iI0YzRjRGNiIvPgogIDx0ZXh0IHg9IjE1MCIgeT0iMTkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2QjczODAiPkNvbWZvcnRhYmxlIFJvb21zPC90ZXh0Pgo8L3N2Zz4=" alt="Room booking" />
-                        </div>
+                         tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}"
+                         aria-label="Book a room - Choose your dates and accommodation">
+                        <div class="heiwa-price-chip"><span>From</span><strong>€45</strong></div>
                         <div class="heiwa-booking-option-content">
                             <h3 class="heiwa-booking-option-title">Book a Room</h3>
-                            <p class="heiwa-booking-option-subtitle">Choose your dates and accommodation</p>
-                            <p class="heiwa-booking-option-description">Direct booking for rooms with flexible dates</p>
+                            <p class="heiwa-booking-option-subtitle">Choose your dates and accommodation. Perfect for flexible stays.</p>
+                            <div class="heiwa-booking-option-badges">
+                                <span class="heiwa-badge">Flexible dates</span>
+                                <span class="heiwa-badge">Choose your room</span>
+                                <span class="heiwa-badge">Self-guided experience</span>
+                            </div>
+                            <div class="heiwa-selected-badge">Selected</div>
                         </div>
                         <div class="heiwa-booking-option-arrow" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1439,14 +1204,18 @@
                     <div class="heiwa-booking-option-card"
                          data-booking-type="surf-week"
                          role="radio"
-                         aria-label="Book a surf week - Choose your dates and surf lessons"
-                        <div class="heiwa-booking-option-icon" aria-hidden="true">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9Im9jZWFuR3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBEOTJGNCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMzY5QTEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDwhLS0gT2NlYW4gQmFja2dyb3VuZCAtLT4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNvY2VhbkdyYWRpZW50KSIvPgogIDwhLS0gV2F2ZXMgLS0+CiAgPHBhdGggZD0iTTAgMTIwIFE3NSAxMDAgMTUwIDEyMCBUIDMwMCAxMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIzIiBvcGFjaXR5PSIwLjgiLz4KICA8cGF0aCBkPSJNMCAxNDAgUTc1IDEyMCAxNTAgMTQwIFQgMzAwIDE0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNiIvPgogIDxwYXRoIGQ9Ik0wIDE2MCBRNTM1IDE0MCAxNTAgMTYwIFQgMzAwIDE2MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC40Ii8+CiAgPCEtLSBTdXJmYm9hcmQgLS0+CiAgPGVsbGlwc2UgY3g9IjE1MCIgY3k9IjEzMCIgcng9IjQwIiByeT0iOCIgZmlsbD0iI0ZGRkZGRiIgb3BhY2l0eT0iMC45Ii8+CiAgPHRleHQgeD0iMTUwIiB5PSIxOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI0ZGRkZGRiI+U3VyZiBXZWVrczwvdGV4dD4KPC9zdmc+" alt="Surf week booking" />
-                        </div>
+                         aria-checked="${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}"
+                         tabindex="${bookingData.bookingType === 'surf-week' ? '0' : '-1'}"
+                         aria-label="All-inclusive surf week - Join our structured surf camp programs">
+                        <div class="heiwa-price-chip"><span>From</span><strong>€599</strong></div>
                         <div class="heiwa-booking-option-content">
                             <h3 class="heiwa-booking-option-title">All-Inclusive Surf Week</h3>
-                            <p class="heiwa-booking-option-subtitle">Join our structured surf camp programs</p>
-                            <p class="heiwa-booking-option-description">Pre-scheduled weeks with accommodation, meals, and surf lessons</p>
+                            <p class="heiwa-booking-option-subtitle">Join our structured surf camp programs with coaching and community.</p>
+                            <div class="heiwa-booking-option-badges">
+                                <span class="heiwa-badge">Professional coaching</span>
+                                <span class="heiwa-badge">All meals included</span>
+                                <span class="heiwa-badge">Structured program</span>
+                            </div>
                         </div>
                         <div class="heiwa-booking-option-arrow" aria-hidden="true">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1454,6 +1223,13 @@
                             </svg>
                         </div>
                     </div>
+                </div>
+
+                <div class="heiwa-booking-type-help">
+                    <p class="heiwa-booking-type-help-text">
+                        Not sure which option? Our room booking offers more flexibility,
+                        while surf weeks provide a complete guided experience.
+                    </p>
                 </div>
             </div>
         `;
@@ -1463,14 +1239,6 @@
         // Bind click and keyboard events
         $('.heiwa-booking-option-card').on('click', function() {
             const bookingType = $(this).data('booking-type');
-
-            // Track booking type selection
-            trackEvent('booking_type_selected', {
-                booking_type: bookingType,
-                step: 'type_selection',
-                interaction: 'click'
-            });
-
             selectBookingType(bookingType);
         });
 
@@ -1479,16 +1247,6 @@
             const $current = $(this);
             const $options = $('.heiwa-booking-option-card');
             const currentIndex = $options.index($current);
-
-            // Track keyboard navigation
-            if (e.key === 'Enter' || e.key === ' ') {
-                const bookingType = $current.data('booking-type');
-                trackEvent('booking_type_selected', {
-                    booking_type: bookingType,
-                    step: 'type_selection',
-                    interaction: 'keyboard'
-                });
-            }
 
             switch(e.key) {
                 case 'ArrowRight':
@@ -1511,6 +1269,23 @@
                     break;
             }
         });
+
+        // Auto-advance to next step after selection (React parity)
+        function selectBookingType(bookingType) {
+            // Update booking data
+            bookingData.bookingType = bookingType;
+
+            // Update UI state
+            $('.heiwa-booking-option-card').removeClass('selected').attr('aria-checked', 'false');
+            $(`.heiwa-booking-option-card[data-booking-type="${bookingType}"]`)
+                .addClass('selected')
+                .attr('aria-checked', 'true');
+
+            // Auto-advance after short delay
+            setTimeout(() => {
+                goToNextStep();
+            }, 300);
+        }
     }
 
     /**
@@ -1563,9 +1338,6 @@
         console.log('Heiwa Booking Widget: selectBookingType called with type:', type);
         bookingData.bookingType = type;
         bookingType = type;
-
-        // Re-render step navigation for the new booking type
-        renderStepNavigation();
 
         // Clear state for the new booking type
         try {
@@ -1695,17 +1467,9 @@
             $('.heiwa-destination-card').removeClass('selected');
             $(`.heiwa-destination-card[data-camp-id="${campId}"]`).addClass('selected');
 
-        // Track stepper interaction
-        trackEvent('stepper_interaction', {
-            step_number: stepNumber,
-            step_name: STEPS[stepNumber - 1]?.label || 'unknown',
-            action: 'navigation',
-            total_steps: STEPS.length
-        });
-
-        // Update summary
-        updateSummary();
-        updateCTAButton();
+            // Update summary
+            updateSummary();
+            updateCTAButton();
 
             console.log('Heiwa Booking Widget: Advancing to next step...');
 
@@ -1859,9 +1623,6 @@
             bookingData.participantDetails.push({ firstName: '', lastName: '', email: '' });
         }
         bookingData.participantDetails = bookingData.participantDetails.slice(0, bookingData.participants);
-
-        // Re-render step navigation since participant count affects which steps are shown
-        renderStepNavigation();
 
         updateSummary();
         updateCTAButton();
@@ -2089,9 +1850,13 @@
                             <span>Duration</span>
                             <span>${duration} days</span>
                         </div>
-                        <div class="heiwa-summary-total" role="region" aria-label="Booking Total">
-                            <span class="heiwa-summary-total-label">Total Amount:</span>
-                            <span class="heiwa-summary-total-value">${heiwaFmt.format(total)}</span>
+                        <div class="heiwa-pricing-row subtotal">
+                            <span>Subtotal</span>
+                            <span>${heiwaFmt.format(total)}</span>
+                        </div>
+                        <div class="heiwa-pricing-row total">
+                            <span><strong>Total Amount</strong></span>
+                            <span><strong>€${total}</strong></span>
                         </div>
                     </div>
                 </div>
@@ -2187,6 +1952,9 @@
 
         // Build summary HTML with collapsible structure
         let summaryHTML = `
+            <div class="heiwa-summary-sticky-total">
+                <strong>Total: ${heiwaFmt.format(total)}</strong>
+            </div>
             <div class="heiwa-summary-collapsible">
                 <div class="heiwa-summary-content">
         `;
@@ -2257,17 +2025,6 @@
 
         $summaryContainer.html(summaryHTML);
 
-        // Track total visibility for UX validation
-        if (total > 0) {
-            trackEvent('total_displayed', {
-                total_amount: total,
-                formatted_total: heiwaFmt.format(total),
-                has_gradient_styling: true,
-                display_location: 'summary',
-                booking_type: bookingData.bookingType
-            });
-        }
-
         // Bind collapsible toggle
         $summaryContainer.find('.heiwa-summary-toggle').on('click', function() {
             const $toggle = $(this);
@@ -2303,12 +2060,10 @@
 
     /**
      * Update accordion-style summaries for completed steps
-     * Updated to work with dynamic step navigation
      */
     function updateStepSummaries() {
         const $wrap = ensureStepSummariesContainer();
-        const activeSteps = getActiveSteps();
-        const currentIndex = activeSteps.findIndex(s => s.id === currentStep);
+        const currentIndex = STEPS.findIndex(s => s.id === currentStep);
         const items = [];
 
         function addItem(stepId, title, detailsHtml, isExpanded = false) {
@@ -2335,20 +2090,20 @@
         }
 
         // booking-type
-        if (activeSteps.findIndex(s => s.id === 'booking-type') < currentIndex && bookingData.bookingType) {
+        if (STEPS.findIndex(s => s.id === 'booking-type') < currentIndex && bookingData.bookingType) {
             addItem('booking-type', `${getLucideIcon('check', 14)} Booking Type`,
                 bookingData.bookingType === 'surf-week' ? 'All-Inclusive Surf Week' : 'Room Booking');
         }
 
         // surf-weeks
-        if (activeSteps.findIndex(s => s.id === 'surf-weeks') < currentIndex && bookingData.selectedSurfWeek) {
+        if (STEPS.findIndex(s => s.id === 'surf-weeks') < currentIndex && bookingData.selectedSurfWeek) {
             const w = bookingData.selectedSurfWeek;
             addItem('surf-weeks', `${getLucideIcon('waves', 14)} Surf Week`,
                 `${w.title || ''}<br>${formatDate(w.start_date)} – ${formatDate(w.end_date)}`);
         }
 
         // assignment
-        if (activeSteps.findIndex(s => s.id === 'assignment') < currentIndex && bookingData.assignment?.assignments?.length) {
+        if (STEPS.findIndex(s => s.id === 'assignment') < currentIndex && bookingData.assignment?.assignments?.length) {
             const totalAssigned = bookingData.assignment.assignments.reduce((sum, a) => sum + a.participants, 0);
             const roomCount = bookingData.assignment.assignments.length;
             addItem('assignment', `${getLucideIcon('bed', 14)} Room Assignment`,
@@ -2356,28 +2111,28 @@
         }
 
         // room-calendar / dates_participants (dates)
-        if ((activeSteps.findIndex(s => s.id === 'room-calendar') < currentIndex ||
-             activeSteps.findIndex(s => s.id === 'dates_participants') < currentIndex) &&
+        if ((STEPS.findIndex(s => s.id === 'room-calendar') < currentIndex ||
+             STEPS.findIndex(s => s.id === 'dates_participants') < currentIndex) &&
             bookingData.dates.start && bookingData.dates.end) {
             addItem('room-calendar', `${getLucideIcon('calendar', 14)} Dates`,
                 `${formatDate(bookingData.dates.start)} – ${formatDate(bookingData.dates.end)}`);
         }
 
         // room-selection
-        if (activeSteps.findIndex(s => s.id === 'room-selection') < currentIndex && bookingData.selectedRoom) {
+        if (STEPS.findIndex(s => s.id === 'room-selection') < currentIndex && bookingData.selectedRoom) {
             const r = bookingData.selectedRoom;
             addItem('room-selection', `${getLucideIcon('bed', 14)} Room`,
                 `${r.name || ''}<br>${heiwaFmt.format(r.price_per_night || 0)}/night`);
         }
 
         // dates_participants (participants)
-        if (activeSteps.findIndex(s => s.id === 'dates_participants') < currentIndex && bookingData.participants) {
+        if (STEPS.findIndex(s => s.id === 'dates_participants') < currentIndex && bookingData.participants) {
             addItem('dates_participants', `${getLucideIcon('users', 14)} Participants`,
                 `${bookingData.participants} traveller(s)`);
         }
 
         // form_addons
-        if (activeSteps.findIndex(s => s.id === 'form_addons') < currentIndex && bookingData.participantDetails?.length) {
+        if (STEPS.findIndex(s => s.id === 'form_addons') < currentIndex && bookingData.participantDetails?.length) {
             const filled = bookingData.participantDetails.filter(p => (p.firstName||p.lastName||p.email)).length;
             addItem('form_addons', `${getLucideIcon('check', 14)} Details`, `${filled}/${bookingData.participants} completed`);
         }
@@ -2736,16 +2491,9 @@
             // Update summary
             updateSummary();
 
-            // Auto-advance logic: skip assignment for single participants
+            // Auto-advance to assignment step for surf weeks
             setTimeout(() => {
-                if (bookingData.participants === 1) {
-                    // Single participant: auto-assign to best value room and skip to details
-                    autoAssignSingleParticipant();
-                    showStep('form_addons');
-                } else {
-                    // Multiple participants: proceed to assignment step
-                    showStep('assignment');
-                }
+                showStep('assignment');
             }, 500);
         }
     }
@@ -2985,51 +2733,6 @@
                 </div>
             </div>
         `;
-    }
-
-    /**
-     * Auto-assign single participant to best value room
-     * Implements BL-001 fix: Skip assignment step for single participants
-     */
-    function autoAssignSingleParticipant() {
-        console.log('Heiwa Booking Widget: Auto-assigning single participant');
-
-        // Initialize assignment data structure
-        if (!bookingData.assignment) {
-            bookingData.assignment = {
-                assignments: [],
-                suggestions: []
-            };
-        }
-
-        // Generate room suggestions using existing logic
-        const suggestions = generateAssignmentSuggestions();
-
-        if (suggestions.length > 0) {
-            // Select the "value" suggestion (best balance of cost and comfort)
-            const bestSuggestion = suggestions.find(s => s.criteria === 'value') || suggestions[0];
-
-            // Apply the best suggestion automatically
-            bookingData.assignment.assignments = bestSuggestion.assignments;
-
-            console.log('Heiwa Booking Widget: Single participant auto-assigned:', {
-                suggestion: bestSuggestion.criteria,
-                assignments: bookingData.assignment.assignments
-            });
-
-            // Show success message
-            showToast('Room automatically assigned for single participant!', 'success');
-        } else {
-            console.warn('Heiwa Booking Widget: No room suggestions available for auto-assignment');
-            // Fallback: create a basic assignment to the first available room
-            bookingData.assignment.assignments = [{
-                roomId: 1, // Default to first room
-                participants: 1
-            }];
-        }
-
-        // Update summary to reflect the assignment
-        updateSummary();
     }
 
     /**
@@ -3914,8 +3617,14 @@
     // Global widget object for external access
     window.HeiwaBookingWidget = {
         init: function(widgetId, settings) {
-            // Initialize specific widget instance
-            initBookingWidget();
+            // Initialize specific widget instance (jQuery-aware)
+            const $ = window.jQuery || window.$;
+            if ($) {
+                initializeWidget($);
+            } else {
+                // Final fallback if jQuery isn't ready yet
+                waitForjQuery(initializeWidget);
+            }
         },
         retryLoadSurfCamps: function() {
             loadSurfCamps();
@@ -3932,13 +3641,9 @@
     };
 
     // Initialize when document is ready - multiple fallbacks for WordPress compatibility
-    function initializeWidget() {
-        if (typeof jQuery !== 'undefined') {
-            console.log('Heiwa Booking Widget: Initializing...');
-            initBookingWidget();
-        } else {
-            console.error('Heiwa Booking Widget: jQuery not available');
-        }
+    function initializeWidget($) {
+        console.log('Heiwa Booking Widget: Initializing...');
+        initBookingWidget($);
 
         // Runtime version badge for debugging
         if (typeof window.heiwa_booking_ajax !== 'undefined' && window.heiwa_booking_ajax.build_id) {
@@ -3948,26 +3653,51 @@
             );
         }
     }
-
-    // Multiple initialization methods for WordPress compatibility
-    if (document.readyState === 'loading') {
-        // Document still loading
-        $(document).ready(initializeWidget);
-    } else {
-        // Document already loaded
-        initializeWidget();
+    }
+    // Wait for jQuery to be available
+    function waitForjQuery(callback) {
+        if (typeof window.jQuery !== 'undefined' || typeof window.$ !== 'undefined') {
+            const $ = window.jQuery || window.$;
+            callback($);
+        } else {
+            console.log('Heiwa Booking Widget: Waiting for jQuery...');
+            setTimeout(function() {
+                waitForjQuery(callback);
+            }, 50);
+        }
     }
 
-    // Fallback initialization after a short delay
-    setTimeout(function() {
-        if (!isWidgetOpen && $('.heiwa-booking-trigger').length > 0) {
-            // Check if events are bound
-            const triggerElement = $('.heiwa-booking-trigger')[0];
-            if (triggerElement && !jQuery._data(triggerElement, 'events')) {
-                console.log('Heiwa Booking Widget: Fallback initialization');
-                initBookingWidget();
-            }
-        }
-    }, 1000);
+    // Initialize when jQuery is available
+    waitForjQuery(function($) {
+        console.log('Heiwa Booking Widget: jQuery available, initializing...');
 
-})(jQuery || window.jQuery);
+        // Multiple initialization methods for WordPress compatibility
+        if (document.readyState === 'loading') {
+            // Document still loading
+            $(document).ready(function() {
+                initializeWidget($);
+            });
+        } else {
+            // Document already loaded
+            initializeWidget($);
+        }
+
+        // Fallback initialization after a short delay
+        setTimeout(function() {
+            if (!isWidgetOpen && $('.heiwa-booking-trigger').length > 0) {
+                // Check if events are bound
+                const triggerElement = $('.heiwa-booking-trigger')[0];
+                if (triggerElement && !$.data(triggerElement, 'events')) {
+                    console.log('Heiwa Booking Widget: Fallback initialization');
+                    // Use the public API to avoid scoping issues
+                    if (window.HeiwaBookingWidget && typeof window.HeiwaBookingWidget.init === 'function') {
+                        window.HeiwaBookingWidget.init('auto-fallback', {});
+                    } else {
+                        initializeWidget($);
+                    }
+                }
+            }
+        }, 1000);
+    });
+
+})();

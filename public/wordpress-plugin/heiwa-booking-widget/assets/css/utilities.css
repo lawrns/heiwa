@@ -331,7 +331,7 @@
   background: linear-gradient(135deg,
     rgba(236, 106, 28, 0.9) 0%,
     rgba(236, 106, 28, 0.7) 100%),
-    url('images/room2.webp');
+    url('../images/room2.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -411,6 +411,126 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Surf Week card backdrop */
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="surf-week"] {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg,
+    rgba(240, 113, 22, 0.9) 0%,
+    rgba(240, 113, 22, 0.75) 100%),
+    url('../images/room3.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: var(--heiwa-radius-xl);
+  box-shadow: 0 20px 40px rgba(240, 113, 22, 0.28);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.heiwa-booking-widget .heiwa-booking-option-card[data-booking-type="surf-week"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,0.12), rgba(0,0,0,0.28));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Price chip (top-right) */
+.heiwa-booking-widget .heiwa-price-chip {
+  position: absolute;
+  top: var(--heiwa-spacing-sm);
+  right: var(--heiwa-spacing-sm);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.9);
+  color: var(--heiwa-neutral-900);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+.heiwa-booking-widget .heiwa-price-chip span { font-weight: 500; opacity: .8; }
+
+/* Selected badge (bottom-left, shown only on .selected) */
+.heiwa-booking-widget .heiwa-selected-badge {
+  display: none;
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 3;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 600;
+  font-size: 14px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.heiwa-booking-widget .heiwa-booking-option-card.selected .heiwa-selected-badge {
+  display: inline-flex;
+  animation: fadeInScale 0.3s ease-out;
+}
+
+/* Selected card glow effect - React parity */
+.heiwa-booking-widget .heiwa-booking-option-card.selected {
+  border-color: #f97316;
+  box-shadow:
+    0 0 0 2px rgba(249, 115, 22, 0.2),
+    0 10px 25px rgba(249, 115, 22, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  position: relative;
+}
+
+.heiwa-booking-widget .heiwa-booking-option-card.selected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(249, 115, 22, 0.1));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}</parameter">
+</xai:function_call name  
+<xai:function_call name="StrReplace">
+<parameter name="file_path">public/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js
+
+/* Feature badges */
+.heiwa-booking-widget .heiwa-booking-option-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.heiwa-booking-widget .heiwa-badge {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 999px;
+  font-size: var(--heiwa-font-size-sm);
+  padding: 6px 10px;
+}
+
 .heiwa-booking-widget .heiwa-booking-option-arrow {
   margin-left: auto;
   display: flex;
@@ -434,8 +554,11 @@
 .heiwa-booking-widget .heiwa-booking-type-options {
   display: flex;
   flex-direction: column;
-  gap: var(--heiwa-space-4);
-}
+  gap: var(--heiwa-space-6);
+}</parameter">
+</xai:function_call name  
+<xai:function_call name="StrReplace">
+<parameter name="file_path">public/wordpress-plugin/heiwa-booking-widget/assets/css/utilities.css
 
 /* Enhanced drawer polish */
 .heiwa-booking-drawer {
@@ -456,7 +579,7 @@
   border-radius: inherit;
 }
 
-/* Enhanced stepper interactions */
+/* Enhanced stepper interactions - React parity */
 .heiwa-booking-stepper {
   position: sticky;
   top: 20px;
@@ -466,8 +589,43 @@
 .heiwa-booking-step.completed:hover,
 .heiwa-booking-step.current:hover {
   transform: scale(1.05);
-  transition: all 0.2s ease;
+  transition: all 0.2s ease-out;
 }
+
+/* Step transition animations - React parity */
+.heiwa-step-content {
+  animation: stepFadeIn 0.5s ease-out;
+}
+
+@keyframes stepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.heiwa-booking-step.completed {
+  animation: stepCompletePulse 0.6s ease-out;
+}
+
+@keyframes stepCompletePulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}</parameter">
+</xai:function_call name  
+<xai:function_call name="TodoWrite">
+<parameter name="todos">[{"id":"stepper_interactions","content":"Animate active step change and completed state to mirror React (ease, duration). Acceptance: Animation duration and easing feel indistinguishable.","status":"completed"}]
 
 /* Sticky summary enhancement */
 .heiwa-summary-sticky-total {
@@ -578,7 +736,7 @@
   }
 }
 
-/* Mobile responsive for accordions */
+/* Mobile responsive for accordions and experience screen */
 @media (max-width: 768px) {
   .heiwa-accordion-header {
     padding: var(--heiwa-space-3);
@@ -644,7 +802,43 @@
   .heiwa-room-grid {
     grid-template-columns: 1fr;
   }
-}
+
+  /* Experience screen responsive adjustments */
+  .heiwa-booking-widget .heiwa-booking-type-options {
+    gap: var(--heiwa-space-4);
+  }
+
+  .heiwa-booking-widget .heiwa-booking-option-card {
+    min-height: 200px;
+  }
+
+  .heiwa-booking-widget .heiwa-price-chip {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .heiwa-booking-widget .heiwa-selected-badge {
+    left: 8px;
+    bottom: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .heiwa-booking-widget .heiwa-booking-option-badges {
+    gap: 6px;
+  }
+
+  .heiwa-booking-widget .heiwa-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}</parameter">
+</xai:function_call name  
+<xai:function_call name="TodoWrite">
+<parameter name="todos">[{"id":"responsive_behavior","content":"Cards stack cleanly on mobile; ensure price chip and badges reflow without overlap; verify 360\u20131440px. Acceptance: No overflow; Lighthouse layout shift under 0.02.","status":"completed"}]
 
 /* ===========================================
    FINAL PRICE DISPLAY UTILITY
@@ -671,6 +865,29 @@
 }
 
 /* ===========================================
+   TYPOGRAPHY PARITY FOR EXPERIENCE SCREEN
+   =========================================== */
+
+/* Experience screen title parity */
+.heiwa-booking-widget .heiwa-booking-type-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  text-transform: none;
+  letter-spacing: normal;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+/* Experience screen subtitle parity */
+.heiwa-booking-widget .heiwa-booking-type-subtitle {
+  font-size: 1rem;
+  color: #4B5563;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+/* ===========================================
    END OF UTILITIES
    ===========================================
 
@@ -683,7 +900,10 @@
    - Legacy compatibility overrides
    - Mobile responsive utilities
    - Accessibility support
-   =========================================== */
+   =========================================== */</parameter">
+</xai:function_call name  
+<xai:function_call name="TodoWrite">
+<parameter name="todos">[{"id":"pixel_typo_parity","content":"Match font sizes, line heights, paddings, radii, and shadow depths to /widget-new. Focus titles: modal title, 'Choose Your Adventure', card titles/subtitles. Acceptance: \u00b12px spacing variance at 360/768/1024/1440 widths.","status":"completed"}]
 
 /* ===========================================
    UX IMPROVEMENTS - Phase 2: Eliminate Duplicate Totals

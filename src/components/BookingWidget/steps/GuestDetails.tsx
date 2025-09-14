@@ -65,8 +65,8 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     newForms[index] = { ...newForms[index], [field]: value };
     setGuestForms(newForms);
 
-    // Clear error for this field
-    const errorKey = `guest-${index}-${field}`;
+    // Clear error for this guest when any field is changed
+    const errorKey = `guest-${index}`;
     if (errors[errorKey]) {
       const newErrors = { ...errors };
       delete newErrors[errorKey];
@@ -79,13 +79,17 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     const formErrors = validateForm(formData, index);
 
     if (formErrors.length > 0) {
-      const newErrors: Record<string, string> = {};
-      formErrors.forEach(error => {
-        newErrors[`guest-${index}`] = error;
-      });
+      // Set error for this specific guest
+      const newErrors = { ...errors };
+      newErrors[`guest-${index}`] = formErrors[0]; // Show first error
       setErrors(newErrors);
       return;
     }
+
+    // Clear any existing errors for this guest
+    const newErrors = { ...errors };
+    delete newErrors[`guest-${index}`];
+    setErrors(newErrors);
 
     const guestInfo: GuestInfo = {
       id: `guest-${index}`,
@@ -186,10 +190,28 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                     type="email"
                     value={guestForm.email}
                     onChange={(e) => handleInputChange(index, 'email', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 ${
+                      guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email)
+                        ? 'border-red-300 bg-red-50'
+                        : 'border-gray-300'
+                    }`}
                     placeholder="Enter email address"
                   />
+                  {/* Real-time email validation indicator */}
+                  {guestForm.email && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) ? (
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      ) : (
+                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      )}
+                    </div>
+                  )}
                 </div>
+                {/* Real-time email validation message */}
+                {guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) && (
+                  <p className="text-xs text-red-600 mt-1">Please enter a valid email address</p>
+                )}
               </div>
 
               {/* Phone */}

@@ -92,6 +92,7 @@ class Heiwa_Booking_Widget {
         require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/class-api-connector.php';
         require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/class-widget.php';
         require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/class-shortcode.php';
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/class-landing-page.php';
         
         // Admin classes
         if (is_admin()) {
@@ -143,6 +144,7 @@ class Heiwa_Booking_Widget {
         
         // Initialize components
         new Heiwa_Booking_Widget_Shortcode();
+        new Heiwa_Booking_Landing_Page();
         new Heiwa_Booking_API_Connector();
 
         // Initialize admin settings
