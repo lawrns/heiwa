@@ -72,7 +72,7 @@ export default function ClientProfile() {
   useEffect(() => {
     // Mock profile data
     const mockProfile: UserProfile = {
-      name: user?.name || 'John Doe',
+      name: user?.displayName || 'John Doe',
       email: user?.email || 'john.doe@example.com',
       phone: '+1 (555) 123-4567',
       dateOfBirth: '1990-05-15',

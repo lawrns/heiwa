@@ -70,7 +70,7 @@ export default function ProfileForm() {
         
         // Mock profile data - in real implementation, fetch from /api/client/profile
         const mockProfile: UserProfile = {
-          id: user.uid,
+          id: user.id,
           name: user.displayName || 'John Doe',
           email: user.email || 'john@example.com',
           phone: '+1 (555) 123-4567',

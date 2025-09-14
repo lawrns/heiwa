@@ -27,8 +27,10 @@ export default function WidgetAdminPage() {
         onLoad={() => {
           console.log('jQuery loaded for WordPress widget')
           // Make jQuery available globally
-          ;(window as any).jQuery = window.jQuery
-          ;(window as any).$ = window.jQuery
+          if (typeof window !== 'undefined' && (window as any).jQuery) {
+            ;(window as any).jQuery = (window as any).jQuery
+            ;(window as any).$ = (window as any).jQuery
+          }
         }}
       />
 

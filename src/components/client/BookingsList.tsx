@@ -88,7 +88,7 @@ export default function BookingsList() {
       const mockBookings: Booking[] = [
         {
           id: 'booking_001',
-          clientIds: [user.uid],
+          clientIds: [user.id],
           items: [
             {
               id: 'item_001',
@@ -111,7 +111,7 @@ export default function BookingsList() {
         },
         {
           id: 'booking_002',
-          clientIds: [user.uid],
+          clientIds: [user.id],
           items: [
             {
               id: 'item_002',

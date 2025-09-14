@@ -32,7 +32,7 @@ export function calculateRoomPrice(
   endDate?: string,
   quantity: number = 1
 ): { unitPrice: number; totalPrice: number; nights?: number } {
-  const basePrice = room.pricing.basePrice || 0;
+  const basePrice = room.pricing.standard || room.pricing.offSeason || 0;
   
   // Calculate nights if dates are provided
   let nights = 1;
@@ -42,25 +42,25 @@ export function calculateRoomPrice(
     nights = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
   }
 
-  // Handle different pricing models
+  // Handle different pricing models based on bookingType and camp pricing
   let unitPrice = basePrice;
-  
-  if (room.pricing.pricingModel === 'per_bed') {
-    // Price per bed per night
-    unitPrice = basePrice * nights;
-  } else if (room.pricing.pricingModel === 'whole_room') {
-    // Price for whole room per night
-    unitPrice = basePrice * nights;
-  } else {
-    // Default: base price per night
-    unitPrice = basePrice * nights;
-  }
 
-  // Apply seasonal pricing if available
-  if (room.pricing.seasonalRates && startDate) {
-    const seasonalRate = getSeasonalRate(room.pricing.seasonalRates, startDate);
-    if (seasonalRate) {
-      unitPrice = seasonalRate * nights;
+  if (room.bookingType === 'perBed') {
+    // Use camp pricing for per-bed bookings
+    if (typeof room.pricing.camp === 'object' && 'perBed' in room.pricing.camp) {
+      unitPrice = room.pricing.camp.perBed * nights;
+    } else {
+      unitPrice = basePrice * nights;
+    }
+  } else {
+    // Whole room pricing - use camp pricing if available
+    if (typeof room.pricing.camp === 'object' && typeof room.pricing.camp === 'object' && !('perBed' in room.pricing.camp)) {
+      // Use camp pricing for occupancy-based rates
+      const campPricing = room.pricing.camp as Record<number, number>;
+      const occupancyRate = campPricing[1] || basePrice; // Default to 1 person rate
+      unitPrice = occupancyRate * nights;
+    } else {
+      unitPrice = basePrice * nights;
     }
   }
 
@@ -73,13 +73,14 @@ export function calculateRoomPrice(
 
 /**
  * Calculate surf camp price based on participants and duration
+ * Note: SurfCamp schema doesn't include pricing - this would need CampWeek data
  */
 export function calculateSurfCampPrice(
   camp: SurfCamp & { id: string },
   participants: number = 1,
-  duration?: number
+  duration?: number,
+  basePrice: number = 0 // Base price should be provided from CampWeek or other source
 ): { unitPrice: number; totalPrice: number } {
-  const basePrice = camp.price || 0;
   let unitPrice = basePrice;
 
   // Apply duration multiplier if specified
@@ -87,9 +88,9 @@ export function calculateSurfCampPrice(
     unitPrice = basePrice * duration;
   }
 
-  // Apply group discounts if available
-  if (participants > 1 && camp.groupDiscount) {
-    const discountRate = Math.min(camp.groupDiscount * (participants - 1), 0.3); // Max 30% discount
+  // Apply basic group discount based on participants (simplified)
+  if (participants > 1) {
+    const discountRate = Math.min(0.1 * (participants - 1), 0.3); // Max 30% discount
     unitPrice = unitPrice * (1 - discountRate);
   }
 

@@ -2,6 +2,9 @@
 // Using Supabase
 import type { Client, Booking, BookingItem } from './schemas';
 
+// For mock data timestamps, we'll use JavaScript Date objects instead of Firebase Timestamps
+// since this is a Supabase project, not Firebase
+
 // Mock Clients Data
 export const mockClients: (Client & { id: string })[] = [
   {
@@ -9,70 +12,70 @@ export const mockClients: (Client & { id: string })[] = [
     name: 'Sarah Johnson',
     email: 'sarah.johnson@email.com',
     phone: '+1-555-0123',
-    lastBookingDate: Timestamp.fromDate(new Date('2024-01-15')),
+    lastBookingDate: new Date('2024-01-15'),
     notes: 'Regular customer, prefers ocean view rooms',
-    createdAt: Timestamp.fromDate(new Date('2023-06-10')),
-    updatedAt: Timestamp.fromDate(new Date('2024-01-15')),
+    createdAt: new Date('2023-06-10'),
+    updatedAt: new Date('2024-01-15'),
   },
   {
     id: 'client_002',
     name: 'Michael Chen',
     email: 'michael.chen@email.com',
     phone: '+1-555-0124',
-    lastBookingDate: Timestamp.fromDate(new Date('2024-01-20')),
+    lastBookingDate: new Date(new Date('2024-01-20')),
     notes: 'First-time visitor, interested in surf camps',
-    createdAt: Timestamp.fromDate(new Date('2023-08-22')),
-    updatedAt: Timestamp.fromDate(new Date('2024-01-20')),
+    createdAt: new Date(new Date('2023-08-22')),
+    updatedAt: new Date(new Date('2024-01-20')),
   },
   {
     id: 'client_003',
     name: 'Emma Rodriguez',
     email: 'emma.rodriguez@email.com',
     phone: '+1-555-0125',
-    lastBookingDate: Timestamp.fromDate(new Date('2023-12-10')),
+    lastBookingDate: new Date(new Date('2023-12-10')),
     notes: 'Booked family room for 4 people',
-    createdAt: Timestamp.fromDate(new Date('2023-09-15')),
-    updatedAt: Timestamp.fromDate(new Date('2023-12-10')),
+    createdAt: new Date(new Date('2023-09-15')),
+    updatedAt: new Date(new Date('2023-12-10')),
   },
   {
     id: 'client_004',
     name: 'James Wilson',
     email: 'james.wilson@email.com',
     phone: '+1-555-0126',
-    lastBookingDate: Timestamp.fromDate(new Date('2024-01-25')),
+    lastBookingDate: new Date(new Date('2024-01-25')),
     notes: 'Corporate booking, needs invoice',
-    createdAt: Timestamp.fromDate(new Date('2023-11-05')),
-    updatedAt: Timestamp.fromDate(new Date('2024-01-25')),
+    createdAt: new Date(new Date('2023-11-05')),
+    updatedAt: new Date(new Date('2024-01-25')),
   },
   {
     id: 'client_005',
     name: 'Lisa Thompson',
     email: 'lisa.thompson@email.com',
     phone: '+1-555-0127',
-    lastBookingDate: Timestamp.fromDate(new Date('2023-11-30')),
+    lastBookingDate: new Date(new Date('2023-11-30')),
     notes: 'Vegetarian, requires special dietary arrangements',
-    createdAt: Timestamp.fromDate(new Date('2023-07-18')),
-    updatedAt: Timestamp.fromDate(new Date('2023-11-30')),
+    createdAt: new Date(new Date('2023-07-18')),
+    updatedAt: new Date(new Date('2023-11-30')),
   },
   {
     id: 'client_006',
     name: 'David Kim',
     email: 'david.kim@email.com',
     phone: '+1-555-0128',
-    lastBookingDate: Timestamp.fromDate(new Date('2024-01-08')),
+    lastBookingDate: new Date(new Date('2024-01-08')),
     notes: 'Experienced surfer, interested in advanced lessons',
-    createdAt: Timestamp.fromDate(new Date('2023-10-12')),
-    updatedAt: Timestamp.fromDate(new Date('2024-01-08')),
+    createdAt: new Date(new Date('2023-10-12')),
+    updatedAt: new Date(new Date('2024-01-08')),
   },
   {
     id: 'client_007',
     name: 'Anna Martinez',
     email: 'anna.martinez@email.com',
     phone: '+1-555-0129',
-    lastBookingDate: Timestamp.fromDate(new Date('2023-12-22')),
+    lastBookingDate: new Date(new Date('2023-12-22')),
     notes: 'Celebrating anniversary, wants romantic setup',
-    createdAt: Timestamp.fromDate(new Date('2023-05-20')),
-    updatedAt: Timestamp.fromDate(new Date('2023-12-22')),
+    createdAt: new Date(new Date('2023-05-20')),
+    updatedAt: new Date(new Date('2023-12-22')),
   },
   {
     id: 'client_008',
@@ -80,8 +83,8 @@ export const mockClients: (Client & { id: string })[] = [
     email: 'robert.taylor@email.com',
     phone: '+1-555-0130',
     notes: 'New client, no booking history yet',
-    createdAt: Timestamp.fromDate(new Date('2024-01-28')),
-    updatedAt: Timestamp.fromDate(new Date('2024-01-28')),
+    createdAt: new Date(new Date('2024-01-28')),
+    updatedAt: new Date(new Date('2024-01-28')),
   },
 ];
 
@@ -94,8 +97,8 @@ const mockBookingItems: BookingItem[] = [
     unitPrice: 150,
     totalPrice: 150,
     dates: {
-      checkIn: Timestamp.fromDate(new Date('2024-02-01')),
-      checkOut: Timestamp.fromDate(new Date('2024-02-05')),
+      checkIn: new Date(new Date('2024-02-01')),
+      checkOut: new Date(new Date('2024-02-05')),
     },
   },
   {
@@ -112,8 +115,8 @@ const mockBookingItems: BookingItem[] = [
     unitPrice: 300,
     totalPrice: 300,
     dates: {
-      checkIn: Timestamp.fromDate(new Date('2024-02-10')),
-      checkOut: Timestamp.fromDate(new Date('2024-02-14')),
+      checkIn: new Date(new Date('2024-02-10')),
+      checkOut: new Date(new Date('2024-02-14')),
     },
   },
 ];
@@ -131,8 +134,8 @@ export const mockBookings: (Booking & { id: string })[] = [
         unitPrice: 180,
         totalPrice: 180,
         dates: {
-          checkIn: Timestamp.fromDate(new Date('2024-01-15')),
-          checkOut: Timestamp.fromDate(new Date('2024-01-20')),
+          checkIn: new Date(new Date('2024-01-15')),
+          checkOut: new Date(new Date('2024-01-20')),
         },
       },
       {
@@ -162,8 +165,8 @@ export const mockBookings: (Booking & { id: string })[] = [
         unitPrice: 350,
         totalPrice: 350,
         dates: {
-          checkIn: Timestamp.fromDate(new Date('2024-01-20')),
-          checkOut: Timestamp.fromDate(new Date('2024-01-25')),
+          checkIn: new Date(new Date('2024-01-20')),
+          checkOut: new Date(new Date('2024-01-25')),
         },
       },
     ],
@@ -186,8 +189,8 @@ export const mockBookings: (Booking & { id: string })[] = [
         unitPrice: 250,
         totalPrice: 250,
         dates: {
-          checkIn: Timestamp.fromDate(new Date('2023-12-10')),
-          checkOut: Timestamp.fromDate(new Date('2023-12-15')),
+          checkIn: new Date(new Date('2023-12-10')),
+          checkOut: new Date(new Date('2023-12-15')),
         },
       },
       {
@@ -217,8 +220,8 @@ export const mockBookings: (Booking & { id: string })[] = [
         unitPrice: 200,
         totalPrice: 200,
         dates: {
-          checkIn: Timestamp.fromDate(new Date('2024-01-25')),
-          checkOut: Timestamp.fromDate(new Date('2024-01-28')),
+          checkIn: new Date(new Date('2024-01-25')),
+          checkOut: new Date(new Date('2024-01-28')),
         },
       },
     ],
@@ -240,8 +243,8 @@ export const mockBookings: (Booking & { id: string })[] = [
         unitPrice: 160,
         totalPrice: 160,
         dates: {
-          checkIn: Timestamp.fromDate(new Date('2023-11-30')),
-          checkOut: Timestamp.fromDate(new Date('2023-12-03')),
+          checkIn: new Date(new Date('2023-11-30')),
+          checkOut: new Date(new Date('2023-12-03')),
         },
       },
       {
@@ -271,8 +274,8 @@ export const mockBookings: (Booking & { id: string })[] = [
         unitPrice: 400,
         totalPrice: 400,
         dates: {
-          checkIn: Timestamp.fromDate(new Date('2024-01-08')),
-          checkOut: Timestamp.fromDate(new Date('2024-01-13')),
+          checkIn: new Date(new Date('2024-01-08')),
+          checkOut: new Date(new Date('2024-01-13')),
         },
       },
     ],
@@ -295,8 +298,8 @@ export const mockBookings: (Booking & { id: string })[] = [
         unitPrice: 220,
         totalPrice: 220,
         dates: {
-          checkIn: Timestamp.fromDate(new Date('2023-12-22')),
-          checkOut: Timestamp.fromDate(new Date('2023-12-25')),
+          checkIn: new Date(new Date('2023-12-22')),
+          checkOut: new Date(new Date('2023-12-25')),
         },
       },
       {
@@ -326,8 +329,8 @@ export const mockBookings: (Booking & { id: string })[] = [
         unitPrice: 170,
         totalPrice: 170,
         dates: {
-          checkIn: Timestamp.fromDate(new Date('2024-02-05')),
-          checkOut: Timestamp.fromDate(new Date('2024-02-08')),
+          checkIn: new Date(new Date('2024-02-05')),
+          checkOut: new Date(new Date('2024-02-08')),
         },
       },
     ],

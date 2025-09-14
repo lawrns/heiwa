@@ -70,7 +70,7 @@ export default function PaymentPage() {
         cardDetails.name.trim() !== '' &&
         cardDetails.number.replace(/\s/g, '').length >= 16 &&
         cardDetails.expiry.length >= 5 &&
-        cardDetails.cvv.length >= 3
+        cardDetails.cvc.length >= 3
       )
     }
     return paymentMethod !== ''

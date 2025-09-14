@@ -119,13 +119,24 @@ if (typeof window !== 'undefined') {
     }
     
     // Create React root and render widget
-    const root = window.ReactDOM.createRoot(container);
-    root.render(
-      window.React.createElement(StandaloneWidget, {
-        containerId: containerId,
-        config: config || (window as any).heiwaWidgetConfig
-      })
-    );
+    if ((window as any).ReactDOM && (window as any).ReactDOM.createRoot) {
+      const root = (window as any).ReactDOM.createRoot(container);
+      root.render(
+        window.React.createElement(StandaloneWidget, {
+          containerId: containerId,
+          config: config || (window as any).heiwaWidgetConfig
+        })
+      );
+    } else {
+      // Fallback for older React versions
+      (window as any).ReactDOM.render(
+        window.React.createElement(StandaloneWidget, {
+          containerId: containerId,
+          config: config || (window as any).heiwaWidgetConfig
+        }),
+        container
+      );
+    }
     
     console.log('Heiwa Widget: Successfully initialized in container:', containerId);
   };

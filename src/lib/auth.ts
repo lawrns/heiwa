@@ -23,7 +23,7 @@ const ADMIN_EMAILS = [
 export function supabaseUserToAuthUser(user: User): AuthUser {
   return {
     id: user.id,
-    email: user.email,
+    email: user.email || null,
     displayName: user.user_metadata?.display_name || user.email?.split('@')[0] || null,
     isAdmin: user.email ? ADMIN_EMAILS.includes(user.email) : false,
   };
