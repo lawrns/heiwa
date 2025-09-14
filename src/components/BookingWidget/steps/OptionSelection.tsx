@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapPin, Users, Star, Check, Clock, Wifi, Car, Utensils, Calendar, Minus, Plus } from 'lucide-react';
-import { BookingState } from '../types';
+import { BookingState, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 
@@ -11,6 +11,7 @@ interface OptionSelectionProps {
     setSurfWeek: (surfWeekId: string) => void;
     setDates: (checkIn: Date, checkOut: Date) => void;
     setGuests: (count: number) => void;
+    updatePricing: (pricing: PricingBreakdown) => void;
   };
 }
 
@@ -72,9 +73,47 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     }
   };
 
+  // Recompute base price and totals when selection/dates/guests change
+  useEffect(() => {
+    if (!selectedOption) return;
+    const opt: any = (options as any[]).find((o) => o.id === selectedOption);
+    if (!opt) return;
+
+    let basePrice = 0;
+    if (state.experienceType === 'room') {
+      if (state.dates.checkIn && state.dates.checkOut) {
+        const nights = Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24));
+        const unit = typeof opt.pricePerNight === 'number' ? opt.pricePerNight : (opt.price ?? 0);
+        basePrice = unit * nights;
+      }
+    } else if (state.experienceType === 'surf-week') {
+      const unit = typeof opt.price === 'number' ? opt.price : (opt.priceFrom ?? 0);
+      basePrice = unit * Math.max(1, state.guests);
+    }
+
+    if (basePrice > 0) {
+      const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
+      const taxes = Math.round((basePrice + addOnsSubtotal) * 0.1);
+      const fees = Math.round((basePrice + addOnsSubtotal) * 0.05);
+      const total = basePrice + addOnsSubtotal + taxes + fees;
+      actions.updatePricing({ ...state.pricing, basePrice, taxes, fees, total, currency: 'EUR' });
+    }
+  }, [selectedOption, state.dates.checkIn, state.dates.checkOut, state.guests, state.experienceType, options]);
+
   const adjustGuests = (delta: number) => {
     const newCount = Math.max(1, Math.min(12, state.guests + delta));
     actions.setGuests(newCount);
+  };
+
+  // Check if a room can accommodate the current guest count
+  const canAccommodateGuests = (room: any) => {
+    return room.maxOccupancy >= state.guests;
+  };
+
+  // Get rooms that exceed capacity for warning display
+  const getRoomsExceedingCapacity = () => {
+    if (state.experienceType !== 'room') return [];
+    return (options as any[]).filter(room => !canAccommodateGuests(room));
   };
 
   const getAmenityIcon = (amenity: string) => {
@@ -94,11 +133,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   };
 
   const calculateTotalPrice = (option: any) => {
-    if (state.experienceType === 'room' && state.dates.checkIn && state.dates.checkOut) {
-      const nights = Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24));
-      return option.pricePerNight * nights;
+    if (state.experienceType === 'room') {
+      if (state.dates.checkIn && state.dates.checkOut) {
+        const nights = Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24));
+        return option.pricePerNight * nights;
+      }
+      return undefined; // Wait for dates to avoid NaN
     }
-    return option.price;
+    return option.price ?? undefined;
   };
 
   if (loading) {
@@ -253,6 +295,27 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         </div>
       )}
 
+      {/* Capacity Warning for Rooms */}
+      {state.experienceType === 'room' && getRoomsExceedingCapacity().length > 0 && (
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <div className="w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">!</span>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-amber-800 mb-1">
+                Some rooms cannot accommodate {state.guests} guests
+              </h4>
+              <p className="text-sm text-amber-700">
+                Rooms that exceed capacity are disabled. Consider reducing guest count or selecting a larger room.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Options Grid */}
       {state.experienceType === 'surf-week' ? (
         <div className="space-y-3">
@@ -313,20 +376,28 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             const isSelected = selectedOption === option.id;
             const totalPrice = calculateTotalPrice(option);
             const amenities = option.amenities;
+            const canAccommodate = canAccommodateGuests(option);
+            const exceedsCapacity = !canAccommodate;
 
             return (
               <button
                 key={option.id}
-                onClick={() => handleOptionSelect(option.id)}
+                onClick={() => {
+                  if (canAccommodate) {
+                    handleOptionSelect(option.id);
+                  }
+                }}
+                disabled={exceedsCapacity}
                 className={`
                   w-full p-6 rounded-xl border-2 text-left
                   transition-all duration-300 ease-out
-                  hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1
                   focus:outline-none focus:ring-4 focus:ring-orange-500/30
                   animate-in fade-in-0 slide-in-from-bottom-4
-                  ${isSelected
-                    ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
-                    : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50'
+                  ${exceedsCapacity
+                    ? 'border-red-300 bg-red-50 opacity-60 cursor-not-allowed'
+                    : isSelected
+                      ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
+                      : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1'
                   }
                 `}
                 style={{ animationDelay: `${index * 100}ms` }}
@@ -363,15 +434,13 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                       </div>
                       <div className="text-right">
                         <div className="text-2xl font-bold text-orange-600">
-                          {formatPrice(totalPrice)}
+                          {typeof totalPrice === 'number' && !Number.isNaN(totalPrice)
+                            ? formatPrice(totalPrice)
+                            : (state.experienceType === 'room' ? 'Select dates' : (option.price ? formatPrice(option.price) : '—'))}
                         </div>
                         <div className="text-xs text-gray-500">
                           {state.experienceType === 'room'
-                            ? `per ${state.dates.checkIn && state.dates.checkOut
-                                ? Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))
-                                : 1} night${state.dates.checkIn && state.dates.checkOut
-                                  ? Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) > 1 ? 's' : ''
-                                  : ''}`
+                            ? (state.dates.checkIn && state.dates.checkOut ? `for ${Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} night${Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) > 1 ? 's' : ''}` : 'per night')
                             : 'per person'
                           }
                         </div>
@@ -381,9 +450,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     {/* Details */}
                     <div className="flex items-center gap-4 text-sm text-gray-600">
                       <>
-                        <div className="flex items-center gap-1">
+                        <div className={`flex items-center gap-1 ${exceedsCapacity ? 'text-red-600 font-medium' : ''}`}>
                           <Users size={14} />
                           <span>Up to {option.maxOccupancy} guests</span>
+                          {exceedsCapacity && (
+                            <span className="text-red-600 text-xs font-medium ml-1">
+                              (Exceeds capacity by {state.guests - option.maxOccupancy})
+                            </span>
+                          )}
                         </div>
                         <div className="flex items-center gap-1">
                           <MapPin size={14} />
@@ -439,7 +513,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       {/* Help Text */}
       <div className="text-center">
         <p className="text-sm text-gray-500">
-          {state.experienceType === 'room' 
+          {state.experienceType === 'room'
             ? 'All rooms include WiFi, linens, and access to common areas.'
             : 'All surf weeks include accommodation, meals, equipment, and professional coaching.'
           }
