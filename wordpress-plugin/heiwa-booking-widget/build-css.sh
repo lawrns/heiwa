@@ -33,6 +33,11 @@ if [ ! -f "$CSS_DIR/utilities.css" ]; then
     exit 1
 fi
 
+if [ ! -f "$CSS_DIR/landing-page.css" ]; then
+    echo "❌ Error: landing-page.css not found in $CSS_DIR"
+    exit 1
+fi
+
 # Create header comment
 cat > "$OUTPUT_FILE" << 'EOF'
 /*!
@@ -44,6 +49,7 @@ cat > "$OUTPUT_FILE" << 'EOF'
  * - base.css (Foundation layer)
  * - components.css (Component layer)
  * - layout.css (Layout layer)
+ * - landing-page.css (Landing page layer)
  * - utilities.css (Utilities layer)
  *
  * Author: Heiwa House Development Team
@@ -69,6 +75,12 @@ echo "/* ===========================================" >> "$OUTPUT_FILE"
 echo "   LAYOUT LAYER - Positioning & Structure" >> "$OUTPUT_FILE"
 echo "   =========================================== */" >> "$OUTPUT_FILE"
 cat "$CSS_DIR/layout.css" >> "$OUTPUT_FILE"
+echo "" >> "$OUTPUT_FILE"
+
+echo "/* ===========================================" >> "$OUTPUT_FILE"
+echo "   LANDING PAGE LAYER - Hero & Destinations" >> "$OUTPUT_FILE"
+echo "   =========================================== */" >> "$OUTPUT_FILE"
+cat "$CSS_DIR/landing-page.css" >> "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
 echo "/* ===========================================" >> "$OUTPUT_FILE"

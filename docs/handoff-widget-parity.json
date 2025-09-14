@@ -1,0 +1,87 @@
+{
+  "objective": "Achieve pixel-perfect parity between the WordPress booking widget (/widget-admin) and the React widget (/widget-new) starting at the Experience screen, maintaining all existing WordPress functionality.",
+  "repo": {
+    "branch": "BNB",
+    "paths_of_interest": [
+      "public/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js",
+      "public/wordpress-plugin/heiwa-booking-widget/assets/css/utilities.css",
+      "wordpress-plugin/heiwa-booking-widget/assets/js/widget.js",
+      "wordpress-plugin/heiwa-booking-widget/assets/css/utilities.css",
+      "src/app/widget-admin/page.tsx"
+    ]
+  },
+  "current_state": {
+    "working_urls": [
+      "http://localhost:3005/widget-admin",
+      "http://localhost:3005/widget-new"
+    ],
+    "status": [
+      "Book Now reliably opens the drawer in /widget-admin",
+      "Experience stepper shows 1..5 (Experience, Options, Add-ons, Details, Review)",
+      "Experience screen has two premium cards with price chips and badges",
+      "Background images render with gradients",
+      "Known: Surf-camps API returns 401 in dev, but does not block Experience UI"
+    ]
+  },
+  "key_changes_made": {
+    "display_steps": "Added DISPLAY_STEPS (5-step) and a mapping from real steps to display indices. Updated progress indicator to use data-display-index.",
+    "experience_ui": "Rewrote booking-type selector HTML; added price chips (€45/€599), badges, 'Selected' tag, improved copy.",
+    "css": [
+      "Utilities.css: backgrounds, overlays, price chip, badges, selected badge, hover polish",
+      "Corrected image paths to '../images/...'"
+    ],
+    "stability": "Init uses global API; drawer opens consistently."
+  },
+  "parity_tasks_next": [
+    {
+      "name": "Pixel spacing and typography parity",
+      "details": "Match font sizes, line heights, paddings, radii, and shadow depths to /widget-new. Focus titles: modal title, 'Choose Your Adventure', card titles/subtitles.",
+      "acceptance": "±2px spacing variance at 360/768/1024/1440 widths."
+    },
+    {
+      "name": "Selected state glow and radio semantics",
+      "details": "When a card is selected, show subtle outer highlight and inner glow identical to React; maintain ARIA radiogroup behavior.",
+      "acceptance": "Visual match plus keyboard Arrow/Enter toggles without focus loss."
+    },
+    {
+      "name": "Helper footnote",
+      "details": "Add bottom helper text: 'Not sure which option?...' matching React copy, weight, and color.",
+      "acceptance": "Exact copy and spacing alignment with /widget-new."
+    },
+    {
+      "name": "Stepper micro-interactions",
+      "details": "Animate active step change and completed state to mirror React (ease, duration).",
+      "acceptance": "Animation duration and easing feel indistinguishable."
+    },
+    {
+      "name": "Responsive behavior",
+      "details": "Cards stack cleanly on mobile; ensure price chip and badges reflow without overlap; verify 360–1440px.",
+      "acceptance": "No overflow; Lighthouse layout shift under 0.02."
+    }
+  ],
+  "constraints": [
+    "Do not break existing WordPress PHP endpoints or admin settings",
+    "No change to underlying 8-step logic; only the display stepper should be 5-step",
+    "Accessibility: radiogroup + radio semantics, focus ring, readable contrast"
+  ],
+  "how_to_run": {
+    "start": "npm run dev",
+    "validate": [
+      "Open http://localhost:3005/widget-admin",
+      "Click 'Book Now' – drawer opens; stepper shows 1..5",
+      "Verify Experience UI matches /widget-new visually at 360/768/1024/1440"
+    ]
+  },
+  "files_to_edit_next": [
+    "public/wordpress-plugin/heiwa-booking-widget/assets/css/utilities.css",
+    "public/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js"
+  ],
+  "non_goals": [
+    "Do not rework surf-week or room flows beyond visuals needed for parity",
+    "Do not modify database or WordPress server routes"
+  ],
+  "handoff_back": {
+    "when_done": "Commit changes on branch BNB with message prefix 'Parity polish:' and ping Augment Agent to review and run final visual and accessibility checks.",
+    "contact": "Reassign back to Augment Agent in this thread."
+  }
+}

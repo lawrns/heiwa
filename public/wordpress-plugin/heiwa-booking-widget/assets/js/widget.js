@@ -1213,10 +1213,21 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Helper footnote - React parity -->
+                <div class="heiwa-booking-type-help">
+                    <p class="heiwa-booking-type-help-text">
+                        Not sure which option? Our room booking offers more flexibility,
+                        while surf weeks provide a complete guided experience.
+                    </p>
+                </div>
             </div>
         `;
 
-        $container.html(bookingTypeHTML);
+        $container.html(bookingTypeHTML);</parameter">
+</xai:function_call name  
+<xai:function_call name="StrReplace">
+<parameter name="file_path">public/wordpress-plugin/heiwa-booking-widget/assets/css/utilities.css
 
         // Bind click and keyboard events
         $('.heiwa-booking-option-card').on('click', function() {
@@ -1251,6 +1262,26 @@
                     break;
             }
         });
+
+        // Auto-advance to next step after selection (React parity)
+        function selectBookingType(bookingType) {
+            // Update booking data
+            bookingData.bookingType = bookingType;
+
+            // Update UI state
+            $('.heiwa-booking-option-card').removeClass('selected').attr('aria-checked', 'false');
+            $(`.heiwa-booking-option-card[data-booking-type="${bookingType}"]`)
+                .addClass('selected')
+                .attr('aria-checked', 'true');
+
+            // Auto-advance after short delay
+            setTimeout(() => {
+                nextStep();
+            }, 300);
+        }</parameter">
+</xai:function_call name  
+<xai:function_call name="StrReplace">
+<parameter name="file_path">public/wordpress-plugin/heiwa-booking-widget/assets/js/widget.js
     }
 
     /**

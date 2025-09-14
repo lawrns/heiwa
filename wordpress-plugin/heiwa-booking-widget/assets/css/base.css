@@ -142,9 +142,9 @@
    =========================================== */
 
 /* Global Reset & Base Styles */
-*,
-*::before,
-*::after {
+.heiwa-booking-widget *,
+.heiwa-booking-widget *::before,
+.heiwa-booking-widget *::after {
   box-sizing: border-box;
 }
 
