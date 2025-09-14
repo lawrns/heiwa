@@ -12,8 +12,15 @@ interface AddOnsSelectionProps {
 }
 
 export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
-  const { addOns, loading, error, selectedAddOns, updateAddOnQuantity, getAddOnSubtotal } = useAddOns();
+  const { addOns, loading, error, selectedAddOns, setSelectedAddOns, updateAddOnQuantity, getAddOnSubtotal } = useAddOns();
   const basePriceRef = useRef(state.pricing.basePrice);
+
+  // Initialize local add-ons state from global state on mount
+  useEffect(() => {
+    if (state.selectedAddOns.length > 0) {
+      setSelectedAddOns(state.selectedAddOns);
+    }
+  }, []); // Only run on mount
 
   // Update base price ref when it changes
   useEffect(() => {
@@ -27,6 +34,20 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
   useEffect(() => {
     const addOnsSubtotal = getAddOnSubtotal();
     const basePrice = basePriceRef.current;
+
+    // Sync add-ons to global state
+    actions.setAddOns(selectedAddOns);
+
+    // If base price isn't set yet (e.g., no room/dates selected),
+    // update only the add-ons subtotal to avoid misleading totals (e.g., €29)
+    if (!basePrice || basePrice <= 0) {
+      actions.updatePricing({
+        ...state.pricing,
+        addOnsSubtotal,
+      });
+      return;
+    }
+
     const taxes = Math.round((basePrice + addOnsSubtotal) * 0.1);
     const fees = Math.round((basePrice + addOnsSubtotal) * 0.05);
     const total = basePrice + addOnsSubtotal + taxes + fees;

@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+import { bookingsAPI, clientsAPI } from '@/lib/supabase-admin';
+import { sendBookingEmails } from '@/lib/email-service';
 
 // CORS headers for WordPress integration
 const corsHeaders = {
@@ -89,90 +92,172 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // For now, create a mock room booking response since we don't have a rooms table
-    // In a real implementation, you would:
-    // 1. Validate the room exists and is available
-    // 2. Calculate pricing based on room rates
-    // 3. Create booking records in the database
-    // 4. Generate payment links
-    // 5. Send confirmation emails
+    // Initialize admin Supabase (service role) for server-side operations
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
-    const mockRoomData = {
-      id: bookingData.room_id,
-      name: bookingData.room_id.replace('room-', '').replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
-      price_per_night: 150, // Mock price
-    };
-
-    // Calculate pricing
     const participantCount = bookingData.participants.length;
     const startDate = new Date(bookingData.start_date);
     const endDate = new Date(bookingData.end_date);
     const nights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-    const basePrice = mockRoomData.price_per_night;
-    const totalAmount = basePrice * participantCount * nights;
 
-    // Generate a mock booking ID
-    const bookingId = `room-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    const bookingNumber = `WP-ROOM-${bookingId.substring(0, 8).toUpperCase()}`;
+    // Create or find clients for each participant
+    const clientIds: string[] = [];
+    for (const participant of bookingData.participants) {
+      const { data: existing } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('email', participant.email)
+        .limit(1);
 
-    // Mock payment link (in real implementation, integrate with Stripe)
-    const paymentLink = `https://checkout.stripe.com/pay/mock-room-booking-${bookingId}`;
-
-    console.log('WordPress room booking created:', {
-      bookingId,
-      room: mockRoomData.name,
-      participants: participantCount,
-      nights,
-      totalAmount
-    });
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        booking: {
-          id: bookingId,
-          booking_number: bookingNumber,
-          status: 'pending',
-          room: {
-            id: mockRoomData.id,
-            name: mockRoomData.name,
-            dates: {
-              start: bookingData.start_date,
-              end: bookingData.end_date
-            }
-          },
-          participants: participantCount,
-          pricing: {
-            base_price: basePrice,
-            nights: nights,
-            participants: participantCount,
-            subtotal: totalAmount,
-            taxes: totalAmount * 0.1, // Estimated
-            total: totalAmount * 1.1,
-            currency: 'EUR'
-          },
-          participant_details: bookingData.participants
-        },
-        payment: {
-          status: 'pending',
-          method: 'stripe',
-          payment_link: paymentLink,
-          expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
-        },
-        next_steps: {
-          payment_required: true,
-          payment_deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-          confirmation_email_sent: true
+      if (existing && existing.length > 0) {
+        clientIds.push(existing[0].id);
+      } else {
+        const { data: newClient, error: clientErr } = await supabase
+          .from('clients')
+          .insert([
+            {
+              name: participant.name,
+              email: participant.email,
+              phone: participant.phone || '',
+              notes: 'Created from WordPress room booking',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+          ])
+          .select('id')
+          .single();
+        if (clientErr || !newClient) {
+          return NextResponse.json(
+            { success: false, error: 'Failed to create client' },
+            { status: 500, headers: corsHeaders }
+          );
         }
-      },
-      meta: {
-        created_at: new Date().toISOString(),
-        source: 'wordpress_widget',
-        booking_reference: bookingNumber
+        clientIds.push(newClient.id);
       }
-    }, {
-      headers: corsHeaders
-    });
+    }
+
+    // Determine pricing: prefer client-provided pricing snapshot to ensure parity with UI
+    const clientPricing = bookingData.pricing || {};
+    const basePrice: number = typeof clientPricing.basePrice === 'number' ? clientPricing.basePrice : 0;
+    const addOnsSubtotal: number = typeof clientPricing.addOnsSubtotal === 'number' ? clientPricing.addOnsSubtotal : 0;
+    const taxesCalc = (basePrice + addOnsSubtotal) * 0.1;
+    const feesCalc = (basePrice + addOnsSubtotal) * 0.05;
+    const taxes = Math.round(taxesCalc);
+    const fees = Math.round(feesCalc);
+    const totalAmount: number = typeof clientPricing.total === 'number' && clientPricing.total > 0
+      ? clientPricing.total
+      : basePrice + addOnsSubtotal + taxes + fees;
+
+    // Build booking items (room + add-ons)
+    const items: any[] = [
+      {
+        type: 'room' as const,
+        itemId: bookingData.room_id,
+        quantity: 1,
+        unitPrice: basePrice - addOnsSubtotal - taxes - fees > 0 ? Math.round((basePrice - addOnsSubtotal - taxes - fees)) : basePrice,
+        totalPrice: basePrice,
+        dates: {
+          checkIn: bookingData.start_date,
+          checkOut: bookingData.end_date,
+        },
+      },
+    ];
+
+    if (Array.isArray(bookingData.add_ons)) {
+      for (const a of bookingData.add_ons) {
+        if (!a || !a.id || !a.quantity) continue;
+        items.push({
+          type: 'addOn' as const,
+          itemId: a.id,
+          quantity: a.quantity,
+          unitPrice: a.price ?? 0,
+          totalPrice: (a.price ?? 0) * a.quantity,
+        });
+      }
+    }
+
+    // Persist booking
+    const heiwaBookingData = {
+      clientIds,
+      items,
+      totalAmount,
+      paymentStatus: 'pending' as const,
+      paymentMethod: 'stripe' as const,
+      notes: 'Room booking created via WordPress widget',
+      source: 'wordpress' as const,
+    };
+
+    const bookingId = await bookingsAPI.create(heiwaBookingData);
+    const createdBooking = await bookingsAPI.getById(bookingId);
+
+    if (!createdBooking) {
+      return NextResponse.json(
+        { success: false, error: 'Booking creation failed' },
+        { status: 500, headers: corsHeaders }
+      );
+    }
+
+    // Send emails asynchronously
+    (async () => {
+      try {
+        const primaryClient = await clientsAPI.getById(clientIds[0]);
+        if (primaryClient && createdBooking) {
+          await sendBookingEmails(createdBooking, primaryClient);
+        }
+      } catch (e) {
+        console.error('Email send failed', e);
+      }
+    })();
+
+    const paymentLink = `${process.env.NEXT_PUBLIC_APP_URL || 'https://your-heiwa-app.com'}/payment/${bookingId}`;
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          booking: {
+            id: bookingId,
+            booking_number: `WP-ROOM-${bookingId.substring(0, 8).toUpperCase()}`,
+            status: 'pending',
+            room: {
+              id: bookingData.room_id,
+              dates: { start: bookingData.start_date, end: bookingData.end_date },
+            },
+            participants: participantCount,
+            pricing: {
+              base_price: basePrice,
+              nights: nights,
+              participants: participantCount,
+              subtotal: basePrice + addOnsSubtotal,
+              taxes,
+              total: totalAmount,
+              currency: 'EUR',
+            },
+            participant_details: bookingData.participants,
+          },
+          payment: {
+            status: 'pending',
+            method: 'stripe',
+            payment_link: paymentLink,
+            expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          },
+          next_steps: {
+            payment_required: true,
+            payment_deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            confirmation_email_sent: true,
+          },
+        },
+        meta: {
+          created_at: new Date().toISOString(),
+          source: 'wordpress_widget',
+          booking_reference: `WP-ROOM-${bookingId.substring(0, 8).toUpperCase()}`,
+        },
+      },
+      { headers: corsHeaders }
+    );
 
   } catch (error) {
     console.error('WordPress room booking error:', error);

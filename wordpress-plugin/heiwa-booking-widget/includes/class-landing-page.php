@@ -355,3 +355,4 @@ class Heiwa_Booking_Landing_Page {
         return '#' . sprintf('%02x%02x%02x', $r, $g, $b);
     }
 }
+

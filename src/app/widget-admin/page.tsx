@@ -11,8 +11,9 @@ export default function WidgetAdminPage() {
         ajax_url: `${window.location.origin}/api/wordpress/ajax`,
         nonce: 'demo_nonce_for_testing',
         api_endpoint: `${window.location.origin}/api`,
-        rest_base: `${window.location.origin}/api/wordpress`,
-        build_id: '20250914-demo'
+        rest_base: `${window.location.origin}/wp-json/heiwa/v1`,
+        build_id: '20250914-demo',
+        api_key: 'heiwa_wp_test_key_2024_secure_deployment'
       }
     }
   }, [])

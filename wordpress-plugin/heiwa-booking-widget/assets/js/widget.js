@@ -935,7 +935,10 @@
                     <div class="heiwa-booking-progress">
                         <div class="heiwa-booking-stepper">
                             ${DISPLAY_STEPS.map((step, index) => `
-                                <div class=\"heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}\" data-display-index=\"${index}\">\n                                    <div class=\"heiwa-booking-step-number\">${index + 1}</div>\n                                    <div class=\"heiwa-booking-step-label\">${step.label}</div>\n                                </div>
+                                <div class="heiwa-booking-step ${index === 0 ? 'current' : 'upcoming'}" data-display-index="${index}">
+                                    <div class="heiwa-booking-step-number">${index + 1}</div>
+                                    <div class="heiwa-booking-step-label">${step.label}</div>
+                                </div>
                             `).join('')}
                         </div>
                     </div>
@@ -1167,55 +1170,66 @@
         const $container = getStepContainer('booking-type');
 
         const bookingTypeHTML = `
-            <div class=\"heiwa-booking-type-selector\">
-                <div class=\"heiwa-booking-type-header\">
-                    <h2 class=\"heiwa-booking-type-title\">Choose Your Adventure</h2>
-                    <p class=\"heiwa-booking-type-subtitle\">How would you like to experience Heiwa House?</p>
+            <div class="heiwa-booking-type-selector">
+                <div class="heiwa-booking-type-header">
+                    <h2 class="heiwa-booking-type-title">Choose Your Adventure</h2>
+                    <p class="heiwa-booking-type-subtitle">How would you like to experience Heiwa House?</p>
                 </div>
 
-                <div class=\"heiwa-booking-type-options\" role=\"radiogroup\" aria-label=\"Select booking type\">
-                    <div class=\"heiwa-booking-option-card\"
-                         data-booking-type=\"room\"
-                         role=\"radio\"
-                         aria-checked=\"${bookingData.bookingType === 'room' ? 'true' : 'false'}\"
-                         tabindex=\"${bookingData.bookingType === 'room' ? '0' : '-1'}\"
-                         aria-label=\"Book a room - Choose your dates and accommodation\">
-                        <div class=\"heiwa-price-chip\"><span>From</span><strong>€45</strong></div>
-                        <div class=\"heiwa-booking-option-content\">
-                            <h3 class=\"heiwa-booking-option-title\">Book a Room</h3>
-                            <p class=\"heiwa-booking-option-subtitle\">Choose your dates and accommodation. Perfect for flexible stays.</p>
-                            <div class=\"heiwa-booking-option-badges\">
-                                <span class=\"heiwa-badge\">Flexible dates</span>
-                                <span class=\"heiwa-badge\">Choose your room</span>
-                                <span class=\"heiwa-badge\">Self-guided experience</span>
+                <div class="heiwa-booking-type-options" role="radiogroup" aria-label="Select booking type">
+                    <div class="heiwa-booking-option-card"
+                         data-booking-type="room"
+                         role="radio"
+                         aria-checked="${bookingData.bookingType === 'room' ? 'true' : 'false'}"
+                         tabindex="${bookingData.bookingType === 'room' ? '0' : '-1'}"
+                         aria-label="Book a room - Choose your dates and accommodation">
+                        <div class="heiwa-price-chip"><span>From</span><strong>€45</strong></div>
+                        <div class="heiwa-booking-option-content">
+                            <h3 class="heiwa-booking-option-title">Book a Room</h3>
+                            <p class="heiwa-booking-option-subtitle">Choose your dates and accommodation. Perfect for flexible stays.</p>
+                            <div class="heiwa-booking-option-badges">
+                                <span class="heiwa-badge">Flexible dates</span>
+                                <span class="heiwa-badge">Choose your room</span>
+                                <span class="heiwa-badge">Self-guided experience</span>
                             </div>
-                            <div class=\"heiwa-selected-badge\">Selected</div>
+                            <div class="heiwa-selected-badge">Selected</div>
                         </div>
-                        <div class=\"heiwa-booking-option-arrow\" aria-hidden=\"true\">
-                            <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n                                <path d=\"M9 18l6-6-6-6\"/>\n                            </svg>
+                        <div class="heiwa-booking-option-arrow" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
                         </div>
                     </div>
 
-                    <div class=\"heiwa-booking-option-card\"
-                         data-booking-type=\"surf-week\"
-                         role=\"radio\"
-                         aria-checked=\"${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}\"
-                         tabindex=\"${bookingData.bookingType === 'surf-week' ? '0' : '-1'}\"
-                         aria-label=\"All-inclusive surf week - Join our structured surf camp programs\">
-                        <div class=\"heiwa-price-chip\"><span>From</span><strong>€599</strong></div>
-                        <div class=\"heiwa-booking-option-content\">
-                            <h3 class=\"heiwa-booking-option-title\">All-Inclusive Surf Week</h3>
-                            <p class=\"heiwa-booking-option-subtitle\">Join our structured surf camp programs with coaching and community.</p>
-                            <div class=\"heiwa-booking-option-badges\">
-                                <span class=\"heiwa-badge\">Professional coaching</span>
-                                <span class=\"heiwa-badge\">All meals included</span>
-                                <span class=\"heiwa-badge\">Structured program</span>
+                    <div class="heiwa-booking-option-card"
+                         data-booking-type="surf-week"
+                         role="radio"
+                         aria-checked="${bookingData.bookingType === 'surf-week' ? 'true' : 'false'}"
+                         tabindex="${bookingData.bookingType === 'surf-week' ? '0' : '-1'}"
+                         aria-label="All-inclusive surf week - Join our structured surf camp programs">
+                        <div class="heiwa-price-chip"><span>From</span><strong>€599</strong></div>
+                        <div class="heiwa-booking-option-content">
+                            <h3 class="heiwa-booking-option-title">All-Inclusive Surf Week</h3>
+                            <p class="heiwa-booking-option-subtitle">Join our structured surf camp programs with coaching and community.</p>
+                            <div class="heiwa-booking-option-badges">
+                                <span class="heiwa-badge">Professional coaching</span>
+                                <span class="heiwa-badge">All meals included</span>
+                                <span class="heiwa-badge">Structured program</span>
                             </div>
                         </div>
-                        <div class=\"heiwa-booking-option-arrow\" aria-hidden=\"true\">
-                            <svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">\n                                <path d=\"M9 18l6-6-6-6\"/>\n                            </svg>
+                        <div class="heiwa-booking-option-arrow" aria-hidden="true">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
                         </div>
                     </div>
+                </div>
+
+                <div class="heiwa-booking-type-help">
+                    <p class="heiwa-booking-type-help-text">
+                        Not sure which option? Our room booking offers more flexibility,
+                        while surf weeks provide a complete guided experience.
+                    </p>
                 </div>
             </div>
         `;
@@ -1255,6 +1269,23 @@
                     break;
             }
         });
+
+        // Auto-advance to next step after selection (React parity)
+        function selectBookingType(bookingType) {
+            // Update booking data
+            bookingData.bookingType = bookingType;
+
+            // Update UI state
+            $('.heiwa-booking-option-card').removeClass('selected').attr('aria-checked', 'false');
+            $(`.heiwa-booking-option-card[data-booking-type="${bookingType}"]`)
+                .addClass('selected')
+                .attr('aria-checked', 'true');
+
+            // Auto-advance after short delay
+            setTimeout(() => {
+                goToNextStep();
+            }, 300);
+        }
     }
 
     /**

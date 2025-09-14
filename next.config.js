@@ -70,6 +70,13 @@ const nextConfig = {
   generateBuildId: async () => {
     return 'build-' + Date.now()
   },
+
+  // WordPress widget build configuration
+  experimental: {
+    // Enable optimizations for widget builds
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-dialog']
+  },
 }
 
 module.exports = nextConfig
