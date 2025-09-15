@@ -26,6 +26,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryRoomName, setGalleryRoomName] = useState('');
+  const [galleryRoom, setGalleryRoom] = useState<any>(null);
 
   // Initialize guest IDs
   useEffect(() => {
@@ -111,9 +112,10 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
   };
 
   // Open image gallery
-  const openGallery = (images: string[], roomName: string) => {
-    setGalleryImages(images);
-    setGalleryRoomName(roomName);
+  const openGallery = (room: any) => {
+    setGalleryImages(room.images || []);
+    setGalleryRoomName(room.name);
+    setGalleryRoom(room);
     setGalleryOpen(true);
   };
 
@@ -191,7 +193,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                     <RoomThumbnail
                       image={room.images[0]}
                       roomName={room.name}
-                      onClick={() => openGallery(room.images, room.name)}
+                      onClick={() => openGallery(room)}
                       className="w-20 h-15"
                     />
                   ) : (
@@ -297,6 +299,11 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
       <RoomImageGallery
         images={galleryImages}
         roomName={galleryRoomName}
+        roomDescription={galleryRoom?.description}
+        roomAmenities={galleryRoom?.amenities}
+        roomType={galleryRoom?.type}
+        maxOccupancy={galleryRoom?.maxOccupancy}
+        pricePerNight={galleryRoom?.pricePerNight}
         isOpen={galleryOpen}
         onClose={() => setGalleryOpen(false)}
       />

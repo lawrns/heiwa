@@ -60,15 +60,21 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
       // Get surf week duration (assuming 7 days for now)
       const surfWeekDuration = 7;
       const roomUpgradeTotal = room.pricePerNight * surfWeekDuration;
-      
-      // Update pricing with room upgrade
+
+      // Recalculate pricing with room upgrade included in base calculation
       const basePrice = state.pricing.basePrice;
-      const newTotal = basePrice + roomUpgradeTotal + state.pricing.addOnsSubtotal + state.pricing.taxes + state.pricing.fees;
-      
+      const addOnsSubtotal = state.pricing.addOnsSubtotal;
+      const subtotal = basePrice + roomUpgradeTotal + addOnsSubtotal;
+      const taxes = Math.round(subtotal * 0.1); // 10% tax
+      const fees = Math.round(subtotal * 0.05); // 5% service fee
+      const total = subtotal + taxes + fees;
+
       actions.updatePricing({
         ...state.pricing,
         roomUpgrade: roomUpgradeTotal,
-        total: newTotal,
+        taxes,
+        fees,
+        total,
       });
     }
   };
@@ -111,9 +117,22 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                 }
               `}
             >
-              {/* Room Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
+              {/* Room Header with Thumbnail */}
+              <div className="flex items-start gap-4 mb-4">
+                {/* Room Thumbnail */}
+                <div className="flex-shrink-0">
+                  <img
+                    src={room.image}
+                    alt={room.name}
+                    className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiNGM0Y0RjYiLz48cGF0aCBkPSJNMjQgMzJMMzIgMjRMMzYgMjhMNDggMTZMNTYgMjRWNDhIMjRWMzJaIiBmaWxsPSIjOUNBM0FGIi8+PC9zdmc+';
+                    }}
+                  />
+                </div>
+
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
                     <Bed size={20} className="text-orange-500" />
                     <h4 className="text-lg font-semibold text-gray-900">

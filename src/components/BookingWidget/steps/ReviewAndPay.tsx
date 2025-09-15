@@ -22,7 +22,8 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
   useEffect(() => {
     const basePrice = state.pricing.basePrice || 0;
     const addOnsSubtotal = state.selectedAddOns.reduce((total, addOn) => total + addOn.price * addOn.quantity, 0);
-    const subtotal = basePrice + addOnsSubtotal;
+    const roomUpgrade = state.pricing.roomUpgrade || 0;
+    const subtotal = basePrice + addOnsSubtotal + roomUpgrade;
     const taxes = Math.round(subtotal * 0.1);
     const fees = Math.round(subtotal * 0.05);
     const total = subtotal + taxes + fees;
@@ -30,6 +31,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
     const newPricing: PricingBreakdown = {
       basePrice,
       addOnsSubtotal,
+      roomUpgrade,
       taxes,
       fees,
       total,
@@ -38,7 +40,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
     setPricing(newPricing);
     actions.updatePricing(newPricing);
-  }, [state.pricing.basePrice, state.selectedAddOns]);
+  }, [state.pricing.basePrice, state.pricing.roomUpgrade, state.selectedAddOns]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-EU', {
@@ -255,6 +257,12 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             <span className="text-gray-700">Base Price</span>
             <span className="font-medium">{formatPrice(pricing.basePrice)}</span>
           </div>
+          {pricing.roomUpgrade && pricing.roomUpgrade > 0 && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-700">Room Upgrade</span>
+              <span className="font-medium">{formatPrice(pricing.roomUpgrade)}</span>
+            </div>
+          )}
           {pricing.addOnsSubtotal > 0 && (
             <div className="flex justify-between items-center">
               <span className="text-gray-700">Add-ons</span>

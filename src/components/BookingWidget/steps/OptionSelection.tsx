@@ -29,6 +29,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryRoomName, setGalleryRoomName] = useState('');
+  const [galleryRoom, setGalleryRoom] = useState<any>(null);
 
   // Local state for room booking dates
   const [checkInDate, setCheckInDate] = useState(
@@ -112,9 +113,10 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   };
 
   // Open image gallery
-  const openGallery = (images: string[], roomName: string) => {
-    setGalleryImages(images);
-    setGalleryRoomName(roomName);
+  const openGallery = (room: any) => {
+    setGalleryImages(room.images || []);
+    setGalleryRoomName(room.name);
+    setGalleryRoom(room);
     setGalleryOpen(true);
   };
 
@@ -397,7 +399,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                       <RoomHeroImage
                         image={option.images[0]}
                         roomName={option.name}
-                        onClick={() => openGallery(option.images, option.name)}
+                        onClick={() => openGallery(option)}
                         className="w-32 h-24"
                       />
                     ) : (
@@ -475,7 +477,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          openGallery(option.images, option.name);
+                          openGallery(option);
                         }}
                         className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
                       >
@@ -521,6 +523,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       <RoomImageGallery
         images={galleryImages}
         roomName={galleryRoomName}
+        roomDescription={galleryRoom?.description}
+        roomAmenities={galleryRoom?.amenities}
+        roomType={galleryRoom?.type}
+        maxOccupancy={galleryRoom?.maxOccupancy}
+        pricePerNight={galleryRoom?.pricePerNight}
         isOpen={galleryOpen}
         onClose={() => setGalleryOpen(false)}
       />
