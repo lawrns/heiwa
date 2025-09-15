@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 
 import { Component, ReactNode, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -92,6 +93,43 @@ const navigationItems = [
   { name: 'Compliance', href: '/admin/compliance', icon: FileTextIcon },
   { name: 'System', href: '/admin/system', icon: ShieldIcon },
 ];
+
+// AdminLogo component
+interface AdminLogoProps {
+  collapsed: boolean;
+  className?: string;
+}
+
+function AdminLogo({ collapsed, className = "" }: AdminLogoProps) {
+  return (
+    <Link href="/admin" className={`flex items-center justify-center ${className}`}>
+      <div className={`relative ${collapsed ? 'w-8 h-8' : 'w-10 h-10'} flex-shrink-0`}>
+        <Image
+          src="/wordpress-plugin/heiwa-booking-widget/assets/images/heiwalogo.webp"
+          alt="Heiwa House Admin"
+          width={collapsed ? 32 : 40}
+          height={collapsed ? 32 : 40}
+          className="object-contain filter brightness-0 invert"
+          onError={(e) => {
+            // Fallback to 'H' text if image fails to load
+            const target = e.target as HTMLElement;
+            if (target) {
+              target.style.display = 'none';
+              const fallback = target.parentElement?.querySelector('.logo-fallback');
+              if (fallback) {
+                (fallback as HTMLElement).style.display = 'flex';
+              }
+            }
+          }}
+        />
+        {/* Fallback 'H' text */}
+        <div className="logo-fallback absolute inset-0 hidden items-center justify-center">
+          <span className="text-white font-bold text-lg">H</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const { user, signOut, loading } = useAuth();
@@ -202,27 +240,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           {/* Sidebar */}
           <aside className={`
             fixed md:sticky inset-y-0 md:top-0 left-0 z-40 md:z-auto
-            bg-white shadow-lg md:shadow-none
+            bg-gray-800 shadow-lg md:shadow-none
             transform transition-transform duration-300 ease-in-out
             ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             md:translate-x-0
             ${sidebarCollapsed ? 'md:w-16' : 'md:w-64'}
             w-64 md:block
             flex flex-col
-            border-r border-gray-200 md:border-r-0
+            border-r border-gray-700 md:border-r-0
             mt-0 md:mt-0
             md:h-screen md:overflow-hidden
           `}>
             {/* Sidebar header */}
-            <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-between h-16 px-4'} bg-heiwaOrange-600 border-b border-heiwaOrange-700`}>
+            <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-between h-16 px-4'} bg-gray-800 border-b border-gray-700`}>
               {sidebarCollapsed ? (
                 <>
-                  {/* Logo div positioned above SVG when collapsed */}
-                  <Link href="/admin" className="flex items-center justify-center">
-                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-heiwaOrange-600 font-bold text-sm">H</span>
-                    </div>
-                  </Link>
+                  {/* Logo positioned above SVG when collapsed */}
+                  <AdminLogo collapsed={true} />
                   {/* SVG button positioned below logo when collapsed */}
                   <button
                     onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -237,9 +271,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <>
                   {/* Expanded layout - horizontal */}
                   <Link href="/admin" className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-heiwaOrange-600 font-bold text-sm">H</span>
-                    </div>
+                    <AdminLogo collapsed={false} />
                     <span className="text-white font-semibold text-lg truncate">Heiwa House</span>
                   </Link>
                   <div className="flex items-center space-x-2">
@@ -271,8 +303,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     key={item.name}
                     href={item.href}
                     className={`
-                      group relative flex items-center py-3 px-4 text-sm font-medium text-gray-700
-                      rounded-lg hover:bg-gray-100 hover:text-heiwaOrange-600
+                      group relative flex items-center py-3 px-4 text-sm font-medium text-gray-300
+                      rounded-lg hover:bg-gray-700 hover:text-white
                       transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:top-1/2 after:-translate-y-1/2 after:h-5 after:w-0 after:rounded-full after:bg-heiwaOrange-500 after:transition-all after:duration-300 group-hover:after:w-1
                       ${sidebarCollapsed ? 'px-3 justify-center' : ''}
                     `}
