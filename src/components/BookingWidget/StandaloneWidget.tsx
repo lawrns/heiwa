@@ -207,6 +207,15 @@ Plugin URL: ${wpConfig.pluginUrl}`}
         .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500:disabled {
           background: linear-gradient(to right, #d1d5db, #9ca3af) !important;
         }
+
+        /* Restore proper padding for card components */
+        .heiwa-react-widget-container button.p-4 {
+          padding: 1rem !important;
+        }
+
+        .heiwa-react-widget-container button.p-6 {
+          padding: 1.5rem !important;
+        }
         
         /* Ensure proper z-index stacking */
         .heiwa-booking-widget {
