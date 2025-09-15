@@ -116,7 +116,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heiwaOrange-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading admin dashboard...</p>
           <p className="text-sm text-gray-500 mt-2">Initializing...</p>
         </div>
@@ -131,7 +131,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-800 mb-2">Redirecting to login…</h2>
           <p className="text-gray-600 mb-4">Admin access required.</p>
-          <Link href="/login" className="text-blue-600 underline">Go to Login</Link>
+          <Link href="/login" className="text-heiwaOrange-600 underline">Go to Login</Link>
           {/* Immediate client-side redirect to avoid empty render triggering 404 */}
           <script dangerouslySetInnerHTML={{ __html: "window.location.replace('/login')" }} />
         </div>
@@ -150,7 +150,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="heiwa-admin min-h-screen bg-gray-50 flex flex-col">
         {/* Top header - Full width, always visible */}
         <header className="bg-white shadow-sm border-b border-gray-200 z-50 relative">
           <div className="flex items-center justify-between h-16 px-6">
@@ -214,13 +214,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             md:h-screen md:overflow-hidden
           `}>
             {/* Sidebar header */}
-            <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-between h-16 px-4'} bg-blue-600 border-b border-blue-700`}>
+            <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-between h-16 px-4'} bg-heiwaOrange-600 border-b border-heiwaOrange-700`}>
               {sidebarCollapsed ? (
                 <>
                   {/* Logo div positioned above SVG when collapsed */}
                   <Link href="/admin" className="flex items-center justify-center">
                     <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 font-bold text-sm">H</span>
+                      <span className="text-heiwaOrange-600 font-bold text-sm">H</span>
                     </div>
                   </Link>
                   {/* SVG button positioned below logo when collapsed */}
@@ -238,7 +238,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   {/* Expanded layout - horizontal */}
                   <Link href="/admin" className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-                      <span className="text-blue-600 font-bold text-sm">H</span>
+                      <span className="text-heiwaOrange-600 font-bold text-sm">H</span>
                     </div>
                     <span className="text-white font-semibold text-lg truncate">Heiwa House</span>
                   </Link>
@@ -271,9 +271,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     key={item.name}
                     href={item.href}
                     className={`
-                      flex items-center py-3 px-4 text-sm font-medium text-gray-700
-                      rounded-lg hover:bg-gray-100 hover:text-blue-600
-                      transition-colors duration-200
+                      group relative flex items-center py-3 px-4 text-sm font-medium text-gray-700
+                      rounded-lg hover:bg-gray-100 hover:text-heiwaOrange-600
+                      transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:top-1/2 after:-translate-y-1/2 after:h-5 after:w-0 after:rounded-full after:bg-heiwaOrange-500 after:transition-all after:duration-300 group-hover:after:w-1
                       ${sidebarCollapsed ? 'px-3 justify-center' : ''}
                     `}
                     onClick={() => setSidebarOpen(false)}
@@ -290,7 +290,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
           {/* Main content area */}
           <main className="flex-1 flex flex-col min-w-0 bg-gray-50">
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 p-6 overflow-y-auto motion-safe:animate-fade-in">
               {children}
             </div>
           </main>

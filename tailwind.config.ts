@@ -77,6 +77,19 @@ const config: Config = {
   				'800': 'var(--sand-beige-800)',
   				'900': 'var(--sand-beige-900)'
   			},
+  			// Heiwa Orange mapped to CSS variables for admin theming
+  			heiwaOrange: {
+  				'50': 'var(--heiwa-orange-50)',
+  				'100': 'var(--heiwa-orange-100)',
+  				'200': 'var(--heiwa-orange-200)',
+  				'300': 'var(--heiwa-orange-300)',
+  				'400': 'var(--heiwa-orange-400)',
+  				'500': 'var(--heiwa-orange-500)',
+  				'600': 'var(--heiwa-orange-600)',
+  				'700': 'var(--heiwa-orange-700)',
+  				'800': 'var(--heiwa-orange-800)',
+  				'900': 'var(--heiwa-orange-900)'
+  			},
   			// Legacy brand colors (keeping for backward compatibility)
   			frOrange: {
   				'50': '#fff7ed',

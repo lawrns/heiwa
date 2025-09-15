@@ -2,6 +2,17 @@
 
 /* Brand Colors - Enhanced Palette */
 :root {
+  /* Heiwa Orange - Admin accent */
+  --heiwa-orange-50: #fff7ed;
+  --heiwa-orange-100: #ffedd5;
+  --heiwa-orange-200: #fed7aa;
+  --heiwa-orange-300: #fdba74;
+  --heiwa-orange-400: #fb923c;
+  --heiwa-orange-500: #f97316;
+  --heiwa-orange-600: #ea580c;
+  --heiwa-orange-700: #c2410c;
+  --heiwa-orange-800: #9a3412;
+  --heiwa-orange-900: #7c2d12;
   /* Ocean Blue - Primary brand color */
   --ocean-blue-50: #eff6ff;
   --ocean-blue-100: #dbeafe;
@@ -110,6 +121,7 @@
   --gradient-ocean: linear-gradient(135deg, var(--ocean-blue-500) 0%, var(--ocean-blue-700) 100%);
   --gradient-surf: linear-gradient(135deg, var(--surf-teal-500) 0%, var(--surf-teal-700) 100%);
   --gradient-sand: linear-gradient(135deg, var(--sand-beige-500) 0%, var(--sand-beige-700) 100%);
+  --gradient-heiwa: linear-gradient(135deg, var(--heiwa-orange-500) 0%, var(--heiwa-orange-600) 100%);
 }
 
 /* Dark mode overrides */
