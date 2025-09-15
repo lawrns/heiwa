@@ -74,7 +74,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heiwaOrange-600"></div>
       </div>
     );
   }
@@ -118,11 +118,11 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-blue-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-bookings">
+          <Card className="bg-white border-gray-200 hover:border-heiwaOrange-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-bookings">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                  <CalendarIcon className="w-6 h-6 text-blue-600" />
+                <div className="p-2 bg-heiwaOrange-500/10 rounded-lg border border-heiwaOrange-500/20">
+                  <CalendarIcon className="w-6 h-6 text-heiwaOrange-600" />
                 </div>
                 <div>
                   <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-bookings-title">Bookings Management</CardTitle>
@@ -134,12 +134,12 @@ export default function AdminDashboard() {
                 View and manage all bookings for rooms and surf camps.
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-heiwaOrange-600 rounded-full"></div>
                 <span className="text-gray-700 text-sm">{stats.totalBookings} Active Bookings</span>
               </div>
               <Link href="/admin/bookings" className="mt-auto">
                 <Button
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  className="w-full bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white"
                   aria-label="Manage Bookings"
                   data-testid="manage-bookings-button"
                 >
@@ -155,11 +155,11 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-green-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-rooms">
+          <Card className="bg-white border-gray-200 hover:border-heiwaOrange-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-rooms">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-green-500/10 rounded-lg border border-green-500/20">
-                  <BedIcon className="w-6 h-6 text-green-600" />
+                <div className="p-2 bg-heiwaOrange-500/10 rounded-lg border border-heiwaOrange-500/20">
+                  <BedIcon className="w-6 h-6 text-heiwaOrange-600" />
                 </div>
                 <div>
                   <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-rooms-title">Rooms Management</CardTitle>
@@ -171,12 +171,12 @@ export default function AdminDashboard() {
                 Manage room inventory, pricing, and availability.
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-heiwaOrange-600 rounded-full"></div>
                 <span className="text-gray-700 text-sm">{stats.availableRooms} Available Rooms</span>
               </div>
               <Link href="/admin/rooms" className="mt-auto">
                 <Button
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  className="w-full bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white"
                   aria-label="Manage Rooms"
                   data-testid="manage-rooms-button"
                 >
@@ -192,11 +192,11 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-teal-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-surf-camps">
+          <Card className="bg-white border-gray-200 hover:border-heiwaOrange-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-surf-camps">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-teal-500/10 rounded-lg border border-teal-500/20">
-                  <Waves className="w-6 h-6 text-teal-600" />
+                <div className="p-2 bg-heiwaOrange-500/10 rounded-lg border border-heiwaOrange-500/20">
+                  <Waves className="w-6 h-6 text-heiwaOrange-600" />
                 </div>
                 <div>
                   <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-surf-camps-title">Surf Camps</CardTitle>
@@ -208,12 +208,12 @@ export default function AdminDashboard() {
                 Create and manage surf camp sessions and schedules.
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-2 h-2 bg-teal-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-heiwaOrange-600 rounded-full"></div>
                 <span className="text-gray-700 text-sm">{stats.activeSurfCamps} Active Camps</span>
               </div>
               <Link href="/admin/surfcamps" className="mt-auto">
                 <Button
-                  className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                  className="w-full bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white"
                   aria-label="Manage Surf Camps"
                   data-testid="manage-surf-camps-button"
                 >
@@ -229,11 +229,11 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-purple-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-clients">
+          <Card className="bg-white border-gray-200 hover:border-heiwaOrange-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-clients">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                  <UsersIcon className="w-6 h-6 text-purple-600" />
+                <div className="p-2 bg-heiwaOrange-500/10 rounded-lg border border-heiwaOrange-500/20">
+                  <UsersIcon className="w-6 h-6 text-heiwaOrange-600" />
                 </div>
                 <div>
                   <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-clients-title">Clients</CardTitle>
@@ -245,12 +245,12 @@ export default function AdminDashboard() {
                 View and manage client information and history.
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-heiwaOrange-600 rounded-full"></div>
                 <span className="text-gray-700 text-sm">{stats.totalClients} Total Clients</span>
               </div>
               <Link href="/admin/clients" className="mt-auto">
                 <Button
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                  className="w-full bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white"
                   aria-label="Manage Clients"
                   data-testid="manage-clients-button"
                 >
@@ -266,11 +266,11 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-orange-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-calendar">
+          <Card className="bg-white border-gray-200 hover:border-heiwaOrange-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-calendar">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-orange-500/10 rounded-lg border border-orange-500/20">
-                  <Calendar className="w-6 h-6 text-orange-600" />
+                <div className="p-2 bg-heiwaOrange-500/10 rounded-lg border border-heiwaOrange-500/20">
+                  <Calendar className="w-6 h-6 text-heiwaOrange-600" />
                 </div>
                 <div>
                   <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-calendar-title">Calendar</CardTitle>
@@ -282,12 +282,12 @@ export default function AdminDashboard() {
                 View booking calendar and manage schedules.
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-heiwaOrange-600 rounded-full"></div>
                 <span className="text-gray-700 text-sm">~ 15 Events This Week</span>
               </div>
               <Link href="/admin/calendar" className="mt-auto">
                 <Button
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                  className="w-full bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white"
                   aria-label="View Calendar"
                   data-testid="view-calendar-button"
                 >
@@ -303,11 +303,11 @@ export default function AdminDashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <Card className="bg-white border-gray-200 hover:border-gray-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-analytics">
+          <Card className="bg-white border-gray-200 hover:border-heiwaOrange-500/50 transition-colors h-full flex flex-col" data-testid="dashboard-card-analytics">
             <CardHeader className="pb-3">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-gray-500/10 rounded-lg border border-gray-500/20">
-                  <BarChart3Icon className="w-6 h-6 text-gray-600" />
+                <div className="p-2 bg-heiwaOrange-500/10 rounded-lg border border-heiwaOrange-500/20">
+                  <BarChart3Icon className="w-6 h-6 text-heiwaOrange-600" />
                 </div>
                 <div>
                   <CardTitle className="text-gray-900 text-lg" data-testid="dashboard-card-analytics-title">Analytics</CardTitle>
@@ -319,7 +319,7 @@ export default function AdminDashboard() {
                 View booking statistics and revenue reports.
               </CardDescription>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+                <div className="w-2 h-2 bg-heiwaOrange-600 rounded-full"></div>
                 <span className="text-gray-700 text-sm">~ 80% Occupancy Rate</span>
               </div>
               <div className="mb-4">
@@ -327,7 +327,7 @@ export default function AdminDashboard() {
               </div>
               <Link href="/admin/analytics" className="mt-auto">
                 <Button
-                  className="w-full bg-gray-600 hover:bg-gray-700 text-white"
+                  className="w-full bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white"
                   aria-label="View Analytics"
                   data-testid="view-analytics-button"
                 >
