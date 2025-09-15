@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Bed, Users, Star, ArrowRight } from 'lucide-react';
 import { BookingState, Room } from '../types';
 import { useRooms } from '../hooks/useRooms';
+import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
 
 interface SurfWeekRoomSelectionProps {
   state: BookingState;
@@ -33,6 +34,12 @@ const transformRoomForSurfWeek = (room: Room) => {
 export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionProps) {
   const [selectedRoom, setSelectedRoom] = useState<string | null>(state.selectedSurfWeekRoom);
 
+  // Image gallery state
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [galleryRoomName, setGalleryRoomName] = useState('');
+  const [galleryRoom, setGalleryRoom] = useState<any>(null);
+
   // Fetch real room data (no date filtering needed for surf weeks)
   const { rooms, loading, error } = useRooms({
     checkIn: null,
@@ -49,6 +56,15 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
       if (a.type !== 'dorm' && b.type === 'dorm') return 1;
       return a.name.localeCompare(b.name);
     });
+
+  // Open image gallery
+  const openGallery = (room: any) => {
+    const originalRoom = rooms.find(r => r.id === room.id);
+    setGalleryImages(originalRoom?.images || []);
+    setGalleryRoomName(room.name);
+    setGalleryRoom(originalRoom);
+    setGalleryOpen(true);
+  };
 
   // Show loading state
   if (loading) {
@@ -145,14 +161,11 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
               <div className="flex items-start gap-4 mb-4">
                 {/* Room Thumbnail */}
                 <div className="flex-shrink-0">
-                  <img
-                    src={room.image}
-                    alt={room.name}
-                    className="w-20 h-20 object-cover rounded-lg border border-gray-200"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIGZpbGw9IiNGM0Y0RjYiLz48cGF0aCBkPSJNMjQgMzJMMzIgMjRMMzYgMjhMNDggMTZMNTYgMjRWNDhIMjRWMzJaIiBmaWxsPSIjOUNBM0FGIi8+PC9zdmc+';
-                    }}
+                  <RoomHeroImage
+                    image={room.image}
+                    roomName={room.name}
+                    onClick={() => openGallery(room)}
+                    className="w-20 h-20"
                   />
                 </div>
 
@@ -206,7 +219,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                 </div>
               </div>
 
-              {/* Room Details */}
+              {/* Room Details and View Photos */}
               <div className="flex items-center justify-between text-sm text-gray-600">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
@@ -221,13 +234,31 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                   )}
                 </div>
 
-                {/* Selection Indicator */}
-                {isSelected && (
-                  <div className="flex items-center gap-2 text-orange-600 font-medium">
-                    <span>Selected</span>
-                    <ArrowRight size={16} />
-                  </div>
-                )}
+                <div className="flex items-center gap-3">
+                  {/* View Photos Button */}
+                  {(() => {
+                    const originalRoom = rooms.find(r => r.id === room.id);
+                    return originalRoom?.images && originalRoom.images.length > 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openGallery(room);
+                        }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
+                      >
+                        📸 View {originalRoom.images.length} Photo{originalRoom.images.length > 1 ? 's' : ''}
+                      </button>
+                    );
+                  })()}
+
+                  {/* Selection Indicator */}
+                  {isSelected && (
+                    <div className="flex items-center gap-2 text-orange-600 font-medium">
+                      <span>Selected</span>
+                      <ArrowRight size={16} />
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Selection Border Effect */}
@@ -273,6 +304,19 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           Private rooms can be upgraded at any time during your stay.
         </p>
       </div>
+
+      {/* Room Image Gallery Modal */}
+      <RoomImageGallery
+        images={galleryImages}
+        roomName={galleryRoomName}
+        roomDescription={galleryRoom?.description}
+        roomAmenities={galleryRoom?.amenities}
+        roomType={galleryRoom?.type}
+        maxOccupancy={galleryRoom?.maxOccupancy}
+        pricePerNight={galleryRoom?.pricePerNight}
+        isOpen={galleryOpen}
+        onClose={() => setGalleryOpen(false)}
+      />
     </div>
   );
 }

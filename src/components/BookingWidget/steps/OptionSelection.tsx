@@ -313,7 +313,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
       {/* Options Grid */}
       {state.experienceType === 'surf-week' ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {options.map((w: any, index: number) => {
             const isSelected = selectedOption === w.id;
             const from = typeof w.priceFrom === 'number' ? w.priceFrom : w.price;
@@ -336,29 +336,107 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 key={w.id}
                 data-testid="surf-week-row"
                 onClick={() => handleOptionSelect(w.id)}
-                className={`w-full flex items-center justify-between p-4 rounded-xl border-2 bg-white text-left transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50 relative
+                className={`w-full p-6 rounded-xl border-2 bg-white text-left transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50 relative
                   ${isSelected ? 'border-orange-500 bg-orange-50 shadow-md ring-2 ring-orange-500/30' : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50/50'}
                   ${isFullyBooked ? 'opacity-60 cursor-not-allowed' : ''}`}
                 style={{ animationDelay: `${index * 80}ms` }}
                 disabled={isFullyBooked}
               >
-                <div className="min-w-[140px]" data-testid="surf-week-dates">
-                  <div className="text-lg font-bold text-gray-900">{dateText}</div>
-                </div>
-                <div className="flex-1 px-4">
-                  <div className="text-orange-500 font-extrabold uppercase tracking-wide text-sm" data-testid="surf-week-title">{w.name}</div>
-                  <div className={`text-xs mt-0.5 ${isFullyBooked ? 'text-red-500 font-medium' : 'text-gray-500'}`} data-testid="surf-week-occupancy">
-                    {occupancyText}
+                <div className="flex gap-6">
+                  {/* Surf Week Hero Image */}
+                  <div className="flex-shrink-0">
+                    {w.images && w.images.length > 0 ? (
+                      <RoomHeroImage
+                        image={w.images[0]}
+                        roomName={w.name}
+                        onClick={() => openGallery(w)}
+                        className="w-32 h-24"
+                      />
+                    ) : (
+                      <div className="w-32 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                        <div className="text-white text-2xl font-bold">🏄‍♂️</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 space-y-3">
+                    {/* Title and Price */}
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="text-lg font-bold text-gray-900">{dateText}</div>
+                        <div className="text-orange-500 font-extrabold uppercase tracking-wide text-sm mt-1" data-testid="surf-week-title">{w.name}</div>
+                        <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                          {w.description}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-orange-600">
+                          {`from €${Math.round(from)}`}
+                        </div>
+                        <div className="text-xs text-gray-500">per person</div>
+                      </div>
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <Users size={14} />
+                        <span>Up to {w.maxParticipants} participants</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Star size={14} />
+                        <span className="capitalize">{w.level} level</span>
+                      </div>
+                    </div>
+
+                    {/* Includes */}
+                    {w.includes && w.includes.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {w.includes.slice(0, 3).map((include: string, index: number) => (
+                          <span
+                            key={index}
+                            className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full"
+                          >
+                            <Check size={10} />
+                            {include}
+                          </span>
+                        ))}
+                        {w.includes.length > 3 && (
+                          <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full">
+                            +{w.includes.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Occupancy and View Photos */}
+                    <div className="flex items-center justify-between">
+                      <div className={`text-xs ${isFullyBooked ? 'text-red-500 font-medium' : 'text-gray-500'}`} data-testid="surf-week-occupancy">
+                        {occupancyText}
+                      </div>
+
+                      {/* View Photos Button */}
+                      {w.images && w.images.length > 0 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openGallery(w);
+                          }}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
+                        >
+                          📸 View {w.images.length} Photo{w.images.length > 1 ? 's' : ''}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="shrink-0" data-testid="surf-week-price">
-                  <span className={`inline-block rounded-full px-4 py-2 font-semibold shadow-sm ${isFullyBooked ? 'bg-gray-400 text-gray-200' : 'bg-orange-500 text-white'}`}>
-                    {`from €${Math.round(from)}`}
-                  </span>
-                </div>
+
+                {/* Selection Indicator */}
                 {isSelected && (
-                  <div className="absolute top-2 right-2">
+                  <div className="mt-4 flex items-center gap-2 text-orange-600">
                     <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                    <span className="text-sm font-medium">Selected</span>
                   </div>
                 )}
               </button>
