@@ -182,14 +182,37 @@ Plugin URL: ${wpConfig.pluginUrl}`}
           box-sizing: border-box;
         }
         
-        /* Override WordPress theme styles that might interfere */
-        .heiwa-react-widget-container button {
+        /* Override WordPress theme styles that might interfere - scoped to WP native elements only */
+        .heiwa-react-widget-container .wp-block-button .wp-block-button__link,
+        .heiwa-react-widget-container .wp-element-button,
+        .heiwa-react-widget-container input[type="submit"]:not(.heiwa-allow-styling),
+        .heiwa-react-widget-container input[type="button"]:not(.heiwa-allow-styling) {
           background: none;
           border: none;
           padding: 0;
           font: inherit;
           cursor: pointer;
           outline: inherit;
+        }
+
+        /* Ensure React component buttons retain their Tailwind styling */
+        .heiwa-react-widget-container button.bg-gradient-to-r,
+        .heiwa-react-widget-container button[class*="border-"],
+        .heiwa-react-widget-container button[class*="p-"],
+        .heiwa-react-widget-container button[class*="px-"],
+        .heiwa-react-widget-container button[class*="py-"] {
+          background: revert !important;
+          border: revert !important;
+          padding: revert !important;
+        }
+
+        /* Defensive orange gradient enforcement for brand consistency */
+        .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500 {
+          background-image: linear-gradient(to right, #f97316, #ea580c) !important;
+        }
+
+        .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500:hover {
+          background-image: linear-gradient(to right, #ea580c, #c2410c) !important;
         }
         
         /* Ensure proper z-index stacking */
