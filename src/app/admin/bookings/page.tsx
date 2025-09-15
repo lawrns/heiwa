@@ -67,19 +67,30 @@ export default function BookingsPage() {
       }
 
       if (data) {
-        const formattedBookings: BookingWithClients[] = data.map(booking => ({
-          id: booking.id,
-          clientIds: booking.client_ids || [],
-          items: booking.items || [],
-          totalAmount: booking.total_amount,
-          paymentStatus: booking.payment_status,
-          paymentMethod: booking.payment_method,
-          notes: booking.notes || '',
-          source: booking.source || 'dashboard',
-          createdAt: new Date(booking.created_at),
-          updatedAt: new Date(booking.updated_at),
-          clientNames: [] // Will be populated by fetching client names
-        }));
+        const formattedBookings: BookingWithClients[] = data.map(booking => {
+          // Debug logging for problematic bookings
+          if (!Array.isArray(booking.items)) {
+            console.warn('Booking with invalid items structure:', {
+              id: booking.id,
+              items: booking.items,
+              itemsType: typeof booking.items
+            });
+          }
+
+          return {
+            id: booking.id,
+            clientIds: booking.client_ids || [],
+            items: Array.isArray(booking.items) ? booking.items : [],
+            totalAmount: booking.total_amount,
+            paymentStatus: booking.payment_status,
+            paymentMethod: booking.payment_method,
+            notes: booking.notes || '',
+            source: booking.source || 'dashboard',
+            createdAt: new Date(booking.created_at),
+            updatedAt: new Date(booking.updated_at),
+            clientNames: [] // Will be populated by fetching client names
+          };
+        });
         setBookings(formattedBookings);
         setFilteredBookings(formattedBookings);
       }
@@ -361,11 +372,17 @@ export default function BookingsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">
-                        {booking.items.map((item, index) => (
-                          <div key={index} className="text-sm">
-                            {item.type} × {item.quantity}
+                        {Array.isArray(booking.items) ? (
+                          booking.items.map((item, index) => (
+                            <div key={index} className="text-sm">
+                              {item.type} × {item.quantity}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-sm text-gray-500">
+                            Invalid items data
                           </div>
-                        ))}
+                        )}
                       </div>
                     </TableCell>
                     <TableCell className="font-semibold">
