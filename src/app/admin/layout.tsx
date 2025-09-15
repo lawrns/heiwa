@@ -103,12 +103,12 @@ interface AdminLogoProps {
 function AdminLogo({ collapsed, className = "" }: AdminLogoProps) {
   return (
     <Link href="/admin" className={`flex items-center justify-center ${className}`}>
-      <div className={`relative ${collapsed ? 'w-8 h-8' : 'w-10 h-10'} flex-shrink-0`}>
+      <div className={`relative ${collapsed ? 'w-24 h-24' : 'w-30 h-30'} flex-shrink-0`}>
         <Image
           src="/wordpress-plugin/heiwa-booking-widget/assets/images/heiwalogo.webp"
           alt="Heiwa House Admin"
-          width={collapsed ? 32 : 40}
-          height={collapsed ? 32 : 40}
+          width={collapsed ? 96 : 120}
+          height={collapsed ? 96 : 120}
           className="object-contain filter brightness-0 invert"
           onError={(e) => {
             // Fallback to 'H' text if image fails to load
@@ -124,7 +124,7 @@ function AdminLogo({ collapsed, className = "" }: AdminLogoProps) {
         />
         {/* Fallback 'H' text */}
         <div className="logo-fallback absolute inset-0 hidden items-center justify-center">
-          <span className="text-white font-bold text-lg">H</span>
+          <span className="text-white font-bold text-4xl">H</span>
         </div>
       </div>
     </Link>
@@ -216,7 +216,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             h-screen md:overflow-hidden
           `}>
             {/* Sidebar header */}
-            <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-between h-16 px-4'} bg-gray-800 border-b border-gray-700`}>
+            <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-center h-20 px-4 relative'} bg-gray-800 border-b border-gray-700`}>
               {sidebarCollapsed ? (
                 <>
                   {/* Mobile menu button for collapsed state */}
@@ -242,27 +242,26 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </>
               ) : (
                 <>
-                  {/* Expanded layout - horizontal */}
-                  <Link href="/admin" className="flex items-center">
+                  {/* Expanded layout - centered logo */}
+                  <Link href="/admin" className="flex items-center justify-center w-full">
                     <AdminLogo collapsed={false} />
                   </Link>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                      className="hidden md:block text-white hover:text-gray-200 p-1 rounded transition-colors"
-                      title="Collapse sidebar"
-                      data-testid="sidebar-toggle"
-                    >
-                      <Bars3Icon className="h-5 w-5 transition-transform duration-200" />
-                    </button>
-                    <button
-                      onClick={() => setSidebarOpen(false)}
-                      className="md:hidden text-white hover:text-gray-200 p-1 rounded transition-colors"
-                      data-testid="sidebar-close-button"
-                    >
-                      <XMarkIcon className="h-6 w-6" />
-                    </button>
-                  </div>
+                  {/* Toggle button positioned absolutely in top-right corner */}
+                  <button
+                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    className="absolute top-2 right-2 hidden md:block text-white hover:text-gray-200 p-1 rounded transition-colors"
+                    title="Collapse sidebar"
+                    data-testid="sidebar-toggle"
+                  >
+                    <Bars3Icon className="h-5 w-5 transition-transform duration-200" />
+                  </button>
+                  <button
+                    onClick={() => setSidebarOpen(false)}
+                    className="absolute top-2 right-2 md:hidden text-white hover:text-gray-200 p-1 rounded transition-colors"
+                    data-testid="sidebar-close-button"
+                  >
+                    <XMarkIcon className="h-6 w-6" />
+                  </button>
                 </>
               )}
             </div>
