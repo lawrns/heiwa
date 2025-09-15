@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { Booking } from '@/lib/schemas';
 import { CreateBookingModal } from '@/components/admin/bookings/CreateBookingModal';
+import { ViewBookingModal } from '@/components/admin/bookings/ViewBookingModal';
 import { useRequireAdmin } from '@/hooks/useAuth';
 
 interface BookingWithClients extends Booking {
@@ -47,6 +48,7 @@ export default function BookingsPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<BookingWithClients | null>(null);
   const itemsPerPage = 10;
 
@@ -68,19 +70,34 @@ export default function BookingsPage() {
 
       if (data) {
         const formattedBookings: BookingWithClients[] = data.map(booking => {
-          // Debug logging for problematic bookings
-          if (!Array.isArray(booking.items)) {
-            console.warn('Booking with invalid items structure:', {
+          // Parse items if it's a JSON string (JSONB from Supabase)
+          let parsedItems = [];
+          try {
+            if (typeof booking.items === 'string') {
+              parsedItems = JSON.parse(booking.items);
+            } else if (Array.isArray(booking.items)) {
+              parsedItems = booking.items;
+            } else {
+              console.warn('Booking with invalid items structure:', {
+                id: booking.id,
+                items: booking.items,
+                itemsType: typeof booking.items
+              });
+              parsedItems = [];
+            }
+          } catch (error) {
+            console.error('Error parsing booking items JSON:', {
               id: booking.id,
               items: booking.items,
-              itemsType: typeof booking.items
+              error: error.message
             });
+            parsedItems = [];
           }
 
           return {
             id: booking.id,
             clientIds: booking.client_ids || [],
-            items: Array.isArray(booking.items) ? booking.items : [],
+            items: parsedItems,
             totalAmount: booking.total_amount,
             paymentStatus: booking.payment_status,
             paymentMethod: booking.payment_method,
@@ -398,7 +415,10 @@ export default function BookingsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setSelectedBooking(booking)}
+                          onClick={() => {
+                            setSelectedBooking(booking);
+                            setIsViewDialogOpen(true);
+                          }}
                           data-testid={`view-booking-${booking.id}`}
                         >
                           <Eye className="w-4 h-4" />
@@ -503,6 +523,16 @@ export default function BookingsPage() {
             position: 'top-right',
             autoClose: 4000,
           });
+        }}
+      />
+
+      {/* View Booking Modal */}
+      <ViewBookingModal
+        booking={selectedBooking}
+        isOpen={isViewDialogOpen}
+        onClose={() => {
+          setIsViewDialogOpen(false);
+          setSelectedBooking(null);
         }}
       />
     </div>
