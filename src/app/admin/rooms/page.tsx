@@ -530,12 +530,10 @@ export default function RoomsPage() {
                       <FormLabel>Room Images</FormLabel>
                       <FormControl>
                         <ImageUpload
-
-
-
                           value={field.value || []}
                           onChange={(urls) => field.onChange(urls)}
-                          storagePath={`rooms/${Date.now()}`}
+                          storagePath={`${Date.now()}`}
+                          bucketName="rooms"
                           maxFiles={10}
                         />
                       </FormControl>
@@ -930,7 +928,8 @@ export default function RoomsPage() {
                       <ImageUpload
                         value={field.value || []}
                         onChange={(urls) => field.onChange(urls)}
-                        storagePath={`rooms/${selectedRoom?.id || Date.now()}`}
+                        storagePath={`${selectedRoom?.id || Date.now()}`}
+                        bucketName="rooms"
                         maxFiles={10}
                       />
                     </FormControl>

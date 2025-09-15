@@ -16,6 +16,7 @@ interface ImageUploadProps {
   disabled?: boolean;
   className?: string;
   storagePath: string;
+  bucketName?: string;
 }
 
 interface UploadedImage extends UploadedFile {
@@ -29,7 +30,8 @@ export function ImageUpload({
   accept = 'image/*',
   disabled = false,
   className = '',
-  storagePath
+  storagePath,
+  bucketName = 'images'
 }: ImageUploadProps) {
   const [images, setImages] = useState<UploadedImage[]>(
     value.map(url => ({ url, path: '', name: '', size: 0, type: '' }))
@@ -64,6 +66,7 @@ export function ImageUpload({
       const uploadedFiles = await uploadFiles(
         files,
         storagePath,
+        bucketName,
         (fileIndex, progress) => {
           setUploadProgress(progress);
         },

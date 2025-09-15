@@ -40,6 +40,7 @@ export function validateFile(file: File): { valid: boolean; error?: string } {
 export async function uploadFile(
   file: File,
   storagePath: string,
+  bucketName: string = 'images',
   onProgress?: (progress: UploadProgress) => void
 ): Promise<UploadedFile> {
   const validation = validateFile(file);
@@ -56,7 +57,7 @@ export async function uploadFile(
   }
 
   const { data, error } = await supabase.storage
-    .from('images')
+    .from(bucketName)
     .upload(filePath, file);
 
   if (error) {
@@ -68,7 +69,7 @@ export async function uploadFile(
   }
 
   const { data: { publicUrl } } = supabase.storage
-    .from('images')
+    .from(bucketName)
     .getPublicUrl(filePath);
 
   return {
@@ -84,6 +85,7 @@ export async function uploadFile(
 export async function uploadFiles(
   files: File[],
   storagePath: string,
+  bucketName: string = 'images',
   onProgress?: (fileIndex: number, progress: UploadProgress) => void,
   onFileComplete?: (fileIndex: number, result: UploadedFile) => void
 ): Promise<UploadedFile[]> {
@@ -91,16 +93,17 @@ export async function uploadFiles(
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    
+
     try {
       const result = await uploadFile(
         file,
         storagePath,
+        bucketName,
         onProgress ? (progress) => onProgress(i, progress) : undefined
       );
-      
+
       results.push(result);
-      
+
       if (onFileComplete) {
         onFileComplete(i, result);
       }
@@ -114,9 +117,9 @@ export async function uploadFiles(
 }
 
 // Delete file
-export async function deleteFile(filePath: string): Promise<void> {
+export async function deleteFile(filePath: string, bucketName: string = 'images'): Promise<void> {
   const { error } = await supabase.storage
-    .from('images')
+    .from(bucketName)
     .remove([filePath]);
 
   if (error) {
@@ -125,9 +128,9 @@ export async function deleteFile(filePath: string): Promise<void> {
 }
 
 // Delete multiple files
-export async function deleteFiles(filePaths: string[]): Promise<void> {
+export async function deleteFiles(filePaths: string[], bucketName: string = 'images'): Promise<void> {
   const { error } = await supabase.storage
-    .from('images')
+    .from(bucketName)
     .remove(filePaths);
 
   if (error) {
@@ -139,28 +142,28 @@ export async function deleteFiles(filePaths: string[]): Promise<void> {
 export const storageUtils = {
   // Room images
   async uploadRoomImages(files: File[], roomId: string): Promise<UploadedFile[]> {
-    return uploadFiles(files, `rooms/${roomId}`);
+    return uploadFiles(files, `${roomId}`, 'rooms');
   },
 
   async deleteRoomImages(filePaths: string[]): Promise<void> {
-    return deleteFiles(filePaths);
+    return deleteFiles(filePaths, 'rooms');
   },
 
   // Surf camp images
   async uploadSurfCampImages(files: File[], campId: string): Promise<UploadedFile[]> {
-    return uploadFiles(files, `surf-camps/${campId}`);
+    return uploadFiles(files, `${campId}`, 'surf-camps');
   },
 
   async deleteSurfCampImages(filePaths: string[]): Promise<void> {
-    return deleteFiles(filePaths);
+    return deleteFiles(filePaths, 'surf-camps');
   },
 
   // Add-on images
   async uploadAddOnImages(files: File[], addOnId: string): Promise<UploadedFile[]> {
-    return uploadFiles(files, `add-ons/${addOnId}`);
+    return uploadFiles(files, `${addOnId}`, 'add-ons');
   },
 
   async deleteAddOnImages(filePaths: string[]): Promise<void> {
-    return deleteFiles(filePaths);
+    return deleteFiles(filePaths, 'add-ons');
   },
 };

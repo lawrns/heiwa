@@ -115,15 +115,15 @@ export default function AddOnsPage() {
 
     setUploadingImage(true);
     try {
-      const fileName = `addons/${Date.now()}_${file.name}`;
+      const fileName = `${Date.now()}_${file.name}`;
       const { error } = await supabase.storage
-        .from('images')
+        .from('add-ons')
         .upload(fileName, file);
 
       if (error) throw error;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('images')
+        .from('add-ons')
         .getPublicUrl(fileName);
 
       return publicUrl;
