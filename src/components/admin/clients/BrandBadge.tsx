@@ -7,7 +7,7 @@ interface BrandBadgeProps {
 }
 
 const brandStyles = {
-  'Heiwa House': 'bg-blue-100 text-blue-700 hover:bg-blue-200',
+  'Heiwa House': 'bg-heiwaOrange-100 text-heiwaOrange-700 hover:bg-heiwaOrange-200',
   'Freedom Routes': 'bg-orange-100 text-orange-700 hover:bg-orange-200',
 } as const;
 

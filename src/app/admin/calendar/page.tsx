@@ -80,7 +80,7 @@ interface CalendarEvent {
 const EventComponent = ({ event }: { event: CalendarEvent }) => {
   const getEventColor = () => {
     if (event.resource.type === 'surfCamp') {
-      return event.resource.category === 'FR' ? 'bg-orange-500' : 'bg-blue-500';
+      return event.resource.category === 'FR' ? 'bg-orange-500' : 'bg-heiwaOrange-500';
     }
     return 'bg-gray-500';
   };
@@ -554,7 +554,7 @@ export default function CalendarPage() {
           <span className="text-sm font-medium">Frenchman&apos;s Surf Camp</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 bg-blue-500 rounded"></div>
+          <div className="w-4 h-4 bg-heiwaOrange-500 rounded"></div>
           <span className="text-sm font-medium">Honolua Bay Surf Camp</span>
         </div>
         <div className="flex items-center space-x-2">
@@ -619,7 +619,7 @@ export default function CalendarPage() {
             <CardTitle className="text-lg">Total Events</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-blue-600">{calendarEvents.length}</div>
+            <div className="text-3xl font-bold text-heiwaOrange-600">{calendarEvents.length}</div>
           </CardContent>
         </Card>
 

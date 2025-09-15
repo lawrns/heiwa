@@ -161,7 +161,7 @@ export function ClientsToolbar({
         </div>
         <Button
           onClick={onAddClient}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          className="flex items-center gap-2 bg-heiwaOrange-600 hover:bg-heiwaOrange-700"
           aria-label="Add new client"
         >
           <Plus className="h-4 w-4" />

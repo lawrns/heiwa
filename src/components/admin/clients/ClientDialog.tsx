@@ -307,7 +307,7 @@ export function ClientDialog({
               <Button
                 type="submit"
                 disabled={isSaving}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-heiwaOrange-600 hover:bg-heiwaOrange-700"
               >
                 {isSaving ? 'Saving...' : isEdit ? 'Update Client' : 'Add Client'}
               </Button>

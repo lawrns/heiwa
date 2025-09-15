@@ -97,17 +97,17 @@ export default function SystemPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+            <Card className="bg-gradient-to-br from-heiwaOrange-50 to-heiwaOrange-100 border-heiwaOrange-200">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-blue-800">Active Admins</CardTitle>
-                  <UsersIcon className="w-4 h-4 text-blue-600" />
+                  <CardTitle className="text-sm font-medium text-heiwaOrange-800">Active Admins</CardTitle>
+                  <UsersIcon className="w-4 h-4 text-heiwaOrange-600" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-blue-900">3</div>
-                <div className="text-xs text-blue-600 mt-1">
-                  <Badge variant="secondary" className="bg-blue-200 text-blue-800">1 Superadmin</Badge>
+                <div className="text-2xl font-bold text-heiwaOrange-900">3</div>
+                <div className="text-xs text-heiwaOrange-600 mt-1">
+                  <Badge variant="secondary" className="bg-heiwaOrange-200 text-heiwaOrange-800">1 Superadmin</Badge>
                 </div>
               </CardContent>
             </Card>

@@ -50,7 +50,7 @@ export default function AnalyticsPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heiwaOrange-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading analytics dashboard...</p>
         </div>
       </div>
@@ -252,7 +252,7 @@ export default function AnalyticsPage() {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-xl text-gray-900 flex items-center">
-            <TrendingUpIcon className="w-5 h-5 text-blue-600 mr-2" />
+            <TrendingUpIcon className="w-5 h-5 text-heiwaOrange-600 mr-2" />
             Booking Trends
           </CardTitle>
           <CardDescription>

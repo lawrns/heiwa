@@ -31,11 +31,11 @@ export function BulkBar({
 
   return (
     <div className={cn(
-      'flex items-center justify-between p-4 bg-blue-50 border-b border-blue-200',
+      'flex items-center justify-between p-4 bg-heiwaOrange-50 border-b border-heiwaOrange-200',
       className
     )}>
       <div className="flex items-center gap-3">
-        <span className="text-sm font-medium text-blue-900">
+        <span className="text-sm font-medium text-heiwaOrange-900">
           {selectedCount} client{selectedCount !== 1 ? 's' : ''} selected
         </span>
 
@@ -45,7 +45,7 @@ export function BulkBar({
             size="sm"
             onClick={onArchiveSelected}
             disabled={isArchiving}
-            className="flex items-center gap-2 border-blue-300 text-blue-700 hover:bg-blue-100"
+            className="flex items-center gap-2 border-heiwaOrange-300 text-heiwaOrange-700 hover:bg-heiwaOrange-100"
           >
             <Archive className="h-4 w-4" />
             {isArchiving ? 'Archiving...' : 'Archive'}
@@ -56,7 +56,7 @@ export function BulkBar({
             size="sm"
             onClick={onExportSelected}
             disabled={isExporting}
-            className="flex items-center gap-2 border-blue-300 text-blue-700 hover:bg-blue-100"
+            className="flex items-center gap-2 border-heiwaOrange-300 text-heiwaOrange-700 hover:bg-heiwaOrange-100"
           >
             <Download className="h-4 w-4" />
             {isExporting ? 'Exporting...' : 'Export'}
@@ -79,7 +79,7 @@ export function BulkBar({
         variant="ghost"
         size="sm"
         onClick={onClearSelection}
-        className="flex items-center gap-2 text-blue-700 hover:bg-blue-100"
+        className="flex items-center gap-2 text-heiwaOrange-700 hover:bg-heiwaOrange-100"
         aria-label="Clear selection"
       >
         <X className="h-4 w-4" />

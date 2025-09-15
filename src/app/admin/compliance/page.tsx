@@ -67,17 +67,17 @@ export default function CompliancePage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-gradient-to-br from-heiwaOrange-50 to-heiwaOrange-100 border-heiwaOrange-200">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-medium text-blue-800">Active Consents</CardTitle>
-              <UserCheckIcon className="w-4 h-4 text-blue-600" />
+              <CardTitle className="text-sm font-medium text-heiwaOrange-800">Active Consents</CardTitle>
+              <UserCheckIcon className="w-4 h-4 text-heiwaOrange-600" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-900">89%</div>
-            <p className="text-xs text-blue-600 mt-1">
-              <Badge variant="secondary" className="bg-blue-200 text-blue-800">127/142 clients</Badge>
+            <div className="text-2xl font-bold text-heiwaOrange-900">89%</div>
+            <p className="text-xs text-heiwaOrange-600 mt-1">
+              <Badge variant="secondary" className="bg-heiwaOrange-200 text-heiwaOrange-800">127/142 clients</Badge>
             </p>
           </CardContent>
         </Card>
@@ -174,9 +174,9 @@ export default function CompliancePage() {
                   </div>
                 </div>
 
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <h3 className="font-medium text-blue-900 mb-2">Admin Confirmations</h3>
-                  <p className="text-sm text-blue-700 mb-2">
+                <div className="bg-heiwaOrange-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-heiwaOrange-900 mb-2">Admin Confirmations</h3>
+                  <p className="text-sm text-heiwaOrange-700 mb-2">
                     All administrators must confirm they&apos;ve read and understood the latest privacy policy.
                   </p>
                   <div className="flex items-center space-x-4">

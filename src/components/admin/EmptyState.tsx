@@ -90,7 +90,7 @@ export function LoadingState({ message = 'Loading clients...' }: { message?: str
   return (
     <EmptyState
       icon={() => (
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-blue-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-heiwaOrange-600" />
       )}
       title=""
       description={message}

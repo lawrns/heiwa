@@ -82,7 +82,7 @@ const DraggableParticipant: React.FC<DraggableParticipantProps> = memo(({ partic
           <p className="text-sm font-medium truncate">{participant.name}</p>
           <p className="text-xs text-gray-500 truncate">{participant.email}</p>
         </div>
-        <Badge variant="outline" className="text-xs">
+        <Badge className="text-xs bg-heiwaOrange-600 text-white hover:bg-heiwaOrange-700">
           {participant.surfLevel}
         </Badge>
       </div>
@@ -141,7 +141,7 @@ const DroppableRoom: React.FC<DroppableRoomProps> = memo(({
         <div className="flex items-center space-x-2">
           <MapPinIcon className="w-5 h-5 text-gray-600" />
           <h3 className="font-medium">{room.name}</h3>
-          <Badge variant={room.type === 'private' ? 'default' : 'secondary'}>
+          <Badge className="bg-heiwaOrange-600 text-white hover:bg-heiwaOrange-700">
             {room.type}
           </Badge>
         </div>
@@ -352,7 +352,7 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heiwaOrange-600"></div>
       </div>
     )
   }
@@ -387,7 +387,7 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
-                <UsersIcon className="w-5 h-5 text-blue-600" />
+                <UsersIcon className="w-5 h-5 text-heiwaOrange-600" />
                 <div>
                   <p className="text-2xl font-bold" data-testid="total-participants-1">{participants.length}</p>
                   <p className="text-sm text-gray-600">Total Participants</p>

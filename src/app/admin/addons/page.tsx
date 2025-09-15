@@ -249,7 +249,7 @@ export default function AddOnsPage() {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'equipment': return 'bg-blue-100 text-blue-800';
+      case 'equipment': return 'bg-heiwaOrange-100 text-heiwaOrange-800';
       case 'service': return 'bg-green-100 text-green-800';
       case 'food': return 'bg-orange-100 text-orange-800';
       case 'transport': return 'bg-purple-100 text-purple-800';

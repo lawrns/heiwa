@@ -94,7 +94,7 @@ export default function AdminAssignmentsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-heiwaOrange-600"></div>
       </div>
     )
   }
@@ -182,7 +182,7 @@ export default function AdminAssignmentsPage() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <CalendarIcon className="w-8 h-8 text-blue-600" />
+              <CalendarIcon className="w-8 h-8 text-heiwaOrange-600" />
               <div>
                 <p className="text-2xl font-bold">3</p>
                 <p className="text-sm text-gray-600">Active Weeks</p>

@@ -55,7 +55,7 @@ class ErrorBoundary extends Component<
             <div className="space-x-4">
               <button
                 onClick={() => window.location.reload()}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                className="bg-heiwaOrange-600 text-white px-4 py-2 rounded hover:bg-heiwaOrange-700"
               >
                 Try again
               </button>
@@ -103,12 +103,12 @@ interface AdminLogoProps {
 function AdminLogo({ collapsed, className = "" }: AdminLogoProps) {
   return (
     <Link href="/admin" className={`flex items-center justify-center ${className}`}>
-      <div className={`relative ${collapsed ? 'w-24 h-24' : 'w-30 h-30'} flex-shrink-0`}>
+      <div className={`relative ${collapsed ? 'w-36 h-36' : 'w-45 h-45'} flex-shrink-0`}>
         <Image
           src="/wordpress-plugin/heiwa-booking-widget/assets/images/heiwalogo.webp"
           alt="Heiwa House Admin"
-          width={collapsed ? 96 : 120}
-          height={collapsed ? 96 : 120}
+          width={collapsed ? 144 : 180}
+          height={collapsed ? 144 : 180}
           className="object-contain filter brightness-0 invert"
           onError={(e) => {
             // Fallback to 'H' text if image fails to load
@@ -124,7 +124,7 @@ function AdminLogo({ collapsed, className = "" }: AdminLogoProps) {
         />
         {/* Fallback 'H' text */}
         <div className="logo-fallback absolute inset-0 hidden items-center justify-center">
-          <span className="text-white font-bold text-4xl">H</span>
+          <span className="text-white font-bold text-6xl">H</span>
         </div>
       </div>
     </Link>
@@ -216,7 +216,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             h-screen md:overflow-hidden
           `}>
             {/* Sidebar header */}
-            <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-center h-20 px-4 relative'} bg-gray-800 border-b border-gray-700`}>
+            <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-center h-24 px-4 relative'} bg-gray-800 border-b border-gray-700`}>
               {sidebarCollapsed ? (
                 <>
                   {/* Mobile menu button for collapsed state */}

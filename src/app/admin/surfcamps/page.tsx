@@ -156,7 +156,7 @@ const DraggableRoom: React.FC<DraggableRoomProps> = ({ room, isAssigned }) => {
     <div
       ref={drag as any}
       className={`p-2 mb-2 border rounded cursor-move transition-colors ${
-        isAssigned ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
+        isAssigned ? 'bg-heiwaOrange-50 border-heiwaOrange-200' : 'bg-gray-50 border-gray-200'
       } ${isDragging ? 'opacity-50' : 'opacity-100'}`}
     >
       <div className="flex items-center space-x-2">
@@ -187,7 +187,7 @@ const DropZone: React.FC<DropZoneProps> = ({ onDrop, children, className = '' })
   return (
     <div
       ref={drop as any}
-      className={`${className} ${isOver ? 'bg-blue-50 border-blue-300' : ''}`}
+      className={`${className} ${isOver ? 'bg-heiwaOrange-50 border-heiwaOrange-300' : ''}`}
     >
       {children}
     </div>
@@ -861,7 +861,7 @@ export default function SurfCampsPage() {
                             <div className="w-full bg-gray-200 rounded-full h-2">
                               <motion.div
                                 className={`h-2 rounded-full ${
-                                  camp.category === 'FR' ? 'bg-orange-500' : 'bg-blue-500'
+                                  camp.category === 'FR' ? 'bg-orange-500' : 'bg-heiwaOrange-500'
                                 }`}
                                 initial={{ width: 0 }}
                                 animate={{ width: `${Math.min(occupancyPercentage, 100)}%` }}
@@ -1003,7 +1003,7 @@ export default function SurfCampsPage() {
                             return room ? (
                               <div
                                 key={roomId}
-                                className="flex items-center justify-between p-2 bg-blue-50 border border-blue-200 rounded"
+                                className="flex items-center justify-between p-2 bg-heiwaOrange-50 border border-heiwaOrange-200 rounded"
                               >
                                 <div className="flex items-center space-x-2">
                                   <MapPin className="w-4 h-4" />

@@ -99,8 +99,8 @@ export const YearView: React.FC<YearViewProps> & {
                     type="button"
                     className={[
                       'relative h-10 rounded-md border text-xs flex items-center justify-center transition-colors',
-                      inMonth ? 'bg-white hover:bg-blue-50' : 'bg-gray-50 text-gray-400',
-                      has ? 'border-blue-300' : 'border-gray-200',
+                      inMonth ? 'bg-white hover:bg-heiwaOrange-50' : 'bg-gray-50 text-gray-400',
+                      has ? 'border-heiwaOrange-300' : 'border-gray-200',
                     ].join(' ')}
                     onClick={() => onSelectSlot?.({ start: startOfDay(day), end: new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1), action: 'click' })}
                     aria-label={`${day.toDateString()}${has ? `, ${todaysEvents.length} events` : ''}`}
@@ -115,7 +115,7 @@ export const YearView: React.FC<YearViewProps> & {
                             className={[
                               'inline-block w-2.5 h-2.5 rounded-full border border-white',
                               e.resource?.type === 'surfCamp'
-                                ? (e.resource?.category === 'FR' ? 'bg-orange-500' : 'bg-blue-500')
+                                ? (e.resource?.category === 'FR' ? 'bg-orange-500' : 'bg-heiwaOrange-500')
                                 : e.resource?.type === 'booking'
                                 ? 'bg-gray-500'
                                 : 'bg-green-500',

@@ -306,7 +306,7 @@ export function AddEventModal({ isOpen, onClose, onSuccess, selectedDate }: AddE
                   <Card
                     className={cn(
                       "cursor-pointer transition-all hover:shadow-md",
-                      eventType === 'custom' ? "ring-2 ring-blue-500 bg-blue-50" : ""
+                      eventType === 'custom' ? "ring-2 ring-heiwaOrange-500 bg-heiwaOrange-50" : ""
                     )}
                     onClick={() => setEventType('custom')}
                   >
@@ -569,8 +569,8 @@ export function AddEventModal({ isOpen, onClose, onSuccess, selectedDate }: AddE
               )}
 
               {eventType === 'custom' && (
-                <div className="space-y-4 p-4 bg-blue-50 rounded-lg border">
-                  <h3 className="font-medium text-blue-800">Custom Event Details</h3>
+                <div className="space-y-4 p-4 bg-heiwaOrange-50 rounded-lg border">
+                  <h3 className="font-medium text-heiwaOrange-800">Custom Event Details</h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField

@@ -475,7 +475,7 @@ export default function AdminClientsPage() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold text-gray-900">Clients</h1>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-heiwaOrange-100 text-heiwaOrange-800">
               {statistics.total}
             </span>
           </div>
@@ -589,10 +589,10 @@ export default function AdminClientsPage() {
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">Total Clients</CardTitle>
-            <Users className="h-4 w-4 text-blue-600" />
+            <Users className="h-4 w-4 text-heiwaOrange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{statistics.total}</div>
+            <div className="text-2xl font-bold text-heiwaOrange-600">{statistics.total}</div>
             <p className="text-xs text-gray-500 mt-1">Registered clients</p>
           </CardContent>
         </Card>
