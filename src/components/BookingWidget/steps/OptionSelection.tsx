@@ -3,6 +3,7 @@ import { MapPin, Users, Star, Check, Clock, Wifi, Car, Utensils, Calendar, Minus
 import { BookingState, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
+import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
 
 interface OptionSelectionProps {
   state: BookingState;
@@ -23,6 +24,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   });
   const { surfCamps, loading: campsLoading, error: campsError } = useSurfCamps();
   const [selectedOption, setSelectedOption] = useState<string | null>(state.selectedOption);
+
+  // Image gallery state
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [galleryRoomName, setGalleryRoomName] = useState('');
 
   // Local state for room booking dates
   const [checkInDate, setCheckInDate] = useState(
@@ -105,15 +111,21 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     actions.setGuests(newCount);
   };
 
-  // Check if a room can accommodate the current guest count
-  const canAccommodateGuests = (room: any) => {
-    return room.maxOccupancy >= state.guests;
+  // Open image gallery
+  const openGallery = (images: string[], roomName: string) => {
+    setGalleryImages(images);
+    setGalleryRoomName(roomName);
+    setGalleryOpen(true);
   };
 
-  // Get rooms that exceed capacity for warning display
+  // Enhanced room assignment: Remove capacity restrictions - all rooms show normally
+  const canAccommodateGuests = (room: any) => {
+    return true; // Always return true to show all rooms normally
+  };
+
+  // Enhanced room assignment: No capacity warnings needed
   const getRoomsExceedingCapacity = () => {
-    if (state.experienceType !== 'room') return [];
-    return (options as any[]).filter(room => !canAccommodateGuests(room));
+    return []; // Always return empty array to remove capacity warnings
   };
 
   const getAmenityIcon = (amenity: string) => {
@@ -295,26 +307,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         </div>
       )}
 
-      {/* Capacity Warning for Rooms */}
-      {state.experienceType === 'room' && getRoomsExceedingCapacity().length > 0 && (
-        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0">
-              <div className="w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">!</span>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium text-amber-800 mb-1">
-                Some rooms cannot accommodate {state.guests} guests
-              </h4>
-              <p className="text-sm text-amber-700">
-                Rooms that exceed capacity are disabled. Consider reducing guest count or selecting a larger room.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Enhanced room assignment: Removed capacity warnings - all rooms show normally */}
 
       {/* Options Grid */}
       {state.experienceType === 'surf-week' ? (
@@ -376,48 +369,44 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             const isSelected = selectedOption === option.id;
             const totalPrice = calculateTotalPrice(option);
             const amenities = option.amenities;
-            const canAccommodate = canAccommodateGuests(option);
-            const exceedsCapacity = !canAccommodate;
+            // Enhanced room assignment: All rooms are selectable regardless of capacity
+            const canAccommodate = true;
+            const exceedsCapacity = false;
 
             return (
               <button
                 key={option.id}
-                onClick={() => {
-                  if (canAccommodate) {
-                    handleOptionSelect(option.id);
-                  }
-                }}
-                disabled={exceedsCapacity}
+                onClick={() => handleOptionSelect(option.id)}
+                disabled={false}
                 className={`
                   w-full p-6 rounded-xl border-2 text-left
                   transition-all duration-300 ease-out
                   focus:outline-none focus:ring-4 focus:ring-orange-500/30
                   animate-in fade-in-0 slide-in-from-bottom-4
-                  ${exceedsCapacity
-                    ? 'border-red-300 bg-red-50 opacity-60 cursor-not-allowed'
-                    : isSelected
-                      ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
-                      : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1'
+                  ${isSelected
+                    ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
+                    : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1'
                   }
                 `}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="flex gap-6">
-                  {/* Image */}
+                  {/* Enhanced Hero Image */}
                   <div className="flex-shrink-0">
-                    <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                      {option.images && option.images.length > 0 ? (
-                        <img
-                          src={option.images[0]}
-                          alt={option.name}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      ) : (
+                    {option.images && option.images.length > 0 ? (
+                      <RoomHeroImage
+                        image={option.images[0]}
+                        roomName={option.name}
+                        onClick={() => openGallery(option.images, option.name)}
+                        className="w-32 h-24"
+                      />
+                    ) : (
+                      <div className="w-32 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
                         <div className="text-white text-2xl font-bold">
                           {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Content */}
@@ -450,14 +439,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     {/* Details */}
                     <div className="flex items-center gap-4 text-sm text-gray-600">
                       <>
-                        <div className={`flex items-center gap-1 ${exceedsCapacity ? 'text-red-600 font-medium' : ''}`}>
+                        <div className="flex items-center gap-1">
                           <Users size={14} />
                           <span>Up to {option.maxOccupancy} guests</span>
-                          {exceedsCapacity && (
-                            <span className="text-red-600 text-xs font-medium ml-1">
-                              (Exceeds capacity by {state.guests - option.maxOccupancy})
-                            </span>
-                          )}
                         </div>
                         <div className="flex items-center gap-1">
                           <MapPin size={14} />
@@ -484,6 +468,19 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                           </span>
                         )}
                       </div>
+                    )}
+
+                    {/* View Photos Button */}
+                    {option.images && option.images.length > 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openGallery(option.images, option.name);
+                        }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
+                      >
+                        📸 View {option.images.length} Photo{option.images.length > 1 ? 's' : ''}
+                      </button>
                     )}
                   </div>
                 </div>
@@ -519,6 +516,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           }
         </p>
       </div>
+
+      {/* Room Image Gallery Modal */}
+      <RoomImageGallery
+        images={galleryImages}
+        roomName={galleryRoomName}
+        isOpen={galleryOpen}
+        onClose={() => setGalleryOpen(false)}
+      />
     </div>
   );
 }

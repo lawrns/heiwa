@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Users, Bed, ArrowRight, Check } from 'lucide-react';
 import { BookingState, RoomAssignment as RoomAssignmentType } from '../types';
 import { useRooms } from '../hooks/useRooms';
+import { RoomImageGallery, RoomThumbnail } from '../components/RoomImageGallery';
 
 interface RoomAssignmentProps {
   state: BookingState;
@@ -20,6 +21,11 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
   });
 
   const [unassignedGuests, setUnassignedGuests] = useState<string[]>([]);
+
+  // Image gallery state
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [galleryRoomName, setGalleryRoomName] = useState('');
 
   // Initialize guest IDs
   useEffect(() => {
@@ -91,9 +97,24 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
     return assignment ? assignment.guestIds.length : 0;
   };
 
+  // Enhanced room assignment: Display actual guest names instead of "Guest 1, Guest 2"
   const getGuestName = (guestId: string) => {
-    const guestNumber = guestId.split('-')[1];
-    return `Guest ${guestNumber}`;
+    const guestNumber = parseInt(guestId.split('-')[1]) - 1; // Convert to 0-based index
+    const guest = state.guestDetails[guestNumber];
+
+    if (guest && guest.firstName && guest.lastName) {
+      return `${guest.firstName} ${guest.lastName}`;
+    }
+
+    // Fallback to generic name if guest details not available
+    return `Guest ${guestNumber + 1}`;
+  };
+
+  // Open image gallery
+  const openGallery = (images: string[], roomName: string) => {
+    setGalleryImages(images);
+    setGalleryRoomName(roomName);
+    setGalleryOpen(true);
   };
 
   if (loading) {
@@ -163,16 +184,36 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                 assignment ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'
               }`}
             >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900">{room.name}</h4>
-                  <p className="text-gray-600 text-sm">{room.description}</p>
+              <div className="flex items-start gap-4 mb-4">
+                {/* Room Thumbnail */}
+                <div className="flex-shrink-0">
+                  {room.images && room.images.length > 0 ? (
+                    <RoomThumbnail
+                      image={room.images[0]}
+                      roomName={room.name}
+                      onClick={() => openGallery(room.images, room.name)}
+                      className="w-20 h-15"
+                    />
+                  ) : (
+                    <div className="w-20 h-15 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-lg">🏠</span>
+                    </div>
+                  )}
                 </div>
-                <div className="text-right">
-                  <div className="text-lg font-bold text-gray-900">
-                    €{room.pricePerNight}
+
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900">{room.name}</h4>
+                      <p className="text-gray-600 text-sm">{room.description}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-gray-900">
+                        €{room.pricePerNight}
+                      </div>
+                      <div className="text-sm text-gray-600">per night</div>
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600">per night</div>
                 </div>
               </div>
 
@@ -251,6 +292,14 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
           <p>Unassigned: {unassignedGuests.length}</p>
         </div>
       </div>
+
+      {/* Room Image Gallery Modal */}
+      <RoomImageGallery
+        images={galleryImages}
+        roomName={galleryRoomName}
+        isOpen={galleryOpen}
+        onClose={() => setGalleryOpen(false)}
+      />
     </div>
   );
 }

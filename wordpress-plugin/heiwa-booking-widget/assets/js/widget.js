@@ -541,15 +541,15 @@
         updateCTAButton();
     }
 
-    // Step configuration
+    // Step configuration - Reordered to collect guest details before room assignment
     const STEPS = [
         { id: 'booking-type', title: 'Choose Booking Type', label: 'Type' },
         { id: 'surf-weeks', title: 'Available Surf Weeks', label: 'Surf Weeks' },
-        { id: 'assignment', title: 'Assign Rooms & Beds', label: 'Assignment' },
         { id: 'room-calendar', title: 'Select Dates & Room', label: 'Dates' },
         { id: 'room-selection', title: 'Choose Your Room', label: 'Room' },
         { id: 'dates_participants', title: 'Select Dates & Participants', label: 'Dates' },
         { id: 'form_addons', title: 'Your Details & Add-ons', label: 'Details' },
+        { id: 'assignment', title: 'Assign Rooms & Beds', label: 'Assignment' },
         { id: 'confirmation', title: 'Review & Confirm', label: 'Confirm' }
     ];
     // Display-step configuration to match React's 5-step flow
@@ -2781,8 +2781,33 @@
      * Render room picker grid
      */
     function renderRoomPicker() {
-        // Mock room data - in real implementation this would come from API
-        const rooms = [
+        // Use actual room data from API if available, otherwise fallback to enhanced mock data
+        let rooms = [];
+
+        if (availabilityData && availabilityData.available_rooms) {
+            // Transform API room data to include enhanced information
+            rooms = availabilityData.available_rooms.map(room => ({
+                id: room.id,
+                type: room.booking_type === 'perBed' ? 'dorm' : 'private',
+                capacity: room.capacity,
+                price: room.price_per_night,
+                name: room.name,
+                available: true,
+                occupancy: 0,
+                thumbnail: room.featured_image || '/wp-content/plugins/heiwa-booking-widget/assets/images/room-default.jpg',
+                images: room.gallery_images || [room.featured_image || '/wp-content/plugins/heiwa-booking-widget/assets/images/room-default.jpg'],
+                amenities: room.amenities || ['WiFi', 'Shared bathroom'],
+                specifications: {
+                    size: room.size || 'Standard',
+                    bed_configuration: room.bed_configuration || `${room.capacity} beds`,
+                    bathroom: room.bathroom_type || 'Shared',
+                    view: room.view || 'Garden view'
+                },
+                description_long: room.description || `Comfortable ${room.booking_type === 'perBed' ? 'dorm' : 'private'} room with modern amenities.`
+            }));
+        } else {
+            // Fallback to enhanced mock data
+            rooms = [
             {
                 id: 1,
                 type: 'private',
@@ -2790,7 +2815,21 @@
                 price: 150,
                 name: 'Private Room (2 beds)',
                 available: true,
-                occupancy: 0
+                occupancy: 0,
+                thumbnail: '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-2.jpg',
+                images: [
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-2-1.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-2-2.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-2-3.jpg'
+                ],
+                amenities: ['Private bathroom', 'Air conditioning', 'Ocean view', 'WiFi', 'Mini fridge'],
+                specifications: {
+                    size: '25 sqm',
+                    bed_configuration: '2 single beds',
+                    bathroom: 'Private',
+                    view: 'Ocean view'
+                },
+                description_long: 'Cozy private room with stunning ocean views and modern amenities. Perfect for couples or friends seeking comfort and privacy.'
             },
             {
                 id: 2,
@@ -2799,7 +2838,21 @@
                 price: 210,
                 name: 'Private Room (3 beds)',
                 available: true,
-                occupancy: 0
+                occupancy: 0,
+                thumbnail: '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-3.jpg',
+                images: [
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-3-1.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-3-2.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-3-3.jpg'
+                ],
+                amenities: ['Private bathroom', 'Air conditioning', 'Garden view', 'WiFi', 'Mini fridge', 'Balcony'],
+                specifications: {
+                    size: '35 sqm',
+                    bed_configuration: '1 double bed + 1 single bed',
+                    bathroom: 'Private',
+                    view: 'Garden view'
+                },
+                description_long: 'Spacious private room ideal for small groups or families. Features a comfortable layout with garden views and private balcony.'
             },
             {
                 id: 3,
@@ -2808,7 +2861,21 @@
                 price: 85,
                 name: 'Dorm Room (6 beds)',
                 available: true,
-                occupancy: 0
+                occupancy: 0,
+                thumbnail: '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-6.jpg',
+                images: [
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-6-1.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-6-2.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-6-3.jpg'
+                ],
+                amenities: ['Shared bathroom', 'Air conditioning', 'WiFi', 'Lockers', 'Common area'],
+                specifications: {
+                    size: '40 sqm',
+                    bed_configuration: '6 bunk beds',
+                    bathroom: 'Shared',
+                    view: 'Courtyard view'
+                },
+                description_long: 'Social dorm room perfect for meeting fellow travelers. Clean, comfortable, and well-ventilated with secure lockers for each guest.'
             },
             {
                 id: 4,
@@ -2817,12 +2884,35 @@
                 price: 75,
                 name: 'Dorm Room (8 beds)',
                 available: true,
-                occupancy: 0
+                occupancy: 0,
+                thumbnail: '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-8.jpg',
+                images: [
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-8-1.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-8-2.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-8-3.jpg'
+                ],
+                amenities: ['Shared bathroom', 'Air conditioning', 'WiFi', 'Lockers', 'Reading lights'],
+                specifications: {
+                    size: '50 sqm',
+                    bed_configuration: '8 bunk beds',
+                    bathroom: 'Shared',
+                    view: 'Garden view'
+                },
+                description_long: 'Large, airy dorm room with excellent ventilation and individual reading lights. Great for budget-conscious travelers who love the social atmosphere.'
             }
-        ];
+            ];
+        }
 
         return rooms.map(room => `
             <div class="heiwa-room-picker-card ${room.type}" data-room-id="${room.id}">
+                <div class="heiwa-room-thumbnail" data-room-id="${room.id}">
+                    <img src="${room.thumbnail}" alt="${room.name}"
+                         onerror="this.style.display='none';this.parentElement.classList.add('no-image');" />
+                    <div class="heiwa-room-thumbnail-overlay">
+                        <span class="heiwa-view-details-text">View Details</span>
+                    </div>
+                </div>
+
                 <div class="heiwa-room-picker-header">
                     <h5 class="heiwa-room-picker-name">${room.name}</h5>
                     <span class="heiwa-room-picker-type ${room.type}">${room.type}</span>
@@ -2843,12 +2933,250 @@
                 </div>
 
                 <div class="heiwa-room-picker-actions">
+                    <button class="heiwa-room-details-btn" data-room-id="${room.id}" data-action="view-details">
+                        View Details
+                    </button>
                     <button class="heiwa-room-assign-btn" data-room-id="${room.id}" data-action="assign">
                         Assign Here
                     </button>
                 </div>
             </div>
         `).join('');
+    }
+
+    /**
+     * Show room details modal
+     */
+    function showRoomDetailsModal(roomId) {
+        // Use actual room data from API if available, otherwise fallback to enhanced mock data
+        let rooms = [];
+
+        if (availabilityData && availabilityData.available_rooms) {
+            // Transform API room data to include enhanced information
+            rooms = availabilityData.available_rooms.map(room => ({
+                id: room.id,
+                type: room.booking_type === 'perBed' ? 'dorm' : 'private',
+                capacity: room.capacity,
+                price: room.price_per_night,
+                name: room.name,
+                available: true,
+                occupancy: 0,
+                thumbnail: room.featured_image || '/wp-content/plugins/heiwa-booking-widget/assets/images/room-default.jpg',
+                images: room.gallery_images || [room.featured_image || '/wp-content/plugins/heiwa-booking-widget/assets/images/room-default.jpg'],
+                amenities: room.amenities || ['WiFi', 'Shared bathroom'],
+                specifications: {
+                    size: room.size || 'Standard',
+                    bed_configuration: room.bed_configuration || `${room.capacity} beds`,
+                    bathroom: room.bathroom_type || 'Shared',
+                    view: room.view || 'Garden view'
+                },
+                description_long: room.description || `Comfortable ${room.booking_type === 'perBed' ? 'dorm' : 'private'} room with modern amenities.`
+            }));
+        } else {
+            // Fallback to enhanced mock data
+            rooms = [
+            {
+                id: 1,
+                type: 'private',
+                capacity: 2,
+                price: 150,
+                name: 'Private Room (2 beds)',
+                available: true,
+                occupancy: 0,
+                thumbnail: '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-2.jpg',
+                images: [
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-2-1.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-2-2.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-2-3.jpg'
+                ],
+                amenities: ['Private bathroom', 'Air conditioning', 'Ocean view', 'WiFi', 'Mini fridge'],
+                specifications: {
+                    size: '25 sqm',
+                    bed_configuration: '2 single beds',
+                    bathroom: 'Private',
+                    view: 'Ocean view'
+                },
+                description_long: 'Cozy private room with stunning ocean views and modern amenities. Perfect for couples or friends seeking comfort and privacy.'
+            },
+            {
+                id: 2,
+                type: 'private',
+                capacity: 3,
+                price: 210,
+                name: 'Private Room (3 beds)',
+                available: true,
+                occupancy: 0,
+                thumbnail: '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-3.jpg',
+                images: [
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-3-1.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-3-2.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-private-3-3.jpg'
+                ],
+                amenities: ['Private bathroom', 'Air conditioning', 'Garden view', 'WiFi', 'Mini fridge', 'Balcony'],
+                specifications: {
+                    size: '35 sqm',
+                    bed_configuration: '1 double bed + 1 single bed',
+                    bathroom: 'Private',
+                    view: 'Garden view'
+                },
+                description_long: 'Spacious private room ideal for small groups or families. Features a comfortable layout with garden views and private balcony.'
+            },
+            {
+                id: 3,
+                type: 'dorm',
+                capacity: 6,
+                price: 85,
+                name: 'Dorm Room (6 beds)',
+                available: true,
+                occupancy: 0,
+                thumbnail: '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-6.jpg',
+                images: [
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-6-1.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-6-2.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-6-3.jpg'
+                ],
+                amenities: ['Shared bathroom', 'Air conditioning', 'WiFi', 'Lockers', 'Common area'],
+                specifications: {
+                    size: '40 sqm',
+                    bed_configuration: '6 bunk beds',
+                    bathroom: 'Shared',
+                    view: 'Courtyard view'
+                },
+                description_long: 'Social dorm room perfect for meeting fellow travelers. Clean, comfortable, and well-ventilated with secure lockers for each guest.'
+            },
+            {
+                id: 4,
+                type: 'dorm',
+                capacity: 8,
+                price: 75,
+                name: 'Dorm Room (8 beds)',
+                available: true,
+                occupancy: 0,
+                thumbnail: '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-8.jpg',
+                images: [
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-8-1.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-8-2.jpg',
+                    '/wp-content/plugins/heiwa-booking-widget/assets/images/room-dorm-8-3.jpg'
+                ],
+                amenities: ['Shared bathroom', 'Air conditioning', 'WiFi', 'Lockers', 'Reading lights'],
+                specifications: {
+                    size: '50 sqm',
+                    bed_configuration: '8 bunk beds',
+                    bathroom: 'Shared',
+                    view: 'Garden view'
+                },
+                description_long: 'Large, airy dorm room with excellent ventilation and individual reading lights. Great for budget-conscious travelers who love the social atmosphere.'
+            }
+            ];
+        }
+
+        const room = rooms.find(r => r.id === parseInt(roomId));
+        if (!room) return;
+
+        const modalHTML = `
+            <div class="heiwa-room-details-modal" id="heiwa-room-modal">
+                <div class="heiwa-room-details-content">
+                    <div class="heiwa-room-modal-header">
+                        <h3 class="heiwa-room-modal-title">${room.name}</h3>
+                        <button class="heiwa-room-modal-close" aria-label="Close room details">
+                            ${getLucideIcon('x', 24)}
+                        </button>
+                    </div>
+
+                    <div class="heiwa-room-modal-body">
+                        <div class="heiwa-room-gallery">
+                            ${room.images.map(image => `
+                                <div class="heiwa-room-gallery-item">
+                                    <img src="${image}" alt="${room.name}"
+                                         onerror="this.parentElement.style.display='none';" />
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="heiwa-room-info-grid">
+                            <div class="heiwa-room-description">
+                                <h4>Description</h4>
+                                <p>${room.description_long}</p>
+                            </div>
+
+                            <div class="heiwa-room-specifications">
+                                <h4>Room Specifications</h4>
+                                <ul class="heiwa-spec-list">
+                                    <li><strong>Size:</strong> ${room.specifications.size}</li>
+                                    <li><strong>Beds:</strong> ${room.specifications.bed_configuration}</li>
+                                    <li><strong>Bathroom:</strong> ${room.specifications.bathroom}</li>
+                                    <li><strong>View:</strong> ${room.specifications.view}</li>
+                                    <li><strong>Capacity:</strong> Up to ${room.capacity} guests</li>
+                                </ul>
+                            </div>
+
+                            <div class="heiwa-room-amenities-full">
+                                <h4>Amenities</h4>
+                                <div class="heiwa-amenities-grid">
+                                    ${room.amenities.map(amenity => {
+                                        const amenityInfo = getAmenityIcon(amenity);
+                                        return `<div class="heiwa-amenity-item">
+                                            ${getLucideIcon(amenityInfo.icon, 16)}
+                                            <span>${amenityInfo.label}</span>
+                                        </div>`;
+                                    }).join('')}
+                                </div>
+                            </div>
+
+                            <div class="heiwa-room-pricing">
+                                <h4>Pricing</h4>
+                                <div class="heiwa-price-display">
+                                    <span class="heiwa-price-amount">${heiwaFmt.format(room.price)}</span>
+                                    <span class="heiwa-price-label">${room.type === 'private' ? 'per room per night' : 'per person per night'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="heiwa-room-modal-footer">
+                        <button class="heiwa-room-assign-btn-modal" data-room-id="${room.id}" data-action="assign">
+                            Assign to This Room
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Remove existing modal if any
+        $('#heiwa-room-modal').remove();
+
+        // Add modal to body
+        $('body').append(modalHTML);
+
+        // Show modal
+        $('#heiwa-room-modal').fadeIn(300);
+
+        // Prevent body scroll
+        $('body').addClass('heiwa-modal-open');
+
+        // Bind close events
+        $('.heiwa-room-modal-close, #heiwa-room-modal').on('click', function(e) {
+            if (e.target === this) {
+                closeRoomDetailsModal();
+            }
+        });
+
+        // Bind assign button
+        $('.heiwa-room-assign-btn-modal').on('click', function() {
+            const roomId = $(this).data('room-id');
+            closeRoomDetailsModal();
+            assignToRoom(roomId);
+        });
+    }
+
+    /**
+     * Close room details modal
+     */
+    function closeRoomDetailsModal() {
+        $('#heiwa-room-modal').fadeOut(300, function() {
+            $(this).remove();
+        });
+        $('body').removeClass('heiwa-modal-open');
     }
 
     /**
@@ -2867,6 +3195,20 @@
             e.stopPropagation();
             const roomId = $(this).data('room-id');
             assignToRoom(roomId);
+        });
+
+        // Room details button
+        $('.heiwa-room-details-btn').on('click', function(e) {
+            e.stopPropagation();
+            const roomId = $(this).data('room-id');
+            showRoomDetailsModal(roomId);
+        });
+
+        // Room thumbnail click
+        $('.heiwa-room-thumbnail').on('click', function(e) {
+            e.stopPropagation();
+            const roomId = $(this).data('room-id');
+            showRoomDetailsModal(roomId);
         });
     }
 
@@ -3227,7 +3569,7 @@
             // Update summary
             updateSummary();
 
-            // Auto-advance to next step
+            // Auto-advance to next step - now goes to guest details before assignment
             setTimeout(() => {
                 showStep('form_addons');
             }, 500);

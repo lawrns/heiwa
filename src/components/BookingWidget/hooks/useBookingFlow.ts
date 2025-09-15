@@ -123,17 +123,28 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
 export function useBookingFlow() {
   const [state, dispatch] = useReducer(bookingReducer, initialState);
 
-  // Dynamic step calculation based on booking type and guest count
+  // Enhanced room assignment: Reordered step flow to collect guest details before room assignment
   const getStepFlow = useCallback(() => {
     const baseSteps = ['experience', 'options'];
 
     if (state.experienceType === 'surf-week') {
       baseSteps.push('surf-week-room-selection');
-    } else if (state.experienceType === 'room' && state.guests > 1) {
-      baseSteps.push('room-assignment');
     }
 
-    baseSteps.push('add-ons', 'guest-details', 'review-pay');
+    // Enhanced room assignment: Always add guest-details step for room bookings
+    if (state.experienceType === 'room') {
+      baseSteps.push('guest-details');
+
+      // Only add room-assignment step if multiple guests
+      if (state.guests > 1) {
+        baseSteps.push('room-assignment');
+      }
+    } else if (state.experienceType === 'surf-week') {
+      // For surf weeks, keep guest-details after room selection
+      baseSteps.push('guest-details');
+    }
+
+    baseSteps.push('add-ons', 'review-pay');
     return baseSteps;
   }, [state.experienceType, state.guests]);
 

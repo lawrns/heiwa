@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Room Assignment Test - Heiwa Booking Widget</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        .test-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .test-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .test-section {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #1e293b;
+            font-size: 1.5rem;
+            border-bottom: 3px solid #f97316;
+            padding-bottom: 10px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+        .feature-card h4 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+        .feature-card ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .widget-trigger-btn {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .widget-trigger-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+        }
+        .status-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 16px;
+        }
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-error {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .status-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .test-flow {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-flow h4 {
+            color: #f97316;
+            margin-top: 0;
+        }
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .flow-step-number {
+            background: #f97316;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 16px;
+        }
+        .api-mock {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+        .highlight {
+            background: rgba(249, 115, 22, 0.1);
+            border-left: 4px solid #f97316;
+            padding: 16px;
+            margin: 16px 0;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🏄‍♂️ Enhanced Room Assignment Test</h1>
+            <p>Testing the new room booking flow with visual thumbnails, detailed modals, and guest name assignment</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🚀 New Features Testing</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>📸 Room Thumbnails</h4>
+                    <ul>
+                        <li>Clickable room images</li>
+                        <li>Hover overlay effects</li>
+                        <li>Fallback for missing images</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>🔍 Room Details Modal</h4>
+                    <ul>
+                        <li>Image gallery</li>
+                        <li>Amenities & specifications</li>
+                        <li>Pricing information</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>👥 Guest Name Assignment</h4>
+                    <ul>
+                        <li>Collect names before assignment</li>
+                        <li>Show actual names vs "Guest 1, 2"</li>
+                        <li>Improved UX flow</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>🎨 Surf-Themed Design</h4>
+                    <ul>
+                        <li>Ocean gradients</li>
+                        <li>Smooth animations</li>
+                        <li>Premium styling</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Widget Initialization</h3>
+            <p>Click the button below to initialize the enhanced widget and test the new room assignment features:</p>
+            <button class="widget-trigger-btn" onclick="initializeWidget()">🏄‍♂️ Launch Enhanced Widget</button>
+            <div id="init-status" class="status-indicator status-info">Ready to test</div>
+            
+            <div class="highlight">
+                <strong>💡 Testing Tip:</strong> After initialization, select "Book a Room" to test the enhanced room assignment flow with thumbnails and detailed modals.
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Enhanced Booking Flow</h3>
+            <div class="test-flow">
+                <h4>New Improved Flow Order:</h4>
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div>Choose Booking Type (Room or Surf Week)</div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div>Select Dates & Participants</div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div>Choose Your Room (with thumbnails)</div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div><strong>NEW:</strong> Enter Guest Details (names collected first)</div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div><strong>ENHANCED:</strong> Room Assignment (with guest names & room details)</div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">6</div>
+                    <div>Review & Confirm</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Enhanced API Mock Data</h3>
+            <p>Room data now includes enhanced information for thumbnails and modals:</p>
+            <div class="api-mock">{
+  "success": true,
+  "data": {
+    "available_rooms": [
+      {
+        "id": "room-001",
+        "name": "Ocean View Private Room",
+        "capacity": 2,
+        "price_per_night": 150,
+        "featured_image": "/images/room-ocean-view.jpg",
+        "gallery_images": [
+          "/images/room-ocean-1.jpg",
+          "/images/room-ocean-2.jpg",
+          "/images/room-ocean-3.jpg"
+        ],
+        "amenities": ["Private bathroom", "Ocean view", "WiFi", "AC"],
+        "specifications": {
+          "size": "25 sqm",
+          "bed_configuration": "2 single beds",
+          "bathroom": "Private",
+          "view": "Ocean view"
+        },
+        "description": "Stunning ocean view room with modern amenities"
+      }
+    ]
+  }
+}</div>
+        </div>
+    </div>
+
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Configure API before loading widget -->
+    <script>
+        // Enhanced API configuration for testing
+        window.heiwa_booking_ajax = {
+            api_endpoint: 'http://localhost:3005/api',
+            api_key: 'heiwa_wp_test_key_2024_secure_deployment'
+        };
+    </script>
+
+    <!-- Load widget styles and scripts -->
+    <link rel="stylesheet" href="wordpress-plugin/heiwa-booking-widget/assets/css/widget.css?v=2025091502">
+    <script src="wordpress-plugin/heiwa-booking-widget/assets/js/widget.js?v=2025091502"></script>
+
+    <script>
+        function initializeWidget() {
+            try {
+                // Create a test trigger button
+                const triggerHTML = '<button class="heiwa-booking-trigger" style="position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 16px 24px; border-radius: 50px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4); z-index: 1000;">🏄‍♂️ BOOK NOW</button>';
+                document.body.insertAdjacentHTML('beforeend', triggerHTML);
+
+                // Initialize the widget
+                if (typeof $ !== 'undefined') {
+                    // Widget should auto-initialize when jQuery is available
+                    document.getElementById('init-status').textContent = 'Widget Initialized - Click BOOK NOW button!';
+                    document.getElementById('init-status').className = 'status-indicator status-success';
+                    
+                    console.log('Enhanced Room Assignment Widget initialized successfully!');
+                    console.log('New features available:');
+                    console.log('- Room thumbnails with hover effects');
+                    console.log('- Detailed room modals with image galleries');
+                    console.log('- Guest name-based assignment');
+                    console.log('- Reordered booking flow');
+                } else {
+                    throw new Error('jQuery not loaded');
+                }
+            } catch (error) {
+                console.error('Widget initialization failed:', error);
+                document.getElementById('init-status').textContent = 'Initialization failed';
+                document.getElementById('init-status').className = 'status-indicator status-error';
+            }
+        }
+
+        // Enhanced test logging
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('heiwa-booking-trigger')) {
+                console.log('🏄‍♂️ Enhanced Widget triggered!');
+                console.log('Testing new room assignment features...');
+            }
+        });
+
+        // Auto-initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initializeWidget, 1000);
+        });
+    </script>
+</body>
+</html>
