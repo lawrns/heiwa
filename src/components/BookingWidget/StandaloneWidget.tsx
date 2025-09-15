@@ -192,20 +192,50 @@ Plugin URL: ${wpConfig.pluginUrl}`}
           outline: inherit;
         }
 
-        /* Surgical fix: Restore orange gradient for specific CTA buttons only */
+        /* Enhanced CTA buttons with premium styling */
         .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500 {
-          background: linear-gradient(to right, #f97316, #ea580c) !important;
+          background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%) !important;
           padding: revert !important;
-          border-radius: revert !important;
-          box-shadow: revert !important;
+          border-radius: 0.75rem !important;
+          box-shadow: 0 4px 14px 0 rgba(249, 115, 22, 0.3), 0 2px 4px 0 rgba(0, 0, 0, 0.1) !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+          position: relative !important;
+          overflow: hidden !important;
+          transform: translateY(0) !important;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500::before {
+          content: '' !important;
+          position: absolute !important;
+          top: 0 !important;
+          left: -100% !important;
+          width: 100% !important;
+          height: 100% !important;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+          transition: left 0.6s ease !important;
         }
 
         .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500:hover {
-          background: linear-gradient(to right, #ea580c, #c2410c) !important;
+          background: linear-gradient(135deg, #ea580c 0%, #dc2626 50%, #b91c1c 100%) !important;
+          box-shadow: 0 8px 25px 0 rgba(249, 115, 22, 0.4), 0 4px 12px 0 rgba(0, 0, 0, 0.15) !important;
+          transform: translateY(-2px) scale(1.02) !important;
+        }
+
+        .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500:hover::before {
+          left: 100% !important;
+        }
+
+        .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500:active {
+          transform: translateY(0) scale(1.01) !important;
+          transition: all 0.1s ease !important;
         }
 
         .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500:disabled {
-          background: linear-gradient(to right, #d1d5db, #9ca3af) !important;
+          background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 50%, #6b7280 100%) !important;
+          box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1) !important;
+          transform: none !important;
+          cursor: not-allowed !important;
         }
 
         /* Restore proper padding for card components */
