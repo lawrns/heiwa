@@ -188,43 +188,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <ErrorBoundary>
-      <div className="heiwa-admin min-h-screen bg-gray-50 flex flex-col">
-        {/* Top header - Full width, always visible */}
-        <header className="bg-white shadow-sm border-b border-gray-200 z-50 relative">
-          <div className="flex items-center justify-between h-16 px-6">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="md:hidden text-gray-500 hover:text-gray-700"
-              aria-label="Open sidebar"
-              data-testid="sidebar-open-button"
-            >
-              <Bars3Icon className="h-6 w-6" />
-            </button>
-
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-gray-600 font-medium text-sm">
-                    {user?.email?.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <span className="text-gray-700 font-medium">{user?.email}</span>
-              </div>
-
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                className="flex items-center space-x-2"
-                aria-label="Sign out"
-              >
-                <ArrowRightOnRectangleIcon className="h-4 w-4" />
-                <span>Logout</span>
-              </Button>
-            </div>
-          </div>
-        </header>
-
+      <div className="heiwa-admin min-h-screen bg-gray-50 flex">
         {/* Main layout container - Flex row for desktop, column for mobile */}
         <div className="flex flex-1 overflow-hidden">
           {/* Mobile sidebar overlay */}
@@ -249,13 +213,22 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             flex flex-col
             border-r border-gray-700 md:border-r-0
             mt-0 md:mt-0
-            md:h-screen md:overflow-hidden
+            h-screen md:overflow-hidden
           `}>
             {/* Sidebar header */}
             <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-between h-16 px-4'} bg-gray-800 border-b border-gray-700`}>
               {sidebarCollapsed ? (
                 <>
-                  {/* Logo positioned above SVG when collapsed */}
+                  {/* Mobile menu button for collapsed state */}
+                  <button
+                    onClick={() => setSidebarOpen(true)}
+                    className="md:hidden text-white hover:text-gray-200 p-1 rounded transition-colors mb-2"
+                    aria-label="Open sidebar"
+                    data-testid="sidebar-open-button"
+                  >
+                    <Bars3Icon className="h-6 w-6" />
+                  </button>
+                  {/* Logo positioned below mobile button when collapsed */}
                   <AdminLogo collapsed={true} />
                   {/* SVG button positioned below logo when collapsed */}
                   <button
@@ -322,6 +295,28 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
           {/* Main content area */}
           <main className="flex-1 flex flex-col min-w-0 bg-gray-50">
+            {/* User/Logout header - positioned below sidebar, left-aligned */}
+            <header className="bg-white border-b border-gray-200 shadow-sm px-6 h-16 flex items-center justify-start">
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span className="text-gray-600 font-medium text-sm">
+                    {user?.email?.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <span className="text-gray-700 font-medium">{user?.email}</span>
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  size="sm"
+                  className="ml-2 flex items-center space-x-2"
+                  aria-label="Sign out"
+                >
+                  <ArrowRightOnRectangleIcon className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              </div>
+            </header>
+            
             <div className="flex-1 p-6 overflow-y-auto motion-safe:animate-fade-in">
               {children}
             </div>
