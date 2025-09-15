@@ -171,18 +171,44 @@ export default function CalendarPage() {
       }
 
       if (data) {
-        const formattedBookings = data.map(booking => ({
-          id: booking.id,
-          clientIds: booking.client_ids || [],
-          items: booking.items || [],
-          totalAmount: booking.total_amount,
-          paymentStatus: booking.payment_status,
-          paymentMethod: booking.payment_method,
-          notes: booking.notes,
-          source: booking.source || 'dashboard',
-          createdAt: new Date(booking.created_at),
-          updatedAt: new Date(booking.updated_at)
-        }));
+        const formattedBookings = data.map(booking => {
+          // Parse items if it's a JSON string (JSONB from Supabase)
+          let parsedItems = [];
+          try {
+            if (typeof booking.items === 'string') {
+              parsedItems = JSON.parse(booking.items);
+            } else if (Array.isArray(booking.items)) {
+              parsedItems = booking.items;
+            } else {
+              console.warn('Calendar: Booking with invalid items structure:', {
+                id: booking.id,
+                items: booking.items,
+                itemsType: typeof booking.items
+              });
+              parsedItems = [];
+            }
+          } catch (error) {
+            console.error('Calendar: Error parsing booking items JSON:', {
+              id: booking.id,
+              items: booking.items,
+              error: error.message
+            });
+            parsedItems = [];
+          }
+
+          return {
+            id: booking.id,
+            clientIds: booking.client_ids || [],
+            items: parsedItems,
+            totalAmount: booking.total_amount,
+            paymentStatus: booking.payment_status,
+            paymentMethod: booking.payment_method,
+            notes: booking.notes,
+            source: booking.source || 'dashboard',
+            createdAt: new Date(booking.created_at),
+            updatedAt: new Date(booking.updated_at)
+          };
+        });
         setBookings(formattedBookings);
       }
     } catch (error) {
