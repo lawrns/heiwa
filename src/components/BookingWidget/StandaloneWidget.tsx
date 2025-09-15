@@ -191,6 +191,22 @@ Plugin URL: ${wpConfig.pluginUrl}`}
           cursor: pointer;
           outline: inherit;
         }
+
+        /* Surgical fix: Restore orange gradient for specific CTA buttons only */
+        .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500 {
+          background: linear-gradient(to right, #f97316, #ea580c) !important;
+          padding: revert !important;
+          border-radius: revert !important;
+          box-shadow: revert !important;
+        }
+
+        .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500:hover {
+          background: linear-gradient(to right, #ea580c, #c2410c) !important;
+        }
+
+        .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500:disabled {
+          background: linear-gradient(to right, #d1d5db, #9ca3af) !important;
+        }
         
         /* Ensure proper z-index stacking */
         .heiwa-booking-widget {
