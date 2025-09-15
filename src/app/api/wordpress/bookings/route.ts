@@ -33,13 +33,28 @@ export async function POST(request: NextRequest) {
     // Validate API key
     const apiKey = request.headers.get('X-Heiwa-API-Key');
     const validApiKey = process.env.WORDPRESS_API_KEY;
-    
+
+    console.log('🔐 Surf week booking API auth check:', {
+      hasApiKey: !!apiKey,
+      hasValidApiKey: !!validApiKey,
+      apiKeyLength: apiKey?.length || 0,
+      validApiKeyLength: validApiKey?.length || 0,
+      keysMatch: apiKey === validApiKey,
+      receivedKey: apiKey?.substring(0, 10) + '...',
+      expectedKey: validApiKey?.substring(0, 10) + '...'
+    });
+
     if (!apiKey || !validApiKey || apiKey !== validApiKey) {
       return NextResponse.json(
         {
           success: false,
           error: 'Unauthorized',
-          message: 'Invalid or missing API key'
+          message: 'Invalid or missing API key',
+          debug: {
+            hasApiKey: !!apiKey,
+            hasValidApiKey: !!validApiKey,
+            keysMatch: apiKey === validApiKey
+          }
         },
         {
           status: 401,

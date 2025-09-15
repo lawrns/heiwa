@@ -99,11 +99,21 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         throw new Error('Missing required booking information');
       }
 
+      // Get API key from environment or use fallback
+      const apiKey = process.env.NEXT_PUBLIC_WORDPRESS_API_KEY || 'heiwa_wp_test_key_2024_secure_deployment';
+
+      console.log('🔑 Booking submission:', {
+        endpoint,
+        hasApiKey: !!apiKey,
+        apiKeyLength: apiKey.length,
+        payload: { ...payload, participants: payload.participants?.length || 0 }
+      });
+
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Heiwa-API-Key': 'heiwa_wp_test_key_2024_secure_deployment',
+          'X-Heiwa-API-Key': apiKey,
         },
         body: JSON.stringify(payload),
       });

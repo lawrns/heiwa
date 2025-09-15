@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Bed, Users, Star, ArrowRight } from 'lucide-react';
-import { BookingState } from '../types';
+import { BookingState, Room } from '../types';
+import { useRooms } from '../hooks/useRooms';
 
 interface SurfWeekRoomSelectionProps {
   state: BookingState;
@@ -10,45 +11,68 @@ interface SurfWeekRoomSelectionProps {
   };
 }
 
-// Mock room data for surf week accommodation options
-const surfWeekRooms = [
-  {
-    id: 'dorm-shared',
-    name: 'Shared Dorm Room',
-    type: 'dorm',
-    description: 'Comfortable shared accommodation with fellow surfers',
-    features: ['Shared bathroom', 'Air conditioning', 'Lockers', 'Common area access'],
-    maxOccupancy: 6,
-    pricePerNight: 0, // Included in surf week price
-    isIncluded: true,
-    image: '/images/dorm-room.jpg'
-  },
-  {
-    id: 'private-single',
-    name: 'Private Single Room',
-    type: 'private',
-    description: 'Your own private space with all amenities',
-    features: ['Private bathroom', 'Air conditioning', 'Mini fridge', 'Ocean view'],
-    maxOccupancy: 1,
-    pricePerNight: 45, // Upgrade price per night
-    isIncluded: false,
-    image: '/images/private-room.jpg'
-  },
-  {
-    id: 'private-double',
-    name: 'Private Double Room',
-    type: 'private',
-    description: 'Spacious private room perfect for couples or friends',
-    features: ['Private bathroom', 'Air conditioning', 'Mini fridge', 'Ocean view', 'Double bed'],
-    maxOccupancy: 2,
-    pricePerNight: 65, // Upgrade price per night
-    isIncluded: false,
-    image: '/images/private-double.jpg'
-  }
-];
+// Transform real room data for surf week accommodation options
+const transformRoomForSurfWeek = (room: Room) => {
+  // Dorm room is included, private rooms are upgrades
+  const isIncluded = room.type === 'dorm';
+  const upgradePrice = isIncluded ? 0 : room.pricePerNight;
+
+  return {
+    id: room.id,
+    name: room.name,
+    type: room.type,
+    description: room.description,
+    features: room.amenities.map(amenity => amenity.replace(/-/g, ' ')),
+    maxOccupancy: room.maxOccupancy,
+    pricePerNight: upgradePrice,
+    isIncluded,
+    image: room.images[0] || '/images/room-placeholder.jpg'
+  };
+};
 
 export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionProps) {
   const [selectedRoom, setSelectedRoom] = useState<string | null>(state.selectedSurfWeekRoom);
+
+  // Fetch real room data (no date filtering needed for surf weeks)
+  const { rooms, loading, error } = useRooms({
+    checkIn: null,
+    checkOut: null,
+    guests: 1
+  });
+
+  // Transform real rooms for surf week display, with dorm first
+  const surfWeekRooms = rooms
+    .map(transformRoomForSurfWeek)
+    .sort((a, b) => {
+      // Dorm rooms first, then private rooms
+      if (a.type === 'dorm' && b.type !== 'dorm') return -1;
+      if (a.type !== 'dorm' && b.type === 'dorm') return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center space-y-2">
+          <h3 className="text-2xl font-bold text-gray-900">Choose Your Accommodation</h3>
+          <p className="text-gray-600">Loading room options...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center space-y-2">
+          <h3 className="text-2xl font-bold text-gray-900">Choose Your Accommodation</h3>
+          <p className="text-red-600">Error loading rooms: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleRoomSelection = (roomId: string) => {
     setSelectedRoom(roomId);

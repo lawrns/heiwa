@@ -50,7 +50,7 @@ function buildMonthMatrix(year: number, month: number) {
   const dayOfWeek = firstOfMonth.getDay() // 0 Sun .. 6 Sat
   const gridStart = new Date(year, month, 1 - dayOfWeek)
   const matrix: Date[][] = []
-  let current = new Date(gridStart)
+  const current = new Date(gridStart)
   for (let w = 0; w < 6; w++) {
     const week: Date[] = []
     for (let d = 0; d < 7; d++) {

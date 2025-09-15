@@ -135,7 +135,7 @@ export async function GET(request: NextRequest) {
 
     // Compute real-time occupancy and price_from
     // 1) Fetch confirmed bookings (items JSONB) and reduce by campId
-    let confirmedByCamp: Record<string, number> = {};
+    const confirmedByCamp: Record<string, number> = {};
     try {
       const { data: bookingsData, error: bookingsError } = await client
         .from('bookings')
