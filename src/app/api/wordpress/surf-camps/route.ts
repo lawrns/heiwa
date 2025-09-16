@@ -7,7 +7,21 @@ import { createClient } from '@supabase/supabase-js';
 function createSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) return null as any;
+
+  console.log('WordPress surf-camps API: Environment check', {
+    hasUrl: !!url,
+    hasKey: !!key,
+    urlPrefix: url ? url.substring(0, 20) + '...' : 'missing',
+    keyPrefix: key ? key.substring(0, 10) + '...' : 'missing'
+  });
+
+  if (!url || !key) {
+    console.error('WordPress surf-camps API: Missing Supabase environment variables', {
+      NEXT_PUBLIC_SUPABASE_URL: !!url,
+      SUPABASE_SERVICE_ROLE_KEY: !!key
+    });
+    return null as any;
+  }
   return createClient(url, key);
 }
 
@@ -54,9 +68,20 @@ export async function GET(request: NextRequest) {
     // Build query for active surf camps - no fallback, always use real data
     const client = createSupabase();
     if (!client) {
+      console.error('WordPress surf-camps API: Failed to create Supabase client');
+
+      // Provide detailed error information for debugging
+      const debugInfo = {
+        hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+        hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+        nodeEnv: process.env.NODE_ENV
+      };
+
       return NextResponse.json({
         success: false,
         error: 'Database connection not available',
+        message: 'Supabase client could not be initialized - check environment variables',
+        debug: process.env.NODE_ENV === 'development' ? debugInfo : undefined,
         data: { surf_camps: [], total_count: 0 }
       }, { status: 500 });
     }
@@ -239,12 +264,18 @@ export async function GET(request: NextRequest) {
     return response;
 
   } catch (error: any) {
-    console.error('WordPress surf-camps endpoint error:', error);
+    console.error('WordPress surf-camps endpoint error:', {
+      message: error?.message,
+      stack: error?.stack,
+      name: error?.name,
+      cause: error?.cause
+    });
     const response = NextResponse.json(
       {
         success: false,
         error: 'Internal server error',
-        message: 'Failed to process surf camps request'
+        message: 'Failed to process surf camps request',
+        debug: process.env.NODE_ENV === 'development' ? error?.message : undefined
       },
       { status: 500 }
     );
