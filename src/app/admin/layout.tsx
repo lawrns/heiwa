@@ -228,16 +228,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   >
                     <Bars3Icon className="h-6 w-6" />
                   </button>
-                  {/* Logo positioned below mobile button when collapsed */}
-                  <AdminLogo collapsed={true} />
-                  {/* SVG button positioned below logo when collapsed */}
+                  {/* Hide logo when collapsed - only show expand button */}
                   <button
                     onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    className="hidden md:block text-white hover:text-gray-200 p-1 rounded transition-colors"
+                    className="hidden md:block text-white hover:text-gray-200 p-2 rounded transition-colors"
                     title="Expand sidebar"
                     data-testid="sidebar-toggle"
                   >
-                    <ChevronRightIcon className="h-5 w-5 transition-transform duration-200" />
+                    <ChevronRightIcon className="h-6 w-6 transition-transform duration-200" />
                   </button>
                 </>
               ) : (
@@ -268,16 +266,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
             {/* Navigation */}
             <nav className="flex-1 mt-8 px-4 md:px-4 overflow-y-auto md:max-h-[calc(100vh-4rem)]" aria-label="Navigation menu" data-testid="sidebar-nav">
-              <div className={`${sidebarCollapsed ? 'px-2' : 'px-0'} space-y-2`}>
+              <div className="px-0 space-y-2">
                 {navigationItems.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
                     className={`
-                      group relative flex items-center py-3 px-4 text-sm font-medium text-gray-300
+                      group relative flex items-center py-3 text-sm font-medium text-gray-300
                       rounded-lg hover:bg-gray-700 hover:text-white
                       transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:top-1/2 after:-translate-y-1/2 after:h-5 after:w-0 after:rounded-full after:bg-heiwaOrange-500 after:transition-all after:duration-300 group-hover:after:w-1
-                      ${sidebarCollapsed ? 'px-3 justify-center' : ''}
+                      ${sidebarCollapsed ? 'justify-center px-0' : 'px-4'}
                     `}
                     onClick={() => setSidebarOpen(false)}
                     title={sidebarCollapsed ? item.name : ""}

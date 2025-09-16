@@ -1084,7 +1084,19 @@
         const currentIndex = STEPS.findIndex(step => step.id === currentStep);
 
         if (currentIndex < STEPS.length - 1) {
-            const nextStep = STEPS[currentIndex + 1];
+            let nextStep = STEPS[currentIndex + 1];
+
+            // Skip assignment step for single-participant room bookings
+            if (nextStep.id === 'assignment' &&
+                bookingData.bookingType === 'room' &&
+                bookingData.participants === 1) {
+                // Skip to the step after assignment
+                const assignmentIndex = STEPS.findIndex(step => step.id === 'assignment');
+                if (assignmentIndex < STEPS.length - 1) {
+                    nextStep = STEPS[assignmentIndex + 1];
+                }
+            }
+
             showStep(nextStep.id);
         }
     }
@@ -2133,7 +2145,7 @@
 
         // form_addons
         if (STEPS.findIndex(s => s.id === 'form_addons') < currentIndex && bookingData.participantDetails?.length) {
-            const filled = bookingData.participantDetails.filter(p => (p.firstName||p.lastName||p.email)).length;
+            const filled = bookingData.participantDetails.filter(p => (p.firstName && p.lastName && p.email)).length;
             addItem('form_addons', `${getLucideIcon('check', 14)} Details`, `${filled}/${bookingData.participants} completed`);
         }
 

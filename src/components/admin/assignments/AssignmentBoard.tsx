@@ -130,10 +130,10 @@ const DroppableRoom: React.FC<DroppableRoomProps> = memo(({
       animate={{ opacity: 1, y: 0 }}
       className={`border-2 border-dashed rounded-lg p-4 min-h-[200px] transition-all ${
         isOver
-          ? 'border-blue-400 bg-blue-50'
+          ? 'border-heiwaOrange-400 bg-heiwaOrange-50'
           : isFull
             ? 'border-red-300 bg-red-50'
-            : 'border-gray-300 hover:border-gray-400'
+            : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
       }`}
       data-testid={`room-zone-${room.id}`}
     >
@@ -226,47 +226,58 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  // Mock data
+  // Fetch real data from API
   useEffect(() => {
-    const mockParticipants: Participant[] = [
-      { id: 'p1', name: 'Sarah Johnson', email: 'sarah@email.com', surfLevel: 'intermediate', bookingId: 'b1' },
-      { id: 'p2', name: 'Marcus Rodriguez', email: 'marcus@email.com', surfLevel: 'advanced', bookingId: 'b2' },
-      { id: 'p3', name: 'Emily Chen', email: 'emily@email.com', surfLevel: 'beginner', bookingId: 'b3' },
-      { id: 'p4', name: 'David Thompson', email: 'david@email.com', surfLevel: 'intermediate', bookingId: 'b4' },
-    ]
+    const fetchData = async () => {
+      try {
+        setLoading(true)
 
-    const mockRooms: Room[] = [
-      {
-        id: 'r1',
-        name: 'Ocean View Suite',
-        capacity: 2,
-        type: 'private',
-        currentOccupancy: 0,
-        amenities: ['private-bathroom', 'sea-view', 'balcony']
-      },
-      {
-        id: 'r2',
-        name: 'Garden Bungalow',
-        capacity: 2,
-        type: 'private',
-        currentOccupancy: 0,
-        amenities: ['private-bathroom', 'kitchen']
-      },
-      {
-        id: 'r3',
-        name: 'Beachfront Dorm',
-        capacity: 8,
-        type: 'dorm',
-        currentOccupancy: 0,
-        amenities: ['shared-bathroom', 'wifi']
+        // Fetch participants for the selected week
+        const participantsResponse = await fetch(`/api/assignments/participants?weekId=${weekId}`)
+        const participantsData = await participantsResponse.json()
+
+        // Fetch actual rooms from the database
+        const roomsResponse = await fetch('/api/rooms')
+        const roomsData = await roomsResponse.json()
+
+        // Transform room data to match our interface
+        const roomsArray = roomsData.rooms || []
+        const transformedRooms: Room[] = roomsArray.map((room: any) => ({
+          id: room.id,
+          name: room.name,
+          capacity: room.capacity,
+          type: room.bookingType === 'perBed' ? 'dorm' : 'private',
+          currentOccupancy: 0, // Will be calculated from assignments
+          amenities: room.amenities || []
+        }))
+
+        // Fetch existing assignments
+        const assignmentsResponse = await fetch(`/api/assignments?weekId=${weekId}`)
+        const assignmentsData = await assignmentsResponse.json()
+
+        setParticipants(participantsData || [])
+        setRooms(transformedRooms)
+        setAssignments(assignmentsData || [])
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching assignment data:', error)
+        // Fallback to mock data if API fails
+        const mockParticipants: Participant[] = [
+          { id: 'p1', name: 'Sarah Johnson', email: 'sarah@email.com', surfLevel: 'intermediate', bookingId: 'b1' },
+          { id: 'p2', name: 'Marcus Rodriguez', email: 'marcus@email.com', surfLevel: 'advanced', bookingId: 'b2' },
+          { id: 'p3', name: 'Emily Chen', email: 'emily@email.com', surfLevel: 'beginner', bookingId: 'b3' },
+          { id: 'p4', name: 'David Thompson', email: 'david@email.com', surfLevel: 'intermediate', bookingId: 'b4' },
+        ]
+
+        setParticipants(mockParticipants)
+        setRooms([]) // No rooms if API fails
+        setLoading(false)
       }
-    ]
+    }
 
-    setTimeout(() => {
-      setParticipants(mockParticipants)
-      setRooms(mockRooms)
-      setLoading(false)
-    }, 1000)
+    if (weekId) {
+      fetchData()
+    }
   }, [weekId])
 
   const handleParticipantDrop = useCallback((roomId: string, participantId: string) => {

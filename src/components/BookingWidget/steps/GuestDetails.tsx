@@ -285,7 +285,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
           <div>
             <h5 className="font-semibold text-orange-900">Guest Information Status</h5>
             <p className="text-sm text-orange-700" data-testid="guest-completion-status">
-              {state.guestDetails.length} of {state.guests} guests completed
+              {state.guestDetails.filter(g => g.firstName && g.lastName && g.email).length} of {state.guests} guests completed
             </p>
           </div>
           <div className="text-right">

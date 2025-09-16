@@ -1,0 +1,221 @@
+{
+  "config": {
+    "configFile": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/playwright.config.ts",
+    "rootDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results/junit.xml"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "chromium-admin",
+        "name": "chromium-admin",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+        "testIgnore": [
+          "**/unit/**",
+          "**/utils/**"
+        ],
+        "testMatch": [
+          "**/admin/**",
+          "**/dashboard.spec.ts",
+          "**/auth.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "firefox-admin",
+        "name": "firefox-admin",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+        "testIgnore": [
+          "**/unit/**",
+          "**/utils/**"
+        ],
+        "testMatch": [
+          "**/admin/**",
+          "**/dashboard.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "wordpress-integration",
+        "name": "wordpress-integration",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+        "testIgnore": [
+          "**/unit/**",
+          "**/utils/**"
+        ],
+        "testMatch": [
+          "**/wordpress-integration.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "widget-parity",
+        "name": "widget-parity",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+        "testIgnore": [
+          "**/unit/**",
+          "**/utils/**"
+        ],
+        "testMatch": [
+          "**/widget-parity.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "mobile-chrome",
+        "name": "mobile-chrome",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+        "testIgnore": [
+          "**/unit/**",
+          "**/utils/**"
+        ],
+        "testMatch": [
+          "**/client/**",
+          "**/booking-flow.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "mobile-safari",
+        "name": "mobile-safari",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+        "testIgnore": [
+          "**/unit/**",
+          "**/utils/**"
+        ],
+        "testMatch": [
+          "**/client/**"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "performance",
+        "name": "performance",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+        "testIgnore": [
+          "**/unit/**",
+          "**/utils/**"
+        ],
+        "testMatch": [
+          "**/performance.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "setup-wordpress",
+        "name": "setup-wordpress",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+        "testIgnore": [
+          "**/unit/**",
+          "**/utils/**"
+        ],
+        "testMatch": [
+          "**/setup/wordpress-setup.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "cleanup-wordpress",
+        "name": "cleanup-wordpress",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
+        "testIgnore": [
+          "**/unit/**",
+          "**/utils/**"
+        ],
+        "testMatch": [
+          "**/setup/wordpress-cleanup.spec.ts"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.55.0",
+    "workers": 7,
+    "webServer": null
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "Error: Process from config.webServer exited early.",
+      "stack": "Error: Process from config.webServer exited early."
+    }
+  ],
+  "stats": {
+    "startTime": "2025-09-16T16:28:33.340Z",
+    "duration": 1262.256,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

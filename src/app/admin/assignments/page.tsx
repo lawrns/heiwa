@@ -206,7 +206,7 @@ export default function AdminAssignmentsPage() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
-              <MapPinIcon className="w-8 h-8 text-purple-600" />
+              <MapPinIcon className="w-8 h-8 text-heiwaOrange-600" />
               <div>
                 <p className="text-2xl font-bold">17</p>
                 <p className="text-sm text-gray-600">Rooms Available</p>

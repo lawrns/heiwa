@@ -80,6 +80,16 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     }
   };
 
+  // Auto-select for room bookings when dates and guests are set
+  useEffect(() => {
+    if (state.experienceType === 'room' && state.dates.checkIn && state.dates.checkOut && state.guests > 0 && !selectedOption) {
+      // Auto-select a dummy option for room bookings to allow progression
+      const dummyOptionId = 'room-dates-selected';
+      setSelectedOption(dummyOptionId);
+      actions.selectOption(dummyOptionId);
+    }
+  }, [state.experienceType, state.dates.checkIn, state.dates.checkOut, state.guests, selectedOption, actions]);
+
   // Recompute base price and totals when selection/dates/guests change
   useEffect(() => {
     if (!selectedOption) return;
@@ -292,6 +302,47 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Guest Counter for Surf Weeks */}
+      {state.experienceType === 'surf-week' && (
+        <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-4">
+          <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <Users size={20} className="text-orange-500" />
+            Number of Participants
+          </h4>
+
+          <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
+            <div>
+              <div className="font-medium text-gray-900">Participants</div>
+              <div className="text-sm text-gray-600">How many people will join the surf camp?</div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => adjustGuests(-1)}
+                disabled={state.guests <= 1}
+                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                aria-label="Decrease participant count"
+              >
+                <Minus size={16} />
+              </button>
+
+              <span className="w-12 text-center text-lg font-semibold text-gray-900">
+                {state.guests}
+              </span>
+
+              <button
+                onClick={() => adjustGuests(1)}
+                disabled={state.guests >= 12}
+                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                aria-label="Increase participant count"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
 
           {/* Date Summary */}
           {state.dates.checkIn && state.dates.checkOut && (
@@ -444,137 +495,37 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           })}
         </div>
       ) : (
-        <div className="space-y-4">
-          {(options as any[]).map((option: any, index: number) => {
-            const isSelected = selectedOption === option.id;
-            const totalPrice = calculateTotalPrice(option);
-            const amenities = option.amenities;
-            // Enhanced room assignment: All rooms are selectable regardless of capacity
-            const canAccommodate = true;
-            const exceedsCapacity = false;
-
-            return (
-              <button
-                key={option.id}
-                onClick={() => handleOptionSelect(option.id)}
-                disabled={false}
-                className={`
-                  w-full p-6 rounded-xl border-2 text-left
-                  transition-all duration-300 ease-out
-                  focus:outline-none focus:ring-4 focus:ring-orange-500/30
-                  animate-in fade-in-0 slide-in-from-bottom-4
-                  ${isSelected
-                    ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
-                    : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1'
-                  }
-                `}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="flex gap-6">
-                  {/* Enhanced Hero Image */}
-                  <div className="flex-shrink-0">
-                    {option.images && option.images.length > 0 ? (
-                      <RoomHeroImage
-                        image={option.images[0]}
-                        roomName={option.name}
-                        onClick={() => openGallery(option)}
-                        className="w-32 h-24"
-                      />
-                    ) : (
-                      <div className="w-32 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                        <div className="text-white text-2xl font-bold">
-                          {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 space-y-3">
-                    {/* Title and Price */}
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                          {option.name}
-                        </h4>
-                        <p className="text-sm text-gray-600 line-clamp-2">
-                          {option.description}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-orange-600">
-                          {typeof totalPrice === 'number' && !Number.isNaN(totalPrice)
-                            ? formatPrice(totalPrice)
-                            : (state.experienceType === 'room' ? 'Select dates' : (option.price ? formatPrice(option.price) : '—'))}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {state.experienceType === 'room'
-                            ? (state.dates.checkIn && state.dates.checkOut ? `for ${Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} night${Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) > 1 ? 's' : ''}` : 'per night')
-                            : 'per person'
-                          }
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Details */}
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <>
-                        <div className="flex items-center gap-1">
-                          <Users size={14} />
-                          <span>Up to {option.maxOccupancy} guests</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin size={14} />
-                          <span className="capitalize">{option.type} room</span>
-                        </div>
-                      </>
-                    </div>
-
-                    {/* Amenities/Includes */}
-                    {amenities && amenities.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {amenities.slice(0, 4).map((amenity: string, index: number) => (
-                          <span
-                            key={index}
-                            className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full"
-                          >
-                            {getAmenityIcon(amenity)}
-                            {amenity}
-                          </span>
-                        ))}
-                        {amenities.length > 4 && (
-                          <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full">
-                            +{amenities.length - 4} more
-                          </span>
-                        )}
-                      </div>
-                    )}
-
-                    {/* View Photos Button */}
-                    {option.images && option.images.length > 0 && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openGallery(option);
-                        }}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
-                      >
-                        📸 View {option.images.length} Photo{option.images.length > 1 ? 's' : ''}
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Selection Indicator */}
-                {isSelected && (
-                  <div className="mt-4 flex items-center gap-2 text-orange-600">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-                    <span className="text-sm font-medium">Selected</span>
-                  </div>
-                )}
-              </button>
-            );
-          })}
+        /* Room Booking - Only show availability message, not room options */
+        <div className="space-y-6">
+          {state.dates.checkIn && state.dates.checkOut && state.guests > 0 ? (
+            <div className="text-center p-8 bg-green-50 rounded-xl border border-green-200">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Check size={24} className="text-green-600" />
+              </div>
+              <h4 className="text-lg font-semibold text-green-900 mb-2">Dates & Guests Selected</h4>
+              <p className="text-green-700 mb-4">
+                {state.guests} guest{state.guests !== 1 ? 's' : ''} • {Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} night{Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) !== 1 ? 's' : ''}
+              </p>
+              <p className="text-sm text-green-600">
+                {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
+              </p>
+              <div className="mt-6 p-4 bg-white rounded-lg border border-green-200">
+                <p className="text-sm text-gray-600">
+                  <strong>Next:</strong> You'll be able to choose from available rooms that match your dates and guest count.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center p-8 bg-gray-50 rounded-xl border border-gray-200">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Calendar size={24} className="text-gray-400" />
+              </div>
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">Complete Your Selection</h4>
+              <p className="text-gray-600">
+                Please select your check-in/check-out dates and number of guests above to continue.
+              </p>
+            </div>
+          )}
         </div>
       )}
 
