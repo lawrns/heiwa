@@ -23,7 +23,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { CreateRoomSchema, Room } from '@/lib/schemas';
+import { CreateRoomSchema, UpdateRoomSchema, Room } from '@/lib/schemas';
 
 type RoomFormData = Omit<z.infer<typeof CreateRoomSchema>, 'bedTypes'> & { bedTypes?: ('single' | 'double' | 'bunk')[] };
 import { Plus, Edit, Trash2, Upload, Image as ImageIcon, Bed, Users, Wifi, Eye, Coffee, Bath, TreePine, Grid3x3, Maximize, Wind, Home, ChefHat } from 'lucide-react';
@@ -206,7 +206,7 @@ export default function RoomsPage() {
     };
   }, [fetchRooms]);
 
-  // Form for creating/editing rooms
+  // Form for creating rooms
   const form = useForm<RoomFormData>({
     resolver: zodResolver(CreateRoomSchema),
     defaultValues: {
@@ -224,6 +224,11 @@ export default function RoomsPage() {
       bedTypes: [],
       isActive: true,
     },
+  });
+
+  // Form for editing rooms (without validation resolver)
+  const editForm = useForm<Partial<RoomFormData>>({
+    defaultValues: {},
   });
 
 
@@ -272,6 +277,8 @@ export default function RoomsPage() {
 
   const handleUpdateRoom = async (roomId: string, data: Partial<RoomFormData>) => {
     try {
+      console.log('Updating room:', roomId, data);
+
       // Convert camelCase to snake_case for Supabase
       const updateData: any = {};
       if (data.name !== undefined) updateData.name = data.name;
@@ -284,19 +291,25 @@ export default function RoomsPage() {
       if (data.bedTypes !== undefined) updateData.bed_types = data.bedTypes;
       if (data.isActive !== undefined) updateData.is_active = data.isActive;
 
+      console.log('Update data:', updateData);
+
       const { error } = await supabase
         .from('rooms')
         .update(updateData)
         .eq('id', roomId);
 
       if (error) {
+        console.error('Supabase update error:', error);
         throw new Error(error.message);
       }
 
+      console.log('Room updated successfully');
       toast.success('Room updated successfully');
-      fetchRooms(); // Refresh the list
+      await fetchRooms(); // Refresh the list
     } catch (error: any) {
+      console.error('Update room error:', error);
       toast.error(`Failed to update room: ${error.message}`);
+      throw error; // Re-throw to prevent modal from closing on error
     }
   };
 
@@ -322,7 +335,7 @@ export default function RoomsPage() {
 
   const openEditModal = (room: Room & { id: string }) => {
     setSelectedRoom(room);
-    form.reset({
+    editForm.reset({
       name: room.name,
       capacity: room.capacity,
       bookingType: room.bookingType,
@@ -768,17 +781,48 @@ export default function RoomsPage() {
               Update room information, pricing, and amenities.
             </DialogDescription>
           </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit((data) => {
+          <Form {...editForm}>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+
+              // Get form data manually
+              const formData = editForm.getValues();
+              console.log('Form submission handler called with raw data:', formData);
+
+              // Transform the form data to match the schema structure
+              const transformedData: any = {
+                ...formData,
+                // Transform pricing from nested fields to object structure
+                pricing: {
+                  standard: formData['pricing.standard'] || formData.pricing?.standard || 0,
+                  offSeason: formData['pricing.offSeason'] || formData.pricing?.offSeason || 0,
+                  camp: formData.pricing?.camp || {}
+                }
+              };
+
+              // Remove the nested pricing fields
+              delete transformedData['pricing.standard'];
+              delete transformedData['pricing.offSeason'];
+
+              console.log('Transformed data for update:', transformedData);
+
               if (selectedRoom) {
-                handleUpdateRoom(selectedRoom.id, data);
-                setShowEditModal(false);
+                console.log('Selected room:', selectedRoom);
+                try {
+                  await handleUpdateRoom(selectedRoom.id, transformedData);
+                  setShowEditModal(false);
+                } catch (error) {
+                  // Error is already handled in handleUpdateRoom, just prevent modal from closing
+                  console.error('Form submission error:', error);
+                }
+              } else {
+                console.log('No selected room');
               }
-            })} className="space-y-6">
+            }} className="space-y-6">
               {/* Same form fields as create modal */}
               <div className="grid grid-cols-2 gap-4">
                 <FormField
-                  control={form.control}
+                  control={editForm.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
@@ -792,7 +836,7 @@ export default function RoomsPage() {
                 />
 
                 <FormField
-                  control={form.control}
+                  control={editForm.control}
                   name="capacity"
                   render={({ field }) => (
                     <FormItem>
@@ -813,7 +857,7 @@ export default function RoomsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <FormField
-                  control={form.control}
+                  control={editForm.control}
                   name="bookingType"
                   render={({ field }) => (
                     <FormItem>
@@ -835,7 +879,7 @@ export default function RoomsPage() {
                 />
 
                 <FormField
-                  control={form.control}
+                  control={editForm.control}
                   name="isActive"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center space-x-3 space-y-0">
@@ -858,7 +902,7 @@ export default function RoomsPage() {
                 <h3 className="text-lg font-semibold">Pricing</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
-                    control={form.control}
+                    control={editForm.control}
                     name="pricing.standard"
                     render={({ field }) => (
                       <FormItem>
@@ -878,7 +922,7 @@ export default function RoomsPage() {
                   />
 
                   <FormField
-                    control={form.control}
+                    control={editForm.control}
                     name="pricing.offSeason"
                     render={({ field }) => (
                       <FormItem>
@@ -900,7 +944,7 @@ export default function RoomsPage() {
               </div>
 
               <FormField
-                control={form.control}
+                control={editForm.control}
                 name="description"
                 render={({ field }) => (
                   <FormItem>
@@ -919,7 +963,7 @@ export default function RoomsPage() {
 
               {/* Image Upload Section */}
               <FormField
-                control={form.control}
+                control={editForm.control}
                 name="images"
                 render={({ field }) => (
                   <FormItem>
@@ -940,7 +984,7 @@ export default function RoomsPage() {
 
               {/* Bed Types */}
               <FormField
-                control={form.control}
+                control={editForm.control}
                 name="bedTypes"
                 render={({ field }) => (
                   <FormItem>
@@ -970,7 +1014,7 @@ export default function RoomsPage() {
 
 
               <FormField
-                control={form.control}
+                control={editForm.control}
                 name="amenities"
                 render={({ field }) => (
                   <FormItem>
