@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'react-toastify';
+import { useSurfCamps } from '@/components/BookingWidget/hooks/useSurfCamps';
 import {
   ArrowLeft,
   ArrowRight,
@@ -59,41 +60,7 @@ const STEPS = [
   { id: 5, title: 'Payment', description: 'Complete your booking' }
 ];
 
-const MOCK_CAMPS: SurfCamp[] = [
-  {
-    id: 'camp_001',
-    name: 'Beginner\'s Paradise',
-    description: 'Perfect introduction to surfing with gentle waves',
-    startDate: '2024-03-01',
-    endDate: '2024-03-07',
-    price: 450,
-    maxParticipants: 12,
-    level: 'beginner',
-    available: true
-  },
-  {
-    id: 'camp_002',
-    name: 'Intermediate Challenge',
-    description: 'Take your surfing to the next level',
-    startDate: '2024-03-08',
-    endDate: '2024-03-14',
-    price: 550,
-    maxParticipants: 10,
-    level: 'intermediate',
-    available: true
-  },
-  {
-    id: 'camp_003',
-    name: 'Advanced Waves',
-    description: 'For experienced surfers seeking bigger challenges',
-    startDate: '2024-03-15',
-    endDate: '2024-03-21',
-    price: 650,
-    maxParticipants: 8,
-    level: 'advanced',
-    available: false
-  }
-];
+// No more mock camps - use real data from API
 
 export default function BookPage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -105,6 +72,9 @@ export default function BookPage() {
   });
 
   const progress = (currentStep / STEPS.length) * 100;
+
+  // Fetch real surf camps data
+  const { surfCamps, loading: surfCampsLoading, error: surfCampsError } = useSurfCamps();
 
   // Add a default participant when component mounts
   useEffect(() => {
@@ -214,7 +184,7 @@ export default function BookPage() {
               <p className="text-gray-600">Select the perfect camp for your skill level</p>
             </div>
             <div className="grid gap-4">
-              {MOCK_CAMPS.map(camp => (
+              {surfCamps.map(camp => (
                 <Card 
                   key={camp.id} 
                   className={`cursor-pointer transition-all ${

@@ -51,30 +51,14 @@ export async function GET(request: NextRequest) {
     const locationFilter = searchParams.get('location');
     const levelFilter = searchParams.get('level');
 
-    // Build query for active surf camps (or fallback when Supabase not configured)
-    const origin = new URL(request.url).origin;
+    // Build query for active surf camps - no fallback, always use real data
     const client = createSupabase();
     if (!client) {
-      const fallbackCamps = getFallbackCamps(origin);
-      const response = NextResponse.json({
-        success: true,
-        data: {
-          surf_camps: fallbackCamps,
-          total_count: fallbackCamps.length,
-          filters_applied: { location: locationFilter, level: levelFilter }
-        },
-        meta: {
-          generated_at: new Date().toISOString(),
-          api_version: '1.0',
-          source: 'heiwa_house_backend',
-          fallback: true
-        }
-      });
-      response.headers.set('Access-Control-Allow-Origin', 'https://heiwahouse.com');
-      response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
-      response.headers.set('Access-Control-Allow-Credentials', 'true');
-      return response;
+      return NextResponse.json({
+        success: false,
+        error: 'Database connection not available',
+        data: { surf_camps: [], total_count: 0 }
+      }, { status: 500 });
     }
 
     let query = client
@@ -107,30 +91,11 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Error fetching surf camps for WordPress:', error);
-      const fallbackCamps = getFallbackCamps(origin);
-      const response = NextResponse.json({
-        success: true,
-        data: {
-          surf_camps: fallbackCamps,
-          total_count: fallbackCamps.length,
-          filters_applied: { location: locationFilter, level: levelFilter }
-        },
-        meta: {
-          generated_at: new Date().toISOString(),
-          api_version: '1.0',
-          source: 'heiwa_house_backend',
-          fallback: true,
-          error: { message: (error as any)?.message, code: (error as any)?.code }
-        }
-      });
-
-      // Add CORS headers
-      response.headers.set('Access-Control-Allow-Origin', 'https://heiwahouse.com');
-      response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
-      response.headers.set('Access-Control-Allow-Credentials', 'true');
-
-      return response;
+      return NextResponse.json({
+        success: false,
+        error: 'Failed to fetch surf camps from database',
+        data: { surf_camps: [], total_count: 0 }
+      }, { status: 500 });
     }
 
     // Compute real-time occupancy and price_from
@@ -319,70 +284,7 @@ function extractDestination(name: string, description: string): string {
   return words.find(word => word.length > 3) || 'Surf Camp';
 }
 
-/**
- * Fallback surf camps when Supabase/env not available
- */
-function getFallbackCamps(origin: string) {
-  const today = new Date();
-  const iso = (d: Date) => d.toISOString().slice(0, 10);
-  const makeCamp = (
-    id: string,
-    name: string,
-    startOffsetDays: number,
-    durationDays: number,
-    price: number,
-    level: 'beginner' | 'intermediate' | 'advanced' | 'all',
-    images?: string[]
-  ) => {
-    const start = new Date(today);
-    start.setDate(start.getDate() + startOffsetDays);
-    const end = new Date(start);
-    end.setDate(end.getDate() + durationDays);
-    const startISO = iso(start);
-    const endISO = iso(end);
-
-    const imgs = images && images.length > 0 ? images : [`${origin}/room1.jpg`];
-
-    return {
-      id,
-      name,
-      description: `${name} — all-inclusive surf coaching, yoga, and community dinners.`,
-      destination: extractDestination(name, ''),
-      dates: {
-        start_date: startISO,
-        end_date: endISO,
-        formatted_dates: formatDateRange(startISO, endISO)
-      },
-      pricing: {
-        base_price: price,
-        currency: 'EUR',
-        display_price: `€${price}`,
-        price_from: price
-      },
-      details: {
-        max_participants: 12,
-        skill_level: level,
-        includes: ['coaching', 'equipment', 'breakfast'],
-        available_spots: 12,
-        confirmed_booked: 0
-      },
-      media: {
-        images: imgs,
-        featured_image: imgs[0]
-      },
-      booking_info: {
-        duration_days: calculateDurationDays(startISO, endISO),
-        booking_deadline: calculateBookingDeadline(startISO)
-      }
-    };
-  };
-
-  return [
-    makeCamp('camp-001', 'Basque Country Surf Week', 14, 7, 799, 'all', [`${origin}/room1.jpg`]),
-    makeCamp('camp-002', 'Morocco Surf Retreat', 30, 7, 699, 'beginner', [`${origin}/room3.webp`]),
-    makeCamp('camp-003', 'Portugal Intermediate Week', 45, 7, 749, 'intermediate', [`${origin}/dorm.webp`])
-  ];
-}
+// No more fallback camps - always use real database data
 
 /**
  * Format date range for display

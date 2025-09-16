@@ -55,14 +55,15 @@ export function useSurfCamps(): UseSurfCampsResult {
 
         setSurfCamps(transformedCamps);
       } else {
-        // Fallback to mock data if API fails
-        setSurfCamps(getMockSurfCamps());
+        // No fallback - show error if API fails
+        setError('No surf camps available');
+        setSurfCamps([]);
       }
     } catch (err) {
       console.error('Error fetching surf camps:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch surf camps');
-      // Fallback to mock data
-      setSurfCamps(getMockSurfCamps());
+      // No fallback - show empty state
+      setSurfCamps([]);
     } finally {
       setLoading(false);
     }
@@ -76,72 +77,8 @@ export function useSurfCamps(): UseSurfCampsResult {
     surfCamps,
     loading,
     error,
-    refetch: fetchSurfCamps,
+    refetch: () => { fetchSurfCamps(); },
   };
 }
 
-// Mock data fallback
-function getMockSurfCamps(): SurfWeek[] {
-  return [
-    {
-      id: 'surf-camp-1',
-      name: 'Beginner Surf Week - Costa Rica',
-      description: 'Perfect introduction to surfing with professional coaching and beautiful waves.',
-      startDate: '2024-02-15',
-      endDate: '2024-02-22',
-      maxParticipants: 12,
-      price: 899,
-      level: 'beginner',
-      includes: [
-        '7 nights accommodation',
-        'Daily surf lessons',
-        'All meals included',
-        'Equipment rental',
-        'Transportation to surf spots',
-        'Professional photography'
-      ],
-      images: ['/room1.jpg'],
-      isActive: true,
-    },
-    {
-      id: 'surf-camp-2',
-      name: 'Intermediate Surf Week - Morocco',
-      description: 'Take your surfing to the next level with advanced coaching in Morocco.',
-      startDate: '2024-03-10',
-      endDate: '2024-03-17',
-      maxParticipants: 10,
-      price: 799,
-      level: 'intermediate',
-      includes: [
-        '7 nights accommodation',
-        'Advanced surf coaching',
-        'All meals included',
-        'Premium equipment',
-        'Video analysis sessions',
-        'Cultural activities'
-      ],
-      images: ['/room2.webp'],
-      isActive: true,
-    },
-    {
-      id: 'surf-camp-3',
-      name: 'Advanced Surf Week - Portugal',
-      description: 'Expert-level coaching for experienced surfers in world-class waves.',
-      startDate: '2024-04-05',
-      endDate: '2024-04-12',
-      maxParticipants: 8,
-      price: 1099,
-      level: 'advanced',
-      includes: [
-        '7 nights luxury accommodation',
-        'Expert surf coaching',
-        'Gourmet meals',
-        'Professional equipment',
-        'Personal video analysis',
-        'Exclusive surf spots access'
-      ],
-      images: ['/room3.webp'],
-      isActive: true,
-    },
-  ];
-}
+// No more mock data - always use real database data

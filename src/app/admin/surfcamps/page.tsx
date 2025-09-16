@@ -197,6 +197,7 @@ const DropZone: React.FC<DropZoneProps> = ({ onDrop, children, className = '' })
 export default function SurfCampsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCamp, setSelectedCamp] = useState<AdminSurfCamp | null>(null);
   const [assignedClients, setAssignedClients] = useState<string[]>([]);
   const [assignedRooms, setAssignedRooms] = useState<string[]>([]);
@@ -370,8 +371,30 @@ export default function SurfCampsPage() {
     return campBookings.reduce((total, booking) => total + booking.clientIds.length, 0);
   };
 
-  // Form for creating/editing surf camps
+  // Form for creating surf camps
   const form = useForm<SurfCampFormData>({
+    resolver: zodResolver(SurfCampFormSchema),
+    defaultValues: {
+      category: 'FR',
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      availableRooms: [],
+      occupancy: 1,
+      name: '',
+      description: '',
+      maxParticipants: 12,
+      price: 599,
+      level: 'all',
+      includes: [],
+      images: [],
+      isActive: true,
+      foodPreferences: [],
+      allergiesInfo: [],
+    },
+  });
+
+  // Form for editing surf camps
+  const editForm = useForm<SurfCampFormData>({
     resolver: zodResolver(SurfCampFormSchema),
     defaultValues: {
       category: 'FR',
@@ -561,6 +584,43 @@ export default function SurfCampsPage() {
     setAssignedClients([]);
     setAssignedRooms(camp.availableRooms || []);
     setShowDetailsModal(true);
+  };
+
+  const openEditModal = (camp: AdminSurfCamp) => {
+    setSelectedCamp(camp);
+    // Populate edit form with current camp data
+    editForm.reset({
+      category: camp.category || 'HH',
+      startDate: camp.startDate,
+      endDate: camp.endDate,
+      availableRooms: camp.availableRooms || [],
+      occupancy: camp.occupancy || camp.maxParticipants,
+      name: camp.name,
+      description: camp.description,
+      maxParticipants: camp.maxParticipants,
+      price: camp.price,
+      level: camp.level,
+      includes: camp.includes || [],
+      images: camp.images || [],
+      isActive: camp.isActive,
+      foodPreferences: camp.foodPreferences || [],
+      allergiesInfo: camp.allergiesInfo || [],
+    });
+    setShowEditModal(true);
+  };
+
+  const handleEditCamp = async (data: SurfCampFormData) => {
+    if (!selectedCamp) return;
+
+    try {
+      await handleUpdateCamp(selectedCamp.id, data);
+      setShowEditModal(false);
+      // Refresh the camps list
+      fetchSurfCamps();
+      editForm.reset();
+    } catch (error) {
+      console.error('Error updating surf camp:', error);
+    }
   };
 
   const formatDate = (timestamp: Date | string | null | undefined) => {
@@ -824,7 +884,7 @@ export default function SurfCampsPage() {
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                openDetailsModal(camp);
+                                openEditModal(camp);
                               }}
                             >
                               <Edit className="w-4 h-4" />
@@ -1040,6 +1100,201 @@ export default function SurfCampsPage() {
                 </div>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Surf Camp Modal */}
+        <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Surf Camp</DialogTitle>
+              <DialogDescription>
+                Update the surf camp details, dates, and settings.
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...editForm}>
+              <form onSubmit={editForm.handleSubmit(handleEditCamp)} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={editForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Camp Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter camp name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editForm.control}
+                    name="level"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Skill Level</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select level" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="beginner">Beginner</SelectItem>
+                            <SelectItem value="intermediate">Intermediate</SelectItem>
+                            <SelectItem value="advanced">Advanced</SelectItem>
+                            <SelectItem value="all">All Levels</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={editForm.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Describe the surf camp experience..."
+                          className="min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={editForm.control}
+                    name="startDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Start Date</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            value={field.value ? field.value.toISOString().split('T')[0] : ''}
+                            onChange={(e) => {
+                              const date = e.target.value ? new Date(e.target.value) : null;
+                              if (date) {
+                                field.onChange(date);
+                                // Auto-set end date to 7 days later
+                                const endDate = new Date(date.getTime() + 7 * 24 * 60 * 60 * 1000);
+                                editForm.setValue('endDate', endDate);
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editForm.control}
+                    name="endDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>End Date</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            value={field.value ? field.value.toISOString().split('T')[0] : ''}
+                            onChange={(e) => {
+                              const date = e.target.value ? new Date(e.target.value) : null;
+                              if (date) field.onChange(date);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={editForm.control}
+                    name="maxParticipants"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Max Participants</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="1"
+                            max="50"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={editForm.control}
+                    name="price"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Price (€)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            {...field}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={editForm.control}
+                  name="isActive"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Active</FormLabel>
+                        <p className="text-sm text-muted-foreground">
+                          Make this surf camp available for booking
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowEditModal(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit">
+                    Update Surf Camp
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </DialogContent>
         </Dialog>
       </div>
