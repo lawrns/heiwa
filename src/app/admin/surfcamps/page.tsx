@@ -19,6 +19,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -587,26 +588,32 @@ export default function SurfCampsPage() {
   };
 
   const openEditModal = (camp: AdminSurfCamp) => {
-    setSelectedCamp(camp);
-    // Populate edit form with current camp data
-    editForm.reset({
-      category: camp.category || 'HH',
-      startDate: camp.startDate,
-      endDate: camp.endDate,
-      availableRooms: camp.availableRooms || [],
-      occupancy: camp.occupancy || camp.maxParticipants,
-      name: camp.name,
-      description: camp.description,
-      maxParticipants: camp.maxParticipants,
-      price: camp.price,
-      level: camp.level,
-      includes: camp.includes || [],
-      images: camp.images || [],
-      isActive: camp.isActive,
-      foodPreferences: camp.foodPreferences || [],
-      allergiesInfo: camp.allergiesInfo || [],
-    });
-    setShowEditModal(true);
+    console.log('openEditModal called with camp:', camp);
+    try {
+      setSelectedCamp(camp);
+      // Populate edit form with current camp data
+      editForm.reset({
+        category: camp.category || 'HH',
+        startDate: camp.startDate,
+        endDate: camp.endDate,
+        availableRooms: camp.availableRooms || [],
+        occupancy: camp.occupancy || camp.maxParticipants,
+        name: camp.name,
+        description: camp.description,
+        maxParticipants: camp.maxParticipants,
+        price: camp.price,
+        level: camp.level,
+        includes: camp.includes || [],
+        images: camp.images || [],
+        isActive: camp.isActive,
+        foodPreferences: camp.foodPreferences || [],
+        allergiesInfo: camp.allergiesInfo || [],
+      });
+      console.log('Setting showEditModal to true');
+      setShowEditModal(true);
+    } catch (error) {
+      console.error('Error in openEditModal:', error);
+    }
   };
 
   const handleEditCamp = async (data: SurfCampFormData) => {
