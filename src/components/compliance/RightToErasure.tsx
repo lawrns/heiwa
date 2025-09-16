@@ -83,44 +83,10 @@ export default function RightToErasure() {
 
   const fetchClients = async () => {
     try {
-      // Mock data - will be replaced with real Firestore queries
-      const mockClients: ClientData[] = [
-        {
-          id: '1',
-          name: 'John Doe',
-          email: 'john.doe@email.com',
-          phone: '+1-555-0123',
-          createdAt: new Date('2023-06-15'),
-          lastBooking: new Date('2024-01-10'),
-          totalBookings: 5,
-          totalSpent: 2500,
-          hasActiveBookings: true
-        },
-        {
-          id: '2',
-          name: 'Jane Smith',
-          email: 'jane.smith@email.com',
-          phone: '+1-555-0456',
-          createdAt: new Date('2023-08-22'),
-          lastBooking: new Date('2024-01-08'),
-          totalBookings: 3,
-          totalSpent: 1800,
-          hasActiveBookings: false
-        },
-        {
-          id: '3',
-          name: 'Mike Johnson',
-          email: 'mike.j@email.com',
-          phone: '+1-555-0789',
-          createdAt: new Date('2023-09-10'),
-          lastBooking: new Date('2024-01-05'),
-          totalBookings: 8,
-          totalSpent: 4200,
-          hasActiveBookings: true
-        }
-      ]
+      // TODO: Implement real client data fetching from database
+      const realClients: ClientData[] = []
 
-      setClients(mockClients)
+      setClients(realClients)
     } catch (error) {
       console.error('Failed to fetch clients:', error)
       toast.error('Failed to load client data')
@@ -129,32 +95,10 @@ export default function RightToErasure() {
 
   const fetchErasureRequests = async () => {
     try {
-      // Mock data - will be replaced with real Firestore queries
-      const mockRequests: ErasureRequest[] = [
-        {
-          id: 'erase1',
-          clientId: '2',
-          clientEmail: 'jane.smith@email.com',
-          clientName: 'Jane Smith',
-          requestedAt: new Date('2024-01-12T09:15:00'),
-          status: 'completed',
-          approvedBy: 'admin@heiwa.house',
-          approvedAt: new Date('2024-01-12T10:30:00'),
-          completedAt: new Date('2024-01-12T11:00:00'),
-          dataCategories: ['personal_info', 'booking_history', 'payment_data']
-        },
-        {
-          id: 'erase2',
-          clientId: '1',
-          clientEmail: 'john.doe@email.com',
-          clientName: 'John Doe',
-          requestedAt: new Date('2024-01-14T16:45:00'),
-          status: 'pending',
-          dataCategories: ['personal_info', 'communication_history']
-        }
-      ]
+      // TODO: Implement real erasure request fetching from database
+      const realRequests: ErasureRequest[] = []
 
-      setErasureRequests(mockRequests)
+      setErasureRequests(realRequests)
     } catch (error) {
       console.error('Failed to fetch erasure requests:', error)
     } finally {

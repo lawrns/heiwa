@@ -261,16 +261,10 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
         setLoading(false)
       } catch (error) {
         console.error('Error fetching assignment data:', error)
-        // Fallback to mock data if API fails
-        const mockParticipants: Participant[] = [
-          { id: 'p1', name: 'Sarah Johnson', email: 'sarah@email.com', surfLevel: 'intermediate', bookingId: 'b1' },
-          { id: 'p2', name: 'Marcus Rodriguez', email: 'marcus@email.com', surfLevel: 'advanced', bookingId: 'b2' },
-          { id: 'p3', name: 'Emily Chen', email: 'emily@email.com', surfLevel: 'beginner', bookingId: 'b3' },
-          { id: 'p4', name: 'David Thompson', email: 'david@email.com', surfLevel: 'intermediate', bookingId: 'b4' },
-        ]
-
-        setParticipants(mockParticipants)
-        setRooms([]) // No rooms if API fails
+        // No fallback - show error state instead of mock data
+        setParticipants([])
+        setRooms([])
+        setAssignments([])
         setLoading(false)
       }
     }

@@ -55,83 +55,15 @@ export default function ClientBookings() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'my-bookings' | 'available-camps'>('my-bookings')
 
-  // Mock data
+  // TODO: Implement real booking data fetching from database
   useEffect(() => {
-    const mockBookings: Booking[] = [
-      {
-        id: '1',
-        campName: 'Beginner Surf Camp',
-        startDate: '2024-02-15',
-        endDate: '2024-02-20',
-        status: 'confirmed',
-        location: 'Heiwa House, Costa Rica',
-        participants: 2,
-        totalAmount: 1200,
-        description: 'Perfect for beginners with daily lessons and equipment included',
-        brand: 'Heiwa House'
-      },
-      {
-        id: '2',
-        campName: 'Advanced Surf Camp',
-        startDate: '2024-03-10',
-        endDate: '2024-03-17',
-        status: 'pending',
-        location: 'Freedom Routes, Nicaragua',
-        participants: 1,
-        totalAmount: 800,
-        description: 'Advanced techniques and big wave training',
-        brand: 'Freedom Routes'
-      },
-      {
-        id: '3',
-        campName: 'Family Surf Camp',
-        startDate: '2024-01-05',
-        endDate: '2024-01-12',
-        status: 'completed',
-        location: 'Heiwa House, Costa Rica',
-        participants: 4,
-        totalAmount: 2400,
-        description: 'Family-friendly camp with activities for all ages',
-        brand: 'Heiwa House'
-      }
-    ]
-
-    const mockAvailableCamps: AvailableCamp[] = [
-      {
-        id: '4',
-        name: 'Intermediate Surf Camp',
-        location: 'Heiwa House, Costa Rica',
-        duration: '7 days',
-        price: 900,
-        description: 'Take your surfing to the next level with intermediate techniques',
-        brand: 'Heiwa House',
-        availableDates: ['2024-04-01', '2024-04-15', '2024-05-01']
-      },
-      {
-        id: '5',
-        name: 'Yoga & Surf Retreat',
-        location: 'Freedom Routes, Nicaragua',
-        duration: '10 days',
-        price: 1400,
-        description: 'Combine surfing with daily yoga sessions for mind and body wellness',
-        brand: 'Freedom Routes',
-        availableDates: ['2024-04-20', '2024-05-10', '2024-06-01']
-      },
-      {
-        id: '6',
-        name: 'Pro Surf Training',
-        location: 'Freedom Routes, Nicaragua',
-        duration: '14 days',
-        price: 2200,
-        description: 'Intensive training for competitive surfers',
-        brand: 'Freedom Routes',
-        availableDates: ['2024-05-15', '2024-06-15', '2024-07-01']
-      }
-    ]
+    // For now, show empty state until real booking system is implemented
+    const realBookings: Booking[] = []
+    const realAvailableCamps: AvailableCamp[] = []
 
     setTimeout(() => {
-      setBookings(mockBookings)
-      setAvailableCamps(mockAvailableCamps)
+      setBookings(realBookings)
+      setAvailableCamps(realAvailableCamps)
       setLoading(false)
     }, 1000)
   }, [])
