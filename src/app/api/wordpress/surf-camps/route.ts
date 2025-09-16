@@ -12,13 +12,20 @@ function createSupabase() {
     hasUrl: !!url,
     hasKey: !!key,
     urlPrefix: url ? url.substring(0, 20) + '...' : 'missing',
-    keyPrefix: key ? key.substring(0, 10) + '...' : 'missing'
+    keyPrefix: key ? key.substring(0, 10) + '...' : 'missing',
+    nodeEnv: process.env.NODE_ENV,
+    platform: process.env.NETLIFY ? 'netlify' : 'other'
   });
 
   if (!url || !key) {
     console.error('WordPress surf-camps API: Missing Supabase environment variables', {
       NEXT_PUBLIC_SUPABASE_URL: !!url,
-      SUPABASE_SERVICE_ROLE_KEY: !!key
+      SUPABASE_SERVICE_ROLE_KEY: !!key,
+      nodeEnv: process.env.NODE_ENV,
+      platform: process.env.NETLIFY ? 'netlify' : 'other',
+      availableEnvVars: Object.keys(process.env).filter(key =>
+        key.includes('SUPABASE') || key.includes('WORDPRESS')
+      )
     });
     return null as any;
   }
@@ -74,16 +81,38 @@ export async function GET(request: NextRequest) {
       const debugInfo = {
         hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
         hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-        nodeEnv: process.env.NODE_ENV
+        nodeEnv: process.env.NODE_ENV,
+        platform: process.env.NETLIFY ? 'netlify' : 'other',
+        timestamp: new Date().toISOString(),
+        availableEnvVars: Object.keys(process.env).filter(key =>
+          key.includes('SUPABASE') || key.includes('WORDPRESS')
+        ),
+        requiredEnvVars: {
+          NEXT_PUBLIC_SUPABASE_URL: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+          SUPABASE_SERVICE_ROLE_KEY: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+          WORDPRESS_API_KEY: !!process.env.WORDPRESS_API_KEY
+        }
       };
 
-      return NextResponse.json({
+      const response = NextResponse.json({
         success: false,
         error: 'Database connection not available',
-        message: 'Supabase client could not be initialized - check environment variables',
-        debug: process.env.NODE_ENV === 'development' ? debugInfo : undefined,
-        data: { surf_camps: [], total_count: 0 }
+        message: 'Supabase client could not be initialized - check environment variables in Netlify deployment settings',
+        debug: debugInfo, // Always include debug info for production troubleshooting
+        data: { surf_camps: [], total_count: 0 },
+        instructions: process.env.NODE_ENV === 'production' ? {
+          netlify_setup: 'Configure environment variables in Netlify Site Settings > Environment Variables',
+          required_vars: ['NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'WORDPRESS_API_KEY'],
+          debug_endpoint: '/api/debug/surf-camps'
+        } : undefined
       }, { status: 500 });
+
+      // Add CORS headers
+      response.headers.set('Access-Control-Allow-Origin', '*');
+      response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, X-Heiwa-API-Key');
+
+      return response;
     }
 
     let query = client
