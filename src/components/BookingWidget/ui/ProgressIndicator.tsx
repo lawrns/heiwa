@@ -25,7 +25,7 @@ export function ProgressIndicator({ currentStep, stepFlow, totalSteps }: Progres
   return (
     <div className="w-full px-4">
       {/* Mobile-optimized stepper with horizontal scroll */}
-      <div className="overflow-x-auto pb-2">
+      <div className="overflow-x-auto py-4">
         <div className="flex items-center justify-center relative min-w-max px-4">
           {currentStepFlow.map((stepType, index) => {
             const stepNumber = index + 1;

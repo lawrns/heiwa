@@ -58,7 +58,7 @@ interface DraggableParticipantProps {
 const DraggableParticipant: React.FC<DraggableParticipantProps> = memo(({ participant }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: ItemTypes.PARTICIPANT,
-    item: () => ({ type: ItemTypes.PARTICIPANT, id: participant.id }),
+    item: { type: ItemTypes.PARTICIPANT, id: participant.id },
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
@@ -67,7 +67,7 @@ const DraggableParticipant: React.FC<DraggableParticipantProps> = memo(({ partic
 
   return (
     <div
-      ref={drag as any}
+      ref={drag}
       className={`p-3 bg-white border rounded-lg cursor-move transition-all ${
         isDragging ? 'opacity-50 shadow-lg' : 'hover:shadow-md'
       }`}
@@ -125,7 +125,7 @@ const DroppableRoom: React.FC<DroppableRoomProps> = memo(({
 
   return (
     <motion.div
-      ref={drop as any}
+      ref={drop}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={`border-2 border-dashed rounded-lg p-4 min-h-[200px] transition-all ${

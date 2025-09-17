@@ -3,6 +3,7 @@ import { MapPin, Users, Star, Check, Clock, Wifi, Car, Utensils, Calendar, Minus
 import { BookingState, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
+import { useDateAvailability } from '../hooks/useDateAvailability';
 import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
 
 interface OptionSelectionProps {
@@ -23,6 +24,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     guests: state.guests,
   });
   const { surfCamps, loading: campsLoading, error: campsError } = useSurfCamps();
+  const {
+    fetchDateAvailability,
+    isDateSoldOut,
+    loading: dateAvailabilityLoading
+  } = useDateAvailability({ participants: state.guests });
   const [selectedOption, setSelectedOption] = useState<string | null>(state.selectedOption);
 
   // Image gallery state
@@ -38,6 +44,18 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const [checkOutDate, setCheckOutDate] = useState(
     state.dates.checkOut?.toISOString().split('T')[0] || ''
   );
+
+  // Fetch date availability for the next 3 months when component mounts
+  useEffect(() => {
+    const today = new Date();
+    const threeMonthsLater = new Date();
+    threeMonthsLater.setMonth(today.getMonth() + 3);
+
+    const startDate = today.toISOString().split('T')[0];
+    const endDate = threeMonthsLater.toISOString().split('T')[0];
+
+    fetchDateAvailability(startDate, endDate);
+  }, [fetchDateAvailability]);
 
   // For surf weeks, if a surf week was already selected in step 2, auto-select it here
   if (state.experienceType === 'surf-week' && state.selectedSurfWeek && !state.selectedOption) {
@@ -236,32 +254,74 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <label htmlFor="check-in" className="block text-sm font-medium text-gray-700">
                   Check-in
                 </label>
-                <input
-                  id="check-in"
-                  type="date"
-                  value={checkInDate}
-                  min={new Date().toISOString().split('T')[0]}
-                  onChange={(e) => handleCheckInChange(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    id="check-in"
+                    type="date"
+                    value={checkInDate}
+                    min={new Date().toISOString().split('T')[0]}
+                    onChange={(e) => handleCheckInChange(e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 ${
+                      checkInDate && isDateSoldOut(checkInDate)
+                        ? 'border-red-300 bg-red-50 text-red-700'
+                        : 'border-gray-300'
+                    }`}
+                    required
+                  />
+                  {checkInDate && isDateSoldOut(checkInDate) && (
+                    <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
+                      <span className="text-red-500 text-sm font-medium">Sold Out</span>
+                    </div>
+                  )}
+                </div>
+                {checkInDate && isDateSoldOut(checkInDate) && (
+                  <p className="text-sm text-red-600 flex items-center gap-1">
+                    <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                    This date is fully booked. Please select another date.
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="check-out" className="block text-sm font-medium text-gray-700">
                   Check-out
                 </label>
-                <input
-                  id="check-out"
-                  type="date"
-                  value={checkOutDate}
-                  min={checkInDate || new Date().toISOString().split('T')[0]}
-                  onChange={(e) => handleCheckOutChange(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
-                  required
-                />
+                <div className="relative">
+                  <input
+                    id="check-out"
+                    type="date"
+                    value={checkOutDate}
+                    min={checkInDate || new Date().toISOString().split('T')[0]}
+                    onChange={(e) => handleCheckOutChange(e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 ${
+                      checkOutDate && isDateSoldOut(checkOutDate)
+                        ? 'border-red-300 bg-red-50 text-red-700'
+                        : 'border-gray-300'
+                    }`}
+                    required
+                  />
+                  {checkOutDate && isDateSoldOut(checkOutDate) && (
+                    <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
+                      <span className="text-red-500 text-sm font-medium">Sold Out</span>
+                    </div>
+                  )}
+                </div>
+                {checkOutDate && isDateSoldOut(checkOutDate) && (
+                  <p className="text-sm text-red-600 flex items-center gap-1">
+                    <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                    This date is fully booked. Please select another date.
+                  </p>
+                )}
               </div>
             </div>
+
+            {/* Date Availability Loading Indicator */}
+            {dateAvailabilityLoading && (
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                Checking date availability...
+              </div>
+            )}
           </div>
 
           {/* Guest Counter */}
@@ -495,25 +555,168 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           })}
         </div>
       ) : (
-        /* Room Booking - Only show availability message, not room options */
+        /* Room Booking - Show available rooms for selection */
         <div className="space-y-6">
           {state.dates.checkIn && state.dates.checkOut && state.guests > 0 ? (
-            <div className="text-center p-8 bg-green-50 rounded-xl border border-green-200">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Check size={24} className="text-green-600" />
-              </div>
-              <h4 className="text-lg font-semibold text-green-900 mb-2">Dates & Guests Selected</h4>
-              <p className="text-green-700 mb-4">
-                {state.guests} guest{state.guests !== 1 ? 's' : ''} • {Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} night{Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) !== 1 ? 's' : ''}
-              </p>
-              <p className="text-sm text-green-600">
-                {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
-              </p>
-              <div className="mt-6 p-4 bg-white rounded-lg border border-green-200">
-                <p className="text-sm text-gray-600">
-                  <strong>Next:</strong> You'll be able to choose from available rooms that match your dates and guest count.
+            <div className="space-y-6">
+              {/* Booking Summary */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-900 mb-2">Your Selection</h4>
+                <p className="text-blue-700 text-sm">
+                  {state.guests} guest{state.guests !== 1 ? 's' : ''} • {Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} night{Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) !== 1 ? 's' : ''} • {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
                 </p>
               </div>
+
+              {/* Room Selection */}
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
+                  <p className="mt-2 text-gray-600">Loading available rooms...</p>
+                </div>
+              ) : options.length > 0 ? (
+                <div className="space-y-4">
+                  {(options as any[]).map((option: any, index: number) => {
+                    const isSelected = selectedOption === option.id;
+                    const totalPrice = calculateTotalPrice(option);
+                    const amenities = option.amenities;
+                    // Enhanced room assignment: All rooms are selectable regardless of capacity
+                    const canAccommodate = true;
+                    const exceedsCapacity = false;
+
+                    return (
+                      <button
+                        key={option.id}
+                        onClick={() => handleOptionSelect(option.id)}
+                        disabled={false}
+                        className={`
+                          w-full p-6 rounded-xl border-2 text-left
+                          transition-all duration-300 ease-out
+                          focus:outline-none focus:ring-4 focus:ring-orange-500/30
+                          animate-in fade-in-0 slide-in-from-bottom-4
+                          ${isSelected
+                            ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
+                            : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1'
+                          }
+                        `}
+                        style={{ animationDelay: `${index * 100}ms` }}
+                      >
+                        <div className="flex gap-6">
+                          {/* Enhanced Hero Image */}
+                          <div className="flex-shrink-0">
+                            {option.images && option.images.length > 0 ? (
+                              <RoomHeroImage
+                                image={option.images[0]}
+                                roomName={option.name}
+                                onClick={() => openGallery(option)}
+                                className="w-32 h-24"
+                              />
+                            ) : (
+                              <div className="w-32 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                                <div className="text-white text-2xl font-bold">
+                                  {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Content */}
+                          <div className="flex-1 space-y-3">
+                            {/* Title and Price */}
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                                  {option.name}
+                                </h4>
+                                <p className="text-sm text-gray-600 line-clamp-2">
+                                  {option.description}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-2xl font-bold text-orange-600">
+                                  {typeof totalPrice === 'number' && !Number.isNaN(totalPrice)
+                                    ? formatPrice(totalPrice)
+                                    : (state.experienceType === 'room' ? 'Select dates' : (option.price ? formatPrice(option.price) : '—'))}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {state.experienceType === 'room'
+                                    ? (state.dates.checkIn && state.dates.checkOut ? `for ${Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} night${Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) > 1 ? 's' : ''}` : 'per night')
+                                    : 'per person'
+                                  }
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Details */}
+                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                              <>
+                                <div className="flex items-center gap-1">
+                                  <Users size={14} />
+                                  <span>Up to {option.maxOccupancy} guests</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <MapPin size={14} />
+                                  <span className="capitalize">{option.type} room</span>
+                                </div>
+                              </>
+                            </div>
+
+                            {/* Amenities/Includes */}
+                            {amenities && amenities.length > 0 && (
+                              <div className="flex flex-wrap gap-2">
+                                {amenities.slice(0, 4).map((amenity: string, index: number) => (
+                                  <span
+                                    key={index}
+                                    className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full"
+                                  >
+                                    {getAmenityIcon(amenity)}
+                                    {amenity}
+                                  </span>
+                                ))}
+                                {amenities.length > 4 && (
+                                  <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full">
+                                    +{amenities.length - 4} more
+                                  </span>
+                                )}
+                              </div>
+                            )}
+
+                            {/* View Photos Button */}
+                            {option.images && option.images.length > 0 && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openGallery(option);
+                                }}
+                                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
+                              >
+                                📸 View {option.images.length} Photo{option.images.length > 1 ? 's' : ''}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Selection Indicator */}
+                        {isSelected && (
+                          <div className="mt-4 flex items-center gap-2 text-orange-600">
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                            <span className="text-sm font-medium">Selected</span>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center p-8 bg-gray-50 rounded-xl border border-gray-200">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Calendar size={24} className="text-gray-400" />
+                  </div>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">No Rooms Available</h4>
+                  <p className="text-gray-600">
+                    No rooms are available for your selected dates. Please try different dates.
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center p-8 bg-gray-50 rounded-xl border border-gray-200">

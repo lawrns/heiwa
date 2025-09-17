@@ -10,7 +10,7 @@ interface ReviewAndPayProps {
     updatePricing: (pricing: PricingBreakdown) => void;
     setPaymentMethod: (method: 'card_stripe' | 'bank_wire') => void;
   };
-  onComplete: () => void;
+  onComplete: (bookingData?: any) => void;
 }
 
 export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) {
@@ -123,7 +123,20 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         throw new Error(data?.error || `Request failed (${res.status})`);
       }
 
-      onComplete();
+      console.log('✅ Booking created successfully:', {
+        bookingId: data.data?.booking?.id,
+        paymentLink: data.data?.payment?.payment_link,
+        paymentMethod: state.paymentMethod
+      });
+
+      // Handle payment flow based on method
+      if (state.paymentMethod === 'card_stripe' && data.data?.payment?.payment_link) {
+        // Redirect to Stripe checkout
+        window.location.href = data.data.payment.payment_link;
+      } else {
+        // For bank wire or if no payment link, show success with booking data
+        onComplete(data.data);
+      }
     } catch (error: any) {
       setPaymentError(error?.message || 'Payment failed. Please try again.');
     } finally {

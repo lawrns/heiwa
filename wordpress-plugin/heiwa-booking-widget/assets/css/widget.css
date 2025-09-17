@@ -474,6 +474,7 @@
   align-items: center;
   gap: var(--heiwa-space-4);
   margin-bottom: var(--heiwa-space-6);
+  padding: var(--heiwa-space-4) 0;
 }
 
 .heiwa-step {
@@ -2833,6 +2834,62 @@ body.heiwa-modal-open {
 .heiwa-booking-step.current:hover {
   transform: scale(1.05);
   transition: all 0.2s ease;
+}
+
+/* ===========================================
+   DATE AVAILABILITY INDICATORS
+   =========================================== */
+
+/* Sold out date input styling */
+.heiwa-form-input.heiwa-date-sold-out {
+  border-color: #dc2626;
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.heiwa-form-input.heiwa-date-sold-out:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Date availability indicator */
+.heiwa-date-availability-indicator {
+  margin-top: var(--heiwa-space-2);
+}
+
+.heiwa-date-availability-indicator.heiwa-sold-out {
+  padding: var(--heiwa-space-2) var(--heiwa-space-3);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--heiwa-radius-lg);
+}
+
+.heiwa-sold-out-badge {
+  display: inline-block;
+  background: #dc2626;
+  color: white;
+  font-size: var(--heiwa-text-xs);
+  font-weight: var(--heiwa-font-semibold);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: var(--heiwa-space-1);
+}
+
+.heiwa-sold-out-message {
+  display: flex;
+  align-items: center;
+  gap: var(--heiwa-space-2);
+  font-size: var(--heiwa-text-sm);
+  color: #dc2626;
+  margin: 0;
+}
+
+.heiwa-indicator-dot {
+  width: 8px;
+  height: 8px;
+  background: #dc2626;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 /* Sticky summary enhancement */

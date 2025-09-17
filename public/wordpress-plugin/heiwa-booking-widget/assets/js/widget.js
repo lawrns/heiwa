@@ -528,6 +528,107 @@
         }
 
         updateStepProgress();
+
+        // Check if the selected date is sold out
+        checkDateAvailability(dateValue);
+    }
+
+    // Store date availability data
+    let dateAvailabilityCache = new Map();
+    let dateAvailabilityLoading = false;
+
+    /**
+     * Fetch date availability for a range of dates
+     */
+    function fetchDateAvailability(startDate, endDate, participants = 1) {
+        const cacheKey = `${startDate}-${endDate}-${participants}`;
+
+        // Check cache first (5 minute cache)
+        const cached = dateAvailabilityCache.get(cacheKey);
+        if (cached && Date.now() - cached.timestamp < 5 * 60 * 1000) {
+            return Promise.resolve(cached.data);
+        }
+
+        if (dateAvailabilityLoading) {
+            return Promise.resolve([]);
+        }
+
+        dateAvailabilityLoading = true;
+
+        const params = new URLSearchParams({
+            start_date: startDate,
+            end_date: endDate,
+            participants: participants.toString()
+        });
+
+        return makeAPIRequest(`/dates/availability?${params}`)
+            .then(response => {
+                dateAvailabilityLoading = false;
+
+                if (response && response.success && response.data && response.data.date_availability) {
+                    const availability = response.data.date_availability;
+
+                    // Cache the result
+                    dateAvailabilityCache.set(cacheKey, {
+                        data: availability,
+                        timestamp: Date.now()
+                    });
+
+                    return availability;
+                }
+                return [];
+            })
+            .catch(error => {
+                dateAvailabilityLoading = false;
+                console.error('Heiwa Booking Widget: Date availability fetch error:', error);
+                return [];
+            });
+    }
+
+    /**
+     * Check if a specific date is sold out
+     */
+    function isDateSoldOut(date) {
+        for (const [key, cached] of dateAvailabilityCache.entries()) {
+            if (Date.now() - cached.timestamp < 5 * 60 * 1000) {
+                const dateInfo = cached.data.find(d => d.date === date);
+                if (dateInfo) {
+                    return !dateInfo.available;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check availability for a specific date and show visual indicators
+     */
+    function checkDateAvailability(date) {
+        if (!date) return;
+
+        const $input = $(`input[value="${date}"]`);
+        if ($input.length === 0) return;
+
+        // Remove existing indicators
+        $input.removeClass('heiwa-date-sold-out');
+        $input.siblings('.heiwa-date-availability-indicator').remove();
+
+        if (isDateSoldOut(date)) {
+            // Add sold out styling
+            $input.addClass('heiwa-date-sold-out');
+
+            // Add visual indicator
+            const indicator = `
+                <div class="heiwa-date-availability-indicator heiwa-sold-out">
+                    <span class="heiwa-sold-out-badge">Sold Out</span>
+                    <p class="heiwa-sold-out-message">
+                        <span class="heiwa-indicator-dot"></span>
+                        This date is fully booked. Please select another date.
+                    </p>
+                </div>
+            `;
+            $input.after(indicator);
+        }
     }
 
     /**
@@ -681,6 +782,30 @@
         setTimeout(function() {
             setupDatePickers();
         }, 100);
+
+        // Initialize date availability for the next 3 months
+        initializeDateAvailability();
+    }
+
+    /**
+     * Initialize date availability data for the next 3 months
+     */
+    function initializeDateAvailability() {
+        const today = new Date();
+        const threeMonthsLater = new Date();
+        threeMonthsLater.setMonth(today.getMonth() + 3);
+
+        const startDate = today.toISOString().split('T')[0];
+        const endDate = threeMonthsLater.toISOString().split('T')[0];
+
+        // Fetch availability data in the background
+        fetchDateAvailability(startDate, endDate, 1)
+            .then(availability => {
+                console.log('Heiwa Booking Widget: Date availability loaded for', availability.length, 'dates');
+            })
+            .catch(error => {
+                console.warn('Heiwa Booking Widget: Failed to load date availability:', error);
+            });
     }
 
     /**

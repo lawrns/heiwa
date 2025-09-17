@@ -82,7 +82,7 @@ export function BookingWidget({ className = '' }: BookingWidgetProps) {
       {/* Trigger Button */}
       <button
         onClick={openWidget}
-        className="relative z-50 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-orange-500/30 animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-300 group"
+        className="fixed top-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-orange-500/30 animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-300"
         aria-label="Open booking widget"
       >
         <Calendar size={18} className="transition-transform duration-300 group-hover:rotate-12" />

@@ -1,4 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+function createSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null as any;
+  return createClient(url, key);
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -27,7 +38,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Week ID and assignments are required' }, { status: 400 })
     }
 
-    const supabase = createClient()
+    const supabase = createSupabase()
 
     // Delete existing assignments for this week
     const { error: deleteError } = await supabase

@@ -37,14 +37,24 @@ export default function WordPressWidgetTestPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Simulate WordPress site header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white shadow-sm border-b relative">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900">
               WordPress Site with Heiwa Widget
             </h1>
-            <div className="text-sm text-gray-600">
-              React Widget Integration Test
+            <div className="flex items-center gap-6">
+              <div className="text-sm text-gray-600">
+                React Widget Integration Test
+              </div>
+              {/* Book Now Button positioned in header like a menu item */}
+              <div className="relative">
+                <StandaloneWidget
+                  config={wpConfig}
+                  containerId="heiwa-booking-widget-header"
+                  className="wordpress-integration-header"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -85,18 +95,21 @@ export default function WordPressWidgetTestPage() {
           </p>
           
           {/* React Widget Container - This simulates WordPress shortcode output */}
-          <div 
-            id="heiwa-booking-widget-test" 
+          <div
+            id="heiwa-booking-widget-test"
             className="heiwa-react-widget-container heiwa-position-inline"
             data-widget-id="test-widget"
             data-build-id="react-widget-1757864064024"
           >
-            {/* Actual React Widget - Same as the working widget at /widget-new/ */}
-            <StandaloneWidget
-              config={wpConfig}
-              containerId="heiwa-booking-widget-test"
-              className="wordpress-integration-test"
-            />
+            {/* Widget moved to header - this shows the shortcode integration concept */}
+            <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <p className="text-gray-600 mb-2">
+                <strong>Widget Active:</strong> The booking widget is now displayed in the header
+              </p>
+              <p className="text-sm text-gray-500">
+                Click the "Book Now" button in the top right corner to open the widget
+              </p>
+            </div>
           </div>
         </div>
 

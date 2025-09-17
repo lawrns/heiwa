@@ -584,14 +584,14 @@ body.heiwa-modal-open {
   background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
 }
 
-/* Stepper container - fix cramped spacing */
+/* Stepper container - fix cramped spacing and accommodate scaled circles */
 .heiwa-booking-stepper {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--heiwa-space-2);
   overflow-x: auto;
-  padding: var(--heiwa-space-2) 0;
+  padding: var(--heiwa-space-4) 0;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }

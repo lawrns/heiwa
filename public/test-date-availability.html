@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Availability Test - Heiwa Booking Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .date-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .sold-out {
+            border-color: #dc2626 !important;
+            background-color: #fef2f2 !important;
+            color: #dc2626 !important;
+        }
+        .availability-indicator {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            color: #dc2626;
+            font-size: 14px;
+        }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>🏄‍♂️ Heiwa Date Availability Test</h1>
+    
+    <div class="test-section">
+        <h2>📅 Date Availability API Test</h2>
+        <p>Testing the new date availability endpoint and visual indicators.</p>
+        
+        <div id="api-test-result" class="test-result info">
+            <span class="loading"></span> Testing API endpoint...
+        </div>
+        
+        <h3>Test Date Inputs</h3>
+        <div>
+            <label for="test-checkin">Check-in Date:</label>
+            <input type="date" id="test-checkin" class="date-input" min="2025-01-01">
+            <div id="checkin-indicator"></div>
+        </div>
+        
+        <div>
+            <label for="test-checkout">Check-out Date:</label>
+            <input type="date" id="test-checkout" class="date-input" min="2025-01-01">
+            <div id="checkout-indicator"></div>
+        </div>
+        
+        <div>
+            <label for="participants">Participants:</label>
+            <input type="number" id="participants" value="2" min="1" max="10" class="date-input">
+        </div>
+        
+        <button onclick="testDateAvailability()" style="padding: 12px 24px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px;">
+            🔍 Check Date Availability
+        </button>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 Availability Results</h2>
+        <div id="availability-results">
+            <p>Select dates and click "Check Date Availability" to see results.</p>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'heiwa_wp_test_key_2024_secure_deployment';
+        
+        // Test the date availability API
+        async function testDateAvailabilityAPI() {
+            try {
+                const today = new Date();
+                const nextWeek = new Date();
+                nextWeek.setDate(today.getDate() + 7);
+                
+                const startDate = today.toISOString().split('T')[0];
+                const endDate = nextWeek.toISOString().split('T')[0];
+                
+                const response = await fetch(`/api/wordpress/dates/availability?start_date=${startDate}&end_date=${endDate}&participants=2`, {
+                    headers: {
+                        'X-Heiwa-API-Key': API_KEY
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    document.getElementById('api-test-result').className = 'test-result success';
+                    document.getElementById('api-test-result').innerHTML = `
+                        ✅ API Test Successful<br>
+                        📅 Checked ${data.data.summary.total_dates_checked} dates<br>
+                        ✅ Available: ${data.data.summary.available_dates}<br>
+                        ❌ Sold out: ${data.data.summary.sold_out_dates}<br>
+                        👥 Capacity: ${data.data.summary.total_capacity}
+                    `;
+                    return data.data.date_availability;
+                } else {
+                    throw new Error(data.message || 'API request failed');
+                }
+            } catch (error) {
+                document.getElementById('api-test-result').className = 'test-result error';
+                document.getElementById('api-test-result').innerHTML = `❌ API Test Failed: ${error.message}`;
+                return [];
+            }
+        }
+        
+        // Test specific date availability
+        async function testDateAvailability() {
+            const checkinDate = document.getElementById('test-checkin').value;
+            const checkoutDate = document.getElementById('test-checkout').value;
+            const participants = document.getElementById('participants').value;
+            
+            if (!checkinDate || !checkoutDate) {
+                alert('Please select both check-in and check-out dates');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/wordpress/dates/availability?start_date=${checkinDate}&end_date=${checkoutDate}&participants=${participants}`, {
+                    headers: {
+                        'X-Heiwa-API-Key': API_KEY
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    displayAvailabilityResults(data.data);
+                    updateDateInputs(data.data.date_availability);
+                } else {
+                    throw new Error(data.message || 'Failed to check availability');
+                }
+            } catch (error) {
+                document.getElementById('availability-results').innerHTML = `
+                    <div class="test-result error">❌ Error: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Display availability results
+        function displayAvailabilityResults(data) {
+            const resultsDiv = document.getElementById('availability-results');
+            
+            let html = `
+                <div class="test-result success">
+                    📊 Availability Summary<br>
+                    📅 Total dates: ${data.summary.total_dates_checked}<br>
+                    ✅ Available: ${data.summary.available_dates}<br>
+                    ❌ Sold out: ${data.summary.sold_out_dates}<br>
+                    👥 Requested participants: ${data.summary.participants_requested}
+                </div>
+                
+                <h3>📅 Day-by-Day Breakdown</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+            `;
+            
+            data.date_availability.forEach(day => {
+                const status = day.available ? '✅ Available' : '❌ Sold Out';
+                const statusClass = day.available ? 'success' : 'error';
+                
+                html += `
+                    <div class="test-result ${statusClass}" style="margin: 5px 0; padding: 8px;">
+                        <strong>${day.date}</strong><br>
+                        ${status}<br>
+                        🛏️ ${day.remaining}/${day.capacity} spots
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            resultsDiv.innerHTML = html;
+        }
+        
+        // Update date inputs with availability indicators
+        function updateDateInputs(availability) {
+            const checkinDate = document.getElementById('test-checkin').value;
+            const checkoutDate = document.getElementById('test-checkout').value;
+            
+            // Check check-in date
+            const checkinAvailability = availability.find(d => d.date === checkinDate);
+            updateDateInput('test-checkin', 'checkin-indicator', checkinAvailability);
+            
+            // Check check-out date
+            const checkoutAvailability = availability.find(d => d.date === checkoutDate);
+            updateDateInput('test-checkout', 'checkout-indicator', checkoutAvailability);
+        }
+        
+        // Update individual date input
+        function updateDateInput(inputId, indicatorId, availability) {
+            const input = document.getElementById(inputId);
+            const indicator = document.getElementById(indicatorId);
+            
+            // Reset styling
+            input.classList.remove('sold-out');
+            indicator.innerHTML = '';
+            
+            if (availability && !availability.available) {
+                // Add sold out styling
+                input.classList.add('sold-out');
+                indicator.innerHTML = `
+                    <div class="availability-indicator">
+                        <strong>❌ Sold Out</strong><br>
+                        This date is fully booked. Please select another date.
+                    </div>
+                `;
+            } else if (availability) {
+                indicator.innerHTML = `
+                    <div style="color: #059669; font-size: 14px; margin-top: 5px;">
+                        ✅ Available (${availability.remaining}/${availability.capacity} spots)
+                    </div>
+                `;
+            }
+        }
+        
+        // Run initial API test when page loads
+        window.addEventListener('load', () => {
+            testDateAvailabilityAPI();
+        });
+    </script>
+</body>
+</html>
