@@ -328,6 +328,7 @@ export default function AdminClientsPage() {
             name: data.name,
             email: data.email,
             phone: data.phone,
+            brand: (data as any).brand || 'Heiwa House',
             socials: (data as any).socials || {},
             notes: data.notes || '',
             updated_at: new Date().toISOString()
@@ -344,6 +345,7 @@ export default function AdminClientsPage() {
             name: data.name,
             email: data.email,
             phone: data.phone,
+            brand: (data as any).brand || 'Heiwa House',
             socials: (data as any).socials || {},
             notes: data.notes || '',
             created_at: new Date().toISOString(),

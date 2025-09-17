@@ -122,6 +122,7 @@ export default function LoginPage() {
                     autoComplete="email"
                     required
                     disabled={loading}
+                    data-testid="email-input"
                   />
                 </div>
               </div>
@@ -143,6 +144,7 @@ export default function LoginPage() {
                     autoComplete="current-password"
                     required
                     disabled={loading}
+                    data-testid="password-input"
                   />
                   <button
                     type="button"
@@ -160,6 +162,7 @@ export default function LoginPage() {
                 type="submit"
                 className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
                 disabled={loading}
+                data-testid="login-button"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">

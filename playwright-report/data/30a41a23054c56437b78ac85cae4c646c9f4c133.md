@@ -1,0 +1,65 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e5]:
+        - link "Heiwa House" [ref=e6] [cursor=pointer]:
+          - /url: /client/dashboard
+          - img [ref=e8] [cursor=pointer]
+          - generic [ref=e12] [cursor=pointer]: Heiwa House
+        - generic [ref=e13]:
+          - generic [ref=e14]: Welcome back!
+          - button "Sign Out" [ref=e15] [cursor=pointer]:
+            - img [ref=e16] [cursor=pointer]
+            - text: Sign Out
+    - generic [ref=e20]:
+      - navigation [ref=e21]:
+        - list [ref=e23]:
+          - listitem [ref=e24]:
+            - link "Dashboard" [ref=e25] [cursor=pointer]:
+              - /url: /client/dashboard
+              - img [ref=e26] [cursor=pointer]
+              - generic [ref=e31] [cursor=pointer]: Dashboard
+          - listitem [ref=e32]:
+            - link "Profile" [ref=e33] [cursor=pointer]:
+              - /url: /client/profile
+              - img [ref=e34] [cursor=pointer]
+              - generic [ref=e37] [cursor=pointer]: Profile
+          - listitem [ref=e38]:
+            - link "Bookings" [ref=e39] [cursor=pointer]:
+              - /url: /client/bookings
+              - img [ref=e40] [cursor=pointer]
+              - generic [ref=e42] [cursor=pointer]: Bookings
+          - listitem [ref=e43]:
+            - link "Preferences" [ref=e44] [cursor=pointer]:
+              - /url: /client/preferences
+              - img [ref=e45] [cursor=pointer]
+              - generic [ref=e48] [cursor=pointer]: Preferences
+      - main [ref=e49]:
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - img [ref=e54]
+            - heading "Welcome to Heiwa House" [level=3] [ref=e58]
+            - paragraph [ref=e59]: Sign in to manage your bookings and preferences
+          - generic [ref=e61]:
+            - tablist [ref=e62]:
+              - tab "Sign In" [selected] [ref=e63] [cursor=pointer]
+              - tab "Sign Up" [ref=e64] [cursor=pointer]
+            - tabpanel "Sign In" [ref=e65]:
+              - generic [ref=e66]:
+                - generic [ref=e67]:
+                  - generic [ref=e68]: Email
+                  - generic [ref=e69]:
+                    - img [ref=e70]
+                    - textbox "Email" [ref=e73]
+                - generic [ref=e74]:
+                  - generic [ref=e75]: Password
+                  - generic [ref=e76]:
+                    - img [ref=e77]
+                    - textbox "Password" [ref=e80]
+                - button "Sign In" [ref=e81] [cursor=pointer]
+  - region "Notifications Alt+T"
+  - alert [ref=e82]
+```
