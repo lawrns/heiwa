@@ -43,13 +43,13 @@ END$$;
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM information_schema.check_constraints 
-    WHERE constraint_schema = 'public' 
-      AND table_name = 'clients' 
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE constraint_schema = 'public'
+      AND table_name = 'clients'
       AND constraint_name = 'clients_brand_check'
   ) THEN
-    ALTER TABLE public.clients 
-      ADD CONSTRAINT clients_brand_check 
+    ALTER TABLE public.clients
+      ADD CONSTRAINT clients_brand_check
       CHECK (brand IN ('Heiwa House', 'Freedom Routes'));
   END IF;
 END$$;

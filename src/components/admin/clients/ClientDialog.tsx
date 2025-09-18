@@ -103,17 +103,47 @@ export function ClientDialog({
 
   const onSubmit = async (data: CreateClient | UpdateClient) => {
     try {
+      console.log('ClientDialog: Form submission started with data:', data);
+      console.log('ClientDialog: Form validation state:', form.formState);
+      console.log('ClientDialog: Form errors:', form.formState.errors);
+
+      // Validate the data against the schema manually for debugging
+      try {
+        const schema = isEdit ? UpdateClientSchema : CreateClientSchema;
+        const validatedData = schema.parse(data);
+        console.log('ClientDialog: Schema validation passed:', validatedData);
+      } catch (validationError) {
+        console.error('ClientDialog: Schema validation failed:', validationError);
+        toast.error('Please check your input and try again.');
+        throw validationError;
+      }
+
       // Convert date string to proper format if needed
       if (data.lastBookingDate && typeof data.lastBookingDate === 'string') {
         // Keep as string for now, let the backend handle conversion
       }
 
       await onSave(data);
+      console.log('ClientDialog: Form submission successful');
       onClose();
       form.reset();
     } catch (error) {
-      console.error('Failed to save client:', error);
-      // Error handling is done in the parent component via toast
+      console.error('ClientDialog: Failed to save client:', error);
+      // Enhanced error handling with user-friendly messages
+      if (error instanceof Error) {
+        if (error.message.includes('socials')) {
+          toast.error('Database configuration issue. Please contact support.');
+        } else if (error.message.includes('email')) {
+          toast.error('Email address is already in use or invalid.');
+        } else if (error.message.includes('network')) {
+          toast.error('Network error. Please check your connection and try again.');
+        } else {
+          toast.error(`Failed to save client: ${error.message}`);
+        }
+      } else {
+        toast.error('An unexpected error occurred. Please try again.');
+      }
+      // Don't close the dialog on error so user can retry
     }
   };
 
@@ -138,7 +168,16 @@ export function ClientDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={(e) => {
+              console.log('Form onSubmit event triggered');
+              console.log('Form state:', form.formState);
+              console.log('Form values:', form.getValues());
+              console.log('Form errors:', form.formState.errors);
+              return form.handleSubmit(onSubmit)(e);
+            }}
+            className="space-y-4"
+          >
             {/* Name Field */}
             <FormField
               control={form.control}
@@ -209,7 +248,11 @@ export function ClientDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Brand *</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue="Heiwa House"
+                  >
                     <FormControl>
                       <SelectTrigger aria-label="Select brand">
                         <SelectValue placeholder="Select a brand" />
@@ -223,6 +266,8 @@ export function ClientDialog({
                       ))}
                     </SelectContent>
                   </Select>
+                  {/* Hidden input to ensure the value is included in FormData */}
+                  <input type="hidden" {...field} />
                   <FormMessage />
                 </FormItem>
               )}
@@ -301,6 +346,7 @@ export function ClientDialog({
                 variant="outline"
                 onClick={handleClose}
                 disabled={isSaving}
+                data-testid="client-dialog-cancel"
               >
                 Cancel
               </Button>
@@ -308,6 +354,7 @@ export function ClientDialog({
                 type="submit"
                 disabled={isSaving}
                 className="bg-heiwaOrange-600 hover:bg-heiwaOrange-700"
+                data-testid="client-dialog-submit"
               >
                 {isSaving ? 'Saving...' : isEdit ? 'Update Client' : 'Add Client'}
               </Button>

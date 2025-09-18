@@ -11,7 +11,7 @@ export const ClientSchema = z.object({
   id: z.string(),
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email format'),
-  phone: z.string().min(1, 'Phone is required'),
+  phone: z.string().optional(),
   brand: z.enum(['Heiwa House', 'Freedom Routes']).transform((val) => val as 'Heiwa House' | 'Freedom Routes'),
   socials: z
     .object({
@@ -33,6 +33,7 @@ export const CreateClientSchema = ClientSchema.omit({
   createdAt: true,
   updatedAt: true,
   registrationDate: true,
+  lastBookingDate: true,
 });
 
 // Schema for updating clients (partial update)

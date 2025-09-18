@@ -319,6 +319,31 @@ export default function AdminClientsPage() {
 
   const handleSaveClient = useCallback(async (data: CreateClient | UpdateClient) => {
     setSaving(true);
+
+    // Optimistic UI update for new client creation
+    let optimisticClient: Client | null = null;
+    if (!editingClient) {
+      optimisticClient = {
+        id: `temp-${Date.now()}`, // Temporary ID
+        name: data.name,
+        email: data.email,
+        phone: data.phone || '',
+        brand: (data as any).brand || 'Heiwa House',
+        socials: (data as any).socials || { instagram: '', facebook: '', twitter: '' },
+        notes: data.notes || '',
+        lastBookingDate: null,
+        registrationDate: null, // Simplified - let backend handle
+        createdAt: null, // Simplified - let backend handle
+        updatedAt: null, // Simplified - let backend handle
+      };
+
+      // Add optimistic client to the list immediately
+      setClients(prev => [optimisticClient!, ...prev]);
+      toast.success('Client added successfully');
+      setDialogOpen(false);
+      setEditingClient(null);
+    }
+
     try {
       if (editingClient) {
         // Update existing client
@@ -337,30 +362,43 @@ export default function AdminClientsPage() {
 
         if (error) throw error;
         toast.success('Client updated successfully');
+        setDialogOpen(false);
+        setEditingClient(null);
       } else {
-        // Create new client
-        const { error } = await supabase
+        // Create new client (temporarily excluding socials field)
+        const { data: newClient, error } = await supabase
           .from('clients')
           .insert({
             name: data.name,
             email: data.email,
             phone: data.phone,
             brand: (data as any).brand || 'Heiwa House',
-            socials: (data as any).socials || {},
+            // socials: (data as any).socials || {}, // Temporarily commented out due to DB schema issue
             notes: data.notes || '',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
+            // created_at: new Date().toISOString(), // Let DB handle this
+            // updated_at: new Date().toISOString() // Let DB handle this
+          })
+          .select()
+          .single();
 
         if (error) throw error;
-        toast.success('Client added successfully');
+
+        // Replace optimistic client with real client data
+        if (optimisticClient && newClient) {
+          setClients(prev => prev.map(client =>
+            client.id === optimisticClient!.id ? newClient : client
+          ));
+        }
       }
 
-      // Refresh the clients list
+      // Refresh the clients list to ensure consistency
       loadClients();
-      setDialogOpen(false);
-      setEditingClient(null);
     } catch (err: any) {
+      // Revert optimistic update on error
+      if (optimisticClient) {
+        setClients(prev => prev.filter(client => client.id !== optimisticClient!.id));
+        setDialogOpen(true); // Reopen dialog for retry
+      }
       toast.error(`Failed to save client: ${err.message}`);
       throw err;
     } finally {

@@ -427,6 +427,8 @@ export default function SurfCampsPage() {
 
   const handleCreateCamp = async (data: SurfCampFormData) => {
     try {
+      console.log('SurfCamps: Form submission started with data:', data);
+
       // Check for overlapping surf camps of the same category
       const overlappingCamp = surfCamps.find(camp =>
         camp.category === data.category &&
@@ -437,6 +439,7 @@ export default function SurfCampsPage() {
       );
 
       if (overlappingCamp) {
+        console.log('SurfCamps: Overlapping camp found, aborting creation');
         toast.error(`Cannot create camp: There is already a ${data.category} camp scheduled during overlapping dates`);
         return;
       }
@@ -467,10 +470,14 @@ export default function SurfCampsPage() {
         });
 
       if (error) throw error;
+      console.log('SurfCamps: Surf camp created successfully in database');
       toast.success('Surf camp created successfully');
       setShowCreateModal(false);
       form.reset();
+      // Refresh the surf camps list
+      fetchSurfCamps();
     } catch (error: unknown) {
+      console.error('SurfCamps: Failed to create surf camp:', error);
       toast.error(`Failed to create surf camp: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
@@ -847,10 +854,20 @@ export default function SurfCampsPage() {
                   />
 
                   <div className="flex justify-end space-x-2">
-                    <Button type="button" variant="outline" onClick={() => setShowCreateModal(false)}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowCreateModal(false)}
+                      data-testid="surf-camp-dialog-cancel"
+                    >
                       Cancel
                     </Button>
-                    <Button type="submit">Create Camp</Button>
+                    <Button
+                      type="submit"
+                      data-testid="surf-camp-dialog-submit"
+                    >
+                      Create Camp
+                    </Button>
                   </div>
                 </form>
               </Form>
