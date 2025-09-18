@@ -33,6 +33,7 @@ export interface PricingBreakdown {
   basePrice: number;
   addOnsSubtotal: number;
   roomUpgrade?: number; // For surf week room upgrades
+  roomQuantity?: number; // Number of rooms needed for guests
   taxes: number;
   fees: number;
   total: number;

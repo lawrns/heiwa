@@ -53,13 +53,13 @@ export async function GET(request: NextRequest) {
 
     const origin = new URL(request.url).origin;
 
-    // Initialize Supabase client safely; if unavailable, return fallback rooms
+    // Initialize Supabase client
     const supa = createSupabase();
     if (!supa) {
-      const fallbackRooms = getFallbackRooms(origin);
+      console.error('Failed to create Supabase client - missing environment variables');
       return NextResponse.json(
-        { success: true, data: { rooms: fallbackRooms }, meta: { fallback: true } },
-        { headers: corsHeaders }
+        { success: false, error: 'Database connection failed' },
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -70,11 +70,10 @@ export async function GET(request: NextRequest) {
       .eq('is_active', true);
 
     if (roomsError) {
-      // Graceful fallback with demo room data for testing environments
-      const fallbackRooms = getFallbackRooms(origin);
+      console.error('Error fetching rooms from database:', roomsError);
       return NextResponse.json(
-        { success: true, data: { rooms: fallbackRooms }, meta: { fallback: true } },
-        { headers: corsHeaders }
+        { success: false, error: 'Failed to fetch rooms from database' },
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -99,9 +98,13 @@ export async function GET(request: NextRequest) {
         booking_type: room.booking_type || 'whole'
       }));
 
-    // If no rooms resolved from DB, provide a graceful fallback dataset
+    // If no rooms resolved from DB, return empty array
     if (!roomsData || roomsData.length === 0) {
-      roomsData = getFallbackRooms(origin);
+      console.warn('No active rooms found in database');
+      return NextResponse.json(
+        { success: true, data: { rooms: [] }, meta: { message: 'No rooms available' } },
+        { headers: corsHeaders }
+      );
     }
 
       return NextResponse.json(
@@ -131,50 +134,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function getFallbackRooms(origin: string) {
-  return [
-    {
-      id: 'room-1',
-      name: 'Room Nr 1',
-      capacity: 2,
-      price_per_night: 90,
-      amenities: ['private-bathroom', 'wooden-furniture', 'traditional-tiles'],
-      featured_image: `${origin}/images/rooms/room1.jpg`,
-      description: 'Step into this beautifully designed room, blending modern comforts with a rustic charm. The cozy wooden furniture, complemented by traditional Portuguese tiles, creates a warm and inviting atmosphere.',
-      booking_type: 'whole'
-    },
-    {
-      id: 'room-2',
-      name: 'Room Nr 2',
-      capacity: 1,
-      price_per_night: 80,
-      amenities: ['private-bathroom', 'queen-bed', 'wooden-furniture', 'traditional-tiles'],
-      featured_image: `${origin}/images/rooms/room2.jpg`,
-      description: 'This inviting room combines the warmth of handcrafted wooden furniture with the beauty of traditional Portuguese tiles. A cozy queen-sized bed ensures a comfortable stay.',
-      booking_type: 'whole'
-    },
-    {
-      id: 'room-3',
-      name: 'Room Nr 3',
-      capacity: 2,
-      price_per_night: 80,
-      amenities: ['private-bathroom', 'wooden-furniture', 'traditional-tiles'],
-      featured_image: `${origin}/images/rooms/room3.jpg`,
-      description: 'Step into the charm of this beautifully designed twin room, blending modern comfort with traditional Portuguese aesthetics. The room features handcrafted wooden furniture and traditional tiles.',
-      booking_type: 'whole'
-    },
-    {
-      id: 'dorm',
-      name: 'Dorm room',
-      capacity: 6,
-      price_per_night: 30,
-      amenities: ['shared-bathroom', 'bunk-beds', 'lockers', 'common-area'],
-      featured_image: `${origin}/images/rooms/dorm.jpg`,
-      description: 'Welcome to our spacious and airy shared dormitory, thoughtfully designed for comfort and community. This room features sturdy, handcrafted wooden bunk beds and a welcoming atmosphere.',
-      booking_type: 'perBed'
-    }
-  ];
-}
+// Fallback rooms function removed - no more mock data
 
 // Handle CORS preflight
 export async function OPTIONS(request: NextRequest) {

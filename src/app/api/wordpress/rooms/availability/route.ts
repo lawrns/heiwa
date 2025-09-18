@@ -83,11 +83,10 @@ export async function GET(request: NextRequest) {
       .eq('is_active', true);
 
     if (roomsError) {
-      // Graceful fallback with demo room data for testing environments
-      const fallbackRooms = getFallbackRooms(origin);
+      console.error('Error fetching rooms for availability check:', roomsError);
       return NextResponse.json(
-        { success: true, data: { available_rooms: fallbackRooms }, meta: { fallback: true } },
-        { headers: corsHeaders }
+        { success: false, error: 'Failed to fetch rooms from database' },
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -98,12 +97,9 @@ export async function GET(request: NextRequest) {
       .or(`and(check_in_date.lte.${endDate},check_out_date.gte.${startDate})`);
 
     if (assignmentsError) {
-      // Graceful fallback instead of empty
-      const fallbackRooms = getFallbackRooms(origin);
-      return NextResponse.json(
-        { success: true, data: { available_rooms: fallbackRooms }, meta: { fallback: true } },
-        { headers: corsHeaders }
-      );
+      console.error('Error fetching room assignments:', assignmentsError);
+      // Continue with empty assignments array instead of failing
+      assignments = [];
     }
 
     // Calculate free capacity per room

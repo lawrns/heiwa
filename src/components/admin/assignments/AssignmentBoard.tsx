@@ -236,20 +236,23 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
         const participantsResponse = await fetch(`/api/assignments/participants?weekId=${weekId}`)
         const participantsData = await participantsResponse.json()
 
-        // Fetch actual rooms from the database
-        const roomsResponse = await fetch('/api/rooms')
+        // Fetch actual rooms from the assignments-specific endpoint
+        const roomsResponse = await fetch('/api/assignments/rooms')
         const roomsData = await roomsResponse.json()
 
-        // Transform room data to match our interface
-        const roomsArray = roomsData.rooms || []
-        const transformedRooms: Room[] = roomsArray.map((room: any) => ({
+        if (!roomsResponse.ok) {
+          throw new Error('Failed to fetch rooms')
+        }
+
+        // Rooms data is already transformed by the assignments API
+        const transformedRooms: Room[] = Array.isArray(roomsData) ? roomsData.map((room: any) => ({
           id: room.id,
           name: room.name,
           capacity: room.capacity,
-          type: room.bookingType === 'perBed' ? 'dorm' : 'private',
+          type: room.type || 'private',
           currentOccupancy: 0, // Will be calculated from assignments
           amenities: room.amenities || []
-        }))
+        })) : []
 
         // Fetch existing assignments
         const assignmentsResponse = await fetch(`/api/assignments?weekId=${weekId}`)

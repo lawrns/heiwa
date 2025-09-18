@@ -2041,14 +2041,19 @@
     }
 
     /**
-     * Calculate total price
+     * Calculate total price with proper room quantity logic
      */
     function calculateTotal() {
         if (bookingData.bookingType === 'surf-week' && bookingData.selectedSurfWeek) {
             return bookingData.selectedSurfWeek.price_from * bookingData.participants;
         } else if (bookingData.bookingType === 'room' && bookingData.selectedRoom && bookingData.dates.start && bookingData.dates.end) {
             const nights = calculateDuration();
-            return bookingData.selectedRoom.price_per_night * bookingData.participants * nights;
+            const roomCapacity = bookingData.selectedRoom.capacity || 2;
+
+            // Calculate room quantity based on guest count and room capacity
+            const roomQuantity = Math.ceil(bookingData.participants / roomCapacity);
+
+            return bookingData.selectedRoom.price_per_night * nights * roomQuantity;
         } else if (bookingData.destination) {
             // Fallback for legacy surf camp booking
             const basePrice = bookingData.destination.price || 599;

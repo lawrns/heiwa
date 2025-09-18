@@ -17,6 +17,7 @@ import {
   DollarSignIcon
 } from 'lucide-react'
 import Link from 'next/link'
+import { supabase } from '@/lib/supabase/client'
 
 interface CampWeek {
   id: string
@@ -40,48 +41,48 @@ export default function WeeksPage() {
   const [sortBy, setSortBy] = useState<'date' | 'price' | 'spots'>('date')
   const [loading, setLoading] = useState(true)
 
-  // Mock data for development
+  // Fetch real surf camp weeks from Supabase
   useEffect(() => {
-    const mockWeeks: CampWeek[] = [
-      {
-        id: 'week-1',
-        campId: 'camp-1',
-        startDate: '2024-03-15',
-        endDate: '2024-03-22',
-        category: 'Heiwa',
-        published: true,
-        maxGuests: 12,
-        pricingRules: { basePrice: 1200, currency: 'MXN' },
-        spotsLeft: 8
-      },
-      {
-        id: 'week-2',
-        campId: 'camp-2',
-        startDate: '2024-03-22',
-        endDate: '2024-03-29',
-        category: 'FreedomRoutes',
-        published: true,
-        maxGuests: 8,
-        pricingRules: { basePrice: 1500, currency: 'MXN' },
-        spotsLeft: 3
-      },
-      {
-        id: 'week-3',
-        campId: 'camp-3',
-        startDate: '2024-04-01',
-        endDate: '2024-04-08',
-        category: 'Heiwa',
-        published: true,
-        maxGuests: 10,
-        pricingRules: { basePrice: 1100, currency: 'MXN' },
-        spotsLeft: 10
-      }
-    ]
+    const fetchWeeks = async () => {
+      try {
+        setLoading(true)
+        const { data, error } = await supabase
+          .from('surf_camps')
+          .select('id, name, start_date, end_date, max_participants, is_active, pricing')
+          .eq('is_active', true)
+          .order('start_date', { ascending: true })
 
-    setTimeout(() => {
-      setWeeks(mockWeeks)
-      setLoading(false)
-    }, 1000)
+        if (error) {
+          console.error('Error fetching surf camp weeks:', error)
+          setWeeks([])
+          return
+        }
+
+        const formattedWeeks: CampWeek[] = (data || []).map(camp => ({
+          id: camp.id,
+          campId: camp.id,
+          startDate: camp.start_date,
+          endDate: camp.end_date,
+          category: camp.name.toLowerCase().includes('frenchman') ? 'FreedomRoutes' : 'Heiwa',
+          published: true,
+          maxGuests: camp.max_participants || 12,
+          pricingRules: {
+            basePrice: camp.pricing?.standard || 1200,
+            currency: 'EUR'
+          },
+          spotsLeft: camp.max_participants || 12 // TODO: Calculate actual spots left
+        }))
+
+        setWeeks(formattedWeeks)
+      } catch (error) {
+        console.error('Error fetching weeks:', error)
+        setWeeks([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchWeeks()
   }, [])
 
   const filteredAndSortedWeeks = useMemo(() => {

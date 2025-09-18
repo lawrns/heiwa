@@ -115,20 +115,10 @@ export default function IntegrationManager() {
         }
       ]
 
-      // Mock status data
-      const mockStatus: IntegrationStatus = {
-        stripe: { enabled: true, configValid: true, missingVars: [] },
-        'google-analytics': { enabled: false, configValid: false, missingVars: ['GA_TRACKING_ID'] },
-        sendgrid: { enabled: false, configValid: false, missingVars: ['SENDGRID_API_KEY', 'SENDGRID_FROM_EMAIL'] },
-        'firebase-functions': { enabled: true, configValid: true, missingVars: [] }
-      }
-
-      // TODO: Replace with real API calls
-      // const response = await fetch('/api/system/integrations')
-      // const realData = await response.json()
-
-      setIntegrations(mockIntegrations)
-      setIntegrationStatus(mockStatus)
+      // TODO: Implement real integration API calls
+      // For now, disable this feature entirely
+      setIntegrations([])
+      setIntegrationStatus({})
     } catch (err) {
       console.error('Failed to fetch integrations:', err)
       setError('Failed to load integrations')

@@ -30,8 +30,7 @@ import { Plus, Edit, Trash2, Upload, Image as ImageIcon, Bed, Users, Wifi, Eye, 
 import { ImageUpload } from '@/components/ui/image-upload';
 
 
-// Fallback demo rooms (empty by default to avoid type errors)
-const DEMO_ROOMS: any[] = [];
+// No more demo rooms - removed mock data
 
 const BED_TYPE_OPTIONS = ['single', 'double', 'bunk'] as const;
 
@@ -128,13 +127,13 @@ export default function RoomsPage() {
       if (error) {
         console.error('Error fetching rooms:', error);
         setErrorRooms(error.message);
-        // Fall back to demo data if there's a permissions error
+        // Show proper error message instead of falling back to demo data
         if (error.message?.includes('permission denied') || error.message?.includes('RLS')) {
-          toast.error('Access denied: Using demo data. Please check your admin permissions.');
-          setRooms(DEMO_ROOMS);
+          toast.error('Access denied: Please check your admin permissions.');
         } else {
           toast.error(`Failed to load rooms: ${error.message}`);
         }
+        setRooms([]); // Set empty array instead of demo data
         return;
       }
 
@@ -179,8 +178,8 @@ export default function RoomsPage() {
       console.error('Error fetching rooms:', error);
       setErrorRooms(error.message || 'Failed to load rooms');
       toast.error(`Failed to load rooms: ${error.message}`);
-      // Fall back to demo data
-      setRooms(DEMO_ROOMS);
+      // Set empty array instead of demo data
+      setRooms([]);
     } finally {
       setLoadingRooms(false);
     }

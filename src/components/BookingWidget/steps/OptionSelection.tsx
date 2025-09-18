@@ -116,7 +116,12 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       if (state.dates.checkIn && state.dates.checkOut) {
         const nights = Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24));
         const unit = typeof opt.pricePerNight === 'number' ? opt.pricePerNight : (opt.price ?? 0);
-        basePrice = unit * nights;
+
+        // Calculate room quantity based on guest count and room capacity
+        const roomCapacity = opt.capacity || 2;
+        const roomQuantity = Math.ceil(state.guests / roomCapacity);
+
+        basePrice = unit * nights * roomQuantity;
       }
     } else if (state.experienceType === 'surf-week') {
       const unit = typeof opt.price === 'number' ? opt.price : (opt.priceFrom ?? 0);
