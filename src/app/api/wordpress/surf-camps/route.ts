@@ -3,6 +3,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 import { createClient } from '@supabase/supabase-js';
+import { withRateLimit, createRateLimitResponse } from '@/lib/rate-limiter';
 
 function createSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -44,6 +45,12 @@ function createSupabase() {
  */
 export async function GET(request: NextRequest) {
   try {
+    // Apply rate limiting
+    const rateLimitResult = await withRateLimit(request);
+    if (!rateLimitResult.allowed) {
+      return createRateLimitResponse(rateLimitResult.headers);
+    }
+
     // Validate API key
     const apiKey = request.headers.get('X-Heiwa-API-Key');
     const validApiKey = process.env.WORDPRESS_API_KEY || 'heiwa_wp_test_key_2024_secure_deployment';

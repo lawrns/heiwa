@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { bookingsAPI, clientsAPI } from '@/lib/supabase-admin';
 import { CreateBookingSchema } from '@/lib/schemas';
 import { sendBookingEmails } from '@/lib/email-service';
+import { withRateLimit, createRateLimitResponse, bookingRateLimiter } from '@/lib/rate-limiter';
 
 // CORS headers for WordPress integration
 const corsHeaders = {
@@ -30,6 +31,12 @@ const supabase = createClient(
  */
 export async function POST(request: NextRequest) {
   try {
+    // Apply strict rate limiting for booking creation
+    const rateLimitResult = await withRateLimit(request, bookingRateLimiter);
+    if (!rateLimitResult.allowed) {
+      return createRateLimitResponse(rateLimitResult.headers);
+    }
+
     // Validate API key
     const apiKey = request.headers.get('X-Heiwa-API-Key');
     const validApiKey = process.env.WORDPRESS_API_KEY;

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 import { createClient } from '@supabase/supabase-js';
+import { withRateLimit, createRateLimitResponse, apiRateLimiter } from '@/lib/rate-limiter';
+import { monitoring, withMonitoring } from '@/lib/monitoring';
 
 // CORS headers for WordPress integration
 const corsHeaders = {
@@ -27,7 +29,17 @@ function createSupabase() {
  * @auth  X-Heiwa-API-Key header required (must equal WORDPRESS_API_KEY)
  */
 export async function GET(request: NextRequest) {
+  const startTime = Date.now();
+  const url = new URL(request.url);
+
   try {
+    return await withMonitoring(async () => {
+      // Apply rate limiting
+      const rateLimitResult = await withRateLimit(request);
+      if (!rateLimitResult.allowed) {
+        return createRateLimitResponse(rateLimitResult.headers);
+      }
+
     // Validate API key
     const apiKey = request.headers.get('X-Heiwa-API-Key');
     // Allow a safe default test key in case env var isn't configured in the hosting env
@@ -35,7 +47,7 @@ export async function GET(request: NextRequest) {
     if (!apiKey || apiKey !== validApiKey) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized', message: 'Invalid or missing API key' },
-        { status: 401, headers: corsHeaders }
+        { status: 401, headers: { ...corsHeaders, ...rateLimitResult.headers } }
       );
     }
 
@@ -92,16 +104,26 @@ export async function GET(request: NextRequest) {
       roomsData = getFallbackRooms(origin);
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: { rooms: roomsData }
-      },
-      { headers: corsHeaders }
-    );
+      return NextResponse.json(
+        {
+          success: true,
+          data: { rooms: roomsData }
+        },
+        { headers: { ...corsHeaders, ...rateLimitResult.headers } }
+      );
+    }, {
+      name: 'wordpress_rooms_api',
+      method: 'GET',
+      url: url.pathname
+    });
 
   } catch (error: any) {
-    console.error('Rooms error:', error);
+    await monitoring.logError(error, {
+      url: url.pathname,
+      userAgent: request.headers.get('user-agent') || undefined,
+      additionalData: { method: 'GET', endpoint: 'wordpress/rooms' }
+    });
+
     return NextResponse.json(
       { success: false, error: 'Internal server error', message: 'Failed to fetch rooms' },
       { status: 500, headers: corsHeaders }

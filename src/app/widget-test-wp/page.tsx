@@ -101,7 +101,11 @@ export default function WordPressWidgetTestPage() {
             data-widget-id="test-widget"
             data-build-id="react-widget-1757864064024"
           >
-
+            <StandaloneWidget
+              config={wpConfig}
+              containerId="heiwa-booking-widget-test"
+              className="wordpress-integration-inline"
+            />
           </div>
         </div>
 
