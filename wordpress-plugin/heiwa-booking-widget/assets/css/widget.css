@@ -3585,4 +3585,105 @@ body.heiwa-modal-open {
     /* These get the large section class applied dynamically by JavaScript */
 }
 
+/* ===========================================
+   GUEST FORM COLLAPSE - Progressive Guest Details
+   =========================================== */
+
+/* Guest summary when forms are collapsed */
+.heiwa-guest-summary {
+    background: var(--heiwa-neutral-50);
+    border: 1px solid var(--heiwa-neutral-200);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+}
+
+.heiwa-guest-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.heiwa-guest-summary-icon {
+    color: var(--heiwa-primary);
+    flex-shrink: 0;
+}
+
+.heiwa-guest-summary-info {
+    flex: 1;
+}
+
+.heiwa-guest-summary-title {
+    font-size: var(--heiwa-text-lg);
+    font-weight: 600;
+    color: var(--heiwa-neutral-900);
+    margin: 0 0 4px 0;
+}
+
+.heiwa-guest-summary-subtitle {
+    font-size: var(--heiwa-text-sm);
+    color: var(--heiwa-neutral-600);
+    margin: 0;
+}
+
+.heiwa-edit-guest-btn {
+    background: var(--heiwa-primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: var(--heiwa-text-sm);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s ease;
+}
+
+.heiwa-edit-guest-btn:hover {
+    background: var(--heiwa-primary-hover);
+}
+
+/* Collapsed guest forms animation */
+.heiwa-guest-forms-collapsed {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 0;
+}
+
+.heiwa-guest-forms:not(.heiwa-guest-forms-collapsed) {
+    max-height: 2000px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mobile optimizations for guest summary */
+@media (max-width: 768px) {
+    .heiwa-guest-summary-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .heiwa-edit-guest-btn {
+        align-self: flex-end;
+    }
+
+    .heiwa-guest-summary {
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+
+    .heiwa-guest-forms-collapsed {
+        max-height: 0;
+        transform: translateY(-5px);
+    }
+}
+
 /* Build completed successfully */

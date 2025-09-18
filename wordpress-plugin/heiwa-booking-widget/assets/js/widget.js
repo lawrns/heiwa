@@ -37,6 +37,9 @@
     // Collapsed sections state for progressive disclosure optimization
     let collapsedSections = new Set();
 
+    // Guest form completion state
+    let guestFormsCompleted = false;
+
     function initializeWidget($) {
         // jQuery is now available as $ parameter
 
@@ -1952,6 +1955,15 @@
         }
         bookingData.participantDetails = bookingData.participantDetails.slice(0, bookingData.participants);
 
+        // Check if all participant details are filled
+        const allParticipantsComplete = bookingData.participantDetails.every(p =>
+            p.firstName.trim() && p.lastName.trim() && p.email.trim()
+        );
+
+        if (allParticipantsComplete && !guestFormsCompleted) {
+            guestFormsCompleted = true;
+        }
+
         const formHTML = `
             <div class="heiwa-step-header">
                 <button class="heiwa-back-button" data-action="heiwa-back">
@@ -1959,43 +1971,65 @@
                 </button>
                 <h3 class="heiwa-booking-step-title">Your Details & Add-ons</h3>
             </div>
-            <div class="heiwa-participant-accordion">
-                ${bookingData.participantDetails.map((participant, index) => `
-                    <div class="heiwa-participant-item">
-                        <div class="heiwa-participant-header" data-participant="${index}">
-                            <span>Participant ${index + 1}</span>
-                            <span>▼</span>
+
+            ${guestFormsCompleted ? `
+                <!-- Collapsed guest summary -->
+                <div class="heiwa-guest-summary">
+                    <div class="heiwa-guest-summary-header">
+                        <div class="heiwa-guest-summary-icon">
+                            ${getLucideIcon('users', 20)}
                         </div>
-                        <div class="heiwa-participant-content expanded">
-                            <div class="heiwa-participant-fields">
-                                <div class="heiwa-form-group">
-                                    <label class="heiwa-form-label">First Name</label>
-                                    <input type="text" class="heiwa-form-input"
-                                           data-participant="${index}" data-field="firstName"
-                                           value="${participant.firstName}" required>
-                                </div>
-                                <div class="heiwa-form-group">
-                                    <label class="heiwa-form-label">Last Name</label>
-                                    <input type="text" class="heiwa-form-input"
-                                           data-participant="${index}" data-field="lastName"
-                                           value="${participant.lastName}" required>
-                                </div>
-                                <div class="heiwa-form-group">
-                                    <label class="heiwa-form-label">Email</label>
-                                    <input type="email" class="heiwa-form-input"
-                                           data-participant="${index}" data-field="email"
-                                           value="${participant.email}" required>
+                        <div class="heiwa-guest-summary-info">
+                            <h4 class="heiwa-guest-summary-title">${bookingData.participants} Participant${bookingData.participants > 1 ? 's' : ''} Added</h4>
+                            <p class="heiwa-guest-summary-subtitle">All guest details have been saved</p>
+                        </div>
+                        <button class="heiwa-edit-guest-btn" data-action="edit-guests">
+                            ${getLucideIcon('edit', 16)} Edit
+                        </button>
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- Guest forms (hidden when completed) -->
+            <div class="heiwa-guest-forms ${guestFormsCompleted ? 'heiwa-guest-forms-collapsed' : ''}">
+                <div class="heiwa-participant-accordion">
+                    ${bookingData.participantDetails.map((participant, index) => `
+                        <div class="heiwa-participant-item">
+                            <div class="heiwa-participant-header" data-participant="${index}">
+                                <span>Participant ${index + 1}</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="heiwa-participant-content expanded">
+                                <div class="heiwa-participant-fields">
+                                    <div class="heiwa-form-group">
+                                        <label class="heiwa-form-label">First Name</label>
+                                        <input type="text" class="heiwa-form-input"
+                                               data-participant="${index}" data-field="firstName"
+                                               value="${participant.firstName}" required>
+                                    </div>
+                                    <div class="heiwa-form-group">
+                                        <label class="heiwa-form-label">Last Name</label>
+                                        <input type="text" class="heiwa-form-input"
+                                               data-participant="${index}" data-field="lastName"
+                                               value="${participant.lastName}" required>
+                                    </div>
+                                    <div class="heiwa-form-group">
+                                        <label class="heiwa-form-label">Email</label>
+                                        <input type="email" class="heiwa-form-input"
+                                               data-participant="${index}" data-field="email"
+                                               value="${participant.email}" required>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `).join('')}
-            </div>
+                    `).join('')}
+                </div>
 
-            <div class="heiwa-form-group">
-                <label class="heiwa-form-label">Special Requests</label>
-                <textarea class="heiwa-form-textarea" id="special-requests"
-                          placeholder="Any special requests or dietary requirements?">${bookingData.specialRequests}</textarea>
+                <div class="heiwa-form-group">
+                    <label class="heiwa-form-label">Special Requests</label>
+                    <textarea class="heiwa-form-textarea" id="special-requests"
+                              placeholder="Any special requests or dietary requirements?">${bookingData.specialRequests}</textarea>
+                </div>
             </div>
 
             <div class="heiwa-trust-signals">
@@ -2013,6 +2047,12 @@
         $('.heiwa-form-input[data-participant]').on('input', updateParticipantDetails);
         $('#special-requests').on('input', function() {
             bookingData.specialRequests = $(this).val();
+        });
+
+        // Bind edit guests button
+        $('.heiwa-edit-guest-btn').on('click', function() {
+            guestFormsCompleted = false;
+            renderFormAddons(); // Re-render to show forms
         });
     }
 
@@ -2034,6 +2074,18 @@
 
         if (bookingData.participantDetails[participantIndex]) {
             bookingData.participantDetails[participantIndex][field] = value;
+        }
+
+        // Check if all participant details are now complete
+        const allParticipantsComplete = bookingData.participantDetails.every(p =>
+            p.firstName.trim() && p.lastName.trim() && p.email.trim()
+        );
+
+        // If all are complete and we haven't marked as completed yet, trigger collapse
+        if (allParticipantsComplete && !guestFormsCompleted) {
+            guestFormsCompleted = true;
+            // Re-render the form to show collapsed state
+            setTimeout(() => renderFormAddons(), 500);
         }
 
         updateCTAButton();
@@ -4233,6 +4285,9 @@
         // Reset collapsed sections state
         collapsedSections.clear();
         $('.heiwa-step-content').removeClass('heiwa-section-collapsed heiwa-large-section').attr('aria-expanded', 'true');
+
+        // Reset guest forms completion state
+        guestFormsCompleted = false;
 
         // Hide all steps initially
         $('.heiwa-booking-step').hide();
