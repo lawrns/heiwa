@@ -22,27 +22,54 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
   const [guestForms, setGuestForms] = useState<GuestFormData[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [initializedGuestCount, setInitializedGuestCount] = useState(0);
 
-  // Initialize guest forms based on guest count
+  // Initialize guest forms based on guest count - only when guest count changes
   useEffect(() => {
-    const newForms: GuestFormData[] = [];
-    for (let i = 0; i < state.guests; i++) {
-      const existingGuest = state.guestDetails[i];
-      newForms.push({
-        firstName: existingGuest?.firstName || '',
-        lastName: existingGuest?.lastName || '',
-        email: existingGuest?.email || '',
-        phone: existingGuest?.phone || '',
-        dietaryRequirements: existingGuest?.dietaryRequirements || '',
-        specialRequests: existingGuest?.specialRequests || '',
-      });
+    if (state.guests !== initializedGuestCount) {
+      const newForms: GuestFormData[] = [];
+      for (let i = 0; i < state.guests; i++) {
+        const existingGuest = state.guestDetails[i];
+        const existingForm = guestForms[i];
+
+        // Preserve existing form data if it exists and has unsaved changes
+        if (existingForm && (
+          existingForm.firstName || existingForm.lastName ||
+          existingForm.email || existingForm.phone ||
+          existingForm.dietaryRequirements || existingForm.specialRequests
+        )) {
+          // Keep existing form data
+          newForms.push(existingForm);
+        } else {
+          // Initialize from saved guest data or empty
+          newForms.push({
+            firstName: existingGuest?.firstName || '',
+            lastName: existingGuest?.lastName || '',
+            email: existingGuest?.email || '',
+            phone: existingGuest?.phone || '',
+            dietaryRequirements: existingGuest?.dietaryRequirements || '',
+            specialRequests: existingGuest?.specialRequests || '',
+          });
+        }
+      }
+      setGuestForms(newForms);
+      setInitializedGuestCount(state.guests);
     }
-    setGuestForms(newForms);
-  }, [state.guests, state.guestDetails]);
+  }, [state.guests, state.guestDetails, guestForms, initializedGuestCount]);
+
+  // Check if all guests are valid and completed
+  const checkAllGuestsCompleted = () => {
+    if (guestForms.length !== state.guests) return false;
+
+    return guestForms.every((form, index) => {
+      const formErrors = validateForm(form, index);
+      return formErrors.length === 0;
+    }) && state.guestDetails.length === state.guests;
+  };
 
   // Auto-collapse when all guests are completed
   useEffect(() => {
-    const allCompleted = allGuestsValid() && state.guestDetails.length === state.guests;
+    const allCompleted = checkAllGuestsCompleted();
     if (allCompleted && !isCollapsed) {
       // Add a small delay for better UX
       const timer = setTimeout(() => {
@@ -50,7 +77,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [state.guestDetails, state.guests, isCollapsed]);
+  }, [guestForms, state.guestDetails, state.guests, isCollapsed]);
 
   const validateForm = (formData: GuestFormData, index: number): string[] => {
     const formErrors: string[] = [];
@@ -122,7 +149,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
   };
 
   const completedGuestsCount = state.guestDetails.filter(g => g.firstName && g.lastName && g.email).length;
-  const allCompleted = allGuestsValid() && completedGuestsCount === state.guests;
+  const allCompleted = checkAllGuestsCompleted();
 
   return (
     <div className="space-y-6">

@@ -47,14 +47,7 @@ export default function WordPressWidgetTestPage() {
               <div className="text-sm text-gray-600">
                 React Widget Integration Test
               </div>
-              {/* Book Now Button positioned in header like a menu item */}
-              <div className="relative">
-                <StandaloneWidget
-                  config={wpConfig}
-                  containerId="heiwa-booking-widget-header"
-                  className="wordpress-integration-header"
-                />
-              </div>
+              {/* Note: Book Now button is rendered in the shortcode section below */}
             </div>
           </div>
         </div>
