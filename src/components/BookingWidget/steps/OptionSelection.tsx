@@ -551,17 +551,17 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         {occupancyText}
                       </div>
 
-                      {/* View Photos Button */}
+                      {/* View Photos Link */}
                       {w.images && w.images.length > 0 && (
-                        <button
+                        <span
                           onClick={(e) => {
                             e.stopPropagation();
                             openGallery(w);
                           }}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200 cursor-pointer select-none"
                         >
                           📸 View {w.images.length} Photo{w.images.length > 1 ? 's' : ''}
-                        </button>
+                        </span>
                       )}
                     </div>
                   </div>
@@ -701,20 +701,19 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                     +{amenities.length - 4} more
                                   </span>
                                 )}
+                                {/* View Photos Link */}
+                                {option.images && option.images.length > 0 && (
+                                  <span
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openGallery(option);
+                                    }}
+                                    className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-full cursor-pointer transition-colors duration-200 select-none"
+                                  >
+                                    📸 {option.images.length} Photo{option.images.length > 1 ? 's' : ''}
+                                  </span>
+                                )}
                               </div>
-                            )}
-
-                            {/* View Photos Button */}
-                            {option.images && option.images.length > 0 && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openGallery(option);
-                                }}
-                                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
-                              >
-                                📸 View {option.images.length} Photo{option.images.length > 1 ? 's' : ''}
-                              </button>
                             )}
                           </div>
                         </div>

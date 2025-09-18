@@ -157,32 +157,56 @@
      * Check if a section should collapse based on current state
      */
     function shouldCollapseSection(sectionId) {
+        let result = false;
         switch (sectionId) {
             case 'booking-type':
-                return bookingData.bookingType !== null;
+                result = bookingData.bookingType !== null;
+                break;
             case 'surf-weeks':
-                return bookingData.selectedSurfWeek !== null && currentStep !== 'surf-weeks';
+                result = bookingData.selectedSurfWeek !== null && currentStep !== 'surf-weeks';
+                break;
             case 'dates_participants':
-                return bookingData.dates.start && bookingData.dates.end && bookingData.participants > 0 && currentStep !== 'dates_participants';
+                result = bookingData.dates.start && bookingData.dates.end && bookingData.participants > 0 && currentStep !== 'dates_participants';
+                break;
             case 'room-calendar':
-                return bookingData.dates.start && bookingData.dates.end && currentStep !== 'room-calendar';
+                result = bookingData.dates.start && bookingData.dates.end && currentStep !== 'room-calendar';
+                break;
             case 'room-selection':
-                return bookingData.selectedRoom !== null;
+                result = bookingData.selectedRoom !== null;
+                break;
             case 'assignment':
-                return bookingData.assignment?.assignments?.length > 0 && currentStep !== 'assignment';
+                result = bookingData.assignment?.assignments?.length > 0 && currentStep !== 'assignment';
+                break;
             case 'form_addons':
-                return currentStep === 'confirmation';
+                result = currentStep === 'confirmation';
+                break;
             default:
-                return false;
+                result = false;
         }
+        console.log('shouldCollapseSection', sectionId, ':', result, {
+            bookingType: bookingData.bookingType,
+            selectedSurfWeek: bookingData.selectedSurfWeek,
+            dates: bookingData.dates,
+            participants: bookingData.participants,
+            selectedRoom: bookingData.selectedRoom,
+            assignment: bookingData.assignment,
+            currentStep: currentStep
+        });
+        return result;
     }
 
     /**
      * Collapse a section with animation
      */
     function collapseSection(sectionId, delay = 0) {
+        console.log('collapseSection called:', sectionId, 'delay:', delay);
         const $section = $(`.heiwa-step-${sectionId}`);
-        if ($section.length === 0 || collapsedSections.has(sectionId)) return;
+        console.log('Section element found:', $section.length > 0, 'already collapsed:', collapsedSections.has(sectionId));
+
+        if ($section.length === 0 || collapsedSections.has(sectionId)) {
+            console.log('Not collapsing - element not found or already collapsed');
+            return;
+        }
 
         // Add large section class for enhanced animations on bigger content areas
         const largeSections = ['room-selection', 'surf-weeks', 'assignment'];
@@ -191,6 +215,7 @@
         }
 
         setTimeout(() => {
+            console.log('Applying collapse classes to:', sectionId);
             $section.addClass('heiwa-section-collapsed');
             $section.attr('aria-expanded', 'false');
             collapsedSections.add(sectionId);
@@ -215,6 +240,8 @@
      * Handle section collapsing based on current step transition
      */
     function handleSectionCollapsing(previousStep, newStep) {
+        console.log('handleSectionCollapsing called:', { previousStep, newStep });
+
         // Define collapse rules based on step transitions
         const collapseRules = {
             'booking-type': {
@@ -248,12 +275,18 @@
         };
 
         // Check if previous section should collapse
-        if (previousStep && collapseRules[previousStep] && shouldCollapseSection(previousStep)) {
-            collapseSection(previousStep, collapseRules[previousStep].delay);
+        if (previousStep && collapseRules[previousStep]) {
+            const shouldCollapse = shouldCollapseSection(previousStep);
+            console.log('Checking collapse for', previousStep, ':', shouldCollapse);
+            if (shouldCollapse) {
+                console.log('Collapsing section:', previousStep);
+                collapseSection(previousStep, collapseRules[previousStep].delay);
+            }
         }
 
         // Handle back navigation - expand sections as needed
         if (isBackNavigation(previousStep, newStep)) {
+            console.log('Back navigation detected, expanding sections');
             expandCollapsedSectionsForBackNavigation(newStep);
         }
     }
@@ -1960,7 +1993,14 @@
             p.firstName.trim() && p.lastName.trim() && p.email.trim()
         );
 
+        console.log('Guest form completion check:', {
+            allParticipantsComplete,
+            guestFormsCompleted,
+            participantDetails: bookingData.participantDetails
+        });
+
         if (allParticipantsComplete && !guestFormsCompleted) {
+            console.log('Marking guest forms as completed');
             guestFormsCompleted = true;
         }
 
@@ -2051,6 +2091,7 @@
 
         // Bind edit guests button
         $('.heiwa-edit-guest-btn').on('click', function() {
+            console.log('Edit guest button clicked');
             guestFormsCompleted = false;
             renderFormAddons(); // Re-render to show forms
         });
@@ -2081,11 +2122,23 @@
             p.firstName.trim() && p.lastName.trim() && p.email.trim()
         );
 
+        console.log('Participant update - completion check:', {
+            allParticipantsComplete,
+            guestFormsCompleted,
+            participantIndex,
+            field,
+            value
+        });
+
         // If all are complete and we haven't marked as completed yet, trigger collapse
         if (allParticipantsComplete && !guestFormsCompleted) {
+            console.log('Triggering guest form collapse');
             guestFormsCompleted = true;
             // Re-render the form to show collapsed state
-            setTimeout(() => renderFormAddons(), 500);
+            setTimeout(() => {
+                console.log('Re-rendering form addons for collapse');
+                renderFormAddons();
+            }, 500);
         }
 
         updateCTAButton();
