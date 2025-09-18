@@ -91,11 +91,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch overlapping assignments to calculate availability
-    const { data: assignments, error: assignmentsError } = await supa
+    const { data: assignmentsData, error: assignmentsError } = await supa
       .from('room_assignments')
       .select('room_id, bed_number')
       .or(`and(check_in_date.lte.${endDate},check_out_date.gte.${startDate})`);
 
+    let assignments = assignmentsData;
     if (assignmentsError) {
       console.error('Error fetching room assignments:', assignmentsError);
       // Continue with empty assignments array instead of failing

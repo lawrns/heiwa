@@ -10,9 +10,7 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {
-      "actualWorkers": 2
-    },
+    "metadata": {},
     "preserveOutput": "always",
     "reporter": [
       [
@@ -44,9 +42,7 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "chromium-admin",
         "name": "chromium-admin",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -59,15 +55,13 @@
           "**/dashboard.spec.ts",
           "**/auth.spec.ts"
         ],
-        "timeout": 60000
+        "timeout": 120000
       },
       {
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "firefox-admin",
         "name": "firefox-admin",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -79,15 +73,13 @@
           "**/admin/**",
           "**/dashboard.spec.ts"
         ],
-        "timeout": 60000
+        "timeout": 120000
       },
       {
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "wordpress-integration",
         "name": "wordpress-integration",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -98,15 +90,13 @@
         "testMatch": [
           "**/wordpress-integration.spec.ts"
         ],
-        "timeout": 60000
+        "timeout": 120000
       },
       {
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "widget-parity",
         "name": "widget-parity",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -117,15 +107,13 @@
         "testMatch": [
           "**/widget-parity.spec.ts"
         ],
-        "timeout": 60000
+        "timeout": 120000
       },
       {
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "mobile-chrome",
         "name": "mobile-chrome",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -137,15 +125,13 @@
           "**/client/**",
           "**/booking-flow.spec.ts"
         ],
-        "timeout": 60000
+        "timeout": 120000
       },
       {
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "mobile-safari",
         "name": "mobile-safari",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -156,15 +142,13 @@
         "testMatch": [
           "**/client/**"
         ],
-        "timeout": 60000
+        "timeout": 120000
       },
       {
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "performance",
         "name": "performance",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -175,15 +159,13 @@
         "testMatch": [
           "**/performance.spec.ts"
         ],
-        "timeout": 60000
+        "timeout": 120000
       },
       {
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "setup-wordpress",
         "name": "setup-wordpress",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -194,15 +176,13 @@
         "testMatch": [
           "**/setup/wordpress-setup.spec.ts"
         ],
-        "timeout": 60000
+        "timeout": 120000
       },
       {
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {
-          "actualWorkers": 2
-        },
+        "metadata": {},
         "id": "cleanup-wordpress",
         "name": "cleanup-wordpress",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -213,7 +193,7 @@
         "testMatch": [
           "**/setup/wordpress-cleanup.spec.ts"
         ],
-        "timeout": 60000
+        "timeout": 120000
       }
     ],
     "shard": null,
@@ -223,296 +203,19 @@
     "workers": 7,
     "webServer": null
   },
-  "suites": [
+  "suites": [],
+  "errors": [
     {
-      "title": "admin/comprehensive-admin.spec.ts",
-      "file": "admin/comprehensive-admin.spec.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "Admin Dashboard - Comprehensive Test Suite",
-          "file": "admin/comprehensive-admin.spec.ts",
-          "line": 21,
-          "column": 6,
-          "specs": [
-            {
-              "title": "Authentication & Access Control",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium-admin",
-                  "projectName": "chromium-admin",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 12635,
-                      "error": {
-                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n",
-                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts:51:56",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                          "column": 56,
-                          "line": 51
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 49 |\u001b[39m     \n \u001b[90m 50 |\u001b[39m     \u001b[90m// Test logout functionality\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Logout'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'heading'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Login'\u001b[39m }))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                            "column": 56,
-                            "line": 51
-                          },
-                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n\n\n\u001b[0m \u001b[90m 49 |\u001b[39m     \n \u001b[90m 50 |\u001b[39m     \u001b[90m// Test logout functionality\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Logout'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'heading'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Login'\u001b[39m }))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts:51:56\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-09-18T00:20:53.000Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-chromium-admin/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-chromium-admin/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-chromium-admin/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                        "column": 56,
-                        "line": 51
-                      }
-                    },
-                    {
-                      "workerIndex": 2,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 11982,
-                      "error": {
-                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n",
-                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts:51:56",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                          "column": 56,
-                          "line": 51
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 49 |\u001b[39m     \n \u001b[90m 50 |\u001b[39m     \u001b[90m// Test logout functionality\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Logout'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'heading'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Login'\u001b[39m }))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                            "column": 56,
-                            "line": 51
-                          },
-                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n\n\n\u001b[0m \u001b[90m 49 |\u001b[39m     \n \u001b[90m 50 |\u001b[39m     \u001b[90m// Test logout functionality\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Logout'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'heading'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Login'\u001b[39m }))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts:51:56\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 1,
-                      "startTime": "2025-09-18T00:21:06.674Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-chromium-admin-retry1/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-chromium-admin-retry1/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-chromium-admin-retry1/error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-chromium-admin-retry1/trace.zip"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                        "column": 56,
-                        "line": 51
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "38bf131319e815476858-520e5e31012a8f9db359",
-              "file": "admin/comprehensive-admin.spec.ts",
-              "line": 41,
-              "column": 7
-            },
-            {
-              "title": "Authentication & Access Control",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "firefox-admin",
-                  "projectName": "firefox-admin",
-                  "results": [
-                    {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
-                      "status": "failed",
-                      "duration": 12869,
-                      "error": {
-                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n",
-                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts:51:56",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                          "column": 56,
-                          "line": 51
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 49 |\u001b[39m     \n \u001b[90m 50 |\u001b[39m     \u001b[90m// Test logout functionality\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Logout'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'heading'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Login'\u001b[39m }))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                            "column": 56,
-                            "line": 51
-                          },
-                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n\n\n\u001b[0m \u001b[90m 49 |\u001b[39m     \n \u001b[90m 50 |\u001b[39m     \u001b[90m// Test logout functionality\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Logout'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'heading'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Login'\u001b[39m }))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts:51:56\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-09-18T00:20:52.998Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-firefox-admin/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-firefox-admin/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-firefox-admin/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                        "column": 56,
-                        "line": 51
-                      }
-                    },
-                    {
-                      "workerIndex": 3,
-                      "parallelIndex": 1,
-                      "status": "failed",
-                      "duration": 13012,
-                      "error": {
-                        "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n",
-                        "stack": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts:51:56",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                          "column": 56,
-                          "line": 51
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 49 |\u001b[39m     \n \u001b[90m 50 |\u001b[39m     \u001b[90m// Test logout functionality\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Logout'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'heading'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Login'\u001b[39m }))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                            "column": 56,
-                            "line": 51
-                          },
-                          "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Logout' })\u001b[22m\n\n\n\u001b[0m \u001b[90m 49 |\u001b[39m     \n \u001b[90m 50 |\u001b[39m     \u001b[90m// Test logout functionality\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'button'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Logout'\u001b[39m })\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForURL(\u001b[32m'/login'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByRole(\u001b[32m'heading'\u001b[39m\u001b[33m,\u001b[39m { name\u001b[33m:\u001b[39m \u001b[32m'Login'\u001b[39m }))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts:51:56\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 1,
-                      "startTime": "2025-09-18T00:21:07.130Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-firefox-admin-retry1/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-firefox-admin-retry1/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-firefox-admin-retry1/error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/admin-comprehensive-admin--a8881-thentication-Access-Control-firefox-admin-retry1/trace.zip"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/admin/comprehensive-admin.spec.ts",
-                        "column": 56,
-                        "line": 51
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "38bf131319e815476858-897fcd10d8b4f98f7f9d",
-              "file": "admin/comprehensive-admin.spec.ts",
-              "line": 41,
-              "column": 7
-            }
-          ]
-        }
-      ]
+      "message": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.",
+      "stack": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments."
     }
   ],
-  "errors": [],
   "stats": {
-    "startTime": "2025-09-18T00:20:48.658Z",
-    "duration": 32394.452,
+    "startTime": "2025-09-18T20:31:59.642Z",
+    "duration": 1097.0259999999998,
     "expected": 0,
     "skipped": 0,
-    "unexpected": 2,
+    "unexpected": 0,
     "flaky": 0
   }
 }
