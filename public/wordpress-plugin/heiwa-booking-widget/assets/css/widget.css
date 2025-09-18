@@ -2270,15 +2270,33 @@ body.heiwa-modal-open {
   }
 }
 
-/* Focus Management - Updated per UI/UX Addendum */
+/* Focus Management - DISABLED for better UI appearance */
 .heiwa-focus-ring {
-  outline: 2px solid var(--heiwa-ocean-700);
-  outline-offset: 2px;
+  outline: none !important;
 }
 
 .heiwa-focus-ring:focus-visible {
-  outline: 2px solid var(--heiwa-ocean-700);
-  outline-offset: 2px;
+  outline: none !important;
+}
+
+/* Global focus ring removal for all elements within the widget */
+.heiwa-booking-widget *:focus,
+.heiwa-booking-widget *:focus-visible,
+.heiwa-booking-widget *:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove focus rings from buttons, inputs, and interactive elements */
+.heiwa-booking-widget button:focus,
+.heiwa-booking-widget input:focus,
+.heiwa-booking-widget select:focus,
+.heiwa-booking-widget textarea:focus,
+.heiwa-booking-widget [role="button"]:focus,
+.heiwa-booking-widget .heiwa-btn:focus,
+.heiwa-booking-widget .heiwa-card:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Touch Target Minimums - Updated per UI/UX Addendum */

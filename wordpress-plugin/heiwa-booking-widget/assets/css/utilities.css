@@ -42,15 +42,13 @@
   }
 }
 
-/* Focus Management - Updated per UI/UX Addendum */
+/* Focus Management - DISABLED for better UI appearance */
 .heiwa-focus-ring {
-  outline: 2px solid var(--heiwa-ocean-700);
-  outline-offset: 2px;
+  outline: none !important;
 }
 
 .heiwa-focus-ring:focus-visible {
-  outline: 2px solid var(--heiwa-ocean-700);
-  outline-offset: 2px;
+  outline: none !important;
 }
 
 /* Touch Target Minimums - Updated per UI/UX Addendum */

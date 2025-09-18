@@ -103,10 +103,37 @@
   animation: spin 1s linear infinite;
 }
 
-/* Focus styles */
-.focus-visible:focus {
-  outline: 2px solid theme('colors.blue.500');
-  outline-offset: 2px;
+/* Focus styles - DISABLED SITE-WIDE */
+/* Remove all focus rings and outlines for better UI appearance */
+*:focus,
+*:focus-visible,
+*:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove Tailwind focus ring utilities */
+.focus\:ring-2:focus,
+.focus\:ring-1:focus,
+.focus\:ring:focus,
+.focus-visible\:ring-2:focus-visible,
+.focus-visible\:ring-1:focus-visible,
+.focus-visible\:ring:focus-visible {
+  --tw-ring-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove focus ring offset */
+.focus\:ring-offset-2:focus,
+.focus-visible\:ring-offset-2:focus-visible {
+  --tw-ring-offset-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove focus outlines */
+.focus\:outline-none:focus,
+.focus-visible\:outline-none:focus-visible {
+  outline: none !important;
 }
 
 /* Custom utilities */

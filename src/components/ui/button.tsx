@@ -4,18 +4,18 @@ import { cn } from "@/lib/utils"
 
 // Simplified button variants without class-variance-authority to fix webpack issues
 const getButtonClasses = (variant: string = 'default', size: string = 'default') => {
-  const baseClasses = "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none shadow-sm hover:shadow-md"
+  const baseClasses = "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-fast focus:outline-none disabled:opacity-50 disabled:pointer-events-none shadow-sm hover:shadow-md"
 
   const variantClasses = {
-    default: "bg-heiwaOrange-600 text-white hover:bg-heiwaOrange-700 focus:ring-heiwaOrange-500",
-    destructive: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
-    outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-heiwaOrange-500",
-    secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500",
-    ghost: "text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
-    link: "text-heiwaOrange-600 underline-offset-4 hover:underline focus:ring-heiwaOrange-500",
-    ocean: "bg-gradient-to-r from-blue-500 to-teal-500 text-white hover:shadow-lg focus:ring-blue-500",
-    surf: "bg-gradient-to-r from-teal-500 to-cyan-500 text-white hover:shadow-lg focus:ring-teal-500",
-    sand: "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:shadow-lg focus:ring-yellow-500",
+    default: "bg-heiwaOrange-600 text-white hover:bg-heiwaOrange-700",
+    destructive: "bg-red-600 text-white hover:bg-red-700",
+    outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
+    secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
+    ghost: "text-gray-700 hover:bg-gray-100",
+    link: "text-heiwaOrange-600 underline-offset-4 hover:underline",
+    ocean: "bg-gradient-to-r from-blue-500 to-teal-500 text-white hover:shadow-lg",
+    surf: "bg-gradient-to-r from-teal-500 to-cyan-500 text-white hover:shadow-lg",
+    sand: "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:shadow-lg",
   }
 
   const sizeClasses = {
