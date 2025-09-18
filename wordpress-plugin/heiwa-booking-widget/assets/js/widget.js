@@ -638,6 +638,12 @@
         bookingData.dates.start = $('#start-date').val();
         bookingData.dates.end = $('#end-date').val();
 
+        // Only check availability when both dates are selected
+        if (bookingData.dates.start && bookingData.dates.end) {
+            const participants = bookingData.participants || 1;
+            checkSelectedDateAvailability(bookingData.dates.start, bookingData.dates.end, participants);
+        }
+
         updateSummary();
         updateCTAButton();
     }
@@ -783,29 +789,48 @@
             setupDatePickers();
         }, 100);
 
-        // Initialize date availability for the next 3 months
-        initializeDateAvailability();
+        // Date availability will be checked when dates are selected
     }
 
     /**
-     * Initialize date availability data for the next 3 months
+     * Check date availability for selected date range
+     * Only called when user has selected both check-in and check-out dates
      */
-    function initializeDateAvailability() {
-        const today = new Date();
-        const threeMonthsLater = new Date();
-        threeMonthsLater.setMonth(today.getMonth() + 3);
+    function checkSelectedDateAvailability(startDate, endDate, participants = 1) {
+        if (!startDate || !endDate) {
+            return; // Don't check availability if dates aren't selected
+        }
 
-        const startDate = today.toISOString().split('T')[0];
-        const endDate = threeMonthsLater.toISOString().split('T')[0];
+        console.log('Heiwa Booking Widget: Checking availability for selected dates:', startDate, 'to', endDate);
 
-        // Fetch availability data in the background
-        fetchDateAvailability(startDate, endDate, 1)
+        // Fetch availability data for the selected range
+        fetchDateAvailability(startDate, endDate, participants)
             .then(availability => {
-                console.log('Heiwa Booking Widget: Date availability loaded for', availability.length, 'dates');
+                console.log('Heiwa Booking Widget: Date availability loaded for selected dates:', availability.length, 'dates');
+
+                // Update UI to show availability status for selected dates
+                updateDateAvailabilityUI(startDate, endDate, availability);
             })
             .catch(error => {
-                console.warn('Heiwa Booking Widget: Failed to load date availability:', error);
+                console.warn('Heiwa Booking Widget: Failed to load date availability for selected dates:', error);
             });
+    }
+
+    /**
+     * Update UI with availability information for selected dates
+     */
+    function updateDateAvailabilityUI(startDate, endDate, availability) {
+        // Check if selected dates are available
+        const startDateInfo = availability.find(d => d.date === startDate);
+        const endDateInfo = availability.find(d => d.date === endDate);
+
+        // Update date inputs with availability status
+        if (startDateInfo && !startDateInfo.available) {
+            checkDateAvailability(startDate);
+        }
+        if (endDateInfo && !endDateInfo.available) {
+            checkDateAvailability(endDate);
+        }
     }
 
     /**
@@ -1733,6 +1758,12 @@
     function updateDates() {
         bookingData.dates.start = $('#start-date').val();
         bookingData.dates.end = $('#end-date').val();
+
+        // Only check availability when both dates are selected
+        if (bookingData.dates.start && bookingData.dates.end) {
+            const participants = bookingData.participants || 1;
+            checkSelectedDateAvailability(bookingData.dates.start, bookingData.dates.end, participants);
+        }
 
         updateSummary();
         updateCTAButton();

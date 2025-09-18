@@ -45,17 +45,13 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     state.dates.checkOut?.toISOString().split('T')[0] || ''
   );
 
-  // Fetch date availability for the next 3 months when component mounts
+  // Fetch date availability only when both dates are selected
   useEffect(() => {
-    const today = new Date();
-    const threeMonthsLater = new Date();
-    threeMonthsLater.setMonth(today.getMonth() + 3);
-
-    const startDate = today.toISOString().split('T')[0];
-    const endDate = threeMonthsLater.toISOString().split('T')[0];
-
-    fetchDateAvailability(startDate, endDate);
-  }, [fetchDateAvailability]);
+    if (checkInDate && checkOutDate) {
+      // Only check availability for the selected date range
+      fetchDateAvailability(checkInDate, checkOutDate);
+    }
+  }, [checkInDate, checkOutDate, fetchDateAvailability]);
 
   // For surf weeks, if a surf week was already selected in step 2, auto-select it here
   if (state.experienceType === 'surf-week' && state.selectedSurfWeek && !state.selectedOption) {
@@ -315,11 +311,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               </div>
             </div>
 
-            {/* Date Availability Loading Indicator */}
-            {dateAvailabilityLoading && (
+            {/* Date Availability Loading Indicator - Only show when dates are selected */}
+            {dateAvailabilityLoading && checkInDate && checkOutDate && (
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                Checking date availability...
+                Checking availability for selected dates...
               </div>
             )}
           </div>
