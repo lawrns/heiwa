@@ -103,37 +103,42 @@
   animation: spin 1s linear infinite;
 }
 
-/* Focus styles - DISABLED SITE-WIDE */
-/* Remove all focus rings and outlines for better UI appearance */
-*:focus,
-*:focus-visible,
-*:focus-within {
-  outline: none !important;
-  box-shadow: none !important;
+/* Accessible Focus Styles */
+/* Provide clear focus indicators for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #ea580c;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* Remove Tailwind focus ring utilities */
-.focus\:ring-2:focus,
-.focus\:ring-1:focus,
-.focus\:ring:focus,
-.focus-visible\:ring-2:focus-visible,
-.focus-visible\:ring-1:focus-visible,
-.focus-visible\:ring:focus-visible {
-  --tw-ring-shadow: none !important;
-  box-shadow: none !important;
+/* Enhanced focus styles for interactive elements */
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid #ea580c;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1);
 }
 
-/* Remove focus ring offset */
-.focus\:ring-offset-2:focus,
-.focus-visible\:ring-offset-2:focus-visible {
-  --tw-ring-offset-shadow: none !important;
-  box-shadow: none !important;
+/* Special focus styles for room selection cards */
+.room-card:focus-visible,
+.booking-option-card:focus-visible {
+  outline: 3px solid #ea580c;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(234, 88, 12, 0.15);
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
 }
 
-/* Remove focus outlines */
-.focus\:outline-none:focus,
-.focus-visible\:outline-none:focus-visible {
-  outline: none !important;
+/* Focus styles for form elements */
+.form-input:focus-visible {
+  outline: 2px solid #ea580c;
+  outline-offset: 1px;
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
 }
 
 /* Custom utilities */

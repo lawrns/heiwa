@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, Utensils, AlertCircle } from 'lucide-react';
+import { User, Mail, Phone, Utensils, AlertCircle, Edit3, ChevronDown } from 'lucide-react';
 import { BookingState, GuestInfo } from '../types';
 
 interface GuestDetailsProps {
@@ -21,6 +21,7 @@ interface GuestFormData {
 export function GuestDetails({ state, actions }: GuestDetailsProps) {
   const [guestForms, setGuestForms] = useState<GuestFormData[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Initialize guest forms based on guest count
   useEffect(() => {
@@ -38,6 +39,18 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     }
     setGuestForms(newForms);
   }, [state.guests, state.guestDetails]);
+
+  // Auto-collapse when all guests are completed
+  useEffect(() => {
+    const allCompleted = allGuestsValid() && state.guestDetails.length === state.guests;
+    if (allCompleted && !isCollapsed) {
+      // Add a small delay for better UX
+      const timer = setTimeout(() => {
+        setIsCollapsed(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [state.guestDetails, state.guests, isCollapsed]);
 
   const validateForm = (formData: GuestFormData, index: number): string[] => {
     const formErrors: string[] = [];
@@ -108,6 +121,9 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     return guestForms.every((form, index) => validateForm(form, index).length === 0);
   };
 
+  const completedGuestsCount = state.guestDetails.filter(g => g.firstName && g.lastName && g.email).length;
+  const allCompleted = allGuestsValid() && completedGuestsCount === state.guests;
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -118,10 +134,40 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
         </p>
       </div>
 
-      {/* Guest Forms */}
-      <div className="space-y-6">
-        {guestForms.map((guestForm, index) => (
-          <div key={index} className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+      {/* Collapsed Summary Card */}
+      {isCollapsed && allCompleted && (
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                <User size={20} className="text-white" />
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold text-green-900">
+                  {completedGuestsCount} {completedGuestsCount === 1 ? 'Participant' : 'Participants'} Added
+                </h4>
+                <p className="text-sm text-green-700">
+                  {state.guestDetails.map(g => `${g.firstName} ${g.lastName}`).join(', ')}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsCollapsed(false)}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-green-300 text-green-700 rounded-lg hover:bg-green-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/30"
+            >
+              <Edit3 size={16} />
+              <span className="font-medium">Edit</span>
+              <ChevronDown size={16} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Guest Forms - Show when not collapsed */}
+      {!isCollapsed && (
+        <div className="space-y-6 transition-all duration-300">
+          {guestForms.map((guestForm, index) => (
+            <div key={`guest-${index}`} className="bg-gray-50 rounded-xl p-6 border border-gray-200">
             {/* Guest Header */}
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
@@ -277,32 +323,35 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
 
-      {/* Summary */}
-      <div className="bg-orange-50 rounded-xl p-4 border border-orange-200">
-        <div className="flex items-center justify-between">
-          <div>
-            <h5 className="font-semibold text-orange-900">Guest Information Status</h5>
-            <p className="text-sm text-orange-700" data-testid="guest-completion-status">
-              {state.guestDetails.filter(g => g.firstName && g.lastName && g.email).length} of {state.guests} guests completed
-            </p>
-          </div>
-          <div className="text-right">
-            {allGuestsValid() ? (
-              <div className="flex items-center gap-2 text-green-600">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm font-medium">All guests ready</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 text-orange-600">
-                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                <span className="text-sm font-medium">Complete all fields</span>
-              </div>
-            )}
+      {/* Summary - Only show when not collapsed */}
+      {!isCollapsed && (
+        <div className="bg-orange-50 rounded-xl p-4 border border-orange-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h5 className="font-semibold text-orange-900">Guest Information Status</h5>
+              <p className="text-sm text-orange-700" data-testid="guest-completion-status">
+                {completedGuestsCount} of {state.guests} guests completed
+              </p>
+            </div>
+            <div className="text-right">
+              {allCompleted ? (
+                <div className="flex items-center gap-2 text-green-600">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm font-medium">All guests ready</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-orange-600">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  <span className="text-sm font-medium">Complete all fields</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Help Text */}
       <div className="text-center">

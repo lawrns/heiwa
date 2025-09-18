@@ -2270,33 +2270,35 @@ body.heiwa-modal-open {
   }
 }
 
-/* Focus Management - DISABLED for better UI appearance */
-.heiwa-focus-ring {
-  outline: none !important;
+/* Accessible Focus Management */
+/* Provide clear focus indicators for keyboard navigation */
+.heiwa-booking-widget *:focus-visible {
+  outline: 2px solid var(--heiwa-primary-color);
+  outline-offset: 2px;
+  border-radius: var(--heiwa-radius-sm);
 }
 
-.heiwa-focus-ring:focus-visible {
-  outline: none !important;
+/* Enhanced focus styles for interactive elements */
+.heiwa-booking-widget button:focus-visible,
+.heiwa-booking-widget input:focus-visible,
+.heiwa-booking-widget select:focus-visible,
+.heiwa-booking-widget textarea:focus-visible,
+.heiwa-booking-widget [role="button"]:focus-visible,
+.heiwa-booking-widget .heiwa-btn:focus-visible {
+  outline: 2px solid var(--heiwa-primary-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(236, 104, 28, 0.1);
 }
 
-/* Global focus ring removal for all elements within the widget */
-.heiwa-booking-widget *:focus,
-.heiwa-booking-widget *:focus-visible,
-.heiwa-booking-widget *:focus-within {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* Remove focus rings from buttons, inputs, and interactive elements */
-.heiwa-booking-widget button:focus,
-.heiwa-booking-widget input:focus,
-.heiwa-booking-widget select:focus,
-.heiwa-booking-widget textarea:focus,
-.heiwa-booking-widget [role="button"]:focus,
-.heiwa-booking-widget .heiwa-btn:focus,
-.heiwa-booking-widget .heiwa-card:focus {
-  outline: none !important;
-  box-shadow: none !important;
+/* Special focus styles for room cards and booking options */
+.heiwa-booking-widget .heiwa-card:focus-visible,
+.heiwa-booking-widget .heiwa-room-card:focus-visible,
+.heiwa-booking-widget .heiwa-booking-option-card:focus-visible {
+  outline: 3px solid var(--heiwa-primary-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px rgba(236, 104, 28, 0.15);
+  transform: translateY(-2px);
+  transition: all var(--heiwa-transition-fast);
 }
 
 /* Touch Target Minimums - Updated per UI/UX Addendum */
