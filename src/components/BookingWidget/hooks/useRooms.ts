@@ -12,12 +12,14 @@ interface UseRoomsResult {
   loading: boolean;
   error: string | null;
   refetch: () => void;
+  retryCount: number;
 }
 
 export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoomsResult {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const fetchRooms = async () => {
     try {
@@ -43,20 +45,28 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
         });
       }
 
-      // Try WordPress API (public endpoint)
-      const response = await fetch(`${apiUrl}${params.toString() ? '?' + params.toString() : ''}`, {
-        method: 'GET',
-        headers: {
-          'X-Heiwa-API-Key': 'heiwa_wp_test_key_2024_secure_deployment',
-          'Content-Type': 'application/json',
-        },
-      });
+      // Create AbortController for timeout handling
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      try {
+        // Try WordPress API (public endpoint) with timeout
+        const response = await fetch(`${apiUrl}${params.toString() ? '?' + params.toString() : ''}`, {
+          method: 'GET',
+          headers: {
+            'X-Heiwa-API-Key': 'heiwa_wp_test_key_2024_secure_deployment',
+            'Content-Type': 'application/json',
+          },
+          signal: controller.signal,
+        });
 
-      const data = await response.json();
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
 
       if (data.success && (data.data?.available_rooms || data.data?.rooms)) {
         // Handle both availability endpoint (available_rooms) and general rooms endpoint (rooms)
@@ -93,9 +103,17 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
         setRooms([]);
         setError('No rooms available');
       }
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+          throw new Error('Request timed out. Please try again.');
+        }
+        throw fetchError;
+      }
     } catch (err) {
       console.error('Error fetching rooms:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch rooms');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch rooms';
+      setError(errorMessage);
       // Set empty array instead of mock data
       setRooms([]);
     } finally {
@@ -111,7 +129,8 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
     rooms,
     loading,
     error,
-    refetch: fetchRooms,
+    refetch: () => { fetchRooms(); },
+    retryCount,
   };
 }
 

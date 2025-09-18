@@ -18,12 +18,13 @@ interface OptionSelectionProps {
 }
 
 export function OptionSelection({ state, actions }: OptionSelectionProps) {
-  const { rooms, loading: roomsLoading, error: roomsError } = useRooms({
-    checkIn: state.dates.checkIn,
-    checkOut: state.dates.checkOut,
-    guests: state.guests,
+  // Only fetch data for the selected experience type to improve performance
+  const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
+    checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+    checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+    guests: state.experienceType === 'room' ? state.guests : 1,
   });
-  const { surfCamps, loading: campsLoading, error: campsError } = useSurfCamps();
+  const { surfCamps, loading: campsLoading, error: campsError, refetch: refetchSurfCamps } = useSurfCamps();
   const {
     fetchDateAvailability,
     isDateSoldOut,
@@ -188,8 +189,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           <h3 className="text-2xl font-bold text-gray-900">
             Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
           </h3>
-          <p className="text-gray-600">
-            Loading available options...
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-gray-600">
+              Loading available {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}...
+            </p>
+          </div>
+          <p className="text-sm text-gray-500">
+            This may take up to 15 seconds
           </p>
         </div>
 
@@ -206,15 +213,31 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   }
 
   if (error) {
+    const handleRetry = () => {
+      if (state.experienceType === 'room') {
+        refetchRooms();
+      } else {
+        refetchSurfCamps();
+      }
+    };
+
     return (
       <div className="space-y-6">
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-4">
           <h3 className="text-2xl font-bold text-gray-900">
             Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
           </h3>
-          <p className="text-red-600">
-            Error loading options: {error}
-          </p>
+          <div className="space-y-2">
+            <p className="text-red-600">
+              Error loading {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}: {error}
+            </p>
+            <button
+              onClick={handleRetry}
+              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </div>
     );

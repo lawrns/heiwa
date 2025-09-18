@@ -18,20 +18,28 @@ export function useSurfCamps(): UseSurfCampsResult {
       setLoading(true);
       setError(null);
 
-      // Try WordPress API first (public endpoint)
-      const response = await fetch('/api/wordpress/surf-camps', {
-        method: 'GET',
-        headers: {
-          'X-Heiwa-API-Key': 'heiwa_wp_test_key_2024_secure_deployment',
-          'Content-Type': 'application/json',
-        },
-      });
+      // Create AbortController for timeout handling
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      try {
+        // Try WordPress API first (public endpoint) with timeout
+        const response = await fetch('/api/wordpress/surf-camps', {
+          method: 'GET',
+          headers: {
+            'X-Heiwa-API-Key': 'heiwa_wp_test_key_2024_secure_deployment',
+            'Content-Type': 'application/json',
+          },
+          signal: controller.signal,
+        });
 
-      const data = await response.json();
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
       
       if (data.success && data.data?.surf_camps) {
         // Transform WordPress API response to our SurfWeek interface
@@ -59,9 +67,17 @@ export function useSurfCamps(): UseSurfCampsResult {
         setError('No surf camps available');
         setSurfCamps([]);
       }
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+          throw new Error('Request timed out. Please try again.');
+        }
+        throw fetchError;
+      }
     } catch (err) {
       console.error('Error fetching surf camps:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch surf camps');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch surf camps';
+      setError(errorMessage);
       // No fallback - show empty state
       setSurfCamps([]);
     } finally {
