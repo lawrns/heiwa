@@ -478,7 +478,27 @@ export default function SurfCampsPage() {
       fetchSurfCamps();
     } catch (error: unknown) {
       console.error('SurfCamps: Failed to create surf camp:', error);
-      toast.error(`Failed to create surf camp: ${error instanceof Error ? error.message : 'Unknown error'}`);
+
+      // Enhanced error handling with user-friendly messages
+      if (error instanceof Error) {
+        if (error.message.includes('start_date')) {
+          toast.error('Invalid start date. Please check the date format.');
+        } else if (error.message.includes('end_date')) {
+          toast.error('Invalid end date. Please ensure end date is after start date.');
+        } else if (error.message.includes('max_participants')) {
+          toast.error('Invalid participant count. Please enter a valid number.');
+        } else if (error.message.includes('price')) {
+          toast.error('Invalid price. Please enter a valid amount.');
+        } else if (error.message.includes('network')) {
+          toast.error('Network error. Please check your connection and try again.');
+        } else if (error.message.includes('category')) {
+          toast.error('Invalid category selection. Please choose a valid category.');
+        } else {
+          toast.error(`Failed to create surf camp: ${error.message}`);
+        }
+      } else {
+        toast.error('An unexpected error occurred. Please try again.');
+      }
     }
   };
 

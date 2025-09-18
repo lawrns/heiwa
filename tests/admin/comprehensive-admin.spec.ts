@@ -26,7 +26,7 @@ test.describe('Admin Dashboard - Comprehensive Test Suite', () => {
     
     // Fill in login credentials
     await page.getByTestId('email-input').fill('admin@heiwa.house');
-    await page.getByTestId('password-input').fill('admin123');
+    await page.getByTestId('password-input').fill('admin123456');
     
     // Submit login form
     await page.getByTestId('login-button').click();
@@ -48,7 +48,7 @@ test.describe('Admin Dashboard - Comprehensive Test Suite', () => {
     await expect(page.getByTestId('sidebar-nav-bookings')).toBeVisible();
     
     // Test logout functionality
-    await page.getByRole('button', { name: 'Logout' }).click();
+    await page.getByRole('button', { name: 'Sign out' }).click();
     await page.waitForURL('/login');
     await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
   });
