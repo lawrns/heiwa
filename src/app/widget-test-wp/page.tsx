@@ -101,13 +101,7 @@ export default function WordPressWidgetTestPage() {
             data-widget-id="test-widget"
             data-build-id="react-widget-1757864064024"
           >
-            {/* Simple, non-intrusive message */}
-            <div className="text-center py-4">
-              <p className="text-sm text-gray-600">
-                📍 <strong>Widget Location:</strong> The booking widget is available in the header.
-                Click "BOOK NOW" in the top right corner to start booking.
-              </p>
-            </div>
+
           </div>
         </div>
 
