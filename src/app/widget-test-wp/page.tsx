@@ -101,13 +101,11 @@ export default function WordPressWidgetTestPage() {
             data-widget-id="test-widget"
             data-build-id="react-widget-1757864064024"
           >
-            {/* Widget moved to header - this shows the shortcode integration concept */}
-            <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-              <p className="text-gray-600 mb-2">
-                <strong>Widget Active:</strong> The booking widget is now displayed in the header
-              </p>
-              <p className="text-sm text-gray-500">
-                Click the "Book Now" button in the top right corner to open the widget
+            {/* Simple, non-intrusive message */}
+            <div className="text-center py-4">
+              <p className="text-sm text-gray-600">
+                📍 <strong>Widget Location:</strong> The booking widget is available in the header.
+                Click "BOOK NOW" in the top right corner to start booking.
               </p>
             </div>
           </div>

@@ -2834,11 +2834,13 @@
 
     /**
      * Calculate total price for a suggestion
+     * Fixed: Charge per room, not per participant
      */
     function calculateSuggestionPrice(assignments, rooms) {
         return assignments.reduce((total, assignment) => {
             const room = rooms.find(r => r.id === assignment.roomId);
-            return total + (room.price * assignment.participants);
+            // Charge per room, not per participant - each room has a fixed price regardless of occupancy
+            return total + room.price;
         }, 0);
     }
 
@@ -3375,18 +3377,44 @@
 
     /**
      * Assign participants to room
+     * Fixed: Improved logic for room capacity and assignment
      */
     function assignToRoom(roomId) {
         // Find unassigned participants
         const unassignedCount = bookingData.participants - bookingData.assignment.assignments.reduce((sum, a) => sum + a.participants, 0);
 
         if (unassignedCount > 0) {
-            const newAssignment = {
-                roomId: parseInt(roomId),
-                participants: Math.min(unassignedCount, 2) // Simple logic - assign 1-2 participants
-            };
+            // Find the room to get its capacity
+            const room = availabilityData?.available_rooms?.find(r => r.id === parseInt(roomId));
+            const roomCapacity = room ? room.capacity : 2; // Default to 2 if room not found
 
-            bookingData.assignment.assignments.push(newAssignment);
+            // Check if room is already assigned
+            const existingAssignment = bookingData.assignment.assignments.find(a => a.roomId === parseInt(roomId));
+
+            if (existingAssignment) {
+                // Room already assigned - add more participants up to capacity
+                const currentOccupancy = existingAssignment.participants;
+                const availableSpace = roomCapacity - currentOccupancy;
+                const toAssign = Math.min(unassignedCount, availableSpace);
+
+                if (toAssign > 0) {
+                    existingAssignment.participants += toAssign;
+                    showToast(`Assigned ${toAssign} more participant(s) to room (${existingAssignment.participants}/${roomCapacity})`, 'info');
+                } else {
+                    showToast('Room is already at full capacity!', 'warning');
+                    return;
+                }
+            } else {
+                // New room assignment
+                const toAssign = Math.min(unassignedCount, roomCapacity);
+                const newAssignment = {
+                    roomId: parseInt(roomId),
+                    participants: toAssign
+                };
+
+                bookingData.assignment.assignments.push(newAssignment);
+                showToast(`Assigned ${toAssign} participant(s) to room (${toAssign}/${roomCapacity})`, 'info');
+            }
 
             // Re-render assignment
             renderAssignment();
@@ -3403,8 +3431,6 @@
                 setTimeout(() => {
                     showStep('form_addons');
                 }, 1500);
-            } else {
-                showToast(`Assigned ${newAssignment.participants} participant(s) to room`, 'info');
             }
         } else {
             showToast('All participants are already assigned!', 'warning');
