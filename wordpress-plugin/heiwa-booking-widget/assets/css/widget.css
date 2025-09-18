@@ -3454,4 +3454,135 @@ body.heiwa-modal-open {
     color: var(--heiwa-orange) !important;
 }
 
+/* ===========================================
+   PROGRESSIVE DISCLOSURE - Section Collapse Animations
+   =========================================== */
+
+/* Collapsed section styles */
+.heiwa-section-collapsed {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border: none;
+}
+
+/* Expanded section styles (default state) */
+.heiwa-step-content:not(.heiwa-section-collapsed) {
+    max-height: 2000px; /* Large enough for content */
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Preserve section headers when collapsed for summary display */
+.heiwa-section-collapsed .heiwa-step-header {
+    display: block;
+    max-height: 40px;
+    opacity: 0.7;
+    transform: scale(0.95);
+    background: var(--heiwa-neutral-50);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    border-left: 3px solid var(--heiwa-primary);
+}
+
+.heiwa-section-collapsed .heiwa-step-header h3 {
+    font-size: var(--heiwa-text-sm);
+    font-weight: 600;
+    margin: 0;
+    color: var(--heiwa-neutral-700);
+}
+
+.heiwa-section-collapsed .heiwa-step-header .heiwa-back-button {
+    display: none;
+}
+
+/* Hide content but show summary when collapsed */
+.heiwa-section-collapsed > *:not(.heiwa-step-header) {
+    display: none;
+}
+
+/* Mobile-specific collapse optimizations */
+@media (max-width: 768px) {
+    .heiwa-section-collapsed {
+        max-height: 0;
+        margin-bottom: 0;
+        transform: translateY(-5px);
+    }
+
+    .heiwa-step-content:not(.heiwa-section-collapsed) {
+        max-height: 1500px; /* Smaller for mobile */
+    }
+
+    .heiwa-section-collapsed .heiwa-step-header {
+        max-height: 35px;
+        padding: 6px 10px;
+        margin-bottom: 6px;
+    }
+}
+
+/* Accessibility: Screen reader support */
+.heiwa-section-collapsed[aria-expanded="false"] {
+    position: relative;
+}
+
+.heiwa-section-collapsed[aria-expanded="false"]::after {
+    content: "✓ Completed";
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: var(--heiwa-text-xs);
+    color: var(--heiwa-success);
+    font-weight: 600;
+}
+
+/* Animation keyframes for smooth transitions */
+@keyframes heiwaCollapseSlide {
+    0% {
+        max-height: 2000px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes heiwaExpandSlide {
+    0% {
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        max-height: 2000px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced collapse animation for larger sections */
+.heiwa-section-collapsed.heiwa-large-section {
+    animation: heiwaCollapseSlide 0.5s ease-in-out forwards;
+}
+
+.heiwa-step-content:not(.heiwa-section-collapsed).heiwa-large-section {
+    animation: heiwaExpandSlide 0.5s ease-in-out forwards;
+}
+
+/* Apply large section class to room grids and assignment sections */
+.heiwa-step-room-selection,
+.heiwa-step-surf-weeks,
+.heiwa-step-assignment {
+    /* These get the large section class applied dynamically by JavaScript */
+}
+
 /* Build completed successfully */

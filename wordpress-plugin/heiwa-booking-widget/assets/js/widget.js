@@ -34,6 +34,9 @@
         totalPrice: 0
     };
 
+    // Collapsed sections state for progressive disclosure optimization
+    let collapsedSections = new Set();
+
     function initializeWidget($) {
         // jQuery is now available as $ parameter
 
@@ -140,6 +143,143 @@
             return inlineContainer;
         } else {
             return $('.heiwa-booking-content');
+        }
+    }
+
+    /**
+     * Progressive disclosure collapse functions for space optimization
+     */
+
+    /**
+     * Check if a section should collapse based on current state
+     */
+    function shouldCollapseSection(sectionId) {
+        switch (sectionId) {
+            case 'booking-type':
+                return bookingData.bookingType !== null;
+            case 'surf-weeks':
+                return bookingData.selectedSurfWeek !== null && currentStep !== 'surf-weeks';
+            case 'dates_participants':
+                return bookingData.dates.start && bookingData.dates.end && bookingData.participants > 0 && currentStep !== 'dates_participants';
+            case 'room-calendar':
+                return bookingData.dates.start && bookingData.dates.end && currentStep !== 'room-calendar';
+            case 'room-selection':
+                return bookingData.selectedRoom !== null;
+            case 'assignment':
+                return bookingData.assignment?.assignments?.length > 0 && currentStep !== 'assignment';
+            case 'form_addons':
+                return currentStep === 'confirmation';
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Collapse a section with animation
+     */
+    function collapseSection(sectionId, delay = 0) {
+        const $section = $(`.heiwa-step-${sectionId}`);
+        if ($section.length === 0 || collapsedSections.has(sectionId)) return;
+
+        // Add large section class for enhanced animations on bigger content areas
+        const largeSections = ['room-selection', 'surf-weeks', 'assignment'];
+        if (largeSections.includes(sectionId)) {
+            $section.addClass('heiwa-large-section');
+        }
+
+        setTimeout(() => {
+            $section.addClass('heiwa-section-collapsed');
+            $section.attr('aria-expanded', 'false');
+            collapsedSections.add(sectionId);
+            console.log(`Heiwa Booking Widget: Collapsed section ${sectionId}`);
+        }, delay);
+    }
+
+    /**
+     * Expand a section (for back navigation)
+     */
+    function expandSection(sectionId) {
+        const $section = $(`.heiwa-step-${sectionId}`);
+        if ($section.length === 0 || !collapsedSections.has(sectionId)) return;
+
+        $section.removeClass('heiwa-section-collapsed heiwa-large-section');
+        $section.attr('aria-expanded', 'true');
+        collapsedSections.delete(sectionId);
+        console.log(`Heiwa Booking Widget: Expanded section ${sectionId}`);
+    }
+
+    /**
+     * Handle section collapsing based on current step transition
+     */
+    function handleSectionCollapsing(previousStep, newStep) {
+        // Define collapse rules based on step transitions
+        const collapseRules = {
+            'booking-type': {
+                trigger: 'on_selection_complete',
+                delay: 300
+            },
+            'surf-weeks': {
+                trigger: 'on_next_step_transition',
+                delay: 500
+            },
+            'dates_participants': {
+                trigger: 'on_next_step_transition',
+                delay: 200
+            },
+            'room-calendar': {
+                trigger: 'on_next_step_transition',
+                delay: 200
+            },
+            'room-selection': {
+                trigger: 'on_selection_complete',
+                delay: 600
+            },
+            'assignment': {
+                trigger: 'on_next_step_transition',
+                delay: 300
+            },
+            'form_addons': {
+                trigger: 'on_next_step_transition',
+                delay: 300
+            }
+        };
+
+        // Check if previous section should collapse
+        if (previousStep && collapseRules[previousStep] && shouldCollapseSection(previousStep)) {
+            collapseSection(previousStep, collapseRules[previousStep].delay);
+        }
+
+        // Handle back navigation - expand sections as needed
+        if (isBackNavigation(previousStep, newStep)) {
+            expandCollapsedSectionsForBackNavigation(newStep);
+        }
+    }
+
+    /**
+     * Check if navigation is backwards
+     */
+    function isBackNavigation(fromStep, toStep) {
+        const stepOrder = ['booking-type', 'surf-weeks', 'assignment', 'room-calendar', 'room-selection', 'dates_participants', 'form_addons', 'confirmation'];
+        const fromIndex = stepOrder.indexOf(fromStep);
+        const toIndex = stepOrder.indexOf(toStep);
+        return fromIndex > toIndex && fromIndex !== -1 && toIndex !== -1;
+    }
+
+    /**
+     * Expand sections when navigating backwards
+     */
+    function expandCollapsedSectionsForBackNavigation(targetStep) {
+        const stepOrder = ['booking-type', 'surf-weeks', 'assignment', 'room-calendar', 'room-selection', 'dates_participants', 'form_addons', 'confirmation'];
+        const targetIndex = stepOrder.indexOf(targetStep);
+
+        if (targetIndex === -1) return;
+
+        // Expand all sections from target step onwards that are collapsed
+        for (let i = 0; i <= targetIndex; i++) {
+            const stepId = stepOrder[i];
+            if (collapsedSections.has(stepId)) {
+                expandSection(stepId);
+            }
         }
     }
 
@@ -1145,7 +1285,11 @@
         console.log('Heiwa Booking Widget: showStep called with stepId:', stepId);
         console.log('Heiwa Booking Widget: Current availabilityData before step change:', availabilityData);
 
+        const previousStep = currentStep;
         currentStep = stepId;
+
+        // Handle section collapsing for progressive disclosure
+        handleSectionCollapsing(previousStep, stepId);
 
         // Hide all step content
         $('.heiwa-booking-step-content').removeClass('active');
@@ -4085,6 +4229,10 @@
         currentStep = 'booking-type';
         selectedCamp = null;
         availabilityData = null;
+
+        // Reset collapsed sections state
+        collapsedSections.clear();
+        $('.heiwa-step-content').removeClass('heiwa-section-collapsed heiwa-large-section').attr('aria-expanded', 'true');
 
         // Hide all steps initially
         $('.heiwa-booking-step').hide();
