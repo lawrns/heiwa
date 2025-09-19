@@ -1,2 +1,85 @@
-<testsuites id="" name="" tests="0" failures="0" skipped="0" errors="0" time="1.0970259999999998">
+<testsuites id="" name="" tests="1" failures="1" skipped="0" errors="0" time="34.040842">
+<testsuite name="wordpress-integration.spec.ts" timestamp="2025-09-19T18:34:55.590Z" hostname="wordpress-integration" tests="1" failures="1" skipped="0" time="0.002" errors="0">
+<testcase name="WordPress Widget Integration › Widget Functionality › should handle room booking flow" classname="wordpress-integration.spec.ts" time="0.002">
+<failure message="wordpress-integration.spec.ts:120:9 should handle room booking flow" type="FAILURE">
+<![CDATA[  [wordpress-integration] › wordpress-integration.spec.ts:120:9 › WordPress Widget Integration › Widget Functionality › should handle room booking flow 
+
+    TimeoutError: page.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('#user_login')
+
+
+      36 |     // Setup WordPress environment
+      37 |     await page.goto(wpConfig.adminUrl);
+    > 38 |     await page.fill('#user_login', wpConfig.adminUser);
+         |                ^
+      39 |     await page.fill('#user_pass', wpConfig.adminPassword);
+      40 |     await page.click('#wp-submit');
+      41 |     
+        at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts:38:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration/error-context.md
+
+    attachment #3: screenshot (image/png) ──────────────────────────────────────────────────────────
+    results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    TimeoutError: page.fill: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('#user_login')
+
+
+      36 |     // Setup WordPress environment
+      37 |     await page.goto(wpConfig.adminUrl);
+    > 38 |     await page.fill('#user_login', wpConfig.adminUser);
+         |                ^
+      39 |     await page.fill('#user_pass', wpConfig.adminPassword);
+      40 |     await page.click('#wp-submit');
+      41 |     
+        at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts:38:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/error-context.md
+
+    attachment #3: screenshot (image/png) ──────────────────────────────────────────────────────────
+    results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/test-failed-2.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration/test-failed-1.png]]
+
+[[ATTACHMENT|../tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration/error-context.md]]
+
+[[ATTACHMENT|../tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration/test-failed-2.png]]
+
+[[ATTACHMENT|../tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/test-failed-1.png]]
+
+[[ATTACHMENT|../tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/error-context.md]]
+
+[[ATTACHMENT|../tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/test-failed-2.png]]
+
+[[ATTACHMENT|../tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/trace.zip]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
 </testsuites>

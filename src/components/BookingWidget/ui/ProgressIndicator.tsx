@@ -128,12 +128,6 @@ export function ProgressIndicator({ currentStep, stepFlow, totalSteps }: Progres
         </div>
       </div>
 
-      {/* Current Step Title */}
-      <div className="mt-4 text-center">
-        <h3 className="text-lg font-semibold text-gray-900" data-testid="progress-step-title">
-          {stepLabels[currentStepFlow[currentStep - 1] as keyof typeof stepLabels]?.title}
-        </h3>
-      </div>
     </div>
   );
 }

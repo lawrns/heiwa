@@ -10,7 +10,9 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {},
+    "metadata": {
+      "actualWorkers": 1
+    },
     "preserveOutput": "always",
     "reporter": [
       [
@@ -42,7 +44,9 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "chromium-admin",
         "name": "chromium-admin",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -61,7 +65,9 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "firefox-admin",
         "name": "firefox-admin",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -79,7 +85,9 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "wordpress-integration",
         "name": "wordpress-integration",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -96,7 +104,9 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "widget-parity",
         "name": "widget-parity",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -113,7 +123,9 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "mobile-chrome",
         "name": "mobile-chrome",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -131,7 +143,9 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "mobile-safari",
         "name": "mobile-safari",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -148,7 +162,9 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "performance",
         "name": "performance",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -165,7 +181,9 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "setup-wordpress",
         "name": "setup-wordpress",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -182,7 +200,9 @@
         "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results",
         "repeatEach": 1,
         "retries": 1,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 1
+        },
         "id": "cleanup-wordpress",
         "name": "cleanup-wordpress",
         "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests",
@@ -203,19 +223,173 @@
     "workers": 7,
     "webServer": null
   },
-  "suites": [],
-  "errors": [
+  "suites": [
     {
-      "message": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments.",
-      "stack": "Error: No tests found.\nMake sure that arguments are regular expressions matching test files.\nYou may need to escape symbols like \"$\" or \"*\" and quote the arguments."
+      "title": "wordpress-integration.spec.ts",
+      "file": "wordpress-integration.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "WordPress Widget Integration",
+          "file": "wordpress-integration.spec.ts",
+          "line": 31,
+          "column": 6,
+          "specs": [],
+          "suites": [
+            {
+              "title": "Widget Functionality",
+              "file": "wordpress-integration.spec.ts",
+              "line": 85,
+              "column": 8,
+              "specs": [
+                {
+                  "title": "should handle room booking flow",
+                  "ok": false,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 120000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "wordpress-integration",
+                      "projectName": "wordpress-integration",
+                      "results": [
+                        {
+                          "workerIndex": 0,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 2,
+                          "error": {
+                            "message": "TimeoutError: page.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#user_login')\u001b[22m\n",
+                            "stack": "TimeoutError: page.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#user_login')\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts:38:16",
+                            "location": {
+                              "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts",
+                              "column": 16,
+                              "line": 38
+                            },
+                            "snippet": "  36 |     // Setup WordPress environment\n  37 |     await page.goto(wpConfig.adminUrl);\n> 38 |     await page.fill('#user_login', wpConfig.adminUser);\n     |                ^\n  39 |     await page.fill('#user_pass', wpConfig.adminPassword);\n  40 |     await page.click('#wp-submit');\n  41 |     "
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts",
+                                "column": 16,
+                                "line": 38
+                              },
+                              "message": "TimeoutError: page.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#user_login')\u001b[22m\n\n\n  36 |     // Setup WordPress environment\n  37 |     await page.goto(wpConfig.adminUrl);\n> 38 |     await page.fill('#user_login', wpConfig.adminUser);\n     |                ^\n  39 |     await page.fill('#user_pass', wpConfig.adminPassword);\n  40 |     await page.click('#wp-submit');\n  41 |     \n    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts:38:16"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-09-19T18:34:56.499Z",
+                          "annotations": [],
+                          "attachments": [
+                            {
+                              "name": "screenshot",
+                              "contentType": "image/png",
+                              "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration/test-failed-1.png"
+                            },
+                            {
+                              "name": "error-context",
+                              "contentType": "text/markdown",
+                              "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration/error-context.md"
+                            },
+                            {
+                              "name": "screenshot",
+                              "contentType": "image/png",
+                              "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration/test-failed-2.png"
+                            }
+                          ],
+                          "errorLocation": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts",
+                            "column": 16,
+                            "line": 38
+                          }
+                        },
+                        {
+                          "workerIndex": 1,
+                          "parallelIndex": 0,
+                          "status": "failed",
+                          "duration": 0,
+                          "error": {
+                            "message": "TimeoutError: page.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#user_login')\u001b[22m\n",
+                            "stack": "TimeoutError: page.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#user_login')\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts:38:16",
+                            "location": {
+                              "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts",
+                              "column": 16,
+                              "line": 38
+                            },
+                            "snippet": "  36 |     // Setup WordPress environment\n  37 |     await page.goto(wpConfig.adminUrl);\n> 38 |     await page.fill('#user_login', wpConfig.adminUser);\n     |                ^\n  39 |     await page.fill('#user_pass', wpConfig.adminPassword);\n  40 |     await page.click('#wp-submit');\n  41 |     "
+                          },
+                          "errors": [
+                            {
+                              "location": {
+                                "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts",
+                                "column": 16,
+                                "line": 38
+                              },
+                              "message": "TimeoutError: page.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#user_login')\u001b[22m\n\n\n  36 |     // Setup WordPress environment\n  37 |     await page.goto(wpConfig.adminUrl);\n> 38 |     await page.fill('#user_login', wpConfig.adminUser);\n     |                ^\n  39 |     await page.fill('#user_pass', wpConfig.adminPassword);\n  40 |     await page.click('#wp-submit');\n  41 |     \n    at /Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts:38:16"
+                            }
+                          ],
+                          "stdout": [],
+                          "stderr": [],
+                          "retry": 1,
+                          "startTime": "2025-09-19T18:35:11.259Z",
+                          "annotations": [],
+                          "attachments": [
+                            {
+                              "name": "screenshot",
+                              "contentType": "image/png",
+                              "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/test-failed-1.png"
+                            },
+                            {
+                              "name": "error-context",
+                              "contentType": "text/markdown",
+                              "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/error-context.md"
+                            },
+                            {
+                              "name": "screenshot",
+                              "contentType": "image/png",
+                              "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/test-failed-2.png"
+                            },
+                            {
+                              "name": "trace",
+                              "contentType": "application/zip",
+                              "path": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/results/wordpress-integration-Word-b7678-ld-handle-room-booking-flow-wordpress-integration-retry1/trace.zip"
+                            }
+                          ],
+                          "errorLocation": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard/tests/wordpress-integration.spec.ts",
+                            "column": 16,
+                            "line": 38
+                          }
+                        }
+                      ],
+                      "status": "unexpected"
+                    }
+                  ],
+                  "id": "dda53b8ab065ed2e3f61-8e4f2970673a7aceb132",
+                  "file": "wordpress-integration.spec.ts",
+                  "line": 120,
+                  "column": 9
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
+  "errors": [],
   "stats": {
-    "startTime": "2025-09-18T20:31:59.642Z",
-    "duration": 1097.0259999999998,
+    "startTime": "2025-09-19T18:34:50.682Z",
+    "duration": 34040.842,
     "expected": 0,
     "skipped": 0,
-    "unexpected": 0,
+    "unexpected": 1,
     "flaky": 0
   }
 }
