@@ -241,9 +241,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               ) : (
                 <>
                   {/* Expanded layout - centered logo */}
-                  <Link href="/admin" className="flex items-center justify-center w-full">
+                  <div className="flex items-center justify-center w-full">
                     <AdminLogo collapsed={false} />
-                  </Link>
+                  </div>
                   {/* Toggle button positioned absolutely in top-right corner */}
                   <button
                     onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
