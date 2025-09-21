@@ -109,6 +109,7 @@ function AdminLogo({ collapsed, className = "" }: AdminLogoProps) {
           alt="Heiwa House Admin"
           width={collapsed ? 144 : 180}
           height={collapsed ? 144 : 180}
+          priority
           className="object-contain filter brightness-0 invert"
           onError={(e) => {
             // Fallback to 'H' text if image fails to load
