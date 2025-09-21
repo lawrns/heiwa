@@ -1,0 +1,321 @@
+openapi: 3.0.3
+info:
+  title: Price Quote API
+  description: Complex pricing calculations with promotions, taxes, and addons
+  version: 1.0.0
+
+servers:
+  - url: https://your-project.supabase.co/functions/v1
+    description: Supabase Edge Function
+
+paths:
+  /price-quote:
+    post:
+      summary: Calculate booking price with all factors
+      description: Comprehensive pricing including base rates, addons, promotions, taxes, and fees
+      operationId: priceQuote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - brand_id
+                - camp_week_id
+                - beds
+                - check_in_date
+                - check_out_date
+                - guest_count
+              properties:
+                brand_id:
+                  type: string
+                  format: uuid
+                  description: Brand for pricing rules and tax rates
+                camp_week_id:
+                  type: string
+                  format: uuid
+                  description: Specific camp week being booked
+                beds:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                    format: uuid
+                  description: Selected bed IDs
+                addons:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - addon_id
+                      - quantity
+                    properties:
+                      addon_id:
+                        type: string
+                        format: uuid
+                      quantity:
+                        type: integer
+                        minimum: 1
+                  description: Optional addons with quantities
+                promo_code:
+                  type: string
+                  description: Optional promotional code
+                check_in_date:
+                  type: string
+                  format: date
+                  description: Actual check-in date (may differ from camp week start)
+                check_out_date:
+                  type: string
+                  format: date
+                  description: Actual check-out date (may differ from camp week end)
+                guest_count:
+                  type: integer
+                  minimum: 1
+                  description: Number of guests (for validation)
+      responses:
+        '200':
+          description: Successful price calculation
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - booking_summary
+                  - pricing_breakdown
+                  - totals
+                  - valid_until
+                properties:
+                  booking_summary:
+                    type: object
+                    required:
+                      - camp_week
+                      - beds
+                      - nights
+                      - guest_count
+                    properties:
+                      camp_week:
+                        type: object
+                        required:
+                          - id
+                          - name
+                          - start_date
+                          - end_date
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                          start_date:
+                            type: string
+                            format: date
+                          end_date:
+                            type: string
+                            format: date
+                      beds:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - id
+                            - name
+                            - room_name
+                            - price_modifier
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                            room_name:
+                              type: string
+                            price_modifier:
+                              type: number
+                              format: decimal
+                      nights:
+                        type: integer
+                        description: Number of nights being charged
+                      guest_count:
+                        type: integer
+                  pricing_breakdown:
+                    type: object
+                    required:
+                      - accommodation
+                      - addons
+                      - subtotal
+                      - discounts
+                      - taxes
+                    properties:
+                      accommodation:
+                        type: object
+                        required:
+                          - base_rate
+                          - nights
+                          - modifiers
+                          - total
+                        properties:
+                          base_rate:
+                            type: number
+                            format: decimal
+                            description: Base nightly rate per person
+                          nights:
+                            type: integer
+                          modifiers:
+                            type: array
+                            items:
+                              type: object
+                              required:
+                                - type
+                                - amount
+                                - description
+                              properties:
+                                type:
+                                  type: string
+                                  enum: [bed_upgrade, early_checkin, late_checkout]
+                                amount:
+                                  type: number
+                                  format: decimal
+                                description:
+                                  type: string
+                          total:
+                            type: number
+                            format: decimal
+                      addons:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - addon_id
+                            - name
+                            - quantity
+                            - unit_price
+                            - total
+                          properties:
+                            addon_id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                            quantity:
+                              type: integer
+                            unit_price:
+                              type: number
+                              format: decimal
+                            total:
+                              type: number
+                              format: decimal
+                      subtotal:
+                        type: number
+                        format: decimal
+                        description: Total before discounts and taxes
+                      discounts:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - type
+                            - code
+                            - amount
+                            - description
+                          properties:
+                            type:
+                              type: string
+                              enum: [promo_code, early_bird, group_discount]
+                            code:
+                              type: string
+                            amount:
+                              type: number
+                              format: decimal
+                            description:
+                              type: string
+                      taxes:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - name
+                            - rate
+                            - amount
+                          properties:
+                            name:
+                              type: string
+                              example: "Sales Tax"
+                            rate:
+                              type: number
+                              format: decimal
+                              example: 0.08
+                            amount:
+                              type: number
+                              format: decimal
+                  totals:
+                    type: object
+                    required:
+                      - subtotal
+                      - discounts_total
+                      - taxes_total
+                      - grand_total
+                      - currency
+                    properties:
+                      subtotal:
+                        type: number
+                        format: decimal
+                      discounts_total:
+                        type: number
+                        format: decimal
+                      taxes_total:
+                        type: number
+                        format: decimal
+                      grand_total:
+                        type: number
+                        format: decimal
+                      currency:
+                        type: string
+                        default: "USD"
+                  valid_until:
+                    type: string
+                    format: date-time
+                    description: Quote expiration (typically 30 minutes)
+        '400':
+          description: Invalid request or unavailable inventory
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - message
+                properties:
+                  error:
+                    type: string
+                    enum: [VALIDATION_ERROR, UNAVAILABLE_INVENTORY, INVALID_PROMO]
+                  message:
+                    type: string
+                  details:
+                    type: object
+                    description: Additional error context
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - message
+                properties:
+                  error:
+                    type: string
+                    enum: [SERVER_ERROR]
+                  message:
+                    type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Supabase anon key for pricing queries
+
+security:
+  - bearerAuth: []

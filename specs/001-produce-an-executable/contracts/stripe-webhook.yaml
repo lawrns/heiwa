@@ -1,0 +1,248 @@
+openapi: 3.0.3
+info:
+  title: Stripe Webhook API
+  description: Payment event processing and booking status updates
+  version: 1.0.0
+
+servers:
+  - url: https://your-project.supabase.co/functions/v1
+    description: Supabase Edge Function
+
+paths:
+  /stripe-webhook:
+    post:
+      summary: Process Stripe webhook events
+      description: Handle payment events and update booking/payment status accordingly
+      operationId: stripeWebhook
+      parameters:
+        - name: stripe-signature
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Stripe webhook signature for verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - object
+                - api_version
+                - created
+                - data
+                - livemode
+                - pending_webhooks
+                - request
+                - type
+              description: Raw Stripe webhook event payload
+      responses:
+        '200':
+          description: Webhook processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - event_id
+                  - processed_at
+                properties:
+                  status:
+                    type: string
+                    enum: [processed]
+                  event_id:
+                    type: string
+                    description: Stripe event ID
+                  processed_at:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid webhook signature or malformed payload
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - message
+                properties:
+                  error:
+                    type: string
+                    enum: [INVALID_SIGNATURE, MALFORMED_PAYLOAD]
+                  message:
+                    type: string
+        '422':
+          description: Event processing failed (will be retried)
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - message
+                  - event_id
+                  - retry_count
+                properties:
+                  error:
+                    type: string
+                    enum: [PROCESSING_FAILED]
+                  message:
+                    type: string
+                  event_id:
+                    type: string
+                  retry_count:
+                    type: integer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - message
+                properties:
+                  error:
+                    type: string
+                    enum: [SERVER_ERROR]
+                  message:
+                    type: string
+
+components:
+  schemas:
+    WebhookEvent:
+      type: object
+      required:
+        - id
+        - object
+        - api_version
+        - created
+        - data
+        - livemode
+        - pending_webhooks
+        - request
+        - type
+      properties:
+        id:
+          type: string
+          description: Unique event identifier
+        object:
+          type: string
+          enum: [event]
+        api_version:
+          type: string
+          description: API version used to create the event
+        created:
+          type: integer
+          description: Unix timestamp of event creation
+        data:
+          type: object
+          required:
+            - object
+          properties:
+            object:
+              oneOf:
+                - $ref: '#/components/schemas/PaymentIntent'
+                - $ref: '#/components/schemas/Charge'
+                - $ref: '#/components/schemas/Refund'
+        livemode:
+          type: boolean
+          description: Whether event occurred in live or test mode
+        pending_webhooks:
+          type: integer
+          description: Number of pending webhooks
+        request:
+          type: object
+          properties:
+            id:
+              type: string
+            idempotency_key:
+              type: string
+        type:
+          type: string
+          enum:
+            - payment_intent.succeeded
+            - payment_intent.payment_failed
+            - charge.succeeded
+            - charge.failed
+            - charge.refunded
+            - charge.dispute.created
+
+    PaymentIntent:
+      type: object
+      required:
+        - id
+        - object
+        - amount
+        - currency
+        - status
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          enum: [payment_intent]
+        amount:
+          type: integer
+          description: Amount in cents
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [requires_payment_method, requires_confirmation, requires_action, processing, requires_capture, canceled, succeeded]
+        metadata:
+          type: object
+          description: Custom metadata including booking reference
+
+    Charge:
+      type: object
+      required:
+        - id
+        - object
+        - amount
+        - currency
+        - status
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          enum: [charge]
+        amount:
+          type: integer
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [succeeded, pending, failed]
+        payment_intent:
+          type: string
+          description: Associated payment intent ID
+
+    Refund:
+      type: object
+      required:
+        - id
+        - object
+        - amount
+        - currency
+        - status
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          enum: [refund]
+        amount:
+          type: integer
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [succeeded, failed, canceled, pending]
+        charge:
+          type: string
+          description: Associated charge ID

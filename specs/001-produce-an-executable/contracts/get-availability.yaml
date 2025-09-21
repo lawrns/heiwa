@@ -1,0 +1,233 @@
+openapi: 3.0.3
+info:
+  title: Get Availability API
+  description: Real-time availability queries for camp weeks, rooms, and beds
+  version: 1.0.0
+
+servers:
+  - url: https://your-project.supabase.co/functions/v1
+    description: Supabase Edge Function
+
+paths:
+  /get-availability:
+    post:
+      summary: Get real-time availability for camp weeks
+      description: Query available beds across multiple camp weeks with filtering options
+      operationId: getAvailability
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - brand_id
+                - check_in_date
+                - check_out_date
+                - guest_count
+              properties:
+                brand_id:
+                  type: string
+                  format: uuid
+                  description: Brand identifier for filtering properties
+                check_in_date:
+                  type: string
+                  format: date
+                  description: Guest check-in date (YYYY-MM-DD)
+                check_out_date:
+                  type: string
+                  format: date
+                  description: Guest check-out date (YYYY-MM-DD)
+                guest_count:
+                  type: integer
+                  minimum: 1
+                  maximum: 20
+                  description: Number of guests to accommodate
+                property_ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  description: Optional filter for specific properties
+                room_types:
+                  type: array
+                  items:
+                    type: string
+                    enum: [dorm, private, suite]
+                  description: Optional filter for room types
+      responses:
+        '200':
+          description: Successful availability response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - available_options
+                  - total_properties
+                  - search_criteria
+                properties:
+                  available_options:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - property
+                        - camp_week
+                        - available_beds
+                        - pricing
+                      properties:
+                        property:
+                          type: object
+                          required:
+                            - id
+                            - name
+                            - location
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                            location:
+                              type: object
+                              properties:
+                                city:
+                                  type: string
+                                country:
+                                  type: string
+                        camp_week:
+                          type: object
+                          required:
+                            - id
+                            - name
+                            - start_date
+                            - end_date
+                            - capacity
+                            - booked_count
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                            start_date:
+                              type: string
+                              format: date
+                            end_date:
+                              type: string
+                              format: date
+                            capacity:
+                              type: integer
+                            booked_count:
+                              type: integer
+                        available_beds:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - room
+                              - beds
+                            properties:
+                              room:
+                                type: object
+                                required:
+                                  - id
+                                  - name
+                                  - type
+                                  - max_occupancy
+                                properties:
+                                  id:
+                                    type: string
+                                    format: uuid
+                                  name:
+                                    type: string
+                                  type:
+                                    type: string
+                                    enum: [dorm, private, suite]
+                                  max_occupancy:
+                                    type: integer
+                              beds:
+                                type: array
+                                items:
+                                  type: object
+                                  required:
+                                    - id
+                                    - name
+                                    - type
+                                    - price_modifier
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    name:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum: [single, bunk, double]
+                                    price_modifier:
+                                      type: number
+                                      format: decimal
+                        pricing:
+                          type: object
+                          required:
+                            - base_price
+                            - currency
+                            - taxes_included
+                          properties:
+                            base_price:
+                              type: number
+                              format: decimal
+                              description: Base price per person per night
+                            currency:
+                              type: string
+                              default: "USD"
+                            taxes_included:
+                              type: boolean
+                              description: Whether taxes are included in base price
+                  total_properties:
+                    type: integer
+                    description: Total number of properties searched
+                  search_criteria:
+                    type: object
+                    description: Echo of search parameters for validation
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - message
+                properties:
+                  error:
+                    type: string
+                    enum: [VALIDATION_ERROR]
+                  message:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                  - message
+                properties:
+                  error:
+                    type: string
+                    enum: [SERVER_ERROR]
+                  message:
+                    type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Supabase anon key for public access
+
+security:
+  - bearerAuth: []

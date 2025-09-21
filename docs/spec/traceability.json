@@ -1,0 +1,434 @@
+{
+  "version": "1.0.0",
+  "generated": "2025-09-21",
+  "description": "Traceability matrix for Heiwa Booking Suite - linking user stories to acceptance criteria, automated tests, and file paths",
+  "user_stories": {
+    "US1": {
+      "title": "Customer Search & Selection Journey",
+      "acceptance_criteria": [
+        "Given a WordPress site with Heiwa booking widget, When customer searches for surf camps, Then displays real-time availability with pricing",
+        "Widget shows room/bed availability based on destination, dates, and guest count",
+        "Accurate pricing calculations including taxes and policies"
+      ],
+      "automated_tests": {
+        "unit": [],
+        "integration": [
+          "tests/integration/get-availability.test.ts",
+          "tests/integration/price-quote-flow.test.ts"
+        ],
+        "e2e": [
+          "tests/e2e/widget/search-availability.spec.ts",
+          "tests/e2e/widget/pricing-promos.spec.ts"
+        ],
+        "contract": [
+          "supabase/functions/get-availability/__tests__/index.test.ts",
+          "supabase/functions/price-quote/__tests__/index.test.ts"
+        ],
+        "visual": [
+          "tests/visual/widget-regression.spec.ts"
+        ]
+      },
+      "file_paths": {
+        "api": [
+          "supabase/functions/get-availability/index.ts",
+          "supabase/functions/price-quote/index.ts"
+        ],
+        "frontend": [
+          "src/components/widget/SearchForm.tsx",
+          "src/components/widget/AvailabilityDisplay.tsx"
+        ],
+        "database": [
+          "supabase/migrations/20250101015_get_available_beds_rpc.sql",
+          "supabase/migrations/20250101016_calculate_booking_price_rpc.sql"
+        ],
+        "tests": [
+          "tests/e2e/widget/search-availability.spec.ts",
+          "tests/contract/get-availability.test.ts"
+        ]
+      },
+      "status": "pending"
+    },
+    "US2": {
+      "title": "Complete Booking Checkout Flow",
+      "acceptance_criteria": [
+        "Given customer has selected accommodation, When completes checkout, Then Stripe processes payment and booking status becomes paid/confirmed",
+        "Booking confirmation emails and SMS are sent",
+        "Payment intent → capture → booking status transitions work correctly"
+      ],
+      "automated_tests": {
+        "unit": [
+          "src/lib/__tests__/stripe-integration.test.ts"
+        ],
+        "integration": [
+          "tests/integration/create-checkout-flow.test.ts",
+          "tests/integration/stripe-webhook-processing.test.ts"
+        ],
+        "e2e": [
+          "tests/e2e/widget/complete-booking.spec.ts"
+        ],
+        "contract": [
+          "supabase/functions/create-checkout/__tests__/index.test.ts",
+          "supabase/functions/stripe-webhook/__tests__/index.test.ts"
+        ]
+      },
+      "file_paths": {
+        "api": [
+          "supabase/functions/create-checkout/index.ts",
+          "supabase/functions/stripe-webhook/index.ts"
+        ],
+        "frontend": [
+          "src/components/widget/CheckoutForm.tsx",
+          "src/components/widget/PaymentForm.tsx"
+        ],
+        "backend": [
+          "src/lib/stripe.ts",
+          "src/emails/booking-confirmation.tsx"
+        ],
+        "database": [
+          "supabase/migrations/20250101007_create_booking_tables.sql",
+          "supabase/migrations/20250101008_create_payment_tables.sql"
+        ]
+      },
+      "status": "pending"
+    },
+    "US3": {
+      "title": "Booking Management & Refunds",
+      "acceptance_criteria": [
+        "Given customer has confirmed booking, When needs to modify/cancel, Then can make changes according to policy",
+        "Refunds processed through Stripe and reflected in database",
+        "Cancellation reasons tracked and customer notified"
+      ],
+      "automated_tests": {
+        "unit": [],
+        "integration": [
+          "tests/integration/booking-modification.test.ts",
+          "tests/integration/refund-processing.test.ts"
+        ],
+        "e2e": [
+          "tests/e2e/widget/manage-bookings.spec.ts",
+          "tests/e2e/dashboard/refunds_and_cancellations.spec.ts"
+        ],
+        "contract": [
+          "tests/contract/refund-booking.test.ts"
+        ]
+      },
+      "file_paths": {
+        "api": [
+          "supabase/functions/refund-booking/index.ts"
+        ],
+        "frontend": [
+          "src/components/widget/BookingManagement.tsx",
+          "src/components/dashboard/BookingsTable.tsx"
+        ],
+        "backend": [
+          "src/lib/stripe.ts",
+          "src/emails/refund-notification.tsx"
+        ]
+      },
+      "status": "pending"
+    },
+    "US4": {
+      "title": "Promotional Codes & Pricing",
+      "acceptance_criteria": [
+        "Given customer wants promotional pricing, When enters valid promo code, Then discount applied correctly",
+        "Promo code validation includes usage limits and date ranges",
+        "Prorated pricing calculations work for partial bookings"
+      ],
+      "automated_tests": {
+        "unit": [],
+        "integration": [
+          "tests/integration/promo-code-validation.test.ts"
+        ],
+        "e2e": [
+          "tests/e2e/widget/pricing-promos.spec.ts",
+          "tests/e2e/widget/promos_soldout_negative.spec.ts"
+        ],
+        "contract": [
+          "supabase/functions/price-quote/__tests__/index.test.ts"
+        ]
+      },
+      "file_paths": {
+        "api": [
+          "supabase/functions/price-quote/index.ts"
+        ],
+        "database": [
+          "supabase/migrations/20250101008_create_payment_tables.sql",
+          "supabase/migrations/20250101017_validate_promo_code_rpc.sql"
+        ]
+      },
+      "status": "pending"
+    },
+    "US5": {
+      "title": "Internationalization & Accessibility",
+      "acceptance_criteria": [
+        "Given customer prefers Spanish, When toggles language, Then all content switches without layout shifts",
+        "WCAG AA compliance maintained across all interactions",
+        "Full keyboard navigation support in widget"
+      ],
+      "automated_tests": {
+        "unit": [],
+        "integration": [],
+        "e2e": [
+          "tests/e2e/widget/language-switching.spec.ts",
+          "tests/e2e/widget/i18n_accessibility.spec.ts"
+        ],
+        "accessibility": [
+          "tests/accessibility/widget-a11y.spec.ts",
+          "tests/accessibility/keyboard-navigation.spec.ts"
+        ],
+        "performance": [
+          "tests/performance/widget-performance.spec.ts"
+        ]
+      },
+      "file_paths": {
+        "frontend": [
+          "src/components/widget/LanguageToggle.tsx",
+          "src/locales/en.json",
+          "src/locales/es.json"
+        ],
+        "wordpress": [
+          "wordpress-plugin/heiwa-booking-widget/languages/heiwa-booking-widget-en.po",
+          "wordpress-plugin/heiwa-booking-widget/languages/heiwa-booking-widget-es.po"
+        ]
+      },
+      "status": "pending"
+    },
+    "US6": {
+      "title": "Admin CRUD Operations",
+      "acceptance_criteria": [
+        "Given administrator, When updates camp weeks/rooms/pricing, Then changes immediately visible to widget",
+        "CRUD operations for all inventory entities work correctly",
+        "Real-time synchronization between admin changes and widget display"
+      ],
+      "automated_tests": {
+        "unit": [
+          "src/components/admin/__tests__/CampWeekForm.test.tsx"
+        ],
+        "integration": [
+          "tests/integration/admin-inventory-updates.test.ts"
+        ],
+        "e2e": [
+          "tests/e2e/dashboard/create_inventory.spec.ts",
+          "tests/e2e/dashboard/crud-operations.spec.ts",
+          "tests/e2e/dashboard/realtime-sync.spec.ts"
+        ],
+        "contract": []
+      },
+      "file_paths": {
+        "frontend": [
+          "src/components/admin/CampWeekForm.tsx",
+          "src/components/admin/RoomManagement.tsx",
+          "src/components/admin/PricingEditor.tsx"
+        ],
+        "api": [
+          "src/app/api/admin/camp-weeks/route.ts",
+          "src/app/api/admin/rooms/route.ts"
+        ]
+      },
+      "status": "pending"
+    },
+    "US7": {
+      "title": "Dashboard Reporting & Analytics",
+      "acceptance_criteria": [
+        "Given administrator, When accesses dashboard, Then sees calendar, occupancy, revenue, and refund views",
+        "CSV export functionality works for all reports",
+        "Real-time data accuracy maintained"
+      ],
+      "automated_tests": {
+        "unit": [],
+        "integration": [
+          "tests/integration/dashboard-reporting.test.ts"
+        ],
+        "e2e": [
+          "tests/e2e/dashboard/reporting.spec.ts"
+        ],
+        "contract": []
+      },
+      "file_paths": {
+        "frontend": [
+          "src/components/dashboard/CalendarView.tsx",
+          "src/components/dashboard/OccupancyChart.tsx",
+          "src/components/dashboard/RevenueReport.tsx"
+        ],
+        "api": [
+          "src/app/api/admin/reports/route.ts"
+        ]
+      },
+      "status": "pending"
+    },
+    "US8": {
+      "title": "Multi-Tenant Access Control",
+      "acceptance_criteria": [
+        "Given multiple property owners, When owner logs in, Then only sees their properties and bookings",
+        "Administrators see all data with proper access controls",
+        "RLS policies prevent cross-tenant data access"
+      ],
+      "automated_tests": {
+        "unit": [],
+        "integration": [
+          "tests/integration/multi-tenant-access.test.ts"
+        ],
+        "e2e": [],
+        "database": [
+          "supabase/tests/rls-policies.test.sql"
+        ],
+        "contract": []
+      },
+      "file_paths": {
+        "database": [
+          "supabase/migrations/20250101011_brand_rls_policies.sql",
+          "supabase/migrations/20250101012_property_rls_policies.sql"
+        ],
+        "frontend": [
+          "src/lib/auth.ts",
+          "src/middleware.ts"
+        ]
+      },
+      "status": "pending"
+    },
+    "US9": {
+      "title": "Payment Reconciliation",
+      "acceptance_criteria": [
+        "Given payment ledger, When admin reviews, Then sees complete flow from intent to capture to refunds",
+        "Webhook anomalies detected and flagged for reconciliation",
+        "Out-of-order webhook events handled correctly"
+      ],
+      "automated_tests": {
+        "unit": [],
+        "integration": [
+          "tests/integration/payment-reconciliation.test.ts"
+        ],
+        "e2e": [
+          "tests/e2e/dashboard/payment-reconciliation.spec.ts"
+        ],
+        "contract": [
+          "supabase/functions/reconcile-payments/__tests__/index.test.ts"
+        ]
+      },
+      "file_paths": {
+        "api": [
+          "supabase/functions/reconcile-payments/index.ts"
+        ],
+        "frontend": [
+          "src/components/dashboard/PaymentLedger.tsx"
+        ],
+        "database": [
+          "supabase/migrations/20250101010_create_webhook_event_table.sql"
+        ]
+      },
+      "status": "pending"
+    },
+    "US10": {
+      "title": "Admin Refund Processing",
+      "acceptance_criteria": [
+        "Given customer cancellation request, When admin processes with reason, Then Stripe refund initiated",
+        "Customer notification sent with refund details",
+        "Refund status tracked in booking and payment records"
+      ],
+      "automated_tests": {
+        "unit": [],
+        "integration": [
+          "tests/integration/admin-refund-processing.test.ts"
+        ],
+        "e2e": [
+          "tests/e2e/dashboard/refunds_and_cancellations.spec.ts"
+        ],
+        "contract": [
+          "supabase/functions/refund-booking/__tests__/index.test.ts"
+        ]
+      },
+      "file_paths": {
+        "api": [
+          "supabase/functions/refund-booking/index.ts"
+        ],
+        "frontend": [
+          "src/components/dashboard/RefundForm.tsx"
+        ],
+        "backend": [
+          "src/lib/stripe.ts",
+          "src/emails/refund-notification.tsx"
+        ]
+      },
+      "status": "pending"
+    },
+    "US11": {
+      "title": "System Observability",
+      "acceptance_criteria": [
+        "Given system errors or performance issues, When they occur, Then alerts sent and logs capture details",
+        "Slow queries and failed webhooks trigger monitoring alerts",
+        "Structured logging includes request_id, user_id, booking_id"
+      ],
+      "automated_tests": {
+        "unit": [
+          "src/lib/__tests__/logger.test.ts"
+        ],
+        "integration": [],
+        "e2e": [],
+        "contract": []
+      },
+      "file_paths": {
+        "frontend": [
+          "src/components/ErrorBoundary.tsx"
+        ],
+        "backend": [
+          "src/lib/logger.ts",
+          "src/lib/sentry.ts"
+        ],
+        "functions": [
+          "supabase/functions/_shared/logger.ts",
+          "supabase/functions/_shared/error-handler.ts"
+        ]
+      },
+      "status": "pending"
+    },
+    "US12": {
+      "title": "Brand Theming & Configuration",
+      "acceptance_criteria": [
+        "Given different brands, When configured, Then widget displays correct colors, typography, and branding",
+        "Brand tokens safely configurable without security risks",
+        "Theme configuration persists across sessions"
+      ],
+      "automated_tests": {
+        "unit": [],
+        "integration": [
+          "tests/integration/brand-theming.test.ts"
+        ],
+        "e2e": [],
+        "contract": []
+      },
+      "file_paths": {
+        "frontend": [
+          "src/components/widget/ThemeProvider.tsx"
+        ],
+        "wordpress": [
+          "wordpress-plugin/heiwa-booking-widget/admin/SettingsPage.php"
+        ],
+        "api": [
+          "src/app/api/widget/config/route.ts"
+        ]
+      },
+      "status": "pending"
+    }
+  },
+  "test_coverage": {
+    "unit_tests": 25,
+    "integration_tests": 15,
+    "e2e_tests": 12,
+    "contract_tests": 6,
+    "accessibility_tests": 3,
+    "performance_tests": 2,
+    "visual_regression_tests": 2,
+    "database_tests": 3,
+    "total_test_files": 68
+  },
+  "implementation_status": {
+    "database_schema": "pending",
+    "api_endpoints": "pending",
+    "frontend_components": "pending",
+    "wordpress_plugin": "pending",
+    "testing_infrastructure": "pending",
+    "ci_cd_pipeline": "pending",
+    "observability": "pending",
+    "documentation": "pending"
+  }
+}

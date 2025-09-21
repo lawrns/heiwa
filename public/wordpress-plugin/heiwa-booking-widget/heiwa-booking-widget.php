@@ -88,14 +88,26 @@ class Heiwa_Booking_Widget {
      * Load plugin dependencies
      */
     private function load_dependencies() {
+        // Security, sanitization, and permissions utilities (load first)
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/security.php';
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/sanitization.php';
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/permissions.php';
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/settings.php';
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/theming.php';
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/api-client.php';
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/error-handling.php';
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/i18n.php';
+
         // Core classes
         require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/class-api-connector.php';
         require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/class-widget.php';
         require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/class-shortcode.php';
-        
+        require_once HEIWA_BOOKING_PLUGIN_DIR . 'includes/class-rest-proxy.php';
+
         // Admin classes
         if (is_admin()) {
             require_once HEIWA_BOOKING_PLUGIN_DIR . 'admin/class-settings.php';
+            require_once HEIWA_BOOKING_PLUGIN_DIR . 'admin/settings-page.php';
         }
     }
 
