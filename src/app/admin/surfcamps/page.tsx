@@ -80,9 +80,9 @@ const SurfCampFormSchema = z.object({
   endDate: z.date(),
   availableRooms: z.array(z.string()).min(1, 'At least one room is required'),
   occupancy: z.number().min(1, 'Occupancy must be at least 1'),
-  name: z.string().min(1, 'Name is required').optional(),
+  name: z.string().min(1, 'Name is required'),
   description: z.string().optional(),
-  maxParticipants: z.number().min(1, 'Max participants must be at least 1').optional(),
+  maxParticipants: z.number().min(1, 'Max participants must be at least 1'),
   price: z.number().min(0, 'Price must be non-negative').optional(),
   level: z.enum(['beginner', 'intermediate', 'advanced', 'all']).optional(),
   includes: z.array(z.string()).optional(),
@@ -402,7 +402,7 @@ export default function SurfCampsPage() {
       startDate: new Date(),
       endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       availableRooms: [],
-      occupancy: 1,
+      occupancy: 12,
       name: '',
       description: '',
       maxParticipants: 12,
@@ -504,33 +504,90 @@ export default function SurfCampsPage() {
 
   const handleUpdateCamp = async (campId: string, data: Partial<SurfCampFormData>) => {
     try {
-      const updateData: Record<string, string | number | boolean | string[] | undefined> = {
+      console.log('handleUpdateCamp called with data:', data);
+
+      const updateData: Record<string, any> = {
         updated_at: new Date().toISOString()
       };
 
-      if (data.name !== undefined) updateData.name = data.name;
-      if (data.description !== undefined) updateData.description = data.description;
-      if (data.startDate !== undefined) updateData.start_date = data.startDate.toISOString();
-      if (data.endDate !== undefined) updateData.end_date = data.endDate.toISOString();
-      if (data.maxParticipants !== undefined) updateData.max_participants = data.maxParticipants;
-      if (data.price !== undefined) updateData.price = data.price;
-      if (data.level !== undefined) updateData.level = data.level;
-      if (data.includes !== undefined) updateData.includes = data.includes;
-      if (data.images !== undefined) updateData.images = data.images;
-      if (data.isActive !== undefined) updateData.is_active = data.isActive;
-      // New fields
-      if (data.category !== undefined) updateData.category = data.category === 'FR' ? 'Freedom Routes' : 'Heiwa House';
-      if (data.foodPreferences !== undefined) updateData.food_preferences = data.foodPreferences;
-      if (data.allergiesInfo !== undefined) updateData.allergies_info = data.allergiesInfo;
+      // Handle name
+      if (data.name !== undefined && data.name !== '') {
+        updateData.name = data.name;
+      }
+
+      // Handle description
+      if (data.description !== undefined) {
+        updateData.description = data.description;
+      }
+
+      // Handle dates - ensure they're Date objects before converting to ISO strings
+      if (data.startDate instanceof Date) {
+        updateData.start_date = data.startDate.toISOString();
+      }
+      if (data.endDate instanceof Date) {
+        updateData.end_date = data.endDate.toISOString();
+      }
+
+      // Handle max participants - use maxParticipants if provided, otherwise use occupancy
+      if (data.maxParticipants !== undefined && data.maxParticipants > 0) {
+        updateData.max_participants = data.maxParticipants;
+      } else if (data.occupancy !== undefined && data.occupancy > 0) {
+        updateData.max_participants = data.occupancy;
+      }
+
+      // Handle price
+      if (data.price !== undefined && data.price >= 0) {
+        updateData.price = data.price;
+      }
+
+      // Handle level
+      if (data.level !== undefined) {
+        updateData.level = data.level;
+      }
+
+      // Handle includes
+      if (data.includes !== undefined) {
+        updateData.includes = data.includes;
+      }
+
+      // Handle images
+      if (data.images !== undefined) {
+        updateData.images = data.images;
+      }
+
+      // Handle isActive
+      if (data.isActive !== undefined) {
+        updateData.is_active = data.isActive;
+      }
+
+      // Handle category
+      if (data.category !== undefined) {
+        updateData.category = data.category === 'FR' ? 'Freedom Routes' : 'Heiwa House';
+      }
+
+      // Handle dietary fields
+      if (data.foodPreferences !== undefined) {
+        updateData.food_preferences = data.foodPreferences;
+      }
+      if (data.allergiesInfo !== undefined) {
+        updateData.allergies_info = data.allergiesInfo;
+      }
+
+      console.log('Update data being sent to database:', updateData);
 
       const { error } = await supabase
         .from('surf_camps')
         .update(updateData)
         .eq('id', campId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
+
       toast.success('Surf camp updated successfully');
     } catch (error: unknown) {
+      console.error('Error in handleUpdateCamp:', error);
       toast.error(`Failed to update surf camp: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
@@ -674,24 +731,30 @@ export default function SurfCampsPage() {
     console.log('openEditModal called with camp:', camp);
     try {
       setSelectedCamp(camp);
-      // Populate edit form with current camp data
-      editForm.reset({
+
+      // Prepare form data with proper defaults
+      const formData = {
         category: camp.category || 'HH',
         startDate: camp.startDate,
         endDate: camp.endDate,
         availableRooms: camp.availableRooms || [],
-        occupancy: camp.occupancy || camp.maxParticipants,
-        name: camp.name,
-        description: camp.description,
-        maxParticipants: camp.maxParticipants,
-        price: camp.price,
-        level: camp.level,
+        occupancy: camp.maxParticipants || camp.occupancy || 12,
+        name: camp.name || '',
+        description: camp.description || '',
+        maxParticipants: camp.maxParticipants || 12,
+        price: camp.price || 599,
+        level: camp.level || 'all',
         includes: camp.includes || [],
         images: camp.images || [],
-        isActive: camp.isActive,
+        isActive: camp.isActive !== undefined ? camp.isActive : true,
         foodPreferences: camp.foodPreferences || [],
         allergiesInfo: camp.allergiesInfo || [],
-      });
+      };
+
+      console.log('Populating edit form with data:', formData);
+
+      // Populate edit form with current camp data
+      editForm.reset(formData);
       console.log('Setting showEditModal to true');
       setShowEditModal(true);
     } catch (error) {
@@ -700,7 +763,13 @@ export default function SurfCampsPage() {
   };
 
   const handleEditCamp = async (data: SurfCampFormData) => {
-    if (!selectedCamp) return;
+    console.log('handleEditCamp called with data:', data);
+    console.log('selectedCamp:', selectedCamp);
+
+    if (!selectedCamp) {
+      toast.error('No surf camp selected for editing');
+      return;
+    }
 
     try {
       await handleUpdateCamp(selectedCamp.id, data);
