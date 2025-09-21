@@ -1,0 +1,693 @@
+{
+  "project": {
+    "name": "Heiwa House Admin Dashboard Testing Context",
+    "description": "Comprehensive testing framework for the admin section of a sophisticated booking management system",
+    "version": "1.0.0",
+    "lastUpdated": "2025-09-19",
+    "testingScope": {
+      "primaryFocus": "Admin Section Load Testing & Functional Validation",
+      "systemType": "Booking Management System",
+      "architecture": "Next.js + Supabase + Real-time Subscriptions"
+    }
+  },
+  "systemArchitecture": {
+    "adminSections": [
+      "Dashboard Overview",
+      "Bookings Management",
+      "Rooms Management",
+      "Clients Management",
+      "Analytics Dashboard",
+      "Calendar Management",
+      "Surf Camps Management",
+      "Room Assignments",
+      "Compliance & GDPR",
+      "System Administration"
+    ],
+    "technologyStack": {
+      "frontend": "Next.js 14.2.15",
+      "database": "Supabase (PostgreSQL)",
+      "testing": ["Playwright", "Jest", "Cypress"],
+      "ui": "Tailwind CSS + Radix UI",
+      "state": "React Context + Supabase Real-time",
+      "deployment": "Vercel/Netlify"
+    },
+    "keyFeatures": {
+      "realTime": "WebSocket subscriptions for live updates",
+      "multiTenant": "Multiple surf camp locations",
+      "complexWorkflows": "Booking assignments, room management, client tracking",
+      "integrations": "Stripe payments, WordPress widget, email service",
+      "compliance": "GDPR compliance, audit trails, data export"
+    }
+  },
+  "currentTestingStatus": {
+    "existingTests": {
+      "playwright": {
+        "adminTests": "tests/admin/comprehensive-admin.spec.ts",
+        "bookingTests": "tests/booking-management.spec.ts",
+        "authTests": "tests/auth.spec.ts",
+        "analyticsTests": "tests/analytics.spec.ts"
+      },
+      "jest": {
+        "unitTests": "tests/unit/",
+        "componentTests": "tests/unit/",
+        "utilityTests": "tests/unit/utils.spec.ts"
+      }
+    },
+    "coverageGaps": [
+      "Load testing with concurrent users",
+      "Database performance under load",
+      "Real-time subscription stress testing",
+      "Memory leak detection",
+      "Cross-browser compatibility at scale",
+      "Mobile performance testing",
+      "API rate limiting validation",
+      "Data integrity during concurrent operations"
+    ],
+    "performanceBaselines": {
+      "currentLoad": "Single user operations",
+      "targetLoad": "50 concurrent admin users",
+      "peakLoad": "200+ concurrent operations",
+      "responseTime": "< 2 seconds for admin operations"
+    }
+  },
+  "functionalTestingScenarios": {
+    "objectives": [
+      "Validate all admin CRUD operations",
+      "Test real-time data synchronization",
+      "Verify authentication and authorization",
+      "Test complex workflows and business logic",
+      "Validate data integrity across operations"
+    ],
+    "prerequisites": [
+      "Supabase database with test data",
+      "Admin user credentials configured",
+      "All admin pages accessible",
+      "Real-time subscriptions enabled",
+      "Test environment isolated from production"
+    ],
+    "testScenarios": [
+      {
+        "id": "FT-001",
+        "name": "Admin Dashboard Overview",
+        "description": "Validate dashboard loads and displays all metrics",
+        "steps": [
+          "Navigate to /admin",
+          "Verify all metric cards load",
+          "Check real-time data updates",
+          "Test navigation to all admin sections"
+        ],
+        "successCriteria": "All metrics display, navigation works, no errors"
+      },
+      {
+        "id": "FT-002",
+        "name": "Booking Management CRUD",
+        "description": "Complete booking lifecycle testing",
+        "steps": [
+          "Create new booking with multiple items",
+          "Verify booking appears in list",
+          "Update booking status",
+          "Search and filter bookings",
+          "Delete booking with confirmation"
+        ],
+        "successCriteria": "CRUD operations successful, real-time updates work"
+      },
+      {
+        "id": "FT-003",
+        "name": "Client Management Operations",
+        "description": "Client CRUD with search and bulk operations",
+        "steps": [
+          "Add new client with all fields",
+          "Search clients by multiple criteria",
+          "Edit client information",
+          "Bulk select and export clients",
+          "Import clients from CSV"
+        ],
+        "successCriteria": "All operations complete without data loss"
+      },
+      {
+        "id": "FT-004",
+        "name": "Room Management",
+        "description": "Room inventory and availability management",
+        "steps": [
+          "Add new room with pricing",
+          "Update room availability",
+          "Test room booking conflicts",
+          "Verify room assignment logic"
+        ],
+        "successCriteria": "Room data accurate, conflicts detected"
+      },
+      {
+        "id": "FT-005",
+        "name": "Analytics Dashboard",
+        "description": "Validate analytics data and charts",
+        "steps": [
+          "Load analytics page",
+          "Verify all charts render",
+          "Test date range filters",
+          "Export analytics data"
+        ],
+        "successCriteria": "Charts display correctly, data accurate"
+      },
+      {
+        "id": "FT-006",
+        "name": "Calendar Integration",
+        "description": "Calendar view and event management",
+        "steps": [
+          "View calendar with bookings",
+          "Add new calendar event",
+          "Test month/week/day views",
+          "Verify booking conflicts in calendar"
+        ],
+        "successCriteria": "Calendar displays correctly, events manageable"
+      },
+      {
+        "id": "FT-007",
+        "name": "Surf Camp Management",
+        "description": "Surf camp creation and management",
+        "steps": [
+          "Create new surf camp",
+          "Add participants to camp",
+          "Manage camp schedule",
+          "Update camp pricing"
+        ],
+        "successCriteria": "Camp data managed successfully"
+      },
+      {
+        "id": "FT-008",
+        "name": "Room Assignments",
+        "description": "Complex assignment logic testing",
+        "steps": [
+          "Load assignment board",
+          "Drag and drop room assignments",
+          "Test conflict resolution",
+          "Verify occupancy calculations"
+        ],
+        "successCriteria": "Assignments work without conflicts"
+      },
+      {
+        "id": "FT-009",
+        "name": "GDPR Compliance",
+        "description": "Data export and deletion compliance",
+        "steps": [
+          "Export client data",
+          "Test right to erasure",
+          "Verify audit trail",
+          "Check consent management"
+        ],
+        "successCriteria": "Compliance features work correctly"
+      },
+      {
+        "id": "FT-010",
+        "name": "Real-time Updates",
+        "description": "WebSocket subscription testing",
+        "steps": [
+          "Open multiple admin tabs",
+          "Create booking in one tab",
+          "Verify update in other tabs",
+          "Test real-time notifications"
+        ],
+        "successCriteria": "Real-time sync works across sessions"
+      }
+    ]
+  },
+  "loadTestingScenarios": {
+    "objectives": [
+      "Determine system capacity limits",
+      "Identify performance bottlenecks",
+      "Validate scalability under load",
+      "Test concurrent user scenarios",
+      "Measure resource consumption"
+    ],
+    "prerequisites": [
+      "Load testing environment configured",
+      "Monitoring tools set up (New Relic, DataDog)",
+      "Test data scaled to production levels",
+      "Load testing tools installed (k6, Artillery, JMeter)",
+      "Performance monitoring enabled"
+    ],
+    "performanceBenchmarks": {
+      "responseTime": {
+        "adminDashboard": "< 2 seconds",
+        "bookingOperations": "< 3 seconds",
+        "searchOperations": "< 1 second",
+        "realTimeUpdates": "< 500ms"
+      },
+      "throughput": {
+        "concurrentUsers": "50+ simultaneous admin users",
+        "requestsPerSecond": "100+ RPS",
+        "databaseQueries": "500+ QPS"
+      },
+      "resourceUsage": {
+        "cpuUsage": "< 70% under load",
+        "memoryUsage": "< 80% under load",
+        "databaseConnections": "< 90% of max"
+      }
+    },
+    "testScenarios": [
+      {
+        "id": "LT-001",
+        "name": "Baseline Performance Test",
+        "type": "Load",
+        "description": "Establish baseline performance metrics",
+        "loadPattern": "Ramp up to 10 concurrent users",
+        "duration": "5 minutes",
+        "successCriteria": "All response times within benchmarks",
+        "monitoring": ["Response times", "Resource usage", "Error rates"]
+      },
+      {
+        "id": "LT-002",
+        "name": "Admin Dashboard Load Test",
+        "type": "Load",
+        "description": "Test dashboard performance under load",
+        "loadPattern": "50 concurrent users accessing dashboard",
+        "duration": "10 minutes",
+        "successCriteria": "Dashboard loads within 2 seconds for 95% of requests",
+        "monitoring": ["Page load times", "API response times", "Real-time subscription performance"]
+      },
+      {
+        "id": "LT-003",
+        "name": "Booking Operations Stress Test",
+        "type": "Stress",
+        "description": "Test booking creation under high load",
+        "loadPattern": "Ramp up to 100 concurrent booking operations",
+        "duration": "15 minutes",
+        "successCriteria": "All bookings created successfully, no data loss",
+        "monitoring": ["Transaction success rate", "Database performance", "Memory usage"]
+      },
+      {
+        "id": "LT-004",
+        "name": "Real-time Subscription Test",
+        "type": "Spike",
+        "description": "Test WebSocket performance under spikes",
+        "loadPattern": "Sudden spike to 200 concurrent connections",
+        "duration": "5 minutes",
+        "successCriteria": "All subscriptions maintain connection, updates delivered within 500ms",
+        "monitoring": ["WebSocket connection stability", "Message delivery time", "Server resource usage"]
+      },
+      {
+        "id": "LT-005",
+        "name": "Database Performance Test",
+        "type": "Volume",
+        "description": "Test database with large dataset",
+        "loadPattern": "Operations on 100k+ records",
+        "duration": "20 minutes",
+        "successCriteria": "Query performance within acceptable limits",
+        "monitoring": ["Query execution time", "Database CPU usage", "Connection pool usage"]
+      },
+      {
+        "id": "LT-006",
+        "name": "Concurrent User Scenario",
+        "type": "Load",
+        "description": "Simulate real-world concurrent admin usage",
+        "loadPattern": "50 admin users performing mixed operations",
+        "duration": "30 minutes",
+        "successCriteria": "All operations complete successfully, no race conditions",
+        "monitoring": ["Operation success rate", "Data consistency", "User experience metrics"]
+      },
+      {
+        "id": "LT-007",
+        "name": "API Rate Limiting Test",
+        "type": "Stress",
+        "description": "Test API rate limiting and throttling",
+        "loadPattern": "Exceed rate limits with 1000+ requests/minute",
+        "duration": "10 minutes",
+        "successCriteria": "Rate limiting works correctly, graceful degradation",
+        "monitoring": ["Rate limit enforcement", "Error response codes", "System stability"]
+      },
+      {
+        "id": "LT-008",
+        "name": "Memory Leak Detection",
+        "type": "Endurance",
+        "description": "Test for memory leaks over extended period",
+        "loadPattern": "50 users performing operations continuously",
+        "duration": "2 hours",
+        "successCriteria": "Memory usage stabilizes, no leaks detected",
+        "monitoring": ["Memory consumption trends", "Garbage collection", "Heap usage"]
+      },
+      {
+        "id": "LT-009",
+        "name": "Cross-browser Load Test",
+        "type": "Load",
+        "description": "Test performance across different browsers",
+        "loadPattern": "Mixed browser traffic simulation",
+        "duration": "15 minutes",
+        "successCriteria": "Consistent performance across browsers",
+        "monitoring": ["Browser-specific metrics", "JavaScript performance", "Network timing"]
+      },
+      {
+        "id": "LT-010",
+        "name": "Mobile Performance Test",
+        "type": "Load",
+        "description": "Test admin interface on mobile devices",
+        "loadPattern": "Mobile user simulation with network throttling",
+        "duration": "10 minutes",
+        "successCriteria": "Mobile performance meets standards",
+        "monitoring": ["Mobile-specific metrics", "Network throttling impact", "Touch interaction performance"]
+      }
+    ]
+  },
+  "securityTestingScenarios": {
+    "objectives": [
+      "Validate authentication mechanisms",
+      "Test authorization controls",
+      "Check for common vulnerabilities",
+      "Verify data protection measures",
+      "Test session management"
+    ],
+    "testScenarios": [
+      {
+        "id": "ST-001",
+        "name": "Authentication Bypass",
+        "description": "Test for authentication bypass vulnerabilities",
+        "steps": ["Attempt direct access to admin routes", "Test session fixation", "Verify token expiration"],
+        "successCriteria": "All bypass attempts fail"
+      },
+      {
+        "id": "ST-002",
+        "name": "SQL Injection Prevention",
+        "description": "Test for SQL injection vulnerabilities",
+        "steps": ["Test search inputs with SQL payloads", "Verify parameterized queries", "Check Supabase security"],
+        "successCriteria": "No SQL injection possible"
+      },
+      {
+        "id": "ST-003",
+        "name": "XSS Prevention",
+        "description": "Test for cross-site scripting vulnerabilities",
+        "steps": ["Test input fields with XSS payloads", "Verify output encoding", "Check React XSS protection"],
+        "successCriteria": "XSS attacks neutralized"
+      },
+      {
+        "id": "ST-004",
+        "name": "CSRF Protection",
+        "description": "Test cross-site request forgery protection",
+        "steps": ["Test state-changing operations", "Verify CSRF tokens", "Check SameSite cookie settings"],
+        "successCriteria": "CSRF attacks prevented"
+      }
+    ]
+  },
+  "integrationTestingScenarios": {
+    "objectives": [
+      "Test end-to-end booking workflows",
+      "Validate third-party integrations",
+      "Test data flow between systems",
+      "Verify email and notification systems"
+    ],
+    "testScenarios": [
+      {
+        "id": "IT-001",
+        "name": "Complete Booking Flow",
+        "description": "End-to-end booking creation and management",
+        "steps": ["Create booking", "Process payment", "Send confirmation", "Update calendar", "Generate reports"],
+        "successCriteria": "All steps complete successfully"
+      },
+      {
+        "id": "IT-002",
+        "name": "WordPress Widget Integration",
+        "description": "Test WordPress booking widget integration",
+        "steps": ["Load widget", "Create booking via widget", "Sync data with admin", "Verify real-time updates"],
+        "successCriteria": "Widget and admin stay synchronized"
+      }
+    ]
+  },
+  "dataIntegrityTestingScenarios": {
+    "objectives": [
+      "Ensure data consistency across operations",
+      "Test database constraints and relationships",
+      "Validate data migration integrity",
+      "Test concurrent data access"
+    ],
+    "testScenarios": [
+      {
+        "id": "DIT-001",
+        "name": "Concurrent Booking Creation",
+        "description": "Test data integrity with concurrent bookings",
+        "steps": ["Create multiple bookings simultaneously", "Check for conflicts", "Verify data consistency"],
+        "successCriteria": "No data corruption or conflicts"
+      }
+    ]
+  },
+  "uiUxTestingScenarios": {
+    "objectives": [
+      "Validate user interface consistency",
+      "Test responsive design",
+      "Verify accessibility compliance",
+      "Test user workflows"
+    ],
+    "testScenarios": [
+      {
+        "id": "UT-001",
+        "name": "Responsive Design Test",
+        "description": "Test admin interface on different screen sizes",
+        "steps": ["Test on mobile", "Test on tablet", "Test on desktop", "Verify layout consistency"],
+        "successCriteria": "Interface works on all screen sizes"
+      }
+    ]
+  },
+  "realTimeTestingScenarios": {
+    "objectives": [
+      "Test WebSocket connections",
+      "Validate real-time data updates",
+      "Test connection recovery",
+      "Verify performance under load"
+    ],
+    "testScenarios": [
+      {
+        "id": "RTT-001",
+        "name": "WebSocket Connection Test",
+        "description": "Test real-time subscription functionality",
+        "steps": ["Establish connection", "Create data change", "Verify real-time update", "Test connection recovery"],
+        "successCriteria": "Real-time updates work reliably"
+      }
+    ]
+  },
+  "errorHandlingTestingScenarios": {
+    "objectives": [
+      "Test error boundaries",
+      "Validate error messages",
+      "Test network failure scenarios",
+      "Verify graceful degradation"
+    ],
+    "testScenarios": [
+      {
+        "id": "EHT-001",
+        "name": "Network Failure Test",
+        "description": "Test behavior during network issues",
+        "steps": ["Simulate network disconnection", "Test offline functionality", "Verify error recovery"],
+        "successCriteria": "Application handles network issues gracefully"
+      }
+    ]
+  },
+  "accessibilityTestingScenarios": {
+    "objectives": [
+      "Test WCAG compliance",
+      "Validate screen reader compatibility",
+      "Test keyboard navigation",
+      "Verify color contrast"
+    ],
+    "testScenarios": [
+      {
+        "id": "AT-001",
+        "name": "WCAG Compliance Test",
+        "description": "Test accessibility compliance",
+        "steps": ["Run accessibility audit", "Test keyboard navigation", "Verify screen reader support"],
+        "successCriteria": "WCAG 2.1 AA compliance achieved"
+      }
+    ]
+  },
+  "databasePerformanceTestingScenarios": {
+    "objectives": [
+      "Test query performance",
+      "Validate indexing effectiveness",
+      "Test connection pooling",
+      "Monitor database metrics"
+    ],
+    "testScenarios": [
+      {
+        "id": "DPT-001",
+        "name": "Query Performance Test",
+        "description": "Test database query performance",
+        "steps": ["Execute complex queries", "Monitor execution time", "Analyze query plans"],
+        "successCriteria": "Queries execute within performance benchmarks"
+      }
+    ]
+  },
+  "apiTestingScenarios": {
+    "objectives": [
+      "Test API rate limiting",
+      "Validate request/response formats",
+      "Test authentication headers",
+      "Monitor API performance"
+    ],
+    "testScenarios": [
+      {
+        "id": "APIT-001",
+        "name": "Rate Limiting Test",
+        "description": "Test API rate limiting functionality",
+        "steps": ["Send requests above limit", "Verify throttling", "Test gradual recovery"],
+        "successCriteria": "Rate limiting works as expected"
+      }
+    ]
+  },
+  "concurrentUserTestingScenarios": {
+    "objectives": [
+      "Test multi-user scenarios",
+      "Validate data consistency",
+      "Test race condition prevention",
+      "Monitor system stability"
+    ],
+    "testScenarios": [
+      {
+        "id": "CUT-001",
+        "name": "Multi-User Booking Test",
+        "description": "Test concurrent booking operations",
+        "steps": ["Multiple users book same room", "Verify conflict resolution", "Check data integrity"],
+        "successCriteria": "No conflicts or data corruption"
+      }
+    ]
+  },
+  "memoryResourceTestingScenarios": {
+    "objectives": [
+      "Monitor memory usage",
+      "Detect memory leaks",
+      "Test resource cleanup",
+      "Validate garbage collection"
+    ],
+    "testScenarios": [
+      {
+        "id": "MRT-001",
+        "name": "Memory Leak Test",
+        "description": "Test for memory leaks during extended use",
+        "steps": ["Monitor memory usage", "Perform repeated operations", "Check for memory growth"],
+        "successCriteria": "No memory leaks detected"
+      }
+    ]
+  },
+  "testingTools": {
+    "functionalTesting": {
+      "primary": "Playwright",
+      "secondary": "Jest + React Testing Library",
+      "visualRegression": "Playwright snapshots",
+      "accessibility": "axe-core + playwright"
+    },
+    "loadTesting": {
+      "primary": "k6",
+      "secondary": "Artillery",
+      "databaseLoad": "pgbench",
+      "monitoring": "New Relic + DataDog"
+    },
+    "performanceMonitoring": {
+      "frontend": "Lighthouse + WebPageTest",
+      "backend": "New Relic APM",
+      "database": "pg_stat_statements",
+      "infrastructure": "Prometheus + Grafana"
+    },
+    "securityTesting": {
+      "vulnerabilityScanning": "OWASP ZAP",
+      "dependencyScanning": "npm audit + Snyk",
+      "penetrationTesting": "Burp Suite"
+    }
+  },
+  "reportingRequirements": {
+    "testExecutionReports": {
+      "format": "JSON + HTML",
+      "metrics": ["Pass/fail rates", "Execution time", "Error details"],
+      "visualizations": "Charts for performance trends"
+    },
+    "performanceReports": {
+      "responseTimeAnalysis": "P95, P99 percentiles",
+      "throughputMetrics": "RPS, concurrent users",
+      "resourceUtilization": "CPU, memory, database connections",
+      "bottleneckAnalysis": "Identify performance constraints"
+    },
+    "loadTestReports": {
+      "capacityLimits": "Maximum concurrent users supported",
+      "scalabilityAnalysis": "Performance scaling characteristics",
+      "reliabilityMetrics": "Error rates under load",
+      "recommendations": "Infrastructure scaling recommendations"
+    },
+    "securityReports": {
+      "vulnerabilityAssessment": "Identified security issues",
+      "riskAnalysis": "Impact and likelihood assessment",
+      "remediationPlan": "Steps to address vulnerabilities"
+    }
+  },
+  "testExecutionStrategy": {
+    "phase1": {
+      "name": "Functional Testing Phase",
+      "duration": "2-3 days",
+      "focus": "Validate all admin functionality",
+      "successCriteria": "All functional tests pass",
+      "nextPhase": "Load testing can begin"
+    },
+    "phase2": {
+      "name": "Load Testing Phase",
+      "duration": "3-5 days",
+      "focus": "Performance and scalability validation",
+      "successCriteria": "Performance benchmarks met",
+      "nextPhase": "Integration testing"
+    },
+    "phase3": {
+      "name": "Integration Testing Phase",
+      "duration": "2-3 days",
+      "focus": "End-to-end workflow validation",
+      "successCriteria": "All integrations work correctly",
+      "nextPhase": "Production deployment"
+    },
+    "continuousTesting": {
+      "name": "Ongoing Testing",
+      "focus": "Regression prevention and monitoring",
+      "frequency": "Daily automated tests + weekly load tests",
+      "monitoring": "Performance dashboards and alerts"
+    }
+  },
+  "riskAssessment": {
+    "highRisk": [
+      "Real-time subscription failures under load",
+      "Database connection pool exhaustion",
+      "Memory leaks in long-running admin sessions",
+      "Race conditions in concurrent booking operations"
+    ],
+    "mediumRisk": [
+      "Performance degradation with large datasets",
+      "Browser compatibility issues under load",
+      "API rate limiting not working correctly",
+      "Data consistency during network interruptions"
+    ],
+    "lowRisk": [
+      "Minor UI inconsistencies across browsers",
+      "Non-critical feature edge cases",
+      "Performance variations in different environments"
+    ],
+    "mitigationStrategies": {
+      "monitoring": "Implement comprehensive monitoring and alerting",
+      "fallback": "Design graceful degradation for critical failures",
+      "scaling": "Implement auto-scaling based on load metrics",
+      "testing": "Regular load testing in staging environment"
+    }
+  },
+  "successMetrics": {
+    "functional": {
+      "testPassRate": "> 95%",
+      "criticalBugCount": "0",
+      "automationCoverage": "> 80%"
+    },
+    "performance": {
+      "responseTimeP95": "< 2 seconds",
+      "errorRate": "< 1%",
+      "concurrentUsers": "> 50",
+      "uptime": "> 99.9%"
+    },
+    "security": {
+      "vulnerabilityCount": "0 critical, < 5 high",
+      "complianceScore": "100% for GDPR requirements",
+      "penetrationTestResults": "No exploitable vulnerabilities"
+    },
+    "usability": {
+      "accessibilityScore": "WCAG 2.1 AA compliant",
+      "mobileCompatibility": "Works on all target devices",
+      "userSatisfaction": "> 4.5/5 in user testing"
+    }
+  }
+}
+
+
