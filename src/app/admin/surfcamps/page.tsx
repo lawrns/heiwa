@@ -237,8 +237,8 @@ export default function SurfCampsPage() {
           id: item.id,
           name: item.name,
           description: item.description,
-          startDate: new Date(item.start_date),
-          endDate: new Date(item.end_date),
+          startDate: new Date(item.start_date + 'T12:00:00'), // Use noon to avoid timezone issues
+          endDate: new Date(item.end_date + 'T12:00:00'),
           maxParticipants: item.max_participants,
           price: item.price,
           level: item.level,
@@ -469,9 +469,9 @@ export default function SurfCampsPage() {
         .insert({
           name: defaultName,
           description: data.description || `${categoryName} surf camp session`,
-          start_date: data.startDate.toISOString(),
-          end_date: data.endDate.toISOString(),
-          max_participants: data.maxParticipants || data.occupancy,
+          start_date: data.startDate.toISOString().split('T')[0], // Store as date only (YYYY-MM-DD)
+          end_date: data.endDate.toISOString().split('T')[0],
+          max_participants: data.occupancy,
           price: data.price || (data.category === 'FR' ? 799.0 : 599.0),
           level: data.level || 'all',
           includes: data.includes || ['Daily surf lessons', 'Equipment rental', 'Breakfast'],
@@ -536,12 +536,12 @@ export default function SurfCampsPage() {
         updateData.description = data.description;
       }
 
-      // Handle dates - ensure they're Date objects before converting to ISO strings
+      // Handle dates - store as date only (YYYY-MM-DD) to avoid timezone issues
       if (data.startDate instanceof Date) {
-        updateData.start_date = data.startDate.toISOString();
+        updateData.start_date = data.startDate.toISOString().split('T')[0];
       }
       if (data.endDate instanceof Date) {
-        updateData.end_date = data.endDate.toISOString();
+        updateData.end_date = data.endDate.toISOString().split('T')[0];
       }
 
       // Handle max participants - use maxParticipants if provided, otherwise use occupancy
