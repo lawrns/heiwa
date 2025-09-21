@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 // Firebase imports removed - using Supabase
 import { supabase } from '@/lib/supabase/client';
 import { toast } from 'react-toastify';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -427,6 +427,22 @@ export default function SurfCampsPage() {
 
   const handleCreateCamp = async (data: SurfCampFormData) => {
     try {
+      console.log('SurfCamps: handleCreateCamp called with data:', data);
+      console.log('SurfCamps: Form errors:', form.formState.errors);
+
+      // Validate required fields
+      if (!data.availableRooms || data.availableRooms.length === 0) {
+        console.error('SurfCamps: No rooms selected');
+        toast.error('Please select at least one available room');
+        return;
+      }
+
+      if (!data.startDate || !data.endDate) {
+        console.error('SurfCamps: Missing dates');
+        toast.error('Please select start and end dates');
+        return;
+      }
+
       console.log('SurfCamps: Form submission started with data:', data);
 
       // Check for overlapping surf camps of the same category
@@ -765,14 +781,30 @@ export default function SurfCampsPage() {
   const handleEditCamp = async (data: SurfCampFormData) => {
     console.log('handleEditCamp called with data:', data);
     console.log('selectedCamp:', selectedCamp);
+    console.log('Edit form errors:', editForm.formState.errors);
 
     if (!selectedCamp) {
       toast.error('No surf camp selected for editing');
       return;
     }
 
+    // Validate required fields for edit
+    if (!data.availableRooms || data.availableRooms.length === 0) {
+      console.error('SurfCamps: No rooms selected in edit');
+      toast.error('Please select at least one available room');
+      return;
+    }
+
+    if (!data.startDate || !data.endDate) {
+      console.error('SurfCamps: Missing dates in edit');
+      toast.error('Please select start and end dates');
+      return;
+    }
+
     try {
+      console.log('handleEditCamp: About to call handleUpdateCamp');
       await handleUpdateCamp(selectedCamp.id, data);
+      console.log('handleEditCamp: Update successful, closing modal');
       setShowEditModal(false);
       // Refresh the camps list
       fetchSurfCamps();
@@ -885,11 +917,20 @@ export default function SurfCampsPage() {
                         <FormItem>
                           <FormLabel>Start Date</FormLabel>
                           <FormControl>
-                            <DatePicker
-                              selected={field.value}
-                              onChange={handleStartDateChange}
-                              className="w-full p-2 border border-gray-300 rounded-md"
-                              dateFormat="yyyy-MM-dd"
+                            <Controller
+                              control={form.control}
+                              name="startDate"
+                              render={({ field: { onChange, value } }) => (
+                                <DatePicker
+                                  selected={value}
+                                  onChange={(date) => {
+                                    onChange(date);
+                                    handleStartDateChange(date);
+                                  }}
+                                  className="w-full p-2 border border-gray-300 rounded-md"
+                                  dateFormat="yyyy-MM-dd"
+                                />
+                              )}
                             />
                           </FormControl>
                           <FormMessage />
@@ -904,11 +945,17 @@ export default function SurfCampsPage() {
                         <FormItem>
                           <FormLabel>End Date</FormLabel>
                           <FormControl>
-                            <DatePicker
-                              selected={field.value}
-                              onChange={(date) => field.onChange(date)}
-                              className="w-full p-2 border border-gray-300 rounded-md"
-                              dateFormat="yyyy-MM-dd"
+                            <Controller
+                              control={form.control}
+                              name="endDate"
+                              render={({ field: { onChange, value } }) => (
+                                <DatePicker
+                                  selected={value}
+                                  onChange={(date) => onChange(date)}
+                                  className="w-full p-2 border border-gray-300 rounded-md"
+                                  dateFormat="yyyy-MM-dd"
+                                />
+                              )}
                             />
                           </FormControl>
                           <FormMessage />
@@ -1459,6 +1506,37 @@ export default function SurfCampsPage() {
                     )}
                   />
                 </div>
+
+                <FormField
+                  control={editForm.control}
+                  name="availableRooms"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Available Rooms</FormLabel>
+                      <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border border-gray-300 rounded-md p-2">
+                        {rooms?.map((room) => (
+                          <div key={room.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`edit-${room.id}`}
+                              checked={field.value?.includes(room.id)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  field.onChange([...(field.value || []), room.id]);
+                                } else {
+                                  field.onChange(field.value?.filter(id => id !== room.id));
+                                }
+                              }}
+                            />
+                            <label htmlFor={`edit-${room.id}`} className="text-sm">
+                              {room.name} (Capacity: {room.capacity})
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={editForm.control}
