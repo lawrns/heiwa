@@ -57,7 +57,7 @@ export default function AdminClientsPage() {
     phone: true,
     lastBookingDate: true,
     brand: true,
-    socials: false,
+        socials: true, // Temporarily enabled until DB schema is fixed
     registrationDate: false, // Hidden by default
   });
 

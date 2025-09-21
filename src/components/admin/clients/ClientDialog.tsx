@@ -132,7 +132,7 @@ export function ClientDialog({
       // Enhanced error handling with user-friendly messages
       if (error instanceof Error) {
         if (error.message.includes('socials')) {
-          toast.error('Database configuration issue. Please contact support.');
+          toast.error('Social media fields are temporarily unavailable due to database schema update. Client data saved successfully without social profiles.');
         } else if (error.message.includes('email')) {
           toast.error('Email address is already in use or invalid.');
         } else if (error.message.includes('network')) {

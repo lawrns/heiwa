@@ -558,44 +558,18 @@ export default function SurfCampsPage() {
         return;
       }
 
-      // Check for conflicts with other surf camps during the same period
-      const conflictingCamp = surfCamps.find(camp =>
-        camp.id !== selectedCamp?.id &&
-        camp.availableRooms?.some(roomId => assignedRooms.includes(roomId)) &&
-        camp.startDate && camp.endDate && selectedCamp?.startDate && selectedCamp?.endDate &&
-        (
-          (camp.startDate <= selectedCamp.endDate && camp.endDate >= selectedCamp.startDate)
-        )
-      );
-
-      if (conflictingCamp) {
-        toast.error(`Client conflict: This client is already assigned to camp "${conflictingCamp.category}" during overlapping dates`);
-        return;
-      }
-
-      setAssignedClients([...assignedClients, item.id]);
+      // Add client to assigned list
+      setAssignedClients(prev => [...prev, item.id]);
+      toast.success(`Client "${item.name}" assigned to camp`);
     } else {
       if (assignedRooms.includes(item.id)) {
         toast.warning('Room is already assigned to this camp');
         return;
       }
 
-      // Check for room conflicts with other surf camps
-      const conflictingCamp = surfCamps.find(camp =>
-        camp.id !== selectedCamp?.id &&
-        camp.availableRooms?.includes(item.id) &&
-        camp.startDate && camp.endDate && selectedCamp?.startDate && selectedCamp?.endDate &&
-        (
-          (camp.startDate <= selectedCamp.endDate && camp.endDate >= selectedCamp.startDate)
-        )
-      );
-
-      if (conflictingCamp) {
-        toast.error(`Room conflict: This room is already assigned to camp "${conflictingCamp.category}" during overlapping dates`);
-        return;
-      }
-
-      setAssignedRooms([...assignedRooms, item.id]);
+      // Add room to assigned list
+      setAssignedRooms(prev => [...prev, item.id]);
+      toast.success(`Room "${item.name}" assigned to camp`);
     }
   };
 
@@ -607,10 +581,92 @@ export default function SurfCampsPage() {
     }
   };
 
-  const openDetailsModal = (camp: AdminSurfCamp) => {
+  const loadAssignments = useCallback(async (campId: string) => {
+    try {
+      // Load client assignments
+      const { data: clientAssignments, error: clientError } = await supabase
+        .from('surf_camp_client_assignments')
+        .select('client_id')
+        .eq('surf_camp_id', campId);
+
+      if (clientError) throw clientError;
+
+      // Load room assignments
+      const { data: roomAssignments, error: roomError } = await supabase
+        .from('surf_camp_room_assignments')
+        .select('room_id')
+        .eq('surf_camp_id', campId);
+
+      if (roomError) throw roomError;
+
+      setAssignedClients(clientAssignments?.map(a => a.client_id) || []);
+      setAssignedRooms(roomAssignments?.map(a => a.room_id) || []);
+    } catch (error) {
+      console.error('Error loading assignments:', error);
+      toast.error('Failed to load existing assignments');
+      // Fallback to empty arrays
+      setAssignedClients([]);
+      setAssignedRooms([]);
+    }
+  }, []);
+
+  const saveAssignments = useCallback(async (campId: string, clientIds: string[], roomIds: string[]) => {
+    try {
+      // Get current user for assignment tracking
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // Delete existing assignments
+      await supabase
+        .from('surf_camp_client_assignments')
+        .delete()
+        .eq('surf_camp_id', campId);
+
+      await supabase
+        .from('surf_camp_room_assignments')
+        .delete()
+        .eq('surf_camp_id', campId);
+
+      // Insert new client assignments
+      if (clientIds.length > 0) {
+        const clientInserts = clientIds.map(clientId => ({
+          surf_camp_id: campId,
+          client_id: clientId,
+          assigned_by: user?.id
+        }));
+
+        const { error: clientError } = await supabase
+          .from('surf_camp_client_assignments')
+          .insert(clientInserts);
+
+        if (clientError) throw clientError;
+      }
+
+      // Insert new room assignments
+      if (roomIds.length > 0) {
+        const roomInserts = roomIds.map(roomId => ({
+          surf_camp_id: campId,
+          room_id: roomId,
+          assigned_by: user?.id
+        }));
+
+        const { error: roomError } = await supabase
+          .from('surf_camp_room_assignments')
+          .insert(roomInserts);
+
+        if (roomError) throw roomError;
+      }
+
+      toast.success('Assignments saved successfully');
+    } catch (error) {
+      console.error('Error saving assignments:', error);
+      toast.error('Failed to save assignments');
+      throw error;
+    }
+  }, []);
+
+  const openDetailsModal = async (camp: AdminSurfCamp) => {
     setSelectedCamp(camp);
-    setAssignedClients([]);
-    setAssignedRooms(camp.availableRooms || []);
+    await loadAssignments(camp.id);
     setShowDetailsModal(true);
   };
 
@@ -946,8 +1002,11 @@ export default function SurfCampsPage() {
                           </div>
                         </div>
                         <CardTitle className="text-lg">
-                          {formatDate(camp.startDate)} - {formatDate(camp.endDate)}
+                          {camp.name || `${camp.category === 'FR' ? 'Frenchman\'s' : 'Honolua Bay'} Surf Camp`}
                         </CardTitle>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {formatDate(camp.startDate)} - {formatDate(camp.endDate)}
+                        </p>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
@@ -1008,58 +1067,65 @@ export default function SurfCampsPage() {
             </DialogHeader>
 
             {selectedCamp && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Left Column - Available Items */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Left Column - Available Clients */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Available Items</h3>
+                  <h3 className="text-lg font-semibold">Available Clients</h3>
 
-                  {/* Available Clients */}
-                  <div>
-                    <h4 className="font-medium mb-2">Clients</h4>
-                    <DropZone
-                      onDrop={(item) => handleDrop(item, 'clients')}
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-4 min-h-[200px]"
-                    >
-                      <div className="space-y-2">
-                        {clients?.map((client) => (
-                          <DraggableClient
-                            key={client.id}
-                            client={client}
-                            isAssigned={assignedClients.includes(client.id)}
-                          />
-                        ))}
-                      </div>
-                    </DropZone>
-                  </div>
+                  <DropZone
+                    onDrop={(item) => handleDrop(item, 'clients')}
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-4 min-h-[300px] max-h-[400px] overflow-y-auto"
+                  >
+                    <div className="space-y-2">
+                      {clients?.filter(client => !assignedClients.includes(client.id)).map((client) => (
+                        <DraggableClient
+                          key={client.id}
+                          client={client}
+                          isAssigned={false}
+                        />
+                      ))}
+                      {clients?.filter(client => !assignedClients.includes(client.id)).length === 0 && (
+                        <p className="text-gray-500 text-center py-8">All clients are assigned or no clients available</p>
+                      )}
+                    </div>
+                  </DropZone>
+                </div>
 
-                  {/* Available Rooms */}
-                  <div>
-                    <h4 className="font-medium mb-2">Rooms</h4>
-                    <DropZone
-                      onDrop={(item) => handleDrop(item, 'rooms')}
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-4 min-h-[200px]"
-                    >
-                      <div className="space-y-2">
-                        {rooms?.map((room) => (
-                          <DraggableRoom
-                            key={room.id}
-                            room={room}
-                            isAssigned={assignedRooms.includes(room.id)}
-                          />
-                        ))}
-                      </div>
-                    </DropZone>
-                  </div>
+                {/* Middle Column - Available Rooms */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Available Rooms</h3>
+                  <DropZone
+                    onDrop={(item) => handleDrop(item, 'rooms')}
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-4 min-h-[300px] max-h-[400px] overflow-y-auto"
+                  >
+                    <div className="space-y-2">
+                      {rooms?.filter(room => !assignedRooms.includes(room.id)).map((room) => (
+                        <DraggableRoom
+                          key={room.id}
+                          room={room}
+                          isAssigned={false}
+                        />
+                      ))}
+                      {rooms?.filter(room => !assignedRooms.includes(room.id)).length === 0 && (
+                        <p className="text-gray-500 text-center py-8">All rooms are assigned or no rooms available</p>
+                      )}
+                    </div>
+                  </DropZone>
                 </div>
 
                 {/* Right Column - Assigned Items */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Assigned to Camp</h3>
+                  <h3 className="text-lg font-semibold text-heiwaOrange-600">Assigned to Camp</h3>
 
                   {/* Assigned Clients */}
                   <div>
-                    <h4 className="font-medium mb-2">Assigned Clients</h4>
-                    <div className="border border-gray-300 rounded-lg p-4 min-h-[200px]">
+                    <h4 className="font-medium mb-2 flex items-center justify-between">
+                      <span>Assigned Clients ({assignedClients.length})</span>
+                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                        {assignedClients.length}
+                      </Badge>
+                    </h4>
+                    <div className="border-2 border-dashed border-green-300 bg-green-50 rounded-lg p-4 min-h-[200px] max-h-[300px] overflow-y-auto">
                       {assignedClients.length === 0 ? (
                         <p className="text-gray-500 text-center py-8">
                           Drag clients here to assign them to this camp
@@ -1071,16 +1137,20 @@ export default function SurfCampsPage() {
                             return client ? (
                               <div
                                 key={clientId}
-                                className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded"
+                                className="flex items-center justify-between p-3 bg-white border border-green-200 rounded-lg shadow-sm"
                               >
                                 <div className="flex items-center space-x-2">
-                                  <Users className="w-4 h-4" />
-                                  <span className="text-sm font-medium">{client.name}</span>
+                                  <Users className="w-4 h-4 text-green-600" />
+                                  <div>
+                                    <span className="text-sm font-medium">{client.name}</span>
+                                    <span className="text-xs text-gray-500 block">{client.email}</span>
+                                  </div>
                                 </div>
                                 <Button
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => removeAssignment(clientId, 'client')}
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
@@ -1094,8 +1164,13 @@ export default function SurfCampsPage() {
 
                   {/* Assigned Rooms */}
                   <div>
-                    <h4 className="font-medium mb-2">Assigned Rooms</h4>
-                    <div className="border border-gray-300 rounded-lg p-4 min-h-[200px]">
+                    <h4 className="font-medium mb-2 flex items-center justify-between">
+                      <span>Assigned Rooms ({assignedRooms.length})</span>
+                      <Badge variant="secondary" className="bg-heiwaOrange-100 text-heiwaOrange-800">
+                        {assignedRooms.length}
+                      </Badge>
+                    </h4>
+                    <div className="border-2 border-dashed border-heiwaOrange-300 bg-heiwaOrange-50 rounded-lg p-4 min-h-[200px] max-h-[300px] overflow-y-auto">
                       {assignedRooms.length === 0 ? (
                         <p className="text-gray-500 text-center py-8">
                           Drag rooms here to assign them to this camp
@@ -1107,17 +1182,20 @@ export default function SurfCampsPage() {
                             return room ? (
                               <div
                                 key={roomId}
-                                className="flex items-center justify-between p-2 bg-heiwaOrange-50 border border-heiwaOrange-200 rounded"
+                                className="flex items-center justify-between p-3 bg-white border border-heiwaOrange-200 rounded-lg shadow-sm"
                               >
                                 <div className="flex items-center space-x-2">
-                                  <MapPin className="w-4 h-4" />
-                                  <span className="text-sm font-medium">{room.name}</span>
-                                  <span className="text-xs text-gray-500">Cap: {room.capacity}</span>
+                                  <MapPin className="w-4 h-4 text-heiwaOrange-600" />
+                                  <div>
+                                    <span className="text-sm font-medium">{room.name}</span>
+                                    <span className="text-xs text-gray-500 block">Capacity: {room.capacity}</span>
+                                  </div>
                                 </div>
                                 <Button
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => removeAssignment(roomId, 'room')}
+                                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
@@ -1131,11 +1209,20 @@ export default function SurfCampsPage() {
 
                   <div className="flex justify-end space-x-2">
                     <Button
-                      onClick={() => {
-                        // TODO: Implement room assignments storage
-                        // For now, just close the modal
-                        toast.info('Room assignments feature coming soon');
-                        setShowDetailsModal(false);
+                      variant="outline"
+                      onClick={() => setShowDetailsModal(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={async () => {
+                        if (!selectedCamp) return;
+                        try {
+                          await saveAssignments(selectedCamp.id, assignedClients, assignedRooms);
+                          setShowDetailsModal(false);
+                        } catch (error) {
+                          // Error is already handled in saveAssignments
+                        }
                       }}
                     >
                       Save Assignments
