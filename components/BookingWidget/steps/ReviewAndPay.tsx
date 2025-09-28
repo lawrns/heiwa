@@ -3,7 +3,7 @@ import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2,
 import { BookingState, PricingBreakdown } from '../types';
 import { PaymentMethodSelector } from '../components/PaymentMethodSelector';
 import { BankWireInstructions } from '../components/BankWireInstructions';
-import { wpFetch } from '../lib/wpApi';
+import { apiFetch } from '../lib/api';
 
 interface ReviewAndPayProps {
   state: BookingState;
@@ -71,41 +71,31 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         phone: g.phone,
       }));
 
-      let endpoint = '';
-      let payload: any = {};
+      // Prepare booking payload for Next.js API
+      const payload: any = {
+        booking_type: state.experienceType === 'room' ? 'room' : 'surf_week',
+        participants,
+        pricing: pricing,
+        guests: state.guests,
+        source_url: typeof window !== 'undefined' ? window.location.href : undefined,
+        add_ons: state.selectedAddOns.map(a => ({ id: a.id, quantity: a.quantity, price: a.price }))
+      };
 
       if (state.experienceType === 'room' && state.dates.checkIn && state.dates.checkOut && state.selectedOption) {
-        endpoint = '/wordpress/room-bookings';
-        payload = {
-          room_id: state.selectedOption,
-          start_date: state.dates.checkIn.toISOString().split('T')[0],
-          end_date: state.dates.checkOut.toISOString().split('T')[0],
-          participants,
-          add_ons: state.selectedAddOns.map(a => ({ id: a.id, quantity: a.quantity, price: a.price })),
-          pricing: pricing,
-          guests: state.guests,
-          source_url: typeof window !== 'undefined' ? window.location.href : undefined,
-          widget_version: 'wp-widget-test'
-        };
+        payload.room_id = state.selectedOption;
+        payload.start_date = state.dates.checkIn.toISOString().split('T')[0];
+        payload.end_date = state.dates.checkOut.toISOString().split('T')[0];
       } else if (state.experienceType === 'surf-week' && state.selectedOption) {
-        endpoint = '/wordpress/bookings';
-        payload = {
-          camp_id: state.selectedOption,
-          participants,
-          pricing: pricing,
-          source_url: typeof window !== 'undefined' ? window.location.href : undefined,
-          widget_version: 'wp-widget-test'
-        };
+        payload.camp_id = state.selectedOption;
       } else {
         throw new Error('Missing required booking information');
       }
 
       console.log('🔑 Booking submission:', {
-        endpoint,
         payload: { ...payload, participants: payload.participants?.length || 0 }
       });
 
-      const res = await wpFetch(endpoint, {
+      const res = await apiFetch('/bookings', {
         method: 'POST',
         body: JSON.stringify(payload),
       });

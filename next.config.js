@@ -6,7 +6,7 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'heiwahouse.com',
         port: '',
-        pathname: '/wp-content/uploads/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',

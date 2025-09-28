@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SurfWeek } from '../types';
-import { wpFetch } from '../lib/wpApi';
+import { apiFetch } from '../lib/api';
 
 interface UseSurfCampsResult {
   surfCamps: SurfWeek[];
@@ -24,8 +24,8 @@ export function useSurfCamps(): UseSurfCampsResult {
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
       try {
-        // Try WordPress API first (public endpoint) with timeout
-        const response = await wpFetch('/wordpress/surf-camps', {
+        // Try Next.js API endpoint with timeout
+        const response = await apiFetch('/surf-camps', {
           method: 'GET',
           signal: controller.signal,
         });
