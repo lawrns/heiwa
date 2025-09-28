@@ -49,9 +49,9 @@ export function StandaloneWidget({
         
         if (!finalConfig && typeof window !== 'undefined') {
           // Try to get config from WordPress localized script
-          const globalConfig = (window as { heiwaWidgetConfig?: unknown }).heiwaWidgetConfig;
+          const globalConfig = (window as any).heiwaWidgetConfig;
           if (globalConfig) {
-            finalConfig = globalConfig as WordPressConfig;
+            finalConfig = globalConfig;
           }
         }
 
@@ -321,7 +321,7 @@ Plugin URL: ${wpConfig.pluginUrl}`}
 
 // Global export for WordPress
 if (typeof window !== 'undefined') {
-  (window as { HeiwaStandaloneWidget?: unknown }).HeiwaStandaloneWidget = StandaloneWidget;
+  (window as any).HeiwaStandaloneWidget = StandaloneWidget;
 }
 
 export default StandaloneWidget;

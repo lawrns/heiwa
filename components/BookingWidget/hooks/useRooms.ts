@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Room } from '../types';
-import { apiFetch } from '../lib/api';
+import { wpFetch } from '../lib/wpApi';
 
 interface UseRoomsParams {
   checkIn: Date | null;
@@ -42,7 +42,7 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
         params = new URLSearchParams({
           start_date: startDate,
           end_date: endDate,
-          guests: guests.toString(),
+          participants: guests.toString(),
         });
       }
 
@@ -51,8 +51,8 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
       try {
-        // Try Next.js API endpoint with timeout
-        const response = await apiFetch(`${apiUrl}${params.toString() ? '?' + params.toString() : ''}`, {
+        // Try WordPress API (public endpoint) with timeout
+        const response = await wpFetch(`${apiUrl}${params.toString() ? '?' + params.toString() : ''}`, {
           method: 'GET',
           signal: controller.signal,
         });

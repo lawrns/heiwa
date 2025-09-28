@@ -1,7 +1,7 @@
 'use client'
 
 import { Calendar, Users, X } from 'lucide-react'
-import { BookingWidget } from './BookingWidget/BookingWidget'
+import { StandaloneWidget } from './BookingWidget/StandaloneWidget'
 import { useBooking } from '@/lib/booking-context'
 
 export function FloatingBookingWidget() {
@@ -45,18 +45,25 @@ export function FloatingBookingWidget() {
               </button>
             </div>
             
-            {/* Booking Widget Content */}
+            {/* Working Booking Widget from wavecampdashboard */}
             <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-              <BookingWidget
-                embedded={true}
+              <StandaloneWidget
                 config={{
-                  triggerText: "Book Now"
-                }}
-                onModalStateChange={(isModalOpen) => {
-                  if (!isModalOpen) {
-                    closeBooking()
+                  ajaxUrl: `${typeof window !== 'undefined' ? window.location.origin : ''}/wp-json/wp/v2/`,
+                  nonce: 'wp_rest_nonce_12345',
+                  restBase: `${typeof window !== 'undefined' ? window.location.origin : ''}/wp-json/heiwa/v1`,
+                  pluginUrl: '/wordpress-plugin/heiwa-booking-widget/',
+                  buildId: 'react-widget-heiwa-page',
+                  settings: {
+                    apiEndpoint: `${typeof window !== 'undefined' ? window.location.origin : ''}/api`,
+                    apiKey: 'heiwa_page_key_2024',
+                    position: 'right',
+                    primaryColor: '#f97316',
+                    triggerText: 'BOOK NOW'
                   }
                 }}
+                containerId="heiwa-booking-widget-modal"
+                className="heiwa-page-integration"
               />
             </div>
           </div>

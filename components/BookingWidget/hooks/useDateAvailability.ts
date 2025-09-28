@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { apiFetch } from '../lib/api';
+import { wpFetch } from '../lib/wpApi';
 
 interface DateAvailability {
   date: string;
@@ -63,7 +63,7 @@ export function useDateAvailability(options: UseDateAvailabilityOptions = {}) {
         participants: participants.toString()
       });
 
-      const response = await apiFetch(`/dates/availability?${params}`);
+      const response = await wpFetch(`/wordpress/dates/availability?${params}`);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);

@@ -19,7 +19,7 @@ interface BookingWidgetProps {
 
 export function BookingWidget({ className = '' }: BookingWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [bookingSuccess, setBookingSuccess] = useState<unknown>(null);
+  const [bookingSuccess, setBookingSuccess] = useState<any>(null);
   const { state, actions, computed } = useBookingFlow();
 
   const openWidget = () => {
@@ -34,7 +34,7 @@ export function BookingWidget({ className = '' }: BookingWidgetProps) {
     actions.reset();
   };
 
-  const handleBookingComplete = (bookingData?: unknown) => {
+  const handleBookingComplete = (bookingData?: any) => {
     if (bookingData) {
       // Show success message with booking data
       setBookingSuccess(bookingData);
@@ -139,7 +139,7 @@ export function BookingWidget({ className = '' }: BookingWidgetProps) {
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
                       <p className="text-gray-600">
-                        Booking #{(bookingSuccess as any)?.booking?.booking_number || 'N/A'}
+                        Booking #{bookingSuccess.booking?.booking_number || 'N/A'}
                       </p>
                     </div>
                     <div className="bg-gray-50 rounded-lg p-4 text-left">

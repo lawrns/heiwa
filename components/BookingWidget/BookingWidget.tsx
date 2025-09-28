@@ -34,11 +34,10 @@ export function BookingWidget({
   config,
   isWebComponent = false,
   externalTrigger,
-  onModalStateChange,
-  embedded = false
-}: BookingWidgetProps & { embedded?: boolean }) {
+  onModalStateChange
+}: BookingWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [bookingSuccess, setBookingSuccess] = useState<unknown>(null);
+  const [bookingSuccess, setBookingSuccess] = useState<any>(null);
   const { state, actions, computed } = useBookingFlow();
 
   useEffect(() => {
@@ -81,7 +80,7 @@ export function BookingWidget({
     actions.reset();
   };
 
-  const handleBookingComplete = (bookingData?: unknown) => {
+  const handleBookingComplete = (bookingData?: any) => {
     if (bookingData) {
       // Show success message with booking data
       setBookingSuccess(bookingData);
@@ -123,75 +122,6 @@ export function BookingWidget({
       </div>
     );
   };
-
-  // If embedded, render the widget content directly without modal
-  if (embedded) {
-    return (
-      <div className={`heiwa-booking-widget-embedded ${className}`}>
-        {/* Widget Content */}
-        <div className="bg-white">
-          {/* Success State */}
-          {bookingSuccess ? (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
-              <p className="text-gray-600">
-                Booking #{(bookingSuccess as any)?.booking?.booking_number || 'N/A'}
-              </p>
-            </div>
-          ) : (
-            /* Booking Flow */
-            <div className="space-y-6">
-              {/* Progress Indicator */}
-              <div className="border-b border-gray-200 pb-4">
-                <ProgressIndicator
-                  currentStep={state.currentStep}
-                  steps={computed.stepNames}
-                />
-              </div>
-
-              {/* Current Step Content */}
-              <div className="min-h-[400px]">
-                {computed.currentStepComponent}
-              </div>
-
-              {/* Navigation */}
-              <div className="flex justify-between items-center pt-6 border-t border-gray-200">
-                <button
-                  onClick={actions.goToPreviousStep}
-                  disabled={computed.isFirstStep}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Back
-                </button>
-
-                <button
-                  onClick={computed.isLastStep ? actions.submitBooking : actions.goToNextStep}
-                  disabled={!computed.canProceed || state.isSubmitting}
-                  className="px-6 py-2 bg-primary hover:bg-accent-hover text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  {state.isSubmitting ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Loading...
-                    </div>
-                  ) : computed.isLastStep ? (
-                    'Complete Booking'
-                  ) : (
-                    'Next'
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    )
-  }
 
   return (
     <>
@@ -277,7 +207,7 @@ export function BookingWidget({
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
                       <p className="text-gray-600">
-                        Booking #{(bookingSuccess as any)?.booking?.booking_number || 'N/A'}
+                        Booking #{bookingSuccess.booking?.booking_number || 'N/A'}
                       </p>
                     </div>
                     <div className="bg-gray-50 rounded-lg p-4 text-left">
