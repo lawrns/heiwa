@@ -94,30 +94,30 @@ export default function RootLayout({
           {children}
         </main>
         <FloatingBookingWidget />
-        <footer className="bg-surface-alt border-t border-muted/20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <footer className="bg-gray-900 text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="col-span-1 md:col-span-2">
-                <h3 className="text-lg font-heading font-semibold text-text mb-4">
-                  Heiwa House
+                <h3 className="text-2xl font-heading font-normal text-primary mb-6">
+                  HEIWA HOUSE
                 </h3>
-                <p className="text-muted text-sm leading-relaxed mb-4">
+                <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-md">
                   Nestled on Portugal&apos;s coast, Heiwa House is your sanctuary for rest and adventure.
                   Experience world-class surfing, yoga, and coastal living.
                 </p>
-                <p className="text-muted text-xs">
+                <p className="text-gray-400 text-xs">
                   © 2024 Heiwa House. All rights reserved.
                 </p>
               </div>
 
               <div>
-                <h4 className="text-sm font-semibold text-text mb-4">Navigation</h4>
-                <ul className="space-y-2">
+                <h4 className="text-sm font-medium text-white mb-4 uppercase tracking-wide">General</h4>
+                <ul className="space-y-3">
                   {navigationItems.map((item) => (
                     <li key={item.path}>
                       <a
                         href={item.path}
-                        className="text-muted text-sm hover:text-primary transition-colors"
+                        className="text-gray-300 text-sm hover:text-primary transition-colors"
                       >
                         {item.name}
                       </a>
@@ -127,14 +127,19 @@ export default function RootLayout({
               </div>
 
               <div>
-                <h4 className="text-sm font-semibold text-text mb-4">Contact</h4>
-                <div className="space-y-2 text-muted text-sm">
-                  <p>Portugal</p>
+                <h4 className="text-sm font-medium text-white mb-4 uppercase tracking-wide">About Us</h4>
+                <div className="space-y-3 text-gray-300 text-sm">
                   <a
                     href="mailto:info@heiwahouse.com"
-                    className="hover:text-primary transition-colors"
+                    className="block hover:text-primary transition-colors"
                   >
-                    info@heiwahouse.com
+                    E. info@heiwahouse.com
+                  </a>
+                  <a
+                    href="tel:+351912193785"
+                    className="block hover:text-primary transition-colors"
+                  >
+                    T. + 351 912 193 785
                   </a>
                 </div>
               </div>

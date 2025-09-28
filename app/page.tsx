@@ -21,10 +21,10 @@ export default function HomePage() {
       />
 
       {/* Three Cards Section */}
-      <section className="py-section-y bg-surface-alt">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-text mb-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-heading font-normal text-text mb-6">
               Discover Heiwa
             </h2>
             <p className="text-lg text-muted max-w-2xl mx-auto">
@@ -35,17 +35,17 @@ export default function HomePage() {
           <CardGrid
             items={homePageContent.featureCards}
             columns={3}
-            className="max-w-5xl mx-auto"
+            className="max-w-6xl mx-auto"
             priorityImages={3}
           />
         </div>
       </section>
 
       {/* Video Section */}
-      <section className="py-section-y bg-surface">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-text mb-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-heading font-normal text-text mb-6">
               Experience Heiwa House
             </h2>
             <p className="text-lg text-muted">
@@ -61,13 +61,13 @@ export default function HomePage() {
             className="max-w-3xl mx-auto"
           />
 
-          <div className="text-center mt-8">
-            <p className="text-muted text-sm">
+          <div className="text-center mt-12">
+            <p className="text-muted text-sm mb-4">
               Ready to join the Heiwa community?
             </p>
             <a
               href="/surf-weeks"
-              className="inline-flex items-center justify-center px-6 py-3 mt-4 btn-primary"
+              className="inline-flex items-center justify-center px-8 py-4 bg-primary hover:bg-accent-hover text-white text-sm font-medium tracking-wide transition-colors"
             >
               Learn About Surf Weeks
             </a>

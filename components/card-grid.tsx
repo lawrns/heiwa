@@ -23,7 +23,7 @@ export function CardGrid({ items, columns = 3, className, priorityImages = 1 }: 
       {items.map((item, index) => (
         <motion.article
           key={index}
-          className="group relative bg-surface rounded-card shadow-card overflow-hidden hover:shadow-lg transition-all duration-300"
+          className="group relative bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
@@ -44,7 +44,7 @@ export function CardGrid({ items, columns = 3, className, priorityImages = 1 }: 
 
           {/* Content */}
           <div className="p-6">
-            <h3 className="text-xl font-heading font-semibold text-text mb-2 group-hover:text-primary transition-colors">
+            <h3 className="text-2xl font-heading font-normal text-text mb-2 group-hover:text-primary transition-colors">
               {item.title}
             </h3>
 

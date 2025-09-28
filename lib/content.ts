@@ -13,10 +13,10 @@ import type {
 
 // Navigation structure
 export const navigationItems: NavigationItem[] = [
-  { path: '/', name: 'Home' },
-  { path: '/the-spot', name: 'The Spot' },
-  { path: '/rooms', name: 'Room Rentals' },
-  { path: '/surf-weeks', name: 'Surf Weeks' }
+  { path: '/', name: 'HOME' },
+  { path: '/the-spot', name: 'THE SPOT' },
+  { path: '/rooms', name: 'ROOM RENTALS' },
+  { path: '/surf-weeks', name: 'SURF CAMP' }
 ]
 
 // Room data
@@ -90,10 +90,10 @@ export const experiences: Experience[] = [
 // Homepage content
 export const homePageContent: HomePageContent = {
   hero: {
-    title: 'A Wave Away',
-    subtitle: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
+    title: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
+    subtitle: 'A WAVE AWAY',
     backgroundImage: '/images/hero/heiwa-hero.jpg',
-    cta: [{ label: 'Book Now', href: '/rooms' }]
+    cta: [{ label: 'EXPLORE', href: '/rooms' }]
   },
   featureCards: [
     {
