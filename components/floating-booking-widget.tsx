@@ -54,7 +54,7 @@ export function FloatingBookingWidget() {
                 }}
                 onModalStateChange={(isModalOpen) => {
                   if (!isModalOpen) {
-                    setIsOpen(false)
+                    closeBooking()
                   }
                 }}
               />
