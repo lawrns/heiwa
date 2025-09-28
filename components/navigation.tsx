@@ -7,11 +7,13 @@ import { Menu, X, Bed } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { NavigationProps, NavigationItem } from '@/lib/types'
 import { getNavigationItems } from '@/lib/content'
+import { useBooking } from '@/lib/booking-context'
 
 export function Navigation({ items: initialItems, currentPath, className }: NavigationProps & { items?: NavigationItem[] }) {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<NavigationItem[]>(initialItems || [])
   const [loading, setLoading] = useState(!initialItems)
+  const { openBooking } = useBooking()
 
   useEffect(() => {
     if (!initialItems) {
@@ -87,13 +89,13 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             </div>
 
             {/* Book Now Button */}
-            <Link
-              href="/booking"
+            <button
+              onClick={openBooking}
               className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase"
             >
               <Bed className="w-4 h-4" />
               BOOK NOW
-            </Link>
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -144,14 +146,16 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               ))}
               <li className="pt-4 border-t border-gray-600">
                 <div className="text-sm text-white mb-3">📞 +351 912 193 785</div>
-                <Link
-                  href="/booking"
-                  onClick={closeMenu}
+                <button
+                  onClick={() => {
+                    openBooking()
+                    closeMenu()
+                  }}
                   className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase"
                 >
                   <Bed className="w-4 h-4" />
                   BOOK NOW
-                </Link>
+                </button>
               </li>
             </ul>
           </nav>
