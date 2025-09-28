@@ -51,8 +51,9 @@ describe('Surf Weeks Page Integration', () => {
     render(<SurfWeeks />)
 
     // Check for feature list or program content
-    const features = screen.queryAllByRole('listitem')
     // May or may not have features depending on implementation
+    // const features = screen.queryAllByRole('listitem') // Placeholder for future feature assertions
+    expect(screen.getByText(/surf weeks|surf training|master the waves/i)).toBeInTheDocument()
   })
 
   it('has proper page structure and SEO', () => {

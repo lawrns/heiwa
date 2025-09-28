@@ -36,6 +36,7 @@ export default function HomePage() {
             items={homePageContent.featureCards}
             columns={3}
             className="max-w-5xl mx-auto"
+            priorityImages={3}
           />
         </div>
       </section>

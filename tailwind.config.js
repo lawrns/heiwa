@@ -8,27 +8,29 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: 'var(--color-primary)',
-        'on-primary': 'var(--color-on-primary)',
-        surface: 'var(--color-surface)',
-        'surface-alt': 'var(--color-surface-alt)',
-        text: 'var(--color-text)',
-        muted: 'var(--color-muted)',
+        primary: '#ec681c',
+        'on-primary': '#FFFFFF',
+        surface: '#FFFFFF',
+        'surface-alt': '#F8F9FA',
+        text: '#1a1a1a',
+        muted: '#5a5a5a',
+        accent: '#ec681c',
+        'accent-hover': '#ed5600',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        heading: ['Montserrat', 'sans-serif'],
+        sans: ['Archivo', 'sans-serif'],
+        heading: ['Archivo Narrow', 'sans-serif'],
       },
       spacing: {
-        'section-y': 'var(--spacing-section-y)',
-        'grid-gap': 'var(--spacing-grid-gap)',
+        'section-y': '96px',
+        'grid-gap': '24px',
       },
       borderRadius: {
-        card: 'var(--radius-card)',
-        button: 'var(--radius-button)',
+        card: '12px',
+        button: '8px',
       },
       boxShadow: {
-        card: 'var(--shadow-card)',
+        card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
       },
     },
   },

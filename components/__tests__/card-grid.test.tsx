@@ -28,13 +28,11 @@ describe('CardGrid', () => {
 
   it('renders cards with proper links when href is provided', () => {
     render(<CardGrid items={mockItems} />)
-    const link1 = screen.getByText('Test Card 1').closest('a')
-    const link2 = screen.getByText('Test Card 2').closest('a')
-    const card3 = screen.getByText('Test Card 3')
+    const links = screen.getAllByRole('link')
+    expect(links).toHaveLength(2) // Only first two items have href
 
-    expect(link1).toHaveAttribute('href', '/test-1')
-    expect(link2).toHaveAttribute('href', '/test-2')
-    expect(card3.closest('a')).toBeNull() // No link for card without href
+    expect(links[0]).toHaveAttribute('href', '/test-1')
+    expect(links[1]).toHaveAttribute('href', '/test-2')
   })
 
   it('renders images with proper alt text', () => {

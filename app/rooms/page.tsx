@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import { CardGrid } from '@/components/card-grid'
-import { BookingWidget } from '@/components/booking-widget'
 import { roomsPageContent } from '@/lib/content'
 
 export const metadata: Metadata = {
@@ -68,10 +67,11 @@ export default function RoomsPage() {
             </p>
           </div>
 
-          <BookingWidget
-            title="Room Booking"
-            className="max-w-2xl mx-auto"
-          />
+          <div className="text-center">
+            <p className="text-muted">
+              Click the "Check Availability" button below to book your room
+            </p>
+          </div>
 
           <div className="text-center mt-8">
             <p className="text-muted text-sm">

@@ -60,7 +60,7 @@ export function VideoEmbed({
     >
       {!isLoaded ? (
         // Poster with play button
-        <div className="relative w-full h-full cursor-pointer group" onClick={handlePlayClick}>
+        <div className="relative w-full h-full cursor-pointer group" style={{ position: 'relative' }} onClick={handlePlayClick}>
           {poster && isInView && (
             <Image
               src={poster}

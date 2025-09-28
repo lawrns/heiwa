@@ -1,9 +1,33 @@
 // Booking widget integration utilities for Heiwa House website
 // Connects to the wavecampdashboard booking system
 
-import { supabase } from './supabase'
+// import { supabase } from './supabase' // Not used in this file
 import { env } from '@/config/environment'
 import type { BookingInquiry, RoomAvailability, SurfCampBooking } from './supabase'
+
+// Widget config for external script
+export interface WidgetConfig {
+  ajaxUrl: string
+  nonce: string
+  restBase: string
+  pluginUrl: string
+  buildId: string
+  settings: {
+    apiEndpoint: string
+    apiKey: string
+    position: 'inline' | 'floating'
+    primaryColor: string
+    triggerText: string
+  }
+}
+
+// Extend Window interface for widget
+declare global {
+  interface Window {
+    heiwaWidgetConfig?: WidgetConfig
+    heiwaWidgetLoaded?: boolean
+  }
+}
 
 // Booking widget configuration
 export interface BookingWidgetConfig {
@@ -119,8 +143,8 @@ export class BookingWidgetService {
   }
 
   // Get booking widget embed code
-  getWidgetEmbedCode(containerId: string = 'heiwa-booking-widget'): string {
-    const config = {
+  getWidgetEmbedCode(_containerId: string = 'heiwa-booking-widget'): string {
+    const widgetConfig: WidgetConfig = {
       ajaxUrl: `${this.config.apiBaseUrl}/wordpress/`,
       nonce: 'wp_rest_nonce_' + Date.now(),
       restBase: `${this.config.apiBaseUrl}/wordpress/heiwa/v1`,
@@ -137,13 +161,14 @@ export class BookingWidgetService {
 
     return `
       <div
-        id="${containerId}"
+        id="${_containerId}"
         class="heiwa-react-widget-container heiwa-position-${this.config.position}"
         data-widget-id="heiwa-widget-${Date.now()}"
-        data-build-id="${config.buildId}"
+        data-build-id="${widgetConfig.buildId}"
       >
+        <!-- Heiwa Booking Widget Container -->
         <script>
-          window.heiwaWidgetConfig = ${JSON.stringify(config)};
+          window.heiwaWidgetConfig = ${JSON.stringify(widgetConfig)};
         </script>
         <script src="${this.config.widgetUrl}/widget.js"></script>
       </div>
@@ -154,7 +179,7 @@ export class BookingWidgetService {
   initializeWidget(containerId: string = 'heiwa-booking-widget'): void {
     if (typeof window === 'undefined') return
 
-    const config = {
+    const widgetConfig: WidgetConfig = {
       ajaxUrl: `${this.config.apiBaseUrl}/wordpress/`,
       nonce: 'wp_rest_nonce_' + Date.now(),
       restBase: `${this.config.apiBaseUrl}/wordpress/heiwa/v1`,
@@ -170,15 +195,15 @@ export class BookingWidgetService {
     }
 
     // Set global config for the widget
-    ;(window as any).heiwaWidgetConfig = config
+    window.heiwaWidgetConfig = widgetConfig
 
     // Load widget script if not already loaded
-    if (!(window as any).heiwaWidgetLoaded) {
+    if (!window.heiwaWidgetLoaded) {
       const script = document.createElement('script')
       script.src = `${this.config.widgetUrl}/widget.js`
       script.async = true
       document.head.appendChild(script)
-      ;(window as any).heiwaWidgetLoaded = true
+      window.heiwaWidgetLoaded = true
     }
   }
 }

@@ -12,14 +12,19 @@ export function Hero({ title, subtitle, image, ctas, className }: HeroProps) {
     >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src={image}
-          alt=""
-          fill
-          className="object-cover"
-          priority
-          sizes="100vw"
-        />
+        {image ? (
+          <Image
+            src={image}
+            alt=""
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+        ) : (
+          /* Gradient background when no image */
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/80 to-surface" />
+        )}
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-surface/40" />
       </div>

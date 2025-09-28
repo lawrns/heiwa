@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import type { CardGridProps } from '@/lib/types'
 
-export function CardGrid({ items, columns = 3, className }: CardGridProps) {
+export function CardGrid({ items, columns = 3, className, priorityImages = 1 }: CardGridProps & { priorityImages?: number }) {
   const gridCols = {
     1: 'grid-cols-1',
     2: 'grid-cols-1 md:grid-cols-2',
@@ -30,11 +30,12 @@ export function CardGrid({ items, columns = 3, className }: CardGridProps) {
           role="gridcell"
         >
           {/* Image */}
-          <div className="relative aspect-[4/3] overflow-hidden">
+          <div className="relative aspect-[4/3] overflow-hidden" style={{ position: 'relative' }}>
             <Image
               src={item.image}
               alt={item.title}
               fill
+              priority={index < priorityImages}
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />

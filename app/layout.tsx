@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import { Inter, Montserrat } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { Navigation } from '@/components/navigation'
+import { FloatingBookingWidget } from '@/components/floating-booking-widget'
 import { navigationItems } from '@/lib/content'
 import './globals.css'
 
@@ -10,11 +11,7 @@ const inter = Inter({
   display: 'swap'
 })
 
-const montserrat = Montserrat({
-  subsets: ['latin'],
-  variable: '--font-montserrat',
-  display: 'swap'
-})
+
 
 export const metadata: Metadata = {
   title: {
@@ -82,12 +79,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${montserrat.variable}`}>
+    <html lang="en" className={`${inter.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Archivo+Narrow:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="font-sans antialiased bg-surface text-text">
         <Navigation items={navigationItems} />
         <main className="min-h-screen">
           {children}
         </main>
+        <FloatingBookingWidget />
         <footer className="bg-surface-alt border-t border-muted/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -96,7 +102,7 @@ export default function RootLayout({
                   Heiwa House
                 </h3>
                 <p className="text-muted text-sm leading-relaxed mb-4">
-                  Nestled on Portugal's coast, Heiwa House is your sanctuary for rest and adventure.
+                  Nestled on Portugal&apos;s coast, Heiwa House is your sanctuary for rest and adventure.
                   Experience world-class surfing, yoga, and coastal living.
                 </p>
                 <p className="text-muted text-xs">

@@ -1,0 +1,14 @@
+<svg width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="surfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F1418;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1B2329;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E85A2B;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#surfGrad)"/>
+  <text x="640" y="340" font-family="Arial, sans-serif" font-size="36" fill="white" text-anchor="middle" font-weight="bold">Heiwa House Surf Weeks</text>
+  <text x="640" y="380" font-family="Arial, sans-serif" font-size="18" fill="white" text-anchor="middle" opacity="0.9">Professional Surf Instruction</text>
+  <circle cx="640" cy="450" r="40" fill="none" stroke="white" stroke-width="3" opacity="0.8"/>
+  <polygon points="620,430 640,450 660,430" fill="white" opacity="0.8"/>
+</svg>

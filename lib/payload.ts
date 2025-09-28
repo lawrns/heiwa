@@ -34,7 +34,7 @@ class PayloadClient {
     return surfWeeksPageContent
   }
 
-  async getPage(slug: string): Promise<Page | null> {
+  async getPage(_slug: string): Promise<Page | null> {
     // Placeholder - would fetch page by slug from CMS
     return null
   }
@@ -133,9 +133,9 @@ export const migrateStaticContentToCms = async () => {
 }
 
 // Content validation utilities
-export const validateContent = (content: any): boolean => {
+export const validateContent = (content: unknown): boolean => {
   // Basic validation - would be more comprehensive with CMS schema
-  return content && typeof content === 'object'
+  return content !== null && typeof content === 'object'
 }
 
 export const logContentFetch = (page: string, source: 'cms' | 'static') => {

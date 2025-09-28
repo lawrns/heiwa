@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import { VideoEmbed } from '@/components/video-embed'
-import { BookingWidget } from '@/components/booking-widget'
 import { surfWeeksPageContent } from '@/lib/content'
 
 export const metadata: Metadata = {
@@ -36,7 +35,7 @@ export default function SurfWeeksPage() {
             </h2>
             <p className="text-lg text-muted mb-8">
               Our comprehensive surf training program combines expert instruction with the perfect coastal environment.
-              Whether you're a complete beginner or looking to refine your technique, our experienced instructors
+              Whether you&apos;re a complete beginner or looking to refine your technique, our experienced instructors
               will help you progress safely and confidently.
             </p>
           </div>
@@ -151,10 +150,11 @@ export default function SurfWeeksPage() {
             </p>
           </div>
 
-          <BookingWidget
-            title="Surf Week Booking"
-            className="max-w-2xl mx-auto"
-          />
+          <div className="text-center">
+            <p className="text-muted">
+              Click the "Check Availability" button below to book your surf week
+            </p>
+          </div>
 
           <div className="text-center mt-8">
             <p className="text-muted text-sm">

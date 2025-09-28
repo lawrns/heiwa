@@ -40,10 +40,10 @@ export function Navigation({ items, currentPath, className }: NavigationProps) {
                     <Link
                       href={item.path}
                       className={cn(
-                        'px-3 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+                        'px-3 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface',
                         currentPath === item.path
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                          ? 'bg-primary text-on-primary'
+                          : 'text-text hover:text-primary hover:bg-surface-alt'
                       )}
                       aria-current={currentPath === item.path ? 'page' : undefined}
                       {...(item.external && {
@@ -83,16 +83,16 @@ export function Navigation({ items, currentPath, className }: NavigationProps) {
       {isOpen && (
         <div className="md:hidden" id="mobile-menu">
           <nav aria-label="Mobile navigation">
-            <ul className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+            <ul className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-surface-alt border-t border-muted/20">
               {items.map((item) => (
                 <li key={item.path}>
                   <Link
                     href={item.path}
                     className={cn(
-                      'block px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+                      'block px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface',
                       currentPath === item.path
-                        ? 'bg-blue-600 text-white'
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-100'
+                        ? 'bg-primary text-on-primary'
+                        : 'text-text hover:text-primary hover:bg-surface'
                     )}
                     onClick={closeMenu}
                     aria-current={currentPath === item.path ? 'page' : undefined}

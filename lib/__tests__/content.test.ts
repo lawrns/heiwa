@@ -15,7 +15,7 @@ describe('Navigation Items', () => {
 
   it('all navigation items have valid paths', () => {
     navigationItems.forEach(item => {
-      expect(item.path).toMatch(/^\/[a-z-]+$/ || item.path === '/')
+      expect(item.path).toMatch(item.path === '/' ? /^\/$/ : /^\/[a-z-]+$/)
     })
   })
 })

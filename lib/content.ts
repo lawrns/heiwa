@@ -115,7 +115,7 @@ export const homePageContent: HomePageContent = {
   videoEmbed: {
     provider: 'youtube',
     src: 'https://youtu.be/9nhQiKGsgHg',
-    poster: '/images/posters/surfweeks.jpg'
+    poster: '/images/posters/surfweeks.svg'
   }
 }
 
@@ -138,7 +138,7 @@ export const surfWeeksPageContent: SurfWeeksPageContent = {
   videoEmbed: {
     provider: 'youtube',
     src: 'https://youtu.be/9nhQiKGsgHg',
-    poster: '/images/posters/surfweeks.jpg'
+    poster: '/images/posters/surfweeks.svg'
   },
   program: {
     title: 'Surf Weeks Program',

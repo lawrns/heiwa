@@ -1,0 +1,209 @@
+'use client';
+
+import { useState } from 'react';
+import { X, Calendar, CheckCircle } from 'lucide-react';
+import { useBookingFlow } from './hooks/useBookingFlow';
+import { ProgressIndicator } from './ui/ProgressIndicator';
+import { ExperienceSelection } from './steps/ExperienceSelection';
+import { OptionSelection } from './steps/OptionSelection';
+import { RoomAssignment } from './steps/RoomAssignment';
+import { SurfWeekRoomSelection } from './steps/SurfWeekRoomSelection';
+import { AddOnsSelection } from './steps/AddOnsSelection';
+import { GuestDetails } from './steps/GuestDetails';
+import { ReviewAndPay } from './steps/ReviewAndPay';
+import './styles/surf-enhancements.css';
+
+interface BookingWidgetProps {
+  className?: string;
+}
+
+export function BookingWidget({ className = '' }: BookingWidgetProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState<unknown>(null);
+  const { state, actions, computed } = useBookingFlow();
+
+  const openWidget = () => {
+    setIsOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeWidget = () => {
+    setIsOpen(false);
+    document.body.style.overflow = 'unset';
+    setBookingSuccess(null);
+    actions.reset();
+  };
+
+  const handleBookingComplete = (bookingData?: unknown) => {
+    if (bookingData) {
+      // Show success message with booking data
+      setBookingSuccess(bookingData);
+    } else {
+      // No booking data, just close widget
+      closeWidget();
+    }
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      closeWidget();
+    }
+  };
+
+  const renderCurrentStep = () => {
+    const currentStepType = computed.currentStepType;
+
+    const stepComponents = {
+      'experience': <ExperienceSelection state={state} actions={actions} />,
+      'options': <OptionSelection state={state} actions={actions} />,
+      'room-assignment': <RoomAssignment state={state} actions={actions} />,
+      'surf-week-room-selection': <SurfWeekRoomSelection state={state} actions={actions} />,
+      'add-ons': <AddOnsSelection state={state} actions={actions} />,
+      'guest-details': <GuestDetails state={state} actions={actions} />,
+      'review-pay': <ReviewAndPay state={state} actions={actions} onComplete={handleBookingComplete} />,
+    };
+
+    return (
+      <div
+        key={`${state.currentStep}-${currentStepType}`}
+        className="animate-in fade-in-0 slide-in-from-right-4 duration-500 ease-out"
+      >
+        {stepComponents[currentStepType as keyof typeof stepComponents] || (
+          <div className="text-center text-red-600">
+            <p>Invalid step: {currentStepType}</p>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {/* Trigger Button */}
+      <button
+        onClick={openWidget}
+        className="fixed top-6 right-6 z-50 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-orange-500/30 animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-300"
+        aria-label="Open booking widget"
+      >
+        <Calendar size={18} className="transition-transform duration-300 group-hover:rotate-12" />
+        <span className="relative">
+          Book Now
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+        </span>
+      </button>
+
+      {/* Widget Modal */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-end"
+          onClick={handleBackdropClick}
+        >
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300"
+          />
+          
+          {/* Widget Panel */}
+          <div className="relative w-full max-w-md h-full bg-white shadow-2xl animate-in slide-in-from-right duration-500 ease-out flex flex-col sm:max-w-lg lg:max-w-xl transform-gpu">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+              <h2 className="text-xl font-bold text-gray-900">
+                Book Your Surf Adventure
+              </h2>
+              <button
+                onClick={closeWidget}
+                className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                aria-label="Close booking widget"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Progress Indicator */}
+            <div className="px-6 py-4 bg-gray-50/50 border-b border-gray-100">
+              <ProgressIndicator
+                currentStep={state.currentStep}
+                stepFlow={computed.stepFlow}
+                totalSteps={computed.totalSteps}
+              />
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-6">
+                {bookingSuccess ? (
+                  <div className="text-center space-y-6">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                      <CheckCircle size={32} className="text-green-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
+                      <p className="text-gray-600">
+                        Booking #{(bookingSuccess as any)?.booking?.booking_number || 'N/A'}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4 text-left">
+                      <h4 className="font-semibold text-gray-900 mb-2">Next Steps:</h4>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        <li>• Confirmation email sent to your inbox</li>
+                        <li>• Complete payment within 24 hours to secure your booking</li>
+                        <li>• Check your email for payment instructions</li>
+                      </ul>
+                    </div>
+                    <button
+                      onClick={closeWidget}
+                      className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+                    >
+                      Close
+                    </button>
+                  </div>
+                ) : (
+                  renderCurrentStep()
+                )}
+              </div>
+            </div>
+
+            {/* Footer Navigation */}
+            {!bookingSuccess && (
+              <div className="flex items-center justify-between p-6 border-t border-gray-100 bg-gradient-to-r from-white to-gray-50">
+                <button
+                  onClick={actions.prevStep}
+                  disabled={computed.isFirstStep}
+                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  Back
+                </button>
+
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-gray-900">
+                      €{state.pricing.total}
+                    </div>
+                    <div className="text-xs text-gray-500">Total</div>
+                  </div>
+
+                  <button
+                    onClick={actions.nextStep}
+                    disabled={!computed.canProceedToNextStep || state.isLoading}
+                    className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-[1.02] disabled:hover:scale-100 focus:outline-none focus:ring-4 focus:ring-orange-500/30 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {state.isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Loading...
+                      </div>
+                    ) : computed.isLastStep ? (
+                      'Complete Booking'
+                    ) : (
+                      'Next'
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
