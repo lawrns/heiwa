@@ -149,7 +149,7 @@ export const homePageContent: HomePageContent = {
   hero: {
     title: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
     subtitle: 'A WAVE AWAY',
-    backgroundImage: '/images/hero/heiwa-hero.jpg',
+    backgroundImage: '/images/hero/heiwa-hero.svg',
     cta: [{ label: 'EXPLORE', href: '/rooms' }]
   },
   featureCards: [

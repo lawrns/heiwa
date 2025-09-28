@@ -51,6 +51,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 width={120}
                 height={40}
                 className="h-10 w-auto"
+                style={{ height: 'auto' }}
               />
             </Link>
           </div>

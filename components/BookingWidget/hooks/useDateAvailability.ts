@@ -63,7 +63,7 @@ export function useDateAvailability(options: UseDateAvailabilityOptions = {}) {
         participants: participants.toString()
       });
 
-      const response = await wpFetch(`/wordpress/dates/availability?${params}`);
+      const response = await wpFetch(`/dates/availability?${params}`);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
