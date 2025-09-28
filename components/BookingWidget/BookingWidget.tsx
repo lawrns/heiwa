@@ -36,7 +36,7 @@ export function BookingWidget({
   externalTrigger,
   onModalStateChange
 }: BookingWidgetProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(isWebComponent);
   const [bookingSuccess, setBookingSuccess] = useState<any>(null);
   const { state, actions, computed } = useBookingFlow();
 

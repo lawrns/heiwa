@@ -23,6 +23,8 @@ interface StandaloneWidgetProps {
   config?: WordPressConfig;
   containerId?: string;
   className?: string;
+  isWebComponent?: boolean;
+  onModalStateChange?: (isOpen: boolean) => void;
 }
 
 /**
@@ -31,10 +33,12 @@ interface StandaloneWidgetProps {
  * This component wraps the main BookingWidget and provides WordPress-specific
  * configuration and initialization logic.
  */
-export function StandaloneWidget({ 
-  config, 
+export function StandaloneWidget({
+  config,
   containerId = 'heiwa-widget',
-  className = '' 
+  className = '',
+  isWebComponent = false,
+  onModalStateChange
 }: StandaloneWidgetProps) {
   const [isConfigured, setIsConfigured] = useState(false);
   const [wpConfig, setWpConfig] = useState<WordPressConfig | null>(null);
@@ -159,8 +163,10 @@ Plugin URL: ${wpConfig.pluginUrl}`}
       data-widget-id={containerId}
       data-build-id={wpConfig.buildId}
     >
-      <BookingWidget 
+      <BookingWidget
         className="heiwa-wordpress-widget"
+        isWebComponent={isWebComponent}
+        onModalStateChange={onModalStateChange}
       />
       
       {/* WordPress integration styles */}

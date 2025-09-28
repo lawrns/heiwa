@@ -1,6 +1,6 @@
 'use client'
 
-import { Calendar, Users, X } from 'lucide-react'
+import { Calendar, Users } from 'lucide-react'
 import { StandaloneWidget } from './BookingWidget/StandaloneWidget'
 import { useBooking } from '@/lib/booking-context'
 
@@ -21,7 +21,7 @@ export function FloatingBookingWidget() {
         </button>
       </div>
 
-      {/* Booking Widget Modal */}
+      {/* React Booking Widget - Direct render when open */}
       {isBookingOpen && (
         <div className="fixed inset-0 z-50">
           {/* Backdrop */}
@@ -30,42 +30,32 @@ export function FloatingBookingWidget() {
             onClick={closeBooking}
           />
 
-          {/* Modal Content - Positioned on the right */}
-          <div className="absolute top-0 right-0 h-full w-full max-w-lg bg-white shadow-2xl overflow-hidden transform transition-transform duration-300 ease-in-out">
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-heading font-semibold text-text">
-                Book Your Stay
-              </h2>
-              <button
-                onClick={closeBooking}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X size={24} className="text-gray-500" />
-              </button>
-            </div>
-            
-            {/* Working Booking Widget from wavecampdashboard */}
-            <div className="p-6 overflow-y-auto h-[calc(100vh-120px)]">
-              <StandaloneWidget
-                config={{
-                  ajaxUrl: `${typeof window !== 'undefined' ? window.location.origin : ''}/wp-json/wp/v2/`,
-                  nonce: 'wp_rest_nonce_12345',
-                  restBase: `${typeof window !== 'undefined' ? window.location.origin : ''}/wp-json/heiwa/v1`,
-                  pluginUrl: '/wordpress-plugin/heiwa-booking-widget/',
-                  buildId: 'react-widget-heiwa-page',
-                  settings: {
-                    apiEndpoint: `${typeof window !== 'undefined' ? window.location.origin : ''}/api`,
-                    apiKey: 'heiwa_page_key_2024',
-                    position: 'right',
-                    primaryColor: '#f97316',
-                    triggerText: 'BOOK NOW'
-                  }
-                }}
-                containerId="heiwa-booking-widget-modal"
-                className="heiwa-page-integration"
-              />
-            </div>
+          {/* StandaloneWidget positioned on the right */}
+          <div className="absolute top-0 right-0 h-full w-full max-w-lg bg-white shadow-2xl overflow-hidden">
+            <StandaloneWidget
+              config={{
+                ajaxUrl: `${typeof window !== 'undefined' ? window.location.origin : ''}/wp-json/wp/v2/`,
+                nonce: 'wp_rest_nonce_12345',
+                restBase: `${typeof window !== 'undefined' ? window.location.origin : ''}/wp-json/heiwa/v1`,
+                pluginUrl: '/wordpress-plugin/heiwa-booking-widget/',
+                buildId: 'react-widget-heiwa-page',
+                settings: {
+                  apiEndpoint: `${typeof window !== 'undefined' ? window.location.origin : ''}/api`,
+                  apiKey: 'heiwa_page_key_2024',
+                  position: 'right',
+                  primaryColor: '#f97316',
+                  triggerText: 'BOOK NOW'
+                }
+              }}
+              containerId="heiwa-booking-widget-modal"
+              className="heiwa-page-integration h-full"
+              isWebComponent={true}
+              onModalStateChange={(isModalOpen) => {
+                if (!isModalOpen) {
+                  closeBooking()
+                }
+              }}
+            />
           </div>
         </div>
       )}
