@@ -27,7 +27,7 @@ import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2,
 import { BookingState, PricingBreakdown } from '../types';
 import { PaymentMethodSelector } from '../components/PaymentMethodSelector';
 import { BankWireInstructions } from '../components/BankWireInstructions';
-import { wpFetch } from '../lib/wpApi';
+import { apiFetch } from '../lib/api';
 
 interface ReviewAndPayProps {
   state: BookingState;
@@ -112,7 +112,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           widget_version: 'wp-widget-test'
         };
       } else if (state.experienceType === 'surf-week' && state.selectedOption) {
-        endpoint = '/wordpress/bookings';
+        endpoint = '/bookings';
         payload = {
           camp_id: state.selectedOption,
           participants,
@@ -129,7 +129,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         payload: { ...payload, participants: payload.participants?.length || 0 }
       });
 
-      const res = await wpFetch(endpoint, {
+      const res = await apiFetch(endpoint, {
         method: 'POST',
         body: JSON.stringify(payload),
       });

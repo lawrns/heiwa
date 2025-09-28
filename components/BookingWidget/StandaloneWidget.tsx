@@ -2,25 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { BookingWidget } from './BookingWidget';
-
-// WordPress configuration interface
-interface WordPressConfig {
-  ajaxUrl: string;
-  nonce: string;
-  restBase: string;
-  pluginUrl: string;
-  buildId: string;
-  settings: {
-    apiEndpoint: string;
-    apiKey: string;
-    position: string;
-    primaryColor: string;
-    triggerText: string;
-  };
-}
+import { NextJSConfig } from './types/config';
 
 interface StandaloneWidgetProps {
-  config?: WordPressConfig;
+  config?: NextJSConfig;
   containerId?: string;
   className?: string;
   isWebComponent?: boolean;
@@ -28,10 +13,10 @@ interface StandaloneWidgetProps {
 }
 
 /**
- * Standalone React Widget for WordPress Integration
- * 
- * This component wraps the main BookingWidget and provides WordPress-specific
- * configuration and initialization logic.
+ * Standalone React Widget for Next.js Integration
+ *
+ * This component wraps the main BookingWidget and provides configuration
+ * and initialization logic for pure Next.js environments.
  */
 export function StandaloneWidget({
   config,
@@ -39,41 +24,38 @@ export function StandaloneWidget({
   className = '',
   isWebComponent = false,
   onModalStateChange
-}: StandaloneWidgetProps) {
+}: Readonly<StandaloneWidgetProps>) {
   const [isConfigured, setIsConfigured] = useState(false);
-  const [wpConfig, setWpConfig] = useState<WordPressConfig | null>(null);
+  const [nextConfig, setNextConfig] = useState<NextJSConfig | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Initialize WordPress configuration
+    // Initialize Next.js configuration
     const initializeConfig = () => {
       try {
-        // Get config from props or global WordPress object
+        // Get config from props or use defaults
         let finalConfig = config;
-        
-        if (!finalConfig && typeof window !== 'undefined') {
-          // Try to get config from WordPress localized script
-          const globalConfig = (window as any).heiwaWidgetConfig;
-          if (globalConfig) {
-            finalConfig = globalConfig;
-          }
-        }
 
         if (!finalConfig) {
-          throw new Error('WordPress configuration not found. Ensure wp_localize_script is properly configured.');
+          // Use default configuration for Next.js
+          finalConfig = {
+            buildId: 'react-widget-heiwa-nextjs',
+            settings: {
+              apiEndpoint: '/api',
+              apiKey: 'heiwa_nextjs_key_2024',
+              position: 'right',
+              primaryColor: '#f97316',
+              triggerText: 'BOOK NOW'
+            }
+          };
         }
 
-        // Validate required configuration
-        if (!finalConfig.restBase || !finalConfig.nonce) {
-          throw new Error('Invalid WordPress configuration. Missing required fields.');
-        }
-
-        setWpConfig(finalConfig);
+        setNextConfig(finalConfig);
         setIsConfigured(true);
-        
-        console.log('🎯 Heiwa Widget: WordPress configuration loaded', {
+
+        console.log('🎯 Heiwa Widget: Next.js configuration loaded', {
           buildId: finalConfig.buildId,
-          restBase: finalConfig.restBase,
+          apiEndpoint: finalConfig.settings.apiEndpoint,
           containerId
         });
 
@@ -106,18 +88,18 @@ export function StandaloneWidget({
         </p>
         <details style={{ marginTop: '10px', fontSize: '12px' }}>
           <summary style={{ cursor: 'pointer' }}>Technical Details</summary>
-          <pre style={{ 
-            marginTop: '5px', 
-            padding: '10px', 
-            backgroundColor: '#fee2e2', 
+          <pre style={{
+            marginTop: '5px',
+            padding: '10px',
+            backgroundColor: '#fee2e2',
             borderRadius: '4px',
             overflow: 'auto'
           }}>
             Container ID: {containerId}
-            {wpConfig && `
-Build ID: ${wpConfig.buildId}
-REST Base: ${wpConfig.restBase}
-Plugin URL: ${wpConfig.pluginUrl}`}
+            {nextConfig && `
+Build ID: ${nextConfig.buildId}
+API Endpoint: ${nextConfig.settings.apiEndpoint}
+API Key: ${nextConfig.settings.apiKey}`}
           </pre>
         </details>
       </div>
@@ -125,7 +107,7 @@ Plugin URL: ${wpConfig.pluginUrl}`}
   }
 
   // Loading state
-  if (!isConfigured || !wpConfig) {
+  if (!isConfigured || !nextConfig) {
     return (
       <div className="heiwa-widget-loading" style={{
         padding: '40px 20px',
@@ -155,40 +137,40 @@ Plugin URL: ${wpConfig.pluginUrl}`}
     );
   }
 
-  // Render the main BookingWidget with WordPress configuration
+  // Render the main BookingWidget with Next.js configuration
   return (
-    <div 
+    <div
       id={containerId}
       className={`heiwa-react-widget-container ${className}`}
       data-widget-id={containerId}
-      data-build-id={wpConfig.buildId}
+      data-build-id={nextConfig.buildId}
     >
       <BookingWidget
-        className="heiwa-wordpress-widget"
+        className="heiwa-nextjs-widget"
         isWebComponent={isWebComponent}
         onModalStateChange={onModalStateChange}
       />
-      
-      {/* WordPress integration styles */}
+
+      {/* Next.js integration styles */}
       <style>{`
         .heiwa-react-widget-container {
           position: relative;
           z-index: 999999;
         }
-        
-        .heiwa-wordpress-widget {
-          /* Ensure widget works in WordPress themes */
+
+        .heiwa-nextjs-widget {
+          /* Ensure widget works in Next.js environments */
           font-family: system-ui, -apple-system, sans-serif;
         }
-        
-        /* WordPress theme compatibility */
+
+        /* Next.js compatibility */
         .heiwa-react-widget-container *,
         .heiwa-react-widget-container *::before,
         .heiwa-react-widget-container *::after {
           box-sizing: border-box;
         }
-        
-        /* Override WordPress theme styles that might interfere */
+
+        /* Override any conflicting styles */
         .heiwa-react-widget-container button {
           background: none;
           border: none;
@@ -258,7 +240,7 @@ Plugin URL: ${wpConfig.pluginUrl}`}
           z-index: 999999 !important;
         }
 
-        /* Force modal overlay to work in WordPress */
+        /* Force modal overlay to work in Next.js */
         .heiwa-react-widget-container .fixed.inset-0 {
           position: fixed !important;
           top: 0 !important;
@@ -308,16 +290,16 @@ Plugin URL: ${wpConfig.pluginUrl}`}
           overflow: hidden !important;
         }
 
-        /* WordPress admin bar compatibility */
+        /* Next.js responsive compatibility */
         @media screen and (max-width: 782px) {
-          .admin-bar .heiwa-booking-widget {
-            top: 46px !important;
+          .heiwa-booking-widget {
+            top: 0 !important;
           }
         }
 
         @media screen and (min-width: 783px) {
-          .admin-bar .heiwa-booking-widget {
-            top: 32px !important;
+          .heiwa-booking-widget {
+            top: 0 !important;
           }
         }
       `}</style>
@@ -325,7 +307,7 @@ Plugin URL: ${wpConfig.pluginUrl}`}
   );
 }
 
-// Global export for WordPress
+// Global export for Next.js
 if (typeof window !== 'undefined') {
   (window as any).HeiwaStandaloneWidget = StandaloneWidget;
 }

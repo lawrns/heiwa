@@ -1,16 +1,11 @@
 // Booking widget integration utilities for Heiwa House website
-// Connects to the wavecampdashboard booking system
+// Pure Next.js implementation connecting directly to Supabase
 
-// import { supabase } from './supabase' // Not used in this file
 import { env } from '@/config/environment'
 import type { BookingInquiry, RoomAvailability, SurfCampBooking } from './supabase'
 
-// Widget config for external script
+// Widget config for Next.js integration
 export interface WidgetConfig {
-  ajaxUrl: string
-  nonce: string
-  restBase: string
-  pluginUrl: string
   buildId: string
   settings: {
     apiEndpoint: string
@@ -145,10 +140,6 @@ export class BookingWidgetService {
   // Get booking widget embed code
   getWidgetEmbedCode(_containerId: string = 'heiwa-booking-widget'): string {
     const widgetConfig: WidgetConfig = {
-      ajaxUrl: `${this.config.apiBaseUrl}/wordpress/`,
-      nonce: 'wp_rest_nonce_' + Date.now(),
-      restBase: `${this.config.apiBaseUrl}/wordpress/heiwa/v1`,
-      pluginUrl: '/wordpress-plugin/heiwa-booking-widget/',
       buildId: 'react-widget-' + Date.now(),
       settings: {
         apiEndpoint: this.config.apiBaseUrl,
@@ -180,10 +171,6 @@ export class BookingWidgetService {
     if (typeof window === 'undefined') return
 
     const widgetConfig: WidgetConfig = {
-      ajaxUrl: `${this.config.apiBaseUrl}/wordpress/`,
-      nonce: 'wp_rest_nonce_' + Date.now(),
-      restBase: `${this.config.apiBaseUrl}/wordpress/heiwa/v1`,
-      pluginUrl: '/wordpress-plugin/heiwa-booking-widget/',
       buildId: 'react-widget-' + Date.now(),
       settings: {
         apiEndpoint: this.config.apiBaseUrl,

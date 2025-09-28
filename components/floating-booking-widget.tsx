@@ -34,10 +34,6 @@ export function FloatingBookingWidget() {
           <div className="absolute top-0 right-0 h-full w-full max-w-lg bg-white shadow-2xl overflow-hidden">
             <StandaloneWidget
               config={{
-                ajaxUrl: `${typeof window !== 'undefined' ? window.location.origin : ''}/wp-json/wp/v2/`,
-                nonce: 'wp_rest_nonce_12345',
-                restBase: `${typeof window !== 'undefined' ? window.location.origin : ''}/wp-json/heiwa/v1`,
-                pluginUrl: '/wordpress-plugin/heiwa-booking-widget/',
                 buildId: 'react-widget-heiwa-page',
                 settings: {
                   apiEndpoint: `${typeof window !== 'undefined' ? window.location.origin : ''}/api`,

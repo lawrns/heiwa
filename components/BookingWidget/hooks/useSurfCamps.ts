@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SurfWeek } from '../types';
-import { wpFetch } from '../lib/wpApi';
+import { apiFetch } from '../lib/api';
 
 interface UseSurfCampsResult {
   surfCamps: SurfWeek[];
@@ -25,7 +25,7 @@ export function useSurfCamps(): UseSurfCampsResult {
 
       try {
         // Try Next.js API endpoint with timeout
-        const response = await wpFetch('/surf-camps', {
+        const response = await apiFetch('/surf-camps', {
           method: 'GET',
           signal: controller.signal,
         });

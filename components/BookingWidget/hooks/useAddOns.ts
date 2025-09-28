@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AddOnSelection } from '../types';
-import { wpFetch } from '../lib/wpApi';
+import { apiFetch } from '../lib/api';
 
 interface AddOn {
   id: string;
@@ -37,7 +37,7 @@ export function useAddOns(): UseAddOnsReturn {
         setLoading(true);
         setError(null);
 
-        const response = await wpFetch('/public/add-ons');
+        const response = await apiFetch('/add-ons');
         if (!response.ok) {
           throw new Error(`Failed to fetch add-ons: ${response.status}`);
         }
