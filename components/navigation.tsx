@@ -1,13 +1,31 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { NavigationProps } from '@/lib/types'
+import type { NavigationProps, NavigationItem } from '@/lib/types'
+import { getNavigationItems } from '@/lib/content'
+import { useBooking } from '@/lib/booking-context'
 
-export function Navigation({ items, currentPath, className }: NavigationProps) {
+export function Navigation({ items: initialItems, currentPath, className }: NavigationProps & { items?: NavigationItem[] }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [items, setItems] = useState<NavigationItem[]>(initialItems || [])
+  const [loading, setLoading] = useState(!initialItems)
+  const { openBooking } = useBooking()
+
+  useEffect(() => {
+    if (!initialItems) {
+      getNavigationItems().then(fetchedItems => {
+        setItems(fetchedItems)
+        setLoading(false)
+      }).catch(() => {
+        // Fallback to static items if fetch fails
+        setItems([])
+        setLoading(false)
+      })
+    }
+  }, [initialItems])
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => setIsOpen(false)
@@ -65,12 +83,12 @@ export function Navigation({ items, currentPath, className }: NavigationProps) {
             </div>
 
             {/* Book Now Button */}
-            <Link
-              href="/rooms"
+            <button
+              onClick={openBooking}
               className="bg-primary hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors"
             >
               BOOK NOW
-            </Link>
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -121,13 +139,15 @@ export function Navigation({ items, currentPath, className }: NavigationProps) {
               ))}
               <li className="pt-4 border-t border-gray-200">
                 <div className="text-sm text-text mb-3">+351 912 193 785</div>
-                <Link
-                  href="/rooms"
+                <button
+                  onClick={() => {
+                    openBooking()
+                    closeMenu()
+                  }}
                   className="inline-block bg-primary hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors"
-                  onClick={closeMenu}
                 >
                   BOOK NOW
-                </Link>
+                </button>
               </li>
             </ul>
           </nav>

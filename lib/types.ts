@@ -113,7 +113,7 @@ export interface VideoEmbedProps {
 }
 
 export interface NavigationProps {
-  items: NavigationItem[];
+  items?: NavigationItem[];
   currentPath?: string;
   className?: string;
 }

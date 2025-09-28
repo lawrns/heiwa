@@ -1,18 +1,18 @@
 'use client'
 
-import { useState } from 'react'
 import { Calendar, Users, X } from 'lucide-react'
 import { BookingWidget } from './BookingWidget/BookingWidget'
+import { useBooking } from '@/lib/booking-context'
 
 export function FloatingBookingWidget() {
-  const [isOpen, setIsOpen] = useState(false)
+  const { isBookingOpen, openBooking, closeBooking } = useBooking()
 
   return (
     <>
       {/* Floating Trigger Button */}
       <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={openBooking}
           className="bg-primary hover:bg-accent-hover text-white px-8 py-4 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-3 font-medium text-lg hover:scale-105"
         >
           <Calendar size={22} />
@@ -22,12 +22,12 @@ export function FloatingBookingWidget() {
       </div>
 
       {/* Booking Widget Modal */}
-      {isOpen && (
+      {isBookingOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setIsOpen(false)}
+            onClick={closeBooking}
           />
           
           {/* Modal Content */}
@@ -38,7 +38,7 @@ export function FloatingBookingWidget() {
                 Book Your Stay
               </h2>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={closeBooking}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <X size={24} className="text-gray-500" />

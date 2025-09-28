@@ -1,13 +1,31 @@
-import { Metadata } from 'next'
-import { CardGrid } from '@/components/card-grid'
-import { roomsPageContent } from '@/lib/content'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Room Rentals',
-  description: 'Book your stay at Heiwa House. Choose from our beautifully appointed rooms and dorm accommodations with ocean views.',
-}
+import { useEffect, useState } from 'react'
+import { CardGrid } from '@/components/card-grid'
+import { getRooms } from '@/lib/content'
+import type { Room } from '@/lib/types'
 
 export default function RoomsPage() {
+  const [rooms, setRooms] = useState<Room[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getRooms().then(fetchedRooms => {
+      setRooms(fetchedRooms)
+      setLoading(false)
+    }).catch(() => {
+      setRooms([])
+      setLoading(false)
+    })
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading rooms...</div>
+      </div>
+    )
+  }
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -39,7 +57,7 @@ export default function RoomsPage() {
           </div>
 
           <CardGrid
-            items={roomsPageContent.rooms.map(room => ({
+            items={rooms.map(room => ({
               title: room.name,
               image: room.image,
               description: room.description

@@ -1,5 +1,5 @@
-// Static content data for Heiwa House website
-// Based on specification requirements
+// Dynamic content data for Heiwa House website
+// Fetches from Supabase CMS or falls back to static data
 
 import type {
   NavigationItem,
@@ -10,17 +10,71 @@ import type {
   ExperiencesPageContent,
   SurfWeeksPageContent
 } from './types'
+import { supabase } from './supabase'
 
-// Navigation structure
-export const navigationItems: NavigationItem[] = [
+// Navigation structure - fetch from CMS or use fallback
+export const getNavigationItems = async (): Promise<NavigationItem[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('navigation_items')
+      .select('name, path')
+      .eq('active', true)
+      .order('order_index')
+
+    if (error) {
+      console.warn('Error fetching navigation from CMS:', error)
+      return getFallbackNavigationItems()
+    }
+
+    return data?.map(item => ({
+      name: item.name,
+      path: item.path
+    })) || getFallbackNavigationItems()
+  } catch (error) {
+    console.warn('Error fetching navigation:', error)
+    return getFallbackNavigationItems()
+  }
+}
+
+// Fallback navigation items
+const getFallbackNavigationItems = (): NavigationItem[] => [
   { path: '/', name: 'HOME' },
   { path: '/the-spot', name: 'THE SPOT' },
   { path: '/rooms', name: 'ROOM RENTALS' },
   { path: '/surf-weeks', name: 'SURF CAMP' }
 ]
 
-// Room data
-export const rooms: Room[] = [
+// For backward compatibility
+export const navigationItems = getFallbackNavigationItems()
+
+// Room data - fetch from CMS or use fallback
+export const getRooms = async (): Promise<Room[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('rooms')
+      .select('*')
+      .eq('active', true)
+      .order('name')
+
+    if (error) {
+      console.warn('Error fetching rooms from CMS:', error)
+      return getFallbackRooms()
+    }
+
+    return data?.map(room => ({
+      id: room.id,
+      name: room.name,
+      image: room.image_url || '',
+      description: room.description || undefined
+    })) || getFallbackRooms()
+  } catch (error) {
+    console.warn('Error fetching rooms:', error)
+    return getFallbackRooms()
+  }
+}
+
+// Fallback rooms data
+const getFallbackRooms = (): Room[] => [
   {
     id: 'room-1',
     name: 'Room Nr 1',
@@ -42,6 +96,9 @@ export const rooms: Room[] = [
     image: 'https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-1-scaled-570x600.webp'
   }
 ]
+
+// For backward compatibility
+export const rooms = getFallbackRooms()
 
 // Experience data
 export const experiences: Experience[] = [
