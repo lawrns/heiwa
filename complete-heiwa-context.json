@@ -1,0 +1,366 @@
+{
+  "project": "Heiwa House Website - Complete Implementation",
+  "issues_found": {
+    "critical": [
+      {
+        "issue": "Room detail pages don't exist",
+        "impact": "All room links lead to 404 errors",
+        "solution": "Create app/rooms/[id]/page.tsx with full room details, image gallery, amenities, booking integration"
+      },
+      {
+        "issue": "Surf weeks page missing major content sections",
+        "impact": "Page is incomplete compared to original",
+        "missing_sections": [
+          "Dates 2025 (with June, August, September dates)",
+          "What is included (6 cards: Accommodation, Food, Yoga, Day trip, Surfskate lesson, Intro surf lesson, Other stuff)",
+          "Extra services (Surfing lessons, Bicycle rental, Massage, Sauna, Spiritual stuff, Surfboard rentals)",
+          "FAQ accordion (9 questions)",
+          "Email to book button"
+        ]
+      }
+    ],
+    "design_polish": [
+      {
+        "missing": "Micro-animations",
+        "needed": [
+          "Fade-in on scroll (for sections entering viewport)",
+          "Smooth hover effects (scale, lift) on cards and images",
+          "Parallax scrolling on hero images",
+          "Smooth transitions on tab switches",
+          "Loading skeletons for async content",
+          "Stagger animations for grid items"
+        ]
+      },
+      {
+        "missing": "Interactive details",
+        "needed": [
+          "Image lightbox/modal for gallery clicks",
+          "Smooth scroll to sections",
+          "Active state indicators",
+          "Tooltip hover states",
+          "Better mobile responsiveness"
+        ]
+      }
+    ]
+  },
+  "implementation_plan": {
+    "phase_1_critical_fixes": {
+      "priority": "IMMEDIATE",
+      "tasks": [
+        {
+          "file": "app/rooms/[id]/page.tsx",
+          "action": "create",
+          "description": "Dynamic room detail page with full gallery, amenities list, pricing, description, and booking integration",
+          "features": [
+            "Full-screen image carousel with thumbnails",
+            "Room details (beds, bathrooms, size, amenities)",
+            "Pricing display",
+            "Booking widget integration",
+            "Similar rooms section",
+            "Breadcrumb navigation"
+          ]
+        },
+        {
+          "file": "app/surf-weeks/page.tsx",
+          "action": "expand",
+          "description": "Add all missing sections from original site",
+          "new_sections": [
+            {
+              "section": "Dates 2025",
+              "layout": "3-column grid with month headers",
+              "content": {
+                "june": ["May 31 – June 07", "June 07 – June 14"],
+                "august": ["August 16 – August 23"],
+                "september": ["August 30 – September 06"]
+              }
+            },
+            {
+              "section": "What is included",
+              "layout": "3-column grid of feature cards",
+              "items": [
+                {
+                  "title": "Accommodation",
+                  "icon": "Bed",
+                  "description": "Very comfortable mattresses and beds. Choose private room or cozy dorm."
+                },
+                {
+                  "title": "Food",
+                  "icon": "UtensilsCrossed",
+                  "description": "Two amazing meals a day prepared by our chef. Breakfast and lunch or dinner."
+                },
+                {
+                  "title": "Yoga",
+                  "icon": "Activity",
+                  "description": "Five yoga sessions during the week to complement surfing perfectly."
+                },
+                {
+                  "title": "Day trip",
+                  "icon": "MapPin",
+                  "description": "At least one day trip to explore Portugal. Ericeira, Sintra, Óbidos, or Lisbon."
+                },
+                {
+                  "title": "Surfskate lesson",
+                  "icon": "Skateboarding",
+                  "description": "One surf-skateboarding lesson included. Basics or progression, we'll help."
+                },
+                {
+                  "title": "Introductory surf lesson",
+                  "icon": "Waves",
+                  "description": "Learn surfing basics at home. Proper techniques, knowledge, and practice exercises."
+                },
+                {
+                  "title": "Other stuff",
+                  "icon": "Star",
+                  "list": ["Table tennis", "Darts", "Table football", "Basketball court", "Slackline", "Skateboards", "Co-working space"]
+                }
+              ]
+            },
+            {
+              "section": "Extra",
+              "layout": "2-column grid",
+              "items": [
+                {
+                  "title": "Surfing lessons",
+                  "pricing": ["One lesson: 45€", "Five lessons: 200€"],
+                  "includes": ["Professional instructors", "Equipment: board and wetsuit", "Daily video analysis"]
+                },
+                {
+                  "title": "Bicycle rental",
+                  "pricing": "30€ per week",
+                  "details": "With lock and board rack"
+                },
+                {
+                  "title": "Massage",
+                  "pricing": "From 35€",
+                  "details": "For sore muscles after surfing"
+                },
+                {
+                  "title": "Sauna",
+                  "pricing": "10€",
+                  "details": "Once a week sauna night with ice tub"
+                },
+                {
+                  "title": "Spiritual stuff",
+                  "details": "Cacao ceremony, Rapé, Sadhu boards, Somatic Alignment"
+                },
+                {
+                  "title": "Surfboard rentals",
+                  "pricing": ["Surfboard: 20€/day", "Wetsuit: 5€/day"],
+                  "details": "Weekly deals available"
+                }
+              ]
+            },
+            {
+              "section": "FAQ",
+              "component": "Accordion",
+              "questions": [
+                {
+                  "q": "How much does Surf Week cost?",
+                  "a": "Prices start at 450€ for dorm bed. Private rooms cost more. Email for options. Surf lessons not included (see Extras)."
+                },
+                {
+                  "q": "Do I have to know how to surf or skateboard?",
+                  "a": "No! Everyone welcome—first-timers, improvers, intermediates, and pros 🙂"
+                },
+                {
+                  "q": "How generally does a day during Surf Week look like?",
+                  "a": "Start with yoga, then breakfast. Surf session, lunch, afternoon activities (day trips, skateboarding, relaxing, games). Dinner at home, sometimes parties 🙂"
+                },
+                {
+                  "q": "How many people are in Surf Week groups?",
+                  "a": "Usually up to 18 people in the house."
+                },
+                {
+                  "q": "What is the age of people who sign up?",
+                  "a": "Generally 24+"
+                },
+                {
+                  "q": "What about if I have dietary restrictions?",
+                  "a": "We cater to vegetarians and accommodate specific food allergies."
+                },
+                {
+                  "q": "How to get to Heiwa House?",
+                  "a": "By car, taxi (approximately 40€), or buses. Message us for detailed instructions."
+                },
+                {
+                  "q": "What are arrival and departure times at the house?",
+                  "a": "Arrival from 15:00 on starting date. Dinner at 19:00. Departure: breakfast at 8:00, vacate by 10:00 (can stay around longer if needed)."
+                },
+                {
+                  "q": "Can I stay more than one week?",
+                  "a": "Yes! Combine surf weeks or rent a room/bed afterward."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "phase_2_animations": {
+      "priority": "HIGH",
+      "library": "framer-motion",
+      "tasks": [
+        {
+          "component": "Section fade-in",
+          "description": "Animate sections as they enter viewport",
+          "implementation": "Use framer-motion's motion.div with viewport trigger"
+        },
+        {
+          "component": "Card hover effects",
+          "description": "Subtle lift and shadow increase on hover",
+          "implementation": "CSS transforms with transition or framer-motion whileHover"
+        },
+        {
+          "component": "Image gallery animations",
+          "description": "Smooth carousel transitions, ken burns effect on static images",
+          "implementation": "framer-motion AnimatePresence for carousel, CSS animation for ken burns"
+        },
+        {
+          "component": "Stagger grid items",
+          "description": "Grid items animate in with stagger delay",
+          "implementation": "framer-motion staggerChildren"
+        },
+        {
+          "component": "Button interactions",
+          "description": "Scale on press, ripple effect",
+          "implementation": "whileTap scale, CSS ripple"
+        }
+      ]
+    },
+    "phase_3_details": {
+      "priority": "MEDIUM",
+      "tasks": [
+        {
+          "feature": "Image lightbox",
+          "description": "Click gallery images to open fullscreen lightbox with navigation",
+          "library": "yet-another-react-lightbox or custom modal"
+        },
+        {
+          "feature": "Smooth scroll",
+          "description": "Smooth scroll to sections when clicking anchor links",
+          "implementation": "CSS scroll-behavior or react-scroll library"
+        },
+        {
+          "feature": "Loading states",
+          "description": "Skeleton loaders for async content",
+          "implementation": "Custom skeleton components matching design"
+        },
+        {
+          "feature": "Mobile optimization",
+          "description": "Better mobile navigation, touch gestures for carousels",
+          "implementation": "Swipe gestures for carousels, hamburger menu improvements"
+        }
+      ]
+    }
+  },
+  "design_tokens_refinement": {
+    "animations": {
+      "durations": {
+        "fast": "150ms",
+        "normal": "300ms",
+        "slow": "500ms"
+      },
+      "easings": {
+        "ease_out": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "ease_in_out": "cubic-bezier(0.4, 0, 0.6, 1)",
+        "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+      }
+    },
+    "hover_effects": {
+      "card": {
+        "transform": "translateY(-4px)",
+        "shadow": "0 12px 24px rgba(0, 0, 0, 0.15)"
+      },
+      "image": {
+        "scale": "1.05",
+        "overlay_opacity": "0.1"
+      }
+    }
+  },
+  "technical_notes": {
+    "room_detail_page": {
+      "data_source": "Fetch from Supabase using room ID",
+      "fallback": "Show 404 page if room not found",
+      "seo": "Dynamic metadata based on room details",
+      "booking": "Integrate FloatingBookingWidget with pre-selected room"
+    },
+    "animations": {
+      "performance": "Use CSS transforms and opacity only for 60fps",
+      "accessibility": "Respect prefers-reduced-motion",
+      "progressive_enhancement": "Works without JS, enhanced with animations"
+    }
+  },
+  "file_changes_required": [
+    {
+      "action": "CREATE",
+      "file": "app/rooms/[id]/page.tsx",
+      "reason": "Room detail pages don't exist"
+    },
+    {
+      "action": "CREATE",
+      "file": "app/rooms/[id]/not-found.tsx",
+      "reason": "Handle invalid room IDs gracefully"
+    },
+    {
+      "action": "EXPAND",
+      "file": "app/surf-weeks/page.tsx",
+      "reason": "Missing major content sections"
+    },
+    {
+      "action": "CREATE",
+      "file": "components/ui/accordion.tsx",
+      "reason": "FAQ needs accordion component (might exist, check and update)"
+    },
+    {
+      "action": "CREATE",
+      "file": "components/ui/lightbox.tsx",
+      "reason": "Image galleries need lightbox functionality"
+    },
+    {
+      "action": "CREATE",
+      "file": "components/animations/fade-in-section.tsx",
+      "reason": "Reusable fade-in animation wrapper"
+    },
+    {
+      "action": "UPDATE",
+      "file": "components/ui/image-carousel.tsx",
+      "reason": "Add click handler for lightbox"
+    },
+    {
+      "action": "UPDATE",
+      "file": "tailwind.config.js",
+      "reason": "Add animation utilities"
+    },
+    {
+      "action": "UPDATE",
+      "file": "app/globals.css",
+      "reason": "Add animation keyframes and transitions"
+    },
+    {
+      "action": "UPDATE",
+      "file": "package.json",
+      "reason": "Add framer-motion dependency"
+    }
+  ],
+  "success_criteria": {
+    "functionality": [
+      "All room detail pages load and display correctly",
+      "Room detail pages show booking widget with pre-selected room",
+      "Surf weeks page matches original content exactly",
+      "FAQ accordion works smoothly",
+      "All images are clickable and open in lightbox"
+    ],
+    "design": [
+      "Smooth animations throughout site",
+      "Cards have hover effects",
+      "Sections fade in on scroll",
+      "Mobile responsive with touch gestures",
+      "No janky animations or layout shifts"
+    ],
+    "performance": [
+      "Animations maintain 60fps",
+      "Images are optimized and lazy-loaded",
+      "No accessibility issues with animations"
+    ]
+  }
+}

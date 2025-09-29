@@ -111,7 +111,7 @@ export default function RoomsPage() {
                 {filteredRooms.map((room) => (
                   <div
                     key={room.id}
-                    className="bg-white overflow-hidden group"
+                    className="bg-white overflow-hidden group hover-lift"
                   >
                     {/* Image Carousel */}
                     <div className="relative mb-6">
