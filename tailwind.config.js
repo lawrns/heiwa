@@ -8,29 +8,63 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#ec681c',
+        // Primary ocean blues
+        primary: {
+          DEFAULT: '#2B5F75',
+          light: '#4A9DB5',
+          dark: '#1A4252',
+        },
+        // Secondary warm tones
+        secondary: {
+          DEFAULT: '#D4C5A9',
+          light: '#E8DCC4',
+          dark: '#B8A88C',
+        },
+        // Accent sunset tones
+        accent: {
+          DEFAULT: '#E57A5F',
+          light: '#F29680',
+          dark: '#D76A47',
+          hover: '#D76A47',
+        },
+        // Neutrals
+        surface: {
+          DEFAULT: '#FFFFFF',
+          alt: '#F9F7F4',
+          light: '#FAFAFA',
+        },
+        text: {
+          DEFAULT: '#1A1A1A',
+          muted: '#5A5A5A',
+          light: '#757575',
+        },
+        // Legacy support
         'on-primary': '#FFFFFF',
-        surface: '#FFFFFF',
-        'surface-alt': '#F8F9FA',
-        text: '#1a1a1a',
-        muted: '#5a5a5a',
-        accent: '#ec681c',
-        'accent-hover': '#ed5600',
+        muted: '#5A5A5A',
       },
       fontFamily: {
-        sans: ['Archivo', 'sans-serif'],
-        heading: ['Archivo Narrow', 'sans-serif'],
+        sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        heading: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       spacing: {
-        'section-y': '96px',
+        'section-y': '80px',
+        'section-y-lg': '120px',
         'grid-gap': '24px',
+        'card-padding': '40px',
       },
       borderRadius: {
-        card: '12px',
-        button: '8px',
+        card: '8px',
+        button: '6px',
+        image: '4px',
       },
       boxShadow: {
-        card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        card: '0 2px 12px rgba(0, 0, 0, 0.08)',
+        'card-hover': '0 4px 20px rgba(0, 0, 0, 0.12)',
+        subtle: '0 1px 3px rgba(0, 0, 0, 0.06)',
+      },
+      maxWidth: {
+        container: '1400px',
+        content: '1200px',
       },
     },
   },

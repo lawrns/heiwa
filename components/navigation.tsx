@@ -33,11 +33,11 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
   return (
     <nav
-      className={cn('fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm', className)}
+      className={cn('fixed top-0 left-0 right-0 z-50 bg-white shadow-sm', className)}
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
         {isHomepage ? (
           // Homepage Layout: Centered logo with left/right positioning
           <div className="relative flex items-center justify-between h-20">
@@ -50,10 +50,10 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase',
+                          'text-sm font-medium transition-colors hover:text-accent',
                           currentPath === item.path
-                            ? 'text-orange-400'
-                            : 'text-white'
+                            ? 'text-accent'
+                            : 'text-text'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {
@@ -90,17 +90,17 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             {/* Right Side - Phone & Book Now Button */}
             <div className="hidden lg:flex items-center space-x-6">
               {/* Phone Number */}
-              <div className="flex items-center text-sm text-white">
-                <span className="tracking-wide">Call. +351 912 193 785</span>
-              </div>
+              <a href="tel:+351912193785" className="flex items-center text-sm text-text hover:text-accent transition-colors">
+                <span>+351 912 193 785</span>
+              </a>
 
               {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded"
+                className="btn-primary flex items-center gap-2"
               >
                 <Bed className="w-4 h-4" />
-                BOOK NOW
+                Book Now
               </button>
             </div>
 
@@ -108,7 +108,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             <div className="lg:hidden ml-auto">
               <button
                 onClick={toggleMenu}
-                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-400"
+                className="inline-flex items-center justify-center p-2 rounded-md text-text hover:text-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent"
                 aria-expanded={isOpen}
                 aria-controls="mobile-menu"
                 aria-label="Toggle mobile menu"
@@ -150,10 +150,10 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase',
+                          'text-sm font-medium transition-colors hover:text-accent',
                           currentPath === item.path
-                            ? 'text-orange-400'
-                            : 'text-white'
+                            ? 'text-accent'
+                            : 'text-text'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {
@@ -170,17 +170,17 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               </nav>
 
               {/* Phone Number */}
-              <div className="flex items-center text-sm text-white">
-                <span className="tracking-wide">Call. +351 912 193 785</span>
-              </div>
+              <a href="tel:+351912193785" className="flex items-center text-sm text-text hover:text-accent transition-colors">
+                <span>+351 912 193 785</span>
+              </a>
 
               {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase"
+                className="btn-primary flex items-center gap-2"
               >
                 <Bed className="w-4 h-4" />
-                BOOK NOW
+                Book Now
               </button>
             </div>
 
@@ -188,7 +188,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             <div className="lg:hidden">
               <button
                 onClick={toggleMenu}
-                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-400"
+                className="inline-flex items-center justify-center p-2 rounded-md text-text hover:text-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent"
                 aria-expanded={isOpen}
                 aria-controls="mobile-menu"
                 aria-label="Toggle mobile menu"
@@ -208,16 +208,16 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
       {isOpen && (
         <div className="lg:hidden" id="mobile-menu">
           <nav aria-label="Mobile navigation">
-            <ul className="px-4 pt-4 pb-6 space-y-2 bg-black/90 backdrop-blur-sm border-t border-gray-600">
+            <ul className="px-4 pt-4 pb-6 space-y-2 bg-white border-t border-gray-200">
               {items.map((item) => (
                 <li key={item.path}>
                   <Link
                     href={item.path}
                     className={cn(
-                      'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase',
+                      'block px-3 py-2 text-sm font-medium transition-colors',
                       currentPath === item.path
-                        ? 'text-orange-400'
-                        : 'text-white hover:text-orange-400'
+                        ? 'text-accent'
+                        : 'text-text hover:text-accent'
                     )}
                     onClick={closeMenu}
                     aria-current={currentPath === item.path ? 'page' : undefined}
@@ -231,17 +231,17 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   </Link>
                 </li>
               ))}
-              <li className="pt-4 border-t border-gray-600">
-                <div className="text-sm text-white mb-3">📞 +351 912 193 785</div>
+              <li className="pt-4 border-t border-gray-200">
+                <a href="tel:+351912193785" className="block text-sm text-text mb-3">📞 +351 912 193 785</a>
                 <button
                   onClick={() => {
                     openBooking()
                     closeMenu()
                   }}
-                  className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase"
+                  className="btn-primary inline-flex items-center gap-2 w-full justify-center"
                 >
                   <Bed className="w-4 h-4" />
-                  BOOK NOW
+                  Book Now
                 </button>
               </li>
             </ul>
