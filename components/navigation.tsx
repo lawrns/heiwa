@@ -91,7 +91,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             <div className="hidden lg:flex items-center space-x-6">
               {/* Phone Number */}
               <div className="flex items-center text-sm text-white">
-                <span>📞 +351 912 193 785</span>
+                <span className="tracking-wide">Call. +351 912 193 785</span>
               </div>
 
               {/* Book Now Button */}
@@ -171,7 +171,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
               {/* Phone Number */}
               <div className="flex items-center text-sm text-white">
-                <span>📞 +351 912 193 785</span>
+                <span className="tracking-wide">Call. +351 912 193 785</span>
               </div>
 
               {/* Book Now Button */}

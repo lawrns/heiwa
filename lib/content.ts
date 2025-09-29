@@ -177,30 +177,31 @@ export const homePageContent: HomePageContent = {
   hero: {
     title: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
     subtitle: 'A WAVE AWAY',
-    backgroundImage: '/images/hero/heiwa-hero.svg',
+    video: '/images/videos/Timeline-1.mp4',
+    backgroundImage: '/images/hero/heiwa-hero.jpg',
     cta: [{ label: 'EXPLORE', href: '/rooms' }]
   },
   featureCards: [
     {
       title: 'Heiwa Play',
-      image: 'https://heiwahouse.com/wp-content/uploads/2025/01/play.jpg',
+      image: '/images/skatepark-1.jpg',
       href: '/the-spot#play'
     },
     {
       title: 'Heiwa Surf',
-      image: 'https://heiwahouse.com/wp-content/uploads/2025/01/surf4.jpg',
+      image: '/images/surf4.jpg',
       href: '/surf-weeks'
     },
     {
       title: 'Heiwa Flow',
-      image: 'https://heiwahouse.com/wp-content/uploads/2024/12/image00023-722x1024.jpeg',
+      image: '/images/yoga_dome1.jpg',
       href: '/the-spot#flow'
     }
   ],
   videoEmbed: {
     provider: 'youtube',
     src: 'https://youtu.be/9nhQiKGsgHg',
-    poster: '/images/posters/surfweeks.svg'
+    poster: '/images/surf-weeks-front-page.jpg'
   }
 }
 

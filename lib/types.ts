@@ -39,7 +39,8 @@ export interface HomePageContent {
   hero: {
     title: string;
     subtitle: string;
-    backgroundImage: string;
+    backgroundImage?: string;
+    video?: string;
     cta: CallToAction[];
   };
   featureCards: Array<{
@@ -86,7 +87,8 @@ export interface CallToAction {
 export interface HeroProps {
   title: string;
   subtitle: string;
-  image: string;
+  image?: string;
+  video?: string;
   ctas: CallToAction[];
   className?: string;
 }
