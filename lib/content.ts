@@ -26,7 +26,7 @@ export const getNavigationItems = async (): Promise<NavigationItem[]> => {
       return getFallbackNavigationItems()
     }
 
-    return data?.map(item => ({
+    return data?.map((item: { name: string; path: string }) => ({
       name: item.name,
       path: item.path
     })) || getFallbackNavigationItems()
@@ -53,7 +53,7 @@ export const getRooms = async (): Promise<Room[]> => {
     const { data, error } = await supabase
       .from('rooms')
       .select('*')
-      .eq('active', true)
+      .eq('is_active', true)
       .order('name')
 
     if (error) {
@@ -61,10 +61,10 @@ export const getRooms = async (): Promise<Room[]> => {
       return getFallbackRooms()
     }
 
-    return data?.map(room => ({
+    return data?.map((room: { id: string; name: string; images: string[]; description: string }) => ({
       id: room.id,
       name: room.name,
-      image: room.image_url || '',
+      image: room.images?.[0] || '',
       description: room.description || undefined
     })) || getFallbackRooms()
   } catch (error) {
@@ -100,8 +100,33 @@ const getFallbackRooms = (): Room[] => [
 // For backward compatibility
 export const rooms = getFallbackRooms()
 
-// Experience data
-export const experiences: Experience[] = [
+// Experience data - fetch from CMS or use fallback
+export const getExperiences = async (): Promise<Experience[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('experiences')
+      .select('*')
+      .eq('active', true)
+      .order('title')
+
+    if (error) {
+      console.warn('Error fetching experiences from CMS:', error)
+      return getFallbackExperiences()
+    }
+
+    return data?.map((experience: { id: string; title: string; image_url: string }) => ({
+      id: experience.id,
+      title: experience.title,
+      image: experience.image_url || ''
+    })) || getFallbackExperiences()
+  } catch (error) {
+    console.warn('Error fetching experiences:', error)
+    return getFallbackExperiences()
+  }
+}
+
+// Fallback experiences data
+const getFallbackExperiences = (): Experience[] => [
   {
     id: 'hiking',
     title: 'Hiking',
@@ -143,6 +168,9 @@ export const experiences: Experience[] = [
     image: 'https://heiwahouse.com/wp-content/uploads/2025/01/DSCF8628.jpg'
   }
 ]
+
+// For backward compatibility
+export const experiences = getFallbackExperiences()
 
 // Homepage content
 export const homePageContent: HomePageContent = {
