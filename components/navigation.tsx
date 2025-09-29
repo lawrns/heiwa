@@ -33,7 +33,11 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
   return (
     <nav
-      className={cn('fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm', className)}
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50',
+        isHomepage ? 'bg-black/20 backdrop-blur-sm' : 'bg-white shadow-sm',
+        className
+      )}
       role="navigation"
       aria-label="Main navigation"
     >
@@ -53,7 +57,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                           'text-sm font-medium transition-colors hover:text-accent',
                           currentPath === item.path
                             ? 'text-accent'
-                            : 'text-white'
+                            : isHomepage ? 'text-white' : 'text-gray-900'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {
@@ -153,7 +157,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                           'text-sm font-medium transition-colors hover:text-accent',
                           currentPath === item.path
                             ? 'text-accent'
-                            : 'text-white'
+                            : isHomepage ? 'text-white' : 'text-gray-900'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { Navigation } from '@/components/navigation'
+import { NavigationWrapper } from '@/components/navigation-wrapper'
 import { Footer } from '@/components/footer'
 import { FloatingBookingWidget } from '@/components/floating-booking-widget'
 import { BookingProvider } from '@/lib/booking-context'
@@ -89,7 +89,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased bg-surface text-text">
         <BookingProvider>
-          <Navigation />
+          <NavigationWrapper />
           <main className="min-h-screen">
             {children}
           </main>

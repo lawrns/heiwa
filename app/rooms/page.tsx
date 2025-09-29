@@ -17,15 +17,11 @@ export default function RoomsPage() {
   useEffect(() => {
     const loadRooms = async () => {
       try {
-        console.log('🏨 RoomsPage: Loading rooms...')
         const fetchedRooms = await getRooms()
-        console.log('🏨 RoomsPage: Loaded rooms:', fetchedRooms.length)
         setRooms(fetchedRooms)
       } catch (error) {
-        console.error('🏨 RoomsPage: Failed to load rooms:', error)
-        // Fallback to static data if everything fails
+        console.error('Failed to load rooms:', error)
         const fallbackRooms = getFallbackRooms()
-        console.log('🏨 RoomsPage: Using fallback rooms:', fallbackRooms.length)
         setRooms(fallbackRooms)
       } finally {
         setLoading(false)
@@ -35,7 +31,7 @@ export default function RoomsPage() {
     loadRooms()
   }, [])
 
-  // Room categories from heiwahouse.com
+  // Room categories
   const categories = [
     { id: 'all', name: 'All' },
     { id: 'dorm', name: 'Dorm room - Bed' },
@@ -44,12 +40,12 @@ export default function RoomsPage() {
     { id: 'twin', name: 'Twin Room' },
   ]
 
-  // Enhance rooms with detailed data (in real app, this would come from Supabase)
+  // Enhance rooms with detailed data
   const enhancedRooms = rooms.map((room, index) => ({
     ...room,
     images: [
       room.image,
-      room.image, // In real app, fetch multiple images
+      room.image,
       room.image,
       room.image,
       room.image,
@@ -70,26 +66,26 @@ export default function RoomsPage() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen pt-20">
-        {/* Page Title */}
-        <div className="bg-white border-b border-gray-200 py-8">
-          <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-text">Room List</h1>
+      <div className="min-h-screen pt-20 bg-white">
+        {/* Simple Page Title */}
+        <div className="py-12 border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-4xl font-bold text-gray-900">Room List</h1>
           </div>
         </div>
 
         {/* Category Filter */}
-        <div className="bg-white border-b border-gray-200 sticky top-20 z-40">
-          <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex gap-2 overflow-x-auto py-4 scrollbar-hide">
+        <div className="bg-white border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex gap-4 overflow-x-auto py-6">
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
                     selectedCategory === category.id
-                      ? 'bg-accent text-white'
-                      : 'bg-gray-100 text-text hover:bg-gray-200'
+                      ? 'text-accent border-b-2 border-accent'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   {category.name}
@@ -100,25 +96,25 @@ export default function RoomsPage() {
         </div>
 
         {/* Rooms Grid */}
-        <section className="py-section-y bg-surface-alt">
-          <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {loading ? (
               <div className="flex items-center justify-center min-h-[400px]">
-                <div className="text-lg text-text-muted">Loading rooms...</div>
+                <div className="text-lg text-gray-500">Loading rooms...</div>
               </div>
             ) : filteredRooms.length === 0 ? (
               <div className="text-center py-16">
-                <p className="text-text-muted text-lg">No rooms available in this category.</p>
+                <p className="text-gray-500 text-lg">No rooms available in this category.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {filteredRooms.map((room) => (
                   <div
                     key={room.id}
-                    className="bg-white rounded-card overflow-hidden shadow-card hover:shadow-card-hover transition-shadow"
+                    className="bg-white overflow-hidden group"
                   >
                     {/* Image Carousel */}
-                    <div className="relative">
+                    <div className="relative mb-6">
                       <ImageCarousel
                         images={room.images}
                         alt={room.name}
@@ -128,8 +124,8 @@ export default function RoomsPage() {
                     </div>
 
                     {/* Room Details */}
-                    <div className="p-6">
-                      <h3 className="text-2xl font-bold text-text mb-4">
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-4">
                         <Link
                           href={`/rooms/${room.id}`}
                           className="hover:text-accent transition-colors"
@@ -139,7 +135,7 @@ export default function RoomsPage() {
                       </h3>
 
                       {/* Amenities */}
-                      <div className="flex items-center gap-6 mb-4 text-text-muted">
+                      <div className="flex items-center gap-6 mb-4 text-gray-600">
                         <div className="flex items-center gap-2">
                           <BedDouble className="w-5 h-5" />
                           <span className="text-sm">{room.beds} {room.beds === 1 ? 'bed' : 'beds'}</span>
@@ -153,16 +149,16 @@ export default function RoomsPage() {
                       </div>
 
                       {/* Description */}
-                      <p className="text-text-muted text-sm mb-6 line-clamp-3">
+                      <p className="text-gray-600 text-sm mb-6 line-clamp-3">
                         {room.description}
                       </p>
 
                       {/* CTA */}
                       <Link
                         href={`/rooms/${room.id}`}
-                        className="inline-block w-full text-center px-6 py-3 border-2 border-accent text-accent hover:bg-accent hover:text-white transition-colors rounded-button font-medium"
+                        className="inline-block text-accent hover:text-accent-dark transition-colors font-medium text-sm"
                       >
-                        Room Detail
+                        Room Detail →
                       </Link>
                     </div>
                   </div>
