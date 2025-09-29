@@ -1,223 +1,122 @@
 import { Metadata } from 'next'
-import { VideoEmbed } from '@/components/video-embed'
-import { surfWeeksPageContent } from '@/lib/content'
+import Image from 'next/image'
+import { Play } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Surf Weeks - Professional Surf Training Program',
-  description: 'Join our comprehensive surf training program at Heiwa House. Professional instruction for all skill levels with beachside accommodation.',
+  title: 'Surf Camp in Santa Cruz, Portugal - Learn Surfing With Heiwa',
+  description: 'We strive to deliver an unforgettable surf camp experience both in and out of the water. Join us for surf, yoga, amazing food, skateboarding, and more.',
 }
 
 export default function SurfWeeksPage() {
+  // Gallery images
+  const galleryImages = [
+    '/images/DSC03081-scaled.jpg',
+    '/images/DSF8322-scaled.jpg',
+    '/images/DSC03521-scaled.jpg',
+    '/images/DSC08600-scaled.jpg',
+    '/images/DSC02099-scaled.jpg',
+    '/images/DSF8619-scaled.jpg',
+    '/images/DSF8554-scaled.jpg',
+    '/images/DSF8298-scaled.jpg',
+    '/images/003844190021-scaled.jpg',
+    '/images/DSC02767-scaled.jpg',
+    '/images/DSF8812-scaled.jpg',
+    '/images/DSC03530-scaled.jpg',
+    '/images/DSC08054-scaled.jpg',
+    '/images/DSC08736-scaled.jpg',
+    '/images/DSF8018-2-scaled.jpg',
+    '/images/DSC04325.jpg',
+  ]
+
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-96 flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/60" />
-          <div className="absolute inset-0 bg-surface/40" />
+    <div className="min-h-screen pt-20">
+      {/* Page Title */}
+      <div className="bg-white border-b border-gray-200 py-8">
+        <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-text">Surf Camp</h1>
         </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl sm:text-5xl font-heading font-bold text-text mb-4">
-            Surf Weeks
-          </h1>
-          <p className="text-lg sm:text-xl text-muted max-w-2xl mx-auto">
-            Professional surf instruction for all skill levels with beachside accommodation
-          </p>
+      </div>
+
+      {/* Hero Quote Section */}
+      <section className="py-section-y bg-white">
+        <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8">
+          <h5 className="text-xl md:text-2xl text-center text-text-muted leading-relaxed max-w-4xl mx-auto">
+            We strive to deliver an unforgettable surf camp experience both in and out of the water. 
+            Even if surfing were taken out of the week, it would still be worth your while—amazing food, 
+            yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and 
+            the surfing? That's going to be awesome too 🙂
+          </h5>
         </div>
       </section>
 
-      {/* Program Introduction */}
-      <section className="py-section-y bg-surface">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-text mb-6">
-              Master the Waves
-            </h2>
-            <p className="text-lg text-muted mb-8">
-              Our comprehensive surf training program combines expert instruction with the perfect coastal environment.
-              Whether you&apos;re a complete beginner or looking to refine your technique, our experienced instructors
-              will help you progress safely and confidently.
-            </p>
-          </div>
-
-          {/* Program Video */}
-          <div className="mb-12">
-            <VideoEmbed
-              src={surfWeeksPageContent.videoEmbed.src}
-              provider={surfWeeksPageContent.videoEmbed.provider}
-              poster={surfWeeksPageContent.videoEmbed.poster}
-              title="Heiwa House Surf Weeks Program"
-              className="max-w-4xl mx-auto"
+      {/* Video Section */}
+      <section className="py-section-y bg-surface-alt">
+        <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative aspect-video rounded-lg overflow-hidden shadow-card group cursor-pointer max-w-4xl mx-auto">
+            <Image
+              src="/images/surf-weeks-front-page.jpg"
+              alt="Surf Weeks Video"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
-          </div>
-
-          {/* Program Features */}
-          {surfWeeksPageContent.program && (
-            <div className="bg-surface-alt rounded-card p-8">
-              <h3 className="text-2xl font-heading font-semibold text-text mb-6 text-center">
-                {surfWeeksPageContent.program.title}
-              </h3>
-              <p className="text-muted text-lg mb-8 text-center max-w-2xl mx-auto">
-                {surfWeeksPageContent.program.description}
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {surfWeeksPageContent.program.features.map((feature, index) => (
-                  <div key={index} className="flex items-start">
-                    <span className="w-2 h-2 bg-primary rounded-full mt-3 mr-4 flex-shrink-0"></span>
-                    <span className="text-muted">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* What You'll Learn */}
-      <section className="py-section-y bg-surface-alt">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-text mb-4">
-              What You&apos;ll Learn
-            </h2>
-            <p className="text-lg text-muted">
-              Our structured curriculum covers everything from basics to advanced techniques
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-surface rounded-card p-6 text-center">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-on-primary font-bold text-lg">1</span>
-              </div>
-              <h3 className="text-lg font-heading font-semibold text-text mb-2">
-                Wave Knowledge
-              </h3>
-              <p className="text-muted text-sm">
-                Understanding wave patterns, tides, and ocean safety
-              </p>
-            </div>
-
-            <div className="bg-surface rounded-card p-6 text-center">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-on-primary font-bold text-lg">2</span>
-              </div>
-              <h3 className="text-lg font-heading font-semibold text-text mb-2">
-                Board Control
-              </h3>
-              <p className="text-muted text-sm">
-                Paddling, positioning, and board handling techniques
-              </p>
-            </div>
-
-            <div className="bg-surface rounded-card p-6 text-center">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-on-primary font-bold text-lg">3</span>
-              </div>
-              <h3 className="text-lg font-heading font-semibold text-text mb-2">
-                Wave Riding
-              </h3>
-              <p className="text-muted text-sm">
-                Catching waves, maintaining balance, and carving turns
-              </p>
-            </div>
-
-            <div className="bg-surface rounded-card p-6 text-center">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-on-primary font-bold text-lg">4</span>
-              </div>
-              <h3 className="text-lg font-heading font-semibold text-text mb-2">
-                Advanced Skills
-              </h3>
-              <p className="text-muted text-sm">
-                Maneuvers, etiquette, and reading the ocean like a local
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Booking Section */}
-      <section className="py-section-y bg-surface">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-text mb-4">
-              Book Your Surf Week
-            </h2>
-            <p className="text-lg text-muted">
-              Join our next surf training program and transform your surfing experience
-            </p>
-          </div>
-
-          <div className="text-center">
-            <p className="text-muted">
-              Click the "Check Availability" button below to book your surf week
-            </p>
-          </div>
-
-          <div className="text-center mt-8">
-            <p className="text-muted text-sm">
-              Questions about our surf program? Contact us at{' '}
+            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
               <a
-                href="mailto:info@heiwahouse.com"
-                className="text-primary hover:underline"
+                href="https://youtu.be/9nhQiKGsgHg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-24 h-24 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors"
+                aria-label="Play video"
               >
-                info@heiwahouse.com
+                <Play className="w-10 h-10 text-accent ml-2" fill="currentColor" />
               </a>
-            </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Instructor Section */}
-      <section className="py-section-y bg-surface-alt">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-heading font-bold text-text mb-6">
-            Meet Your Instructors
-          </h2>
-          <p className="text-lg text-muted mb-12">
-            Learn from experienced surfers who are passionate about sharing their knowledge
-            and helping you discover the joy of riding waves.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-on-primary text-2xl font-bold">P</span>
+      {/* Photo Gallery */}
+      <section className="py-section-y bg-white">
+        <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {galleryImages.map((image, index) => (
+              <div
+                key={index}
+                className="relative aspect-square rounded-image overflow-hidden group cursor-pointer"
+              >
+                <Image
+                  src={image}
+                  alt={`Surf Week ${index + 1}`}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                />
               </div>
-              <h3 className="text-lg font-heading font-semibold text-text mb-2">
-                Professional Instruction
-              </h3>
-              <p className="text-muted text-sm">
-                ISA certified instructors with years of teaching experience
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-on-primary text-2xl font-bold">S</span>
-              </div>
-              <h3 className="text-lg font-heading font-semibold text-text mb-2">
-                Small Groups
-              </h3>
-              <p className="text-muted text-sm">
-                Maximum 6 students per instructor for personalized attention
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-on-primary text-2xl font-bold">L</span>
-              </div>
-              <h3 className="text-lg font-heading font-semibold text-text mb-2">
-                Local Knowledge
-              </h3>
-              <p className="text-muted text-sm">
-                Deep understanding of local breaks and wave conditions
-              </p>
-            </div>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-16 bg-surface-alt">
+        <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-2xl text-text-muted">
+            *prices starting <span className="font-bold text-accent">450€</span>
+          </p>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-section-y bg-primary text-white">
+        <div className="max-w-content mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Join Us?
+          </h2>
+          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+            Book your surf week experience and discover the perfect blend of adventure, relaxation, 
+            and community on Portugal's beautiful coast.
+          </p>
+          <button className="btn-primary bg-white text-primary hover:bg-surface-alt">
+            Check Availability
+          </button>
         </div>
       </section>
     </div>
