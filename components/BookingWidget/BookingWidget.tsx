@@ -99,6 +99,20 @@ export function BookingWidget({
   const renderCurrentStep = () => {
     const currentStepType = computed.currentStepType;
 
+    // Show loading overlay during API operations
+    if (state.isLoading) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[400px] p-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+          <p className="text-muted text-center">
+            {state.errors.availability ? 'Checking availability...' :
+             state.errors.submission ? 'Submitting booking...' :
+             'Processing...'}
+          </p>
+        </div>
+      );
+    }
+
     const stepComponents = {
       'experience': <ExperienceSelection state={state} actions={actions} />,
       'options': <OptionSelection state={state} actions={actions} />,

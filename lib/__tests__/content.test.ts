@@ -104,3 +104,4 @@ describe('Home Page Content', () => {
     expect(homePageContent.videoEmbed.poster).toBeDefined()
   })
 })
+

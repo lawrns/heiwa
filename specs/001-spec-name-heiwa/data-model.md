@@ -174,3 +174,4 @@ Since this is a static website with external content:
 4. **SEO Compliance**: Pages must have title and description
 5. **Navigation Integrity**: All navigation paths must exist
 6. **Image Optimization**: Images should be properly sized to prevent CLS
+

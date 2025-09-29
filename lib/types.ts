@@ -143,3 +143,66 @@ export interface SpacingTokens {
   'section-y': string;
   'grid-gap': string;
 }
+
+// Hybrid Data Access Types (Admin API Integration)
+
+export interface AdminApiError {
+  success: false;
+  error: string;
+  message: string;
+}
+
+export interface BookingRequest {
+  clientName: string;
+  email: string;
+  phone?: string;
+  checkIn: string;
+  checkOut: string;
+  roomId: string;
+  guests: number;
+  message?: string;
+}
+
+export interface BookingResponse {
+  success: boolean;
+  bookingId?: string;
+  status?: 'pending' | 'confirmed' | 'cancelled';
+  message?: string;
+}
+
+export interface AvailabilityCheck {
+  roomId: string;
+  checkIn: string;
+  checkOut: string;
+  available: boolean;
+  price?: number;
+  message?: string;
+}
+
+export interface ApiErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+  errorInfo?: React.ErrorInfo;
+  retryCount: number;
+}
+
+export interface ApiLoadingState {
+  isLoading: boolean;
+  isRetrying: boolean;
+  lastAttempt?: Date;
+  errorCount: number;
+}
+
+// Extended Room interface for admin API compatibility
+export interface ExtendedRoom extends Room {
+  capacity?: number;
+  bookingType?: 'whole' | 'perBed';
+  pricing?: {
+    standard?: number;
+    offSeason?: number;
+    camp?: Record<string, number> | { perBed: number };
+  };
+  amenities?: string[];
+  bedTypes?: string[];
+  isActive?: boolean;
+}

@@ -223,3 +223,4 @@ npm run test:e2e
 - [ ] All automated tests pass
 - [ ] Bundle size is optimized
 - [ ] External image domains configured
+

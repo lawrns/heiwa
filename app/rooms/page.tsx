@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { CardGrid } from '@/components/card-grid'
-import { getRooms } from '@/lib/content'
+import { getRooms, getFallbackRooms } from '@/lib/content'
+import ErrorBoundary from '@/components/error-boundary'
 import type { Room } from '@/lib/types'
 
 export default function RoomsPage() {
@@ -10,14 +11,34 @@ export default function RoomsPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getRooms().then(fetchedRooms => {
-      setRooms(fetchedRooms)
-      setLoading(false)
-    }).catch(() => {
-      setRooms([])
-      setLoading(false)
-    })
+    const loadRooms = async () => {
+      try {
+        console.log('🏨 RoomsPage: Loading rooms...')
+        const fetchedRooms = await getRooms()
+        console.log('🏨 RoomsPage: Loaded rooms:', fetchedRooms.length)
+        setRooms(fetchedRooms)
+      } catch (error) {
+        console.error('🏨 RoomsPage: Failed to load rooms:', error)
+        // Fallback to static data if everything fails
+        const fallbackRooms = getFallbackRooms()
+        console.log('🏨 RoomsPage: Using fallback rooms:', fallbackRooms.length)
+        setRooms(fallbackRooms)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadRooms()
   }, [])
+
+  return (
+    <ErrorBoundary>
+      <RoomsPageContent rooms={rooms} loading={loading} />
+    </ErrorBoundary>
+  )
+}
+
+function RoomsPageContent({ rooms, loading }: { rooms: Room[]; loading: boolean }) {
 
   if (loading) {
     return (
@@ -26,6 +47,7 @@ export default function RoomsPage() {
       </div>
     )
   }
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}

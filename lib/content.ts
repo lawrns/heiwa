@@ -47,9 +47,10 @@ const getFallbackNavigationItems = (): NavigationItem[] => [
 // For backward compatibility
 export const navigationItems = getFallbackNavigationItems()
 
-// Room data - fetch from CMS or use fallback
+// Room data - fetch from CMS or use fallback (Hybrid approach)
 export const getRooms = async (): Promise<Room[]> => {
   try {
+    console.log('Fetching rooms from Supabase...');
     const { data, error } = await supabase
       .from('rooms')
       .select('*')
@@ -57,24 +58,35 @@ export const getRooms = async (): Promise<Room[]> => {
       .order('name')
 
     if (error) {
-      console.warn('Error fetching rooms from CMS:', error)
+      console.warn('Error fetching rooms from Supabase:', error)
       return getFallbackRooms()
     }
 
-    return data?.map((room: { id: string; name: string; images: string[]; description: string }) => ({
+    console.log('Raw rooms data from Supabase:', data?.length || 0, 'rooms found');
+
+    if (!data || data.length === 0) {
+      console.log('No rooms found in database, using fallback data');
+      return getFallbackRooms()
+    }
+
+    const mappedRooms = data.map((room: { id: string; name: string; images: string[]; description: string }) => ({
       id: room.id,
       name: room.name,
-      image: room.images?.[0] || '',
+      image: room.images?.[0] || getFallbackRooms().find(r => r.name === room.name)?.image || getFallbackRooms()[0].image,
       description: room.description || undefined
-    })) || getFallbackRooms()
+    }))
+
+    console.log('Mapped rooms:', mappedRooms.length, 'rooms ready for display');
+    return mappedRooms
   } catch (error) {
-    console.warn('Error fetching rooms:', error)
+    console.warn('Error fetching rooms from Supabase:', error)
+    console.log('Falling back to static room data');
     return getFallbackRooms()
   }
 }
 
 // Fallback rooms data
-const getFallbackRooms = (): Room[] => [
+export const getFallbackRooms = (): Room[] => [
   {
     id: 'room-1',
     name: 'Room Nr 1',

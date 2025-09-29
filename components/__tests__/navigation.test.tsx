@@ -82,3 +82,4 @@ describe('Navigation', () => {
     expect(externalLink).toHaveAttribute('rel', 'noopener noreferrer')
   })
 })
+

@@ -1,5 +1,7 @@
 import { useReducer, useCallback } from 'react';
 import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelection, BankWireDetails, RoomAssignment } from '../types';
+import { availabilityService } from '@/lib/availability';
+import { bookingService } from '@/lib/booking-service';
 
 const initialState: BookingState = {
   currentStep: 1,
@@ -272,6 +274,67 @@ export function useBookingFlow() {
     }
   }, [state, stepFlow]);
 
+  // API integration methods
+  const checkAvailability = useCallback(async (roomId: string) => {
+    if (!state.dates.checkIn || !state.dates.checkOut) {
+      setError('dates', 'Check-in and check-out dates are required');
+      return null;
+    }
+
+    setLoading(true);
+    try {
+      const result = await availabilityService.checkAvailability({
+        roomId,
+        checkIn: state.dates.checkIn.toISOString().split('T')[0],
+        checkOut: state.dates.checkOut.toISOString().split('T')[0],
+      });
+
+      if (!result.available) {
+        setError('availability', result.message || 'Room not available for selected dates');
+      }
+
+      return result;
+    } catch (error) {
+      setError('availability', 'Failed to check availability. Please try again.');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [state.dates.checkIn, state.dates.checkOut]);
+
+  const submitBooking = useCallback(async () => {
+    if (!state.guestDetails.length || !state.dates.checkIn || !state.dates.checkOut) {
+      setError('submission', 'Missing required booking information');
+      return null;
+    }
+
+    setLoading(true);
+    try {
+      const primaryGuest = state.guestDetails[0];
+      const result = await bookingService.submitBooking({
+        clientName: `${primaryGuest.firstName} ${primaryGuest.lastName}`,
+        email: primaryGuest.email,
+        phone: primaryGuest.phone,
+        checkIn: state.dates.checkIn.toISOString().split('T')[0],
+        checkOut: state.dates.checkOut.toISOString().split('T')[0],
+        roomId: state.selectedOption?.id || 'unknown',
+        guests: state.guests,
+        message: state.guestDetails[0]?.specialRequests,
+      });
+
+      if (!result.success) {
+        setError('submission', result.message || 'Booking submission failed');
+      }
+
+      return result;
+    } catch (error) {
+      setError('submission', 'Failed to submit booking. Please try again.');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [state.guestDetails, state.dates, state.selectedOption, state.guests]);
+
   return {
     state,
     actions: {
@@ -295,6 +358,9 @@ export function useBookingFlow() {
       setError,
       clearError,
       reset,
+      // API integration actions
+      checkAvailability,
+      submitBooking,
     },
     computed: {
       canProceedToNextStep: canProceedToNextStep(),

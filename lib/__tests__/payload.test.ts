@@ -54,3 +54,4 @@ describe('CMS Status Functions', () => {
     expect(status.enabled).toBe(false)
   })
 })
+

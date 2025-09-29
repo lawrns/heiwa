@@ -122,3 +122,4 @@
 - Use Playwright for critical user journeys
 - Implement visual regression testing for design consistency
 - Test accessibility with automated tools
+

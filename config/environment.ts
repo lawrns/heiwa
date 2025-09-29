@@ -38,3 +38,4 @@ if (!env.supabase.anonKey) {
 }
 
 export default env
+

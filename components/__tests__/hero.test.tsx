@@ -47,3 +47,4 @@ describe('Hero', () => {
     // The implementation should use next/image with priority prop
   })
 })
+

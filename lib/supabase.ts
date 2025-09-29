@@ -89,3 +89,4 @@ export interface SurfCampBooking {
   status: 'inquiry' | 'booked' | 'completed' | 'cancelled'
   createdAt?: string
 }
+

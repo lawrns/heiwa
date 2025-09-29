@@ -24,3 +24,4 @@ describe('cn (className utility)', () => {
     expect(cn()).toBe('')
   })
 })
+

@@ -94,3 +94,4 @@ describe('Homepage Integration', () => {
     expect(heroSection).toHaveClass('container', 'mx-auto', 'px-4')
   })
 })
+
