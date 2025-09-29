@@ -13,11 +13,11 @@ export function FloatingBookingWidget() {
       <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
         <button
           onClick={openBooking}
-          className="bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-full shadow-2xl transition-all duration-300 hover:shadow-xl flex items-center gap-3 font-medium text-lg hover:scale-105 border-2 border-white"
+          className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-3 font-medium text-lg hover:scale-105"
         >
-          <Calendar size={22} className="text-white" />
-          <span className="font-semibold text-white">Check Availability</span>
-          <Users size={22} className="text-white" />
+          <Calendar size={22} />
+          <span className="font-semibold">Check Availability</span>
+          <Users size={22} />
         </button>
       </div>
 
@@ -39,7 +39,7 @@ export function FloatingBookingWidget() {
                   apiEndpoint: `${typeof window !== 'undefined' ? window.location.origin : ''}/api`,
                   apiKey: 'heiwa_page_key_2024',
                   position: 'right',
-                  primaryColor: '#ec681c',
+                  primaryColor: '#f97316',
                   triggerText: 'BOOK NOW'
                 }
               }}
