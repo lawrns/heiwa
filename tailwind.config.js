@@ -22,10 +22,10 @@ module.exports = {
         },
         // Accent sunset tones
         accent: {
-          DEFAULT: '#E57A5F',
-          light: '#F29680',
-          dark: '#D76A47',
-          hover: '#D76A47',
+          DEFAULT: '#ec681c',
+          light: '#f77b2f',
+          dark: '#d65d16',
+          hover: '#d65d16',
         },
         // Neutrals
         surface: {

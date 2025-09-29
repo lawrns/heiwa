@@ -33,7 +33,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
   return (
     <nav
-      className={cn('fixed top-0 left-0 right-0 z-50 bg-white shadow-sm', className)}
+      className={cn('fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm', className)}
       role="navigation"
       aria-label="Main navigation"
     >
@@ -53,7 +53,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                           'text-sm font-medium transition-colors hover:text-accent',
                           currentPath === item.path
                             ? 'text-accent'
-                            : 'text-text'
+                            : 'text-white'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {
@@ -153,7 +153,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                           'text-sm font-medium transition-colors hover:text-accent',
                           currentPath === item.path
                             ? 'text-accent'
-                            : 'text-text'
+                            : 'text-white'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {
@@ -208,7 +208,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
       {isOpen && (
         <div className="lg:hidden" id="mobile-menu">
           <nav aria-label="Mobile navigation">
-            <ul className="px-4 pt-4 pb-6 space-y-2 bg-white border-t border-gray-200">
+            <ul className="px-4 pt-4 pb-6 space-y-2 bg-black/90 backdrop-blur-sm border-t border-gray-700">
               {items.map((item) => (
                 <li key={item.path}>
                   <Link
@@ -231,8 +231,8 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   </Link>
                 </li>
               ))}
-              <li className="pt-4 border-t border-gray-200">
-                <a href="tel:+351912193785" className="block text-sm text-text mb-3">📞 +351 912 193 785</a>
+              <li className="pt-4 border-t border-gray-700">
+                <a href="tel:+351912193785" className="block text-sm text-white mb-3">📞 +351 912 193 785</a>
                 <button
                   onClick={() => {
                     openBooking()
