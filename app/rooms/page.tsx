@@ -111,10 +111,10 @@ export default function RoomsPage() {
                 {filteredRooms.map((room) => (
                   <div
                     key={room.id}
-                    className="bg-white overflow-hidden group hover-lift"
+                    className="bg-white rounded-lg shadow-card overflow-hidden group hover-lift"
                   >
                     {/* Image Carousel */}
-                    <div className="relative mb-6">
+                    <div className="relative">
                       <ImageCarousel
                         images={room.images}
                         alt={room.name}
@@ -124,8 +124,8 @@ export default function RoomsPage() {
                     </div>
 
                     {/* Room Details */}
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">
                         <Link
                           href={`/rooms/${room.id}`}
                           className="hover:text-accent transition-colors"
@@ -135,30 +135,31 @@ export default function RoomsPage() {
                       </h3>
 
                       {/* Amenities */}
-                      <div className="flex items-center gap-6 mb-4 text-gray-600">
+                      <div className="flex items-center gap-4 mb-4 text-gray-600">
                         <div className="flex items-center gap-2">
-                          <BedDouble className="w-5 h-5" />
+                          <BedDouble className="w-4 h-4 text-accent" />
                           <span className="text-sm">{room.beds} {room.beds === 1 ? 'bed' : 'beds'}</span>
                         </div>
                         {room.bathrooms > 0 && (
                           <div className="flex items-center gap-2">
-                            <Bath className="w-5 h-5" />
+                            <Bath className="w-4 h-4 text-accent" />
                             <span className="text-sm">{room.bathrooms} {room.bathrooms === 1 ? 'bathroom' : 'bathrooms'}</span>
                           </div>
                         )}
                       </div>
 
                       {/* Description */}
-                      <p className="text-gray-600 text-sm mb-6 line-clamp-3">
+                      <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-3">
                         {room.description}
                       </p>
 
                       {/* CTA */}
                       <Link
                         href={`/rooms/${room.id}`}
-                        className="inline-block text-accent hover:text-accent-dark transition-colors font-medium text-sm"
+                        className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors font-medium text-sm group-hover:gap-2 transition-all"
                       >
-                        Room Detail →
+                        Room Detail
+                        <span>→</span>
                       </Link>
                     </div>
                   </div>
