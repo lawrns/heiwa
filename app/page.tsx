@@ -1,225 +1,248 @@
 import { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
-import { Play } from 'lucide-react'
+import Image from 'next/image'
+import { Bed } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Heiwa House – Surf, Stay, and Play by the Ocean',
-  description: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure. Experience world-class surfing, yoga, and coastal living.',
+  title: 'Heiwa House - Surf Camp & Rooms in Santa Cruz, Portugal',
+  description: 'Experience the ultimate surf and lifestyle destination in Santa Cruz, Portugal. Private rooms, surf camps, yoga, skateboarding, and unforgettable adventures.',
 }
 
 export default function HomePage() {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <Image
-            src="/images/DSC08600-scaled.jpg"
-            alt="Heiwa House - Surf and Stay"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
+      {/* Video Hero Section */}
+      <section className="relative h-screen w-full overflow-hidden">
+        {/* Background Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/images/videos/location3.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/30" />
 
         {/* Hero Content */}
-        <div className="relative z-10 text-center text-white px-4 max-w-4xl">
-          <p className="text-sm uppercase tracking-[0.2em] mb-6 opacity-90">
-            A Wave Away
+        <div className="relative h-full flex items-center justify-center text-center px-4">
+          <div className="max-w-4xl">
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
+              Welcome to Heiwa House
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
+              Your surf and lifestyle destination in Santa Cruz, Portugal
+            </p>
+            <Link
+              href="/rooms"
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg"
+            >
+              <Bed className="w-5 h-5" />
+              Explore Rooms
+            </Link>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
+            <div className="w-1 h-2 bg-white/50 rounded-full" />
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            More Than Just a Surf House
+          </h2>
+          <p className="text-lg text-gray-600 leading-relaxed mb-8">
+            Heiwa House is the ultimate adult playground in Santa Cruz, Portugal. Whether you're here 
+            to surf, relax, connect, or simply enjoy life, we've created a space where unforgettable 
+            moments happen naturally. From comfortable rooms to surf camps, yoga sessions, skateboarding, 
+            and amazing food—everything you need is right here.
           </p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-12 leading-tight">
-            Nestled on Portugal's coast, Heiwa House is your sanctuary for rest and adventure.
-          </h1>
-          <button className="btn-primary">
-            Explore
-          </button>
+          <Link
+            href="/the-spot"
+            className="inline-block text-accent hover:text-accent-dark font-semibold transition-colors"
+          >
+            Learn More About The Spot →
+          </Link>
         </div>
       </section>
 
-      {/* About Section - Simple and Clean */}
-      <section className="py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Room Showcase */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-6">
-              ABOUT HEIWA HOUSE
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
-              Where Adventure Meets Tranquility
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Comfortable Accommodations
             </h2>
-          </div>
-          
-          <div className="prose prose-lg max-w-none text-center mx-auto">
-            <p className="text-lg text-gray-600 leading-relaxed mb-6">
-              Surf the waves, flow through yoga, and skate with freedom. Heiwa House is your sanctuary for connection, play, and self-discovery. Here, every experience is designed to help you embrace balance, fun, and the beauty of living in the moment.
+            <p className="text-lg text-gray-600">
+              From private rooms to shared dorms, find your perfect space
             </p>
-            
-            <div className="space-y-4 text-base text-gray-600">
-              <p>You can book a room and enjoy everything the space has to offer.</p>
-              <p>To join a group of like-minded people and have an all-inclusive experience, sign up for any of our dedicated surf weeks.</p>
-              <p>We also offer the option to rent the space for your event.</p>
-            </div>
           </div>
 
-          {/* Video */}
-          <div className="mt-16 relative aspect-video rounded-lg overflow-hidden shadow-lg group cursor-pointer">
-            <Image
-              src="/images/surf-weeks-front-page.jpg"
-              alt="Heiwa House Video"
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-              <a
-                href="https://youtu.be/9nhQiKGsgHg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-20 h-20 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors"
-                aria-label="Play video"
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Private Rooms */}
+            <div className="group hover-lift bg-white rounded-lg overflow-hidden shadow-md">
+              <div className="relative h-64">
+                <Image
+                  src="/images/DSC03479.jpg"
+                  alt="Private Rooms"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Private Rooms</h3>
+                <p className="text-gray-600 mb-4">
+                  Cozy private rooms with comfortable beds and traditional Portuguese charm.
+                </p>
+                <div className="flex items-baseline gap-2 mb-4">
+                  <span className="text-3xl font-bold text-accent">80€</span>
+                  <span className="text-gray-500">/ night</span>
+                </div>
+                <Link
+                  href="/rooms"
+                  className="text-accent hover:text-accent-dark font-semibold transition-colors"
+                >
+                  View Rooms →
+                </Link>
+              </div>
+            </div>
+
+            {/* Twin Rooms */}
+            <div className="group hover-lift bg-white rounded-lg overflow-hidden shadow-md">
+              <div className="relative h-64">
+                <Image
+                  src="/images/DSC03534.jpg"
+                  alt="Twin Rooms"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Twin Rooms</h3>
+                <p className="text-gray-600 mb-4">
+                  Perfect for friends or couples, featuring two comfortable beds.
+                </p>
+                <div className="flex items-baseline gap-2 mb-4">
+                  <span className="text-3xl font-bold text-accent">90€</span>
+                  <span className="text-gray-500">/ night</span>
+                </div>
+                <Link
+                  href="/rooms"
+                  className="text-accent hover:text-accent-dark font-semibold transition-colors"
+                >
+                  View Rooms →
+                </Link>
+              </div>
+            </div>
+
+            {/* Dorm */}
+            <div className="group hover-lift bg-white rounded-lg overflow-hidden shadow-md">
+              <div className="relative h-64">
+                <Image
+                  src="/images/DSF8567.jpg"
+                  alt="Dorm Room"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Dorm Room</h3>
+                <p className="text-gray-600 mb-4">
+                  Budget-friendly option with a friendly, social atmosphere.
+                </p>
+                <div className="flex items-baseline gap-2 mb-4">
+                  <span className="text-3xl font-bold text-accent">30€</span>
+                  <span className="text-gray-500">/ night</span>
+                </div>
+                <Link
+                  href="/rooms"
+                  className="text-accent hover:text-accent-dark font-semibold transition-colors"
+                >
+                  View Rooms →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Facilities Highlight */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Amazing Facilities
+            </h2>
+            <p className="text-lg text-gray-600">
+              Everything you need for an unforgettable stay
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Skatepark Video */}
+            <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg group">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
               >
-                <Play className="w-8 h-8 text-accent ml-1" fill="currentColor" />
-              </a>
+                <source src="/images/videos/sk81.mp4" type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 bg-black/20 flex items-end p-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Skatepark</h3>
+                  <p className="text-white/90">Professional ramps and obstacles for all levels</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Room Showcase Section - Minimal */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-6">
-              RUSTIC CHARM MEETS PORTUGUESE STYLE
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
-              We would be honored to host you in one of our rooms.
-            </h2>
-          </div>
-
-          {/* Simple Image Grid */}
-          <div className="grid grid-cols-3 gap-4 mb-12">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
-              <Image
-                src="/images/Freedomroutes-rooms-1.jpg"
-                alt="Room"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
-              <Image
-                src="/images/Freedomroutes-rooms-50.jpg"
-                alt="Room"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-lg">
-              <Image
-                src="/images/DSC02102-scaled.jpg"
-                alt="Room"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Facilities - Minimal */}
-      <section className="py-24 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.3em] text-gray-500">
-              FACILITIES
-            </p>
-          </div>
-
-          {/* Simple Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="relative aspect-square overflow-hidden rounded-lg group">
-              <Image
-                src="/images/skatepark-1.jpg"
-                alt="Skatepark"
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            </div>
-            <div className="relative aspect-square overflow-hidden rounded-lg group">
+            {/* Pool/Facilities */}
+            <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg group">
               <Image
                 src="/images/yoga_dome1.jpg"
                 alt="Yoga Dome"
                 fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            </div>
-            <div className="relative aspect-square overflow-hidden rounded-lg group">
-              <Image
-                src="/images/pool333.jpg"
-                alt="Pool"
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            </div>
-            <div className="relative aspect-square overflow-hidden rounded-lg group">
-              <Image
-                src="/images/games.jpg"
-                alt="Games"
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-black/20 flex items-end p-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Yoga Dome</h3>
+                  <p className="text-white/90">Perfect space for yoga and meditation</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Experiences - Minimal */}
-      <section className="py-24 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-6">
-              EXPERIENCES
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              What to do in and around
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg group">
-              <Image
-                src="/images/surf3.jpg"
-                alt="Surfing"
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg group">
-              <Image
-                src="/images/ramp3.jpg"
-                alt="Skateboarding"
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg group">
-              <Image
-                src="/images/yoga_dome3.jpg"
-                alt="Yoga"
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            </div>
-          </div>
+      {/* Surf Camp CTA */}
+      <section className="py-20 bg-primary text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold mb-6">
+            Join Our Surf Camp
+          </h2>
+          <p className="text-xl mb-8 text-white/90">
+            Experience the ultimate surf week with professional instructors, yoga, amazing food, 
+            day trips, and unforgettable memories. Prices starting at 450€.
+          </p>
+          <Link
+            href="/surf-weeks"
+            className="inline-block bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg"
+          >
+            Learn More About Surf Camp
+          </Link>
         </div>
       </section>
     </div>

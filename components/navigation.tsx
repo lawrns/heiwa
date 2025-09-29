@@ -12,6 +12,7 @@ import { useBooking } from '@/lib/booking-context'
 export function Navigation({ items: initialItems, currentPath, className }: NavigationProps & { items?: NavigationItem[] }) {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<NavigationItem[]>(initialItems || [])
+  const [scrolled, setScrolled] = useState(false)
   const { openBooking } = useBooking()
 
   useEffect(() => {
@@ -19,32 +20,62 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
       getNavigationItems().then(fetchedItems => {
         setItems(fetchedItems)
       }).catch(() => {
-        // Fallback to static items if fetch fails
         setItems([])
       })
     }
   }, [initialItems])
 
+  // Check if we're on the homepage
+  const isHomepage = currentPath === '/'
+
+  // Track scroll position for minimized nav on inner pages
+  useEffect(() => {
+    if (isHomepage) return // Don't track scroll on homepage
+
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 20
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [scrolled, isHomepage])
+
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => setIsOpen(false)
 
-  // Check if we're on the homepage to apply special layout
-  const isHomepage = currentPath === '/'
+  // Dynamic styles based on page and scroll state
+  const navClasses = cn(
+    'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
+    isHomepage 
+      ? 'bg-black/20 backdrop-blur-sm' 
+      : scrolled
+        ? 'bg-white shadow-lg py-2'
+        : 'bg-white shadow-sm py-4',
+    className
+  )
+
+  const heightClass = cn(
+    'transition-all duration-300 ease-in-out',
+    isHomepage 
+      ? 'h-20' 
+      : scrolled 
+        ? 'h-16' 
+        : 'h-20'
+  )
+
+  const logoSize = scrolled && !isHomepage ? { width: 100, height: 33 } : { width: 140, height: 46 }
+  const textColorClass = isHomepage ? 'text-white' : 'text-gray-900'
+  const hoverColorClass = isHomepage ? 'hover:text-accent' : 'hover:text-accent'
 
   return (
-    <nav
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50',
-        isHomepage ? 'bg-black/20 backdrop-blur-sm' : 'bg-white shadow-sm',
-        className
-      )}
-      role="navigation"
-      aria-label="Main navigation"
-    >
+    <nav className={navClasses} role="navigation" aria-label="Main navigation">
       <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
         {isHomepage ? (
           // Homepage Layout: Centered logo with left/right positioning
-          <div className="relative flex items-center justify-between h-20">
+          <div className={cn('relative flex items-center justify-between', heightClass)}>
             {/* Left Side - Navigation Menu */}
             <div className="hidden lg:flex items-center">
               <nav aria-label="Main navigation">
@@ -54,10 +85,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium transition-colors hover:text-accent',
-                          currentPath === item.path
-                            ? 'text-accent'
-                            : isHomepage ? 'text-white' : 'text-gray-900'
+                          'text-sm font-medium tracking-wide transition-colors uppercase',
+                          currentPath === item.path ? 'text-accent' : textColorClass,
+                          hoverColorClass
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {
@@ -76,16 +106,13 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
             {/* Center - Logo */}
             <div className="absolute left-1/2 transform -translate-x-1/2">
-              <Link
-                href="/"
-                onClick={closeMenu}
-              >
+              <Link href="/" onClick={closeMenu}>
                 <Image
                   src="/images/heiwalogo.webp"
                   alt="Heiwa House"
-                  width={140}
-                  height={46}
-                  className="h-12 w-auto"
+                  width={logoSize.width}
+                  height={logoSize.height}
+                  className="h-12 w-auto transition-all duration-300"
                   style={{ height: 'auto' }}
                 />
               </Link>
@@ -93,54 +120,49 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
             {/* Right Side - Phone & Book Now Button */}
             <div className="hidden lg:flex items-center space-x-6">
-              {/* Phone Number */}
-              <a href="tel:+351912193785" className="flex items-center text-sm text-text hover:text-accent transition-colors">
+              <a href="tel:+351912193785" className={cn('flex items-center text-sm transition-colors', textColorClass, hoverColorClass)}>
                 <span>+351 912 193 785</span>
               </a>
 
-              {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="btn-primary flex items-center gap-2"
+                className="bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-all flex items-center gap-2 uppercase rounded hover:scale-105"
               >
                 <Bed className="w-4 h-4" />
-                Book Now
+                BOOK NOW
               </button>
             </div>
 
-            {/* Mobile menu button - positioned on the right */}
+            {/* Mobile menu button */}
             <div className="lg:hidden ml-auto">
               <button
                 onClick={toggleMenu}
-                className="inline-flex items-center justify-center p-2 rounded-md text-text hover:text-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent"
+                className={cn(
+                  'inline-flex items-center justify-center p-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent',
+                  textColorClass,
+                  hoverColorClass
+                )}
                 aria-expanded={isOpen}
                 aria-controls="mobile-menu"
                 aria-label="Toggle mobile menu"
               >
-                {isOpen ? (
-                  <X className="block h-6 w-6" />
-                ) : (
-                  <Menu className="block h-6 w-6" />
-                )}
+                {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
               </button>
             </div>
           </div>
         ) : (
-          // Other Pages Layout: Original layout with logo on left
-          <div className="flex justify-between items-center h-20">
+          // Inner Pages Layout: Standard horizontal layout with animated minimization
+          <div className={cn('flex justify-between items-center', heightClass)}>
             {/* Logo */}
             <div className="flex-shrink-0">
-              <Link
-                href="/"
-                onClick={closeMenu}
-              >
+              <Link href="/" onClick={closeMenu}>
                 <Image
                   src="/images/heiwalogo.webp"
                   alt="Heiwa House"
-                  width={120}
-                  height={40}
-                  className="h-10 w-auto"
-                  style={{ height: 'auto' }}
+                  width={logoSize.width}
+                  height={logoSize.height}
+                  className="transition-all duration-300"
+                  style={{ height: 'auto', width: scrolled ? '100px' : '120px' }}
                 />
               </Link>
             </div>
@@ -154,10 +176,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium transition-colors hover:text-accent',
-                          currentPath === item.path
-                            ? 'text-accent'
-                            : isHomepage ? 'text-white' : 'text-gray-900'
+                          'text-sm font-medium tracking-wide transition-colors uppercase',
+                          currentPath === item.path ? 'text-accent' : textColorClass,
+                          hoverColorClass
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {
@@ -173,18 +194,19 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 </ul>
               </nav>
 
-              {/* Phone Number */}
-              <a href="tel:+351912193785" className="flex items-center text-sm text-text hover:text-accent transition-colors">
+              <a href="tel:+351912193785" className={cn('flex items-center text-sm transition-colors', textColorClass, hoverColorClass)}>
                 <span>+351 912 193 785</span>
               </a>
 
-              {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="btn-primary flex items-center gap-2"
+                className={cn(
+                  'bg-accent hover:bg-accent-hover text-white font-medium tracking-wide transition-all flex items-center gap-2 uppercase rounded hover:scale-105',
+                  scrolled ? 'px-4 py-2 text-xs' : 'px-6 py-3 text-sm'
+                )}
               >
-                <Bed className="w-4 h-4" />
-                Book Now
+                <Bed className={scrolled ? 'w-3 h-3' : 'w-4 h-4'} />
+                BOOK NOW
               </button>
             </div>
 
@@ -192,16 +214,16 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             <div className="lg:hidden">
               <button
                 onClick={toggleMenu}
-                className="inline-flex items-center justify-center p-2 rounded-md text-text hover:text-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent"
+                className={cn(
+                  'inline-flex items-center justify-center p-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent',
+                  textColorClass,
+                  hoverColorClass
+                )}
                 aria-expanded={isOpen}
                 aria-controls="mobile-menu"
                 aria-label="Toggle mobile menu"
               >
-                {isOpen ? (
-                  <X className="block h-6 w-6" />
-                ) : (
-                  <Menu className="block h-6 w-6" />
-                )}
+                {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
               </button>
             </div>
           </div>
@@ -218,10 +240,8 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   <Link
                     href={item.path}
                     className={cn(
-                      'block px-3 py-2 text-sm font-medium transition-colors',
-                      currentPath === item.path
-                        ? 'text-accent'
-                        : 'text-text hover:text-accent'
+                      'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase',
+                      currentPath === item.path ? 'text-accent' : 'text-white hover:text-accent'
                     )}
                     onClick={closeMenu}
                     aria-current={currentPath === item.path ? 'page' : undefined}
@@ -242,10 +262,10 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                     openBooking()
                     closeMenu()
                   }}
-                  className="btn-primary inline-flex items-center gap-2 w-full justify-center"
+                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase"
                 >
                   <Bed className="w-4 h-4" />
-                  Book Now
+                  BOOK NOW
                 </button>
               </li>
             </ul>
