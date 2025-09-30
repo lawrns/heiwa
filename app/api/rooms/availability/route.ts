@@ -34,7 +34,12 @@ export async function GET(request: NextRequest) {
 
     // Check for existing bookings that overlap with requested dates
     // Handle case where bookings table might not exist yet
-    let existingBookings: any[] = []
+    interface RoomBooking {
+      room_id: string
+      check_in_date: string
+      check_out_date: string
+    }
+    let existingBookings: RoomBooking[] = []
 
     try {
       const { data, error: bookingsError } = await supabase

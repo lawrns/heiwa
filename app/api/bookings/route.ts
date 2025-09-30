@@ -73,7 +73,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Create participant records
-    const participantPromises = participants.map(async (participant: any, index: number) => {
+    const participantPromises = participants.map(async (participant: {
+      firstName?: string
+      lastName?: string
+      email?: string
+      phone?: string | null
+      dateOfBirth?: string | null
+      emergencyContactName?: string | null
+      emergencyContactPhone?: string | null
+      dietaryRestrictions?: string | null
+      medicalConditions?: string | null
+      surfExperience?: string | null
+    }, index: number) => {
       const clientData = {
         first_name: participant.firstName || '',
         last_name: participant.lastName || '',

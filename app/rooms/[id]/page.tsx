@@ -210,7 +210,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
               </BookingButton>
 
               <div className="text-center text-sm text-gray-500 mb-6">
-                <p>You won't be charged yet</p>
+                <p>You won&apos;t be charged yet</p>
               </div>
 
               <div className="border-t border-gray-200 pt-6 mb-6">

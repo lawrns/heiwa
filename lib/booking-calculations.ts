@@ -146,10 +146,18 @@ export function calculatePriceBreakdown(
   };
 }
 
+interface SeasonalRate {
+  startMonth: number
+  startDay: number
+  endMonth: number
+  endDay: number
+  price: number
+}
+
 /**
  * Get seasonal rate for a specific date
  */
-function getSeasonalRate(seasonalRates: any[], date: string): number | null {
+function getSeasonalRate(seasonalRates: SeasonalRate[], date: string): number | null {
   if (!seasonalRates || seasonalRates.length === 0) return null;
 
   const targetDate = new Date(date);

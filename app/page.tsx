@@ -62,9 +62,9 @@ export default function HomePage() {
             More Than Just a Surf House
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed mb-8">
-            Heiwa House is the ultimate adult playground in Santa Cruz, Portugal. Whether you're here 
-            to surf, relax, connect, or simply enjoy life, we've created a space where unforgettable 
-            moments happen naturally. From comfortable rooms to surf camps, yoga sessions, skateboarding, 
+            Heiwa House is the ultimate adult playground in Santa Cruz, Portugal. Whether you&apos;re here
+            to surf, relax, connect, or simply enjoy life, we&apos;ve created a space where unforgettable
+            moments happen naturally. From comfortable rooms to surf camps, yoga sessions, skateboarding,
             and amazing food—everything you need is right here.
           </p>
           <Link

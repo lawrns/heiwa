@@ -168,7 +168,7 @@ class AdminApiClient {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  private isClientError(error: any): boolean {
+  private isClientError(error: unknown): boolean {
     // Consider it a client error if it's not a network/fetch error
     return !(error instanceof TypeError && error.message.includes('fetch'));
   }

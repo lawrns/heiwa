@@ -5,11 +5,15 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 
+interface PageContent {
+  [key: string]: unknown
+}
+
 interface Page {
   id: string
   slug: string
   title: string
-  content: any
+  content: PageContent
   published: boolean
   created_at: string
   updated_at: string

@@ -161,9 +161,9 @@ export default function SurfWeeksPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h5 className="text-xl md:text-2xl text-center text-gray-600 leading-relaxed">
             We strive to deliver an unforgettable surf camp experience both in and out of the water. 
-            Even if surfing were taken out of the week, it would still be worth your while—amazing food, 
-            yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and 
-            the surfing? That's going to be awesome too 🙂
+            Even if surfing were taken out of the week, it would still be worth your while—amazing food,
+            yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and
+            the surfing? That&apos;s going to be awesome too 🙂
           </h5>
         </div>
       </section>

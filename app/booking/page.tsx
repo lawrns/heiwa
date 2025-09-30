@@ -17,7 +17,7 @@ export default function BookingPage() {
               Booking System Coming Soon
             </h2>
             <p className="text-gray-600 mb-8">
-              We're working on our online booking system. In the meantime, please contact us directly to make a reservation.
+              We&apos;re working on our online booking system. In the meantime, please contact us directly to make a reservation.
             </p>
             
             <div className="space-y-4">

@@ -182,7 +182,17 @@ class BookingService {
     checkIn: string,
     checkOut: string,
     guests: number
-  ): { estimatedTotal: number; currency: string; breakdown: any } {
+  ): {
+    estimatedTotal: number
+    currency: string
+    breakdown: {
+      baseRate: number
+      nights: number
+      subtotal: number
+      taxes: number
+      total: number
+    }
+  } {
     // This would typically call the admin API for pricing
     // For now, return a placeholder
     const nights = Math.ceil(

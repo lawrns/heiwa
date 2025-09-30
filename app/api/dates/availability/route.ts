@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
         // Check surf camp bookings for this date
         const { data: surfBookings, error: surfError } = await supabase
           .from('surf_week_assignments')
-          .select('camp_id')
+          .select('surf_camp_id')
           .eq('status', 'confirmed')
           // Note: You might need to add date fields to surf_week_assignments table
 

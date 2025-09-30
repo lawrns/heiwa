@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       .order('name')
     
     // Filter active rooms in code since field name might vary
-    const activeRooms = (rooms || []).filter((room: any) => 
+    const activeRooms = (rooms || []).filter((room: { isActive?: boolean; is_active?: boolean }) =>
       room.isActive !== false && room.is_active !== false
     )
 
@@ -28,7 +28,17 @@ export async function GET(request: NextRequest) {
     console.log('✅ Rooms fetched successfully:', activeRooms.length)
 
     // Transform rooms to match booking widget expected format
-    const transformedRooms = activeRooms.map((room: any) => {
+    const transformedRooms = activeRooms.map((room: {
+      id: string
+      name: string
+      description?: string
+      capacity: number
+      bookingType?: string
+      pricing?: { standard?: number; offSeason?: number }
+      amenities?: string[]
+      images?: string[]
+      isActive?: boolean
+    }) => {
       // Calculate price_per_night from pricing object
       const pricePerNight = room.pricing?.standard || room.pricing?.offSeason || 80
 
@@ -46,7 +56,12 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    console.log('✅ Transformed rooms:', transformedRooms.map((r: any) => ({
+    console.log('✅ Transformed rooms:', transformedRooms.map((r: {
+      id: string
+      name: string
+      featured_image: string | null
+      images: string[]
+    }) => ({
       id: r.id,
       name: r.name,
       has_image: !!r.featured_image,

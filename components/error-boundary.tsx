@@ -9,7 +9,7 @@ interface ErrorBoundaryProps {
   onError?: (error: Error, errorInfo: React.ErrorInfo) => void
 }
 
-interface ErrorBoundaryState extends ApiErrorBoundaryState {}
+type ErrorBoundaryState = ApiErrorBoundaryState
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
@@ -38,8 +38,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     this.props.onError?.(error, errorInfo)
 
     // Log to monitoring service if available
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      ;(window as any).gtag('event', 'exception', {
+    if (typeof window !== 'undefined' && 'gtag' in window) {
+      const gtag = (window as { gtag: (type: string, event: string, params: Record<string, unknown>) => void }).gtag
+      gtag('event', 'exception', {
         description: error.toString(),
         fatal: false,
       })
