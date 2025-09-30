@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
-// API endpoint for getting all rooms
+// API endpoint for getting all rooms (compatible with booking widget)
 export async function GET(request: NextRequest) {
   try {
-    console.log('🏠 Fetching all rooms')
+    console.log('🏠 Fetching all rooms for booking widget')
 
-    // Get all active rooms
+    // Get all active rooms (handle both isActive and is_active field names)
     const { data: rooms, error: roomsError } = await supabase
       .from('rooms')
       .select('*')
-      .eq('is_active', true)
       .order('name')
+    
+    // Filter active rooms in code since field name might vary
+    const activeRooms = (rooms || []).filter((room: any) => 
+      room.isActive !== false && room.is_active !== false
+    )
 
     if (roomsError) {
       console.error('Error fetching rooms:', roomsError)
@@ -21,12 +25,38 @@ export async function GET(request: NextRequest) {
       }, { status: 500 })
     }
 
-    console.log('✅ Rooms fetched successfully:', rooms.length)
+    console.log('✅ Rooms fetched successfully:', activeRooms.length)
+
+    // Transform rooms to match booking widget expected format
+    const transformedRooms = activeRooms.map((room: any) => {
+      // Calculate price_per_night from pricing object
+      const pricePerNight = room.pricing?.standard || room.pricing?.offSeason || 80
+
+      return {
+        id: room.id,
+        name: room.name,
+        description: room.description || `Comfortable accommodation with capacity for ${room.capacity} guests`,
+        capacity: room.capacity,
+        booking_type: room.bookingType || 'whole',
+        price_per_night: pricePerNight,
+        amenities: room.amenities || [],
+        featured_image: room.images && room.images.length > 0 ? room.images[0] : null,
+        images: room.images || [],
+        is_active: room.isActive !== false,
+      }
+    })
+
+    console.log('✅ Transformed rooms:', transformedRooms.map((r: any) => ({
+      id: r.id,
+      name: r.name,
+      has_image: !!r.featured_image,
+      image_count: r.images?.length || 0
+    })))
 
     return NextResponse.json({
       success: true,
       data: {
-        rooms: rooms || []
+        rooms: transformedRooms
       }
     })
 

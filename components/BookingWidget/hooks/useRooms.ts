@@ -69,7 +69,7 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
         // Handle both availability endpoint (available_rooms) and general rooms endpoint (rooms)
         const roomsData = data.data.available_rooms || data.data.rooms;
 
-        // Transform WordPress API response to our Room interface
+        // Transform API response to our Room interface
         const transformedRooms: Room[] = roomsData.map((room: any) => {
           // Determine room type based on booking type and capacity
           let roomType: 'private' | 'shared' | 'dorm';
@@ -81,6 +81,28 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
             roomType = 'shared';
           }
 
+          // Handle images: prefer images array, fallback to featured_image, then fallback URL
+          let images: string[] = [];
+          if (room.images && Array.isArray(room.images) && room.images.length > 0) {
+            images = room.images;
+          } else if (room.featured_image) {
+            images = [room.featured_image];
+          } else {
+            // Fallback to heiwahouse.com images based on room type
+            if (roomType === 'dorm') {
+              images = ['https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-1-scaled-570x600.webp'];
+            } else {
+              images = ['https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-52-scaled-570x600.jpg'];
+            }
+          }
+
+          console.log(`🖼️ Room ${room.name} images:`, {
+            hasImagesArray: !!room.images,
+            imagesCount: room.images?.length || 0,
+            hasFeaturedImage: !!room.featured_image,
+            finalImagesCount: images.length
+          });
+
           return {
             id: room.id,
             name: room.name,
@@ -89,7 +111,7 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
             maxOccupancy: room.capacity,
             pricePerNight: room.price_per_night,
             amenities: room.amenities || [],
-            images: room.featured_image ? [room.featured_image] : [],
+            images: images,
             isAvailable: true, // All returned rooms are available or shown
           };
         });
