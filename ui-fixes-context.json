@@ -1,0 +1,149 @@
+{
+  "title": "Site-wide UI Fixes - Make It Match heiwahouse.com Quality",
+  "critical_issues": [
+    {
+      "issue": "PriceBadge component is terrible and doesn't match original design",
+      "location": "components/ui/price-badge.tsx",
+      "problem": "Current badge uses bg-accent with excessive styling (rounded-lg, shadow-lg, px-6 py-3) and looks amateurish",
+      "solution": "REMOVE the PriceBadge component entirely OR make it subtle like the original - semi-transparent black overlay positioned on the image",
+      "reference": "Original heiwahouse.com uses simple, subtle price overlay on images, not a giant orange badge"
+    },
+    {
+      "issue": "Button colors not working - bg-accent showing as white/transparent",
+      "location": "All buttons with bg-accent class across site",
+      "problem": "Tailwind accent color (#ec681c) is not being applied correctly, buttons appear white or transparent",
+      "root_cause": "The accent color utility might not be properly configured in Tailwind",
+      "solution": "Verify tailwind.config.js has accent colors defined, add !important if needed, or use explicit hex values for critical buttons",
+      "affected_files": [
+        "app/rooms/[id]/page.tsx - BookingButton",
+        "app/page.tsx - CTA buttons",
+        "app/surf-weeks/page.tsx - Email button",
+        "components/navigation.tsx - Book Now button"
+      ]
+    },
+    {
+      "issue": "Inconsistent button styling across site",
+      "problem": "Some buttons use bg-accent, some use btn-primary class, some use inline styles - no consistency",
+      "solution": "Standardize ALL primary CTAs to use the btn-primary class which is properly defined in globals.css with explicit #ec681c color"
+    },
+    {
+      "issue": "Amateur spacing and padding throughout",
+      "locations": [
+        "Room cards - inconsistent padding",
+        "Room detail page - uneven spacing between sections",
+        "Navigation - overlap issues",
+        "Footer - cramped layout"
+      ],
+      "solution": "Apply consistent spacing scale: mb-6 for small gaps, mb-8 for medium, mb-12 for large sections"
+    }
+  ],
+  "implementation_plan": {
+    "phase_1_price_badge": {
+      "action": "REMOVE or completely redesign PriceBadge",
+      "options": [
+        {
+          "option_a": "Remove PriceBadge entirely from room cards, show price in card content instead",
+          "rationale": "Cleaner, more professional look"
+        },
+        {
+          "option_b": "Make badge subtle like original - small, semi-transparent, top-right corner",
+          "new_design": {
+            "className": "absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded font-semibold",
+            "structure": "Just show '80€' without the 'PER NIGHT' text",
+            "size": "Much smaller, unobtrusive"
+          }
+        }
+      ],
+      "recommendation": "Option B - match original subtle design"
+    },
+    "phase_2_button_fixes": {
+      "action": "Fix all button colors site-wide",
+      "steps": [
+        {
+          "step": "Update all primary CTA buttons to use explicit class",
+          "find": "All instances of bg-accent hover:bg-accent-hover",
+          "replace": "btn-primary class OR explicit bg-[#ec681c] hover:bg-[#d65d16]"
+        },
+        {
+          "step": "Ensure BookingButton renders correctly",
+          "file": "components/booking-button.tsx",
+          "fix": "Add default button classes if none provided, ensure text-white is explicit"
+        },
+        {
+          "step": "Test all buttons render with orange (#ec681c) background",
+          "test_locations": [
+            "Homepage hero - Explore Rooms button",
+            "Room list - Room Detail links",  
+            "Room detail - Check Availability button",
+            "Surf weeks - Email to book button",
+            "Navigation - Book Now button",
+            "Floating widget - Check Availability button"
+          ]
+        }
+      ]
+    },
+    "phase_3_consistency": {
+      "action": "Standardize spacing, colors, and typography",
+      "guidelines": {
+        "buttons": {
+          "primary": "btn-primary class (orange #ec681c, white text, rounded-lg, hover effects)",
+          "secondary": "text-accent hover:text-accent-hover (orange text, no background)",
+          "tertiary": "text-gray-600 hover:text-gray-900 (subtle links)"
+        },
+        "spacing": {
+          "section_vertical": "py-16 md:py-24",
+          "card_padding": "p-6",
+          "element_margin_small": "mb-4",
+          "element_margin_medium": "mb-6", 
+          "element_margin_large": "mb-8"
+        },
+        "colors": {
+          "primary_orange": "#ec681c",
+          "primary_orange_hover": "#d65d16",
+          "text_primary": "#1A1A1A",
+          "text_muted": "#5A5A5A",
+          "background": "#FFFFFF",
+          "background_alt": "#F9F7F4"
+        },
+        "shadows": {
+          "card": "shadow-card (0 2px 12px rgba(0, 0, 0, 0.08))",
+          "card_hover": "shadow-card-hover (0 4px 20px rgba(0, 0, 0, 0.12))"
+        }
+      }
+    }
+  },
+  "specific_fixes": {
+    "components_ui_price_badge": {
+      "current": "Overstyled orange badge",
+      "new": "Subtle semi-transparent overlay OR remove entirely",
+      "code": "className='absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded font-semibold' and only show '80€'"
+    },
+    "app_rooms_id_page_booking_button": {
+      "current": "className='w-full bg-accent hover:bg-accent-hover text-white...'",
+      "problem": "bg-accent not rendering as orange",
+      "fix": "Use btn-primary OR bg-[#ec681c] hover:bg-[#d65d16] with explicit !text-white"
+    },
+    "app_rooms_page_room_cards": {
+      "current": "PriceBadge overlay looks terrible",
+      "fix": "Either remove badge or make it subtle. Show price in card content with better typography"
+    },
+    "components_navigation": {
+      "current": "Book Now button uses bg-accent",
+      "fix": "Ensure it uses explicit colors or btn-primary class, verify text-white is explicit"
+    },
+    "components_floating_booking_widget": {
+      "current": "Check Availability button",
+      "fix": "Already fixed to use explicit bg-accent classes, ensure they work"
+    }
+  },
+  "verification_checklist": [
+    "All primary buttons are orange (#ec681c) with white text",
+    "All buttons have consistent hover effects",
+    "PriceBadge is either removed or subtle and professional",
+    "Room cards have consistent spacing and padding",
+    "No white/transparent buttons anywhere",
+    "All CTAs are clearly visible and clickable",
+    "Site matches heiwahouse.com quality and professionalism"
+  ],
+  "priority": "CRITICAL - These amateur UI issues make the site look unprofessional compared to the original"
+}
