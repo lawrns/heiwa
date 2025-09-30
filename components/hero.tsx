@@ -80,7 +80,7 @@ export function Hero({ title, subtitle, image, video, ctas, className }: Readonl
               <Link
                 key={cta.label}
                 href={cta.href}
-                className="inline-flex items-center justify-center px-8 py-4 border border-white/80 hover:border-white text-white hover:bg-white/10 text-sm font-medium tracking-[0.15em] uppercase transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent backdrop-blur-sm"
+                className="inline-flex items-center justify-center px-8 py-4 bg-accent hover:bg-accent-hover text-white text-sm font-medium tracking-[0.15em] uppercase transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 focus:ring-offset-transparent rounded-md shadow-lg hover:shadow-xl"
                 style={{
                   minWidth: '140px',
                   fontSize: '0.875rem',

@@ -112,9 +112,10 @@ export default function RoomsPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {filteredRooms.map((room) => (
-                  <div
+                  <Link
                     key={room.id}
-                    className="bg-white rounded-lg shadow-card overflow-hidden group hover-lift"
+                    href={`/rooms/${room.id}`}
+                    className="bg-white rounded-lg shadow-card overflow-hidden group hover-lift block transition-all duration-300 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   >
                     {/* Image Carousel */}
                     <div className="relative">
@@ -128,13 +129,8 @@ export default function RoomsPage() {
 
                     {/* Room Details */}
                     <div className="p-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">
-                        <Link
-                          href={`/rooms/${room.id}`}
-                          className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 rounded"
-                        >
-                          {room.name}
-                        </Link>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-accent transition-colors">
+                        {room.name}
                       </h3>
 
                       {/* Amenities */}
@@ -157,15 +153,12 @@ export default function RoomsPage() {
                       </p>
 
                       {/* CTA */}
-                      <Link
-                        href={`/rooms/${room.id}`}
-                        className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors font-medium text-sm group-hover:gap-2 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 rounded"
-                      >
+                      <div className="inline-flex items-center gap-1 text-accent group-hover:text-accent-hover font-medium text-sm group-hover:gap-2 transition-all">
                         Room Detail
                         <span>→</span>
-                      </Link>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
