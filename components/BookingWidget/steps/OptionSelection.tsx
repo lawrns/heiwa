@@ -100,8 +100,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const handleCheckInChange = (dateStr: string) => {
     setCheckInDate(dateStr);
     if (dateStr && checkOutDate) {
-      const checkIn = new Date(dateStr);
-      const checkOut = new Date(checkOutDate);
+      // Fix timezone issue: append time to ensure correct date parsing
+      const checkIn = new Date(dateStr + 'T12:00:00');
+      const checkOut = new Date(checkOutDate + 'T12:00:00');
       if (checkIn < checkOut) {
         actions.setDates(checkIn, checkOut);
       }
@@ -111,8 +112,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const handleCheckOutChange = (dateStr: string) => {
     setCheckOutDate(dateStr);
     if (checkInDate && dateStr) {
-      const checkIn = new Date(checkInDate);
-      const checkOut = new Date(dateStr);
+      // Fix timezone issue: append time to ensure correct date parsing
+      const checkIn = new Date(checkInDate + 'T12:00:00');
+      const checkOut = new Date(dateStr + 'T12:00:00');
       if (checkIn < checkOut) {
         actions.setDates(checkIn, checkOut);
       }
