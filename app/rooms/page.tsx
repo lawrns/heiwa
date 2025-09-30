@@ -77,15 +77,15 @@ export default function RoomsPage() {
         {/* Category Filter */}
         <div className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex gap-4 overflow-x-auto py-6">
+            <div className="flex gap-4 overflow-x-auto py-6 snap-x snap-mandatory scrollbar-hide">
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
+                  className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors min-h-[44px] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${
                     selectedCategory === category.id
-                      ? 'text-accent border-b-2 border-accent'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-accent text-white'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                   }`}
                 >
                   {category.name}
@@ -100,7 +100,10 @@ export default function RoomsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {loading ? (
               <div className="flex items-center justify-center min-h-[400px]">
-                <div className="text-lg text-gray-500">Loading rooms...</div>
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
+                  <div className="text-lg text-gray-500">Loading rooms...</div>
+                </div>
               </div>
             ) : filteredRooms.length === 0 ? (
               <div className="text-center py-16">
@@ -128,7 +131,7 @@ export default function RoomsPage() {
                       <h3 className="text-xl font-bold text-gray-900 mb-3">
                         <Link
                           href={`/rooms/${room.id}`}
-                          className="hover:text-accent transition-colors"
+                          className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded"
                         >
                           {room.name}
                         </Link>
@@ -156,7 +159,7 @@ export default function RoomsPage() {
                       {/* CTA */}
                       <Link
                         href={`/rooms/${room.id}`}
-                        className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors font-medium text-sm group-hover:gap-2 transition-all"
+                        className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors font-medium text-sm group-hover:gap-2 transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded"
                       >
                         Room Detail
                         <span>→</span>

@@ -161,7 +161,7 @@ export function RoomImageGallery({
                   <div className="grid grid-cols-1 gap-2">
                     {roomAmenities.map((amenity, index) => (
                       <div key={`${roomName}-amenity-${index}`} className="flex items-center gap-2 text-gray-700">
-                        <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
+                        <div className="w-2 h-2 bg-accent rounded-full flex-shrink-0"></div>
                         <span>{amenity}</span>
                       </div>
                     ))}

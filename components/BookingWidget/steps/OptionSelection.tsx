@@ -240,7 +240,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             </p>
             <button
               onClick={handleRetry}
-              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover transition-colors"
             >
               Try Again
             </button>
@@ -271,7 +271,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           {/* Date Selection */}
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-              <Calendar size={20} className="text-orange-500" />
+              <Calendar size={20} className="text-accent" />
               Select Dates
             </h4>
 
@@ -353,7 +353,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           {/* Guest Counter */}
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-              <Users size={20} className="text-orange-500" />
+              <Users size={20} className="text-accent" />
               Number of Guests
             </h4>
 
@@ -395,7 +395,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       {state.experienceType === 'surf-week' && (
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-4">
           <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-            <Users size={20} className="text-orange-500" />
+            <Users size={20} className="text-accent" />
             Number of Participants
           </h4>
 
@@ -502,7 +502,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     <div className="flex justify-between items-start">
                       <div>
                         <div className="text-lg font-bold text-gray-900">{dateText}</div>
-                        <div className="text-orange-500 font-extrabold uppercase tracking-wide text-sm mt-1" data-testid="surf-week-title">{w.name}</div>
+                        <div className="text-accent font-extrabold uppercase tracking-wide text-sm mt-1" data-testid="surf-week-title">{w.name}</div>
                         <p className="text-sm text-gray-600 line-clamp-2 mt-1">
                           {w.description}
                         </p>
@@ -572,7 +572,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 {/* Selection Indicator */}
                 {isSelected && (
                   <div className="mt-4 flex items-center gap-2 text-orange-600">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                     <span className="text-sm font-medium">Selected</span>
                   </div>
                 )}
@@ -723,7 +723,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         {/* Selection Indicator */}
                         {isSelected && (
                           <div className="mt-4 flex items-center gap-2 text-orange-600">
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                            <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                             <span className="text-sm font-medium">Selected</span>
                           </div>
                         )}

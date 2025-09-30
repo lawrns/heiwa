@@ -25,7 +25,7 @@ export default function BookingPage() {
                 <span className="text-lg">📞</span>
                 <a 
                   href="tel:+351912193785" 
-                  className="text-orange-500 hover:text-orange-600 font-medium text-lg"
+                  className="text-accent hover:text-accent-hover font-medium text-lg"
                 >
                   +351 912 193 785
                 </a>
@@ -35,7 +35,7 @@ export default function BookingPage() {
                 <span className="text-lg">✉️</span>
                 <a 
                   href="mailto:info@heiwahouse.com" 
-                  className="text-orange-500 hover:text-orange-600 font-medium text-lg"
+                  className="text-accent hover:text-accent-hover font-medium text-lg"
                 >
                   info@heiwahouse.com
                 </a>

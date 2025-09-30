@@ -171,7 +171,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
-                    <Bed size={20} className="text-orange-500" />
+                    <Bed size={20} className="text-accent" />
                     <h4 className="text-lg font-semibold text-gray-900">
                       {room.name}
                     </h4>
@@ -264,7 +264,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
               {/* Selection Border Effect */}
               {isSelected && (
                 <div className="absolute inset-0 rounded-xl border-2 border-orange-500 pointer-events-none">
-                  <div className="absolute top-2 right-2 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
+                  <div className="absolute top-2 right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center">
                     <div className="w-2 h-2 bg-white rounded-full"></div>
                   </div>
                 </div>

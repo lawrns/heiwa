@@ -371,7 +371,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 </div>
               ) : (
                 <div className="flex items-center gap-2 text-orange-600">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-accent rounded-full"></div>
                   <span className="text-sm font-medium">Complete all fields</span>
                 </div>
               )}

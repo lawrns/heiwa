@@ -66,7 +66,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
       case 'equipment': return <Wrench size={16} className="text-blue-500" />;
       case 'food': return <Utensils size={16} className="text-green-500" />;
       case 'transport': return <Car size={16} className="text-purple-500" />;
-      case 'service': return <Users size={16} className="text-orange-500" />;
+      case 'service': return <Users size={16} className="text-accent" />;
       default: return <ShoppingBag size={16} className="text-gray-500" />;
     }
   };

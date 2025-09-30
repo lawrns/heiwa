@@ -72,7 +72,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
   return (
     <nav className={navClasses} role="navigation" aria-label="Main navigation">
-      <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
         {isHomepage ? (
           // Homepage Layout: Centered logo with left/right positioning
           <div className={cn('relative flex items-center justify-between', heightClass)}>
@@ -85,8 +85,11 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors uppercase',
-                          currentPath === item.path ? 'text-accent' : textColorClass,
+                          'text-sm font-medium tracking-wide transition-colors uppercase border-b-2 pb-1',
+                          'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded-sm',
+                          currentPath === item.path
+                            ? 'text-accent border-accent font-bold'
+                            : 'border-transparent ' + textColorClass,
                           hoverColorClass
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
@@ -126,7 +129,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
               <button
                 onClick={openBooking}
-                className="bg-[#ec681c] hover:bg-[#d65d16] text-white px-6 py-3 text-sm font-medium tracking-wide transition-all flex items-center gap-2 uppercase rounded hover:scale-105"
+                className="bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
               >
                 <Bed className="w-4 h-4" />
                 BOOK NOW
@@ -176,8 +179,11 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors uppercase',
-                          currentPath === item.path ? 'text-accent' : textColorClass,
+                          'text-sm font-medium tracking-wide transition-colors uppercase border-b-2 pb-1',
+                          'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded-sm',
+                          currentPath === item.path
+                            ? 'text-accent border-accent font-bold'
+                            : 'border-transparent ' + textColorClass,
                           hoverColorClass
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
@@ -201,7 +207,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               <button
                 onClick={openBooking}
                 className={cn(
-                  'bg-[#ec681c] hover:bg-[#d65d16] text-white font-medium tracking-wide transition-all flex items-center gap-2 uppercase rounded hover:scale-105',
+                  'bg-accent hover:bg-accent-hover text-white font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2',
                   scrolled ? 'px-4 py-2 text-xs' : 'px-6 py-3 text-sm'
                 )}
               >
@@ -240,8 +246,11 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   <Link
                     href={item.path}
                     className={cn(
-                      'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase',
-                      currentPath === item.path ? 'text-accent' : 'text-white hover:text-accent'
+                      'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase rounded-lg',
+                      'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black',
+                      currentPath === item.path
+                        ? 'text-accent bg-accent/10 font-bold'
+                        : 'text-white hover:text-accent hover:bg-white/5'
                     )}
                     onClick={closeMenu}
                     aria-current={currentPath === item.path ? 'page' : undefined}
@@ -262,7 +271,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                     openBooking()
                     closeMenu()
                   }}
-                  className="inline-flex items-center gap-2 bg-[#ec681c] hover:bg-[#d65d16] text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase"
+                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase min-h-[44px] rounded focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
                 >
                   <Bed className="w-4 h-4" />
                   BOOK NOW

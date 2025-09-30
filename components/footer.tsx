@@ -25,12 +25,12 @@ export function Footer() {
 
   return (
     <footer className="bg-gray-900 text-white">
-      <div className="max-w-container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
           {/* Map Section */}
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Find us here</h3>
-            <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
+            <div className="w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3082.8544776556686!2d-9.4241!3d39.3567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDIxJzI0LjEiTiA5wrAyNScyNi44Ilc!5e0!3m2!1sen!2spt!4v1234567890"
                 width="100%"
@@ -52,7 +52,7 @@ export function Footer() {
                 <li key={item.path}>
                   <Link
                     href={item.path}
-                    className="text-gray-300 hover:text-accent transition-colors text-sm"
+                    className="text-gray-300 hover:text-accent transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                   >
                     {item.name}
                   </Link>
@@ -68,7 +68,7 @@ export function Footer() {
               href="https://www.instagram.com/heiwahouse_portugal"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-gray-300 hover:text-accent transition-colors text-sm"
+              className="inline-flex items-center gap-2 text-gray-300 hover:text-accent transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
             >
               <Instagram className="w-5 h-5" />
               <span>Instagram</span>
@@ -82,7 +82,7 @@ export function Footer() {
               <p>
                 <a
                   href="mailto:info@heiwahouse.com"
-                  className="hover:text-accent transition-colors"
+                  className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                 >
                   E. info@heiwahouse.com
                 </a>
@@ -90,7 +90,7 @@ export function Footer() {
               <p>
                 <a
                   href="tel:+351912193785"
-                  className="hover:text-accent transition-colors"
+                  className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
                 >
                   T. + 351 912 193 785
                 </a>

@@ -53,7 +53,7 @@ export function PaymentMethodSelector({ selectedMethod, onMethodChange }: Paymen
                 <div className="flex items-center gap-3">
                   <div className={`
                     p-2 rounded-lg
-                    ${isSelected ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600'}
+                    ${isSelected ? 'bg-accent text-white' : 'bg-gray-100 text-gray-600'}
                   `}>
                     <Icon size={20} />
                   </div>
@@ -76,7 +76,7 @@ export function PaymentMethodSelector({ selectedMethod, onMethodChange }: Paymen
                   </span>
                   
                   {isSelected && (
-                    <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                   )}
                 </div>
               </div>
