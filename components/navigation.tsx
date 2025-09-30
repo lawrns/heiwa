@@ -126,7 +126,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
               <button
                 onClick={openBooking}
-                className="bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-all flex items-center gap-2 uppercase rounded hover:scale-105"
+                className="bg-[#ec681c] hover:bg-[#d65d16] text-white px-6 py-3 text-sm font-medium tracking-wide transition-all flex items-center gap-2 uppercase rounded hover:scale-105"
               >
                 <Bed className="w-4 h-4" />
                 BOOK NOW
@@ -201,7 +201,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               <button
                 onClick={openBooking}
                 className={cn(
-                  'bg-accent hover:bg-accent-hover text-white font-medium tracking-wide transition-all flex items-center gap-2 uppercase rounded hover:scale-105',
+                  'bg-[#ec681c] hover:bg-[#d65d16] text-white font-medium tracking-wide transition-all flex items-center gap-2 uppercase rounded hover:scale-105',
                   scrolled ? 'px-4 py-2 text-xs' : 'px-6 py-3 text-sm'
                 )}
               >
@@ -262,7 +262,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                     openBooking()
                     closeMenu()
                   }}
-                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase"
+                  className="inline-flex items-center gap-2 bg-[#ec681c] hover:bg-[#d65d16] text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase"
                 >
                   <Bed className="w-4 h-4" />
                   BOOK NOW

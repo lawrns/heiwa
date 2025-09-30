@@ -39,7 +39,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/rooms"
-              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg"
+              className="inline-flex items-center gap-2 bg-[#ec681c] hover:bg-[#d65d16] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg"
             >
               <Bed className="w-5 h-5" />
               Explore Rooms
@@ -239,7 +239,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/surf-weeks"
-            className="inline-block bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg"
+            className="inline-block bg-[#ec681c] hover:bg-[#d65d16] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-lg"
           >
             Learn More About Surf Camp
           </Link>

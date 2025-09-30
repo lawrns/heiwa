@@ -2,17 +2,16 @@ import React from 'react'
 
 interface PriceBadgeProps {
   price: number | string
-  period?: string
   className?: string
 }
 
-export function PriceBadge({ price, period = 'Per Night', className = '' }: PriceBadgeProps) {
+// Subtle price badge matching original heiwahouse.com design
+export function PriceBadge({ price, className = '' }: PriceBadgeProps) {
   return (
     <div 
-      className={`absolute top-4 right-4 bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-md ${className}`}
+      className={`absolute top-4 right-4 bg-black/50 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded font-semibold ${className}`}
     >
-      <div className="text-2xl font-bold">{price}€</div>
-      <div className="text-xs uppercase tracking-wide opacity-90">{period}</div>
+      {price}€
     </div>
   )
 }

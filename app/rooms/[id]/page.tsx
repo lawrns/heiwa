@@ -204,7 +204,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
 
               <BookingButton 
                 roomId={room.id}
-                className="w-full bg-accent hover:bg-accent-hover text-white py-4 px-6 rounded-lg font-semibold transition-all hover:scale-105 mb-4 shadow-md"
+                className="w-full bg-[#ec681c] hover:bg-[#d65d16] text-white py-4 px-6 rounded-lg font-semibold transition-all hover:scale-105 mb-4 shadow-md"
               >
                 Check Availability
               </BookingButton>

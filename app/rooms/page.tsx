@@ -120,7 +120,7 @@ export default function RoomsPage() {
                         alt={room.name}
                         aspectRatio="video"
                       />
-                      <PriceBadge price={room.price} period="Per Night" />
+                      <PriceBadge price={room.price} />
                     </div>
 
                     {/* Room Details */}
