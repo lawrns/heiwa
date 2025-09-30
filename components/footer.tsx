@@ -52,7 +52,7 @@ export function Footer() {
                 <li key={item.path}>
                   <Link
                     href={item.path}
-                    className="text-gray-300 hover:text-accent transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
+                    className="text-gray-300 hover:text-accent transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
                   >
                     {item.name}
                   </Link>
@@ -68,7 +68,7 @@ export function Footer() {
               href="https://www.instagram.com/heiwahouse_portugal"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-gray-300 hover:text-accent transition-colors text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
+              className="inline-flex items-center gap-2 text-gray-300 hover:text-accent transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
             >
               <Instagram className="w-5 h-5" />
               <span>Instagram</span>
@@ -82,7 +82,7 @@ export function Footer() {
               <p>
                 <a
                   href="mailto:info@heiwahouse.com"
-                  className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
+                  className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
                 >
                   E. info@heiwahouse.com
                 </a>
@@ -90,7 +90,7 @@ export function Footer() {
               <p>
                 <a
                   href="tel:+351912193785"
-                  className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
+                  className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
                 >
                   T. + 351 912 193 785
                 </a>

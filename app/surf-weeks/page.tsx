@@ -183,7 +183,7 @@ export default function SurfWeeksPage() {
                 href="https://youtu.be/9nhQiKGsgHg"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-24 h-24 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+                className="w-24 h-24 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
                 aria-label="Play video"
               >
                 <Play className="w-10 h-10 text-accent ml-2" fill="currentColor" />
@@ -243,7 +243,7 @@ export default function SurfWeeksPage() {
           <div className="mt-12 text-center">
             <a
               href="mailto:info@heiwahouse.com"
-              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
             >
               <Mail className="w-5 h-5" />
               Email to book surf week

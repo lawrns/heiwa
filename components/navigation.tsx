@@ -86,7 +86,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                         href={item.path}
                         className={cn(
                           'text-sm font-medium tracking-wide transition-colors uppercase border-b-2 pb-1',
-                          'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded-sm',
+                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-sm',
                           currentPath === item.path
                             ? 'text-accent border-accent font-bold'
                             : 'border-transparent ' + textColorClass,
@@ -129,7 +129,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
               <button
                 onClick={openBooking}
-                className="bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+                className="bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
               >
                 <Bed className="w-4 h-4" />
                 BOOK NOW
@@ -180,7 +180,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                         href={item.path}
                         className={cn(
                           'text-sm font-medium tracking-wide transition-colors uppercase border-b-2 pb-1',
-                          'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded-sm',
+                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-sm',
                           currentPath === item.path
                             ? 'text-accent border-accent font-bold'
                             : 'border-transparent ' + textColorClass,
@@ -207,7 +207,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               <button
                 onClick={openBooking}
                 className={cn(
-                  'bg-accent hover:bg-accent-hover text-white font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2',
+                  'bg-accent hover:bg-accent-hover text-white font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
                   scrolled ? 'px-4 py-2 text-xs' : 'px-6 py-3 text-sm'
                 )}
               >
@@ -247,7 +247,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                     href={item.path}
                     className={cn(
                       'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase rounded-lg',
-                      'focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus:ring-offset-black',
                       currentPath === item.path
                         ? 'text-accent bg-accent/10 font-bold'
                         : 'text-white hover:text-accent hover:bg-white/5'
@@ -271,7 +271,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                     openBooking()
                     closeMenu()
                   }}
-                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase min-h-[44px] rounded focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
+                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase min-h-[44px] rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus:ring-offset-black"
                 >
                   <Bed className="w-4 h-4" />
                   BOOK NOW

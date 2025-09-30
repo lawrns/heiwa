@@ -82,7 +82,7 @@ export default function RoomsPage() {
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors min-h-[44px] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${
+                  className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors min-h-[44px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 ${
                     selectedCategory === category.id
                       ? 'bg-accent text-white'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
@@ -131,7 +131,7 @@ export default function RoomsPage() {
                       <h3 className="text-xl font-bold text-gray-900 mb-3">
                         <Link
                           href={`/rooms/${room.id}`}
-                          className="hover:text-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded"
+                          className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 rounded"
                         >
                           {room.name}
                         </Link>
@@ -159,7 +159,7 @@ export default function RoomsPage() {
                       {/* CTA */}
                       <Link
                         href={`/rooms/${room.id}`}
-                        className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors font-medium text-sm group-hover:gap-2 transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded"
+                        className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors font-medium text-sm group-hover:gap-2 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 rounded"
                       >
                         Room Detail
                         <span>→</span>

@@ -69,7 +69,7 @@ export function ImageCarousel({
           {/* Previous Button */}
           <button
             onClick={goToPrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+            className="absolute left-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
             aria-label="Previous image"
           >
             <ChevronLeft className="w-6 h-6 text-gray-800" />
@@ -78,7 +78,7 @@ export function ImageCarousel({
           {/* Next Button */}
           <button
             onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+            className="absolute right-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
             aria-label="Next image"
           >
             <ChevronRight className="w-6 h-6 text-gray-800" />
@@ -93,7 +93,7 @@ export function ImageCarousel({
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`transition-all focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${
+              className={`transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 ${
                 index === currentIndex
                   ? 'w-8 h-2 bg-white rounded-full'
                   : 'w-2 h-2 bg-white/50 hover:bg-white/75 rounded-full'

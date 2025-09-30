@@ -96,7 +96,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="text-sm">
-            <Link href="/rooms" className="text-gray-600 hover:text-accent transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded">
+            <Link href="/rooms" className="text-gray-600 hover:text-accent transition-colors font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 rounded">
               ← Back to Room List
             </Link>
           </nav>
@@ -196,7 +196,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
 
               <BookingButton
                 roomId={room.id}
-                className="w-full bg-accent hover:bg-accent-hover text-white py-4 px-6 rounded-lg font-semibold transition-colors mb-4 shadow-md min-h-[44px] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+                className="w-full bg-accent hover:bg-accent-hover text-white py-4 px-6 rounded-lg font-semibold transition-colors mb-4 shadow-md min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
               >
                 Check Availability
               </BookingButton>
@@ -229,7 +229,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
 
               <div className="pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-600 text-center">
-                  Questions? <a href="tel:+351912193785" className="text-accent hover:text-accent-dark font-semibold focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded">Call us</a>
+                  Questions? <a href="tel:+351912193785" className="text-accent hover:text-accent-dark font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 rounded">Call us</a>
                 </p>
               </div>
             </div>
@@ -245,7 +245,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
                 <Link
                   key={similarRoom.id}
                   href={`/rooms/${similarRoom.id}`}
-                  className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+                  className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
                 >
                   <div className="relative h-64 overflow-hidden rounded-t-lg">
                     <Image
