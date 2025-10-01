@@ -73,7 +73,6 @@ export default function ExperiencesManagement() {
           updated_at: new Date().toISOString()
         }
 
-        // @ts-expect-error - Supabase type inference issue with update
         const { error } = await supabase
           .from('experiences')
           .update(updateData)
