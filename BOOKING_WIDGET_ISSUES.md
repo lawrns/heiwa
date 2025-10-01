@@ -74,27 +74,83 @@
 ## Fixes Applied
 
 ### CRITICAL FIXES - DEPLOYED ✅
-1. ✅ **Room prices show "Select dates"** - FIXED & DEPLOYED
-   - Location: `components/BookingWidget/steps/OptionSelection.tsx:658-660`
-   - Issue: calculateTotalPrice returns undefined because local date state wasn't synced with global state
-   - Root Cause: Local checkInDate/checkOutDate state was only initialized on mount, not updated when state.dates changed
+
+1. ✅ **Room prices show "Select dates" - THE REAL FIX** - FIXED & DEPLOYED
+   - Location: `app/api/rooms/availability/route.ts`
+   - Issue: Room prices showing "Select dates" even after dates were selected
+   - Root Cause: The `/rooms/availability` endpoint was returning raw Supabase data without transforming it. The database has `pricing.standard` and `pricing.offSeason` as a JSONB object, but the API wasn't extracting `price_per_night` field
+   - Fix: Added data transformation to `/rooms/availability` endpoint (same as `/rooms` endpoint) to extract `price_per_night` from `pricing.standard` or `pricing.offSeason`
+   - Commit: 2fdb9e1
+   - Status: ✅ Live on production
+   - **This was the actual issue!** The previous fixes were addressing symptoms, not the root cause.
+
+2. ✅ **Local date state sync** - FIXED & DEPLOYED
+   - Location: `components/BookingWidget/steps/OptionSelection.tsx:50-62`
+   - Issue: Local checkInDate/checkOutDate state wasn't syncing with global state
    - Fix: Added useEffect to sync local date state with global state.dates
    - Commits: abadae4, b149473
    - Status: ✅ Live on production
 
-2. ✅ **Auto-select dummy option removed** - FIXED & DEPLOYED
+3. ✅ **Auto-select dummy option removed** - FIXED & DEPLOYED
    - Location: `components/BookingWidget/steps/OptionSelection.tsx:100-108`
    - Issue: Auto-select set dummy ID 'room-dates-selected' which doesn't match any real room
    - Fix: Removed auto-select logic - users must explicitly select a room
    - Commit: f169914
    - Status: ✅ Live on production
 
-3. ✅ **Room pricing calculation fixed** - FIXED & DEPLOYED
+4. ✅ **Room pricing calculation fixed** - FIXED & DEPLOYED
    - Location: `components/BookingWidget/steps/OptionSelection.tsx:108-121`
    - Issue: Price was multiplied by roomQuantity based on guest count, causing incorrect totals
    - Fix: Price is now simply pricePerNight × nights for single room booking
    - Commit: f169914
    - Status: ✅ Live on production
+
+### SUPABASE DATABASE CLEANUP ✅
+
+5. ✅ **Deactivated test rooms** - FIXED IN DATABASE
+   - Deactivated 3 test/junk rooms that were showing in the booking widget:
+     - "LOVEROOM" (capacity 69, price €699)
+     - "sdfsdf" (price €0)
+     - "Room Nr 1 - UPDATED TEST 5" (test room)
+   - Status: ✅ Completed via Supabase API
+
+**Active Legitimate Rooms (4 total):**
+- **Dorm room** - €30/night (per bed), capacity 6, booking_type: perBed
+- **Room Nr 2** - €80/night, capacity 1, booking_type: whole
+- **Room Nr 3** - €80/night, capacity 2, booking_type: whole
+- **The Cave** - €90/night (€70 off-season), capacity 3, booking_type: whole
+
+## Supabase Database Status
+
+### Tables Verified:
+- ✅ **rooms** - 4 active legitimate rooms, 3 test rooms deactivated
+- ✅ **surf_camps** - 3 active camps (all from March 2024 - past dates)
+- ✅ **bookings** - Table exists, 0 bookings
+- ✅ **room_assignments** - Table exists, 0 assignments
+
+### Database Schema Notes:
+1. **rooms.pricing** - JSONB field with structure:
+   ```json
+   {
+     "standard": 80,
+     "offSeason": 70,
+     "camp": { "1": 80, "2": 80 }
+   }
+   ```
+
+2. **room_assignments** - Missing `status` column
+   - The availability API checks for `status = 'confirmed'` but this column doesn't exist
+   - Currently no bookings, so this doesn't cause errors (query returns empty array)
+   - **TODO**: Either add `status` column or update API to not filter by status
+
+3. **surf_camps** - All dates are in the past (March 2024)
+   - Users won't see any surf weeks in the booking widget
+   - **TODO**: Add future surf camp dates or create recurring/template surf camps
+
+### Potential Issues to Address:
+1. ⚠️ **room_assignments.status column missing** - API expects it but it doesn't exist
+2. ⚠️ **No future surf camps** - Surf week booking flow will show "No surf weeks available"
+3. ⚠️ **Image paths** - Some rooms use relative paths (`/images/rooms/room3.webp`), others use full Supabase URLs
 
 ## Validation Logic (from useBookingFlow.ts:241-275)
 
@@ -153,10 +209,19 @@
 - Test email: test@example.com
 - Test phone: +351 123 456 789
 
+## Deployment Status
+
+**Latest deployment:** https://heiwa-house-portugal.netlify.app/
+**Commits:**
+- 2fdb9e1 - API fix (transform room data in availability endpoint)
+- d8f5050 - Debug logging
+**Status:** ✅ LIVE
+
 ## Next Steps
-1. Deploy current fix
-2. Test room booking flow end-to-end
-3. Test surf week booking flow end-to-end
-4. Fix any remaining issues
-5. Document final flow
+1. ✅ Deploy API fix - DONE
+2. ✅ Clean up Supabase test data - DONE
+3. 🔄 Test room booking flow end-to-end - IN PROGRESS (waiting for user confirmation)
+4. ⏳ Test surf week booking flow end-to-end
+5. ⏳ Fix any remaining issues
+6. ⏳ Document final flow
 
