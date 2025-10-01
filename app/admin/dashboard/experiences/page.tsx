@@ -73,10 +73,10 @@ export default function ExperiencesManagement() {
           updated_at: new Date().toISOString()
         }
 
+        // @ts-expect-error - Supabase type inference issue with update
         const { error } = await supabase
           .from('experiences')
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .update(updateData as any)
+          .update(updateData)
           .eq('id', editingExperience.id)
 
         if (error) throw error
