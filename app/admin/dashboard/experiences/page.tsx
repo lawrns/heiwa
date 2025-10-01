@@ -65,7 +65,7 @@ export default function ExperiencesManagement() {
     try {
       if (editingExperience) {
         // Update existing experience
-        const updateData: Partial<Experience> = {
+        const updateData = {
           title: formData.title,
           image_url: formData.image_url || null,
           category: formData.category || null,
@@ -75,7 +75,7 @@ export default function ExperiencesManagement() {
 
         const { error } = await supabase
           .from('experiences')
-          .update(updateData)
+          .update(updateData as any)
           .eq('id', editingExperience.id)
 
         if (error) throw error
