@@ -190,10 +190,26 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       const checkIn = checkInDate ? new Date(checkInDate + 'T12:00:00') : state.dates.checkIn;
       const checkOut = checkOutDate ? new Date(checkOutDate + 'T12:00:00') : state.dates.checkOut;
 
+      // Debug logging
+      console.log('[OptionSelection] calculateTotalPrice DEBUG:', {
+        checkInDate,
+        checkOutDate,
+        'state.dates.checkIn': state.dates.checkIn,
+        'state.dates.checkOut': state.dates.checkOut,
+        checkIn,
+        checkOut,
+        'option.pricePerNight': option.pricePerNight,
+        'option.price': option.price,
+        option
+      });
+
       if (checkIn && checkOut) {
         const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
         if (nights > 0) {
-          return option.pricePerNight * nights;
+          const pricePerNight = option.pricePerNight || option.price || 0;
+          const total = pricePerNight * nights;
+          console.log('[OptionSelection] Calculated price:', { nights, pricePerNight, total });
+          return total;
         }
       }
       return undefined; // Wait for dates to avoid NaN

@@ -73,27 +73,28 @@
 
 ## Fixes Applied
 
-### CRITICAL FIXES - DEPLOYED
+### CRITICAL FIXES - DEPLOYED ✅
 1. ✅ **Room prices show "Select dates"** - FIXED & DEPLOYED
-   - Location: `components/BookingWidget/steps/OptionSelection.tsx:664`
-   - Issue: calculateTotalPrice returns undefined because it checks state.dates which updates async
-   - Fix: Use local checkInDate/checkOutDate state instead
-   - Commit: abadae4
-   - Status: Live on production
+   - Location: `components/BookingWidget/steps/OptionSelection.tsx:658-660`
+   - Issue: calculateTotalPrice returns undefined because local date state wasn't synced with global state
+   - Root Cause: Local checkInDate/checkOutDate state was only initialized on mount, not updated when state.dates changed
+   - Fix: Added useEffect to sync local date state with global state.dates
+   - Commits: abadae4, b149473
+   - Status: ✅ Live on production
 
-2. ✅ **Auto-select dummy option removed** - FIXED & DEPLOYING
+2. ✅ **Auto-select dummy option removed** - FIXED & DEPLOYED
    - Location: `components/BookingWidget/steps/OptionSelection.tsx:100-108`
    - Issue: Auto-select set dummy ID 'room-dates-selected' which doesn't match any real room
    - Fix: Removed auto-select logic - users must explicitly select a room
    - Commit: f169914
-   - Status: Deploying
+   - Status: ✅ Live on production
 
-3. ✅ **Room pricing calculation fixed** - FIXED & DEPLOYING
+3. ✅ **Room pricing calculation fixed** - FIXED & DEPLOYED
    - Location: `components/BookingWidget/steps/OptionSelection.tsx:108-121`
    - Issue: Price was multiplied by roomQuantity based on guest count, causing incorrect totals
    - Fix: Price is now simply pricePerNight × nights for single room booking
    - Commit: f169914
-   - Status: Deploying
+   - Status: ✅ Live on production
 
 ## Validation Logic (from useBookingFlow.ts:241-275)
 
