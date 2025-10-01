@@ -97,15 +97,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     }
   };
 
-  // Auto-select for room bookings when dates and guests are set
-  useEffect(() => {
-    if (state.experienceType === 'room' && state.dates.checkIn && state.dates.checkOut && state.guests > 0 && !selectedOption) {
-      // Auto-select a dummy option for room bookings to allow progression
-      const dummyOptionId = 'room-dates-selected';
-      setSelectedOption(dummyOptionId);
-      actions.selectOption(dummyOptionId);
-    }
-  }, [state.experienceType, state.dates.checkIn, state.dates.checkOut, state.guests, selectedOption, actions]);
+  // Removed auto-select logic - users must explicitly select a room
 
   // Recompute base price and totals when selection/dates/guests change
   useEffect(() => {
@@ -119,11 +111,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         const nights = Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24));
         const unit = typeof opt.pricePerNight === 'number' ? opt.pricePerNight : (opt.price ?? 0);
 
-        // Calculate room quantity based on guest count and room capacity
-        const roomCapacity = opt.capacity || 2;
-        const roomQuantity = Math.ceil(state.guests / roomCapacity);
-
-        basePrice = unit * nights * roomQuantity;
+        // Price is per room per night - user selects ONE specific room
+        // If they need multiple rooms, they would book separately or use room assignment
+        basePrice = unit * nights;
       }
     } else if (state.experienceType === 'surf-week') {
       const unit = typeof opt.price === 'number' ? opt.price : (opt.priceFrom ?? 0);
