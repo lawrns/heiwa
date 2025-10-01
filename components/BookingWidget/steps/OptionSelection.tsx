@@ -180,9 +180,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
   const calculateTotalPrice = (option: any) => {
     if (state.experienceType === 'room') {
-      if (state.dates.checkIn && state.dates.checkOut) {
-        const nights = Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24));
-        return option.pricePerNight * nights;
+      // Use local state dates if available, otherwise fall back to state dates
+      const checkIn = checkInDate ? new Date(checkInDate + 'T12:00:00') : state.dates.checkIn;
+      const checkOut = checkOutDate ? new Date(checkOutDate + 'T12:00:00') : state.dates.checkOut;
+
+      if (checkIn && checkOut) {
+        const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+        if (nights > 0) {
+          return option.pricePerNight * nights;
+        }
       }
       return undefined; // Wait for dates to avoid NaN
     }
