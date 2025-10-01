@@ -82,10 +82,39 @@ export async function GET(request: NextRequest) {
       requested_guests: guests
     })
 
+    // Transform rooms to match booking widget expected format (same as /rooms endpoint)
+    const transformedRooms = availableRooms.map((room: {
+      id: string
+      name: string
+      description?: string
+      capacity: number
+      bookingType?: string
+      pricing?: { standard?: number; offSeason?: number }
+      amenities?: string[]
+      images?: string[]
+      isActive?: boolean
+    }) => {
+      // Calculate price_per_night from pricing object
+      const pricePerNight = room.pricing?.standard || room.pricing?.offSeason || 80
+
+      return {
+        id: room.id,
+        name: room.name,
+        description: room.description || `Comfortable accommodation with capacity for ${room.capacity} guests`,
+        capacity: room.capacity,
+        booking_type: room.bookingType || 'whole',
+        price_per_night: pricePerNight,
+        amenities: room.amenities || [],
+        featured_image: room.images && room.images.length > 0 ? room.images[0] : null,
+        images: room.images || [],
+        is_active: room.isActive !== false,
+      }
+    })
+
     return NextResponse.json({
       success: true,
       data: {
-        available_rooms: availableRooms,
+        available_rooms: transformedRooms,
         total_rooms: allRooms.length,
         requested_dates: {
           start_date: startDate,
