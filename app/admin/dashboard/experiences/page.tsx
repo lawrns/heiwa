@@ -73,6 +73,7 @@ export default function ExperiencesManagement() {
           updated_at: new Date().toISOString()
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { error } = await supabase
           .from('experiences')
           .update(updateData as any)
