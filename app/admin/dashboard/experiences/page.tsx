@@ -61,19 +61,21 @@ export default function ExperiencesManagement() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     try {
       if (editingExperience) {
         // Update existing experience
+        const updateData: Partial<Experience> = {
+          title: formData.title,
+          image_url: formData.image_url || null,
+          category: formData.category || null,
+          active: formData.active,
+          updated_at: new Date().toISOString()
+        }
+
         const { error } = await supabase
           .from('experiences')
-          .update({
-            title: formData.title,
-            image_url: formData.image_url || null,
-            category: formData.category || null,
-            active: formData.active,
-            updated_at: new Date().toISOString()
-          })
+          .update(updateData)
           .eq('id', editingExperience.id)
 
         if (error) throw error
