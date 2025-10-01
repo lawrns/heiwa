@@ -46,6 +46,22 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     state.dates.checkOut?.toISOString().split('T')[0] || ''
   );
 
+  // Sync local date state with global state when it changes
+  useEffect(() => {
+    if (state.dates.checkIn) {
+      const newCheckIn = state.dates.checkIn.toISOString().split('T')[0];
+      if (newCheckIn !== checkInDate) {
+        setCheckInDate(newCheckIn);
+      }
+    }
+    if (state.dates.checkOut) {
+      const newCheckOut = state.dates.checkOut.toISOString().split('T')[0];
+      if (newCheckOut !== checkOutDate) {
+        setCheckOutDate(newCheckOut);
+      }
+    }
+  }, [state.dates.checkIn, state.dates.checkOut]);
+
   // Fetch date availability only when both dates are selected
   useEffect(() => {
     if (checkInDate && checkOutDate) {
