@@ -69,7 +69,7 @@ export default function HomePage() {
           <p className="text-xs sm:text-sm text-white/80 tracking-[0.3em] uppercase font-medium mb-6">
             ADVENTURE SURF & YOGA WEEKS
           </p>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-light mb-8 leading-tight">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-light text-white mb-8 leading-tight">
             All-inclusive weeks with surf, yoga, great food, and coastal adventures.
           </h2>
           <p className="text-lg text-white/90 mb-8">
