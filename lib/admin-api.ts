@@ -61,7 +61,7 @@ class AdminApiClient {
     const method = options.method || 'GET';
     const startTime = Date.now();
 
-    let lastError: Error;
+    let lastError: Error | undefined;
 
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
@@ -157,11 +157,12 @@ class AdminApiClient {
 
     // All retries exhausted
     const duration = Date.now() - startTime;
+    const errorMessage = lastError instanceof Error ? lastError.message : String(lastError || 'Unknown error');
     console.error(`💥 Admin API ${method} ${endpoint} failed after ${this.maxRetries} attempts (${duration}ms):`, {
-      error: lastError instanceof Error ? lastError.message : String(lastError),
+      error: errorMessage,
       timestamp: new Date().toISOString(),
     });
-    throw lastError;
+    throw lastError || new Error(`Admin API request failed after ${this.maxRetries} attempts`);
   }
 
   private delay(ms: number): Promise<void> {
@@ -181,7 +182,8 @@ class AdminApiClient {
       const response = await this.makeRequest<{ success: boolean; data: { rooms: AdminApiRoom[] } } | AdminApiError>('/rooms');
 
       if ('success' in response && !response.success) {
-        throw new Error(response.message || 'Failed to fetch rooms from admin API');
+        const errorMsg = 'message' in response ? response.message : 'Failed to fetch rooms from admin API';
+        throw new Error(errorMsg);
       }
 
       if ('data' in response && response.data?.rooms) {

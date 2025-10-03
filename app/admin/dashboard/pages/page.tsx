@@ -86,7 +86,7 @@ export default function PagesManagement() {
             content: parsedContent,
             published: formData.published,
             updated_at: new Date().toISOString()
-          })
+          } as never)
           .eq('id', editingPage.id)
 
         if (error) throw error
@@ -99,7 +99,7 @@ export default function PagesManagement() {
             title: formData.title,
             content: parsedContent,
             published: formData.published
-          }])
+          }] as never[])
 
         if (error) throw error
       }

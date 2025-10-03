@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
         const { data: rooms, error: roomsError } = await supabase
           .from('rooms')
           .select('capacity')
-          .eq('is_active', true)
+          .eq('is_active', true) as { data: { capacity: number }[] | null; error: unknown }
 
         const totalCapacity = rooms?.reduce((sum, room) => sum + (room.capacity || 0), 0) || 10
         const bookedCapacity = (roomBookings?.length || 0) + (surfBookings?.length || 0)

@@ -317,7 +317,7 @@ export function useBookingFlow() {
         phone: primaryGuest.phone,
         checkIn: state.dates.checkIn.toISOString().split('T')[0],
         checkOut: state.dates.checkOut.toISOString().split('T')[0],
-        roomId: state.selectedOption?.id || 'unknown',
+        roomId: state.selectedOption || 'unknown',
         guests: state.guests,
         message: state.guestDetails[0]?.specialRequests,
       });

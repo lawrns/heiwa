@@ -18,6 +18,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [pricing, setPricing] = useState<PricingBreakdown>(state.pricing);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Calculate pricing from established base price and current add-ons
   useEffect(() => {
@@ -161,7 +162,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                 {state.experienceType === 'room' ? 'Room Booking' : 'Surf Week Package'}
               </div>
               <div className="text-sm text-gray-600">
-                {state.experienceType === 'room' ? 'Ocean View Private Room' : 'Beginner Surf Week - Costa Rica'}
+                {state.experienceType === 'room' ? 'Ocean View Private Room' : 'Beginner Surf Week - Portugal'}
               </div>
             </div>
           </div>
@@ -201,7 +202,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             <div>
               <div className="font-medium text-gray-900">Location</div>
               <div className="text-sm text-gray-600">
-                {state.experienceType === 'room' ? 'Heiwa House, Costa Rica' : 'Nosara Beach, Costa Rica'}
+                {state.experienceType === 'room' ? 'Heiwa House, Santa Cruz, Portugal' : 'Santa Cruz, Portugal'}
               </div>
             </div>
           </div>
@@ -315,16 +316,18 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           <input
             type="checkbox"
             id="terms"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
             className="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
             required
           />
           <label htmlFor="terms" className="text-sm text-gray-700">
             I agree to the{' '}
-            <a href="#" className="text-orange-600 hover:text-orange-700 underline">
+            <a href="/terms" className="text-orange-600 hover:text-orange-700 underline">
               Terms and Conditions
             </a>{' '}
             and{' '}
-            <a href="#" className="text-orange-600 hover:text-orange-700 underline">
+            <a href="/privacy" className="text-orange-600 hover:text-orange-700 underline">
               Privacy Policy
             </a>
             . I understand that this booking is subject to our cancellation policy.
@@ -352,7 +355,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         <div className="space-y-4">
           <button
             onClick={handlePayment}
-            disabled={isProcessing}
+            disabled={isProcessing || !termsAccepted}
             className="
               w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600
               hover:from-orange-600 hover:to-orange-700

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     const { data: allRooms, error: roomsError } = await supabase
       .from('rooms')
       .select('*')
-      .eq('is_active', true)
+      .eq('is_active', true) as { data: Array<{ capacity?: number; [key: string]: unknown }> | null; error: unknown }
 
     if (roomsError) {
       console.error('Error fetching rooms:', roomsError)
@@ -62,14 +62,14 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter available rooms
-    const availableRooms = allRooms.filter(room => {
+    const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; [key: string]: unknown }) => {
       // Check if room has capacity for requested guests
       if (room.capacity && room.capacity < guests) {
         return false
       }
 
       // Check if room is already booked for these dates
-      const isBooked = existingBookings.some(booking => 
+      const isBooked = existingBookings.some(booking =>
         booking.room_id === room.id
       )
 
@@ -77,37 +77,38 @@ export async function GET(request: NextRequest) {
     })
 
     console.log('✅ Room availability check completed:', {
-      total_rooms: allRooms.length,
+      total_rooms: allRooms?.length || 0,
       available_rooms: availableRooms.length,
       requested_guests: guests
     })
 
     // Transform rooms to match booking widget expected format (same as /rooms endpoint)
-    const transformedRooms = availableRooms.map((room: {
-      id: string
-      name: string
-      description?: string
-      capacity: number
-      bookingType?: string
-      pricing?: { standard?: number; offSeason?: number }
-      amenities?: string[]
-      images?: string[]
-      isActive?: boolean
-    }) => {
+    const transformedRooms = availableRooms.map((room: unknown) => {
+      const r = room as {
+        id: string
+        name: string
+        description?: string
+        capacity: number
+        bookingType?: string
+        pricing?: { standard?: number; offSeason?: number }
+        amenities?: string[]
+        images?: string[]
+        isActive?: boolean
+      }
       // Calculate price_per_night from pricing object
-      const pricePerNight = room.pricing?.standard || room.pricing?.offSeason || 80
+      const pricePerNight = r.pricing?.standard || r.pricing?.offSeason || 80
 
       return {
-        id: room.id,
-        name: room.name,
-        description: room.description || `Comfortable accommodation with capacity for ${room.capacity} guests`,
-        capacity: room.capacity,
-        booking_type: room.bookingType || 'whole',
+        id: r.id,
+        name: r.name,
+        description: r.description || `Comfortable accommodation with capacity for ${r.capacity} guests`,
+        capacity: r.capacity,
+        booking_type: r.bookingType || 'whole',
         price_per_night: pricePerNight,
-        amenities: room.amenities || [],
-        featured_image: room.images && room.images.length > 0 ? room.images[0] : null,
-        images: room.images || [],
-        is_active: room.isActive !== false,
+        amenities: r.amenities || [],
+        featured_image: r.images && r.images.length > 0 ? r.images[0] : null,
+        images: r.images || [],
+        is_active: r.isActive !== false,
       }
     })
 
@@ -115,7 +116,7 @@ export async function GET(request: NextRequest) {
       success: true,
       data: {
         available_rooms: transformedRooms,
-        total_rooms: allRooms.length,
+        total_rooms: allRooms?.length || 0,
         requested_dates: {
           start_date: startDate,
           end_date: endDate,

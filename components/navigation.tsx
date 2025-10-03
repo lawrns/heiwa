@@ -12,7 +12,6 @@ import { useBooking } from '@/lib/booking-context'
 export function Navigation({ items: initialItems, currentPath, className }: NavigationProps & { items?: NavigationItem[] }) {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<NavigationItem[]>(initialItems || [])
-  const [scrolled, setScrolled] = useState(false)
   const { openBooking } = useBooking()
 
   useEffect(() => {
@@ -20,62 +19,28 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
       getNavigationItems().then(fetchedItems => {
         setItems(fetchedItems)
       }).catch(() => {
+        // Fallback to static items if fetch fails
         setItems([])
       })
     }
   }, [initialItems])
 
-  // Check if we're on the homepage
-  const isHomepage = currentPath === '/'
-
-  // Track scroll position for minimized nav on inner pages
-  useEffect(() => {
-    if (isHomepage) return // Don't track scroll on homepage
-
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 20
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled)
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [scrolled, isHomepage])
-
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => setIsOpen(false)
 
-  // Dynamic styles based on page and scroll state
-  const navClasses = cn(
-    'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
-    isHomepage 
-      ? 'bg-black/20 backdrop-blur-sm' 
-      : scrolled
-        ? 'bg-white shadow-lg py-2'
-        : 'bg-white shadow-sm py-4',
-    className
-  )
-
-  const heightClass = cn(
-    'transition-all duration-300 ease-in-out',
-    isHomepage 
-      ? 'h-20' 
-      : scrolled 
-        ? 'h-16' 
-        : 'h-20'
-  )
-
-  const logoSize = scrolled && !isHomepage ? { width: 100, height: 33 } : { width: 140, height: 46 }
-  const textColorClass = isHomepage ? 'text-white' : 'text-gray-900'
-  const hoverColorClass = isHomepage ? 'hover:text-accent' : 'hover:text-accent'
+  // Check if we're on the homepage to apply special layout
+  const isHomepage = currentPath === '/'
 
   return (
-    <nav className={navClasses} role="navigation" aria-label="Main navigation">
-      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <nav
+      className={cn('fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm', className)}
+      role="navigation"
+      aria-label="Main navigation"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {isHomepage ? (
           // Homepage Layout: Centered logo with left/right positioning
-          <div className={cn('relative flex items-center justify-between', heightClass)}>
+          <div className="relative flex items-center justify-between h-20">
             {/* Left Side - Navigation Menu */}
             <div className="hidden lg:flex items-center">
               <nav aria-label="Main navigation">
@@ -85,12 +50,10 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors uppercase border-b-2 pb-1',
-                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-sm',
+                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase',
                           currentPath === item.path
-                            ? 'text-accent border-accent font-bold'
-                            : 'border-transparent ' + textColorClass,
-                          hoverColorClass
+                            ? 'text-orange-400'
+                            : 'text-white'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {
@@ -109,13 +72,16 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
             {/* Center - Logo */}
             <div className="absolute left-1/2 transform -translate-x-1/2">
-              <Link href="/" onClick={closeMenu}>
+              <Link
+                href="/"
+                onClick={closeMenu}
+              >
                 <Image
                   src="/images/heiwalogo.webp"
                   alt="Heiwa House"
-                  width={logoSize.width}
-                  height={logoSize.height}
-                  className="h-12 w-auto transition-all duration-300"
+                  width={140}
+                  height={46}
+                  className="h-12 w-auto"
                   style={{ height: 'auto' }}
                 />
               </Link>
@@ -123,49 +89,54 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
             {/* Right Side - Phone & Book Now Button */}
             <div className="hidden lg:flex items-center space-x-6">
-              <a href="tel:+351912193785" className={cn('flex items-center text-sm transition-colors', textColorClass, hoverColorClass)}>
-                <span>+351 912 193 785</span>
-              </a>
+              {/* Phone Number */}
+              <div className="flex items-center text-sm text-white">
+                <span className="tracking-wide">Call. +351 912 193 785</span>
+              </div>
 
+              {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded"
               >
                 <Bed className="w-4 h-4" />
                 BOOK NOW
               </button>
             </div>
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button - positioned on the right */}
             <div className="lg:hidden ml-auto">
               <button
                 onClick={toggleMenu}
-                className={cn(
-                  'inline-flex items-center justify-center p-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent',
-                  textColorClass,
-                  hoverColorClass
-                )}
+                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-400"
                 aria-expanded={isOpen}
                 aria-controls="mobile-menu"
                 aria-label="Toggle mobile menu"
               >
-                {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
+                {isOpen ? (
+                  <X className="block h-6 w-6" />
+                ) : (
+                  <Menu className="block h-6 w-6" />
+                )}
               </button>
             </div>
           </div>
         ) : (
-          // Inner Pages Layout: Standard horizontal layout with animated minimization
-          <div className={cn('flex justify-between items-center', heightClass)}>
+          // Other Pages Layout: Original layout with logo on left
+          <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <Link href="/" onClick={closeMenu}>
+              <Link
+                href="/"
+                onClick={closeMenu}
+              >
                 <Image
                   src="/images/heiwalogo.webp"
                   alt="Heiwa House"
-                  width={logoSize.width}
-                  height={logoSize.height}
-                  className="transition-all duration-300"
-                  style={{ height: 'auto', width: scrolled ? '100px' : '120px' }}
+                  width={120}
+                  height={40}
+                  className="h-10 w-auto"
+                  style={{ height: 'auto' }}
                 />
               </Link>
             </div>
@@ -179,12 +150,10 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors uppercase border-b-2 pb-1',
-                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-sm',
+                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase',
                           currentPath === item.path
-                            ? 'text-accent border-accent font-bold'
-                            : 'border-transparent ' + textColorClass,
-                          hoverColorClass
+                            ? 'text-orange-400'
+                            : 'text-white'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
                         {...(item.external && {
@@ -200,18 +169,17 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 </ul>
               </nav>
 
-              <a href="tel:+351912193785" className={cn('flex items-center text-sm transition-colors', textColorClass, hoverColorClass)}>
-                <span>+351 912 193 785</span>
-              </a>
+              {/* Phone Number */}
+              <div className="flex items-center text-sm text-white">
+                <span className="tracking-wide">Call. +351 912 193 785</span>
+              </div>
 
+              {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className={cn(
-                  'bg-accent hover:bg-accent-hover text-white font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent',
-                  scrolled ? 'px-4 py-2 text-xs' : 'px-6 py-3 text-sm'
-                )}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase"
               >
-                <Bed className={scrolled ? 'w-3 h-3' : 'w-4 h-4'} />
+                <Bed className="w-4 h-4" />
                 BOOK NOW
               </button>
             </div>
@@ -220,16 +188,16 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             <div className="lg:hidden">
               <button
                 onClick={toggleMenu}
-                className={cn(
-                  'inline-flex items-center justify-center p-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent',
-                  textColorClass,
-                  hoverColorClass
-                )}
+                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-400"
                 aria-expanded={isOpen}
                 aria-controls="mobile-menu"
                 aria-label="Toggle mobile menu"
               >
-                {isOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
+                {isOpen ? (
+                  <X className="block h-6 w-6" />
+                ) : (
+                  <Menu className="block h-6 w-6" />
+                )}
               </button>
             </div>
           </div>
@@ -240,17 +208,16 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
       {isOpen && (
         <div className="lg:hidden" id="mobile-menu">
           <nav aria-label="Mobile navigation">
-            <ul className="px-4 pt-4 pb-6 space-y-2 bg-black/90 backdrop-blur-sm border-t border-gray-700">
+            <ul className="px-4 pt-4 pb-6 space-y-2 bg-black/90 backdrop-blur-sm border-t border-gray-600">
               {items.map((item) => (
                 <li key={item.path}>
                   <Link
                     href={item.path}
                     className={cn(
-                      'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase rounded-lg',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus:ring-offset-black',
+                      'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase',
                       currentPath === item.path
-                        ? 'text-accent bg-accent/10 font-bold'
-                        : 'text-white hover:text-accent hover:bg-white/5'
+                        ? 'text-orange-400'
+                        : 'text-white hover:text-orange-400'
                     )}
                     onClick={closeMenu}
                     aria-current={currentPath === item.path ? 'page' : undefined}
@@ -264,14 +231,14 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   </Link>
                 </li>
               ))}
-              <li className="pt-4 border-t border-gray-700">
-                <a href="tel:+351912193785" className="block text-sm text-white mb-3">📞 +351 912 193 785</a>
+              <li className="pt-4 border-t border-gray-600">
+                <div className="text-sm text-white mb-3">📞 +351 912 193 785</div>
                 <button
                   onClick={() => {
                     openBooking()
                     closeMenu()
                   }}
-                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase min-h-[44px] rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent focus:ring-offset-black"
+                  className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase"
                 >
                   <Bed className="w-4 h-4" />
                   BOOK NOW

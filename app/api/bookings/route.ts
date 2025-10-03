@@ -60,11 +60,11 @@ export async function POST(request: NextRequest) {
 
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .insert([bookingData])
+      .insert([bookingData] as never[])
       .select()
-      .single()
+      .single() as { data: { id: string } | null; error: unknown }
 
-    if (bookingError) {
+    if (bookingError || !booking) {
       console.error('Error creating booking:', bookingError)
       return NextResponse.json({
         success: false,
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
 
       const { data: client, error: clientError } = await supabase
         .from('clients')
-        .insert([clientData])
+        .insert([clientData] as never[])
         .select()
         .single()
 
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
 
         const { error: assignmentError } = await supabase
           .from('room_assignments')
-          .insert([assignmentData])
+          .insert([assignmentData] as never[])
 
         if (assignmentError) {
           console.error('Error creating room assignment:', assignmentError)
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
 
         const { error: assignmentError } = await supabase
           .from('surf_week_assignments')
-          .insert([assignmentData])
+          .insert([assignmentData] as never[])
 
         if (assignmentError) {
           console.error('Error creating surf week assignment:', assignmentError)

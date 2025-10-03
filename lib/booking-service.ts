@@ -52,7 +52,10 @@ class BookingService {
       });
 
       return {
-        ...response,
+        success: response.success,
+        bookingId: response.bookingId,
+        status: response.status as 'pending' | 'confirmed' | 'cancelled' | undefined,
+        message: response.message,
         loading: false,
         submittedAt: new Date(),
       };
@@ -107,8 +110,9 @@ class BookingService {
       const checkInDate = new Date(booking.checkIn);
       const checkOutDate = new Date(booking.checkOut);
       const now = new Date();
+      now.setHours(0, 0, 0, 0);
 
-      if (checkInDate < now.setHours(0, 0, 0, 0)) {
+      if (checkInDate < now) {
         errors.push('Check-in date cannot be in the past');
       }
 

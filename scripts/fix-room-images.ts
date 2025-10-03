@@ -3,6 +3,13 @@
 
 import { supabaseAdmin } from '../lib/supabase'
 
+interface Room {
+  id: string
+  name: string
+  images?: string[]
+  [key: string]: any
+}
+
 async function fixRoomImages() {
   console.log('🔧 Fixing corrupted room image paths...')
 
@@ -19,7 +26,7 @@ async function fixRoomImages() {
   console.log(`📋 Found ${rooms?.length || 0} rooms`)
 
   // Fix each room's images
-  for (const room of rooms || []) {
+  for (const room of (rooms as Room[]) || []) {
     console.log(`\n🏠 Processing room: ${room.name} (${room.id})`)
     console.log(`   Current images:`, room.images)
 
@@ -47,9 +54,10 @@ async function fixRoomImages() {
     console.log(`   Fixed images:`, fixedImages)
 
     // Update the room
+    const updateData: Partial<Room> = { images: fixedImages }
     const { error: updateError } = await supabaseAdmin
       .from('rooms')
-      .update({ images: fixedImages })
+      .update(updateData as any)
       .eq('id', room.id)
 
     if (updateError) {

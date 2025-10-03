@@ -53,11 +53,11 @@ export default function RoomsPage() {
       room.image,
       room.image,
     ],
-    price: index === 3 ? 30 : index === 0 ? 90 : 80,
+    price: index === 3 ? 30 : index === 0 ? 80 : 80,
     beds: index === 3 ? 6 : index === 0 || index === 2 ? 2 : 1,
-    bathrooms: index === 3 ? 0 : 1,
+    bathrooms: index === 3 ? 2 : 1,
     category: index === 3 ? 'dorm' : index === 0 || index === 2 ? 'twin' : 'double',
-    description: room.description || `Beautiful room with ${index === 3 ? '6 beds' : index === 0 || index === 2 ? '2 beds' : '1 bed'}.`,
+    description: room.description || (index === 3 ? 'Shared dormitory room with 6 comfortable beds, perfect for solo travelers and groups looking for an affordable stay.' : `Beautiful room with ${index === 0 || index === 2 ? '2 beds' : '1 bed'}.`),
   }))
 
   const filteredRooms = selectedCategory === 'all' 

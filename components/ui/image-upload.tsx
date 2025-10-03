@@ -18,11 +18,19 @@ type UploadedFile = {
 type UploadProgress = {
   progress: number;
   file: File;
+  bytesTransferred?: number;
+  totalBytes?: number;
 };
 
 // Stub functions until supabase-storage is implemented
 const validateFile = (file: File) => ({ valid: true, error: '' });
-const uploadFiles = async (files: File[], path: string, bucket: string, onProgress: (index: number, progress: UploadProgress) => void) => {
+const uploadFiles = async (
+  files: File[],
+  path: string,
+  bucket: string,
+  onProgress: (index: number, progress: UploadProgress) => void,
+  onFileComplete?: (index: number, result: UploadedFile) => void
+): Promise<UploadedFile[]> => {
   // Stub implementation - return empty array
   return [];
 };
@@ -79,7 +87,7 @@ export function ImageUpload({
     }
 
     setUploading(true);
-    setUploadProgress({ bytesTransferred: 0, totalBytes: 1, progress: 0 });
+    setUploadProgress({ bytesTransferred: 0, totalBytes: 1, progress: 0, file: files[0] });
 
     try {
       const uploadedFiles = await uploadFiles(

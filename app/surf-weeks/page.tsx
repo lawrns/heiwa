@@ -222,7 +222,7 @@ export default function SurfWeeksPage() {
             <div>
               <h4 className="text-xl font-semibold text-gray-900 mb-4">June</h4>
               <ul className="space-y-2 text-gray-600">
-                <li>May 31 – June 07</li>
+                <li>June 01 – June 07</li>
                 <li>June 07 – June 14</li>
               </ul>
             </div>
@@ -291,7 +291,7 @@ export default function SurfWeeksPage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-xl text-gray-600">
-            *prices starting <span className="font-bold text-gray-900">450€</span>
+            Prices starting <span className="font-bold text-gray-900">450€</span>
           </p>
         </div>
       </section>

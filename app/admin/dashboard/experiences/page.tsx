@@ -65,7 +65,13 @@ export default function ExperiencesManagement() {
     try {
       if (editingExperience) {
         // Update existing experience
-        const updateData = {
+        const updateData: {
+          title: string
+          image_url: string | null
+          category: string | null
+          active: boolean
+          updated_at: string
+        } = {
           title: formData.title,
           image_url: formData.image_url || null,
           category: formData.category || null,
@@ -75,7 +81,7 @@ export default function ExperiencesManagement() {
 
         const { error } = await supabase
           .from('experiences')
-          .update(updateData)
+          .update(updateData as never)
           .eq('id', editingExperience.id)
 
         if (error) throw error
@@ -88,7 +94,7 @@ export default function ExperiencesManagement() {
             image_url: formData.image_url || null,
             category: formData.category || null,
             active: formData.active
-          }])
+          }] as never[])
 
         if (error) throw error
       }

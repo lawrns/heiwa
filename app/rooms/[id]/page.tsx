@@ -14,11 +14,18 @@ interface RoomPageProps {
   }>
 }
 
+export async function generateStaticParams() {
+  const rooms = await getRooms()
+  return rooms.map((room) => ({
+    id: room.id,
+  }))
+}
+
 export async function generateMetadata({ params }: RoomPageProps): Promise<Metadata> {
   const { id } = await params
   const rooms = await getRooms()
   const room = rooms.find(r => r.id === id)
-  
+
   if (!room) {
     return {
       title: 'Room Not Found - Heiwa House',

@@ -62,7 +62,7 @@ export default function NavigationManagement() {
     try {
       const { error } = await supabaseAdmin
         .from('navigation_items')
-        .upsert(item)
+        .upsert(item as never)
 
       if (error) {
         console.error('Error saving navigation item:', error)

@@ -7,18 +7,20 @@ function renderBackgroundMedia(video?: string, image?: string) {
   if (video) {
     return (
       <video
-        src={video}
         autoPlay
         loop
         muted
         playsInline
-        preload="metadata"
+        preload="auto"
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ 
+        style={{
           filter: 'brightness(0.7)',
-          transform: 'scale(1.02)' 
+          transform: 'scale(1.02)'
         }}
-      />
+      >
+        <source src={video} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
     )
   }
   

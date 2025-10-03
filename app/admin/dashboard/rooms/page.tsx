@@ -63,7 +63,7 @@ export default function RoomsManagement() {
     try {
       const { error } = await supabaseAdmin
         .from('rooms')
-        .upsert(room)
+        .upsert(room as never)
 
       if (error) {
         console.error('Error saving room:', error)

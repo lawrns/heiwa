@@ -32,14 +32,14 @@ export function Footer() {
             <h3 className="text-lg font-semibold text-white mb-4">Find us here</h3>
             <div className="w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3082.8544776556686!2d-9.4241!3d39.3567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDIxJzI0LjEiTiA5wrAyNScyNi44Ilc!5e0!3m2!1sen!2spt!4v1234567890"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3076.5367824744444!2d-9.1657!3d39.1853!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDExJzA3LjEiTiA5wrAwOSw1Ni41Ilc!5e0!3m2!1sen!2spt!4v1234567890"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Heiwa House Location"
+                title="Heiwa House Location - Santa Cruz, Portugal"
               />
             </div>
           </div>
