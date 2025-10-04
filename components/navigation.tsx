@@ -97,7 +97,10 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded"
+                className="px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded text-white"
+                style={{ backgroundColor: '#ec681c' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
               >
                 <Bed className="w-4 h-4" />
                 BOOK NOW
@@ -177,7 +180,10 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase"
+                className="px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase text-white"
+                style={{ backgroundColor: '#ec681c' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
               >
                 <Bed className="w-4 h-4" />
                 BOOK NOW
@@ -238,7 +244,10 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                     openBooking()
                     closeMenu()
                   }}
-                  className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase"
+                  className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase text-white"
+                  style={{ backgroundColor: '#ec681c' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
                 >
                   <Bed className="w-4 h-4" />
                   BOOK NOW
