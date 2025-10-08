@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { BedDouble, Bath } from 'lucide-react'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { PriceBadge } from '@/components/ui/price-badge'
+import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { getRooms, getFallbackRooms } from '@/lib/content'
 import ErrorBoundary from '@/components/error-boundary'
 import type { Room } from '@/lib/types'
@@ -40,25 +41,28 @@ export default function RoomsPage() {
     { id: 'twin', name: 'Twin Room' },
   ]
 
-  // Enhance rooms with detailed data
-  const enhancedRooms = rooms.map((room, index) => ({
-    ...room,
-    images: [
-      room.image,
-      room.image,
-      room.image,
-      room.image,
-      room.image,
-      room.image,
-      room.image,
-      room.image,
-    ],
-    price: index === 3 ? 30 : index === 0 ? 80 : 80,
-    beds: index === 3 ? 6 : index === 0 || index === 2 ? 2 : 1,
-    bathrooms: index === 3 ? 2 : 1,
-    category: index === 3 ? 'dorm' : index === 0 || index === 2 ? 'twin' : 'double',
-    description: room.description || (index === 3 ? 'Shared dormitory room with 6 comfortable beds, perfect for solo travelers and groups looking for an affordable stay.' : `Beautiful room with ${index === 0 || index === 2 ? '2 beds' : '1 bed'}.`),
-  }))
+  // Use real room data from database
+  const enhancedRooms = rooms.map((room) => {
+    // Determine category from room data
+    let category = 'double';
+    if (room.bookingType === 'perBed' || (room.capacity && room.capacity >= 4)) {
+      category = 'dorm';
+    } else if (room.capacity === 2) {
+      category = 'twin';
+    } else if (room.name.toLowerCase().includes('family')) {
+      category = 'family';
+    }
+
+    return {
+      ...room,
+      images: room.images && room.images.length > 0 ? room.images : [room.image],
+      price: room.pricing?.standard || room.pricing?.offSeason || 80,
+      beds: room.capacity || 1,
+      bathrooms: 1, // Default to 1, could be added to database later
+      category: category,
+      description: room.description || `Comfortable accommodation with capacity for ${room.capacity || 1} guest${(room.capacity || 1) > 1 ? 's' : ''}.`,
+    }
+  })
 
   const filteredRooms = selectedCategory === 'all' 
     ? enhancedRooms 
@@ -164,6 +168,9 @@ export default function RoomsPage() {
             )}
           </div>
         </section>
+
+        {/* Floating Check Availability Button */}
+        <FloatingCheckAvailability />
       </div>
     </ErrorBoundary>
   )

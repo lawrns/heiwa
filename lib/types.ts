@@ -10,8 +10,17 @@ export interface NavigationItem {
 export interface Room {
   id: string;         // Unique identifier
   name: string;       // Display name (e.g., "Room Nr 1")
-  image: string;      // Image URL from heiwahouse.com
+  image: string;      // Primary image URL (for backward compatibility)
+  images?: string[];  // Array of all images
   description?: string; // Optional description
+  capacity?: number;  // Maximum occupancy
+  pricing?: {         // Pricing structure
+    standard?: number;
+    offSeason?: number;
+  };
+  bookingType?: string; // 'whole' or 'perBed'
+  amenities?: string[]; // List of amenities
+  isActive?: boolean;   // Whether room is active
 }
 
 export interface Experience {

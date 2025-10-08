@@ -69,14 +69,45 @@ export const getRooms = async (): Promise<Room[]> => {
       return getFallbackRooms()
     }
 
-    const mappedRooms = data.map((room: { id: string; name: string; images: string[]; description: string }) => ({
-      id: room.id,
-      name: room.name,
-      image: room.images?.[0] || getFallbackRooms().find(r => r.name === room.name)?.image || getFallbackRooms()[0].image,
-      description: room.description || undefined
-    }))
+    const mappedRooms = data.map((room: {
+      id: string;
+      name: string;
+      images?: string[];
+      description?: string;
+      capacity?: number;
+      pricing?: { standard?: number; offSeason?: number };
+      bookingType?: string;
+      booking_type?: string;
+      amenities?: string[];
+      isActive?: boolean;
+      is_active?: boolean;
+    }) => {
+      const images = room.images && Array.isArray(room.images) && room.images.length > 0
+        ? room.images
+        : [getFallbackRooms().find(r => r.name === room.name)?.image || getFallbackRooms()[0].image];
 
-    console.log('Mapped rooms:', mappedRooms.length, 'rooms ready for display');
+      return {
+        id: room.id,
+        name: room.name,
+        image: images[0], // Primary image for backward compatibility
+        images: images,   // Full array of images
+        description: room.description || undefined,
+        capacity: room.capacity || undefined,
+        pricing: room.pricing || undefined,
+        bookingType: room.bookingType || room.booking_type || undefined,
+        amenities: room.amenities && Array.isArray(room.amenities) ? room.amenities : [],
+        isActive: room.isActive !== false && room.is_active !== false
+      }
+    })
+
+    console.log('Mapped rooms:', mappedRooms.length, 'rooms ready for display with full data');
+    console.log('Sample room data:', mappedRooms[0] ? {
+      name: mappedRooms[0].name,
+      imageCount: mappedRooms[0].images?.length || 0,
+      capacity: mappedRooms[0].capacity,
+      hasPrice: !!mappedRooms[0].pricing
+    } : 'No rooms');
+
     return mappedRooms
   } catch (error) {
     console.warn('Error fetching rooms from Supabase:', error)
