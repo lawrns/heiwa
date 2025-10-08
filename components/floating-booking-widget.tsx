@@ -1,12 +1,10 @@
 'use client'
 
 import { StandaloneWidget } from './BookingWidget/StandaloneWidget'
-// import { useBooking } from '@/lib/booking-context'
+import { useBooking } from '@/lib/booking-context'
 
 export function FloatingBookingWidget() {
-  // const { isBookingOpen, closeBooking } = useBooking()
-  const isBookingOpen = false
-  const closeBooking = () => {}
+  const { isBookingOpen, closeBooking } = useBooking()
 
   return (
     <>

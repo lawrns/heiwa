@@ -7,13 +7,12 @@ import { Menu, X, Bed } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { NavigationProps, NavigationItem } from '@/lib/types'
 import { getNavigationItems } from '@/lib/content'
-// import { useBooking } from '@/lib/booking-context'
+import { useBooking } from '@/lib/booking-context'
 
 export function Navigation({ items: initialItems, currentPath, className }: NavigationProps & { items?: NavigationItem[] }) {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<NavigationItem[]>(initialItems || [])
-  // const { openBooking } = useBooking()
-  const openBooking = () => {} // Temporary placeholder
+  const { openBooking } = useBooking()
 
   useEffect(() => {
     if (!initialItems) {

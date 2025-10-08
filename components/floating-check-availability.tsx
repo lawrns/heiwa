@@ -1,11 +1,10 @@
 'use client'
 
 import { Calendar, Users } from 'lucide-react'
-// import { useBooking } from '@/lib/booking-context'
+import { useBooking } from '@/lib/booking-context'
 
 export function FloatingCheckAvailability() {
-  // const { openBooking } = useBooking()
-  const openBooking = () => {}
+  const { openBooking } = useBooking()
 
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 pb-safe">
