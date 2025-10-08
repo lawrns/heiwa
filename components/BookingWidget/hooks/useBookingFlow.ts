@@ -300,7 +300,7 @@ export function useBookingFlow() {
     } finally {
       setLoading(false);
     }
-  }, [state.dates.checkIn, state.dates.checkOut]);
+  }, [state.dates.checkIn, state.dates.checkOut, setError, setLoading]);
 
   const submitBooking = useCallback(async () => {
     if (!state.guestDetails.length || !state.dates.checkIn || !state.dates.checkOut) {
@@ -333,7 +333,7 @@ export function useBookingFlow() {
     } finally {
       setLoading(false);
     }
-  }, [state.guestDetails, state.dates, state.selectedOption, state.guests]);
+  }, [state.guestDetails, state.dates, state.selectedOption, state.guests, setError, setLoading]);
 
   return {
     state,

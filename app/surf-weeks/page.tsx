@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import { Play, Bed, UtensilsCrossed, Activity, MapPin, Waves, Star, Mail } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 
 export const metadata: Metadata = {
   title: 'Surf Camp in Santa Cruz, Portugal - Learn Surfing With Heiwa',
@@ -358,6 +359,9 @@ export default function SurfWeeksPage() {
           </Accordion>
         </div>
       </section>
+
+      {/* Floating Check Availability Button */}
+      <FloatingCheckAvailability />
     </div>
   )
 }

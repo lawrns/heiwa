@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Rooms API</title></head>
+<body>
+<h1>Testing /api/rooms</h1>
+<div id="result"></div>
+<script>
+fetch('/api/rooms')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+    console.log('Rooms data:', data);
+  })
+  .catch(err => {
+    document.getElementById('result').innerHTML = '<p style="color:red">Error: ' + err.message + '</p>';
+    console.error('Error:', err);
+  });
+</script>
+</body>
+</html>

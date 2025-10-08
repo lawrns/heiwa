@@ -5,8 +5,7 @@ import Link from 'next/link'
 import { BedDouble, Bath } from 'lucide-react'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { PriceBadge } from '@/components/ui/price-badge'
-import { FloatingCheckAvailability } from '@/components/floating-check-availability'
-import { getRooms, getFallbackRooms } from '@/lib/content'
+import { getFallbackRooms } from '@/lib/content'
 import ErrorBoundary from '@/components/error-boundary'
 import type { Room } from '@/lib/types'
 
@@ -18,8 +17,44 @@ export default function RoomsPage() {
   useEffect(() => {
     const loadRooms = async () => {
       try {
-        const fetchedRooms = await getRooms()
-        setRooms(fetchedRooms)
+        console.log('Fetching rooms from API...')
+        // Use API endpoint instead of direct server function call
+        const response = await fetch('/api/rooms')
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        console.log('API response:', data)
+
+        if (data.success && data.data?.rooms) {
+          // Transform API response to match Room interface
+          const transformedRooms = data.data.rooms.map((room: {
+            id: string
+            name: string
+            images: string[]
+            featured_image: string
+            description: string
+            capacity: number
+            price_per_night: number
+            amenities: string[]
+            booking_type: string
+          }) => ({
+            id: room.id,
+            name: room.name,
+            image: room.featured_image || room.images?.[0] || '',
+            images: room.images || [room.featured_image],
+            description: room.description,
+            capacity: room.capacity,
+            pricing: { standard: room.price_per_night },
+            bookingType: room.booking_type,
+            amenities: room.amenities,
+            isActive: true
+          }))
+          console.log('Transformed rooms:', transformedRooms.length, 'rooms')
+          setRooms(transformedRooms)
+        } else {
+          throw new Error('No rooms data in response')
+        }
       } catch (error) {
         console.error('Failed to load rooms:', error)
         const fallbackRooms = getFallbackRooms()
@@ -168,9 +203,6 @@ export default function RoomsPage() {
             )}
           </div>
         </section>
-
-        {/* Floating Check Availability Button */}
-        <FloatingCheckAvailability />
       </div>
     </ErrorBoundary>
   )

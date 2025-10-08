@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Room } from '../types';
 import { apiFetch } from '../lib/api';
 
@@ -22,7 +22,12 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 
-  const fetchRooms = async () => {
+  // Create stable string representations of dates to prevent infinite loops
+  // Convert dates to timestamps for stable comparison
+  const checkInTime = checkIn?.getTime() ?? null;
+  const checkOutTime = checkOut?.getTime() ?? null;
+
+  const fetchRooms = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -34,9 +39,9 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
       let params = new URLSearchParams();
 
       // If dates are selected, check availability
-      if (checkIn && checkOut) {
-        const startDate = checkIn.toISOString().split('T')[0];
-        const endDate = checkOut.toISOString().split('T')[0];
+      if (checkInTime && checkOutTime) {
+        const startDate = new Date(checkInTime).toISOString().split('T')[0];
+        const endDate = new Date(checkOutTime).toISOString().split('T')[0];
 
         apiUrl = '/rooms/availability';
         params = new URLSearchParams({
@@ -138,11 +143,12 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
     } finally {
       setLoading(false);
     }
-  };
+  }, [checkInTime, checkOutTime, guests]);
 
   useEffect(() => {
     fetchRooms();
-  }, [checkIn, checkOut, guests]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkInTime, checkOutTime, guests]);
 
   return {
     rooms,

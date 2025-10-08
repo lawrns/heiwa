@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -8,30 +8,20 @@ interface ImageCarouselProps {
   images: string[]
   alt: string
   className?: string
-  aspectRatio?: 'video' | 'square' | 'portrait'
+  showDots?: boolean
+  showArrows?: boolean
+  aspectRatio?: string
 }
 
 export function ImageCarousel({ 
   images, 
   alt, 
-  className = '',
-  aspectRatio = 'video' 
+  className = '', 
+  showDots = true, 
+  showArrows = true,
+  aspectRatio = 'aspect-video'
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
-
-  const aspectClasses = {
-    video: 'aspect-video',
-    square: 'aspect-square',
-    portrait: 'aspect-[3/4]',
-  }
-
-  if (!images || images.length === 0) {
-    return (
-      <div className={`${aspectClasses[aspectRatio]} bg-gray-200 flex items-center justify-center ${className}`}>
-        <p className="text-gray-400">No images available</p>
-      </div>
-    )
-  }
 
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) => 
@@ -49,65 +39,62 @@ export function ImageCarousel({
     setCurrentIndex(index)
   }
 
+  if (images.length === 0) return null
+
   return (
     <div className={`relative group ${className}`}>
       {/* Main Image */}
-      <div className={`relative ${aspectClasses[aspectRatio]} overflow-hidden bg-gray-100`}>
+      <div className={`relative ${aspectRatio} overflow-hidden rounded-lg`}>
         <Image
           src={images[currentIndex]}
-          alt={`${alt} - Image ${currentIndex + 1}`}
+          alt={`${alt} ${currentIndex + 1}`}
           fill
           className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority={currentIndex === 0}
         />
+        
+        {/* Navigation Arrows */}
+        {showArrows && images.length > 1 && (
+          <>
+            <button
+              onClick={goToPrevious}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 focus:outline-none focus:ring-2 focus:ring-white/50"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={goToNext}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 focus:outline-none focus:ring-2 focus:ring-white/50"
+              aria-label="Next image"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </>
+        )}
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Image Counter */}
       {images.length > 1 && (
-        <>
-          {/* Previous Button */}
-          <button
-            onClick={goToPrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-            aria-label="Previous image"
-          >
-            <ChevronLeft className="w-6 h-6 text-gray-800" />
-          </button>
-
-          {/* Next Button */}
-          <button
-            onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-            aria-label="Next image"
-          >
-            <ChevronRight className="w-6 h-6 text-gray-800" />
-          </button>
-        </>
+        <div className="absolute top-4 right-4 bg-black/50 text-white text-sm px-2 py-1 rounded">
+          {currentIndex + 1}/{images.length}
+        </div>
       )}
 
-      {/* Dot Navigation */}
-      {images.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10 bg-black/20 px-3 py-2 rounded-full backdrop-blur-sm">
+      {/* Dots Indicator */}
+      {showDots && images.length > 1 && (
+        <div className="flex justify-center mt-4 space-x-2">
           {images.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 ${
-                index === currentIndex
-                  ? 'w-8 h-2 bg-white rounded-full'
-                  : 'w-2 h-2 bg-white/50 hover:bg-white/75 rounded-full'
+              className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                index === currentIndex 
+                  ? 'bg-gray-800' 
+                  : 'bg-gray-300 hover:bg-gray-500'
               }`}
               aria-label={`Go to image ${index + 1}`}
             />
           ))}
-        </div>
-      )}
-
-      {/* Image Counter */}
-      {images.length > 1 && (
-        <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm font-medium z-10">
-          {currentIndex + 1} / {images.length}
         </div>
       )}
     </div>

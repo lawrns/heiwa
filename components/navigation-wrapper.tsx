@@ -3,8 +3,8 @@
 import { usePathname } from 'next/navigation'
 import { Navigation } from './navigation'
 
-export function NavigationWrapper() {
+export default function NavigationWrapper() {
   const pathname = usePathname()
-  
+
   return <Navigation currentPath={pathname} />
 }

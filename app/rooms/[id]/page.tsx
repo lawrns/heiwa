@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { BedDouble, Bath, Maximize2, Users } from 'lucide-react'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { BookingButton } from '@/components/booking-button'
+import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { getRooms } from '@/lib/content'
 import type { Room } from '@/lib/types'
 
@@ -289,6 +290,9 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
           </div>
         )}
       </div>
+
+      {/* Floating Check Availability Button */}
+      <FloatingCheckAvailability />
     </div>
   )
 }

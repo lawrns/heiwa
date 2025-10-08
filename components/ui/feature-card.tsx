@@ -46,3 +46,4 @@ export function FeatureCard({ title, description, image, href, className = '' }:
     </div>
   )
 }
+
