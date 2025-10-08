@@ -1,6 +1,6 @@
 'use client'
 
-import { useBooking } from '@/lib/booking-context'
+// import { useBooking } from '@/lib/booking-context'
 
 interface BookingButtonProps {
   roomId?: string
@@ -9,7 +9,8 @@ interface BookingButtonProps {
 }
 
 export function BookingButton({ roomId, className, children }: BookingButtonProps) {
-  const { openBooking } = useBooking()
+  // const { openBooking } = useBooking()
+  const openBooking = () => {}
 
   const handleClick = () => {
     openBooking()
