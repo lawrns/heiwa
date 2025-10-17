@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Get total capacity (simplified - you might want to make this more sophisticated)
-        const { data: rooms, error: roomsError } = await supabase
+        const { data: rooms } = await supabase
           .from('rooms')
           .select('capacity')
           .eq('is_active', true) as { data: { capacity: number }[] | null; error: unknown }

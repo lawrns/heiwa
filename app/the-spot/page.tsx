@@ -2,7 +2,6 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ImageCarousel } from '@/components/ui/image-carousel'
-import { Waves, Lightbulb, Zap } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'The Spot - Heiwa House Facilities & Activities',

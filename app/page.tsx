@@ -28,24 +28,6 @@ export default function HomePage() {
     { id: '4', name: 'Paul Egan', rating: 5, text: 'Perfect place to learn surfing and meet like-minded people. Highly recommended!', timeAgo: '3 weeks ago', verified: true },
   ]
 
-  // Sample data for activities
-  const activities = [
-    { id: '1', title: 'Surfing and lessons', image: '/images/surf-lessons.jpg' },
-    { id: '2', title: 'Skateboarding', image: '/images/skateboarding.jpg' },
-    { id: '3', title: 'Yoga and spiritual practices', image: '/images/yoga-practices.jpg' },
-  ]
-
-  // Sample data for room images
-  const roomImages = [
-    '/images/rooms/room1.jpg',
-    '/images/rooms/room2.jpg',
-    '/images/rooms/room3.jpg',
-    '/images/rooms/room4.jpg',
-    '/images/rooms/room5.jpg',
-    '/images/rooms/room6.jpg',
-    '/images/rooms/room7.jpg',
-    '/images/rooms/room8.jpg',
-  ]
 
   return (
     <div className="min-h-screen">

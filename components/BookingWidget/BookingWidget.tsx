@@ -30,10 +30,8 @@ interface BookingWidgetProps {
 }
 
 export function BookingWidget({
-  className = '',
   config,
   isWebComponent = false,
-  externalTrigger,
   onModalStateChange
 }: BookingWidgetProps) {
   const [isOpen, setIsOpen] = useState(isWebComponent);

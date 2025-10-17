@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
 // API endpoint for getting all rooms (compatible with booking widget)
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('🏠 Fetching all rooms for booking widget')
 
