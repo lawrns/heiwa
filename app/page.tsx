@@ -6,6 +6,8 @@ import { FeatureCard } from '@/components/ui/feature-card'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { HostSection } from '@/components/ui/host-section'
 import { ActivitiesCarousel } from '@/components/ui/activity-card'
+import { AnimatedHeroHeading } from '@/components/ui/animated-hero-heading'
+import { ScrollIndicator } from '@/components/ui/scroll-indicator'
 
 export const metadata: Metadata = {
   title: 'Heiwa House - Surf Camp & Rooms in Santa Cruz, Portugal',
@@ -51,9 +53,10 @@ export default function HomePage() {
         {/* Hero Content */}
         <div className="relative h-full flex items-center justify-center text-center px-4">
           <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-              Welcome to Heiwa House
-            </h1>
+            <AnimatedHeroHeading
+              text="Welcome to Heiwa House"
+              className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg"
+            />
             <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
               Your surf and lifestyle destination in Santa Cruz, Portugal
             </p>
@@ -69,11 +72,7 @@ export default function HomePage() {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
-            <div className="w-1 h-2 bg-white/50 rounded-full" />
-          </div>
-        </div>
+        <ScrollIndicator />
       </section>
 
       {/* Heiwa Surf Weeks Section */}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -11,26 +11,32 @@ interface ImageCarouselProps {
   showDots?: boolean
   showArrows?: boolean
   aspectRatio?: string
+  autoAdvance?: boolean
+  autoAdvanceInterval?: number
 }
 
-export function ImageCarousel({ 
-  images, 
-  alt, 
-  className = '', 
-  showDots = true, 
+export function ImageCarousel({
+  images,
+  alt,
+  className = '',
+  showDots = true,
   showArrows = true,
-  aspectRatio = 'aspect-video'
+  aspectRatio = 'aspect-video',
+  autoAdvance = true,
+  autoAdvanceInterval = 5000
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1
     )
   }
 
   const goToNext = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     )
   }
@@ -39,10 +45,31 @@ export function ImageCarousel({
     setCurrentIndex(index)
   }
 
+  // Auto-advance carousel every N seconds when not hovered
+  useEffect(() => {
+    if (autoAdvance && images.length > 1 && !isHovered) {
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prevIndex) =>
+          prevIndex === images.length - 1 ? 0 : prevIndex + 1
+        )
+      }, autoAdvanceInterval)
+
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+        }
+      }
+    }
+  }, [autoAdvance, images.length, isHovered, autoAdvanceInterval])
+
   if (images.length === 0) return null
 
   return (
-    <div className={`relative group ${className}`}>
+    <div
+      className={`relative group ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {/* Main Image */}
       <div className={`relative ${aspectRatio} overflow-hidden rounded-lg`}>
         <Image
