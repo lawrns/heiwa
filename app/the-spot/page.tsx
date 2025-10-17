@@ -107,7 +107,7 @@ export default function TheSpotPage() {
             <ImageCarousel
               images={venueImages}
               alt="Heiwa House Property Overview"
-              aspectRatio="video"
+              aspectRatio="aspect-video"
             />
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function TheSpotPage() {
               <ImageCarousel
                 images={yogaImages}
                 alt="Yoga Dome"
-                aspectRatio="video"
+                aspectRatio="aspect-video"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ export default function TheSpotPage() {
               <ImageCarousel
                 images={skateparkImages}
                 alt="Skatepark and Ramps"
-                aspectRatio="video"
+                aspectRatio="aspect-video"
               />
             </div>
             <div className="order-1 lg:order-2">
@@ -223,7 +223,7 @@ export default function TheSpotPage() {
               <ImageCarousel
                 images={poolImages}
                 alt="Swimming Pool"
-                aspectRatio="video"
+                aspectRatio="aspect-video"
               />
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function TheSpotPage() {
               <ImageCarousel
                 images={gamesImages}
                 alt="Games and Recreation"
-                aspectRatio="video"
+                aspectRatio="aspect-video"
               />
             </div>
             <div className="order-1 lg:order-2">
