@@ -72,3 +72,4 @@ export function ActivitiesCarousel({ activities, className = '' }: ActivitiesCar
   )
 }
 
+

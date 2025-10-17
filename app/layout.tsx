@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import NavigationWrapper from '@/components/navigation-wrapper'
 import { Footer } from '@/components/footer'
+import { BookingProvider } from '@/lib/booking-context'
+import { FloatingBookingWidget } from '@/components/floating-booking-widget'
 import './globals.css'
 
 const inter = Inter({
@@ -86,11 +88,14 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased bg-surface text-text">
-        <NavigationWrapper />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
+        <BookingProvider>
+          <NavigationWrapper />
+          <main className="min-h-screen">
+            {children}
+          </main>
+          <Footer />
+          <FloatingBookingWidget />
+        </BookingProvider>
       </body>
     </html>
   )

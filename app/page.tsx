@@ -2,7 +2,6 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Bed } from 'lucide-react'
-import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { FeatureCard } from '@/components/ui/feature-card'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { HostSection } from '@/components/ui/host-section'
@@ -228,7 +227,7 @@ export default function HomePage() {
               title="Heiwa Surf"
               description="Experience world-class surf instruction with professional coaches guiding you through Portugal's best breaks. From beginners to advanced surfers, we'll help you catch your wave."
               image="/images/surf3.jpg"
-              href="/surf-weeks"
+              href="/surf"
             />
             <FeatureCard
               title="Heiwa Play"
@@ -496,10 +495,6 @@ export default function HomePage() {
           />
         </div>
       </section>
-
-
-      {/* Floating Check Availability Button */}
-      <FloatingCheckAvailability />
     </div>
   )
 }

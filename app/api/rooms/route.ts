@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     console.log('✅ Rooms fetched successfully:', activeRooms.length)
+    console.log('🔍 RAW DATABASE DATA:', JSON.stringify(activeRooms, null, 2))
 
     // Transform rooms to match booking widget expected format
     const transformedRooms = activeRooms.map((room: {
