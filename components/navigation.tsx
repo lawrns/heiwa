@@ -50,7 +50,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase',
+                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
                           currentPath === item.path
                             ? 'text-orange-400'
                             : 'text-white'
@@ -97,7 +97,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded text-white"
+                className="px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                 style={{ backgroundColor: '#ec681c' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
@@ -153,7 +153,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase',
+                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
                           currentPath === item.path
                             ? 'text-orange-400'
                             : 'text-white'
@@ -180,7 +180,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase text-white"
+                className="px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                 style={{ backgroundColor: '#ec681c' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
@@ -220,7 +220,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   <Link
                     href={item.path}
                     className={cn(
-                      'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase',
+                      'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded',
                       currentPath === item.path
                         ? 'text-orange-400'
                         : 'text-white hover:text-orange-400'
@@ -244,7 +244,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                     openBooking()
                     closeMenu()
                   }}
-                  className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase text-white"
+                  className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                   style={{ backgroundColor: '#ec681c' }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}

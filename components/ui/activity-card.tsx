@@ -23,7 +23,7 @@ export function ActivityCard({ activity, className = '' }: ActivityCardProps) {
           src={activity.image}
           alt={activity.title}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className="object-cover transition-transform duration-500"
         />
         
         {/* Dark Overlay */}

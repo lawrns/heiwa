@@ -18,7 +18,7 @@ export function FloatingBookingWidget() {
           />
 
           {/* StandaloneWidget positioned on the right */}
-          <div className="absolute top-0 right-0 h-full w-full max-w-lg shadow-2xl overflow-hidden">
+          <div className="absolute top-0 right-0 h-full w-full max-w-lg shadow-2xl overflow-hidden" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 20px)' }}>
             <StandaloneWidget
               config={{
                 buildId: 'react-widget-heiwa-page',

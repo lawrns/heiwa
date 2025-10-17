@@ -77,7 +77,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/surf-weeks"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus:outline-none focus:ring-2 focus:ring-offset-2 text-white"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
               style={{ backgroundColor: '#ec681c' }}
             >
               <Bed className="w-5 h-5" />
@@ -189,7 +189,7 @@ export default function HomePage() {
                         <div className="flex justify-end">
                           <Link
                             href="/surf-weeks"
-                            className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent/50"
+                            className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
                             style={{ backgroundColor: '#ec681c' }}
                           >
                             Book
@@ -205,7 +205,7 @@ export default function HomePage() {
               <div className="mt-6 text-center">
                 <Link
                   href="/surf-weeks"
-                  className="px-8 py-3 border-2 border-gray-300 bg-yellow-50 hover:bg-yellow-100 text-gray-900 font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500/50"
+                  className="px-8 py-3 border-2 border-gray-300 bg-yellow-50 hover:bg-yellow-100 text-gray-900 font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500/50 focus-visible:ring-offset-2"
                 >
                   Show All Surf Weeks
                 </Link>
@@ -292,7 +292,7 @@ export default function HomePage() {
           <div className="text-center">
             <Link
               href="/rooms"
-              className="inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus:outline-none focus:ring-2 focus:ring-offset-2 text-white"
+              className="inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
               style={{ backgroundColor: '#ec681c' }}
             >
               Explore All Rooms
@@ -336,7 +336,7 @@ export default function HomePage() {
               href="https://www.google.com/search?q=Heiwa+House+reviews"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
             >
               Review us on Google
             </Link>

@@ -59,7 +59,7 @@ export function ReviewCard({ review, className = '' }: ReviewCardProps) {
       </p>
 
       {/* Read More Link */}
-      <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+      <button className="text-blue-600 hover:text-blue-800 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 rounded">
         Read more
       </button>
     </div>
@@ -106,7 +106,7 @@ export function GoogleReviews({ reviews, rating, reviewCount, onReviewUs }: Goog
         </div>
         <button
           onClick={onReviewUs}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
         >
           Review us on Google
         </button>

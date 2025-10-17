@@ -60,9 +60,9 @@ export function RoomsGrid({ rooms }: RoomsGridProps) {
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors min-h-[44px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 ${
+                className={`px-6 py-2 text-sm font-medium whitespace-nowrap transition-colors min-h-[44px] rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
                   selectedCategory === category.id
-                    ? 'bg-accent text-white'
+                    ? 'bg-accent text-white font-bold border-b-2 border-accent-dark'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >

@@ -1,6 +1,33 @@
 @config "../tailwind.config.js";
 @import "tailwindcss";
 
+@layer base {
+  :root {
+    /* Color System */
+    --color-accent: #ec681c;
+    --color-accent-hover: #d65d16;
+    --color-accent-light: rgba(236, 104, 28, 0.1);
+    --color-accent-dark: #b8491a;
+
+    /* Semantic Colors */
+    --color-primary: #2B5F75;
+    --color-primary-light: #4A9DB5;
+    --color-primary-dark: #1A4252;
+
+    --color-secondary: #D4C5A9;
+    --color-secondary-light: #E8DCC4;
+    --color-secondary-dark: #B8A88C;
+
+    --color-surface: #FFFFFF;
+    --color-surface-alt: #F9F7F4;
+    --color-surface-light: #FAFAFA;
+
+    --color-text: #1A1A1A;
+    --color-text-muted: #5A5A5A;
+    --color-text-light: #757575;
+  }
+}
+
 @layer components {
   .btn-primary {
     background-color: #ec681c;
