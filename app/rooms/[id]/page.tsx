@@ -48,21 +48,20 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
     notFound()
   }
 
-  // Enhanced room data
+  // Enhanced room data with actual database images
   const roomIndex = rooms.findIndex(r => r.id === id)
   const isDorm = roomIndex === 3 || room.name.toLowerCase().includes('dorm')
   const isTwin = roomIndex === 0 || roomIndex === 2 || room.name.toLowerCase().includes('twin') || room.name.includes('Nr 1') || room.name.includes('Nr 3')
-  
+
+  // Use actual images from database, fallback to single image if not available
+  const roomData = room as Room & { images?: string[] }
+  const roomImages = roomData.images && Array.isArray(roomData.images) && roomData.images.length > 0
+    ? roomData.images
+    : room.image ? [room.image] : []
+
   const enhancedRoom = {
     ...room,
-    images: [
-      room.image,
-      room.image,
-      room.image,
-      room.image,
-      room.image,
-      room.image,
-    ],
+    images: roomImages.length > 0 ? roomImages : [room.image],
     price: isDorm ? 30 : room.name.includes('Nr 1') ? 90 : 80,
     beds: isDorm ? 6 : isTwin ? 2 : 1,
     bathrooms: isDorm ? 0 : 1,

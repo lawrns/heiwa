@@ -82,15 +82,21 @@ export const getRooms = async (): Promise<Room[]> => {
       isActive?: boolean;
       is_active?: boolean;
     }) => {
-      const images = room.images && Array.isArray(room.images) && room.images.length > 0
-        ? room.images
-        : [getFallbackRooms().find(r => r.name === room.name)?.image || getFallbackRooms()[0].image];
+      // Priority: Use database images first, then fallback to WordPress URLs
+      let images = [];
+      if (room.images && Array.isArray(room.images) && room.images.length > 0) {
+        images = room.images;
+      } else {
+        // Fallback: Try to find similar room in fallback data
+        const fallbackRoom = getFallbackRooms().find(r => r.name === room.name);
+        images = fallbackRoom ? [fallbackRoom.image] : [getFallbackRooms()[0].image];
+      }
 
       return {
         id: room.id,
         name: room.name,
         image: images[0], // Primary image for backward compatibility
-        images: images,   // Full array of images
+        images: images,   // Full array of images from database
         description: room.description || undefined,
         capacity: room.capacity || undefined,
         pricing: room.pricing || undefined,
