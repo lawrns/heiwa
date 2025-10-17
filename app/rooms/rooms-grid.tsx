@@ -93,7 +93,7 @@ export function RoomsGrid({ rooms }: RoomsGridProps) {
                     <ImageCarousel
                       images={room.images}
                       alt={room.name}
-                      aspectRatio="video"
+                      aspectRatio="aspect-video"
                     />
                     <PriceBadge price={room.price} />
                   </div>
