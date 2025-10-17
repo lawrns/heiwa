@@ -4,6 +4,8 @@ import NavigationWrapper from '@/components/navigation-wrapper'
 import { Footer } from '@/components/footer'
 import { BookingProvider } from '@/lib/booking-context'
 import { FloatingBookingWidget } from '@/components/floating-booking-widget'
+import { SkipToContent } from '@/components/ui/skip-to-content'
+import { FloatingCTAButton } from '@/components/ui/floating-cta-button'
 import './globals.css'
 
 const inter = Inter({
@@ -88,13 +90,15 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased bg-surface text-text">
+        <SkipToContent />
         <BookingProvider>
           <NavigationWrapper />
-          <main className="min-h-screen">
+          <main id="main-content" className="min-h-screen">
             {children}
           </main>
           <Footer />
           <FloatingBookingWidget />
+          <FloatingCTAButton />
         </BookingProvider>
       </body>
     </html>
