@@ -25,30 +25,31 @@ export default function TheSpotPage() {
 
   // Yoga dome images
   const yogaImages = [
-    '/images/yoga_dome1.jpg',
-    '/images/yoga_dome3.jpg',
-    '/images/yoga_dome2.jpg',
-    '/images/yoga_dome4.jpg',
+    '/images/DSC02767-scaled.jpg',
+    '/images/DSC03081-scaled.jpg',
+    '/images/DSC03521-scaled.jpg',
+    '/images/DSC03530-scaled.jpg',
   ]
 
   // Skatepark & activities images
   const skateparkImages = [
-    '/images/ramp3.jpg',
     '/images/DSC04325.jpg',
     '/images/DSF7498.jpg',
     '/images/DSC01794.jpg',
     '/images/DSC01829-Enhanced-NR-2.jpg',
+    '/images/DSF8322-scaled.jpg',
   ]
 
-  // Additional activity images
+  // Pool images
   const poolImages = [
-    '/images/pool333.jpg',
-    '/images/pool4444.jpg',
+    '/images/DSC08054-scaled.jpg',
+    '/images/DSC08600-scaled.jpg',
   ]
 
+  // Games & recreation images
   const gamesImages = [
-    '/images/games.jpg',
-    '/images/park333.jpg',
+    '/images/DSC08736-scaled.jpg',
+    '/images/DSF8298-scaled.jpg',
   ]
 
   return (
