@@ -1,0 +1,487 @@
+{
+  "projectName": "Heiwa House - Premium Million Dollar Experience Upgrade",
+  "tagline": "Elevating from Great to Unforgettable: Premium UX with Enchanting Surf House Soul",
+  "vision": "Create a luxury, immersive experience that feels like stepping into an exclusive, high-end retreat before users even arrive. Blend cutting-edge UI/UX with the warm, authentic vibe of a beloved surf house.",
+  "totalEstimatedDays": 12,
+  "phases": [
+    {
+      "phaseId": "PREMIUM-001",
+      "phaseName": "Navigation & Header Reimagined",
+      "description": "Transform navigation into a sophisticated, minimalist luxury header that feels premium yet approachable",
+      "priority": "CRITICAL",
+      "estimatedDays": 2,
+      "tasks": [
+        {
+          "taskId": "PREMIUM-001-001",
+          "title": "Sticky header with glassmorphism effect",
+          "description": "Navigation bar uses frosted glass effect (backdrop blur with subtle color) that feels premium and modern",
+          "implementation": "backdrop-blur-md with semi-transparent background that adapts to scroll position",
+          "techniques": ["Glassmorphism", "Scroll-based opacity changes", "Smooth transitions"],
+          "impact": "HIGH - Creates immediate luxury feel"
+        },
+        {
+          "taskId": "PREMIUM-001-002",
+          "title": "Animated logo reveal with scroll",
+          "description": "Logo animates in/out based on scroll position for elegant space usage",
+          "implementation": "useScroll hook to animate logo scale and opacity",
+          "techniques": ["Framer Motion", "Scroll tracking", "CSS transforms"],
+          "impact": "MEDIUM - Sophisticated visual flow"
+        },
+        {
+          "taskId": "PREMIUM-001-003",
+          "title": "Navigation with hover depth effect",
+          "description": "Nav items have subtle 3D depth on hover with cascading shadows",
+          "implementation": "CSS transforms with perspective and drop shadows",
+          "techniques": ["3D transforms", "Hover animations", "Staggered delays"],
+          "impact": "MEDIUM - Premium interactive feel"
+        },
+        {
+          "taskId": "PREMIUM-001-004",
+          "title": "Gradient accent line indicator",
+          "description": "Active nav item highlighted with animated gradient line underneath",
+          "implementation": "Animated gradient bar under active nav item",
+          "techniques": ["CSS gradients", "Motion paths", "Active state animations"],
+          "impact": "MEDIUM - Elegant visual hierarchy"
+        },
+        {
+          "taskId": "PREMIUM-001-005",
+          "title": "CTA button with premium interactions",
+          "description": "Book button with hover effects (glow, scale, shadow morphing)",
+          "implementation": "Multiple layered animations and effects on hover",
+          "techniques": ["Box shadows", "Glow effects", "Scale animations"],
+          "impact": "HIGH - Draws attention, conversion focused"
+        }
+      ]
+    },
+    {
+      "phaseId": "PREMIUM-002",
+      "phaseName": "Hero Section - Immersive & Cinematic",
+      "description": "Completely reimagine hero to feel like stepping into a premium travel video/experience",
+      "priority": "CRITICAL",
+      "estimatedDays": 3,
+      "tasks": [
+        {
+          "taskId": "PREMIUM-002-001",
+          "title": "Multi-layer parallax with depth effect",
+          "description": "Video background, text overlay, and floating elements move at different speeds creating immersive 3D depth",
+          "implementation": "Multiple parallax layers with adjusted scroll speeds",
+          "techniques": ["Parallax scrolling", "Z-depth layers", "Motion paths"],
+          "impact": "HIGH - Cinematic, immersive feel"
+        },
+        {
+          "taskId": "PREMIUM-002-002",
+          "title": "Animated mesh gradient overlay",
+          "description": "Animated gradient mesh that moves subtly over hero video creating dynamic visual interest",
+          "implementation": "SVG gradient animation or CSS gradient animation",
+          "techniques": ["SVG filters", "Gradient animations", "Blend modes"],
+          "impact": "MEDIUM - Visual sophistication"
+        },
+        {
+          "taskId": "PREMIUM-002-003",
+          "title": "Text reveal with staggered animation",
+          "description": "Hero headline reveals word-by-word with elegant fade and slide effect",
+          "implementation": "Framer Motion with staggered child variants",
+          "techniques": ["Text splitting", "Stagger animations", "Reveal effects"],
+          "impact": "HIGH - Dramatic, engaging entrance"
+        },
+        {
+          "taskId": "PREMIUM-002-004",
+          "title": "Floating element collection",
+          "description": "Small icons/emojis (🏄 🧘 🌊) floating gently around hero creating 'magical' feel",
+          "implementation": "Animated SVGs with organic motion paths",
+          "techniques": ["Motion paths", "Sine wave animations", "Floating particles"],
+          "impact": "MEDIUM - Enchanting, playful atmosphere"
+        },
+        {
+          "taskId": "PREMIUM-002-005",
+          "title": "Hero subtitle with typewriter effect",
+          "description": "Tagline appears with premium typewriter effect (smooth character reveal, not chunky)",
+          "implementation": "Smooth character reveal using clip-path or mask",
+          "techniques": ["Clip-path animation", "Mask-image", "SVG text path"],
+          "impact": "MEDIUM - Engaging, premium feel"
+        },
+        {
+          "taskId": "PREMIUM-002-006",
+          "title": "Scroll indicator with contextual message",
+          "description": "Scroll prompt shows different messages ('See the magic', 'Discover', etc) that rotate",
+          "implementation": "Animated text rotation with scroll indicator",
+          "techniques": ["Text rotation", "Message cycling", "Animated arrows"],
+          "impact": "LOW - Engagement enhancer"
+        },
+        {
+          "taskId": "PREMIUM-002-007",
+          "title": "Hero video optimization with blur-up",
+          "description": "Hero video loads with smooth blur-up effect from placeholder while buffering",
+          "implementation": "LQIP (Low Quality Image Placeholder) technique for video",
+          "techniques": ["Video optimization", "Progressive loading", "Blur effects"],
+          "impact": "MEDIUM - Better perceived performance"
+        }
+      ]
+    },
+    {
+      "phaseId": "PREMIUM-003",
+      "phaseName": "Premium Content Sections - Storytelling",
+      "description": "Elevate content sections with immersive storytelling techniques and premium layouts",
+      "priority": "HIGH",
+      "estimatedDays": 2.5,
+      "tasks": [
+        {
+          "taskId": "PREMIUM-003-001",
+          "title": "Intersection Observer with scroll reveal animations",
+          "description": "Content sections animate in as user scrolls to them with sophisticated reveal patterns",
+          "implementation": "useInView hook with customized animation patterns",
+          "techniques": ["Intersection Observer", "Staggered reveals", "Scale/fade effects"],
+          "impact": "HIGH - Professional, premium feel"
+        },
+        {
+          "taskId": "PREMIUM-003-002",
+          "title": "Image gallery with lightbox & zoom",
+          "description": "Images in content sections can be clicked for full-screen lightbox with zoom/pan capability",
+          "implementation": "Framer Motion modal with gesture support",
+          "techniques": ["Modal overlays", "Gesture controls", "Zoom animations"],
+          "impact": "MEDIUM - Better image showcase"
+        },
+        {
+          "taskId": "PREMIUM-003-003",
+          "title": "Split-screen content with interactive depth",
+          "description": "Text on left, image on right (or vice) with parallax when scrolling",
+          "implementation": "Split layout with individual parallax layers",
+          "techniques": ["Grid layouts", "Parallax offset", "Responsive stacking"],
+          "impact": "HIGH - Modern, premium layout pattern"
+        },
+        {
+          "taskId": "PREMIUM-003-004",
+          "title": "Premium testimonial carousel with avatar animations",
+          "description": "Testimonials auto-advance with avatar images, smooth transitions, and subtle animations",
+          "implementation": "Enhanced carousel with image support and animations",
+          "techniques": ["Carousel patterns", "Image preloading", "Smooth transitions"],
+          "impact": "HIGH - Social proof + engagement"
+        },
+        {
+          "taskId": "PREMIUM-003-005",
+          "title": "Stats counter with prefix animations",
+          "description": "Achievement numbers animate with euro/plus signs appearing and values counting",
+          "implementation": "Enhanced AnimatedCounter with symbol animations",
+          "techniques": ["Number animations", "Symbol reveals", "Staggered timing"],
+          "impact": "MEDIUM - Credibility builder"
+        }
+      ]
+    },
+    {
+      "phaseId": "PREMIUM-004",
+      "phaseName": "Premium CTA & Conversion Flow",
+      "description": "Maximize conversions with sophisticated, non-pushy premium CTAs",
+      "priority": "HIGH",
+      "estimatedDays": 1.5,
+      "tasks": [
+        {
+          "taskId": "PREMIUM-004-001",
+          "title": "Magnetic CTA button",
+          "description": "CTA button 'magnetic' effect - moves toward cursor on hover creating playful premium feel",
+          "implementation": "Mouse move tracking with transform calculation",
+          "techniques": ["Mouse tracking", "Transforms", "Easing functions"],
+          "impact": "HIGH - Irresistibly fun, converts better"
+        },
+        {
+          "taskId": "PREMIUM-004-002",
+          "title": "Staggered CTAs with scroll reveal",
+          "description": "Multiple CTAs appear at different scroll points with tailored messaging",
+          "implementation": "Multiple floating CTAs with scroll-based visibility",
+          "techniques": ["Scroll detection", "Conditional rendering", "Stagger timing"],
+          "impact": "MEDIUM - Better conversion funnel"
+        },
+        {
+          "taskId": "PREMIUM-004-003",
+          "title": "Premium booking modal with smooth transitions",
+          "description": "When CTA clicked, opens modal with premium blur backdrop and smooth animations",
+          "implementation": "Framer Motion modal with glassmorphism backdrop",
+          "techniques": ["Modal overlays", "Backdrop blur", "Portal rendering"],
+          "impact": "HIGH - Professional conversion experience"
+        },
+        {
+          "taskId": "PREMIUM-004-004",
+          "title": "Social proof notifications",
+          "description": "Toast notifications showing 'X people booking this week' appearing subtly at bottom",
+          "implementation": "Toast notification system with real data",
+          "techniques": ["Toast patterns", "FIFO queue", "Auto-dismiss"],
+          "impact": "MEDIUM - Creates urgency naturally"
+        }
+      ]
+    },
+    {
+      "phaseId": "PREMIUM-005",
+      "phaseName": "Cursor & Interactive Enhancements",
+      "description": "Elevate interactivity with sophisticated cursor and gesture feedback",
+      "priority": "MEDIUM",
+      "estimatedDays": 1,
+      "tasks": [
+        {
+          "taskId": "PREMIUM-005-001",
+          "title": "Custom cursor with context changes",
+          "description": "Custom animated cursor that changes appearance on hover over interactive elements",
+          "implementation": "Custom cursor CSS with element-specific SVG cursors",
+          "techniques": ["Custom cursors", "Cursor styling", "Context detection"],
+          "impact": "MEDIUM - Premium, polished feel"
+        },
+        {
+          "taskId": "PREMIUM-005-002",
+          "title": "Hover ripple effect on all interactive elements",
+          "description": "Material Design ripple effect on buttons and clickable elements",
+          "implementation": "SVG ripple animation component or CSS implementation",
+          "techniques": ["Ripple animations", "Event listeners", "SVG morphing"],
+          "impact": "MEDIUM - Tactile feedback"
+        },
+        {
+          "taskId": "PREMIUM-005-003",
+          "title": "Gesture support for mobile interactions",
+          "description": "Swipe, pinch, and long-press gestures for mobile users",
+          "implementation": "react-use-gesture or similar library",
+          "techniques": ["Touch events", "Gesture recognition", "Mobile UX"],
+          "impact": "HIGH - Better mobile experience"
+        }
+      ]
+    },
+    {
+      "phaseId": "PREMIUM-006",
+      "phaseName": "Performance & Loading Experience",
+      "description": "Premium loading experience that doesn't feel slow despite being smooth",
+      "priority": "HIGH",
+      "estimatedDays": 1.5,
+      "tasks": [
+        {
+          "taskId": "PREMIUM-006-001",
+          "title": "Premium page loader with progress visualization",
+          "description": "Animated loader on initial page load showing progress elegantly",
+          "implementation": "SVG-based loader with smooth animations",
+          "techniques": ["SVG animations", "Progress tracking", "Smooth easing"],
+          "impact": "MEDIUM - Better perceived performance"
+        },
+        {
+          "taskId": "PREMIUM-006-002",
+          "title": "Image lazy loading with fade-in blur effect",
+          "description": "Images lazy load with smooth fade-in and blur-up transition",
+          "implementation": "Intersection Observer with image placeholder",
+          "techniques": ["Lazy loading", "Blur-up effect", "Fade transitions"],
+          "impact": "MEDIUM - Better perceived speed"
+        },
+        {
+          "taskId": "PREMIUM-006-003",
+          "title": "Skeleton loading screens for dynamic content",
+          "description": "Premium skeleton screens that match layout while content loads",
+          "implementation": "Skeleton component with shimmer effect",
+          "techniques": ["Skeleton patterns", "Shimmer effects", "Layout matching"],
+          "impact": "MEDIUM - Professional async UX"
+        },
+        {
+          "taskId": "PREMIUM-006-004",
+          "title": "Web Vitals optimization & monitoring",
+          "description": "Optimize for Core Web Vitals (LCP, FID, CLS) with monitoring",
+          "implementation": "Performance monitoring and optimization",
+          "techniques": ["Performance API", "Web Vitals", "Optimization strategies"],
+          "impact": "HIGH - Better user experience + SEO"
+        }
+      ]
+    },
+    {
+      "phaseId": "PREMIUM-007",
+      "phaseName": "Immersive Visual Effects",
+      "description": "Add sophisticated visual effects that enhance (not distract) from experience",
+      "priority": "MEDIUM",
+      "estimatedDays": 1.5,
+      "tasks": [
+        {
+          "taskId": "PREMIUM-007-001",
+          "title": "Floating particle background system",
+          "description": "Subtle animated particles (bubbles, waves) floating in background at low opacity",
+          "implementation": "Canvas-based particle system or SVG animations",
+          "techniques": ["Particle systems", "Canvas rendering", "SVG animations"],
+          "impact": "MEDIUM - Enchanting atmosphere"
+        },
+        {
+          "taskId": "PREMIUM-007-002",
+          "title": "Liquid swipe section transitions",
+          "description": "Sections transition with organic liquid wave effect between colors/content",
+          "implementation": "SVG morphing or Canvas animation",
+          "techniques": ["SVG morphing", "Canvas drawing", "Ease functions"],
+          "impact": "HIGH - Memorable, unique transitions"
+        },
+        {
+          "taskId": "PREMIUM-007-003",
+          "title": "Gradient shift animation on scroll",
+          "description": "Background colors shift subtly through gradient spectrum as user scrolls",
+          "implementation": "CSS gradients with scroll-based color interpolation",
+          "techniques": ["Gradient animations", "Color transitions", "Scroll tracking"],
+          "impact": "MEDIUM - Ambient visual interest"
+        },
+        {
+          "taskId": "PREMIUM-007-004",
+          "title": "SVG illustration animations",
+          "description": "Custom SVG illustrations (surfboard, wave, yoga pose) with subtle idle animations",
+          "implementation": "SVG with Framer Motion or CSS animations",
+          "techniques": ["SVG animations", "CSS transforms", "Keyframes"],
+          "impact": "MEDIUM - Brand personality"
+        }
+      ]
+    },
+    {
+      "phaseId": "PREMIUM-008",
+      "phaseName": "Premium Typography & Layout",
+      "description": "Elevate typography system with premium font combinations and spacing",
+      "priority": "MEDIUM",
+      "estimatedDays": 1,
+      "tasks": [
+        {
+          "taskId": "PREMIUM-008-001",
+          "title": "Variable font system with weight animation",
+          "description": "Use variable fonts that can animate weight changes smoothly",
+          "implementation": "Google Fonts variable fonts with CSS transitions",
+          "techniques": ["Variable fonts", "Font-weight animation", "CSS transitions"],
+          "impact": "MEDIUM - Modern, sophisticated typography"
+        },
+        {
+          "taskId": "PREMIUM-008-002",
+          "title": "Premium grid system with golden ratio",
+          "description": "Layout follows golden ratio proportions for mathematical harmony",
+          "implementation": "CSS Grid with calculated ratio-based sizes",
+          "techniques": ["CSS Grid", "Golden ratio math", "Spacing system"],
+          "impact": "MEDIUM - Unconsciously feels 'right'"
+        },
+        {
+          "taskId": "PREMIUM-008-003",
+          "title": "Advanced text effects (gradient text, shadow)",
+          "description": "Headlines with gradient colors, custom shadows, and blend effects",
+          "implementation": "CSS background-clip, text-shadow, mix-blend-mode",
+          "techniques": ["CSS effects", "Gradient text", "Blend modes"],
+          "impact": "MEDIUM - Premium headline treatment"
+        }
+      ]
+    },
+    {
+      "phaseId": "PREMIUM-009",
+      "phaseName": "Premium Mobile Experience",
+      "description": "Mobile-first premium experience that rivals desktop",
+      "priority": "HIGH",
+      "estimatedDays": 1.5,
+      "tasks": [
+        {
+          "taskId": "PREMIUM-009-001",
+          "title": "Mobile-optimized navigation drawer",
+          "description": "Premium side drawer/menu with smooth slide-in and glassmorphism",
+          "implementation": "Animated drawer with backdrop",
+          "techniques": ["Drawer patterns", "Slide animations", "Touch areas"],
+          "impact": "HIGH - Mobile usability"
+        },
+        {
+          "taskId": "PREMIUM-009-002",
+          "title": "Touch-optimized interactive zones",
+          "description": "All interactive elements have minimum 48px touch targets with haptic feedback where possible",
+          "implementation": "Proper sizing with touch event handling",
+          "techniques": ["Touch sizing", "Haptic feedback", "Touch events"],
+          "impact": "HIGH - Mobile accessibility"
+        },
+        {
+          "taskId": "PREMIUM-009-003",
+          "title": "Swipe-based carousel navigation",
+          "description": "Carousels respond to swipe gestures for natural mobile navigation",
+          "implementation": "Touch event listeners with drag calculation",
+          "techniques": ["Swipe detection", "Drag calculation", "Momentum scrolling"],
+          "impact": "MEDIUM - Natural mobile UX"
+        },
+        {
+          "taskId": "PREMIUM-009-004",
+          "title": "App-like bottom navigation",
+          "description": "Bottom nav bar that sticks and provides quick access to key sections (premium UX pattern)",
+          "implementation": "Sticky bottom nav with icon navigation",
+          "techniques": ["Fixed positioning", "Safe area", "Tab patterns"],
+          "impact": "MEDIUM - App-like experience"
+        }
+      ]
+    }
+  ],
+  "implementationStrategy": {
+    "approach": "Phased Progressive Enhancement",
+    "startWith": ["PREMIUM-001", "PREMIUM-002", "PREMIUM-004"],
+    "difficulty": "ADVANCED - Requires strong animation & performance knowledge",
+    "testing": "Visual regression + performance profiling + user testing",
+    "deployment": "Staged rollout with feature flags"
+  },
+  "estimatedTotalEffort": {
+    "days": 12,
+    "developmentTeam": "1-2 Senior Full-stack Developers with animation expertise",
+    "designer": "1 UX/Motion Designer (optional but recommended)"
+  },
+  "requiredLibraries": [
+    "framer-motion: Advanced animations",
+    "@use-gesture/react: Gesture support",
+    "react-use-measure: Responsive measurements",
+    "lottie-react: Complex animations",
+    "use-deep-compare: Performance optimization",
+    "html5-qrcode: Optional QR code booking"
+  ],
+  "expectedOutcomes": [
+    "Premium, luxury feel that justifies higher pricing",
+    "+25-40% increase in user engagement",
+    "+15-25% improvement in conversion rates",
+    "Viral-worthy shareability on social media",
+    "Premium brand perception ($$$)",
+    "Reduced bounce rate from hero section",
+    "Improved Core Web Vitals scores",
+    "Mobile-first premium experience"
+  ],
+  "keyPrinciples": {
+    "principle1": "Less is more - sophistication through subtlety",
+    "principle2": "Animation should enhance, never distract",
+    "principle3": "Performance is a feature - smooth 60fps always",
+    "principle4": "Maintain enchanting surf house soul - don't over-corporate",
+    "principle5": "Every interaction should feel intentional and rewarding",
+    "principle6": "Mobile experience equals desktop quality"
+  },
+  "inspirationSources": [
+    "Luxury hotel websites (Four Seasons, Aman Resorts)",
+    "Premium travel apps (Airbnb, Luxury travel experiences)",
+    "High-end sneaker drops (premium ecommerce UX)",
+    "Apple product pages (minimalist premium design)",
+    "Figma/Framer design systems (cutting-edge UX)",
+    "Awwwards award-winning sites (inspiration)"
+  ],
+  "measurableMetrics": {
+    "engagement": {
+      "scrollDepth": "Target: 85%+ scroll to footer",
+      "timeOnPage": "Target: +30% increase",
+      "interactionRate": "Target: 60%+ users interact with animations"
+    },
+    "conversion": {
+      "CTAClickRate": "Target: +20% increase",
+      "bookingCompletion": "Target: +15% improvement",
+      "abandonmentRate": "Target: -20% reduction"
+    },
+    "performance": {
+      "LCP": "Target: < 2.5s",
+      "FID": "Target: < 100ms",
+      "CLS": "Target: < 0.1",
+      "FPS": "Target: 60fps minimum"
+    },
+    "qualitative": {
+      "userFeedback": "Premium, luxury, memorable",
+      "shareability": "Users share on social media",
+      "brandPerception": "High-end, trustworthy, exclusive"
+    }
+  },
+  "budgetConsideration": {
+    "total": "$8,000 - $15,000 USD",
+    "breakdown": {
+      "animation_implementation": "40%",
+      "performance_optimization": "20%",
+      "motion_design_consultation": "15%",
+      "testing_refinement": "15%",
+      "documentation": "10%"
+    }
+  },
+  "notes": {
+    "criticalSuccess": "Do NOT over-animate. Each animation must serve UX purpose. Premium = restraint + quality, not quantity.",
+    "surfHouseVibe": "Keep it warm, welcoming, fun. Add sophistication without losing personality. Think 5-star resort, not corporate.",
+    "beforeStarting": "Audit current site for performance. Optimize images, reduce bloat. A million dollar site must load like one.",
+    "timeline": "Recommend 2-3 weeks implementation + 1 week testing/refinement",
+    "recommendation": "Start with hero and nav - these create 70% of premium perception"
+  }
+}
