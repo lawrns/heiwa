@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { BedDouble, Bath } from 'lucide-react'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { PriceBadge } from '@/components/ui/price-badge'
+import { HoverCard } from '@/components/ui/hover-card'
 import type { Room } from '@/lib/types'
 
 interface RoomsGridProps {
@@ -83,11 +84,14 @@ export function RoomsGrid({ rooms }: RoomsGridProps) {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {filteredRooms.map((room) => (
-                <Link
+                <HoverCard
                   key={room.id}
-                  href={`/rooms/${room.id}`}
-                  className="bg-white rounded-lg shadow-card overflow-hidden group hover-lift block transition-all duration-300 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                  className="h-full"
                 >
+                  <Link
+                    href={`/rooms/${room.id}`}
+                    className="bg-white rounded-lg shadow-card overflow-hidden group hover-lift block transition-all duration-300 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 h-full flex flex-col"
+                  >
                   {/* Image Carousel */}
                   <div className="relative">
                     <ImageCarousel
@@ -129,7 +133,8 @@ export function RoomsGrid({ rooms }: RoomsGridProps) {
                       <span>→</span>
                     </div>
                   </div>
-                </Link>
+                  </Link>
+                </HoverCard>
               ))}
             </div>
           )}
