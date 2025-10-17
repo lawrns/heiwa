@@ -340,10 +340,7 @@ export default function HomePage() {
               href="https://www.google.com/search?q=Heiwa+House+reviews"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-              style={{ backgroundColor: '#ec681c' }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
+              className="px-4 py-2 text-sm font-semibold rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 btn-accent"
             >
               Review us on Google
             </Link>

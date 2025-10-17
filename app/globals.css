@@ -62,6 +62,21 @@
     outline: none;
     box-shadow: 0 0 0 2px #ec681c;
   }
+
+  .btn-accent {
+    background-color: #ec681c;
+    color: #FFFFFF;
+    transition: background-color 0.15s ease;
+  }
+
+  .btn-accent:hover {
+    background-color: #d65d16;
+  }
+
+  .btn-accent:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #d65d16;
+  }
 }
 
 @layer base {
