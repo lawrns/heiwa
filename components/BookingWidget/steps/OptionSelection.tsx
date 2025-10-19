@@ -92,9 +92,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const handleCheckInChange = (dateStr: string) => {
     setCheckInDate(dateStr);
     if (dateStr && checkOutDate) {
-      // Fix timezone issue: append time to ensure correct date parsing
-      const checkIn = new Date(dateStr + 'T12:00:00');
-      const checkOut = new Date(checkOutDate + 'T12:00:00');
+      // Use UTC dates to avoid timezone issues
+      const checkIn = new Date(dateStr + 'T00:00:00.000Z');
+      const checkOut = new Date(checkOutDate + 'T00:00:00.000Z');
       if (checkIn < checkOut) {
         actions.setDates(checkIn, checkOut);
       }
@@ -104,9 +104,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const handleCheckOutChange = (dateStr: string) => {
     setCheckOutDate(dateStr);
     if (checkInDate && dateStr) {
-      // Fix timezone issue: append time to ensure correct date parsing
-      const checkIn = new Date(checkInDate + 'T12:00:00');
-      const checkOut = new Date(dateStr + 'T12:00:00');
+      // Use UTC dates to avoid timezone issues
+      const checkIn = new Date(checkInDate + 'T00:00:00.000Z');
+      const checkOut = new Date(dateStr + 'T00:00:00.000Z');
       if (checkIn < checkOut) {
         actions.setDates(checkIn, checkOut);
       }
@@ -124,7 +124,10 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     let basePrice = 0;
     if (state.experienceType === 'room') {
       if (state.dates.checkIn && state.dates.checkOut) {
-        const nights = Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24));
+        // Calculate nights using UTC dates to avoid timezone issues
+        const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
+        const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
+        const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
         const unit = typeof opt.pricePerNight === 'number' ? opt.pricePerNight : (opt.price ?? 0);
 
         // Price is per room per night - user selects ONE specific room
@@ -187,28 +190,18 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const calculateTotalPrice = (option: any) => {
     if (state.experienceType === 'room') {
       // Use local state dates if available, otherwise fall back to state dates
-      const checkIn = checkInDate ? new Date(checkInDate + 'T12:00:00') : state.dates.checkIn;
-      const checkOut = checkOutDate ? new Date(checkOutDate + 'T12:00:00') : state.dates.checkOut;
-
-      // Debug logging
-      console.log('[OptionSelection] calculateTotalPrice DEBUG:', {
-        checkInDate,
-        checkOutDate,
-        'state.dates.checkIn': state.dates.checkIn,
-        'state.dates.checkOut': state.dates.checkOut,
-        checkIn,
-        checkOut,
-        'option.pricePerNight': option.pricePerNight,
-        'option.price': option.price,
-        option
-      });
+      const checkIn = checkInDate ? new Date(checkInDate + 'T00:00:00.000Z') : state.dates.checkIn;
+      const checkOut = checkOutDate ? new Date(checkOutDate + 'T00:00:00.000Z') : state.dates.checkOut;
 
       if (checkIn && checkOut) {
-        const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
+        // Calculate nights using UTC dates to avoid timezone issues
+        const checkInUTC = new Date(checkIn.getFullYear(), checkIn.getMonth(), checkIn.getDate());
+        const checkOutUTC = new Date(checkOut.getFullYear(), checkOut.getMonth(), checkOut.getDate());
+        const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
+        
         if (nights > 0) {
           const pricePerNight = option.pricePerNight || option.price || 0;
           const total = pricePerNight * nights;
-          console.log('[OptionSelection] Calculated price:', { nights, pricePerNight, total });
           return total;
         }
       }
@@ -463,7 +456,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-orange-800">
-                  Duration: {Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} nights
+                  Duration: {(() => {
+                    const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
+                    const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
+                    return Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
+                  })()} nights
                 </span>
                 <span className="text-sm text-orange-600">
                   {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
@@ -617,7 +614,17 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <h4 className="font-semibold text-blue-900 mb-2">Your Selection</h4>
                 <p className="text-blue-700 text-sm">
-                  {state.guests} guest{state.guests !== 1 ? 's' : ''} • {Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} night{Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) !== 1 ? 's' : ''} • {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
+                  {state.guests} guest{state.guests !== 1 ? 's' : ''} • {(() => {
+                    const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
+                    const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
+                    const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
+                    return nights;
+                  })()} night{(() => {
+                    const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
+                    const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
+                    const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
+                    return nights !== 1 ? 's' : '';
+                  })()} • {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
                 </p>
               </div>
 
@@ -693,7 +700,12 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                 </div>
                                 <div className="text-xs text-gray-500">
                                   {state.experienceType === 'room'
-                                    ? (state.dates.checkIn && state.dates.checkOut ? `for ${Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} night${Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24)) > 1 ? 's' : ''}` : 'per night')
+                                    ? (state.dates.checkIn && state.dates.checkOut ? (() => {
+                                        const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
+                                        const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
+                                        const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
+                                        return `for ${nights} night${nights > 1 ? 's' : ''}`;
+                                      })() : 'per night')
                                     : 'per person'
                                   }
                                 </div>

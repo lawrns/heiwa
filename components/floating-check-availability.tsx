@@ -4,8 +4,8 @@ import { Calendar, Users } from 'lucide-react'
 
 export function FloatingCheckAvailability() {
   const openBooking = () => {
-    // TODO: Re-enable when BookingProvider is fixed
-    console.log('Booking widget temporarily disabled')
+    // This component is deprecated - use FloatingBookingWidget instead
+    console.log('FloatingCheckAvailability is deprecated - use FloatingBookingWidget')
   }
 
   return (

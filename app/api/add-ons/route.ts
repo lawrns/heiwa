@@ -4,8 +4,6 @@ import { supabase } from '@/lib/supabase'
 // API endpoint for getting all add-ons
 export async function GET() {
   try {
-    console.log('🛍️ Fetching all add-ons')
-
     // Get all active add-ons
     const { data: addOns, error: addOnsError } = await supabase
       .from('add_ons')
@@ -22,8 +20,6 @@ export async function GET() {
         addOns: []
       })
     }
-
-    console.log('✅ Add-ons fetched successfully:', addOns?.length || 0)
 
     return NextResponse.json({
       success: true,

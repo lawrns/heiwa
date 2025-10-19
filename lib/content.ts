@@ -50,7 +50,6 @@ export const navigationItems = getFallbackNavigationItems()
 // Room data - fetch from CMS or use fallback (Hybrid approach)
 export const getRooms = async (): Promise<Room[]> => {
   try {
-    console.log('Fetching rooms from Supabase...');
     const { data, error } = await supabase
       .from('rooms')
       .select('*')
@@ -62,10 +61,7 @@ export const getRooms = async (): Promise<Room[]> => {
       return getFallbackRooms()
     }
 
-    console.log('Raw rooms data from Supabase:', data?.length || 0, 'rooms found');
-
     if (!data || data.length === 0) {
-      console.log('No rooms found in database, using fallback data');
       return getFallbackRooms()
     }
 
@@ -106,18 +102,9 @@ export const getRooms = async (): Promise<Room[]> => {
       }
     })
 
-    console.log('Mapped rooms:', mappedRooms.length, 'rooms ready for display with full data');
-    console.log('Sample room data:', mappedRooms[0] ? {
-      name: mappedRooms[0].name,
-      imageCount: mappedRooms[0].images?.length || 0,
-      capacity: mappedRooms[0].capacity,
-      hasPrice: !!mappedRooms[0].pricing
-    } : 'No rooms');
-
     return mappedRooms
   } catch (error) {
     console.warn('Error fetching rooms from Supabase:', error)
-    console.log('Falling back to static room data');
     return getFallbackRooms()
   }
 }

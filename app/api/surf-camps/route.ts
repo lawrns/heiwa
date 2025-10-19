@@ -4,8 +4,6 @@ import { supabase } from '@/lib/supabase'
 // API endpoint for getting all surf camps
 export async function GET() {
   try {
-    console.log('🏄‍♂️ Fetching all surf camps')
-
     // Get all active surf camps
     const { data: surfCamps, error: surfCampsError } = await supabase
       .from('surf_camps')
@@ -20,8 +18,6 @@ export async function GET() {
         error: 'Failed to fetch surf camps'
       }, { status: 500 })
     }
-
-    console.log('✅ Surf camps fetched successfully:', surfCamps?.length || 0)
 
     return NextResponse.json({
       success: true,
