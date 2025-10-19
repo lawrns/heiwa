@@ -8,7 +8,7 @@ import { HostSection } from '@/components/ui/host-section'
 import { ActivitiesCarousel } from '@/components/ui/activity-card'
 import { AnimatedHeroHeading } from '@/components/ui/animated-hero-heading'
 import { ScrollIndicator } from '@/components/ui/scroll-indicator'
-import { UrgencyMessage, LiveBookingCount, SocialProof } from '@/components/ui/urgency-messaging'
+import { GoogleRatingSummary } from '@/components/ui/google-reviews'
 
 export const metadata: Metadata = {
   title: 'Heiwa House - Surf Camp & Rooms in Santa Cruz, Portugal',
@@ -65,16 +65,10 @@ export default function HomePage() {
               Your surf and lifestyle destination in Santa Cruz, Portugal
             </p>
             
-            {/* Social Proof */}
-            <div className="flex justify-center mb-4">
-              <SocialProof reviews={127} rating={4.8} className="text-white/80" />
-            </div>
-            
-            {/* Urgency Messaging */}
-            <div className="flex flex-wrap justify-center gap-3 mb-6">
-              <UrgencyMessage type="spots-left" count={3} />
-              <LiveBookingCount count={12} />
-            </div>
+              {/* Google Reviews */}
+              <div className="flex justify-center mb-6">
+                <GoogleRatingSummary className="text-white/90" />
+              </div>
             
             <Link
               href="/surf-weeks"

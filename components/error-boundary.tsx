@@ -1,172 +1,134 @@
 'use client'
 
-import React from 'react'
-import type { ApiErrorBoundaryState } from '@/lib/types'
+import React, { Component, ErrorInfo, ReactNode } from 'react'
+import { AlertTriangle, RefreshCw } from 'lucide-react'
 
-interface ErrorBoundaryProps {
-  children: React.ReactNode
-  fallback?: React.ComponentType<{ error: Error; retry: () => void }>
-  onError?: (error: Error, errorInfo: React.ErrorInfo) => void
+interface Props {
+  children: ReactNode
+  fallback?: ReactNode
 }
 
-type ErrorBoundaryState = ApiErrorBoundaryState
+interface State {
+  hasError: boolean
+  error: Error | null
+  errorInfo: ErrorInfo | null
+}
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
+export class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
     super(props)
     this.state = {
       hasError: false,
-      retryCount: 0,
+      error: null,
+      errorInfo: null,
     }
   }
 
-  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
+  static getDerivedStateFromError(error: Error): State {
     return {
       hasError: true,
       error,
+      errorInfo: null,
     }
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // Log error to console in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error Boundary caught an error:', error, errorInfo)
+    }
+
+    // Log to external service in production (e.g., Sentry)
+    if (process.env.NODE_ENV === 'production') {
+      // TODO: Integrate with error logging service
+      // logErrorToService(error, errorInfo)
+    }
 
     this.setState({
+      error,
       errorInfo,
     })
-
-    // Call optional error handler
-    this.props.onError?.(error, errorInfo)
-
-    // Log to monitoring service if available
-    if (typeof window !== 'undefined' && 'gtag' in window) {
-      const gtag = (window as { gtag: (type: string, event: string, params: Record<string, unknown>) => void }).gtag
-      gtag('event', 'exception', {
-        description: error.toString(),
-        fatal: false,
-      })
-    }
   }
 
-  handleRetry = () => {
-    this.setState(prevState => ({
+  handleReset = () => {
+    this.setState({
       hasError: false,
-      error: undefined,
-      errorInfo: undefined,
-      retryCount: prevState.retryCount + 1,
-    }))
+      error: null,
+      errorInfo: null,
+    })
   }
 
   render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
-        const FallbackComponent = this.props.fallback
-        return <FallbackComponent error={this.state.error!} retry={this.handleRetry} />
+        return this.props.fallback
       }
 
-      return <DefaultErrorFallback error={this.state.error!} retry={this.handleRetry} />
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+            <div className="flex justify-center mb-4">
+              <AlertTriangle className="h-16 w-16 text-red-500" />
+            </div>
+            
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Oops! Something went wrong
+            </h1>
+            
+            <p className="text-gray-600 mb-6">
+              We're sorry for the inconvenience. An unexpected error occurred.
+            </p>
+
+            {process.env.NODE_ENV === 'development' && this.state.error && (
+              <div className="mb-6 p-4 bg-red-50 rounded-lg text-left">
+                <p className="text-sm font-semibold text-red-900 mb-2">
+                  Error Details (Development Only):
+                </p>
+                <p className="text-xs text-red-700 font-mono break-all">
+                  {this.state.error.toString()}
+                </p>
+                {this.state.errorInfo && (
+                  <details className="mt-2">
+                    <summary className="text-xs text-red-700 cursor-pointer">
+                      Stack Trace
+                    </summary>
+                    <pre className="text-xs text-red-600 mt-2 overflow-auto max-h-40">
+                      {this.state.errorInfo.componentStack}
+                    </pre>
+                  </details>
+                )}
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={this.handleReset}
+                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-accent hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors"
+              >
+                <RefreshCw className="h-5 w-5 mr-2" />
+                Try Again
+              </button>
+              
+              <a
+                href="/"
+                className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors"
+              >
+                Go Home
+              </a>
+            </div>
+
+            <p className="mt-6 text-sm text-gray-500">
+              If this problem persists, please{' '}
+              <a href="/contact" className="text-accent hover:text-accent-hover underline">
+                contact us
+              </a>
+              .
+            </p>
+          </div>
+        </div>
+      )
     }
 
     return this.props.children
   }
 }
-
-// Default error fallback component
-interface DefaultErrorFallbackProps {
-  error: Error
-  retry: () => void
-}
-
-const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({ error, retry }) => {
-  const isApiError = error.message.includes('fetch') || error.message.includes('API')
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-surface">
-      <div className="max-w-md mx-auto px-4 py-8 text-center">
-        <div className="mb-6">
-          <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-            <svg
-              className="w-8 h-8 text-red-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
-          </div>
-          <h2 className="text-xl font-heading font-semibold text-text mb-2">
-            {isApiError ? 'Service Temporarily Unavailable' : 'Something went wrong'}
-          </h2>
-          <p className="text-muted text-sm mb-6">
-            {isApiError
-              ? 'We\'re having trouble connecting to our booking service. This usually resolves itself quickly.'
-              : 'An unexpected error occurred. Our team has been notified.'
-            }
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <button
-            onClick={retry}
-            className="w-full px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            Try Again
-          </button>
-
-          <div className="text-xs text-muted">
-            <p>If the problem persists, please contact us:</p>
-            <p className="mt-1">
-              <a
-                href="mailto:info@heiwahouse.com"
-                className="text-primary hover:underline"
-              >
-                info@heiwahouse.com
-              </a>
-              {' • '}
-              <a
-                href="tel:+351912193785"
-                className="text-primary hover:underline"
-              >
-                +351 912 193 785
-              </a>
-            </p>
-          </div>
-        </div>
-
-        {process.env.NODE_ENV === 'development' && (
-          <details className="mt-6 text-left">
-            <summary className="text-xs text-muted cursor-pointer hover:text-text">
-              Error Details (Development)
-            </summary>
-            <pre className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded overflow-auto">
-              {error.toString()}
-            </pre>
-          </details>
-        )}
-      </div>
-    </div>
-  )
-}
-
-// Higher-order component for easier usage
-export const withErrorBoundary = <P extends object>(
-  Component: React.ComponentType<P>,
-  errorBoundaryProps?: Omit<ErrorBoundaryProps, 'children'>
-) => {
-  const WrappedComponent = (props: P) => (
-    <ErrorBoundary {...errorBoundaryProps}>
-      <Component {...props} />
-    </ErrorBoundary>
-  )
-
-  WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`
-
-  return WrappedComponent
-}
-
-export default ErrorBoundary
-

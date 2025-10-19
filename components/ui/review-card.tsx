@@ -21,6 +21,7 @@ export function ReviewCard({ review, className = '' }: ReviewCardProps) {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
+        data-testid="star"
         className={`w-3 h-3 sm:w-4 sm:h-4 ${
           i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
         }`}

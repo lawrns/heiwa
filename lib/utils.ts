@@ -1,106 +1,130 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Currency formatting
-export function formatCurrency(amount: number, currency: string = 'USD'): string {
-  if (isNaN(amount) || !isFinite(amount)) {
-    return '$0.00'
+/**
+ * Calculate the number of nights between two dates
+ * Uses UTC dates to avoid timezone issues
+ */
+export function calculateNights(checkIn: Date, checkOut: Date): number {
+  if (!checkIn || !checkOut || isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
+    return 0
   }
 
-  const formatter = new Intl.NumberFormat('en-US', {
+  // Use UTC dates to avoid timezone issues
+  const checkInUTC = new Date(checkIn.getFullYear(), checkIn.getMonth(), checkIn.getDate())
+  const checkOutUTC = new Date(checkOut.getFullYear(), checkOut.getMonth(), checkOut.getDate())
+  
+  const timeDiff = checkOutUTC.getTime() - checkInUTC.getTime()
+  const nights = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
+  
+  return Math.max(0, nights)
+}
+
+/**
+ * Calculate total price for a booking option
+ */
+export function calculateTotalPrice(option: any, nights: number): number {
+  if (!option) return 0
+
+  // For rooms, calculate based on nights
+  if (option.pricePerNight !== undefined) {
+    return (option.pricePerNight || 0) * nights
+  }
+
+  // For surf weeks or fixed price items
+  if (option.price !== undefined) {
+    return option.price || 0
+  }
+
+  return 0
+}
+
+/**
+ * Format price with euro symbol
+ */
+export function formatPrice(price: number): string {
+  return new Intl.NumberFormat('en-EU', {
     style: 'currency',
-    currency: currency,
+    currency: 'EUR',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  })
-
-  return formatter.format(amount)
+  }).format(price)
 }
 
-// Date formatting
-export function formatDate(
-  date: string | Date | null | undefined,
-  format: 'short' | 'long' | 'full' = 'long'
-): string {
-  if (!date) return 'Invalid Date'
+/**
+ * Format date for display
+ */
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date)
+}
 
-  try {
-    let dateObj: Date
+/**
+ * Validate email format
+ */
+export function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}
 
-    if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      // Handle date-only strings like '2024-03-15' by avoiding timezone conversion
-      const [year, month, day] = date.split('-').map(Number)
-      dateObj = new Date(year, month - 1, day)
-    } else {
-      dateObj = new Date(date)
-    }
+/**
+ * Validate phone number format
+ */
+export function isValidPhone(phone: string): boolean {
+  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/
+  return phoneRegex.test(phone.replace(/\s/g, ''))
+}
 
-    if (isNaN(dateObj.getTime())) return 'Invalid Date'
+/**
+ * Generate a unique ID
+ */
+export function generateId(): string {
+  return Math.random().toString(36).substr(2, 9)
+}
 
-    if (format === 'short') {
-      return `${dateObj.getMonth() + 1}/${dateObj.getDate()}/${dateObj.getFullYear()}`
-    }
-
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    }
-
-    if (format === 'full') {
-      options.weekday = 'long'
-      options.hour = 'numeric'
-      options.minute = 'numeric'
-    }
-
-    return new Intl.DateTimeFormat('en-US', options).format(dateObj)
-  } catch {
-    return 'Invalid Date'
+/**
+ * Debounce function for search inputs
+ */
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: NodeJS.Timeout
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait)
   }
 }
 
-// Email validation
-export function validateEmail(email: string): boolean {
-  if (typeof email !== 'string') return false
-
-  const emailRegex = /^[^\s@]+@[^\s@]+(\.[^\s@]+)*$/
-  return emailRegex.test(email.trim()) && !email.includes('..')
+/**
+ * Truncate text to specified length
+ */
+export function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text
+  return text.substr(0, maxLength) + '...'
 }
 
-// ID generation
-export function generateId(prefix: string = '', length: number = 16): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = prefix ? `${prefix}_` : ''
-
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-
-  return result
+/**
+ * Capitalize first letter of string
+ */
+export function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-// Date calculation
-export function calculateDaysBetween(
-  startDate: string | Date,
-  endDate: string | Date
-): number {
-  try {
-    const start = new Date(startDate)
-    const end = new Date(endDate)
-
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      return NaN
-    }
-
-    const diffTime = end.getTime() - start.getTime()
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    return diffDays
-  } catch {
-    return NaN
-  }
+/**
+ * Convert string to slug format
+ */
+export function slugify(str: string): string {
+  return str
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
 }

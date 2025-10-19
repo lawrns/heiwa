@@ -33,7 +33,13 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
   return (
     <nav
-      className={cn('fixed top-0 left-0 right-0 z-50 bg-gray-800 backdrop-blur-sm', className)}
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        isHomepage 
+          ? 'bg-black/20 backdrop-blur-md' 
+          : 'bg-gray-800 backdrop-blur-sm',
+        className
+      )}
       role="navigation"
       aria-label="Main navigation"
     >

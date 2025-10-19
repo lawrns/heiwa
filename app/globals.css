@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 /* Premium typography from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Archivo:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -97,16 +97,16 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Archivo Narrow', sans-serif;
     font-weight: 700;
     color: #1a1a1a;
     letter-spacing: 0.02em;
   }
 
   h1 {
-    font-size: 3rem;
-    line-height: 1.2;
-    font-weight: 800;
+    font-size: 4.5rem;
+    line-height: 1.1;
+    font-weight: 700;
   }
 
   h2 {
