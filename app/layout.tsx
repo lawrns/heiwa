@@ -6,6 +6,7 @@ import { BookingProvider } from '@/lib/booking-context'
 import { FloatingBookingWidget } from '@/components/floating-booking-widget'
 import { SkipToContent } from '@/components/ui/skip-to-content'
 import { FloatingCTAButton } from '@/components/ui/floating-cta-button'
+import { PerformanceMonitor } from '@/components/ui/performance-monitor'
 import './globals.css'
 
 const inter = Inter({
@@ -88,8 +89,13 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Archivo:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        <link rel="preload" href="/images/heiwalogo.webp" as="image" type="image/webp" />
+        <link rel="dns-prefetch" href="//zejrhceuuujzgyukdwnb.supabase.co" />
+        <meta name="theme-color" content="#ec681c" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className="font-sans antialiased bg-surface text-text">
+        <PerformanceMonitor />
         <SkipToContent />
         <BookingProvider>
           <NavigationWrapper />

@@ -41,9 +41,12 @@ export default function HomePage() {
           loop
           muted
           playsInline
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover"
+          poster="/images/videos/Timeline-1-poster.jpg"
         >
           <source src="/images/videos/Timeline-1.mp4" type="video/mp4" />
+          <source src="/images/videos/Timeline-1.webm" type="video/webm" />
           Your browser does not support the video tag.
         </video>
 
