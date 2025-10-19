@@ -8,6 +8,7 @@ import { HostSection } from '@/components/ui/host-section'
 import { ActivitiesCarousel } from '@/components/ui/activity-card'
 import { AnimatedHeroHeading } from '@/components/ui/animated-hero-heading'
 import { ScrollIndicator } from '@/components/ui/scroll-indicator'
+import { UrgencyMessage, LiveBookingCount, SocialProof } from '@/components/ui/urgency-messaging'
 
 export const metadata: Metadata = {
   title: 'Heiwa House - Surf Camp & Rooms in Santa Cruz, Portugal',
@@ -60,9 +61,21 @@ export default function HomePage() {
               text="Welcome to Heiwa House"
               className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg"
             />
-            <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
+            <p className="text-xl md:text-2xl text-white/90 mb-6 drop-shadow-md">
               Your surf and lifestyle destination in Santa Cruz, Portugal
             </p>
+            
+            {/* Social Proof */}
+            <div className="flex justify-center mb-4">
+              <SocialProof reviews={127} rating={4.8} className="text-white/80" />
+            </div>
+            
+            {/* Urgency Messaging */}
+            <div className="flex flex-wrap justify-center gap-3 mb-6">
+              <UrgencyMessage type="spots-left" count={3} />
+              <LiveBookingCount count={12} />
+            </div>
+            
             <Link
               href="/surf-weeks"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"

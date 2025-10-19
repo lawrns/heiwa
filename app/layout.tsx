@@ -8,6 +8,7 @@ import { SkipToContent } from '@/components/ui/skip-to-content'
 import { FloatingCTAButton } from '@/components/ui/floating-cta-button'
 import { PerformanceMonitor } from '@/components/ui/performance-monitor'
 import { PageTransition } from '@/components/ui/page-transition'
+import { WhatsAppButton } from '@/components/ui/whatsapp-button'
 import './globals.css'
 
 const inter = Inter({
@@ -108,6 +109,7 @@ export default function RootLayout({
           <Footer />
           <FloatingBookingWidget />
           <FloatingCTAButton />
+          <WhatsAppButton />
         </BookingProvider>
       </body>
     </html>
