@@ -7,6 +7,7 @@ import { FloatingBookingWidget } from '@/components/floating-booking-widget'
 import { SkipToContent } from '@/components/ui/skip-to-content'
 import { FloatingCTAButton } from '@/components/ui/floating-cta-button'
 import { PerformanceMonitor } from '@/components/ui/performance-monitor'
+import { PageTransition } from '@/components/ui/page-transition'
 import './globals.css'
 
 const inter = Inter({
@@ -100,7 +101,9 @@ export default function RootLayout({
         <BookingProvider>
           <NavigationWrapper />
           <main id="main-content" className="min-h-screen">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </main>
           <Footer />
           <FloatingBookingWidget />

@@ -6,13 +6,15 @@ import { BedDouble, Bath } from 'lucide-react'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { PriceBadge } from '@/components/ui/price-badge'
 import { HoverCard } from '@/components/ui/hover-card'
+import { RoomCardSkeleton } from '@/components/ui/skeleton-loaders'
 import type { Room } from '@/lib/types'
 
 interface RoomsGridProps {
   rooms: Room[]
+  loading?: boolean
 }
 
-export function RoomsGrid({ rooms }: RoomsGridProps) {
+export function RoomsGrid({ rooms, loading = false }: RoomsGridProps) {
   const [selectedCategory, setSelectedCategory] = useState('all')
 
   // Room categories
@@ -77,7 +79,13 @@ export function RoomsGrid({ rooms }: RoomsGridProps) {
       {/* Rooms Grid */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {filteredRooms.length === 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <RoomCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : filteredRooms.length === 0 ? (
             <div className="text-center py-16">
               <p className="text-gray-500 text-lg">No rooms available in this category.</p>
             </div>
