@@ -44,7 +44,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
   const { id } = await params
   
   // Try to get room from content function first (with Supabase fallback)
-  let rooms = await getRooms()
+  const rooms = await getRooms()
   let room = rooms.find(r => r.id === id)
   
   // If not found, try direct Supabase query (for dynamic routes)

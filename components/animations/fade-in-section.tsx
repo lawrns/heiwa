@@ -6,14 +6,12 @@ import { motion, useInView, useAnimation } from 'framer-motion'
 interface FadeInSectionProps {
   children: ReactNode
   delay?: number
-  duration?: number
   className?: string
 }
 
 export function FadeInSection({ 
   children, 
   delay = 0, 
-  duration = 0.5,
   className = ''
 }: FadeInSectionProps) {
   const ref = useRef(null)
