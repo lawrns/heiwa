@@ -101,7 +101,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* YouTube Video */}
             <YouTubeVideo 
-              videoId="9nhQiKGsgHg"
+              videoId="9nhQi o sHf"
               title="Heiwa Surf Weeks Video"
             />
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface YouTubeVideoProps {
   videoId: string
@@ -11,6 +11,11 @@ interface YouTubeVideoProps {
 export function YouTubeVideo({ videoId, title, className = '' }: YouTubeVideoProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [origin, setOrigin] = useState('')
+  
+  useEffect(() => {
+    setOrigin(window.location.origin)
+  }, [])
   
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying)
@@ -26,7 +31,7 @@ export function YouTubeVideo({ videoId, title, className = '' }: YouTubeVideoPro
       <iframe
         width="100%"
         height="100%"
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=${isPlaying ? '1' : '0'}&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1&color=white&theme=light&nologo=1&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=${isPlaying ? '1' : '0'}&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1&fs=0&iv_load_policy=4&cc_load_policy=0&autohide=1&color=white&theme=light&nologo=1&origin=${origin}`}
         title={title}
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
