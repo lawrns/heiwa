@@ -9,6 +9,7 @@ import { ActivitiesCarousel } from '@/components/ui/activity-card'
 import { AnimatedHeroHeading } from '@/components/ui/animated-hero-heading'
 import { ScrollIndicator } from '@/components/ui/scroll-indicator'
 import { GoogleRatingSummary } from '@/components/ui/google-reviews'
+import { YouTubeVideo } from '@/components/ui/youtube-video'
 
 export const metadata: Metadata = {
   title: 'Heiwa House - Surf Camp & Rooms in Santa Cruz, Portugal',
@@ -99,18 +100,10 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* YouTube Video */}
-            <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
-              <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/9nhQiKGsgHg"
-                title="Heiwa Surf Weeks Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0"
-              ></iframe>
-            </div>
+            <YouTubeVideo 
+              videoId="9nhQiKGsgHg"
+              title="Heiwa Surf Weeks Video"
+            />
 
             {/* Content */}
             <div className="space-y-6">
