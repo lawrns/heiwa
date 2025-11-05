@@ -169,6 +169,97 @@ export default function SurfWeeksPage() {
         </div>
       </section>
 
+      {/* Dates 2025 Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Dates 2025</h2>
+          
+          <div className="space-y-6">
+            {/* June Dates */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="june" className="border-0">
+                  <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                    <div className="flex items-center justify-between w-full">
+                      <h3 className="text-xl font-semibold text-gray-900">June</h3>
+                      <span className="text-sm text-gray-500">2 weeks available</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg border border-accent/20">
+                        <span className="font-medium text-gray-900">May 31 – June 07</span>
+                        <span className="text-sm text-accent font-medium">Available</span>
+                      </div>
+                      <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg border border-accent/20">
+                        <span className="font-medium text-gray-900">June 07 – June 14</span>
+                        <span className="text-sm text-accent font-medium">Available</span>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+
+            {/* August Dates */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="august" className="border-0">
+                  <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                    <div className="flex items-center justify-between w-full">
+                      <h3 className="text-xl font-semibold text-gray-900">August</h3>
+                      <span className="text-sm text-gray-500">1 week available</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg border border-accent/20">
+                        <span className="font-medium text-gray-900">August 16 – August 23</span>
+                        <span className="text-sm text-accent font-medium">Available</span>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+
+            {/* September Dates */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="september" className="border-0">
+                  <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                    <div className="flex items-center justify-between w-full">
+                      <h3 className="text-xl font-semibold text-gray-900">September</h3>
+                      <span className="text-sm text-gray-500">1 week available</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-6">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg border border-accent/20">
+                        <span className="font-medium text-gray-900">August 30 – September 06</span>
+                        <span className="text-sm text-accent font-medium">Available</span>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          </div>
+
+          {/* Booking CTA */}
+          <div className="mt-12 text-center">
+            <p className="text-lg text-gray-600 mb-6">*prices starting 450€</p>
+            <a
+              href="mailto:info@heiwahouse.com"
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-3 rounded-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
+            >
+              <Mail className="w-5 h-5" />
+              Email to book surf week
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* Video Section */}
       <section className="py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

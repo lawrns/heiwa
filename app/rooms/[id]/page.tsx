@@ -8,6 +8,7 @@ import { BookingButton } from '@/components/booking-button'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { getRooms } from '@/lib/content'
 import type { Room } from '@/lib/types'
+import { supabase } from '@/lib/supabase'
 
 interface RoomPageProps {
   params: Promise<{
@@ -41,32 +42,75 @@ export async function generateMetadata({ params }: RoomPageProps): Promise<Metad
 
 export default async function RoomDetailPage({ params }: RoomPageProps) {
   const { id } = await params
-  const rooms = await getRooms()
-  const room = rooms.find(r => r.id === id)
+  
+  // Try to get room from content function first (with Supabase fallback)
+  let rooms = await getRooms()
+  let room = rooms.find(r => r.id === id)
+  
+  // If not found, try direct Supabase query (for dynamic routes)
+  if (!room) {
+    try {
+      const { data: directRoom, error } = await supabase
+        .from('rooms')
+        .select('*')
+        .eq('id', id)
+        .eq('is_active', true)
+        .single()
+      
+      if (!error && directRoom) {
+        // Type the directRoom properly
+        const dbRoom = directRoom as {
+          id: string
+          name: string
+          images?: string[]
+          description?: string
+          capacity?: number
+          pricing?: { standard?: number; offSeason?: number }
+          booking_type?: string
+          amenities?: string[]
+          is_active?: boolean
+        }
+        
+        // Transform to Room interface
+        room = {
+          id: dbRoom.id,
+          name: dbRoom.name,
+          image: dbRoom.images?.[0] || '',
+          images: dbRoom.images || [],
+          description: dbRoom.description || '',
+          capacity: dbRoom.capacity,
+          pricing: dbRoom.pricing || {},
+          bookingType: dbRoom.booking_type || 'whole',
+          amenities: dbRoom.amenities || [],
+          isActive: dbRoom.is_active !== false
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching room directly from Supabase:', error)
+    }
+  }
 
   if (!room) {
     notFound()
   }
 
   // Enhanced room data with actual database images
-  const roomIndex = rooms.findIndex(r => r.id === id)
-  const isDorm = roomIndex === 3 || room.name.toLowerCase().includes('dorm')
-  const isTwin = roomIndex === 0 || roomIndex === 2 || room.name.toLowerCase().includes('twin') || room.name.includes('Nr 1') || room.name.includes('Nr 3')
+  const isDorm = room.name.toLowerCase().includes('dorm') || room.bookingType === 'perBed'
+  const isTwin = room.name.toLowerCase().includes('twin') || room.capacity === 2
 
   // Use actual images from database, fallback to single image if not available
-  const roomData = room as Room & { images?: string[] }
-  const roomImages = roomData.images && Array.isArray(roomData.images) && roomData.images.length > 0
-    ? roomData.images
+  const roomImages = room.images && Array.isArray(room.images) && room.images.length > 0
+    ? room.images
     : room.image ? [room.image] : []
 
   const enhancedRoom = {
     ...room,
     images: roomImages.length > 0 ? roomImages : [room.image],
-    price: isDorm ? 30 : room.name.includes('Nr 1') ? 90 : 80,
-    beds: isDorm ? 6 : isTwin ? 2 : 1,
+    price: room.pricing?.standard || room.pricing?.offSeason || (isDorm ? 30 : 80),
+    beds: isDorm ? 6 : isTwin ? 2 : room.capacity || 1,
     bathrooms: isDorm ? 0 : 1,
     size: isDorm ? 45 : 25,
-    maxGuests: isDorm ? 6 : 2,
+    maxGuests: room.capacity || (isDorm ? 6 : 2),
     description: room.description || `Step into this beautifully designed ${isDorm ? 'shared dormitory' : 'room'}, blending modern comforts with rustic charm. ${isDorm ? 'Features sturdy, handcrafted wooden bunk beds perfect for solo travelers and groups.' : 'The cozy space features comfortable furniture complemented by traditional Portuguese tiles.'} Perfect for your surf adventure in Santa Cruz.`,
     features: isDorm 
       ? [
@@ -87,15 +131,21 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
         ]
   }
 
-  // Similar rooms
+  // Similar rooms - use the same data source
   const similarRooms = rooms
     .filter(r => r.id !== id)
     .slice(0, 2)
-    .map((r, idx) => ({
-      ...r,
-      price: idx === 0 ? 80 : 90,
-      beds: idx === 0 ? 1 : 2,
-    }))
+    .map((similarRoom) => {
+      const similarIsDorm = similarRoom.name.toLowerCase().includes('dorm') || similarRoom.bookingType === 'perBed'
+      const similarIsTwin = similarRoom.name.toLowerCase().includes('twin') || similarRoom.capacity === 2
+      
+      return {
+        ...similarRoom,
+        price: similarRoom.pricing?.standard || similarRoom.pricing?.offSeason || (similarIsDorm ? 30 : 80),
+        beds: similarIsDorm ? 6 : similarIsTwin ? 2 : similarRoom.capacity || 1,
+        image: similarRoom.images?.[0] || similarRoom.image
+      }
+    })
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">

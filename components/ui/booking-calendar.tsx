@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { ChevronLeft, ChevronRight, Calendar, Users, BedDouble, Surfing } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar, Users, BedDouble, Waves } from 'lucide-react'
 
 interface Booking {
   id: string
@@ -103,7 +103,7 @@ export function BookingCalendar({ bookings, onBookingClick }: BookingCalendarPro
       case 'room':
         return <BedDouble size={12} />
       case 'surf-week':
-        return <Surfing size={12} />
+        return <Waves size={12} />
       default:
         return <Calendar size={12} />
     }
@@ -213,7 +213,7 @@ export function BookingCalendar({ bookings, onBookingClick }: BookingCalendarPro
           <span>Room</span>
         </div>
         <div className="flex items-center gap-2">
-          <Surfing size={16} className="text-gray-600" />
+          <Waves size={16} className="text-gray-600" />
           <span>Surf Week</span>
         </div>
       </div>
