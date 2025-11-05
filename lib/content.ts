@@ -41,7 +41,9 @@ const getFallbackNavigationItems = (): NavigationItem[] => [
   { path: '/', name: 'HOME' },
   { path: '/the-spot', name: 'THE SPOT' },
   { path: '/rooms', name: 'ROOM RENTALS' },
-  { path: '/surf-weeks', name: 'SURF CAMP' }
+  { path: '/surf-weeks', name: 'SURF CAMP' },
+  { path: '/play', name: 'PLAY' },
+  { path: '/flow', name: 'FLOW' }
 ]
 
 // For backward compatibility
@@ -221,7 +223,7 @@ export const homePageContent: HomePageContent = {
     {
       title: 'Heiwa Play',
       image: '/images/skatepark-1.jpg',
-      href: '/the-spot#play'
+      href: '/play'
     },
     {
       title: 'Heiwa Surf',
@@ -231,7 +233,7 @@ export const homePageContent: HomePageContent = {
     {
       title: 'Heiwa Flow',
       image: '/images/yoga_dome1.jpg',
-      href: '/the-spot#flow'
+      href: '/flow'
     }
   ],
   videoEmbed: {

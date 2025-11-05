@@ -26,6 +26,14 @@ export default function SurfWeeksPage() {
     '/images/DSF8018-2-scaled.jpg',
   ]
 
+  // Featured surf week data
+  const featuredWeek = {
+    dates: 'February 1st to 12th, 2025!',
+    price: 'From 450€',
+    availableSpots: '8 spots left',
+    image: '/images/DSC03081-scaled.jpg',
+  }
+
   const includedFeatures = [
     {
       icon: Bed,
@@ -150,136 +158,320 @@ export default function SurfWeeksPage() {
 
   return (
     <div className="min-h-screen pt-20 bg-white">
-      {/* Simple Page Title */}
-      <div className="py-12 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold text-gray-900">Surf Camp</h1>
-        </div>
-      </div>
+      {/* Hero Section with Overlay */}
+      <section className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
+        <Image
+          src="/images/surf-weeks-front-page.jpg"
+          alt="Surf Weeks at Heiwa House"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/50" />
 
-      {/* Hero Quote Section */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h5 className="text-xl md:text-2xl text-center text-gray-600 leading-relaxed">
-            We strive to deliver an unforgettable surf camp experience both in and out of the water. 
-            Even if surfing were taken out of the week, it would still be worth your while—amazing food,
-            yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and
-            the surfing? That&apos;s going to be awesome too 🙂
-          </h5>
+        <div className="relative h-full flex items-center justify-center text-center px-4">
+          <div className="max-w-4xl">
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
+              Surf Weeks
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90 drop-shadow-md max-w-3xl mx-auto mb-8">
+              We strive to deliver an unforgettable surf camp experience both in and out of the water. 
+              Even if surfing were taken out of the week, it would still be worth your while—amazing food,
+              yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and
+              the surfing? That&apos;s going to be awesome too 🙂
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Dates 2025 Section */}
+      {/* Featured Surf Week Callout */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Dates 2025</h2>
-          
-          <div className="space-y-6">
-            {/* June Dates */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="june" className="border-0">
-                  <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                    <div className="flex items-center justify-between w-full">
-                      <h3 className="text-xl font-semibold text-gray-900">June</h3>
-                      <span className="text-sm text-gray-500">2 weeks available</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-6">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg border border-accent/20">
-                        <span className="font-medium text-gray-900">May 31 – June 07</span>
-                        <span className="text-sm text-accent font-medium">Available</span>
-                      </div>
-                      <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg border border-accent/20">
-                        <span className="font-medium text-gray-900">June 07 – June 14</span>
-                        <span className="text-sm text-accent font-medium">Available</span>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="relative h-64">
+              <Image
+                src={featuredWeek.image}
+                alt="Featured Surf Week"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <h2 className="text-3xl font-bold text-white mb-2">{featuredWeek.dates}</h2>
+                <p className="text-white/90 text-lg">{featuredWeek.price} • {featuredWeek.availableSpots}</p>
+              </div>
             </div>
-
-            {/* August Dates */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="august" className="border-0">
-                  <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                    <div className="flex items-center justify-between w-full">
-                      <h3 className="text-xl font-semibold text-gray-900">August</h3>
-                      <span className="text-sm text-gray-500">1 week available</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-6">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg border border-accent/20">
-                        <span className="font-medium text-gray-900">August 16 – August 23</span>
-                        <span className="text-sm text-accent font-medium">Available</span>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+            <div className="p-8">
+              <div className="space-y-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 bg-accent rounded-full"></span>
+                  <span className="text-gray-700">Professional surf instruction with video analysis</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 bg-accent rounded-full"></span>
+                  <span className="text-gray-700">Daily yoga and meditation sessions</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 bg-accent rounded-full"></span>
+                  <span className="text-gray-700">Two amazing meals per day by our chef</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 bg-accent rounded-full"></span>
+                  <span className="text-gray-700">Exciting day trips to explore Portugal</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-2 h-2 bg-accent rounded-full"></span>
+                  <span className="text-gray-700">Skateboarding, games, and amazing memories</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    ))}
+                  </div>
+                  <span className="text-gray-600 text-sm">4.7 (16,940 reviews)</span>
+                </div>
+                <a
+                  href="mailto:info@heiwahouse.com"
+                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 rounded-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
+                  style={{ backgroundColor: '#ec681c' }}
+                >
+                  <Mail className="w-5 h-5" />
+                  Book Now
+                </a>
+              </div>
             </div>
-
-            {/* September Dates */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="september" className="border-0">
-                  <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                    <div className="flex items-center justify-between w-full">
-                      <h3 className="text-xl font-semibold text-gray-900">September</h3>
-                      <span className="text-sm text-gray-500">1 week available</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-6">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-4 bg-accent/5 rounded-lg border border-accent/20">
-                        <span className="font-medium text-gray-900">August 30 – September 06</span>
-                        <span className="text-sm text-accent font-medium">Available</span>
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-          </div>
-
-          {/* Booking CTA */}
-          <div className="mt-12 text-center">
-            <p className="text-lg text-gray-600 mb-6">*prices starting 450€</p>
-            <a
-              href="mailto:info@heiwahouse.com"
-              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-3 rounded-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-            >
-              <Mail className="w-5 h-5" />
-              Email to book surf week
-            </a>
           </div>
         </div>
       </section>
 
-      {/* Video Section */}
-      <section className="py-12">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg group cursor-pointer">
-            <Image
-              src="/images/surf-weeks-front-page.jpg"
-              alt="Surf Weeks Video"
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-              <a
-                href="https://youtu.be/9nhQiKGsgHg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-24 h-24 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-                aria-label="Play video"
-              >
-                <Play className="w-10 h-10 text-accent ml-2" fill="currentColor" />
-              </a>
+      {/* More Scheduled Surf Weeks Table */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">More Scheduled Surf Weeks</h2>
+          
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            {/* Table Header */}
+            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+              <div className="grid grid-cols-4 gap-4 text-sm font-semibold text-gray-700">
+                <div>Dates</div>
+                <div className="flex items-center gap-2">
+                  Price
+                  <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>Available Spots</div>
+                <div></div>
+              </div>
+            </div>
+
+            {/* Table Body */}
+            <div className="divide-y divide-gray-200">
+              <div className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                <div className="grid grid-cols-4 gap-4 items-center">
+                  <div className="text-gray-900 font-medium">May 31 – June 07</div>
+                  <div className="text-gray-900 font-medium">From 450€</div>
+                  <div className="text-gray-600">5/18</div>
+                  <div className="flex justify-end">
+                    <a
+                      href="mailto:info@heiwahouse.com"
+                      className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
+                      style={{ backgroundColor: '#ec681c' }}
+                    >
+                      Book
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                <div className="grid grid-cols-4 gap-4 items-center">
+                  <div className="text-gray-900 font-medium">June 07 – June 14</div>
+                  <div className="text-gray-900 font-medium">From 450€</div>
+                  <div className="text-gray-600">8/18</div>
+                  <div className="flex justify-end">
+                    <a
+                      href="mailto:info@heiwahouse.com"
+                      className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
+                      style={{ backgroundColor: '#ec681c' }}
+                    >
+                      Book
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                <div className="grid grid-cols-4 gap-4 items-center">
+                  <div className="text-gray-900 font-medium">August 16 – August 23</div>
+                  <div className="text-gray-900 font-medium">From 450€</div>
+                  <div className="text-gray-600">12/18</div>
+                  <div className="flex justify-end">
+                    <a
+                      href="mailto:info@heiwahouse.com"
+                      className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
+                      style={{ backgroundColor: '#ec681c' }}
+                    >
+                      Book
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                <div className="grid grid-cols-4 gap-4 items-center">
+                  <div className="text-gray-900 font-medium">August 30 – September 06</div>
+                  <div className="text-gray-900 font-medium">From 450€</div>
+                  <div className="text-gray-600">15/18</div>
+                  <div className="flex justify-end">
+                    <a
+                      href="mailto:info@heiwahouse.com"
+                      className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
+                      style={{ backgroundColor: '#ec681c' }}
+                    >
+                      Book
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How a Surf Week Works Timeline */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              How a surf week works
+            </h2>
+            <p className="text-lg text-gray-600">
+              Your journey from booking to catching waves
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            {/* Step 1 */}
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-lg">
+                1
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Choose a week & book</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Browse our available surf weeks and select the dates that work for you. 
+                  Send us an email to confirm availability and make your booking. 
+                  We&apos;ll provide all the details you need to prepare for your adventure.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-lg">
+                2
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Transfer, Arrival & Check-in</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Arrive anytime from 15:00 on your starting date. We can help arrange transfers 
+                  from the airport (approximately 40€ taxi ride). Settle into your comfortable room 
+                  and get ready for an incredible week ahead.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-lg">
+                3
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Welcome Tour</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  We&apos;ll show you around Heiwa House - from the skatepark and yoga dome to the 
+                  pool and game areas. Meet your fellow surf week participants and get familiar 
+                  with everything our amazing property has to offer.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 4 */}
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-lg">
+                4
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Surf Theory & Go Surfing!</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Start with an introductory surf lesson right at home to learn proper techniques 
+                  and safety. Then head out to the best beaches in Ericeira and Peniche with our 
+                  professional instructors. All equipment included!
+                </p>
+              </div>
+            </div>
+
+            {/* Step 5 */}
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-lg">
+                5
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Feast Twice a Day!</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Enjoy two delicious meals prepared by our chef each day. Start with breakfast 
+                  to fuel your surf sessions, and return to either lunch or dinner featuring 
+                  fresh, local Portuguese cuisine. We cater to vegetarians and dietary restrictions.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 6 */}
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-lg">
+                6
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Video Analysis</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  We film your surf sessions and provide detailed video analysis to help you 
+                  improve your technique. Plus, we share the videos with you so you can use 
+                  them for social media or keep them as amazing memories! 📹
+                </p>
+              </div>
+            </div>
+
+            {/* Step 7 */}
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-lg">
+                7
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Yoga</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Five yoga sessions throughout the week complement your surfing perfectly. 
+                  Practice in our beautiful dome with views of the Portuguese countryside. 
+                  Improve flexibility, balance, and find your inner flow.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 8 */}
+            <div className="flex items-start gap-6">
+              <div className="flex-shrink-0 w-12 h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold text-lg">
+                8
+              </div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Surfskate, pool, sauna, ice bath, games!</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  When you&apos;re not surfing, enjoy endless activities: master surfskate techniques, 
+                  relax by the pool, experience our weekly sauna nights with ice bath dips, 
+                  play table tennis, darts, basketball, or explore the area on our bicycles.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -302,44 +494,6 @@ export default function SurfWeeksPage() {
                 />
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Dates 2025 Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Dates 2025</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-4">June</h4>
-              <ul className="space-y-2 text-gray-600">
-                <li>June 01 – June 07</li>
-                <li>June 07 – June 14</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-4">August</h4>
-              <ul className="space-y-2 text-gray-600">
-                <li>August 16 – August 23</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xl font-semibold text-gray-900 mb-4">September</h4>
-              <ul className="space-y-2 text-gray-600">
-                <li>August 30 – September 06</li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="mt-12 text-center">
-            <a
-              href="mailto:info@heiwahouse.com"
-              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-            >
-              <Mail className="w-5 h-5" />
-              Email to book surf week
-            </a>
           </div>
         </div>
       </section>
@@ -435,7 +589,7 @@ export default function SurfWeeksPage() {
       {/* FAQ Section */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">FAQ</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Commonly asked surf related questions</h2>
           <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm">
             {faqItems.map((item, index) => (
               <AccordionItem key={index} value={`item-${index}`} className="border-b border-gray-200 last:border-0">

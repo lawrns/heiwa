@@ -224,13 +224,13 @@ export default function HomePage() {
               title="Heiwa Play"
               description="Unleash your inner child at our skatepark, play beach volleyball, or enjoy board games. Adventure and fun await at every corner of our property."
               image="/images/skatepark-1.jpg"
-              href="/surf-weeks"
+              href="/play"
             />
             <FeatureCard
               title="Heiwa Flow"
               description="Find your zen in our yoga dome with daily sessions overlooking the Portuguese countryside. Meditation, breathwork, and mindful movement to balance your energy."
               image="/images/yoga_dome2.jpg"
-              href="/surf-weeks"
+              href="/flow"
             />
           </div>
         </div>
