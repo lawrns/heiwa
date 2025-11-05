@@ -32,12 +32,12 @@ export function FadeInSection({
       initial="hidden"
       animate={controls}
       variants={{
-        hidden: { opacity: 0, y: 30 },
+        hidden: { opacity: 0, y: 15 },
         visible: { 
           opacity: 1, 
           y: 0,
           transition: {
-            duration,
+            duration: 0.4,
             delay,
             ease: [0.4, 0, 0.2, 1]
           }

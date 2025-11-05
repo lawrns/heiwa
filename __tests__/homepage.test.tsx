@@ -89,9 +89,9 @@ describe('Homepage Integration', () => {
   it('renders responsive layout', () => {
     render(<Home />)
 
-    // Check for responsive classes
-    const heroSection = screen.getByRole('banner')
-    expect(heroSection).toHaveClass('container', 'mx-auto', 'px-4')
+    // Check for responsive classes on hero section
+    const heroSection = screen.getByRole('heading', { name: /welcome to heiwa house/i }).closest('section')
+    expect(heroSection).toHaveClass('h-screen', 'w-full')
   })
 })
 

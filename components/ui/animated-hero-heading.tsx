@@ -22,8 +22,8 @@ export function AnimatedHeroHeading({ text, className = '' }: AnimatedHeroHeadin
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.03,
-        delayChildren: 0.2,
+        staggerChildren: 0.02,
+        delayChildren: 0.1,
       },
     },
   }
@@ -47,7 +47,7 @@ export function AnimatedHeroHeading({ text, className = '' }: AnimatedHeroHeadin
         <motion.span
           key={index}
           variants={characterVariants}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
         >
           {char}
         </motion.span>

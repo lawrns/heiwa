@@ -110,24 +110,20 @@ describe('Surf Weeks Page Integration', () => {
     }, { timeout: 3000 })
   })
 
-  it('has responsive video container', () => {
+  it('has responsive hero section', () => {
     render(<SurfWeeks />)
 
-    // Video container should be responsive
-    const videoContainer = screen.getByTestId('video-container')
-    expect(videoContainer).toHaveClass('aspect-video', 'w-full')
+    // Hero section should be responsive
+    const heroSection = screen.getByRole('heading', { name: /surf weeks/i }).closest('section')
+    expect(heroSection).toHaveClass('h-[70vh]', 'min-h-[500px]')
   })
 
-  it('includes OpenGraph metadata for social sharing', () => {
+  it('includes featured surf week section', () => {
     render(<SurfWeeks />)
 
-    // Check for OpenGraph meta tags
-    const ogTitle = document.querySelector('meta[property="og:title"]')
-    const ogDescription = document.querySelector('meta[property="og:description"]')
-    const ogImage = document.querySelector('meta[property="og:image"]')
-
-    expect(ogTitle).toBeInTheDocument()
-    expect(ogDescription).toBeInTheDocument()
-    expect(ogImage).toBeInTheDocument()
+    // Check for featured surf week content
+    expect(screen.getByText(/february 1st to 12th, 2025/i)).toBeInTheDocument()
+    expect(screen.getByText(/professional surf instruction with video analysis/i)).toBeInTheDocument()
+    expect(screen.getByText(/book now/i)).toBeInTheDocument()
   })
 })

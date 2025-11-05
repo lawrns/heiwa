@@ -99,7 +99,7 @@ export function GoogleReviews({
           href="https://www.google.com/maps/place/Heiwa+House/@39.123456,-9.123456,15z"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 hover:text-blue-800 text-xs flex items-center gap-1"
+          className="text-white hover:text-white/80 text-xs flex items-center gap-1"
         >
           View on Google
           <ExternalLink className="w-3 h-3" />
@@ -125,7 +125,7 @@ export function GoogleReviews({
           href="https://www.google.com/maps/place/Heiwa+House/@39.123456,-9.123456,15z"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 hover:text-blue-800 text-xs flex items-center gap-1"
+          className="text-white hover:text-white/80 text-xs flex items-center gap-1"
         >
           View on Google
           <ExternalLink className="w-3 h-3" />
