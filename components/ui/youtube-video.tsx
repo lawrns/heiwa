@@ -22,20 +22,23 @@ export function YouTubeVideo({ videoId, title, className = '' }: YouTubeVideoPro
 
   return (
     <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg ${className}`}>
-      {/* YouTube iframe - never shows controls */}
+      {/* YouTube iframe - completely stripped of all YouTube UI */}
       <iframe
         width="100%"
         height="100%"
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=${isPlaying ? '1' : '0'}&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=${isPlaying ? '1' : '0'}&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1&color=white&theme=light&nologo=1&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
         title={title}
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         className="absolute inset-0"
+        style={{
+          pointerEvents: isPlaying ? 'auto' : 'none'
+        }}
       ></iframe>
       
       {/* Custom overlay - always visible when not playing */}
       {!isPlaying && (
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
           <button
             onClick={handlePlayPause}
             className="bg-white/90 backdrop-blur-sm rounded-full p-6 shadow-xl hover:bg-white hover:scale-110 transition-all duration-300"
@@ -50,7 +53,7 @@ export function YouTubeVideo({ videoId, title, className = '' }: YouTubeVideoPro
       
       {/* Custom controls - visible when playing */}
       {isPlaying && (
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 z-10">
           <div className="flex items-center justify-between">
             <button
               onClick={handlePlayPause}
@@ -78,6 +81,9 @@ export function YouTubeVideo({ videoId, title, className = '' }: YouTubeVideoPro
           </div>
         </div>
       )}
+      
+      {/* Top overlay to hide any remaining YouTube elements */}
+      <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-black/30 to-transparent pointer-events-none z-10" />
     </div>
   )
 }
