@@ -10,7 +10,6 @@ import { AnimatedHeroHeading } from '@/components/ui/animated-hero-heading'
 import { ScrollIndicator } from '@/components/ui/scroll-indicator'
 import { GoogleRatingSummary } from '@/components/ui/google-reviews'
 import { YouTubeVideo } from '@/components/ui/youtube-video'
-import { VideoHero } from '@/components/ui/video-hero'
 import { ActivityCardEnhanced } from '@/components/ui/activity-card-enhanced'
 
 export const metadata: Metadata = {
@@ -37,16 +36,56 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* New Video Hero Section with Animations */}
-      <VideoHero
-        videoSrc="/optimized/videos/video_001_timeline-1.mp4"
-        title="Welcome to Heiwa House"
-        subtitle="Your surf and lifestyle destination in Santa Cruz, Portugal"
-        ctaText="Explore surf weeks"
-        ctaHref="/surf-weeks"
-        showRating={true}
-        showScrollIndicator={true}
-      />
+      {/* Video Hero Section */}
+      <section className="relative h-screen w-full overflow-hidden">
+        {/* Background Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-cover"
+          poster="/images/videos/Timeline-1-poster.jpg"
+        >
+          <source src="/images/videos/Timeline-1.mp4" type="video/mp4" />
+          <source src="/images/videos/Timeline-1.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/30" />
+
+        {/* Hero Content */}
+        <div className="relative h-full flex items-center justify-center text-center px-4">
+          <div className="max-w-4xl">
+            <AnimatedHeroHeading
+              text="Welcome to Heiwa House"
+              className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg"
+            />
+            <p className="text-xl md:text-2xl text-white/90 mb-6 drop-shadow-md">
+              Your surf and lifestyle destination in Santa Cruz, Portugal
+            </p>
+            
+              {/* Google Reviews */}
+              <div className="flex justify-center mb-6">
+                <GoogleRatingSummary className="text-white/90" />
+              </div>
+            
+            <Link
+              href="/surf-weeks"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
+              style={{ backgroundColor: '#ec681c' }}
+            >
+              <Bed className="w-5 h-5" />
+              Explore surf weeks
+            </Link>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <ScrollIndicator />
+      </section>
 
       {/* Heiwa Surf Weeks Section */}
       <section className="py-20 bg-gray-50">
@@ -174,7 +213,6 @@ export default function HomePage() {
               title="Surf Lessons"
               description="World-class surf instruction with professional coaches"
               image="/optimized/activities_001_surf-lessons.webp"
-              icon={Waves}
               href="/activities/surf"
               index={0}
             />
@@ -182,7 +220,6 @@ export default function HomePage() {
               title="Skateboarding"
               description="Professional ramps and obstacles for all levels"
               image="/optimized/activities_011_skatepark.webp"
-              icon={Zap}
               href="/activities/skateboarding"
               index={1}
             />
@@ -190,7 +227,6 @@ export default function HomePage() {
               title="Yoga & Wellness"
               description="Find your zen in our yoga dome with daily sessions"
               image="/optimized/activities_019_yoga_dome1.webp"
-              icon={Wind}
               href="/activities/yoga"
               index={2}
             />

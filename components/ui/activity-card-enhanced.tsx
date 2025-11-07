@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -10,7 +10,6 @@ interface ActivityCardEnhancedProps {
   title: string
   description: string
   image: string
-  icon: LucideIcon
   href: string
   index?: number
 }
@@ -19,7 +18,6 @@ export function ActivityCardEnhanced({
   title,
   description,
   image,
-  icon: Icon,
   href,
   index = 0,
 }: ActivityCardEnhancedProps) {
@@ -52,11 +50,7 @@ export function ActivityCardEnhanced({
     hover: { y: -10, opacity: 1, transition: { duration: 0.3 } },
   }
 
-  const iconVariants = {
-    initial: { rotate: 0, scale: 1 },
-    hover: { rotate: 12, scale: 1.1, transition: { duration: 0.3 } },
-  }
-
+  
   return (
     <motion.div
       variants={containerVariants}
@@ -98,16 +92,7 @@ export function ActivityCardEnhanced({
         animate={isHovered ? 'hover' : 'initial'}
         className="absolute inset-0 flex flex-col justify-end p-6 text-white"
       >
-        {/* Icon */}
-        <motion.div
-          variants={iconVariants}
-          initial="initial"
-          animate={isHovered ? 'hover' : 'initial'}
-          className="mb-3"
-        >
-          <Icon className="w-8 h-8 text-orange-400" />
-        </motion.div>
-
+        
         {/* Title */}
         <h3 className="text-2xl font-bold mb-2">{title}</h3>
 
@@ -117,11 +102,7 @@ export function ActivityCardEnhanced({
         </p>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={isHovered ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-          transition={{ duration: 0.3 }}
-        >
+        <div className={`transition-all duration-300 ease ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'}`}>
           <Link
             href={href}
             className="inline-flex items-center gap-2 text-orange-400 font-semibold hover:text-orange-300 transition-colors"
@@ -129,7 +110,7 @@ export function ActivityCardEnhanced({
             Learn more
             <ArrowRight className="w-4 h-4" />
           </Link>
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Border on hover */}
