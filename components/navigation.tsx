@@ -48,15 +48,15 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
           // Homepage Layout: Centered logo with left/right positioning
           <div className="relative flex items-center justify-between h-20">
             {/* Left Side - Navigation Menu */}
-            <div className="hidden lg:flex items-center">
+            <div className="hidden lg:flex items-center flex-1">
               <nav aria-label="Main navigation">
-                <ul className="flex items-center space-x-8">
+                <ul className="flex items-center space-x-4">
                   {items.map((item) => (
                     <li key={item.path}>
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
+                          'text-xs font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
                           currentPath === item.path
                             ? 'text-orange-400'
                             : 'text-white'
@@ -94,22 +94,22 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             </div>
 
             {/* Right Side - Phone & Book Now Button */}
-            <div className="hidden lg:flex items-center space-x-6">
+            <div className="hidden lg:flex items-center space-x-4 flex-1 justify-end">
               {/* Phone Number */}
-              <div className="flex items-center text-sm text-white">
-                <span className="tracking-wide">Call. +351 912 193 785</span>
+              <div className="flex items-center text-xs text-white">
+                <span className="tracking-wide">+351 912 193 785</span>
               </div>
 
               {/* Book Now Button */}
               <button
                 onClick={openBooking}
-                className="px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase rounded text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                className="px-4 py-2 text-xs font-medium tracking-wide transition-colors flex items-center gap-1 uppercase rounded text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                 style={{ backgroundColor: '#ec681c' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
               >
-                <Bed className="w-4 h-4" />
-                BOOK NOW
+                <Bed className="w-3 h-3" />
+                BOOK
               </button>
             </div>
 
