@@ -51,15 +51,8 @@ export function ActivitiesCarousel({ activities, className = '' }: ActivitiesCar
     <div className={`w-full ${className}`}>
       {/* Intro Text */}
       <div className="max-w-4xl mx-auto mb-12">
-        <p className="text-lg text-gray-600 leading-relaxed mb-4">
-          Info leading into a blogpost style page about the activity. Info leading into a blogpost style page about the activity. 
-          Info leading into a blogpost style page about the activity. Info leading into a blogpost style page about the activity. 
-          Info leading into a blogpost style page about the activity.
-        </p>
         <p className="text-lg text-gray-600 leading-relaxed">
-          Info leading into a blogpost style page about the activity. Info leading into a blogpost style page about the activity. 
-          Info leading into a blogpost style page about the activity. Info leading into a blogpost style page about the activity. 
-          Info leading into a blogpost style page about the activity.
+          Explore the amazing activities and experiences available around Heiwa House. From water sports to wellness activities, there's something for everyone to enjoy during your stay.
         </p>
       </div>
 
