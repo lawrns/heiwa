@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import type { NavigationProps, NavigationItem } from '@/lib/types'
 import { getNavigationItems } from '@/lib/content'
 import { useBooking } from '@/lib/booking-context'
+import { MobileNavOverlay } from '@/components/ui/mobile-nav-overlay'
 
 export function Navigation({ items: initialItems, currentPath, className }: NavigationProps & { items?: NavigationItem[] }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -263,6 +264,14 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
           </nav>
         </div>
       )}
+      
+      {/* Mobile Navigation Overlay */}
+      <MobileNavOverlay 
+        isOpen={isOpen} 
+        onClose={closeMenu} 
+        items={items}
+        currentPath={currentPath || '/'}
+      />
     </nav>
   )
 }
