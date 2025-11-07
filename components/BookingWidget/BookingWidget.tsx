@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, Calendar, CheckCircle } from 'lucide-react';
 import { useBookingFlow } from './hooks/useBookingFlow';
+import { useBooking } from '@/lib/booking-context';
 import { ProgressIndicator } from './ui/ProgressIndicator';
 import { ExperienceSelection } from './steps/ExperienceSelection';
 import { OptionSelection } from './steps/OptionSelection';
@@ -37,6 +38,7 @@ export function BookingWidget({
   const [isOpen, setIsOpen] = useState(isWebComponent);
   const [bookingSuccess, setBookingSuccess] = useState<any>(null);
   const { state, actions, computed } = useBookingFlow();
+  const { setBookingSuccess: setBookingSuccessInContext } = useBooking();
 
   useEffect(() => {
     // Handle body overflow and modal classes
@@ -75,6 +77,7 @@ export function BookingWidget({
   const closeWidget = () => {
     setIsOpen(false);
     setBookingSuccess(null);
+    setBookingSuccessInContext(false); // Reset booking success when closing
     actions.reset();
   };
 
@@ -82,6 +85,8 @@ export function BookingWidget({
     if (bookingData) {
       // Show success message with booking data
       setBookingSuccess(bookingData);
+      // Set booking success in context to hide WhatsApp button
+      setBookingSuccessInContext(true);
     } else {
       // No booking data, just close widget
       closeWidget();

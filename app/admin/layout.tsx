@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Home, Bed, Calendar, ShoppingCart, Image, Settings, Globe } from 'lucide-react'
+import { Home, Bed, Calendar, ShoppingCart, Image, Settings, Globe, Activity } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard | Heiwa House',
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: Home },
   { name: 'Rooms', href: '/admin/rooms', icon: Bed },
+  { name: 'Activities', href: '/admin/activities', icon: Activity },
   { name: 'Surf Camps', href: '/admin/surf-camps', icon: Calendar },
   { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
   { name: 'Add-ons', href: '/admin/add-ons', icon: ShoppingCart },

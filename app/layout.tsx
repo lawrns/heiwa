@@ -5,8 +5,8 @@ import { Footer } from '@/components/footer'
 import { BookingProvider } from '@/lib/booking-context'
 import { FloatingBookingWidget } from '@/components/floating-booking-widget'
 import { SkipToContent } from '@/components/ui/skip-to-content'
-import { FloatingCTAButton } from '@/components/ui/floating-cta-button'
 import { PerformanceMonitor } from '@/components/ui/performance-monitor'
+import { PerformanceDashboard } from '@/components/ui/performance-dashboard'
 import { PageTransition } from '@/components/ui/page-transition'
 import { WhatsAppButton } from '@/components/ui/whatsapp-button'
 import './globals.css'
@@ -91,13 +91,13 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
-        <link rel="preload" href="/images/heiwalogo.webp" as="image" type="image/webp" />
-        <link rel="dns-prefetch" href="//zejrhceuuujzgyukdwnb.supabase.co" />
+                <link rel="dns-prefetch" href="//zejrhceuuujzgyukdwnb.supabase.co" />
         <meta name="theme-color" content="#ec681c" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className="font-sans antialiased bg-surface text-text">
         <PerformanceMonitor />
+        <PerformanceDashboard />
         <SkipToContent />
         <BookingProvider>
           <NavigationWrapper />
@@ -108,8 +108,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <FloatingBookingWidget />
-          <FloatingCTAButton />
-          <WhatsAppButton />
+                    <WhatsAppButton />
         </BookingProvider>
       </body>
     </html>

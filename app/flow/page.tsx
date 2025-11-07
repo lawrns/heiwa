@@ -1,7 +1,9 @@
 import { Metadata } from 'next'
-import Image from 'next/image'
-import { Heart, Wind, Droplets, Thermometer, Mail, Star } from 'lucide-react'
+import { Mail } from 'lucide-react'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
+import { HeroVideo } from '@/components/hero/hero-video'
+import { ActivityGrid } from '@/components/activities/activity-grid'
 
 export const metadata: Metadata = {
   title: 'Heiwa Flow - Yoga, Massage & Wellness in Santa Cruz, Portugal',
@@ -9,81 +11,6 @@ export const metadata: Metadata = {
 }
 
 export default function FlowPage() {
-  // Main flow services
-  const flowServices = [
-    {
-      title: 'Yoga',
-      description: 'Daily yoga and meditation sessions in our beautiful dome overlooking the Portuguese countryside. Find balance, flexibility, and inner peace.',
-      image: '/images/yoga_dome1.jpg',
-      icon: Heart,
-      features: ['Daily sessions', 'All levels welcome', 'Meditation & breathwork', 'Beautiful dome setting'],
-    },
-    {
-      title: 'Massage',
-      description: 'Professional massage therapy to soothe sore muscles after surfing or simply to relax and rejuvenate your body and mind.',
-      image: '/images/yoga_dome2.jpg',
-      icon: Wind,
-      features: ['Professional therapists', 'Multiple techniques', 'Recovery focused', 'Relaxing environment'],
-    },
-    {
-      title: 'Ice Bath',
-      description: 'Experience the power of cold therapy for recovery, circulation, and mental clarity. Perfect complement to our active lifestyle.',
-      image: '/images/pool333.jpg',
-      icon: Droplets,
-      features: ['Cold therapy', 'Recovery benefits', 'Mental clarity', 'Guided sessions'],
-    },
-    {
-      title: 'Sauna',
-      description: 'Traditional sauna experience to detoxify, relax muscles, and promote overall wellness. Weekly sauna nights with community.',
-      image: '/images/pool333.jpg',
-      icon: Thermometer,
-      features: ['Traditional sauna', 'Detoxification', 'Muscle relaxation', 'Community nights'],
-    },
-  ]
-
-  // Available on request services
-  const requestServices = [
-    {
-      title: 'Breathwork',
-      description: 'Guided breathing techniques to reduce stress, increase energy, and enhance mental clarity.',
-      icon: Wind,
-    },
-    {
-      title: 'Gong and Sound Healing',
-      description: 'Therapeutic sound sessions using gongs and other instruments to promote deep relaxation and healing.',
-      icon: Heart,
-    },
-    {
-      title: 'Nail Boards',
-      description: 'Traditional Sadhu nail board experience for mindfulness, focus, and overcoming mental barriers.',
-      icon: Droplets,
-    },
-    {
-      title: 'Somatic Alignment',
-      description: 'Holistic body-mind therapy combining movement, breath, and awareness for optimal wellness.',
-      icon: Heart,
-    },
-    {
-      title: 'Reiki',
-      description: 'Energy healing therapy to balance your body\'s energy centers and promote deep relaxation.',
-      icon: Wind,
-    },
-    {
-      title: 'Cacao Ceremony',
-      description: 'Sacred cacao rituals for heart opening, connection, and spiritual exploration.',
-      icon: Heart,
-    },
-    {
-      title: 'Rapé Ceremony',
-      description: 'Traditional Amazonian snuff ceremony for cleansing, clarity, and spiritual connection.',
-      icon: Wind,
-    },
-    {
-      title: 'Meditation',
-      description: 'Guided meditation sessions for stress reduction, focus, and inner peace.',
-      icon: Droplets,
-    },
-  ]
 
   // Reviews for Flow page
   const reviews = [
@@ -123,29 +50,13 @@ export default function FlowPage() {
 
   return (
     <div className="min-h-screen pt-20 bg-white">
-      {/* Hero Section */}
-      <section className="relative h-[60vh] min-h-[400px] w-full overflow-hidden">
-        <Image
-          src="/images/yoga_dome3.jpg"
-          alt="Heiwa Flow Wellness"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/40" />
-
-        <div className="relative h-full flex items-center justify-center text-center px-4">
-          <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-              Heiwa Flow
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 drop-shadow-md max-w-3xl mx-auto">
-              Find your inner flow through yoga, wellness, and mindful practices. 
-              Balance your body, mind, and spirit in our peaceful Portuguese sanctuary.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Hero Section with Video */}
+      <HeroVideo
+        title="Heiwa Flow"
+        description="Find your inner flow through yoga, wellness, and mindful practices. Balance your body, mind, and spirit in our peaceful Portuguese sanctuary."
+        videoUrl="/images/videos/flow-wellness.mp4"
+        imageUrl="/images/yoga_dome3.jpg"
+      />
 
       {/* Introduction Section */}
       <section className="py-20 bg-gray-50">
@@ -169,52 +80,18 @@ export default function FlowPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Flow Services
+              Core Flow Services
             </h2>
             <p className="text-lg text-gray-600">
-              Core wellness experiences to enhance your stay
+              Included wellness experiences to enhance your stay
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {flowServices.map((service, index) => {
-              const Icon = service.icon
-              return (
-                <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                  <div className="relative h-64">
-                    <Image
-                      src={service.image}
-                      alt={service.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-12 h-12 bg-white/90 rounded-lg flex items-center justify-center">
-                          <Icon className="w-7 h-7 text-accent" />
-                        </div>
-                        <h3 className="text-2xl font-bold text-white">{service.title}</h3>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <p className="text-gray-600 leading-relaxed mb-4">
-                      {service.description}
-                    </p>
-                    <ul className="space-y-2">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-sm text-gray-600">
-                          <span className="w-1.5 h-1.5 bg-accent rounded-full"></span>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+          <ActivityGrid 
+            category="flow" 
+            tier="always" 
+            showTierBadge={false}
+          />
         </div>
       </section>
 
@@ -230,24 +107,11 @@ export default function FlowPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {requestServices.map((service, index) => {
-              const Icon = service.icon
-              return (
-                <div key={index} className="bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-shadow duration-300">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-accent" />
-                    </div>
-                    <h4 className="text-lg font-semibold text-gray-900">{service.title}</h4>
-                  </div>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    {service.description}
-                  </p>
-                </div>
-              )
-            })}
-          </div>
+          <ActivityGrid 
+            category="flow" 
+            tier="on-request" 
+            showTierBadge={true}
+          />
         </div>
       </section>
 

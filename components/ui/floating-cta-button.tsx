@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Calendar } from 'lucide-react'
+import { useBooking } from '@/lib/booking-context'
 
 export function FloatingCTAButton() {
   const [isVisible, setIsVisible] = useState(false)
+  const { isBookingOpen } = useBooking()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,7 +20,8 @@ export function FloatingCTAButton() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  if (!isVisible) return null
+  // Hide button when booking widget is open or not scrolled enough
+  if (!isVisible || isBookingOpen) return null
 
   return (
     <motion.div

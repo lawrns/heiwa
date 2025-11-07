@@ -77,6 +77,8 @@ export function ImageCarousel({
           alt={`${alt} ${currentIndex + 1}`}
           fill
           className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          priority={currentIndex === 0}
         />
         
         {/* Navigation Arrows */}

@@ -28,6 +28,23 @@ export interface Experience {
   title: string;      // Activity name (e.g., "Hiking", "Surfing")
   image: string;      // Image URL from heiwahouse.com
   category?: string;  // Optional category grouping
+  description?: string; // Activity description
+  icon?: string;      // Icon name (lucide icon)
+  availability_tier?: 'always' | 'on-request'; // Availability tier
+  display_order?: number; // Display order in lists
+  active?: boolean;   // Whether activity is active
+  hero_video_url?: string; // Hero video URL for category pages
+  hero_image_url?: string; // Hero image URL for category pages
+  features?: string[]; // List of features for the activity
+}
+
+export interface ActivityCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  display_order?: number;
+  active?: boolean;
 }
 
 export interface Page {

@@ -46,7 +46,6 @@ export default function HomePage() {
           playsInline
           preload="metadata"
           className="absolute inset-0 w-full h-full object-cover"
-          poster="/images/videos/Timeline-1-poster.jpg"
         >
           <source src="/images/videos/Timeline-1.mp4" type="video/mp4" />
           <source src="/images/videos/Timeline-1.webm" type="video/webm" />
@@ -421,6 +420,8 @@ export default function HomePage() {
                 alt="Yoga Dome"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-black/20 flex items-end p-6">
                 <div>

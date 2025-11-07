@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -50,10 +50,11 @@ export function ImageGallery({
   )
 
   // Add keyboard listener
-  if (typeof window !== 'undefined' && selectedIndex !== null) {
+  useEffect(() => {
+    if (typeof window === 'undefined' || selectedIndex === null) return
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }
+  }, [selectedIndex, handleKeyDown])
 
   const gridColsClass = {
     2: 'grid-cols-1 md:grid-cols-2',

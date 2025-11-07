@@ -2,7 +2,6 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import { Play, Bed, UtensilsCrossed, Activity, MapPin, Waves, Star, Mail } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
-import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 
 export const metadata: Metadata = {
   title: 'Surf Camp in Santa Cruz, Portugal - Learn Surfing With Heiwa',
@@ -186,63 +185,63 @@ export default function SurfWeeksPage() {
 
       {/* Featured Surf Week Callout */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="relative h-64">
-              <Image
-                src={featuredWeek.image}
-                alt="Featured Surf Week"
-                fill
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4">
-                <h2 className="text-3xl font-bold text-white mb-2">{featuredWeek.dates}</h2>
-                <p className="text-white/90 text-lg">{featuredWeek.price} • {featuredWeek.availableSpots}</p>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-2">Next Surf Week at Heiwa!</h2>
+          </div>
+          
+          <div className="bg-white rounded-lg overflow-hidden shadow-md">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+              {/* Image */}
+              <div className="relative h-64 md:h-auto">
+                <Image
+                  src={featuredWeek.image}
+                  alt="Featured Surf Week"
+                  fill
+                  className="object-cover"
+                />
               </div>
-            </div>
-            <div className="p-8">
-              <div className="space-y-4 mb-6">
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-accent rounded-full"></span>
-                  <span className="text-gray-700">Professional surf instruction with video analysis</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-accent rounded-full"></span>
-                  <span className="text-gray-700">Daily yoga and meditation sessions</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-accent rounded-full"></span>
-                  <span className="text-gray-700">Two amazing meals per day by our chef</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-accent rounded-full"></span>
-                  <span className="text-gray-700">Exciting day trips to explore Portugal</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-accent rounded-full"></span>
-                  <span className="text-gray-700">Skateboarding, games, and amazing memories</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    ))}
+              
+              {/* Content */}
+              <div className="md:col-span-2 p-8 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4">{featuredWeek.dates}</h3>
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-start gap-3">
+                      <span className="text-accent text-lg font-semibold">-</span>
+                      <span className="text-gray-700">Professional instructors for all levels</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="text-accent text-lg font-semibold">-</span>
+                      <span className="text-gray-700">Amazing food prepared by our chef</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="text-accent text-lg font-semibold">-</span>
+                      <span className="text-gray-700">Daily yoga and meditation sessions</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="text-accent text-lg font-semibold">-</span>
+                      <span className="text-gray-700">Surfskate and other activities!</span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="text-accent text-lg font-semibold">-</span>
+                      <span className="text-gray-700">Prices starting from EUR 450!</span>
+                    </div>
                   </div>
-                  <span className="text-gray-600 text-sm">4.7 (16,940 reviews)</span>
                 </div>
-                <a
-                  href="mailto:info@heiwahouse.com"
-                  className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 rounded-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-                  style={{ backgroundColor: '#ec681c' }}
-                >
-                  <Mail className="w-5 h-5" />
-                  Book Now
-                </a>
+                
+                <div className="flex items-center pt-6 border-t border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      ))}
+                    </div>
+                    <span className="text-gray-600 text-xs">4.7 (16,940)</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -498,6 +497,135 @@ export default function SurfWeeksPage() {
         </div>
       </section>
 
+      {/* Customer Reviews Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">What Our Customers Say</h2>
+          
+          <div className="bg-gray-50 rounded-lg p-8 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                  ))}
+                </div>
+                <span className="text-lg font-semibold text-gray-900">4.7</span>
+                <span className="text-gray-600">(16,940 reviews)</span>
+              </div>
+              <a
+                href="https://www.google.com/search?q=heiwa+house+reviews"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-sm"
+              >
+                Review us on Google
+              </a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Review 1 */}
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                  JM
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">Jesús MR</p>
+                  <p className="text-gray-500 text-xs">2 days ago</p>
+                </div>
+              </div>
+              <div className="flex mb-2">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                ))}
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Lugar con vistas increíbles de la ciudad de Los Angeles, el observatorio "s, es...
+              </p>
+              <a href="#" className="text-blue-600 text-sm font-medium mt-2 inline-block hover:underline">Read more</a>
+            </div>
+
+            {/* Review 2 */}
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                  EG
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">Ernesto Guevara</p>
+                  <p className="text-gray-500 text-xs">1 week ago</p>
+                </div>
+              </div>
+              <div className="flex mb-2">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                ))}
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Griffith Observatory is one of the Los Angeles' most iconic attractions and absolutely...
+              </p>
+              <a href="#" className="text-blue-600 text-sm font-medium mt-2 inline-block hover:underline">Read more</a>
+            </div>
+
+            {/* Review 3 */}
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold">
+                  JZ
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">John Z</p>
+                  <p className="text-gray-500 text-xs">2 weeks ago</p>
+                </div>
+              </div>
+              <div className="flex mb-2">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                ))}
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Definitely a visit worth it if you come before 11 parking is for free
+              </p>
+              <a href="#" className="text-blue-600 text-sm font-medium mt-2 inline-block hover:underline">Read more</a>
+            </div>
+
+            {/* Review 4 */}
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full flex items-center justify-center text-white font-bold">
+                  PE
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">Paul Egan</p>
+                  <p className="text-gray-500 text-xs">3 weeks ago</p>
+                </div>
+              </div>
+              <div className="flex mb-2">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                ))}
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Best view of LA and the Hollywood sign. Going on a week day is...
+              </p>
+              <a href="#" className="text-blue-600 text-sm font-medium mt-2 inline-block hover:underline">Read more</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* What is Included Section */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -605,8 +733,6 @@ export default function SurfWeeksPage() {
         </div>
       </section>
 
-      {/* Floating Check Availability Button */}
-      <FloatingCheckAvailability />
-    </div>
+          </div>
   )
 }

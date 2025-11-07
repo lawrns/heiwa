@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
-import Image from 'next/image'
-import { Play, Dumbbell, Waves, Bike, Thermometer, Users, Star, Mail } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
+import { HeroVideo } from '@/components/hero/hero-video'
+import { ActivityGrid } from '@/components/activities/activity-grid'
 
 export const metadata: Metadata = {
   title: 'Heiwa Play - Activities & Fun at Santa Cruz, Portugal',
@@ -10,45 +11,6 @@ export const metadata: Metadata = {
 }
 
 export default function PlayPage() {
-  // Play activities data
-  const playActivities = [
-    {
-      title: 'Table Games',
-      description: 'Challenge friends to table tennis, darts, table football, or basketball. Perfect for friendly competition and making memories.',
-      image: '/images/games.jpg',
-      icon: Users,
-    },
-    {
-      title: 'Sauna & Ice Bath',
-      description: 'Experience the ultimate contrast therapy with our sauna and ice bath facilities. Great for recovery and relaxation after surf sessions.',
-      image: '/images/pool333.jpg',
-      icon: Thermometer,
-    },
-    {
-      title: 'Giant Pool',
-      description: 'Relax and unwind in our beautiful swimming pool. Perfect for cooling off on hot Portuguese days or just lounging in the sun.',
-      image: '/images/pool333.jpg',
-      icon: Waves,
-    },
-    {
-      title: 'Gym',
-      description: 'Stay fit and active with our gym facilities. Whether you want to maintain your workout routine or try something new, we have you covered.',
-      image: '/images/park333.jpg',
-      icon: Dumbbell,
-    },
-    {
-      title: 'Bicycles',
-      description: 'Explore the beautiful surroundings of Santa Cruz on our bicycles. Perfect for beach trips, town exploration, or countryside adventures.',
-      image: '/images/ramp3.jpg',
-      icon: Bike,
-    },
-    {
-      title: 'Skatepark',
-      description: 'Unleash your inner skater at our professional skatepark. With ramps and obstacles for all skill levels, it\'s time to shred!',
-      image: '/images/skatepark-1.jpg',
-      icon: Play,
-    },
-  ]
 
   // FAQ items for Play page
   const faqItems = [
@@ -116,29 +78,13 @@ export default function PlayPage() {
 
   return (
     <div className="min-h-screen pt-20 bg-white">
-      {/* Hero Section */}
-      <section className="relative h-[60vh] min-h-[400px] w-full overflow-hidden">
-        <Image
-          src="/images/games.jpg"
-          alt="Heiwa Play Activities"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/40" />
-
-        <div className="relative h-full flex items-center justify-center text-center px-4">
-          <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-              Heiwa Play
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 drop-shadow-md max-w-3xl mx-auto">
-              Unleash your inner child with endless activities and adventures. 
-              From skateboarding to sauna sessions, every day is filled with fun and excitement.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Hero Section with Video */}
+      <HeroVideo
+        title="Heiwa Play"
+        description="Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."
+        videoUrl="/images/videos/play-activities.mp4"
+        imageUrl="/images/games.jpg"
+      />
 
       {/* Introduction Section */}
       <section className="py-20 bg-gray-50">
@@ -157,49 +103,43 @@ export default function PlayPage() {
         </div>
       </section>
 
-      {/* Activities Grid Section */}
+      {/* Always Available Activities Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Play Activities
+              Always Included Activities
             </h2>
             <p className="text-lg text-gray-600">
-              Discover all the ways to have fun at Heiwa House
+              These fun experiences are included in your stay at Heiwa House
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {playActivities.map((activity, index) => {
-              const Icon = activity.icon
-              return (
-                <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                  <div className="relative h-48">
-                    <Image
-                      src={activity.image}
-                      alt={activity.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                    <div className="absolute bottom-4 left-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center">
-                          <Icon className="w-6 h-6 text-accent" />
-                        </div>
-                        <h3 className="text-xl font-bold text-white">{activity.title}</h3>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <p className="text-gray-600 leading-relaxed">
-                      {activity.description}
-                    </p>
-                  </div>
-                </div>
-              )
-            })}
+          <ActivityGrid 
+            category="play" 
+            tier="always" 
+            showTierBadge={false}
+          />
+        </div>
+      </section>
+
+      {/* Available on Request Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Available as Add-ons
+            </h2>
+            <p className="text-lg text-gray-600">
+              Special activities available upon request - contact us to arrange
+            </p>
           </div>
+
+          <ActivityGrid 
+            category="play" 
+            tier="on-request" 
+            showTierBadge={true}
+          />
         </div>
       </section>
 

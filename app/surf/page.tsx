@@ -1,12 +1,15 @@
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Waves, MapPin, Clock, Car } from 'lucide-react'
+import { Waves, MapPin, Clock, Car, Mail } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { FloatingCheckAvailability } from '@/components/floating-check-availability'
+import { HeroVideo } from '@/components/hero/hero-video'
+import { ActivityGrid } from '@/components/activities/activity-grid'
 
 export const metadata: Metadata = {
-  title: 'Surfing at Heiwa House - Santa Cruz, Portugal | Between Ericeira & Peniche',
-  description: 'Discover world-class surfing at Heiwa House. Located between Ericeira and Peniche, with beautiful beaches just 5 minutes away. Perfect for all skill levels.',
+  title: 'Heiwa Surf - Surf Lessons & Ocean Adventures in Santa Cruz, Portugal',
+  description: 'Learn to surf at Heiwa House in Santa Cruz, Portugal. Professional surf instruction for all levels with equipment provided and beachside accommodation.',
 }
 
 export default function SurfPage() {
@@ -47,43 +50,47 @@ export default function SurfPage() {
 
   return (
     <div className="min-h-screen pt-20 bg-white">
-      {/* Hero Section */}
-      <section className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
-        <Image
-          src="/images/surf4.jpg"
-          alt="Surfing at Heiwa House"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/40" />
+      {/* Hero Section with Video */}
+      <HeroVideo
+        title="Heiwa Surf"
+        description="Experience the thrill of surfing in Portugal's pristine waters. From beginner lessons to advanced coaching, discover your perfect wave at our doorstep."
+        videoUrl="/images/videos/surf-ocean.mp4"
+        imageUrl="/images/surf4.jpg"
+      />
 
-        <div className="relative h-full flex items-center justify-center text-center px-4">
-          <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-              Surfing at Heiwa House
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 drop-shadow-md max-w-3xl mx-auto">
-              Perfectly positioned between two of Portugal&apos;s most legendary surf towns - Ericeira and Peniche -
-              with beautiful beaches right on our doorstep
+      {/* Introduction Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-6">
+            <p className="text-lg text-gray-700 leading-relaxed">
+              Located in the heart of Portugal&apos;s surf paradise, Heiwa House offers direct access to some of Europe&apos;s most beautiful beaches. 
+              Our prime location between Ericeira and Peniche puts you within minutes of world-class surf breaks suitable for all levels.
+            </p>
+            <p className="text-lg text-gray-700 leading-relaxed">
+              Whether you&apos;re catching your first wave or perfecting advanced techniques, our experienced instructors and pristine conditions 
+              create the perfect environment for your surfing journey.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Introduction Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="prose prose-lg max-w-none">
-            <p className="text-lg text-gray-700 leading-relaxed mb-6">
-              When we say Heiwa House is in the perfect surf location, we mean it. Imagine waking up, checking the conditions,
-              and having your pick of some of the best surf spots in Portugal - all within 30 minutes of our door.
-            </p>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Whether you&apos;re a complete beginner taking your first wave or an experienced surfer chasing the perfect barrel,
-              the beaches around Heiwa House offer something for everyone. And the best part? You don&apos;t have to travel far to find it.
+      {/* Surf Activities Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Surf Programs & Services
+            </h2>
+            <p className="text-lg text-gray-600">
+              Professional surf instruction and ocean experiences
             </p>
           </div>
+
+          <ActivityGrid 
+            category="surf" 
+            tier="always" 
+            showTierBadge={false}
+          />
         </div>
       </section>
 

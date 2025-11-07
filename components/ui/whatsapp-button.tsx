@@ -2,6 +2,7 @@
 
 import { MessageCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useBooking } from '@/lib/booking-context'
 
 interface WhatsAppButtonProps {
   phoneNumber?: string
@@ -14,10 +15,17 @@ export function WhatsAppButton({
   message = 'Hi! I\'m interested in booking at Heiwa House. Can you help me?',
   className = ''
 }: WhatsAppButtonProps) {
+  const { hasActiveBooking, isBookingOpen } = useBooking()
+
   const handleClick = () => {
     const encodedMessage = encodeURIComponent(message)
     const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[^0-9]/g, '')}?text=${encodedMessage}`
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+  }
+
+  // Hide WhatsApp button when booking widget is open OR when there's an active booking
+  if (hasActiveBooking || isBookingOpen) {
+    return null
   }
 
   return (

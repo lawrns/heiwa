@@ -41,6 +41,8 @@ const nextConfig = {
   // Performance optimizations
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizeCss: true,
+    scrollRestoration: true,
   },
   
   // Compiler optimizations
@@ -84,11 +86,33 @@ const nextConfig = {
         ],
       },
       {
+        source: '/images/videos/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=604800, immutable',
+          },
+          {
+            key: 'Accept-Ranges',
+            value: 'bytes',
+          },
+        ],
+      },
+      {
         source: '/_next/static/:path*',
         headers: [
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=300, s-maxage=300',
           },
         ],
       },

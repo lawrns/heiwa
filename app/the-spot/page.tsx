@@ -72,14 +72,7 @@ export default function TheSpotPage() {
         </div>
       </section>
 
-      {/* Page Title Section */}
-      <div className="py-12 border-b border-gray-200 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">Welcome to Heiwa House</h2>
-          <p className="text-lg text-gray-600">A surf, yoga, and lifestyle destination like no other</p>
-        </div>
-      </div>
-
+      
       {/* Our Story Section */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -272,7 +265,7 @@ export default function TheSpotPage() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-accent to-accent-hover text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Experience The Spot?</h2>
+          <h2 className="text-4xl font-bold mb-6 text-white">Ready to Experience The Spot?</h2>
           <p className="text-xl mb-8 text-white/90">Book your stay and discover your paradise at Heiwa House</p>
           <Link
             href="/rooms"
