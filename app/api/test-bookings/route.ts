@@ -20,14 +20,18 @@ export async function GET() {
       })
     }
 
-    // Test creating a simple booking
+    // Test creating a simple booking using the correct schema
     const testBooking = {
-      client_name: 'Test User',
-      email: 'test@example.com',
+      booking_type: 'room',
+      room_id: 'f3f00cbb-c30e-4d84-9352-cfb6a76684d0',
+      camp_id: null,
       check_in_date: '2025-12-15',
       check_out_date: '2025-12-17',
-      room_id: 'f3f00cbb-c30e-4d84-9352-cfb6a76684d0',
-      guests: 2,
+      total_participants: 1,
+      total_guests: 2,
+      pricing_breakdown: null,
+      add_ons: [],
+      source_url: null,
       status: 'pending',
       created_at: new Date().toISOString()
     }
