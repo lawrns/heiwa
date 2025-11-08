@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Home, Bed, Calendar, ShoppingCart, Image, Settings, Globe, Activity, LogOut } from 'lucide-react'
+import { Home, Bed, Calendar, ShoppingCart, Image, Settings, Globe, Activity } from 'lucide-react'
 import AdminLogoutButton from '@/components/admin/AdminLogoutButton'
 
 export const metadata: Metadata = {
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: Home },
+  { name: 'CMS', href: '/admin/cms', icon: Globe },
   { name: 'Rooms', href: '/admin/rooms', icon: Bed },
   { name: 'Activities', href: '/admin/activities', icon: Activity },
   { name: 'Surf Camps', href: '/admin/surf-camps', icon: Calendar },
@@ -26,7 +27,7 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
       <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg">
         <div className="flex h-16 items-center px-6 border-b border-gray-200">
@@ -59,7 +60,7 @@ export default function AdminLayout({
       </div>
 
       {/* Main content */}
-      <div className="pl-64">
+      <div className="ml-64 flex-1">
         <div className="min-h-screen">
           {children}
         </div>

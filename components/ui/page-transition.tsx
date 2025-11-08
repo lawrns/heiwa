@@ -35,6 +35,11 @@ const pageTransition = {
 export function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname()
 
+  // Skip animation for admin routes
+  if (pathname.startsWith('/admin')) {
+    return <>{children}</>
+  }
+
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div

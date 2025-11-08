@@ -1,13 +1,20 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Instagram } from 'lucide-react'
 import { getNavigationItems } from '@/lib/content'
 import type { NavigationItem } from '@/lib/types'
 
 export function Footer() {
+  const pathname = usePathname()
   const [navigationItems, setNavigationItems] = useState<NavigationItem[]>([])
+
+  // Hide footer for admin routes
+  if (pathname.startsWith('/admin')) {
+    return null
+  }
 
   useEffect(() => {
     getNavigationItems().then(items => {

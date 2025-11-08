@@ -1,4 +1,15 @@
+'use client'
+
+import { usePathname } from 'next/navigation'
+
 export function SkipToContent() {
+  const pathname = usePathname()
+  
+  // Hide for admin routes
+  if (pathname.startsWith('/admin')) {
+    return null
+  }
+  
   return (
     <a
       href="#main-content"
