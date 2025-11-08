@@ -110,8 +110,8 @@ export async function POST(request: NextRequest) {
       }
 
       if (existingClient) {
-        clientData = existingClient
-        console.log('✅ Found existing client:', clientData.id)
+        clientData = existingClient as any
+        console.log('✅ Found existing client:', (clientData as any).id)
       } else {
         // Create new client
         const newClient = {
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
 
         const { data: newClientData, error: createClientError } = await supabaseAdmin
           .from('clients')
-          .insert([newClient])
+          .insert([newClient] as any)
           .select()
           .single()
 
@@ -136,8 +136,8 @@ export async function POST(request: NextRequest) {
           }, { status: 500 })
         }
 
-        clientData = newClientData
-        console.log('✅ Created new client:', clientData.id)
+        clientData = newClientData as any
+        console.log('✅ Created new client:', (clientData as any).id)
       }
     } catch (clientError) {
       console.error('Client creation error:', clientError)
@@ -168,7 +168,7 @@ export async function POST(request: NextRequest) {
 
       const { data: newBooking, error: bookingError } = await supabaseAdmin
         .from('bookings')
-        .insert([booking])
+        .insert([booking] as any)
         .select()
         .single()
 
@@ -180,8 +180,8 @@ export async function POST(request: NextRequest) {
         }, { status: 500 })
       }
 
-      bookingData = newBooking
-      console.log('✅ Created booking:', bookingData.id)
+      bookingData = newBooking as any
+      console.log('✅ Created booking:', (bookingData as any).id)
     } catch (bookingError) {
       console.error('Booking creation error:', bookingError)
       return NextResponse.json({
@@ -194,8 +194,8 @@ export async function POST(request: NextRequest) {
     try {
       const roomAssignment = {
         room_id: room_id,
-        booking_id: bookingData.id,
-        client_id: clientData.id,
+        booking_id: (bookingData as any).id,
+        client_id: (clientData as any).id,
         check_in_date: start_date,
         check_out_date: end_date,
         bed_number: null // Will be assigned later
@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
 
       const { data: assignmentData, error: assignmentError } = await supabaseAdmin
         .from('room_assignments')
-        .insert([roomAssignment])
+        .insert([roomAssignment] as any)
         .select()
         .single()
 
@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
         // Don't fail the whole booking if assignment fails, but log it
         console.log('⚠️ Booking created but room assignment failed')
       } else {
-        console.log('✅ Created room assignment:', assignmentData.id)
+        console.log('✅ Created room assignment:', (assignmentData as any).id)
       }
     } catch (assignmentError) {
       console.error('Room assignment error:', assignmentError)
@@ -224,8 +224,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: {
-        booking_id: bookingData.id,
-        client_id: clientData.id,
+        booking_id: (bookingData as any).id,
+        client_id: (clientData as any).id,
         booking_type,
         status: 'confirmed',
         message: 'Booking created successfully'
