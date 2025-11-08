@@ -12,16 +12,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabaseAdmin
       .from('bookings')
-      .select(`
-        *,
-        rooms:room_id (
-          id,
-          name,
-          capacity,
-          booking_type,
-          pricing
-        )
-      `)
+      .select('*')
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
