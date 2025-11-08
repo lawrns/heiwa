@@ -59,28 +59,28 @@ const CMSDashboard: React.FC = () => {
 
       {/* Main Content */}
       <Tabs defaultValue="homepage" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="homepage" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-6 bg-gray-100 p-1">
+          <TabsTrigger value="homepage" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-orange-600">
             <Layout className="w-4 h-4" />
             Homepage
           </TabsTrigger>
-          <TabsTrigger value="pages" className="flex items-center gap-2">
+          <TabsTrigger value="pages" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-orange-600">
             <MousePointer className="w-4 h-4" />
             Pages
           </TabsTrigger>
-          <TabsTrigger value="media" className="flex items-center gap-2">
+          <TabsTrigger value="media" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-orange-600">
             <Image className="w-4 h-4" />
             Media
           </TabsTrigger>
-          <TabsTrigger value="testimonials" className="flex items-center gap-2">
+          <TabsTrigger value="testimonials" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-orange-600">
             <MessageSquare className="w-4 h-4" />
             Testimonials
           </TabsTrigger>
-          <TabsTrigger value="faq" className="flex items-center gap-2">
+          <TabsTrigger value="faq" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-orange-600">
             <HelpCircle className="w-4 h-4" />
             FAQ
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
+          <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-orange-600">
             <BarChart3 className="w-4 h-4" />
             Analytics
           </TabsTrigger>
