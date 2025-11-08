@@ -28,18 +28,8 @@ export async function GET() {
     console.log('✅ Rooms fetched successfully:', activeRooms.length)
     console.log('🔍 RAW DATABASE DATA:', JSON.stringify(activeRooms, null, 2))
 
-    // Transform rooms to match booking widget expected format
-    const transformedRooms = activeRooms.map((room: {
-      id: string
-      name: string
-      description?: string
-      capacity: number
-      bookingType?: string
-      pricing?: { standard?: number; offSeason?: number }
-      amenities?: string[]
-      images?: string[]
-      isActive?: boolean
-    }) => {
+    // Transform rooms to match UI expected format with proper field mapping
+    const transformedRooms = activeRooms.map((room: any) => {
       // Calculate price_per_night from pricing object
       const pricePerNight = room.pricing?.standard || room.pricing?.offSeason || 80
 
@@ -48,12 +38,17 @@ export async function GET() {
         name: room.name,
         description: room.description || `Comfortable accommodation with capacity for ${room.capacity} guests`,
         capacity: room.capacity,
-        booking_type: room.bookingType || 'whole',
-        price_per_night: pricePerNight,
+        bookingType: room.booking_type || 'whole', // Map from database booking_type
+        pricing: room.pricing,
         amenities: room.amenities || [],
-        featured_image: room.images && room.images.length > 0 ? room.images[0] : null,
         images: room.images || [],
-        is_active: room.isActive !== false,
+        isActive: room.is_active !== false, // Map from database is_active
+        bedTypes: room.bed_types || [], // Map from database bed_types
+        // Keep original fields for backward compatibility
+        booking_type: room.booking_type,
+        is_active: room.is_active,
+        price_per_night: pricePerNight,
+        featured_image: room.images && room.images.length > 0 ? room.images[0] : null,
       }
     })
 

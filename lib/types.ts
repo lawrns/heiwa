@@ -26,7 +26,8 @@ export interface Room {
 export interface Experience {
   id: string;         // Unique identifier
   title: string;      // Activity name (e.g., "Hiking", "Surfing")
-  image: string;      // Image URL from heiwahouse.com
+  image: string;      // Image URL (mapped from image_url in database)
+  image_url?: string; // Original database field (for backward compatibility)
   category?: string;  // Optional category grouping
   description?: string; // Activity description
   icon?: string;      // Icon name (lucide icon)
@@ -231,4 +232,10 @@ export interface ExtendedRoom extends Room {
   amenities?: string[];
   bedTypes?: string[];
   isActive?: boolean;
+  // Database snake_case fields for backward compatibility
+  booking_type?: string;
+  is_active?: boolean;
+  bed_types?: string[];
+  price_per_night?: number;
+  featured_image?: string | null;
 }

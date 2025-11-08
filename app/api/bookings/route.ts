@@ -1,6 +1,64 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+// GET method to fetch bookings from database
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const status = searchParams.get('status')
+    const roomId = searchParams.get('roomId')
+    const limit = parseInt(searchParams.get('limit') || '10')
+    const offset = parseInt(searchParams.get('offset') || '0')
+
+    let query = supabase
+      .from('bookings')
+      .select(`
+        *,
+        rooms:room_id (
+          id,
+          name,
+          capacity,
+          booking_type,
+          pricing
+        )
+      `)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1)
+
+    if (status) {
+      query = query.eq('status', status)
+    }
+
+    if (roomId) {
+      query = query.eq('room_id', roomId)
+    }
+
+    const { data, error, count } = await query
+
+    if (error) {
+      console.error('Error fetching bookings:', error)
+      return NextResponse.json(
+        { success: false, error: 'Failed to fetch bookings' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: data || [],
+      count,
+      limit,
+      offset
+    })
+  } catch (error) {
+    console.error('Unexpected error:', error)
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
 // API endpoint for all bookings (rooms and surf weeks)
 export async function POST(request: NextRequest) {
   try {
@@ -17,7 +75,14 @@ export async function POST(request: NextRequest) {
       add_ons = [],
       pricing,
       guests,
-      source_url
+      source_url,
+      // Additional fields for better database integration
+      clientName,
+      email,
+      phone,
+      message,
+      checkIn,
+      checkOut
     } = body
 
     // Validate required fields

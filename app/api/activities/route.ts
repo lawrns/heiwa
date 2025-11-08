@@ -38,9 +38,16 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Transform data to match UI expectations (image_url -> image)
+    const transformedData = (data || []).map((activity: any) => ({
+      ...activity,
+      image: activity.image_url, // Map image_url to image for UI compatibility
+      // Keep original image_url for backward compatibility
+    }))
+
     return NextResponse.json({
       success: true,
-      data: data || []
+      data: transformedData
     })
   } catch (error) {
     console.error('Unexpected error:', error)

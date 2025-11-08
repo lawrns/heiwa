@@ -1,6 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { Experience } from '@/lib/types'
 
 interface Activity {
   id: string
@@ -42,11 +44,59 @@ export function ActivityCard({ activity, className = '' }: ActivityCardProps) {
 }
 
 interface ActivitiesCarouselProps {
-  activities: Activity[]
+  activities?: Activity[]
   className?: string
+  category?: string
 }
 
-export function ActivitiesCarousel({ activities, className = '' }: ActivitiesCarouselProps) {
+export function ActivitiesCarousel({ activities: initialActivities, className = '', category }: ActivitiesCarouselProps) {
+  const [activities, setActivities] = useState<Activity[]>(initialActivities || [])
+  const [loading, setLoading] = useState(!initialActivities)
+
+  useEffect(() => {
+    if (initialActivities) return // Use provided activities
+
+    async function fetchActivities() {
+      try {
+        setLoading(true)
+        const params = new URLSearchParams()
+        if (category) params.append('category', category)
+
+        const response = await fetch(`/api/activities?${params.toString()}`)
+        const data = await response.json()
+
+        if (data.success) {
+          const transformedActivities = data.data.map((exp: Experience) => ({
+            id: exp.id,
+            title: exp.title,
+            image: exp.image,
+            href: `/activities/${exp.category?.toLowerCase() || 'general'}`
+          }))
+          setActivities(transformedActivities)
+        }
+      } catch (error) {
+        console.error('Error fetching activities:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchActivities()
+  }, [initialActivities, category])
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="animate-pulse">
+            <div className="aspect-[4/3] bg-gray-200 rounded-lg mb-2"></div>
+            <div className="h-3 bg-gray-200 rounded"></div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className={`w-full ${className}`}>
       {/* Intro Text */}

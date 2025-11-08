@@ -11,6 +11,7 @@ import { ScrollIndicator } from '@/components/ui/scroll-indicator'
 import { GoogleRatingSummary } from '@/components/ui/google-reviews'
 import { YouTubeVideo } from '@/components/ui/youtube-video'
 import { ActivityCardEnhanced } from '@/components/ui/activity-card-enhanced'
+import { DynamicActivities } from '@/components/ui/dynamic-activities'
 
 export const metadata: Metadata = {
   title: 'Heiwa House - Surf Camp & Rooms in Santa Cruz, Portugal',
@@ -207,29 +208,7 @@ export default function HomePage() {
             What we are about
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <ActivityCardEnhanced
-              title="Surf Lessons"
-              description="World-class surf instruction with professional coaches"
-              image="/optimized/activities_001_surf-lessons.webp"
-              href="/activities/surf"
-              index={0}
-            />
-            <ActivityCardEnhanced
-              title="Skateboarding"
-              description="Professional ramps and obstacles for all levels"
-              image="/optimized/activities_011_skatepark.webp"
-              href="/activities/skateboarding"
-              index={1}
-            />
-            <ActivityCardEnhanced
-              title="Yoga & Wellness"
-              description="Find your zen in our yoga dome with daily sessions"
-              image="/optimized/activities_019_yoga_dome1.webp"
-              href="/activities/yoga"
-              index={2}
-            />
-          </div>
+          <DynamicActivities limit={3} />
         </div>
       </section>
 

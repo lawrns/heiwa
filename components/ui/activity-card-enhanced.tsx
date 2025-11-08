@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { LucideIcon, ArrowRight } from 'lucide-react'
+import { AvailabilityBadge } from './availability-badge'
 
 interface ActivityCardEnhancedProps {
   title: string
@@ -12,6 +13,7 @@ interface ActivityCardEnhancedProps {
   image: string
   href: string
   index?: number
+  availabilityTier?: 'always' | 'on-request'
 }
 
 export function ActivityCardEnhanced({
@@ -20,6 +22,7 @@ export function ActivityCardEnhanced({
   image,
   href,
   index = 0,
+  availabilityTier,
 }: ActivityCardEnhancedProps) {
   const [isHovered, setIsHovered] = useState(false)
 
@@ -97,9 +100,16 @@ export function ActivityCardEnhanced({
         <h3 className="text-2xl font-bold mb-2 text-white">{title}</h3>
 
         {/* Description */}
-        <p className="text-sm text-white/80 mb-4 line-clamp-2 text-white">
+        <p className="text-sm text-white/80 mb-3 line-clamp-2 text-white">
           {description}
         </p>
+
+        {/* Availability */}
+        {availabilityTier && (
+          <div className="mb-4">
+            <AvailabilityBadge tier={availabilityTier} className="scale-90 origin-left" />
+          </div>
+        )}
 
         {/* CTA */}
         <div className={`transition-all duration-300 ease ${isHovered ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'}`}>
