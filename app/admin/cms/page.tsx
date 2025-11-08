@@ -4,8 +4,13 @@
 // Main dashboard for content management
 
 import React from 'react'
-import { HomepageEditor, MediaLibrary } from '@/components/admin'
-import { AdminButton } from '@/components/admin/ui'
+import HomepageEditor from '@/components/admin/editors/HomepageEditor'
+import PageContentEditor from '@/components/admin/editors/PageContentEditor'
+import TestimonialsManager from '@/components/admin/editors/TestimonialsManager'
+import FAQManager from '@/components/admin/editors/FAQManager'
+import MediaLibrary from '@/components/admin/editors/MediaLibrary'
+import AnalyticsDashboard from '@/components/admin/analytics/AnalyticsDashboard'
+import { AdminButton } from '@/components/admin'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Layout, 
@@ -91,11 +96,7 @@ const CMSDashboard: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="pages">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Page Content Editor</h3>
-            <p className="text-gray-600 mb-4">Manage content for Flow, Play, Surf, and The Spot pages</p>
-            <AdminButton variant="outline">Coming Soon</AdminButton>
-          </div>
+          <PageContentEditor />
         </TabsContent>
 
         <TabsContent value="media">
@@ -103,27 +104,15 @@ const CMSDashboard: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="testimonials">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Testimonials Manager</h3>
-            <p className="text-gray-600 mb-4">Manage guest reviews and testimonials</p>
-            <AdminButton variant="outline">Coming Soon</AdminButton>
-          </div>
+          <TestimonialsManager />
         </TabsContent>
 
         <TabsContent value="faq">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">FAQ Manager</h3>
-            <p className="text-gray-600 mb-4">Manage frequently asked questions</p>
-            <AdminButton variant="outline">Coming Soon</AdminButton>
-          </div>
+          <FAQManager />
         </TabsContent>
 
         <TabsContent value="analytics">
-          <div className="text-center py-12">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Analytics Dashboard</h3>
-            <p className="text-gray-600 mb-4">View content performance and usage statistics</p>
-            <AdminButton variant="outline">Coming Soon</AdminButton>
-          </div>
+          <AnalyticsDashboard />
         </TabsContent>
       </Tabs>
     </div>
