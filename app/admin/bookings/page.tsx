@@ -183,75 +183,116 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Bookings Management</h1>
-            <p className="text-gray-600 mt-2">Manage all bookings and reservations</p>
+    <div className="space-y-8">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Bookings Management</h1>
+          <p className="text-gray-600 mt-2">Manage all bookings and reservations</p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setView(view === 'table' ? 'calendar' : 'table')}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+          >
+            <Calendar className="h-4 w-4" />
+            {view === 'table' ? 'Calendar View' : 'Table View'}
+          </button>
+          <button
+            onClick={exportBookings}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </button>
+        </div>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
+          <div className="flex-shrink-0 bg-blue-100 text-blue-600 rounded-full p-3">
+            <Calendar size={20} />
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setView(view === 'table' ? 'calendar' : 'table')}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            >
-              <Calendar className="h-4 w-4" />
-              {view === 'table' ? 'Calendar View' : 'Table View'}
-            </button>
-            <button
-              onClick={exportBookings}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <Download className="h-4 w-4" />
-              Export CSV
-            </button>
+          <div>
+            <p className="text-gray-500 text-sm">Total Bookings</p>
+            <p className="text-2xl font-bold text-gray-900">{bookings.length}</p>
           </div>
         </div>
+        
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
+          <div className="flex-shrink-0 bg-green-100 text-green-600 rounded-full p-3">
+            <CheckCircle size={20} />
+          </div>
+          <div>
+            <p className="text-gray-500 text-sm">Confirmed</p>
+            <p className="text-2xl font-bold text-gray-900">{bookings.filter(b => b.status === 'confirmed').length}</p>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
+          <div className="flex-shrink-0 bg-yellow-100 text-yellow-600 rounded-full p-3">
+            <Clock size={20} />
+          </div>
+          <div>
+            <p className="text-gray-500 text-sm">Pending</p>
+            <p className="text-2xl font-bold text-gray-900">{bookings.filter(b => b.status === 'pending').length}</p>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
+          <div className="flex-shrink-0 bg-purple-100 text-purple-600 rounded-full p-3">
+            <Filter size={20} />
+          </div>
+          <div>
+            <p className="text-gray-500 text-sm">Filtered</p>
+            <p className="text-2xl font-bold text-gray-900">{filteredBookings.length}</p>
+          </div>
+        </div>
+      </div>
 
-        {/* Filters */}
-        <div className="bg-white p-4 rounded-lg shadow border">
-          <div className="flex flex-wrap gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <select
-                value={filters.status}
-                onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="all">All Statuses</option>
-                <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="cancelled">Cancelled</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-              <select
-                value={filters.type}
-                onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="all">All Types</option>
-                <option value="room">Rooms</option>
-                <option value="surf_camp">Surf Camps</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Payment</label>
-              <select
-                value={filters.payment_status}
-                onChange={(e) => setFilters(prev => ({ ...prev, payment_status: e.target.value }))}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="all">All Payments</option>
-                <option value="pending">Pending</option>
-                <option value="paid">Paid</option>
-                <option value="refunded">Refunded</option>
-              </select>
-            </div>
+      {/* Filters */}
+      <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <div className="flex flex-wrap gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select
+              value={filters.status}
+              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+            <select
+              value={filters.type}
+              onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="all">All Types</option>
+              <option value="room">Rooms</option>
+              <option value="surf_camp">Surf Camps</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Payment</label>
+            <select
+              value={filters.payment_status}
+              onChange={(e) => setFilters(prev => ({ ...prev, payment_status: e.target.value }))}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="all">All Payments</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="refunded">Refunded</option>
+            </select>
           </div>
         </div>
       </div>
@@ -311,33 +352,33 @@ export default function BookingsPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredBookings.map((booking) => (
                   <tr key={booking.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-3 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">#{booking.id}</div>
                         <div className="text-sm text-gray-500">{booking.item_name}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-3 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">{booking.guest_name}</div>
                         <div className="text-sm text-gray-500">{booking.guest_email}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-3 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         booking.type === 'room' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
                       }`}>
                         {booking.type === 'room' ? 'Room' : 'Surf Camp'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
                       <div>{booking.check_in}</div>
                       <div>{booking.check_out}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900">
                       €{booking.total_price}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-3 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         {getStatusIcon(booking.status)}
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`}>
@@ -350,7 +391,7 @@ export default function BookingsPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-3 whitespace-nowrap text-sm font-medium">
                       <div className="flex gap-2">
                         <button
                           onClick={() => console.log('View booking:', booking.id)}

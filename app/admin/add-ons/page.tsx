@@ -99,7 +99,7 @@ export default function AdminAddOnsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Add-ons Management</h1>
@@ -115,8 +115,8 @@ export default function AdminAddOnsPage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-md p-5 flex items-center space-x-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
           <div className="flex-shrink-0 bg-accent/10 text-accent rounded-full p-3">
             <Package size={20} />
           </div>
@@ -126,7 +126,7 @@ export default function AdminAddOnsPage() {
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-md p-5 flex items-center space-x-4">
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
           <div className="flex-shrink-0 bg-green-100 text-green-600 rounded-full p-3">
             <Package size={20} />
           </div>
@@ -136,7 +136,7 @@ export default function AdminAddOnsPage() {
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-md p-5 flex items-center space-x-4">
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
           <div className="flex-shrink-0 bg-blue-100 text-blue-600 rounded-full p-3">
             <Euro size={20} />
           </div>
@@ -148,7 +148,7 @@ export default function AdminAddOnsPage() {
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-md p-5 flex items-center space-x-4">
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
           <div className="flex-shrink-0 bg-purple-100 text-purple-600 rounded-full p-3">
             <Users size={20} />
           </div>
@@ -195,13 +195,13 @@ export default function AdminAddOnsPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {addOns.map((addOn) => (
                 <tr key={addOn.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <div>
                       <div className="text-sm font-medium text-gray-900">{addOn.name}</div>
                       <div className="text-sm text-gray-500 max-w-xs truncate">{addOn.description}</div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       {getCategoryIcon(addOn.category)}
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getCategoryColor(addOn.category)}`}>
@@ -209,27 +209,27 @@ export default function AdminAddOnsPage() {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900">
                     €{addOn.price}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
                     {addOn.maxQuantity || 'Unlimited'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       addOn.requiresBooking ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
                     }`}>
                       {addOn.requiresBooking ? 'Yes' : 'No'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       addOn.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                     }`}>
                       {addOn.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex gap-2">
                       <Link href={`/admin/add-ons/${addOn.id}`} className="text-accent hover:text-accent-hover">
                         <Edit className="h-5 w-5 inline-block" />
@@ -247,7 +247,7 @@ export default function AdminAddOnsPage() {
       </div>
 
       {/* Categories Overview */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-6 mt-8">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Categories Overview</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {['equipment', 'service', 'experience', 'transport'].map(category => {
