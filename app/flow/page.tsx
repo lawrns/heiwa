@@ -1,52 +1,44 @@
-import { Metadata } from 'next'
+'use client'
+
 import { Mail } from 'lucide-react'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
+import { useEffect, useState } from 'react'
 
-export const metadata: Metadata = {
-  title: 'Heiwa Flow - Yoga, Massage & Wellness in Santa Cruz, Portugal',
-  description: 'Find your flow at Heiwa House with yoga, massage, ice bath, sauna, and wellness services. Experience ultimate relaxation and rejuvenation in Portugal.',
+// Note: Metadata export removed because this is now a client component
+// SEO metadata is handled via generateMetadata in layout or static metadata
+
+interface Testimonial {
+  id: string
+  author_name: string
+  content: string
+  rating: number
+  is_featured: boolean
 }
 
 export default function FlowPage() {
+  const [reviews, setReviews] = useState<Testimonial[]>([])
+  const [loading, setLoading] = useState(true)
 
-  // Reviews for Flow page
-  const reviews = [
-    {
-      id: '1',
-      name: 'Maria S.',
-      rating: 5,
-      text: 'The yoga sessions in the dome were absolutely magical. Waking up to practice with that view was the perfect start to each day.',
-      timeAgo: '1 week ago',
-      verified: true,
-    },
-    {
-      id: '2',
-      name: 'Thomas K.',
-      rating: 5,
-      text: 'The ice bath and sauna combination was incredible for recovery. I felt refreshed and energized after every session.',
-      timeAgo: '2 weeks ago',
-      verified: true,
-    },
-    {
-      id: '3',
-      name: 'Lisa P.',
-      rating: 5,
-      text: 'The massage therapy was exactly what I needed after surfing. Professional, relaxing, and so beneficial for my muscles.',
-      timeAgo: '3 weeks ago',
-      verified: true,
-    },
-    {
-      id: '4',
-      name: 'David R.',
-      rating: 5,
-      text: 'The sound healing session was transformative. I\'d never experienced anything like it before - so deeply relaxing.',
-      timeAgo: '1 month ago',
-      verified: true,
-    },
-  ]
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch('/api/admin/testimonials?featured=true')
+        const data = await response.json()
+        if (data.success && data.data) {
+          setReviews(data.data)
+        }
+      } catch (error) {
+        console.error('Error fetching testimonials:', error)
+        // Fallback to empty array - page still renders
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTestimonials()
+  }, [])
 
   return (
     <div className="min-h-screen pt-20 bg-white">
@@ -162,16 +154,15 @@ export default function FlowPage() {
 
                 {/* Review Text */}
                 <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                  {review.text}
+                  {review.content}
                 </p>
 
                 {/* Reviewer Info */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-gray-900 text-sm">{review.name}</p>
-                    <p className="text-xs text-gray-500">{review.timeAgo}</p>
+                    <p className="font-semibold text-gray-900 text-sm">{review.author_name}</p>
                   </div>
-                  {review.verified && (
+                  {review.is_featured && (
                     <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
