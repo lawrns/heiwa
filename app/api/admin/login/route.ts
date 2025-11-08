@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
     const { password } = await request.json()
 
     // Validate password
-    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123'
+    const adminPassword = process.env.ADMIN_PASSWORD || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'heiwa_admin_2024'
 
     if (password !== adminPassword) {
       return NextResponse.json(

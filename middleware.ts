@@ -7,14 +7,15 @@ export function middleware(request: NextRequest) {
     const adminAuth = request.cookies.get('admin_auth')?.value
 
     // If no auth cookie, redirect to login
-    if (!adminAuth || adminAuth !== process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+    const adminPassword = process.env.ADMIN_PASSWORD || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'heiwa_admin_2024'
+    if (!adminAuth || adminAuth !== adminPassword) {
       // Allow access to /admin/login
-      if (request.nextUrl.pathname === '/admin/login') {
+      if (request.nextUrl.pathname === '/admin/login' || request.nextUrl.pathname === '/admin/(auth)/login' || request.nextUrl.pathname === '/admin-login') {
         return NextResponse.next()
       }
 
       // Redirect to login
-      return NextResponse.redirect(new URL('/admin/login', request.url))
+      return NextResponse.redirect(new URL('/admin-login', request.url))
     }
   }
 
