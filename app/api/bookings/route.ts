@@ -92,23 +92,13 @@ export async function POST(request: NextRequest) {
     const participantEmail = participant.email || email
     const participantPhone = participant.phone || phone
 
-    // Create booking record in Supabase with available fields
+    // Create booking record in Supabase with minimal required fields
     const bookingData = {
-      booking_type: booking_type || 'room',
       room_id: room_id,
-      camp_id: null,
-      check_in_date: start_date,
-      check_out_date: end_date,
-      total_participants: participants.length || 1,
-      total_guests: guests || 1,
-      pricing_breakdown: null,
-      add_ons: [],
-      source_url: null,
-      status: 'pending',
       created_at: new Date().toISOString()
     }
 
-    console.log('📝 Creating booking with data:', bookingData)
+    console.log('📝 Creating booking with minimal data:', bookingData)
 
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
