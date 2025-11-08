@@ -34,7 +34,7 @@ export async function GET() {
 
     const { data: insertedBooking, error: insertError } = await supabase
       .from('bookings')
-      .insert(testBooking)
+      .insert(testBooking as any)
       .select()
       .single()
 
@@ -48,17 +48,17 @@ export async function GET() {
     }
 
     // Clean up the test booking
-    if (insertedBooking?.id) {
+    if ((insertedBooking as any)?.id) {
       await supabase
         .from('bookings')
         .delete()
-        .eq('id', insertedBooking.id)
+        .eq('id', (insertedBooking as any).id)
     }
 
     return NextResponse.json({
       success: true,
       message: 'Bookings table working correctly',
-      testBookingId: insertedBooking?.id,
+      testBookingId: (insertedBooking as any)?.id,
       timestamp: new Date().toISOString()
     })
 
