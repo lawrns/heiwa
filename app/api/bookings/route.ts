@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 // GET method to fetch bookings from database
 export async function GET(request: NextRequest) {
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    let query = supabase
+    let query = supabaseAdmin
       .from('bookings')
       .select(`
         *,
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     let clientData
     try {
       // Try to find existing client by email
-      const { data: existingClient, error: findClientError } = await supabase
+      const { data: existingClient, error: findClientError } = await supabaseAdmin
         .from('clients')
         .select('*')
         .eq('email', participantEmail)
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
           brand: 'Heiwa House'
         }
 
-        const { data: newClientData, error: createClientError } = await supabase
+        const { data: newClientData, error: createClientError } = await supabaseAdmin
           .from('clients')
           .insert([newClient])
           .select()
@@ -175,7 +175,7 @@ export async function POST(request: NextRequest) {
         source: 'api'
       }
 
-      const { data: newBooking, error: bookingError } = await supabase
+      const { data: newBooking, error: bookingError } = await supabaseAdmin
         .from('bookings')
         .insert([booking])
         .select()
@@ -210,7 +210,7 @@ export async function POST(request: NextRequest) {
         bed_number: null // Will be assigned later
       }
 
-      const { data: assignmentData, error: assignmentError } = await supabase
+      const { data: assignmentData, error: assignmentError } = await supabaseAdmin
         .from('room_assignments')
         .insert([roomAssignment])
         .select()
