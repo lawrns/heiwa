@@ -94,7 +94,6 @@ export async function POST(request: NextRequest) {
 
     // Create booking record in Supabase with minimal required fields
     const bookingData = {
-      room_id: room_id,
       created_at: new Date().toISOString()
     }
 
