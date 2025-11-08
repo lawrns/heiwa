@@ -77,10 +77,10 @@ export function RoomsGrid({ rooms, loading = false }: RoomsGridProps) {
       </div>
 
       {/* Rooms Grid */}
-      <section className="py-16 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 4 }).map((_, i) => (
                 <RoomCardSkeleton key={i} />
               ))}
@@ -90,7 +90,7 @@ export function RoomsGrid({ rooms, loading = false }: RoomsGridProps) {
               <p className="text-gray-500 text-lg">No rooms available in this category.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredRooms.map((room) => (
                 <HoverCard
                   key={room.id}
@@ -101,7 +101,7 @@ export function RoomsGrid({ rooms, loading = false }: RoomsGridProps) {
                     className="bg-white rounded-lg shadow-card overflow-hidden group hover-lift block transition-all duration-300 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 h-full flex flex-col"
                   >
                   {/* Image Carousel */}
-                  <div className="relative">
+                  <div className="relative h-48 overflow-hidden">
                     <ImageCarousel
                       images={room.images}
                       alt={room.name}
@@ -111,32 +111,32 @@ export function RoomsGrid({ rooms, loading = false }: RoomsGridProps) {
                   </div>
 
                   {/* Room Details */}
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-accent transition-colors">
+                  <div className="p-4 flex flex-col flex-grow">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-accent transition-colors line-clamp-2">
                       {room.name}
                     </h3>
 
                     {/* Amenities */}
-                    <div className="flex items-center gap-4 mb-4 text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <BedDouble className="w-4 h-4 text-accent" />
-                        <span className="text-sm">{room.beds} {room.beds === 1 ? 'bed' : 'beds'}</span>
+                    <div className="flex items-center gap-3 mb-3 text-gray-600 text-xs">
+                      <div className="flex items-center gap-1">
+                        <BedDouble className="w-3 h-3 text-accent" />
+                        <span>{room.beds} {room.beds === 1 ? 'bed' : 'beds'}</span>
                       </div>
                       {room.bathrooms > 0 && (
-                        <div className="flex items-center gap-2">
-                          <Bath className="w-4 h-4 text-accent" />
-                          <span className="text-sm">{room.bathrooms} {room.bathrooms === 1 ? 'bathroom' : 'bathrooms'}</span>
+                        <div className="flex items-center gap-1">
+                          <Bath className="w-3 h-3 text-accent" />
+                          <span>{room.bathrooms} {room.bathrooms === 1 ? 'bath' : 'baths'}</span>
                         </div>
                       )}
                     </div>
 
                     {/* Description */}
-                    <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-3">
+                    <p className="text-gray-600 text-xs leading-relaxed mb-3 line-clamp-2 flex-grow">
                       {room.description}
                     </p>
 
                     {/* CTA */}
-                    <div className="inline-flex items-center gap-1 text-accent group-hover:text-accent-hover font-medium text-sm group-hover:gap-2 transition-all">
+                    <div className="inline-flex items-center gap-1 text-accent group-hover:text-accent-hover font-medium text-xs group-hover:gap-2 transition-all">
                       Room Detail
                       <span>→</span>
                     </div>

@@ -6,9 +6,10 @@ import { motion } from 'framer-motion'
 interface AnimatedHeroHeadingProps {
   text: string
   className?: string
+  style?: React.CSSProperties
 }
 
-export function AnimatedHeroHeading({ text, className = '' }: AnimatedHeroHeadingProps) {
+export function AnimatedHeroHeading({ text, className = '', style }: AnimatedHeroHeadingProps) {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export function AnimatedHeroHeading({ text, className = '' }: AnimatedHeroHeadin
   return (
     <motion.div
       className={className}
+      style={style}
       variants={containerVariants}
       initial="hidden"
       animate={isVisible ? 'visible' : 'hidden'}

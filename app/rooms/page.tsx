@@ -1,6 +1,10 @@
 import { getRooms } from '@/lib/content'
 import { RoomsGrid } from './rooms-grid'
 
+// Force dynamic rendering to prevent static caching
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function RoomsPage() {
   // Fetch rooms server-side
   const rooms = await getRooms()

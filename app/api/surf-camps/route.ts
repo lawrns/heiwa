@@ -1,15 +1,35 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+// TypeScript interface for surf camp data
+interface SurfCamp {
+  id: string
+  name: string
+  description: string
+  start_date: string
+  end_date: string
+  max_participants: number
+  price: number
+  level: string
+  category: string
+  images: string[]
+  includes: string[]
+  is_active: boolean
+}
+
 // API endpoint for getting all surf camps
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // Get all active surf camps
+    const { searchParams } = new URL(request.url)
+    const category = searchParams.get('category') || 'surf-week'
+    
+    // Get all active surf camps for specific category
     const { data: surfCamps, error: surfCampsError } = await supabase
       .from('surf_camps')
       .select('*')
       .eq('is_active', true)
-      .order('name')
+      .eq('category', category)
+      .order('start_date', { ascending: true })
 
     if (surfCampsError) {
       console.error('Error fetching surf camps:', surfCampsError)
@@ -19,10 +39,39 @@ export async function GET() {
       }, { status: 500 })
     }
 
+    // Get enrollment counts for each surf camp
+    const surfCampsWithAvailability = await Promise.all(
+      (surfCamps || []).map(async (camp: SurfCamp) => {
+        const { count: enrolledCount } = await supabase
+          .from('surf_camp_enrollments')
+          .select('*', { count: 'exact', head: true })
+          .eq('surf_camp_id', camp.id)
+          .eq('status', 'confirmed')
+        
+        const availableSpots = camp.max_participants - (enrolledCount || 0)
+        
+        return {
+          id: camp.id,
+          name: camp.name,
+          description: camp.description,
+          start_date: camp.start_date,
+          end_date: camp.end_date,
+          price: camp.price,
+          max_participants: camp.max_participants,
+          enrolled_count: enrolledCount || 0,
+          available_spots: Math.max(0, availableSpots),
+          is_full: availableSpots <= 0,
+          level: camp.level,
+          images: camp.images,
+          includes: camp.includes
+        }
+      })
+    )
+
     return NextResponse.json({
       success: true,
       data: {
-        surf_camps: surfCamps || []
+        surf_camps: surfCampsWithAvailability
       }
     })
 

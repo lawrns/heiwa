@@ -61,25 +61,35 @@ export default function HomePage() {
           <div className="max-w-4xl">
             <AnimatedHeroHeading
               text="Welcome to Heiwa House"
-              className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg"
+              className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg" style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 700, letterSpacing: '-0.02em' }}
             />
-            <p className="text-xl md:text-2xl text-white/90 mb-6 drop-shadow-md">
+            <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
               Your surf and lifestyle destination in Santa Cruz, Portugal
             </p>
             
-              {/* Google Reviews */}
-              <div className="flex justify-center mb-6">
-                <GoogleRatingSummary className="text-white/90" />
-              </div>
+            {/* Two Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <Link
+                href="/surf-weeks"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
+                style={{ backgroundColor: '#ec681c' }}
+              >
+                <Waves className="w-5 h-5" />
+                Come for a Surf Camp
+              </Link>
+              <Link
+                href="/rooms"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white border-2 border-white hover:bg-white/10"
+              >
+                <Bed className="w-5 h-5" />
+                Rent a Room
+              </Link>
+            </div>
             
-            <Link
-              href="/surf-weeks"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
-              style={{ backgroundColor: '#ec681c' }}
-            >
-              <Bed className="w-5 h-5" />
-              Explore surf weeks
-            </Link>
+            {/* Google Reviews */}
+            <div className="flex justify-center">
+              <GoogleRatingSummary className="text-white/90" />
+            </div>
           </div>
         </div>
 
@@ -99,12 +109,14 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* YouTube Video */}
-            <YouTubeVideo 
-              videoId="9nhQi o sHf"
-              title="Heiwa Surf Weeks Video"
-            />
+            <div className="flex justify-center">
+              <YouTubeVideo 
+                videoId="9nhQiKGsgHg"
+                title="Heiwa Surf Weeks Video"
+              />
+            </div>
 
             {/* Content */}
             <div className="space-y-6">
@@ -208,7 +220,49 @@ export default function HomePage() {
             What we are about
           </h2>
 
-          <DynamicActivities limit={3} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Heiwa Play */}
+            <Link href="/play" className="group">
+              <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
+                <img src="/optimized/photography_009_dsc03491.webp" alt="Heiwa Play" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
+                <div className="absolute inset-0 flex items-end">
+                  <div className="w-full p-6">
+                    <h3 className="text-2xl font-bold text-white mb-2">Heiwa Play</h3>
+                    <p className="text-white/90 text-sm">Explore activities and experiences around our location</p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Heiwa Surf */}
+            <Link href="/surf" className="group">
+              <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
+                <img src="/images/hh1.webp" alt="Heiwa Surf" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
+                <div className="absolute inset-0 flex items-end">
+                  <div className="w-full p-6">
+                    <h3 className="text-2xl font-bold text-white mb-2">Heiwa Surf</h3>
+                    <p className="text-white/90 text-sm">Discover the best surfing spots and conditions</p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Heiwa Flow */}
+            <Link href="/flow" className="group">
+              <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
+                <img src="/images/hh2.webp" alt="Heiwa Flow" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
+                <div className="absolute inset-0 flex items-end">
+                  <div className="w-full p-6">
+                    <h3 className="text-2xl font-bold text-white mb-2">Heiwa Flow</h3>
+                    <p className="text-white/90 text-sm">Wellness, yoga, and mindfulness experiences</p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -432,40 +486,35 @@ export default function HomePage() {
             Activities Around
           </h2>
 
-          <ActivitiesCarousel
-            activities={[
-              {
-                id: '1',
-                title: 'Surfing',
-                image: '/images/surf4.jpg',
-              },
-              {
-                id: '2',
-                title: 'Skateboarding',
-                image: '/images/ramp3.jpg',
-              },
-              {
-                id: '3',
-                title: 'Yoga & Flow',
-                image: '/images/yoga_dome3.jpg',
-              },
-              {
-                id: '4',
-                title: 'Swimming Pool',
-                image: '/images/pool333.jpg',
-              },
-              {
-                id: '5',
-                title: 'Adventure Park',
-                image: '/images/park333.jpg',
-              },
-              {
-                id: '6',
-                title: 'Games & Fun',
-                image: '/images/games.jpg',
-              },
-            ]}
-          />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { title: 'Surf Lessons', desc: 'Learn to ride the waves with professional instructors', img: '/optimized/photography_001_dji_0098-scaled.webp' },
+              { title: 'Go Karts', desc: 'Feel the adrenaline rush on our local tracks', img: '/optimized/photography_002_dsc01794.webp' },
+              { title: 'Horseback Riding', desc: 'Explore the countryside on horseback', img: '/optimized/photography_003_dsc01829-enhanced-nr-2.webp' },
+              { title: 'Plane Flight', desc: 'Experience breathtaking aerial views', img: '/optimized/photography_004_dsc02099-scaled.webp' },
+              { title: 'Wineyard Tour', desc: 'Taste local wines and learn about Portuguese vineyards', img: '/optimized/photography_005_dsc02102-scaled.webp' },
+              { title: 'Hiking', desc: 'Discover scenic trails and natural beauty', img: '/optimized/photography_006_dsc02767-scaled.webp' },
+              { title: 'Paragliding', desc: 'Soar above the landscape with stunning views', img: '/optimized/photography_007_dsc03081-enhanced-nr-scaled.webp' },
+              { title: 'Bicycle Riding', desc: 'Pedal through coastal paths and hidden gems', img: '/optimized/photography_008_dsc03427-enhanced-nr-scaled.webp' },
+            ].map((activity) => (
+              <div key={activity.title} className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-default">
+                <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
+                  <img src={activity.img} alt={activity.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors" />
+                  
+                  {/* Title - always visible */}
+                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                    <h3 className="text-sm sm:text-base font-bold text-white">{activity.title}</h3>
+                  </div>
+                  
+                  {/* Description - appears on hover */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-white text-center text-sm px-4 font-medium">{activity.desc}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>

@@ -6,16 +6,15 @@ export async function GET() {
   try {
     console.log('🏠 Fetching all rooms for booking widget')
 
-    // Get all active rooms (handle both isActive and is_active field names)
+    // Get all active rooms from database
     const { data: rooms, error: roomsError } = await supabase
       .from('rooms')
       .select('*')
+      .eq('is_active', true)
       .order('name')
     
-    // Filter active rooms in code since field name might vary
-    const activeRooms = (rooms || []).filter((room: { isActive?: boolean; is_active?: boolean }) =>
-      room.isActive !== false && room.is_active !== false
-    )
+    // Use rooms directly as they're already filtered by is_active = true
+    const activeRooms = rooms || []
 
     if (roomsError) {
       console.error('Error fetching rooms:', roomsError)

@@ -76,7 +76,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       let payload: any = {};
 
       if (state.experienceType === 'room' && state.dates.checkIn && state.dates.checkOut && state.selectedOption) {
-        endpoint = '/wordpress/room-bookings';
+        endpoint = '/widget/room-bookings';
         payload = {
           room_id: state.selectedOption,
           start_date: state.dates.checkIn.toISOString().split('T')[0],
@@ -86,7 +86,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           pricing: pricing,
           guests: state.guests,
           source_url: typeof window !== 'undefined' ? window.location.href : undefined,
-          widget_version: 'wp-widget-test'
+          widget_version: 'v1'
         };
       } else if (state.experienceType === 'surf-week' && state.selectedOption) {
         endpoint = '/bookings';

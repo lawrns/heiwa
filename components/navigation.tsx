@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X, Bed } from 'lucide-react'
+import { Menu, X, Bed, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { NavigationProps, NavigationItem } from '@/lib/types'
 import { getNavigationItems } from '@/lib/content'
@@ -13,6 +13,7 @@ import { MobileNavOverlay } from '@/components/ui/mobile-nav-overlay'
 export function Navigation({ items: initialItems, currentPath, className }: NavigationProps & { items?: NavigationItem[] }) {
   const [isOpen, setIsOpen] = useState(false)
   const [items, setItems] = useState<NavigationItem[]>(initialItems || [])
+  const [activitiesOpen, setActivitiesOpen] = useState(false)
   const { openBooking } = useBooking()
 
   useEffect(() => {
@@ -27,7 +28,27 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   }, [initialItems])
 
   const toggleMenu = () => setIsOpen(!isOpen)
-  const closeMenu = () => setIsOpen(false)
+  const closeMenu = () => {
+    setIsOpen(false)
+    setActivitiesOpen(false)
+  }
+
+  // Split navigation items for the new layout
+  const leftNavItems = [
+    { path: '/', name: 'HOME' },
+    { path: '/rooms', name: 'ROOM RENTALS' },
+    { path: '/surf-weeks', name: 'SURF WEEK' }
+  ]
+
+  const rightNavItems = [
+    { path: '/the-spot', name: 'LOCATION' }
+  ]
+
+  const activitiesItems = [
+    { path: '/play', name: 'PLAY' },
+    { path: '/surf', name: 'SURF' },
+    { path: '/flow', name: 'FLOW' }
+  ]
 
   // Check if we're on the homepage to apply special layout
   const isHomepage = currentPath === '/'
@@ -51,8 +72,8 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             {/* Left Side - Navigation Menu */}
             <div className="hidden lg:flex items-center flex-1">
               <nav aria-label="Main navigation">
-                <ul className="flex items-center space-x-4">
-                  {items.map((item) => (
+                <ul className="flex items-center space-x-6">
+                  {leftNavItems.map((item) => (
                     <li key={item.path}>
                       <Link
                         href={item.path}
@@ -63,11 +84,6 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                             : 'text-white'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
-                        {...(item.external && {
-                          target: '_blank',
-                          rel: 'noopener noreferrer',
-                          'aria-label': `${item.name} (opens in new tab)`
-                        })}
                       >
                         {item.name}
                       </Link>
@@ -94,8 +110,64 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               </Link>
             </div>
 
-            {/* Right Side - Phone & Book Now Button */}
-            <div className="hidden lg:flex items-center space-x-4 flex-1 justify-end">
+            {/* Right Side - Activities Dropdown, Location, Phone & Book Button */}
+            <div className="hidden lg:flex items-center space-x-6 flex-1 justify-end">
+              {/* Activities Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={() => setActivitiesOpen(true)}
+                onMouseLeave={() => setActivitiesOpen(false)}
+              >
+                <button
+                  className={cn(
+                    'text-xs font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1 flex items-center gap-1',
+                    (currentPath?.includes('/flow') || currentPath?.includes('/play'))
+                      ? 'text-orange-400'
+                      : 'text-white'
+                  )}
+                >
+                  ACTIVITIES
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+                {activitiesOpen && (
+                  <div className="absolute top-full left-0 pt-2 z-50">
+                    <div className="w-40 bg-gray-900 border border-gray-700 rounded-md shadow-lg py-1">
+                      {activitiesItems.map((item) => (
+                        <Link
+                          key={item.path}
+                          href={item.path}
+                          className={cn(
+                            'block px-4 py-2 text-xs font-medium tracking-wide transition-colors hover:bg-gray-800 hover:text-orange-400 uppercase',
+                            currentPath === item.path
+                              ? 'text-orange-400'
+                              : 'text-white'
+                          )}
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Location */}
+              {rightNavItems.map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={cn(
+                    'text-xs font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
+                    currentPath === item.path
+                      ? 'text-orange-400'
+                      : 'text-white'
+                  )}
+                  aria-current={currentPath === item.path ? 'page' : undefined}
+                >
+                  {item.name}
+                </Link>
+              ))}
+
               {/* Phone Number */}
               <div className="flex items-center text-xs text-white">
                 <span className="tracking-wide">+351 912 193 785</span>
@@ -217,59 +289,17 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
         )}
       </div>
 
-      {/* Mobile Navigation Menu */}
-      {isOpen && (
-        <div className="lg:hidden" id="mobile-menu">
-          <nav aria-label="Mobile navigation">
-            <ul className="px-4 pt-4 pb-6 space-y-2 bg-black/90 backdrop-blur-sm border-t border-gray-600">
-              {items.map((item) => (
-                <li key={item.path}>
-                  <Link
-                    href={item.path}
-                    className={cn(
-                      'block px-3 py-2 text-sm font-medium tracking-wide transition-colors uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded',
-                      currentPath === item.path
-                        ? 'text-orange-400'
-                        : 'text-white hover:text-orange-400'
-                    )}
-                    onClick={closeMenu}
-                    aria-current={currentPath === item.path ? 'page' : undefined}
-                    {...(item.external && {
-                      target: '_blank',
-                      rel: 'noopener noreferrer',
-                      'aria-label': `${item.name} (opens in new tab)`
-                    })}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-              <li className="pt-4 border-t border-gray-600">
-                <div className="text-sm text-white mb-3">📞 +351 912 193 785</div>
-                <button
-                  onClick={() => {
-                    openBooking()
-                    closeMenu()
-                  }}
-                  className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium tracking-wide transition-colors uppercase text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
-                  style={{ backgroundColor: '#ec681c' }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
-                >
-                  <Bed className="w-4 h-4" />
-                  BOOK NOW
-                </button>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      )}
-      
       {/* Mobile Navigation Overlay */}
       <MobileNavOverlay 
         isOpen={isOpen} 
         onClose={closeMenu} 
-        items={items}
+        items={[
+          { path: '/', name: 'HOME' },
+          { path: '/rooms', name: 'ROOM RENTALS' },
+          { path: '/surf-weeks', name: 'SURF WEEK' },
+          { path: '/activities', name: 'ACTIVITIES' },
+          { path: '/the-spot', name: 'THE SPOT' }
+        ]}
         currentPath={currentPath || '/'}
       />
     </nav>

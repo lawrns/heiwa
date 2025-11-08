@@ -38,7 +38,7 @@ export function BookingWidget({
   const [isOpen, setIsOpen] = useState(isWebComponent);
   const [bookingSuccess, setBookingSuccess] = useState<any>(null);
   const { state, actions, computed } = useBookingFlow();
-  const { setBookingSuccess: setBookingSuccessInContext } = useBooking();
+  const { setBookingSuccess: setBookingSuccessInContext, selectedSurfWeek, setSelectedSurfWeek } = useBooking();
 
   useEffect(() => {
     // Handle body overflow and modal classes
@@ -70,6 +70,15 @@ export function BookingWidget({
     };
   }, [isOpen, isWebComponent, onModalStateChange]);
 
+  // Handle pre-selected surf week
+  useEffect(() => {
+    if (isOpen && selectedSurfWeek) {
+      // Pre-select surf week in the booking flow
+      actions.setExperienceType('surf-week');
+      actions.setSurfWeek(selectedSurfWeek.id);
+    }
+  }, [isOpen, selectedSurfWeek, actions]);
+
   const openWidget = () => {
     setIsOpen(true);
   };
@@ -78,6 +87,7 @@ export function BookingWidget({
     setIsOpen(false);
     setBookingSuccess(null);
     setBookingSuccessInContext(false); // Reset booking success when closing
+    setSelectedSurfWeek(null); // Clear selected surf week
     actions.reset();
   };
 
@@ -221,25 +231,93 @@ export function BookingWidget({
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                       <CheckCircle size={32} className="text-green-600" />
                     </div>
+
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
-                      <p className="text-gray-600">
+                      <p className="text-gray-600 mb-4">
                         Booking #{bookingSuccess.booking?.booking_number || 'N/A'}
                       </p>
+
+                      {/* Booking Details Card */}
+                      <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 mb-6 text-left max-w-md mx-auto">
+                        <h4 className="text-lg font-semibold text-gray-900 mb-4">Booking Details</h4>
+
+                        <div className="space-y-3">
+                          {/* Booking Type */}
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Type:</span>
+                            <span className="font-medium text-gray-900">
+                              {state.experienceType === 'room' ? 'Room Booking' : 'Surf Week Package'}
+                            </span>
+                          </div>
+
+                          {/* Dates */}
+                          {state.dates.checkIn && state.dates.checkOut && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">Dates:</span>
+                              <span className="font-medium text-gray-900 text-right">
+                                {state.dates.checkIn.toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric'
+                                })} - {state.dates.checkOut.toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric'
+                                })}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Guests */}
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Guests:</span>
+                            <span className="font-medium text-gray-900">{state.guests}</span>
+                          </div>
+
+                          {/* Total Amount */}
+                          <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                            <span className="text-gray-600">Total:</span>
+                            <span className="font-bold text-lg text-green-600">
+                              €{state.pricing.total?.toFixed(2) || '0.00'}
+                            </span>
+                          </div>
+
+                          {/* Payment Method */}
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Payment:</span>
+                            <span className="font-medium text-gray-900">
+                              {state.paymentMethod === 'card_stripe' ? 'Credit Card' : 'Bank Transfer'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Next Steps */}
+                      <div className="bg-blue-50 rounded-lg p-4 text-left max-w-md mx-auto">
+                        <h4 className="font-semibold text-blue-900 mb-2">Next Steps:</h4>
+                        <ul className="text-sm text-blue-700 space-y-1">
+                          {state.paymentMethod === 'card_stripe' ? (
+                            <>
+                              <li>• Payment processing will complete shortly</li>
+                              <li>• Confirmation email sent to your inbox</li>
+                              <li>• Check your email for booking details</li>
+                            </>
+                          ) : (
+                            <>
+                              <li>• Confirmation email sent to your inbox</li>
+                              <li>• Complete bank transfer within 24 hours</li>
+                              <li>• Send transfer confirmation to bookings@heiwahouse.com</li>
+                            </>
+                          )}
+                        </ul>
+                      </div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4 text-left">
-                      <h4 className="font-semibold text-gray-900 mb-2">Next Steps:</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
-                        <li>• Confirmation email sent to your inbox</li>
-                        <li>• Complete payment within 24 hours to secure your booking</li>
-                        <li>• Check your email for payment instructions</li>
-                      </ul>
-                    </div>
+
                     <button
                       onClick={closeWidget}
-                      className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+                      className="w-full max-w-xs py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
                     >
-                      Close
+                      Close & Return to Site
                     </button>
                   </div>
                 ) : (

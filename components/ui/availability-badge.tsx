@@ -44,7 +44,7 @@ export function AvailabilityBadge({ tier = 'always', className = '' }: Availabil
         <Icon className="w-3 h-3" />
         {config.label}
       </Badge>
-      <span className="text-xs text-gray-500 hidden sm:inline">
+      <span className="text-xs text-white hidden sm:inline">
         {config.description}
       </span>
     </div>

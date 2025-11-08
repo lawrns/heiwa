@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { X } from 'lucide-react'
+import { X, Bed, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useBooking } from '@/lib/booking-context'
 
 interface MobileNavOverlayProps {
   isOpen: boolean
@@ -13,6 +14,8 @@ interface MobileNavOverlayProps {
 }
 
 export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: MobileNavOverlayProps) {
+  const { openBooking } = useBooking()
+  const [expandedItems, setExpandedItems] = useState<string[]>([])
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -25,14 +28,14 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
   }, [isOpen])
 
   const menuVariants = {
-    hidden: { opacity: 0, x: -300 },
+    hidden: { opacity: 0, x: 300 },
     visible: {
       opacity: 1,
       x: 0,
     },
     exit: {
       opacity: 0,
-      x: -300,
+      x: 300,
     },
   }
 
@@ -65,7 +68,8 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
             animate="visible"
             exit="exit"
             onClick={onClose}
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            style={{ pointerEvents: 'auto' }}
           />
 
           {/* Menu Panel */}
@@ -74,10 +78,10 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed left-0 top-0 bottom-0 w-64 bg-gray-900 z-50 lg:hidden shadow-xl"
+            className="fixed right-0 top-0 bottom-0 w-80 bg-black/40 backdrop-blur-md z-50 lg:hidden shadow-xl"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-800">
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
               <h2 className="text-lg font-bold text-white">Menu</h2>
               <button
                 onClick={onClose}
@@ -90,36 +94,86 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
 
             {/* Navigation Items */}
             <nav className="p-4 space-y-2">
-              {items.map((item, i) => (
-                <motion.div
-                  key={item.path}
-                  custom={i}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <Link
-                    href={item.path}
-                    onClick={onClose}
-                    className={`block px-4 py-3 rounded-lg transition-all duration-200 font-medium uppercase text-sm tracking-wide ${
-                      currentPath === item.path
-                        ? 'bg-orange-500 text-white'
-                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                    }`}
+              {items.map((item, i) => {
+                const isActivities = item.name === 'ACTIVITIES'
+                const isExpanded = expandedItems.includes('activities')
+                
+                return (
+                  <motion.div
+                    key={item.path}
+                    custom={i}
+                    variants={itemVariants}
+                    initial="hidden"
+                    animate="visible"
                   >
-                    {item.name}
-                  </Link>
-                </motion.div>
-              ))}
+                    {isActivities ? (
+                      <div>
+                        <button
+                          onClick={() => setExpandedItems(isExpanded ? [] : ['activities'])}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 font-medium uppercase text-sm tracking-wide ${
+                            currentPath?.includes('/flow') || currentPath?.includes('/play') || currentPath?.includes('/surf')
+                              ? 'bg-orange-500 text-white'
+                              : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                          }`}
+                        >
+                          {item.name}
+                          <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                        </button>
+                        {isExpanded && (
+                          <div className="mt-2 ml-4 space-y-2 border-l border-gray-700 pl-4">
+                            {[
+                              { name: 'PLAY', path: '/play' },
+                              { name: 'SURF', path: '/surf' },
+                              { name: 'FLOW', path: '/flow' }
+                            ].map((subitem) => (
+                              <Link
+                                key={subitem.path}
+                                href={subitem.path}
+                                onClick={onClose}
+                                className={`block px-4 py-2 rounded-lg transition-all duration-200 font-medium uppercase text-xs tracking-wide ${
+                                  currentPath === subitem.path
+                                    ? 'bg-orange-500 text-white'
+                                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                                }`}
+                              >
+                                {subitem.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <Link
+                        href={item.path}
+                        onClick={onClose}
+                        className={`block px-4 py-3 rounded-lg transition-all duration-200 font-medium uppercase text-sm tracking-wide ${
+                          currentPath === item.path
+                            ? 'bg-orange-500 text-white'
+                            : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    )}
+                  </motion.div>
+                )
+              })}
             </nav>
 
             {/* Footer CTA */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800 bg-gray-800/50">
+            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
               <button
-                className="w-full px-4 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-colors uppercase text-sm"
-                onClick={onClose}
+                className="w-full px-4 py-3 text-white font-semibold rounded-lg transition-colors uppercase text-sm flex items-center justify-center gap-2"
+                style={{ backgroundColor: '#ec681c' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
+                onClick={() => {
+                  openBooking()
+                  onClose()
+                }}
               >
-                Book Now
+                <Bed className="w-4 h-4" />
+                BOOK NOW
               </button>
             </div>
           </motion.div>

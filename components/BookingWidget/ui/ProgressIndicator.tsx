@@ -38,7 +38,7 @@ export function ProgressIndicator({ currentStep, stepFlow, totalSteps }: Progres
               <div key={stepType} className="flex flex-col items-center relative">
                 {/* Connector Line with Wave Pattern */}
                 {index < currentStepFlow.length - 1 && (
-                  <div className="absolute top-5 left-1/2 w-16 sm:w-20 h-0.5 -translate-y-1/2 z-0">
+                  <div className="absolute top-4 left-1/2 w-8 sm:w-12 md:w-16 h-0.5 -translate-y-1/2 z-0">
                     <div className={`
                       h-full transition-all duration-500 ease-out relative overflow-hidden
                       ${isCompleted
@@ -61,12 +61,12 @@ export function ProgressIndicator({ currentStep, stepFlow, totalSteps }: Progres
                   </div>
                 )}
 
-                {/* Step Container with proper spacing */}
-                <div className="flex flex-col items-center px-2 sm:px-4 min-w-[60px] sm:min-w-[80px]">
+                {/* Step Container with responsive spacing */}
+                <div className="flex flex-col items-center px-1 sm:px-2 md:px-4 min-w-[50px] sm:min-w-[70px] md:min-w-[80px]">
 
                   {/* Step Circle */}
                   <div className={`
-                    relative z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center overflow-hidden
+                    relative z-10 w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center overflow-hidden
                     transition-all duration-500 ease-out
                     ${isCompleted
                       ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30 animate-in zoom-in-50 duration-300'
@@ -99,13 +99,13 @@ export function ProgressIndicator({ currentStep, stepFlow, totalSteps }: Progres
                       />
                     )}
                     {isCompleted ? (
-                      <Check size={14} className="drop-shadow-sm" />
+                      <Check size={12} className="drop-shadow-sm sm:w-[14px] sm:h-[14px]" />
                     ) : (
                       <span className="text-xs sm:text-sm font-bold">{stepNumber}</span>
                     )}
                   </div>
 
-                  {/* Step Label - responsive text */}
+                  {/* Step Label - fully responsive */}
                   <div className="mt-1 sm:mt-2 text-center">
                     <div className={`
                       text-xs font-medium transition-colors duration-200 whitespace-nowrap
@@ -116,9 +116,9 @@ export function ProgressIndicator({ currentStep, stepFlow, totalSteps }: Progres
                           : 'text-gray-500'
                       }
                     `}>
-                      {/* Show short labels on mobile, full labels on larger screens */}
-                      <span className="sm:hidden">{stepInfo?.shortLabel}</span>
-                      <span className="hidden sm:inline">{stepInfo?.label}</span>
+                      {/* Hide all text on mobile (< 640px), show short labels on small tablets, full labels on larger screens */}
+                      <span className="hidden sm:inline md:hidden">{stepInfo?.shortLabel}</span>
+                      <span className="hidden md:inline">{stepInfo?.label}</span>
                     </div>
                   </div>
                 </div>
