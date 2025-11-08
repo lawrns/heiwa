@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Home, Bed, Calendar, ShoppingCart, Image, Settings, Globe, Activity } from 'lucide-react'
+import { Home, Bed, Calendar, ShoppingCart, Image, Settings, Globe, Activity, LogOut } from 'lucide-react'
+import AdminLogoutButton from '@/components/admin/AdminLogoutButton'
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard | Heiwa House',
@@ -48,6 +49,11 @@ export default function AdminLayout({
                 </Link>
               )
             })}
+          </div>
+          
+          {/* Logout Button */}
+          <div className="mt-8 pt-8 border-t border-gray-200">
+            <AdminLogoutButton />
           </div>
         </nav>
       </div>
