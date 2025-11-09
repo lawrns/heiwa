@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
 
       // Create surf week booking record
       const bookingData = {
-        clientIds: [clientId],
+        client_ids: [clientId],
         items: [{
           type: 'surfCamp',
           itemId: camp_id,
@@ -165,14 +165,12 @@ export async function POST(request: NextRequest) {
           totalPrice: pricing.total || 0,
           dates: null // Surf camps don't have specific dates like rooms
         }],
-        totalAmount: pricing.total || 0,
+        total_amount: pricing.total || 0,
         status: 'pending',
-        paymentStatus: 'pending',
-        paymentMethod: null,
+        payment_status: 'pending',
+        payment_method: null,
         notes: `Created via surf week booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
-        source: 'dashboard',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        source: 'dashboard'
       }
 
       const bookingResult = await supabaseAdmin
@@ -309,7 +307,7 @@ export async function POST(request: NextRequest) {
     let bookingData
     try {
       const booking = {
-        clientIds: [clientData.id],
+        client_ids: [clientData.id],
         items: [{
           type: 'room',
           itemId: room_id,
@@ -321,14 +319,12 @@ export async function POST(request: NextRequest) {
             checkOut: end_date
           }
         }],
-        totalAmount: 0, // Will be calculated based on room pricing
+        total_amount: 0, // Will be calculated based on room pricing
         status: 'pending',
-        paymentStatus: 'pending',
-        paymentMethod: null,
+        payment_status: 'pending',
+        payment_method: null,
         notes: message || '',
-        source: 'api',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        source: 'api'
       }
 
       const { data: newBooking, error: bookingError } = await supabaseAdmin
