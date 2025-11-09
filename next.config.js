@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Build identifier for cache busting
+  generateBuildId: async () => {
+    return '2025-11-09-16-24-critical-fixes'
+  },
   // Disable ESLint and TypeScript errors during build
   eslint: {
     ignoreDuringBuilds: true,

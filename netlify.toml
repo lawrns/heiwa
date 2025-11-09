@@ -2,7 +2,10 @@
   command = "npm run build"
   publish = ".next"
   # Enable incremental builds for faster deployments
-  environment = { "NODE_OPTIONS" = "--max-old-space-size=4096" }
+  environment = { 
+    "NODE_OPTIONS" = "--max-old-space-size=4096",
+    "BUILD_ID" = "2025-11-09-16-24-critical-fixes"
+  }
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
