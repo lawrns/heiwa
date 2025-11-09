@@ -15,10 +15,6 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  # Optimize Next.js plugin for faster builds
-  [plugins.inputs]
-    # Disable some Next.js optimizations for faster builds
-    skipBuild = false
 
 # Cache static assets for better performance
 [[headers]]
