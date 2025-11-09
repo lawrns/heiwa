@@ -152,7 +152,7 @@ export default function HomePage() {
             {/* YouTube Video */}
             <div className="flex justify-center">
               <YouTubeVideo 
-                videoId="9nhQiKGsgHg"
+                videoId={surfWeeksSection?.videoId || '9nhQiKGsgHg'}
                 title="Heiwa Surf Weeks Video"
               />
             </div>
@@ -216,8 +216,8 @@ export default function HomePage() {
 
                 {/* Table Body */}
                 <div className="divide-y divide-gray-200">
-                  {surfWeeks.map((surfWeek) => (
-                    <div key={surfWeek.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                  {(surfWeeksSection?.bookingData || surfWeeks).map((surfWeek: any, idx: number) => (
+                    <div key={surfWeek.id || idx} className="px-6 py-4 hover:bg-gray-50 transition-colors">
                       <div className="grid grid-cols-4 gap-4 items-center">
                         <div className="text-gray-900 font-medium">{surfWeek.dates}</div>
                         <div className="text-gray-900 font-medium">{surfWeek.price}</div>
@@ -265,47 +265,25 @@ export default function HomePage() {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Heiwa Play */}
-            <Link href="/play" className="group">
-              <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
-                <img src="/optimized/photography_009_dsc03491.webp" alt="Heiwa Play" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
-                <div className="absolute inset-0 flex items-end">
-                  <div className="w-full p-6">
-                    <h3 className="text-2xl font-bold text-white mb-2">Heiwa Play</h3>
-                    <p className="text-white/90 text-sm">Explore activities and experiences around our location</p>
+            {/* About Cards - Using CMS Data */}
+            {(aboutSection?.cards || [
+              { title: 'Heiwa Play', description: 'Explore activities and experiences around our location', image: '/optimized/photography_009_dsc03491.webp', link: '/play' },
+              { title: 'Heiwa Surf', description: 'Discover the best surfing spots and conditions', image: '/images/hh1.webp', link: '/surf' },
+              { title: 'Heiwa Flow', description: 'Wellness, yoga, and mindfulness experiences', image: '/images/hh2.webp', link: '/flow' }
+            ]).map((card: any, idx: number) => (
+              <Link key={idx} href={card.link || '#'} className="group">
+                <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
+                  <img src={card.image || '/images/placeholder.webp'} alt={card.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
+                  <div className="absolute inset-0 flex items-end">
+                    <div className="w-full p-6">
+                      <h3 className="text-2xl font-bold text-white mb-2">{card.title}</h3>
+                      <p className="text-white/90 text-sm">{card.description}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-
-            {/* Heiwa Surf */}
-            <Link href="/surf" className="group">
-              <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
-                <img src="/images/hh1.webp" alt="Heiwa Surf" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
-                <div className="absolute inset-0 flex items-end">
-                  <div className="w-full p-6">
-                    <h3 className="text-2xl font-bold text-white mb-2">Heiwa Surf</h3>
-                    <p className="text-white/90 text-sm">Discover the best surfing spots and conditions</p>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-            {/* Heiwa Flow */}
-            <Link href="/flow" className="group">
-              <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
-                <img src="/images/hh2.webp" alt="Heiwa Flow" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
-                <div className="absolute inset-0 flex items-end">
-                  <div className="w-full p-6">
-                    <h3 className="text-2xl font-bold text-white mb-2">Heiwa Flow</h3>
-                    <p className="text-white/90 text-sm">Wellness, yoga, and mindfulness experiences</p>
-                  </div>
-                </div>
-              </div>
-            </Link>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -323,45 +301,29 @@ export default function HomePage() {
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <div className="relative w-full h-80">
-                <ImageCarousel
-                  images={[
-                    '/images/rooms/room1.jpg',
-                    '/images/Freedomroutes-rooms-1.jpg',
-                    '/images/DSC03479.jpg',
-                  ]}
-                  alt="Private rooms at Heiwa House"
-                  className="h-80"
-                />
+            {/* Rooms Cards - Using CMS Data */}
+            {(roomsSection?.cards || [
+              { title: 'Private Rooms', description: 'Step into the charm of our beautifully designed rooms, blending modern comfort with traditional Portuguese aesthetics. Perfect for couples or solo travelers seeking peace and style.', images: ['/images/rooms/room1.jpg', '/images/Freedomroutes-rooms-1.jpg', '/images/DSC03479.jpg'], link: '/rooms/private' },
+              { title: 'Shared Rooms', description: 'Join our vibrant community in spacious shared accommodations. Meet fellow travelers, share stories, and make lifelong friendships in our comfortable dorm-style rooms.', images: ['/images/rooms/dorm.webp', '/images/Freedomroutes-rooms-50.jpg', '/images/DSC03491.jpg'], link: '/rooms/shared' }
+            ]).map((room: any, idx: number) => (
+              <div key={idx} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div className="relative w-full h-80">
+                  <ImageCarousel
+                    images={room.images || ['/images/placeholder.webp']}
+                    alt={room.title}
+                    className="h-80"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">{room.title}</h3>
+                  <p className="text-gray-600 leading-relaxed line-clamp-3">
+                    {room.description}
+                  </p>
+                </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Private Rooms</h3>
-                <p className="text-gray-600 leading-relaxed line-clamp-3">
-                  Step into the charm of our beautifully designed rooms, blending modern comfort with traditional Portuguese aesthetics. Perfect for couples or solo travelers seeking peace and style.
-                </p>
-              </div>
-            </div>
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <div className="relative w-full h-80">
-                <ImageCarousel
-                  images={[
-                    '/images/rooms/dorm.webp',
-                    '/images/Freedomroutes-rooms-50.jpg',
-                    '/images/DSC03491.jpg',
-                  ]}
-                  alt="Shared rooms at Heiwa House"
-                  className="h-80"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">Shared Rooms</h3>
-                <p className="text-gray-600 leading-relaxed line-clamp-3">
-                  Join our vibrant community in spacious shared accommodations. Meet fellow travelers, share stories, and make lifelong friendships in our comfortable dorm-style rooms.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
+
 
           <div className="text-center">
             <Link
@@ -390,7 +352,7 @@ export default function HomePage() {
             </p>
           )}
           
-          {/* Google Reviews Header */}
+          {/* Google Reviews Header - Using CMS Data */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded flex items-center justify-center text-white font-bold" style={{ backgroundColor: '#ec681c' }}>
@@ -399,20 +361,20 @@ export default function HomePage() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Reviews</h3>
                 <div className="flex items-center space-x-2">
-                  <span className="text-2xl font-bold text-gray-900">4.7</span>
+                  <span className="text-2xl font-bold text-gray-900">{reviewsSection?.googleRating?.rating || '4.7'}</span>
                   <div className="flex items-center space-x-1">
                     {Array.from({ length: 5 }, (_, i) => (
-                      <svg key={i} className={`w-5 h-5 ${i < 4 ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} viewBox="0 0 24 24">
+                      <svg key={i} className={`w-5 h-5 ${i < Math.floor(reviewsSection?.googleRating?.rating || 4.7) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} viewBox="0 0 24 24">
                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                       </svg>
                     ))}
                   </div>
-                  <span className="text-sm text-gray-600">(16,940)</span>
+                  <span className="text-sm text-gray-600">({reviewsSection?.googleRating?.totalReviews?.toLocaleString() || '16,940'})</span>
                 </div>
               </div>
             </div>
             <Link
-              href="https://www.google.com/search?q=Heiwa+House+reviews"
+              href={reviewsSection?.googleRating?.url || 'https://www.google.com/search?q=Heiwa+House+reviews'}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 text-sm font-semibold rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 btn-accent"
@@ -421,9 +383,9 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Reviews Grid */}
+          {/* Reviews Grid - Using CMS Data */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {reviews.map((review) => (
+            {(reviewsSection?.testimonials || reviews).map((review: any) => (
               <div key={review.id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3">
@@ -479,44 +441,43 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Facilities Carousel - showing 2 at a time */}
+          {/* Facilities Carousel - Using CMS Data */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Skatepark */}
-            <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg group">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              >
-                <source src="/images/videos/sk81.mp4" type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 bg-black/20 flex items-end p-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Skatepark</h3>
-                  <p className="text-white/90">Professional ramps and obstacles for all levels</p>
+            {(facilitiesSection?.facilities || [
+              { title: 'Skatepark', description: 'Professional ramps and obstacles for all levels', mediaType: 'video', mediaUrl: '/images/videos/sk81.mp4' },
+              { title: 'Yoga Dome', description: 'Peaceful space for yoga and meditation sessions', mediaType: 'image', mediaUrl: '/images/yoga_dome1.jpg' },
+              { title: 'Gym', description: 'Fully equipped fitness center for your workout needs', mediaType: 'image', mediaUrl: '/images/gym1.jpg' },
+              { title: 'Coworking Space', description: 'Quiet area for remote work and digital nomads', mediaType: 'image', mediaUrl: '/images/coworking1.jpg' }
+            ]).slice(0, 2).map((facility: any, idx: number) => (
+              <div key={idx} className="relative aspect-video rounded-lg overflow-hidden shadow-lg group">
+                {facility.mediaType === 'video' ? (
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  >
+                    <source src={facility.mediaUrl} type="video/mp4" />
+                  </video>
+                ) : (
+                  <Image
+                    src={facility.mediaUrl}
+                    alt={facility.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    loading="lazy"
+                  />
+                )}
+                <div className="absolute inset-0 bg-black/20 flex items-end p-6">
+                  <div>
+                    <h3 className="text-2xl font-bold text-white mb-2">{facility.title}</h3>
+                    <p className="text-white/90">{facility.description}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* Yoga Dome */}
-            <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg group">
-              <Image
-                src="/images/yoga_dome1.jpg"
-                alt="Yoga Dome"
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-black/20 flex items-end p-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Yoga Dome</h3>
-                  <p className="text-white/90">Perfect space for yoga and meditation</p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* Dots indicator */}
