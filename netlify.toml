@@ -5,7 +5,7 @@
 
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"
-  BUILD_ID = "2025-11-09-16-24-critical-fixes"
+  BUILD_ID = "2025-11-09-23-53-final-fixes"
   NODE_VERSION = "18"
   # Optimize build performance
   NPM_FLAGS = "--prefer-offline --no-audit"
