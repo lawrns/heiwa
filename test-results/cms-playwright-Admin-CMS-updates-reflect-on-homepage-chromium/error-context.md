@@ -1,0 +1,288 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - button "100 Performance Score" [ref=e3]:
+    - generic [ref=e4]: "100"
+    - generic:
+      - generic: Performance Score
+  - main [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - link "Heiwa House Admin" [ref=e9] [cursor=pointer]:
+          - /url: /
+        - navigation [ref=e10]:
+          - generic [ref=e11]:
+            - link "Dashboard" [ref=e12] [cursor=pointer]:
+              - /url: /admin
+              - img [ref=e13]
+              - text: Dashboard
+            - link "CMS" [ref=e16] [cursor=pointer]:
+              - /url: /admin/cms
+              - img [ref=e17]
+              - text: CMS
+            - link "Rooms" [ref=e20] [cursor=pointer]:
+              - /url: /admin/rooms
+              - img [ref=e21]
+              - text: Rooms
+            - link "Activities" [ref=e23] [cursor=pointer]:
+              - /url: /admin/activities
+              - img [ref=e24]
+              - text: Activities
+            - link "Surf Camps" [ref=e26] [cursor=pointer]:
+              - /url: /admin/surf-camps
+              - img [ref=e27]
+              - text: Surf Camps
+            - link "Bookings" [ref=e29] [cursor=pointer]:
+              - /url: /admin/bookings
+              - img [ref=e30]
+              - text: Bookings
+            - link "Add-ons" [ref=e32] [cursor=pointer]:
+              - /url: /admin/add-ons
+              - img [ref=e33]
+              - text: Add-ons
+            - link "Gallery" [ref=e37] [cursor=pointer]:
+              - /url: /admin/gallery
+              - img [ref=e38]
+              - text: Gallery
+            - link "Homepage" [ref=e42] [cursor=pointer]:
+              - /url: /admin/homepage
+              - img [ref=e43]
+              - text: Homepage
+            - link "Settings" [ref=e46] [cursor=pointer]:
+              - /url: /admin/settings
+              - img [ref=e47]
+              - text: Settings
+          - button "Logout" [ref=e51]:
+            - img [ref=e52]
+            - text: Logout
+      - generic [ref=e57]:
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - button [ref=e60]:
+              - img [ref=e61]
+            - heading "Homepage Content Management" [level=1] [ref=e63]
+          - generic [ref=e64]:
+            - button "Preview Mode" [ref=e65]:
+              - img [ref=e66]
+              - text: Preview Mode
+            - button "Save Changes" [ref=e69]:
+              - img [ref=e70]
+              - text: Save Changes
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - generic [ref=e77]:
+              - generic [ref=e78]:
+                - img [ref=e79]
+                - generic [ref=e82]:
+                  - heading "hero Section" [level=3] [ref=e83]
+                  - paragraph [ref=e84]: "Order: 1"
+              - generic [ref=e85]:
+                - generic [ref=e86]: hero
+                - generic [ref=e87]:
+                  - checkbox "Active" [checked] [ref=e88]
+                  - generic [ref=e89]: Active
+            - generic [ref=e91]:
+              - generic [ref=e92]:
+                - generic [ref=e93]:
+                  - generic [ref=e94]: Title *
+                  - textbox [ref=e95]: Welcome to Heiwa House
+                - generic [ref=e96]:
+                  - generic [ref=e97]: Subtitle
+                  - textbox [ref=e98]: Your surf and lifestyle destination in Santa Cruz, Portugal
+              - generic [ref=e99]:
+                - generic [ref=e100]: Description
+                - textbox [ref=e101]: Nestled on Portugal's coast, Heiwa House is your sanctuary for rest and adventure.
+              - generic [ref=e102]:
+                - generic [ref=e103]:
+                  - generic [ref=e104]: Image URL
+                  - textbox "https://example.com/image.jpg" [ref=e105]
+                - generic [ref=e106]:
+                  - generic [ref=e107]: Video URL
+                  - textbox "https://example.com/video.mp4" [ref=e108]: /images/videos/Timeline-1.mp4
+              - generic [ref=e109]:
+                - generic [ref=e110]:
+                  - generic [ref=e111]: Link URL
+                  - textbox "/surf-weeks" [ref=e112]
+                - generic [ref=e113]:
+                  - generic [ref=e114]: Link Text
+                  - textbox "Explore surf weeks" [ref=e115]
+              - generic [ref=e116]:
+                - generic [ref=e117]: Order (Display Order)
+                - spinbutton [ref=e118]: "1"
+          - generic [ref=e119]:
+            - generic [ref=e121]:
+              - generic [ref=e122]:
+                - img [ref=e123]
+                - generic [ref=e127]:
+                  - heading "features Section" [level=3] [ref=e128]
+                  - paragraph [ref=e129]: "Order: 2"
+              - generic [ref=e130]:
+                - generic [ref=e131]: features
+                - generic [ref=e132]:
+                  - checkbox "Active" [checked] [ref=e133]
+                  - generic [ref=e134]: Active
+            - generic [ref=e136]:
+              - generic [ref=e137]:
+                - generic [ref=e138]:
+                  - generic [ref=e139]: Title *
+                  - textbox [ref=e140]: What Makes Us Special
+                - generic [ref=e141]:
+                  - generic [ref=e142]: Subtitle
+                  - textbox [ref=e143]: Experience the perfect blend of surf, yoga, and coastal living
+              - generic [ref=e144]:
+                - generic [ref=e145]: Description
+                - textbox [ref=e146]: Discover our unique offerings that make Heiwa House the ultimate destination.
+              - generic [ref=e147]:
+                - generic [ref=e148]:
+                  - generic [ref=e149]: Image URL
+                  - textbox "https://example.com/image.jpg" [ref=e150]: /images/features/coastal-living.jpg
+                - generic [ref=e151]:
+                  - generic [ref=e152]: Video URL
+                  - textbox "https://example.com/video.mp4" [ref=e153]
+              - generic [ref=e154]:
+                - generic [ref=e155]:
+                  - generic [ref=e156]: Link URL
+                  - textbox "/surf-weeks" [ref=e157]
+                - generic [ref=e158]:
+                  - generic [ref=e159]: Link Text
+                  - textbox "Explore surf weeks" [ref=e160]
+              - generic [ref=e161]:
+                - generic [ref=e162]: Order (Display Order)
+                - spinbutton [ref=e163]: "2"
+          - generic [ref=e164]:
+            - generic [ref=e166]:
+              - generic [ref=e167]:
+                - img [ref=e168]
+                - generic [ref=e172]:
+                  - heading "activities Section" [level=3] [ref=e173]
+                  - paragraph [ref=e174]: "Order: 3"
+              - generic [ref=e175]:
+                - generic [ref=e176]: activities
+                - generic [ref=e177]:
+                  - checkbox "Active" [checked] [ref=e178]
+                  - generic [ref=e179]: Active
+            - generic [ref=e181]:
+              - generic [ref=e182]:
+                - generic [ref=e183]:
+                  - generic [ref=e184]: Title *
+                  - textbox [ref=e185]: Activities & Experiences
+                - generic [ref=e186]:
+                  - generic [ref=e187]: Subtitle
+                  - textbox [ref=e188]: From sunrise yoga to sunset surf sessions
+              - generic [ref=e189]:
+                - generic [ref=e190]: Description
+                - textbox [ref=e191]: Immerse yourself in our diverse range of activities designed to rejuvenate your mind, body, and soul.
+              - generic [ref=e192]:
+                - generic [ref=e193]:
+                  - generic [ref=e194]: Image URL
+                  - textbox "https://example.com/image.jpg" [ref=e195]: /images/activities/yoga-deck.jpg
+                - generic [ref=e196]:
+                  - generic [ref=e197]: Video URL
+                  - textbox "https://example.com/video.mp4" [ref=e198]
+              - generic [ref=e199]:
+                - generic [ref=e200]:
+                  - generic [ref=e201]: Link URL
+                  - textbox "/surf-weeks" [ref=e202]
+                - generic [ref=e203]:
+                  - generic [ref=e204]: Link Text
+                  - textbox "Explore surf weeks" [ref=e205]
+              - generic [ref=e206]:
+                - generic [ref=e207]: Order (Display Order)
+                - spinbutton [ref=e208]: "3"
+          - generic [ref=e209]:
+            - generic [ref=e211]:
+              - generic [ref=e212]:
+                - img [ref=e213]
+                - generic [ref=e215]:
+                  - heading "testimonials Section" [level=3] [ref=e216]
+                  - paragraph [ref=e217]: "Order: 4"
+              - generic [ref=e218]:
+                - generic [ref=e219]: testimonials
+                - generic [ref=e220]:
+                  - checkbox "Active" [checked] [ref=e221]
+                  - generic [ref=e222]: Active
+            - generic [ref=e224]:
+              - generic [ref=e225]:
+                - generic [ref=e226]:
+                  - generic [ref=e227]: Title *
+                  - textbox [ref=e228]: What Our Guests Say
+                - generic [ref=e229]:
+                  - generic [ref=e230]: Subtitle
+                  - textbox [ref=e231]: Real experiences from real people
+              - generic [ref=e232]:
+                - generic [ref=e233]: Description
+                - textbox [ref=e234]: Read about the transformative experiences our guests have had at Heiwa House.
+              - generic [ref=e235]:
+                - generic [ref=e236]:
+                  - generic [ref=e237]: Image URL
+                  - textbox "https://example.com/image.jpg" [ref=e238]
+                - generic [ref=e239]:
+                  - generic [ref=e240]: Video URL
+                  - textbox "https://example.com/video.mp4" [ref=e241]
+              - generic [ref=e242]:
+                - generic [ref=e243]:
+                  - generic [ref=e244]: Link URL
+                  - textbox "/surf-weeks" [ref=e245]
+                - generic [ref=e246]:
+                  - generic [ref=e247]: Link Text
+                  - textbox "Explore surf weeks" [ref=e248]
+              - generic [ref=e249]:
+                - generic [ref=e250]: Order (Display Order)
+                - spinbutton [ref=e251]: "4"
+          - generic [ref=e252]:
+            - generic [ref=e254]:
+              - generic [ref=e255]:
+                - img [ref=e256]
+                - generic [ref=e259]:
+                  - heading "cta Section" [level=3] [ref=e260]
+                  - paragraph [ref=e261]: "Order: 5"
+              - generic [ref=e262]:
+                - generic [ref=e263]: cta
+                - generic [ref=e264]:
+                  - checkbox "Active" [checked] [ref=e265]
+                  - generic [ref=e266]: Active
+            - generic [ref=e268]:
+              - generic [ref=e269]:
+                - generic [ref=e270]:
+                  - generic [ref=e271]: Title *
+                  - textbox [ref=e272]: Ready for Your Adventure?
+                - generic [ref=e273]:
+                  - generic [ref=e274]: Subtitle
+                  - textbox [ref=e275]: Book your stay and start your journey
+              - generic [ref=e276]:
+                - generic [ref=e277]: Description
+                - textbox [ref=e278]: Don't wait - limited spots available for the upcoming season.
+              - generic [ref=e279]:
+                - generic [ref=e280]:
+                  - generic [ref=e281]: Image URL
+                  - textbox "https://example.com/image.jpg" [ref=e282]
+                - generic [ref=e283]:
+                  - generic [ref=e284]: Video URL
+                  - textbox "https://example.com/video.mp4" [ref=e285]
+              - generic [ref=e286]:
+                - generic [ref=e287]:
+                  - generic [ref=e288]: Link URL
+                  - textbox "/surf-weeks" [ref=e289]: /booking
+                - generic [ref=e290]:
+                  - generic [ref=e291]: Link Text
+                  - textbox "Explore surf weeks" [ref=e292]: Book Now
+              - generic [ref=e293]:
+                - generic [ref=e294]: Order (Display Order)
+                - spinbutton [ref=e295]: "5"
+        - generic [ref=e296]:
+          - heading "Quick Actions" [level=3] [ref=e297]
+          - generic [ref=e298]:
+            - button "View Live Homepage" [ref=e299]:
+              - img [ref=e300]
+              - text: View Live Homepage
+            - button "Check Active Sections" [ref=e303]:
+              - img [ref=e304]
+              - text: Check Active Sections
+            - button "Check Media Coverage" [ref=e306]:
+              - img [ref=e307]
+              - text: Check Media Coverage
+  - button "Contact us on WhatsApp" [ref=e311]:
+    - img [ref=e312]
+  - alert [ref=e314]
+```

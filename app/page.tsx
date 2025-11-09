@@ -37,7 +37,9 @@ export default function HomePage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('/api/admin/homepage')
+        const response = await fetch('/api/admin/homepage?t=' + Date.now(), {
+        cache: 'no-store'
+      })
         const result = await response.json()
         if (result.success && result.data && result.data.length > 0) {
           console.log('✅ CMS content loaded:', result.data.length, 'sections')

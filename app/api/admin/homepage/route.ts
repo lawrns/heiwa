@@ -29,6 +29,12 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       data: data || []
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     })
   } catch (err) {
     console.error('Error fetching homepage content:', err)
