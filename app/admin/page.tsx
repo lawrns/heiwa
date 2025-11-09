@@ -1,25 +1,83 @@
-import { Metadata } from 'next'
+'use client'
+
+import { useState, useEffect } from 'react'
 import { Bed, Calendar, Users, TrendingUp } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Admin Dashboard | Heiwa House',
+interface Stat {
+  name: string
+  value: string
+  icon: any
+  change: string
+  changeType: 'positive' | 'negative'
 }
 
-// Mock data - in real implementation, this would come from API
-const stats = [
-  { name: 'Total Rooms', value: '8', icon: Bed, change: '+2', changeType: 'positive' },
-  { name: 'Active Bookings', value: '24', icon: Calendar, change: '+12%', changeType: 'positive' },
-  { name: 'Total Guests', value: '156', icon: Users, change: '+8%', changeType: 'positive' },
-  { name: 'Revenue', value: '€12,450', icon: TrendingUp, change: '+15%', changeType: 'positive' },
-]
+interface Booking {
+  id: string
+  guest: string
+  room: string
+  checkIn: string
+  status: string
+}
 
-const recentBookings = [
-  { id: 'BK001', guest: 'John Doe', room: 'The Cave', checkIn: '2024-01-15', status: 'confirmed' },
-  { id: 'BK002', guest: 'Jane Smith', room: 'Room Nr 2', checkIn: '2024-01-16', status: 'pending' },
-  { id: 'BK003', guest: 'Mike Johnson', room: 'Dorm room', checkIn: '2024-01-17', status: 'confirmed' },
-]
+interface DashboardData {
+  stats: Stat[]
+  recentBookings: Booking[]
+}
 
 export default function AdminDashboard() {
+  const [data, setData] = useState<DashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await fetch('/api/admin/analytics?type=dashboard')
+        const result = await response.json()
+        
+        if (result.success) {
+          setData(result.data)
+        } else {
+          setError('Failed to fetch dashboard data')
+        }
+      } catch (err) {
+        setError('Error loading dashboard data')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchDashboardData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-gray-200 rounded-lg h-32"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="p-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-800">{error}</p>
+        </div>
+      </div>
+    )
+  }
+
+  const stats = data?.stats || []
+  const recentBookings = data?.recentBookings || []
   return (
     <div className="p-8">
       <div className="mb-8">
@@ -30,7 +88,13 @@ export default function AdminDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat) => {
-          const Icon = stat.icon
+          const iconMap: { [key: string]: any } = {
+            'Bed': Bed,
+            'Calendar': Calendar,
+            'Users': Users,
+            'TrendingUp': TrendingUp
+          }
+          const Icon = iconMap[stat.icon] || Bed
           return (
             <div key={stat.name} className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center">

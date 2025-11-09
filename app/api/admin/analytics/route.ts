@@ -120,6 +120,51 @@ export async function GET(request: NextRequest) {
         }
         break
 
+      case 'dashboard':
+        // Get real dashboard statistics from database
+        const [
+          { count: totalRooms },
+          { count: activeBookings },
+          { count: totalGuests },
+          { data: revenueData },
+          { data: recentBookingsData }
+        ] = await Promise.all([
+          supabaseAdmin.from('rooms').select('*', { count: 'exact', head: true }).eq('is_active', true),
+          supabaseAdmin.from('bookings').select('*', { count: 'exact', head: true }).in('payment_status', ['confirmed', 'pending']),
+          supabaseAdmin.from('clients').select('*', { count: 'exact', head: true }),
+          supabaseAdmin.from('bookings').select('total_amount').in('payment_status', ['confirmed']),
+          supabaseAdmin.from('bookings').select(`
+            id,
+            clients!inner(name),
+            rooms!inner(name),
+            check_in_date,
+            payment_status
+          `).order('created_at', { ascending: false }).limit(5)
+        ])
+
+        // Calculate total revenue
+        const totalRevenue = (revenueData as any[])?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0
+
+        // Format recent bookings
+        const formattedBookings = (recentBookingsData as any[])?.map(booking => ({
+          id: booking.id,
+          guest: booking.clients?.name || 'Unknown',
+          room: booking.rooms?.name || 'Unknown',
+          checkIn: new Date(booking.check_in_date).toISOString().split('T')[0],
+          status: booking.payment_status || 'pending'
+        })) || []
+
+        data = {
+          stats: [
+            { name: 'Total Rooms', value: totalRooms?.toString() || '0', icon: 'Bed', change: '+0', changeType: 'positive' },
+            { name: 'Active Bookings', value: activeBookings?.toString() || '0', icon: 'Calendar', change: '+0%', changeType: 'positive' },
+            { name: 'Total Guests', value: totalGuests?.toString() || '0', icon: 'Users', change: '+0%', changeType: 'positive' },
+            { name: 'Revenue', value: `€${totalRevenue.toLocaleString()}`, icon: 'TrendingUp', change: '+0%', changeType: 'positive' }
+          ],
+          recentBookings: formattedBookings
+        }
+        break
+
       default:
         return NextResponse.json(
           { success: false, error: 'Invalid analytics type' },
