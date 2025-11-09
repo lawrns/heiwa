@@ -10,10 +10,60 @@ export interface HomepageSection {
   content?: string
   imageUrl?: string
   videoUrl?: string
+  videoId?: string
   linkUrl?: string
   linkText?: string
   isActive: boolean
   order: number
+  
+  // Complex content fields for different section types
+  cards?: CardData[]
+  bookingData?: BookingData[]
+  testimonials?: TestimonialData[]
+  facilities?: FacilityData[]
+  googleRating?: GoogleRatingData
+}
+
+export interface CardData {
+  id?: string
+  title: string
+  description: string
+  image?: string
+  images?: string[]
+  link?: string
+  mediaType?: 'image' | 'video'
+  mediaUrl?: string
+}
+
+export interface BookingData {
+  id?: string
+  dates: string
+  price: string
+  availableSpots: string
+  totalSpots?: number
+}
+
+export interface TestimonialData {
+  id?: string
+  name: string
+  rating: number
+  text: string
+  timeAgo: string
+  verified: boolean
+}
+
+export interface FacilityData {
+  id?: string
+  title: string
+  description: string
+  mediaType: 'image' | 'video'
+  mediaUrl: string
+}
+
+export interface GoogleRatingData {
+  rating: number
+  totalReviews: number
+  url: string
 }
 
 // GET - Fetch all homepage sections
@@ -26,9 +76,20 @@ export async function GET() {
 
     if (error) throw error
 
+    // Parse JSON fields for complex data types
+    const parsedData = (data || []).map((item: any) => ({
+      ...item,
+      cards: item.cards ? JSON.parse(item.cards) : undefined,
+      bookingData: item.booking_data ? JSON.parse(item.booking_data) : undefined,
+      testimonials: item.testimonials ? JSON.parse(item.testimonials) : undefined,
+      facilities: item.facilities ? JSON.parse(item.facilities) : undefined,
+      googleRating: item.google_rating ? JSON.parse(item.google_rating) : undefined,
+      videoId: item.video_id || undefined
+    }))
+
     return NextResponse.json({
       success: true,
-      data: data || []
+      data: parsedData
     }, {
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
@@ -49,7 +110,25 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { section, title, subtitle, description, content, imageUrl, videoUrl, linkUrl, linkText, isActive, order } = body
+    const { 
+      section, 
+      title, 
+      subtitle, 
+      description, 
+      content, 
+      imageUrl, 
+      videoUrl, 
+      videoId,
+      linkUrl, 
+      linkText, 
+      isActive, 
+      order,
+      cards,
+      bookingData,
+      testimonials,
+      facilities,
+      googleRating
+    } = body
 
     if (!section || !title) {
       return NextResponse.json({
@@ -68,8 +147,14 @@ export async function POST(request: NextRequest) {
         content,
         image_url: imageUrl,
         video_url: videoUrl,
+        video_id: videoId,
         link_url: linkUrl,
         link_text: linkText,
+        cards: cards ? JSON.stringify(cards) : null,
+        booking_data: bookingData ? JSON.stringify(bookingData) : null,
+        testimonials: testimonials ? JSON.stringify(testimonials) : null,
+        facilities: facilities ? JSON.stringify(facilities) : null,
+        google_rating: googleRating ? JSON.stringify(googleRating) : null,
         is_active: isActive ?? true,
         order_index: order ?? 0
       } as any)
@@ -94,7 +179,26 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json()
-    const { id, section, title, subtitle, description, content, imageUrl, videoUrl, linkUrl, linkText, isActive, order } = body
+    const { 
+      id, 
+      section, 
+      title, 
+      subtitle, 
+      description, 
+      content, 
+      imageUrl, 
+      videoUrl, 
+      videoId,
+      linkUrl, 
+      linkText, 
+      isActive, 
+      order,
+      cards,
+      bookingData,
+      testimonials,
+      facilities,
+      googleRating
+    } = body
 
     if (!id) {
       return NextResponse.json({
@@ -103,22 +207,42 @@ export async function PUT(request: NextRequest) {
       }, { status: 400 })
     }
 
+    const updateData: any = {
+      section,
+      title,
+      subtitle,
+      description,
+      content,
+      image_url: imageUrl,
+      video_url: videoUrl,
+      video_id: videoId,
+      link_url: linkUrl,
+      link_text: linkText,
+      is_active: isActive,
+      order_index: order,
+      updated_at: new Date().toISOString()
+    }
+
+    // Only include JSON fields if they're provided
+    if (cards !== undefined) {
+      updateData.cards = cards ? JSON.stringify(cards) : null
+    }
+    if (bookingData !== undefined) {
+      updateData.booking_data = bookingData ? JSON.stringify(bookingData) : null
+    }
+    if (testimonials !== undefined) {
+      updateData.testimonials = testimonials ? JSON.stringify(testimonials) : null
+    }
+    if (facilities !== undefined) {
+      updateData.facilities = facilities ? JSON.stringify(facilities) : null
+    }
+    if (googleRating !== undefined) {
+      updateData.google_rating = googleRating ? JSON.stringify(googleRating) : null
+    }
+
     const { data, error } = await supabaseAdmin
       .from('homepage_content' as any)
-      .update({
-        section,
-        title,
-        subtitle,
-        description,
-        content,
-        image_url: imageUrl,
-        video_url: videoUrl,
-        link_url: linkUrl,
-        link_text: linkText,
-        is_active: isActive,
-        order_index: order,
-        updated_at: new Date().toISOString()
-      } as any)
+      .update(updateData)
       .eq('id', id)
       .select()
 
