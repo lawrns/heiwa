@@ -33,7 +33,7 @@ export default function TestBookingPage() {
             
             <div className="text-center">
               <button
-                onClick={openBooking}
+                onClick={() => openBooking()}
                 className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors shadow-lg"
               >
                 🏄‍♂️ Open Booking Widget
