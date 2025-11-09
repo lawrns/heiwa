@@ -1,0 +1,503 @@
+{
+  "plan": {
+    "title": "CMS Drift Fix Plan - Make Homepage Fully CMS-Driven",
+    "objective": "Eliminate drift between CMS and homepage by making all existing content editable via CMS",
+    "current_state": {
+      "sync_percentage": "10%",
+      "status": "PARTIAL_SYNC",
+      "fully_synced_sections": 1,
+      "partially_synced_sections": 5,
+      "not_in_cms_sections": 1
+    },
+    "target_state": {
+      "sync_percentage": "100%",
+      "status": "FULL_SYNC",
+      "editable_sections": 7,
+      "hardcoded_content": 0
+    },
+    "phases": [
+      {
+        "phase": 1,
+        "title": "Extend CMS Schema & API",
+        "description": "Update database schema and API to support all content types",
+        "tasks": [
+          {
+            "id": "1.1",
+            "task": "Extend HomepageSection interface",
+            "details": {
+              "file": "/app/api/admin/homepage/route.ts",
+              "current_fields": ["section", "title", "subtitle", "description", "content", "imageUrl", "videoUrl", "linkUrl", "linkText"],
+              "new_fields": ["cards", "reviews", "facilities", "bookingData", "videoId", "ratingData"],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "1.2",
+            "task": "Update database schema",
+            "details": {
+              "table": "homepage_content",
+              "new_columns": [
+                {"name": "cards", "type": "JSONB", "description": "Array of card objects for sections like About, Rooms, Facilities"},
+                {"name": "video_id", "type": "TEXT", "description": "YouTube video ID for sections"},
+                {"name": "booking_data", "type": "JSONB", "description": "Booking table data for Surf Weeks"},
+                {"name": "google_rating", "type": "JSONB", "description": "Google reviews rating data"},
+                {"name": "testimonials", "type": "JSONB", "description": "Array of testimonial objects"}
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "1.3",
+            "task": "Update API validation",
+            "details": {
+              "file": "/app/api/admin/homepage/route.ts",
+              "updates": ["Add validation for new fields", "Update POST/PUT handlers", "Add JSON serialization for complex types"],
+              "priority": "MEDIUM"
+            }
+          }
+        ],
+        "estimated_time": "2-3 hours",
+        "deliverables": ["Updated API schema", "Database migration script", "Enhanced validation"]
+      },
+      {
+        "phase": 2,
+        "title": "Populate CMS with Existing Content",
+        "description": "Extract all hardcoded content and populate CMS database",
+        "tasks": [
+          {
+            "id": "2.1",
+            "task": "Extract Surf Weeks content",
+            "details": {
+              "content": {
+                "video_id": "9nhQiKGsgHg",
+                "booking_data": [
+                  {"dates": "01 Feb. - 12 Feb.", "price": "From €485", "availableSpots": "5/18", "totalSpots": 18},
+                  {"dates": "01 May - 12 May", "price": "From €485", "availableSpots": "5/18", "totalSpots": 18},
+                  {"dates": "01 May - 12 May", "price": "From €485", "availableSpots": "5/18", "totalSpots": 18}
+                ],
+                "bullet_points": [
+                  "Professional surf instruction for all levels",
+                  "Daily yoga and meditation sessions",
+                  "Amazing food prepared by our chef",
+                  "Exciting day trips to explore Portugal",
+                  "Skateboarding and other activities",
+                  "Prices starting at 450€"
+                ]
+              },
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "2.2",
+            "task": "Extract About section cards",
+            "details": {
+              "content": {
+                "cards": [
+                  {
+                    "title": "Heiwa Play",
+                    "description": "Explore activities and experiences around our location",
+                    "image": "/optimized/photography_009_dsc03491.webp",
+                    "link": "/play"
+                  },
+                  {
+                    "title": "Heiwa Surf",
+                    "description": "Discover the best surfing spots and conditions",
+                    "image": "/images/hh1.webp",
+                    "link": "/surf"
+                  },
+                  {
+                    "title": "Heiwa Flow",
+                    "description": "Wellness, yoga, and mindfulness experiences",
+                    "image": "/images/hh2.webp",
+                    "link": "/flow"
+                  }
+                ]
+              },
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "2.3",
+            "task": "Extract Rooms section data",
+            "details": {
+              "content": {
+                "cards": [
+                  {
+                    "title": "Private Rooms",
+                    "description": "Step into the charm of our beautifully designed rooms, blending modern comfort with traditional Portuguese aesthetics. Perfect for couples or solo travelers seeking peace and style.",
+                    "images": [
+                      "/images/rooms/room1.jpg",
+                      "/images/Freedomroutes-rooms-1.jpg",
+                      "/images/DSC03479.jpg"
+                    ]
+                  },
+                  {
+                    "title": "Shared Rooms",
+                    "description": "Join our vibrant community in spacious shared accommodations. Meet fellow travelers, share stories, and make lifelong friendships in our comfortable dorm-style rooms.",
+                    "images": [
+                      "/images/rooms/dorm.webp",
+                      "/images/Freedomroutes-rooms-50.jpg",
+                      "/images/DSC03491.jpg"
+                    ]
+                  }
+                ]
+              },
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "2.4",
+            "task": "Extract Reviews section data",
+            "details": {
+              "content": {
+                "google_rating": {
+                  "rating": 4.7,
+                  "total_reviews": 16940,
+                  "url": "https://www.google.com/search?q=Heiwa+House+reviews"
+                },
+                "testimonials": [
+                  {
+                    "name": "Jesús MR",
+                    "rating": 5,
+                    "text": "Amazing experience at Heiwa House! The surf lessons were incredible and the yoga sessions were perfect for recovery.",
+                    "timeAgo": "6 days ago",
+                    "verified": true
+                  },
+                  {
+                    "name": "Ernesto Guevara",
+                    "rating": 5,
+                    "text": "Best surf camp I've ever been to. The instructors are professional and the atmosphere is amazing.",
+                    "timeAgo": "1 week ago",
+                    "verified": true
+                  },
+                  {
+                    "name": "John Z",
+                    "rating": 5,
+                    "text": "Heiwa House exceeded all my expectations. The facilities are top-notch and the food is delicious.",
+                    "timeAgo": "2 weeks ago",
+                    "verified": true
+                  },
+                  {
+                    "name": "Paul Egan",
+                    "rating": 5,
+                    "text": "Perfect place to learn surfing and meet like-minded people. Highly recommended!",
+                    "timeAgo": "3 weeks ago",
+                    "verified": true
+                  }
+                ]
+              },
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "2.5",
+            "task": "Extract Facilities section data",
+            "details": {
+              "content": {
+                "cards": [
+                  {
+                    "title": "Skatepark",
+                    "description": "Professional ramps and obstacles for all levels",
+                    "media_type": "video",
+                    "media_url": "/images/videos/sk81.mp4"
+                  },
+                  {
+                    "title": "Yoga Dome",
+                    "description": "Peaceful space for yoga and meditation sessions",
+                    "media_type": "image",
+                    "media_url": "/images/yoga_dome1.jpg"
+                  },
+                  {
+                    "title": "Gym",
+                    "description": "Fully equipped fitness center for your workout needs",
+                    "media_type": "image",
+                    "media_url": "/images/gym1.jpg"
+                  },
+                  {
+                    "title": "Coworking Space",
+                    "description": "Quiet area for remote work and digital nomads",
+                    "media_type": "image",
+                    "media_url": "/images/coworking1.jpg"
+                  }
+                ]
+              },
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "2.6",
+            "task": "Add Your Hosts section to CMS",
+            "details": {
+              "content": {
+                "title": "Your Hosts",
+                "subtitle": "Meet the people behind Heiwa House",
+                "description": "Our dedicated team is here to make your stay unforgettable"
+              },
+              "priority": "MEDIUM"
+            }
+          }
+        ],
+        "estimated_time": "3-4 hours",
+        "deliverables": ["CMS populated with all existing content", "Migration script", "Content verification"]
+      },
+      {
+        "phase": 3,
+        "title": "Update Homepage to Use CMS Data",
+        "description": "Replace all hardcoded content with CMS-driven rendering",
+        "tasks": [
+          {
+            "id": "3.1",
+            "task": "Update Surf Weeks section",
+            "details": {
+              "file": "/app/page.tsx",
+              "changes": [
+                "Replace hardcoded videoId with CMS data",
+                "Replace hardcoded bookingData with CMS data",
+                "Replace hardcoded bullet points with CMS content"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "3.2",
+            "task": "Update About section",
+            "details": {
+              "file": "/app/page.tsx",
+              "changes": [
+                "Replace hardcoded cards with CMS cards data",
+                "Use CMS data for card titles, descriptions, images, links"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "3.3",
+            "task": "Update Rooms section",
+            "details": {
+              "file": "/app/page.tsx",
+              "changes": [
+                "Replace hardcoded room cards with CMS data",
+                "Use CMS images for carousels",
+                "Use CMS descriptions"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "3.4",
+            "task": "Update Reviews section",
+            "details": {
+              "file": "/app/page.tsx",
+              "changes": [
+                "Replace hardcoded Google rating with CMS data",
+                "Replace hardcoded testimonials with CMS testimonials"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "3.5",
+            "task": "Update Facilities section",
+            "details": {
+              "file": "/app/page.tsx",
+              "changes": [
+                "Replace hardcoded facility cards with CMS data",
+                "Support both video and image media types from CMS"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "3.6",
+            "task": "Add Your Hosts section",
+            "details": {
+              "file": "/app/page.tsx",
+              "changes": [
+                "Replace HostSection component with CMS-driven content",
+                "Use CMS data for hosts section"
+              ],
+              "priority": "MEDIUM"
+            }
+          }
+        ],
+        "estimated_time": "4-5 hours",
+        "deliverables": ["Fully CMS-driven homepage", "No hardcoded content remaining", "Dynamic rendering for all sections"]
+      },
+      {
+        "phase": 4,
+        "title": "Update Admin Editor",
+        "description": "Enhance admin interface to support editing all new content types",
+        "tasks": [
+          {
+            "id": "4.1",
+            "task": "Add card editor components",
+            "details": {
+              "file": "/app/admin/homepage/page.tsx",
+              "features": [
+                "Dynamic card list management",
+                "Add/remove cards",
+                "Edit card title, description, image, link"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "4.2",
+            "task": "Add media upload support",
+            "details": {
+              "file": "/app/admin/homepage/page.tsx",
+              "features": [
+                "Image upload for cards",
+                "Video URL input",
+                "Media preview"
+              ],
+              "priority": "MEDIUM"
+            }
+          },
+          {
+            "id": "4.3",
+            "task": "Add booking data editor",
+            "details": {
+              "file": "/app/admin/homepage/page.tsx",
+              "features": [
+                "Dynamic booking table rows",
+                "Edit dates, prices, availability"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "4.4",
+            "task": "Add testimonials editor",
+            "details": {
+              "file": "/app/admin/homepage/page.tsx",
+              "features": [
+                "Testimonial list management",
+                "Edit name, rating, text, time",
+                "Add/remove testimonials"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "4.5",
+            "task": "Add Google rating editor",
+            "details": {
+              "file": "/app/admin/homepage/page.tsx",
+              "features": [
+                "Edit rating number",
+                "Edit total reviews count",
+                "Edit Google reviews URL"
+              ],
+              "priority": "MEDIUM"
+            }
+          }
+        ],
+        "estimated_time": "3-4 hours",
+        "deliverables": ["Full admin editing capabilities", "User-friendly content management", "Real-time preview"]
+      },
+      {
+        "phase": 5,
+        "title": "Testing & Deployment",
+        "description": "Comprehensive testing and production deployment",
+        "tasks": [
+          {
+            "id": "5.1",
+            "task": "Unit testing",
+            "details": {
+              "scope": [
+                "API endpoints with new schema",
+                "CMS data extraction",
+                "Homepage rendering with CMS data"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "5.2",
+            "task": "Integration testing",
+            "details": {
+              "scope": [
+                "Admin editor to database flow",
+                "Database to homepage flow",
+                "Content update propagation"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "5.3",
+            "task": "User acceptance testing",
+            "details": {
+              "scenarios": [
+                "Edit all section types",
+                "Upload images",
+                "Update booking data",
+                "Verify homepage updates"
+              ],
+              "priority": "HIGH"
+            }
+          },
+          {
+            "id": "5.4",
+            "task": "Production deployment",
+            "details": {
+              "steps": [
+                "Database migration",
+                "Code deployment",
+                "Content verification",
+                "Performance testing"
+              ],
+              "priority": "HIGH"
+            }
+          }
+        ],
+        "estimated_time": "2-3 hours",
+        "deliverables": ["Fully tested system", "Production deployment", "Documentation"]
+      }
+    ],
+    "timeline": {
+      "total_estimated_time": "14-19 hours",
+      "phases": [
+        {"phase": 1, "time": "2-3 hours", "complexity": "MEDIUM"},
+        {"phase": 2, "time": "3-4 hours", "complexity": "HIGH"},
+        {"phase": 3, "time": "4-5 hours", "complexity": "HIGH"},
+        {"phase": 4, "time": "3-4 hours", "complexity": "HIGH"},
+        {"phase": 5, "time": "2-3 hours", "complexity": "MEDIUM"}
+      ],
+      "estimated_completion": "2-3 days"
+    },
+    "success_criteria": [
+      "100% of homepage content is editable via CMS",
+      "No hardcoded content remains on homepage",
+      "Admin editor supports all content types",
+      "Content changes propagate immediately to homepage",
+      "All existing functionality preserved",
+      "Performance remains optimal"
+    ],
+    "risks": [
+      {
+        "risk": "Database migration complexity",
+        "mitigation": "Create migration script, backup before changes"
+      },
+      {
+        "risk": "Content loss during migration",
+        "mitigation": "Extract and verify all existing content before migration"
+      },
+      {
+        "risk": "Performance impact with JSON fields",
+        "mitigation": "Optimize queries, add indexes, monitor performance"
+      },
+      {
+        "risk": "Admin editor complexity",
+        "mitigation": "Modular component design, progressive enhancement"
+      }
+    ],
+    "next_steps": [
+      "Approve plan and timeline",
+      "Set up development environment",
+      "Create database backup",
+      "Begin Phase 1: Extend CMS Schema & API"
+    ]
+  }
+}
