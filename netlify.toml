@@ -2,10 +2,16 @@
   command = "npm run build"
   publish = ".next"
   # Enable incremental builds for faster deployments
-  environment = { 
-    "NODE_OPTIONS" = "--max-old-space-size=4096",
-    "BUILD_ID" = "2025-11-09-16-24-critical-fixes"
-  }
+
+[build.environment]
+  NODE_OPTIONS = "--max-old-space-size=4096"
+  BUILD_ID = "2025-11-09-16-24-critical-fixes"
+  NODE_VERSION = "18"
+  # Optimize build performance
+  NPM_FLAGS = "--prefer-offline --no-audit"
+  # Enable caching for faster builds
+  NETLIFY_USE_YARN = "true"
+  YARN_CACHE_FOLDER = ".yarn/cache"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
@@ -13,14 +19,6 @@
   [plugins.inputs]
     # Disable some Next.js optimizations for faster builds
     skipBuild = false
-
-[build.environment]
-  NODE_VERSION = "18"
-  # Optimize build performance
-  NPM_FLAGS = "--prefer-offline --no-audit"
-  # Enable caching for faster builds
-  NETLIFY_USE_YARN = "true"
-  YARN_CACHE_FOLDER = ".yarn/cache"
 
 # Cache static assets for better performance
 [[headers]]
