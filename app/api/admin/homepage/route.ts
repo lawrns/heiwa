@@ -22,7 +22,7 @@ export async function GET() {
     const { data, error } = await supabaseAdmin
       .from('homepage_content' as any)
       .select('*')
-      .order('order', { ascending: true })
+      .order('order_index', { ascending: true })
 
     if (error) throw error
 

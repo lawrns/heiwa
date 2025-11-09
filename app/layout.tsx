@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import NavigationWrapper from '@/components/navigation-wrapper'
 import { Footer } from '@/components/footer'
 import { BookingProvider } from '@/lib/booking-context'
+import { SupabaseProvider } from '@/lib/supabase-context'
 import { FloatingBookingWidget } from '@/components/floating-booking-widget'
 import { SkipToContent } from '@/components/ui/skip-to-content'
 import { PerformanceMonitor } from '@/components/ui/performance-monitor'
@@ -101,17 +102,19 @@ export default function RootLayout({
         <PerformanceDashboard />
         <PerformanceBadge />
         <SkipToContent />
-        <BookingProvider>
-          <NavigationWrapper />
-          <main id="main-content" className="min-h-screen">
-            <PageTransition>
-              {children}
-            </PageTransition>
-          </main>
-          <Footer />
-          <FloatingBookingWidget />
-                    <WhatsAppButton />
-        </BookingProvider>
+        <SupabaseProvider>
+          <BookingProvider>
+            <NavigationWrapper />
+            <main id="main-content" className="min-h-screen">
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </main>
+            <Footer />
+            <FloatingBookingWidget />
+            <WhatsAppButton />
+          </BookingProvider>
+        </SupabaseProvider>
       </body>
     </html>
   )
