@@ -22,5 +22,13 @@ out/
 # Local Netlify folder
 .netlify
 
+# Large files and archives
+*.zip
+public/optimized.zip
+public/videos.zip
+*.mp4
+*.mov
+*.avi
+*.mkv
 
 .kluster
