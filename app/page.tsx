@@ -1,4 +1,5 @@
-import { Metadata } from 'next'
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { Bed, Waves, Zap, Wind, Dumbbell, Users } from 'lucide-react'
@@ -12,27 +13,48 @@ import { GoogleRatingSummary } from '@/components/ui/google-reviews'
 import { YouTubeVideo } from '@/components/ui/youtube-video'
 import { ActivityCardEnhanced } from '@/components/ui/activity-card-enhanced'
 import { DynamicActivities } from '@/components/ui/dynamic-activities'
-
-export const metadata: Metadata = {
-  title: 'Heiwa House - Surf Camp & Rooms in Santa Cruz, Portugal',
-  description: 'Experience the ultimate surf and lifestyle destination in Santa Cruz, Portugal. Private rooms, surf camps, yoga, skateboarding, and unforgettable adventures.',
-}
+import { useEffect, useState } from 'react'
 
 export default function HomePage() {
-  // Sample data for surf weeks
-  const surfWeeks = [
+  const [homepageContent, setHomepageContent] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Default data for fallback
+  const defaultSurfWeeks = [
     { id: '1', dates: '01 Feb. - 12 Feb.', price: 'From €485', availableSpots: '5/18', totalSpots: 18 },
     { id: '2', dates: '01 May - 12 May', price: 'From €485', availableSpots: '5/18', totalSpots: 18 },
     { id: '3', dates: '01 May - 12 May', price: 'From €485', availableSpots: '5/18', totalSpots: 18 },
   ]
 
-  // Sample data for reviews
-  const reviews = [
+  const defaultReviews = [
     { id: '1', name: 'Jesús MR', rating: 5, text: 'Amazing experience at Heiwa House! The surf lessons were incredible and the yoga sessions were perfect for recovery.', timeAgo: '6 days ago', verified: true },
     { id: '2', name: 'Ernesto Guevara', rating: 5, text: 'Best surf camp I\'ve ever been to. The instructors are professional and the atmosphere is amazing.', timeAgo: '1 week ago', verified: true },
     { id: '3', name: 'John Z', rating: 5, text: 'Heiwa House exceeded all my expectations. The facilities are top-notch and the food is delicious.', timeAgo: '2 weeks ago', verified: true },
     { id: '4', name: 'Paul Egan', rating: 5, text: 'Perfect place to learn surfing and meet like-minded people. Highly recommended!', timeAgo: '3 weeks ago', verified: true },
   ]
+
+  // Fetch homepage content from CMS
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await fetch('/api/admin/homepage')
+        const result = await response.json()
+        if (result.success && result.data) {
+          setHomepageContent(result.data)
+        }
+      } catch (error) {
+        console.error('Error fetching homepage content:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchContent()
+  }, [])
+
+  // Use CMS content if available, otherwise use defaults
+  const surfWeeks = defaultSurfWeeks
+  const reviews = defaultReviews
 
 
   return (

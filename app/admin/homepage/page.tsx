@@ -27,82 +27,161 @@ export default function HomepageCMSPage() {
   const [previewMode, setPreviewMode] = useState(false)
 
   useEffect(() => {
-    // TODO: Fetch homepage content from API
-    // For now, simulate loading with mock data
-    setTimeout(() => {
-      setContent([
-        {
-          id: 'hero',
-          section: 'hero',
-          title: 'Welcome to Heiwa House',
-          subtitle: 'Your surf and lifestyle destination in Santa Cruz, Portugal',
-          description: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
-          content: '',
-          videoUrl: '/images/videos/Timeline-1.mp4',
-          linkUrl: '/surf-weeks',
-          linkText: 'Explore surf weeks',
-          isActive: true,
-          order: 1
-        },
-        {
-          id: 'features',
-          section: 'features',
-          title: 'What Makes Us Special',
-          subtitle: 'Experience the perfect blend of surf, yoga, and coastal living',
-          description: 'Discover our unique offerings that make Heiwa House the ultimate destination.',
-          content: '',
-          imageUrl: '/images/features/coastal-living.jpg',
-          isActive: true,
-          order: 2
-        },
-        {
-          id: 'activities',
-          section: 'activities',
-          title: 'Activities & Experiences',
-          subtitle: 'From sunrise yoga to sunset surf sessions',
-          description: 'Immerse yourself in our diverse range of activities designed to rejuvenate your mind, body, and soul.',
-          content: '',
-          imageUrl: '/images/activities/yoga-deck.jpg',
-          isActive: true,
-          order: 3
-        },
-        {
-          id: 'testimonials',
-          section: 'testimonials',
-          title: 'What Our Guests Say',
-          subtitle: 'Real experiences from real people',
-          description: 'Read about the transformative experiences our guests have had at Heiwa House.',
-          content: '',
-          isActive: true,
-          order: 4
-        },
-        {
-          id: 'cta',
-          section: 'cta',
-          title: 'Ready for Your Adventure?',
-          subtitle: 'Book your stay and start your journey',
-          description: 'Don\'t wait - limited spots available for the upcoming season.',
-          content: '',
-          linkUrl: '/booking',
-          linkText: 'Book Now',
-          isActive: true,
-          order: 5
+    const fetchContent = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/admin/homepage')
+        const result = await response.json()
+        
+        if (result.success && result.data.length > 0) {
+          // Map API response to component state
+          setContent(result.data.map((item: any) => ({
+            id: item.id,
+            section: item.section,
+            title: item.title,
+            subtitle: item.subtitle,
+            description: item.description,
+            content: item.content,
+            imageUrl: item.image_url,
+            videoUrl: item.video_url,
+            linkUrl: item.link_url,
+            linkText: item.link_text,
+            isActive: item.is_active,
+            order: item.order_index
+          })))
+        } else {
+          // If no data exists, create default sections
+          setContent([
+            {
+              id: 'hero',
+              section: 'hero',
+              title: 'Welcome to Heiwa House',
+              subtitle: 'Your surf and lifestyle destination in Santa Cruz, Portugal',
+              description: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
+              content: '',
+              videoUrl: '/images/videos/Timeline-1.mp4',
+              linkUrl: '/surf-weeks',
+              linkText: 'Explore surf weeks',
+              isActive: true,
+              order: 1
+            },
+            {
+              id: 'features',
+              section: 'features',
+              title: 'What Makes Us Special',
+              subtitle: 'Experience the perfect blend of surf, yoga, and coastal living',
+              description: 'Discover our unique offerings that make Heiwa House the ultimate destination.',
+              content: '',
+              imageUrl: '/images/features/coastal-living.jpg',
+              isActive: true,
+              order: 2
+            },
+            {
+              id: 'activities',
+              section: 'activities',
+              title: 'Activities & Experiences',
+              subtitle: 'From sunrise yoga to sunset surf sessions',
+              description: 'Immerse yourself in our diverse range of activities designed to rejuvenate your mind, body, and soul.',
+              content: '',
+              imageUrl: '/images/activities/yoga-deck.jpg',
+              isActive: true,
+              order: 3
+            },
+            {
+              id: 'testimonials',
+              section: 'testimonials',
+              title: 'What Our Guests Say',
+              subtitle: 'Real experiences from real people',
+              description: 'Read about the transformative experiences our guests have had at Heiwa House.',
+              content: '',
+              isActive: true,
+              order: 4
+            },
+            {
+              id: 'cta',
+              section: 'cta',
+              title: 'Ready for Your Adventure?',
+              subtitle: 'Book your stay and start your journey',
+              description: 'Don\'t wait - limited spots available for the upcoming season.',
+              content: '',
+              linkUrl: '/booking',
+              linkText: 'Book Now',
+              isActive: true,
+              order: 5
+            }
+          ])
         }
-      ])
-      setLoading(false)
-    }, 1000)
+      } catch (error) {
+        console.error('Error fetching homepage content:', error)
+        // Fallback to default content on error
+        setContent([
+          {
+            id: 'hero',
+            section: 'hero',
+            title: 'Welcome to Heiwa House',
+            subtitle: 'Your surf and lifestyle destination in Santa Cruz, Portugal',
+            description: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
+            content: '',
+            videoUrl: '/images/videos/Timeline-1.mp4',
+            linkUrl: '/surf-weeks',
+            linkText: 'Explore surf weeks',
+            isActive: true,
+            order: 1
+          }
+        ])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchContent()
   }, [])
 
   const handleSave = async () => {
     setSaving(true)
     try {
-      // TODO: Implement actual API call to save homepage content
-      console.log('Saving homepage content:', content)
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
+      // Save each section to the API
+      for (const section of content) {
+        const payload = {
+          id: section.id,
+          section: section.section,
+          title: section.title,
+          subtitle: section.subtitle,
+          description: section.description,
+          content: section.content,
+          imageUrl: section.imageUrl,
+          videoUrl: section.videoUrl,
+          linkUrl: section.linkUrl,
+          linkText: section.linkText,
+          isActive: section.isActive,
+          order: section.order
+        }
+
+        // Check if section exists (has a real ID from database)
+        if (section.id && section.id !== 'hero' && section.id !== 'features' && section.id !== 'activities' && section.id !== 'testimonials' && section.id !== 'cta') {
+          // Update existing section
+          const response = await fetch('/api/admin/homepage', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
+          const result = await response.json()
+          if (!result.success) throw new Error(`Failed to update ${section.section}`)
+        } else {
+          // Create new section
+          const response = await fetch('/api/admin/homepage', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
+          const result = await response.json()
+          if (!result.success) throw new Error(`Failed to create ${section.section}`)
+        }
+      }
       alert('Homepage content saved successfully!')
     } catch (error) {
       console.error('Error saving content:', error)
-      alert('Error saving content. Please try again.')
+      alert(`Error saving content: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setSaving(false)
     }
