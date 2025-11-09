@@ -47,16 +47,38 @@ test('Admin CMS updates reflect on homepage', async ({ page }) => {
     await saveChanges(page)
   }
 
+  const checkApiTitle = async (expectedTitle) => {
+    const response = await page.goto(`${BASE_URL}/api/admin/homepage?t=${Date.now()}`)
+    const text = await response.text()
+    return text.includes(expectedTitle)
+  }
+
   try {
     await login(page)
 
     // Update hero title via CMS
     await updateHeroTitle(newTitle)
 
-    // Verify change on homepage
-    await page.goto(`${BASE_URL}/`)
-    await page.waitForLoadState('domcontentloaded')
-    await page.waitForTimeout(5000)
+    // Verify API returns updated title
+    console.log('Checking API response...')
+    const apiHasUpdated = await checkApiTitle(newTitle)
+    if (!apiHasUpdated) {
+      console.log('API does not have updated title yet, waiting...')
+      await page.waitForTimeout(5000)
+      const apiHasUpdatedAfterWait = await checkApiTitle(newTitle)
+      if (!apiHasUpdatedAfterWait) {
+        throw new Error(`API does not contain updated title "${newTitle}"`)
+      }
+    }
+    console.log('✅ API has updated title')
+
+    // Verify change on homepage with hard refresh
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(3000) // Wait for client-side JS to load CMS data
+    
+    // Hard refresh to bypass any caching
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(3000)
     
     // Check if the title is visible anywhere on the page
     const titleLocator = page.getByText(newTitle, { exact: true })
@@ -67,10 +89,11 @@ test('Admin CMS updates reflect on homepage', async ({ page }) => {
       const pageContent = await page.content()
       const hasTitle = pageContent.includes(newTitle)
       if (!hasTitle) {
-        throw new Error(`Title "${newTitle}" not found on homepage after CMS update`)
+        throw new Error(`Title "${newTitle}" not found on homepage after CMS update. API has updated title but frontend does not reflect it.`)
       }
     }
     
+    console.log('✅ Homepage reflects updated title')
     await expect(titleLocator).toBeVisible()
   } finally {
     if (originalTitle && originalTitle !== newTitle) {

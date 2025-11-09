@@ -157,8 +157,8 @@ export default function HomepageCMSPage() {
           order: section.order
         }
 
-        // Check if section exists (has a real ID from database)
-        if (section.id && section.id !== 'hero' && section.id !== 'features' && section.id !== 'activities' && section.id !== 'testimonials' && section.id !== 'cta') {
+        // Check if section exists (has a real UUID from database)
+        if (section.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(section.id)) {
           // Update existing section
           const response = await fetch('/api/admin/homepage', {
             method: 'PUT',

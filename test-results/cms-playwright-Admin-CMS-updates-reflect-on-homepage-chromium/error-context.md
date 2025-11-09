@@ -86,7 +86,7 @@
               - generic [ref=e92]:
                 - generic [ref=e93]:
                   - generic [ref=e94]: Title *
-                  - textbox [ref=e95]: Welcome to Heiwa House
+                  - textbox [ref=e95]: Welcome to Heiwa House - DATABASE TEST
                 - generic [ref=e96]:
                   - generic [ref=e97]: Subtitle
                   - textbox [ref=e98]: Your surf and lifestyle destination in Santa Cruz, Portugal
