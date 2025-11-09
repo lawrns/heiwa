@@ -46,7 +46,12 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { 
+        success: false, 
+        error: 'Internal server error',
+        timestamp: new Date().toISOString(),
+        debug: 'POST endpoint updated 2025-11-09'
+      },
       { status: 500 }
     )
   }
@@ -339,7 +344,9 @@ export async function POST(request: NextRequest) {
         console.error('Error creating booking:', bookingError)
         return NextResponse.json({
           success: false,
-          error: `Database error creating booking: ${bookingError.message}`
+          error: `Database error creating booking: ${bookingError.message}`,
+          timestamp: new Date().toISOString(),
+          debug: 'POST endpoint updated 2025-11-09 - schema fixes applied'
         }, { status: 500 })
       }
 
