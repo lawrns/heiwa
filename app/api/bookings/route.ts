@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+// Booking API - Fixed database schema field names
+
 // GET method to fetch bookings from database
 export async function GET(request: NextRequest) {
   try {
