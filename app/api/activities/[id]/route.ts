@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET(
   request: NextRequest,
@@ -12,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('experiences')
       .select('*')
       .eq('id', id)
@@ -57,7 +52,7 @@ export async function PUT(
       updated_at: new Date().toISOString()
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('experiences')
       .update(activityData)
       .eq('id', params.id)
@@ -96,7 +91,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('experiences')
       .delete()
       .eq('id', params.id)

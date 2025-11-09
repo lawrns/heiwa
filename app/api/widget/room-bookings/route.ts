@@ -141,41 +141,22 @@ export async function POST(request: NextRequest) {
 
     // Create booking record
     const bookingData = {
-      client_ids: [clientId],
-      items: [{
-        type: 'room',
-        itemId: room_id,
-        quantity: 1,
-        unitPrice: pricing.basePrice || 0,
-        totalPrice: pricing.total || 0,
-        dates: {
-          checkIn: start_date,
-          checkOut: end_date
-        }
-      }],
+      client_id: clientId,
+      room_id: room_id,
+      clientName: clientName,
+      email: email,
+      phone: phone,
+      start_date: start_date,
+      end_date: end_date,
+      guests: guests,
       total_amount: pricing.total || 0,
       status: 'pending',
       payment_status: 'pending',
       payment_method: null,
       notes: `Created via booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
-      source: 'dashboard'
-    }
-
-    // Add add-ons if any
-    if (add_ons.length > 0) {
-      add_ons.forEach((addOn: any) => {
-        bookingData.items.push({
-          type: 'addOn',
-          itemId: addOn.id,
-          quantity: addOn.quantity,
-          unitPrice: addOn.price,
-          totalPrice: addOn.price * addOn.quantity,
-          dates: {
-          checkIn: start_date,
-          checkOut: end_date
-        }
-        })
-      })
+      source: 'dashboard',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }
 
     const bookingResult = await supabaseAdmin

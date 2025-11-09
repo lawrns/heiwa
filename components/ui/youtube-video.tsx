@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface YouTubeVideoProps {
   videoId: string
@@ -10,85 +10,50 @@ interface YouTubeVideoProps {
 
 export function YouTubeVideo({ videoId, title, className = '' }: YouTubeVideoProps) {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const [origin, setOrigin] = useState('')
   
-  useEffect(() => {
-    setOrigin(window.location.origin)
-  }, [])
-  
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying)
-  }
-
-  const handleFullscreen = () => {
-    setIsFullscreen(!isFullscreen)
+  const handlePlay = () => {
+    setIsPlaying(true)
   }
 
   return (
-    <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg ${className}`}>
-      {/* YouTube iframe - completely stripped of all YouTube UI */}
-      <iframe
-        width="100%"
-        height="100%"
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=${isPlaying ? '1' : '0'}&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&disablekb=1&fs=0&iv_load_policy=4&cc_load_policy=0&autohide=1&color=white&theme=light&nologo=1&origin=${origin}`}
-        title={title}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        className="absolute inset-0"
-        style={{
-          pointerEvents: isPlaying ? 'auto' : 'none'
-        }}
-      ></iframe>
-      
-      {/* Custom overlay - always visible when not playing */}
-      {!isPlaying && (
-        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
-          <button
-            onClick={handlePlayPause}
-            className="bg-white/90 backdrop-blur-sm rounded-full p-6 shadow-xl hover:bg-white hover:scale-110 transition-all duration-300"
-            aria-label="Play video"
-          >
-            <svg className="w-12 h-12 text-accent ml-1" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </button>
-        </div>
-      )}
-      
-      {/* Custom controls - visible when playing */}
-      {isPlaying && (
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 z-10">
-          <div className="flex items-center justify-between">
+    <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900 ${className}`}>
+      {!isPlaying ? (
+        // Thumbnail with play button
+        <div className="relative w-full h-full">
+          <img
+            src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+            alt={title}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              // Fallback to lower quality if maxresdefault fails
+              e.currentTarget.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+            }}
+          />
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
             <button
-              onClick={handlePlayPause}
-              className="bg-white/20 backdrop-blur-sm rounded-full p-3 hover:bg-white/30 transition-colors duration-200"
-              aria-label="Pause video"
+              onClick={handlePlay}
+              className="bg-red-600 hover:bg-red-700 text-white rounded-full p-4 shadow-lg hover:scale-110 transition-all duration-300"
+              aria-label="Play video"
             >
-              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-              </svg>
-            </button>
-            
-            <button
-              onClick={handleFullscreen}
-              className="bg-white/20 backdrop-blur-sm rounded-full p-3 hover:bg-white/30 transition-colors duration-200"
-              aria-label="Toggle fullscreen"
-            >
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                {!isFullscreen ? (
-                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-                ) : (
-                  <path d="M8 3v5a2 2 0 0 1-2 2H3m18 0h-5a2 2 0 0 1-2-2V3m0 18v-5a2 2 0 0 1 2-2h5M3 16h5a2 2 0 0 1 2 2v5"/>
-                )}
+              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
               </svg>
             </button>
           </div>
         </div>
+      ) : (
+        // Simple iframe - minimal YouTube parameters to avoid blocking
+        <iframe
+          width="100%"
+          height="100%"
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0`}
+          title={title}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          className="absolute inset-0"
+        />
       )}
-      
-      {/* Top overlay to hide any remaining YouTube elements */}
-      <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-black/30 to-transparent pointer-events-none z-10" />
     </div>
   )
 }
