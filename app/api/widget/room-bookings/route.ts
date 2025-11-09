@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
 
     // Create booking record
     const bookingData = {
-      clientIds: [clientId],
+      client_ids: [clientId],
       items: [{
         type: 'room',
         itemId: room_id,
@@ -118,14 +118,12 @@ export async function POST(request: NextRequest) {
           checkOut: end_date
         }
       }],
-      totalAmount: pricing.total || 0,
+      total_amount: pricing.total || 0,
       status: 'pending',
-      paymentStatus: 'pending',
-      paymentMethod: null,
+      payment_status: 'pending',
+      payment_method: null,
       notes: `Created via booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
-      source: 'dashboard',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      source: 'dashboard'
     }
 
     // Add add-ons if any

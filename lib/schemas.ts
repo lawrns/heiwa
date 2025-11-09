@@ -118,15 +118,15 @@ const BookingItemSchema = z.object({
 // Booking schema
 export const BookingSchema = z.object({
   id: z.string(),
-  clientIds: z.array(z.string()).min(1, 'At least one client is required'),
+  client_ids: z.array(z.string()).min(1, 'At least one client is required'),
   items: z.array(BookingItemSchema).min(1, 'At least one booking item is required'),
-  totalAmount: z.number().min(0, 'Total amount must be non-negative'),
-  paymentStatus: z.enum(['pending', 'confirmed', 'cancelled']),
-  paymentMethod: z.enum(['stripe', 'cash', 'transfer', 'other']).optional(),
+  total_amount: z.number().min(0, 'Total amount must be non-negative'),
+  payment_status: z.enum(['pending', 'confirmed', 'cancelled']),
+  payment_method: z.enum(['stripe', 'cash', 'transfer', 'other']).optional(),
   notes: z.string().optional().default(''),
   source: z.enum(['dashboard', 'wordpress', 'api']).optional().default('dashboard'),
-  createdAt: TimestampSchema,
-  updatedAt: TimestampSchema,
+  created_at: TimestampSchema,
+  updated_at: TimestampSchema,
 });
 
 export type Booking = z.infer<typeof BookingSchema>;
