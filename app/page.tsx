@@ -59,11 +59,19 @@ export default function HomePage() {
 
   // Extract CMS content or use defaults
   const heroSection = homepageContent?.find((s: any) => s.section === 'hero')
+  const surfWeeksSection = homepageContent?.find((s: any) => s.section === 'surf-weeks')
+  const aboutSection = homepageContent?.find((s: any) => s.section === 'about')
+  const roomsSection = homepageContent?.find((s: any) => s.section === 'rooms')
+  const hostsSection = homepageContent?.find((s: any) => s.section === 'hosts')
+  const reviewsSection = homepageContent?.find((s: any) => s.section === 'reviews')
+  const facilitiesSection = homepageContent?.find((s: any) => s.section === 'facilities')
+  
   const heroTitle = heroSection?.title || 'Welcome to Heiwa House'
   const heroSubtitle = heroSection?.subtitle || 'Your surf and lifestyle destination in Santa Cruz, Portugal'
   
-  const surfWeeks = defaultSurfWeeks
-  const reviews = defaultReviews
+  // Use CMS data or fallback to defaults
+  const surfWeeks = surfWeeksSection?.data || defaultSurfWeeks
+  const reviews = reviewsSection?.data || defaultReviews
 
 
   return (
@@ -128,15 +136,15 @@ export default function HomePage() {
         <ScrollIndicator />
       </section>
 
-      {/* Heiwa Surf Weeks Section */}
+      {/* Heiwa Surf Weeks Section - Using CMS Data */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Heiwa Surf Weeks
+              {surfWeeksSection?.title || 'Heiwa Surf Weeks'}
             </h2>
             <p className="text-lg text-gray-600">
-              Experience the ultimate surf camp with professional instructors, yoga, amazing food, day trips, and unforgettable memories
+              {surfWeeksSection?.subtitle || 'Experience the ultimate surf camp with professional instructors, yoga, amazing food, day trips, and unforgettable memories'}
             </p>
           </div>
 
@@ -244,12 +252,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* What We Are About Section */}
+      {/* What We Are About Section - Using CMS Data */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-            What we are about
+            {aboutSection?.title || 'What we are about'}
           </h2>
+          {aboutSection?.subtitle && (
+            <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+              {aboutSection.subtitle}
+            </p>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Heiwa Play */}
@@ -297,12 +310,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Our Rooms Section */}
+      {/* Our Rooms Section - Using CMS Data */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-            Our Rooms
+            {roomsSection?.title || 'Our Rooms'}
           </h2>
+          {roomsSection?.subtitle && (
+            <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+              {roomsSection.subtitle}
+            </p>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -360,12 +378,17 @@ export default function HomePage() {
       {/* Your Hosts Section */}
       <HostSection />
 
-      {/* What Our Customers Say Section */}
+      {/* What Our Customers Say Section - Using CMS Data */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-            What Our Customers Say
+            {reviewsSection?.title || 'What Our Customers Say'}
           </h2>
+          {reviewsSection?.subtitle && (
+            <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+              {reviewsSection.subtitle}
+            </p>
+          )}
           
           {/* Google Reviews Header */}
           <div className="flex items-center justify-between mb-6">
@@ -444,15 +467,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Amazing Facilities Section */}
+      {/* Amazing Facilities Section - Using CMS Data */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Amazing Facilities
+              {facilitiesSection?.title || 'Amazing Facilities'}
             </h2>
             <p className="text-lg text-gray-600">
-              Everything you need for an unforgettable stay
+              {facilitiesSection?.subtitle || 'Everything you need for an unforgettable stay'}
             </p>
           </div>
 
