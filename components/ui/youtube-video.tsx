@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 
 interface VideoPlayerProps {
   videoId: string
@@ -9,67 +9,70 @@ interface VideoPlayerProps {
 }
 
 export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const [currentImage, setCurrentImage] = useState(0)
   
-  // Map YouTube video IDs to local video files
-  const videoMap: { [key: string]: string } = {
-    '9nhQiKGsgHg': '/images/videos/Timeline-1.mp4',
-    // Add more mappings as needed
-  }
-
-  const localVideoSrc = videoMap[videoId] || '/images/videos/Timeline-1.mp4'
+  // Use local images instead of video to avoid blocking
+  const images = [
+    '/optimized/photography_010_dsc03491.webp',
+    '/optimized/photography_011_dsc03521-scaled.webp',
+    '/optimized/photography_012_dsc03530-scaled.webp'
+  ]
   
-  const handlePlay = () => {
-    if (videoRef.current) {
-      videoRef.current.play()
-      setIsPlaying(true)
-    }
+  const nextImage = () => {
+    setCurrentImage((prev) => (prev + 1) % images.length)
   }
-
-  const handlePause = () => {
-    if (videoRef.current) {
-      videoRef.current.pause()
-      setIsPlaying(false)
-    }
+  
+  const prevImage = () => {
+    setCurrentImage((prev) => (prev - 1 + images.length) % images.length)
   }
 
   return (
     <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900 ${className}`}>
-      {!isPlaying ? (
-        // Thumbnail with play button
-        <div className="relative w-full h-full">
-          <img
-            src="/optimized/photography_010_dsc03491.webp"
-            alt={title}
-            className="w-full h-full object-cover"
+      <img
+        src={images[currentImage]}
+        alt={title}
+        className="w-full h-full object-cover"
+      />
+      
+      {/* Navigation controls */}
+      <button
+        onClick={prevImage}
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+        aria-label="Previous image"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      
+      <button
+        onClick={nextImage}
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+        aria-label="Next image"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      
+      {/* Image indicators */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentImage(index)}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              index === currentImage ? 'bg-white' : 'bg-white/50'
+            }`}
+            aria-label={`Go to image ${index + 1}`}
           />
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <button
-              onClick={handlePlay}
-              className="bg-red-600 hover:bg-red-700 text-white rounded-full p-6 shadow-xl hover:scale-110 transition-all duration-300"
-              aria-label="Play video"
-            >
-              <svg className="w-12 h-12 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      ) : (
-        // Self-hosted video player - NO YouTube, NO tracking
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover"
-          controls
-          playsInline
-          onPause={handlePause}
-          onEnded={() => setIsPlaying(false)}
-        >
-          <source src={localVideoSrc} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      )}
+        ))}
+      </div>
+      
+      {/* Title overlay */}
+      <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-2">
+        <h3 className="text-white font-semibold">{title}</h3>
+      </div>
     </div>
   )
 }

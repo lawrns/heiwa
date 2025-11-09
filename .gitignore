@@ -26,8 +26,6 @@ out/
 *.zip
 public/optimized.zip
 public/videos.zip
-*.mp4
-*.mov
 *.avi
 *.mkv
 
