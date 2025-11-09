@@ -44,7 +44,31 @@ test('Admin CMS updates reflect on homepage', async ({ page }) => {
     await firstInput.fill(title)
     console.log(`Updated title to: "${title}"`)
     
+    // Listen for network requests to debug
+    const responses = []
+    page.on('response', async response => {
+      if (response.url().includes('/api/admin/homepage')) {
+        const status = response.status()
+        const url = response.url()
+        console.log(`API Response: ${status} ${url}`)
+        
+        if (status >= 400) {
+          const text = await response.text()
+          console.log(`Error response body: ${text}`)
+        }
+        
+        responses.push(response)
+      }
+    })
+    
     await saveChanges(page)
+    
+    // Wait a bit and check responses
+    await page.waitForTimeout(2000)
+    console.log(`Total API responses: ${responses.length}`)
+    for (const resp of responses) {
+      console.log(`Status: ${resp.status()}, URL: ${resp.url()}`)
+    }
   }
 
   const checkApiTitle = async (expectedTitle) => {
