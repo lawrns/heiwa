@@ -1,18 +1,37 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
-interface YouTubeVideoProps {
+interface VideoPlayerProps {
   videoId: string
   title: string
   className?: string
 }
 
-export function YouTubeVideo({ videoId, title, className = '' }: YouTubeVideoProps) {
+export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  
+  // Map YouTube video IDs to local video files
+  const videoMap: { [key: string]: string } = {
+    '9nhQiKGsgHg': '/images/videos/Timeline-1.mp4',
+    // Add more mappings as needed
+  }
+
+  const localVideoSrc = videoMap[videoId] || '/images/videos/Timeline-1.mp4'
   
   const handlePlay = () => {
-    setIsPlaying(true)
+    if (videoRef.current) {
+      videoRef.current.play()
+      setIsPlaying(true)
+    }
+  }
+
+  const handlePause = () => {
+    if (videoRef.current) {
+      videoRef.current.pause()
+      setIsPlaying(false)
+    }
   }
 
   return (
@@ -21,38 +40,35 @@ export function YouTubeVideo({ videoId, title, className = '' }: YouTubeVideoPro
         // Thumbnail with play button
         <div className="relative w-full h-full">
           <img
-            src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+            src="/optimized/photography_010_dsc03491.webp"
             alt={title}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              // Fallback to lower quality if maxresdefault fails
-              e.currentTarget.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-            }}
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
             <button
               onClick={handlePlay}
-              className="bg-red-600 hover:bg-red-700 text-white rounded-full p-4 shadow-lg hover:scale-110 transition-all duration-300"
+              className="bg-red-600 hover:bg-red-700 text-white rounded-full p-6 shadow-xl hover:scale-110 transition-all duration-300"
               aria-label="Play video"
             >
-              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-12 h-12 ml-1" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z"/>
               </svg>
             </button>
           </div>
         </div>
       ) : (
-        // Simple iframe - minimal YouTube parameters to avoid blocking
-        <iframe
-          width="100%"
-          height="100%"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&showinfo=0`}
-          title={title}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          className="absolute inset-0"
-        />
+        // Self-hosted video player - NO YouTube, NO tracking
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover"
+          controls
+          playsInline
+          onPause={handlePause}
+          onEnded={() => setIsPlaying(false)}
+        >
+          <source src={localVideoSrc} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       )}
     </div>
   )
