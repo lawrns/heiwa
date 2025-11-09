@@ -281,7 +281,7 @@ export async function PUT(request: NextRequest) {
 
     const { data, error } = await supabaseAdmin
       .from('homepage_content' as any)
-      .update(updateData)
+      .update(updateData as any)
       .eq('id', id)
       .select()
 

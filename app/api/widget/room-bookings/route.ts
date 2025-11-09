@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
 
       const createResult = await supabaseAdmin
         .from('clients')
-        .insert(newClient)
+        .insert(newClient as any)
         .select('id')
         .single()
 
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
         }, { status: 500 })
       }
 
-      clientId = createResult.data.id
+      clientId = (createResult.data as any).id
       console.log('✅ New client created:', clientId)
     } else if (clientResult.error) {
       console.error('Failed to check client:', clientResult.error)
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
         error: 'Failed to verify client'
       }, { status: 500 })
     } else {
-      clientId = clientResult.data.id
+      clientId = (clientResult.data as any).id
       console.log('✅ Existing client found:', clientId)
     }
 
@@ -170,14 +170,17 @@ export async function POST(request: NextRequest) {
           quantity: addOn.quantity,
           unitPrice: addOn.price,
           totalPrice: addOn.price * addOn.quantity,
-          dates: null
+          dates: {
+          checkIn: start_date,
+          checkOut: end_date
+        }
         })
       })
     }
 
     const bookingResult = await supabaseAdmin
       .from('bookings')
-      .insert(bookingData)
+      .insert(bookingData as any)
       .select('id')
       .single()
 
@@ -189,7 +192,7 @@ export async function POST(request: NextRequest) {
       }, { status: 500 })
     }
 
-    const bookingId = bookingResult.data.id
+    const bookingId = (bookingResult.data as any).id
     console.log('✅ Booking created:', bookingId)
 
     // Return success response
