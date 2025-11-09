@@ -30,11 +30,13 @@ export default function HomepageCMSPage() {
     const fetchContent = async () => {
       try {
         setLoading(true)
-        const response = await fetch('/api/admin/homepage')
+        const response = await fetch('/api/admin/homepage?t=' + Date.now(), {
+          cache: 'no-store'
+        })
         const result = await response.json()
         
-        if (result.success && result.data.length > 0) {
-          // Map API response to component state
+        if (result.success && result.data && result.data.length > 0) {
+          // Map API response to component state - use REAL data from database
           setContent(result.data.map((item: any) => ({
             id: item.id,
             section: item.section,
@@ -50,85 +52,14 @@ export default function HomepageCMSPage() {
             order: item.order_index
           })))
         } else {
-          // If no data exists, create default sections
-          setContent([
-            {
-              id: 'hero',
-              section: 'hero',
-              title: 'Welcome to Heiwa House',
-              subtitle: 'Your surf and lifestyle destination in Santa Cruz, Portugal',
-              description: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
-              content: '',
-              videoUrl: '/images/videos/Timeline-1.mp4',
-              linkUrl: '/surf-weeks',
-              linkText: 'Explore surf weeks',
-              isActive: true,
-              order: 1
-            },
-            {
-              id: 'features',
-              section: 'features',
-              title: 'What Makes Us Special',
-              subtitle: 'Experience the perfect blend of surf, yoga, and coastal living',
-              description: 'Discover our unique offerings that make Heiwa House the ultimate destination.',
-              content: '',
-              imageUrl: '/images/features/coastal-living.jpg',
-              isActive: true,
-              order: 2
-            },
-            {
-              id: 'activities',
-              section: 'activities',
-              title: 'Activities & Experiences',
-              subtitle: 'From sunrise yoga to sunset surf sessions',
-              description: 'Immerse yourself in our diverse range of activities designed to rejuvenate your mind, body, and soul.',
-              content: '',
-              imageUrl: '/images/activities/yoga-deck.jpg',
-              isActive: true,
-              order: 3
-            },
-            {
-              id: 'testimonials',
-              section: 'testimonials',
-              title: 'What Our Guests Say',
-              subtitle: 'Real experiences from real people',
-              description: 'Read about the transformative experiences our guests have had at Heiwa House.',
-              content: '',
-              isActive: true,
-              order: 4
-            },
-            {
-              id: 'cta',
-              section: 'cta',
-              title: 'Ready for Your Adventure?',
-              subtitle: 'Book your stay and start your journey',
-              description: 'Don\'t wait - limited spots available for the upcoming season.',
-              content: '',
-              linkUrl: '/booking',
-              linkText: 'Book Now',
-              isActive: true,
-              order: 5
-            }
-          ])
+          // If no data exists, show empty state instead of template
+          console.warn('⚠️ No homepage content found in database')
+          setContent([])
         }
       } catch (error) {
-        console.error('Error fetching homepage content:', error)
-        // Fallback to default content on error
-        setContent([
-          {
-            id: 'hero',
-            section: 'hero',
-            title: 'Welcome to Heiwa House',
-            subtitle: 'Your surf and lifestyle destination in Santa Cruz, Portugal',
-            description: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
-            content: '',
-            videoUrl: '/images/videos/Timeline-1.mp4',
-            linkUrl: '/surf-weeks',
-            linkText: 'Explore surf weeks',
-            isActive: true,
-            order: 1
-          }
-        ])
+        console.error('❌ Error fetching homepage content:', error)
+        // On error, show empty state instead of fallback template
+        setContent([])
       } finally {
         setLoading(false)
       }
@@ -284,7 +215,55 @@ export default function HomepageCMSPage() {
 
       {/* Content Sections */}
       <div className="space-y-6">
-        {content.map((section) => (
+        {loading ? (
+          <div className="bg-white rounded-lg shadow-md p-8 text-center">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+            </div>
+          </div>
+        ) : content.length === 0 ? (
+          <div className="bg-white rounded-lg shadow-md p-12 text-center">
+            <div className="mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+                <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Homepage Content Found</h3>
+              <p className="text-gray-600 mb-6">
+                The homepage_content table is empty. Create sections to manage your homepage content.
+              </p>
+              <button
+                onClick={() => {
+                  // Add a new empty section
+                  const newSection: HomepageContent = {
+                    id: `section-${Date.now()}`,
+                    section: 'hero',
+                    title: 'New Section',
+                    subtitle: '',
+                    description: '',
+                    content: '',
+                    imageUrl: '',
+                    videoUrl: '',
+                    linkUrl: '',
+                    linkText: '',
+                    isActive: true,
+                    order: 1
+                  }
+                  setContent([newSection])
+                }}
+                className="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Create First Section
+              </button>
+            </div>
+          </div>
+        ) : (
+          content.map((section) => (
           <div key={section.id} className="bg-white rounded-lg shadow-md overflow-hidden">
             {/* Section Header */}
             <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
@@ -458,7 +437,8 @@ export default function HomepageCMSPage() {
               )}
             </div>
           </div>
-        ))}
+        ))
+        )}
       </div>
 
       {/* Quick Actions */}
