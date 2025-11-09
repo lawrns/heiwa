@@ -6,6 +6,17 @@ import { supabaseAdmin } from '@/lib/supabase'
 // GET method to fetch bookings from database
 export async function GET(request: NextRequest) {
   try {
+    console.log('GET /api/bookings - Fetching all bookings with cache-busting')
+    
+    // Add cache-busting headers
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Last-Modified': new Date().toUTCString()
+    })
+
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const roomId = searchParams.get('roomId')
@@ -42,6 +53,13 @@ export async function GET(request: NextRequest) {
       count,
       limit,
       offset
+    }, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Last-Modified': new Date().toUTCString()
+      }
     })
   } catch (error) {
     console.error('Unexpected error:', error)
@@ -379,6 +397,13 @@ export async function POST(request: NextRequest) {
           payment_link: null,
           status: 'pending'
         }
+      }
+    }, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Last-Modified': new Date().toUTCString()
       }
     })
   }

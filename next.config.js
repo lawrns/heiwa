@@ -73,7 +73,7 @@ const nextConfig = {
     return config
   },
   
-  // Headers for caching
+  // Optimized headers for faster deployments
   async headers() {
     return [
       {
@@ -81,7 +81,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: 'public, max-age=86400, stale-while-revalidate=3600',
           },
         ],
       },
@@ -90,7 +90,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=604800, immutable',
+            value: 'public, max-age=86400, stale-while-revalidate=3600',
           },
           {
             key: 'Accept-Ranges',
@@ -112,7 +112,24 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=300, s-maxage=300',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache',
+          },
+          {
+            key: 'Expires',
+            value: '0',
+          },
+        ],
+      },
+      {
+        source: '/(admin|api)/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
           },
         ],
       },
