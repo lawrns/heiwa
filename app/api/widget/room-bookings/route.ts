@@ -1,6 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+// GET method to provide room booking availability info
+export async function GET(request: NextRequest) {
+  try {
+    console.log('📋 Room Booking Widget - GET request received')
+    
+    // Return basic availability info
+    return NextResponse.json({
+      success: true,
+      message: 'Room booking widget is available',
+      endpoint: '/api/widget/room-bookings',
+      method: 'POST',
+      usage: 'Send POST request with booking data to create a room booking',
+      example_payload: {
+        room_id: "uuid",
+        start_date: "2025-11-14",
+        end_date: "2025-11-16",
+        participants: [{ name: "John Doe", email: "john@example.com" }],
+        guests: 1
+      }
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    })
+  } catch (error) {
+    console.error('Room booking widget GET error:', error)
+    return NextResponse.json({
+      success: false,
+      error: 'Failed to get room booking info'
+    }, { status: 500 })
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()

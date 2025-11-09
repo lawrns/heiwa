@@ -69,23 +69,53 @@ export interface GoogleRatingData {
 // GET - Fetch all homepage sections
 export async function GET() {
   try {
+    console.log('🏠 Homepage API - Starting GET request')
+    
+    // Test Supabase connection
+    console.log('🔗 Testing Supabase connection...')
+    const { data: testData, error: testError } = await supabaseAdmin
+      .from('homepage_content' as any)
+      .select('count')
+      .limit(1)
+    
+    if (testError) {
+      console.error('❌ Supabase connection test failed:', testError)
+      throw new Error(`Supabase connection failed: ${testError.message}`)
+    }
+    
+    console.log('✅ Supabase connection successful, fetching data...')
+    
     const { data, error } = await supabaseAdmin
       .from('homepage_content' as any)
       .select('*')
       .order('order_index', { ascending: true })
 
-    if (error) throw error
+    if (error) {
+      console.error('❌ Database query error:', error)
+      throw error
+    }
+
+    console.log(`✅ Successfully fetched ${data?.length || 0} homepage sections`)
 
     // Parse JSON fields for complex data types
-    const parsedData = (data || []).map((item: any) => ({
-      ...item,
-      cards: item.cards ? JSON.parse(item.cards) : undefined,
-      bookingData: item.booking_data ? JSON.parse(item.booking_data) : undefined,
-      testimonials: item.testimonials ? JSON.parse(item.testimonials) : undefined,
-      facilities: item.facilities ? JSON.parse(item.facilities) : undefined,
-      googleRating: item.google_rating ? JSON.parse(item.google_rating) : undefined,
-      videoId: item.video_id || undefined
-    }))
+    const parsedData = (data || []).map((item: any) => {
+      try {
+        return {
+          ...item,
+          cards: item.cards ? JSON.parse(item.cards) : undefined,
+          bookingData: item.booking_data ? JSON.parse(item.booking_data) : undefined,
+          testimonials: item.testimonials ? JSON.parse(item.testimonials) : undefined,
+          facilities: item.facilities ? JSON.parse(item.facilities) : undefined,
+          googleRating: item.google_rating ? JSON.parse(item.google_rating) : undefined,
+          videoId: item.video_id || undefined
+        }
+      } catch (parseError) {
+        console.error(`❌ JSON parse error for item ${item.id}:`, parseError)
+        return item // Return original item if parsing fails
+      }
+    })
+
+    console.log('✅ Successfully parsed all homepage data')
 
     return NextResponse.json({
       success: true,
@@ -98,10 +128,19 @@ export async function GET() {
       }
     })
   } catch (err) {
-    console.error('Error fetching homepage content:', err)
+    console.error('❌ Homepage API Error:', {
+      error: err,
+      message: err instanceof Error ? err.message : 'Unknown error',
+      stack: err instanceof Error ? err.stack : undefined,
+      timestamp: new Date().toISOString()
+    })
     return NextResponse.json({
       success: false,
-      error: 'Failed to fetch homepage content'
+      error: 'Failed to fetch homepage content',
+      debug: process.env.NODE_ENV === 'development' ? {
+        message: err instanceof Error ? err.message : 'Unknown error',
+        timestamp: new Date().toISOString()
+      } : undefined
     }, { status: 500 })
   }
 }
