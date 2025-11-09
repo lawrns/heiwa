@@ -33,6 +33,31 @@ export interface PageContent {
   updated_at: string
 }
 
+export interface PageSection {
+  id: string
+  page_slug: string
+  section_type: 'hero' | 'intro' | 'features' | 'gallery' | 'pricing' | 'text' | 'image_text' | 'video' | 'custom'
+  section_name: string
+  content: Record<string, any>
+  order_index: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface PageData {
+  slug: string
+  title: string
+  description: string
+  sections: PageSection[]
+  metadata: {
+    seoTitle: string
+    seoDescription: string
+    featuredImage: string
+    lastModified: string
+  }
+}
+
 export interface Testimonial {
   id: string
   author_name: string

@@ -1,0 +1,232 @@
+'use client'
+
+import { useState } from 'react'
+import { MoreVertical, Edit, Copy, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react'
+import AdminButton from '@/components/admin/ui/AdminButton'
+import { PageSection } from '@/lib/cms-types'
+
+interface SectionCardProps {
+  section: PageSection
+  index: number
+  onEdit: () => void
+  onDelete: () => void
+  onDuplicate: () => void
+  onToggleActive: (isActive: boolean) => void
+  dragHandleProps?: any
+}
+
+export default function SectionCard({
+  section,
+  index,
+  onEdit,
+  onDelete,
+  onDuplicate,
+  onToggleActive,
+  dragHandleProps
+}: SectionCardProps) {
+  const [showMenu, setShowMenu] = useState(false)
+
+  const getSectionIcon = (sectionType: string) => {
+    const icons: Record<string, string> = {
+      hero: '🎯',
+      intro: '📝',
+      text: '📄',
+      features: '⭐',
+      gallery: '🖼️',
+      pricing: '💰',
+      image_text: '🖼️',
+      video: '🎥',
+      custom: '⚙️'
+    }
+    return icons[sectionType] || '📄'
+  }
+
+  const getSectionPreview = (section: PageSection) => {
+    switch (section.section_type) {
+      case 'hero':
+        return section.content?.title || 'Hero Section'
+      case 'text':
+        return section.content?.title || 'Text Section'
+      case 'intro':
+        return 'Introduction'
+      default:
+        return section.section_name || section.section_type
+    }
+  }
+
+  const getSectionTypeLabel = (sectionType: string) => {
+    const labels: Record<string, string> = {
+      hero: 'Hero',
+      intro: 'Introduction',
+      text: 'Text',
+      features: 'Features',
+      gallery: 'Gallery',
+      pricing: 'Pricing',
+      image_text: 'Image + Text',
+      video: 'Video',
+      custom: 'Custom'
+    }
+    return labels[sectionType] || sectionType
+  }
+
+  return (
+    <div className="p-6 hover:bg-gray-50 transition-colors group">
+      <div className="flex items-start justify-between">
+        <div className="flex items-start flex-1">
+          {/* Drag Handle */}
+          <div
+            {...dragHandleProps}
+            className="mr-4 p-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+          >
+            <GripVertical className="w-5 h-5" />
+          </div>
+
+          {/* Section Icon */}
+          <div className="mr-4 text-2xl">
+            {getSectionIcon(section.section_type)}
+          </div>
+
+          {/* Section Info */}
+          <div className="flex-1">
+            <div className="flex items-center mb-2">
+              <h3 className="font-medium text-gray-900 mr-3">
+                {getSectionPreview(section)}
+              </h3>
+              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                {getSectionTypeLabel(section.section_type)}
+              </span>
+              {!section.is_active && (
+                <span className="ml-2 text-xs text-gray-500 bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                  Inactive
+                </span>
+              )}
+            </div>
+            
+            <p className="text-sm text-gray-500 mb-2">
+              Order: {section.order_index} • Last updated: {new Date(section.updated_at).toLocaleDateString()}
+            </p>
+
+            {/* Section Preview */}
+            <div className="text-sm text-gray-600 mb-3">
+              {section.content?.title && (
+                <p className="font-medium mb-1">Title: {section.content.title}</p>
+              )}
+              {section.content?.subtitle && (
+                <p className="text-gray-500">Subtitle: {section.content.subtitle}</p>
+              )}
+              {section.content?.description && (
+                <p className="text-gray-500 line-clamp-2">
+                  {section.content.description.substring(0, 100)}...
+                </p>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={section.is_active}
+                  onChange={(e) => onToggleActive(e.target.checked)}
+                  className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span className="text-sm text-gray-700">
+                  {section.is_active ? 'Active' : 'Inactive'}
+                </span>
+              </label>
+              
+              <AdminButton variant="outline" size="sm" onClick={onEdit}>
+                <Edit className="w-4 h-4 mr-1" />
+                Edit
+              </AdminButton>
+
+              <div className="relative">
+                <AdminButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowMenu(!showMenu)}
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </AdminButton>
+
+                {showMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          onToggleActive(!section.is_active)
+                          setShowMenu(false)
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        {section.is_active ? (
+                          <>
+                            <EyeOff className="w-4 h-4 mr-2" />
+                            Deactivate
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="w-4 h-4 mr-2" />
+                            Activate
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => {
+                          onDuplicate()
+                          setShowMenu(false)
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <Copy className="w-4 h-4 mr-2" />
+                        Duplicate
+                      </button>
+                      <div className="border-t border-gray-100 my-1"></div>
+                      <button
+                        onClick={() => {
+                          onDelete()
+                          setShowMenu(false)
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="ml-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={onEdit}
+              className="p-1 hover:bg-gray-200 rounded"
+              title="Edit section"
+            >
+              <Edit className="w-4 h-4" />
+            </button>
+            <button
+              onClick={onDuplicate}
+              className="p-1 hover:bg-gray-200 rounded"
+              title="Duplicate section"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => onToggleActive(!section.is_active)}
+              className="p-1 hover:bg-gray-200 rounded"
+              title={section.is_active ? 'Deactivate' : 'Activate'}
+            >
+              {section.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
