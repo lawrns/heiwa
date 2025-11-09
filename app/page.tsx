@@ -39,11 +39,14 @@ export default function HomePage() {
       try {
         const response = await fetch('/api/admin/homepage')
         const result = await response.json()
-        if (result.success && result.data) {
+        if (result.success && result.data && result.data.length > 0) {
+          console.log('✅ CMS content loaded:', result.data.length, 'sections')
           setHomepageContent(result.data)
+        } else {
+          console.log('⚠️ No CMS content, using defaults')
         }
       } catch (error) {
-        console.error('Error fetching homepage content:', error)
+        console.error('❌ Error fetching homepage content:', error)
       } finally {
         setLoading(false)
       }
@@ -52,7 +55,11 @@ export default function HomePage() {
     fetchContent()
   }, [])
 
-  // Use CMS content if available, otherwise use defaults
+  // Extract CMS content or use defaults
+  const heroSection = homepageContent?.find((s: any) => s.section === 'hero')
+  const heroTitle = heroSection?.title || 'Welcome to Heiwa House'
+  const heroSubtitle = heroSection?.subtitle || 'Your surf and lifestyle destination in Santa Cruz, Portugal'
+  
   const surfWeeks = defaultSurfWeeks
   const reviews = defaultReviews
 
@@ -82,11 +89,11 @@ export default function HomePage() {
         <div className="relative h-full flex items-center justify-center text-center px-4">
           <div className="max-w-4xl">
             <AnimatedHeroHeading
-              text="Welcome to Heiwa House"
+              text={heroTitle}
               className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg" style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 700, letterSpacing: '-0.02em' }}
             />
             <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
-              Your surf and lifestyle destination in Santa Cruz, Portugal
+              {heroSubtitle}
             </p>
             
             {/* Two Buttons */}
