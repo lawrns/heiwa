@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Bed, Calendar, Users, TrendingUp } from 'lucide-react'
+import { Bed, Calendar, Users, TrendingUp, BarChart3, ClipboardList, Building2, Box } from 'lucide-react'
+import StatCard from '@/components/admin/StatCard'
+import ActionCard from '@/components/admin/ActionCard'
 
 interface Stat {
   name: string
@@ -122,46 +124,122 @@ export default function AdminDashboard() {
 
   const stats = data?.stats || []
   const recentBookings = data?.recentBookings || []
+  
+  const iconMap: { [key: string]: any } = {
+    'Bed': Bed,
+    'Calendar': Calendar,
+    'Users': Users,
+    'TrendingUp': TrendingUp,
+    'BarChart3': BarChart3,
+    'ClipboardList': ClipboardList,
+    'Building2': Building2,
+    'Box': Box
+  }
+
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-2">Welcome back! Here's what's happening at Heiwa House.</p>
+    <div className="space-y-8">
+      {/* Dashboard Header */}
+      <div>
+        <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
+        <p className="text-gray-600 mt-2">Manage your bookings, rooms, and surf camps from one central location</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat) => {
-          const iconMap: { [key: string]: any } = {
-            'Bed': Bed,
-            'Calendar': Calendar,
-            'Users': Users,
-            'TrendingUp': TrendingUp
-          }
-          const Icon = iconMap[stat.icon] || Bed
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, idx) => {
+          const Icon = iconMap[stat.icon] || Calendar
+          const colors = ['orange', 'green', 'blue', 'purple'] as const
+          const color = colors[idx % colors.length]
           return (
-            <div key={stat.name} className="bg-white rounded-lg shadow p-6">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <Icon className="h-8 w-8 text-gray-400" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">{stat.name}</dt>
-                    <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">{stat.value}</div>
-                      <div className={`ml-2 flex items-baseline text-sm font-semibold ${
-                        stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
-                      }`}>
-                        {stat.change}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
+            <StatCard
+              key={stat.name}
+              title={stat.name}
+              value={stat.value}
+              icon={Icon}
+              color={color}
+              trend={{
+                value: parseInt(stat.change),
+                direction: stat.changeType === 'positive' ? 'up' : 'down'
+              }}
+            />
           )
         })}
+      </div>
+
+      {/* Action Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ActionCard
+          title="Bookings Management"
+          description="View and manage all bookings for rooms and surf camps."
+          icon={ClipboardList}
+          href="/admin/bookings"
+          buttonText="Manage Bookings"
+          stat={{
+            label: 'Active Bookings',
+            value: stats[0]?.value || '0'
+          }}
+          color="orange"
+        />
+        <ActionCard
+          title="Rooms Management"
+          description="Manage room inventory, pricing, and availability."
+          icon={Bed}
+          href="/admin/rooms"
+          buttonText="Manage Rooms"
+          stat={{
+            label: 'Available Rooms',
+            value: '4'
+          }}
+          color="blue"
+        />
+        <ActionCard
+          title="Surf Camps"
+          description="Create and manage surf camp sessions and schedules."
+          icon={Building2}
+          href="/admin/surf-camps"
+          buttonText="Manage Surf Camps"
+          stat={{
+            label: 'Active Camps',
+            value: '7'
+          }}
+          color="green"
+        />
+        <ActionCard
+          title="Clients"
+          description="View and manage client information and history."
+          icon={Users}
+          href="/admin/clients"
+          buttonText="Manage Clients"
+          stat={{
+            label: 'Total Clients',
+            value: stats[1]?.value || '0'
+          }}
+          color="purple"
+        />
+        <ActionCard
+          title="Calendar"
+          description="View booking calendar and manage schedules."
+          icon={Calendar}
+          href="/admin/calendar"
+          buttonText="View Calendar"
+          stat={{
+            label: 'Events This Week',
+            value: '15'
+          }}
+          color="orange"
+        />
+        <ActionCard
+          title="Analytics"
+          description="View booking statistics and revenue reports."
+          icon={BarChart3}
+          href="/admin/analytics"
+          buttonText="View Analytics"
+          stat={{
+            label: 'Occupancy Rate',
+            value: '80%'
+          }}
+          color="blue"
+        />
       </div>
 
       {/* Recent Bookings */}

@@ -1,0 +1,75 @@
+'use client'
+
+import { LucideIcon } from 'lucide-react'
+
+interface StatCardProps {
+  title: string
+  value: string | number
+  icon: LucideIcon
+  description?: string
+  color?: 'orange' | 'green' | 'blue' | 'purple'
+  trend?: {
+    value: number
+    direction: 'up' | 'down'
+  }
+}
+
+const colorClasses = {
+  orange: {
+    bg: 'bg-orange-50',
+    icon: 'text-orange-600',
+    border: 'border-orange-200',
+  },
+  green: {
+    bg: 'bg-green-50',
+    icon: 'text-green-600',
+    border: 'border-green-200',
+  },
+  blue: {
+    bg: 'bg-blue-50',
+    icon: 'text-blue-600',
+    border: 'border-blue-200',
+  },
+  purple: {
+    bg: 'bg-purple-50',
+    icon: 'text-purple-600',
+    border: 'border-purple-200',
+  },
+}
+
+export function StatCard({
+  title,
+  value,
+  icon: Icon,
+  description,
+  color = 'orange',
+  trend,
+}: StatCardProps) {
+  const colors = colorClasses[color]
+
+  return (
+    <div className={`${colors.bg} rounded-lg border ${colors.border} p-6 transition-all duration-300 hover:shadow-md`}>
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="mt-2 text-3xl font-bold text-gray-900">{value}</p>
+          {description && (
+            <p className="mt-1 text-xs text-gray-500">{description}</p>
+          )}
+          {trend && (
+            <div className={`mt-2 flex items-center text-xs font-semibold ${
+              trend.direction === 'up' ? 'text-green-600' : 'text-red-600'
+            }`}>
+              <span>{trend.direction === 'up' ? '↑' : '↓'} {trend.value}%</span>
+            </div>
+          )}
+        </div>
+        <div className={`${colors.icon} rounded-lg p-3 bg-white`}>
+          <Icon className="h-6 w-6" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default StatCard
