@@ -1,0 +1,328 @@
+{
+  "addendum": "CMS Integration Addendum for Admin Panel Upgrade",
+  "version": "1.0",
+  "date": "2025-11-10",
+  "purpose": "Add CMS functionality to ADMIN_UPGRADE_PLAN.json",
+  
+  "cmsOverview": {
+    "status": "EXISTS",
+    "currentLocation": "/app/admin/cms/",
+    "description": "CMS system already implemented with pages, testimonials, FAQ, analytics, and homepage editing",
+    "needsUpgrade": true,
+    "upgradeReason": "Match wavecampdashboard styling and integrate with new admin layout"
+  },
+
+  "navigationUpdates": {
+    "sidebarItemsToAdd": [
+      {
+        "name": "CMS",
+        "href": "/admin/cms",
+        "icon": "FileText",
+        "description": "Manage website content",
+        "subItems": [
+          {
+            "name": "Pages",
+            "href": "/admin/cms/pages",
+            "icon": "FileText"
+          },
+          {
+            "name": "Homepage",
+            "href": "/admin/homepage",
+            "icon": "Home"
+          },
+          {
+            "name": "Testimonials",
+            "href": "/admin/cms/testimonials",
+            "icon": "MessageSquare"
+          },
+          {
+            "name": "FAQ",
+            "href": "/admin/cms/faq",
+            "icon": "HelpCircle"
+          },
+          {
+            "name": "Analytics",
+            "href": "/admin/cms/analytics",
+            "icon": "BarChart3"
+          }
+        ]
+      }
+    ],
+    "note": "CMS should appear in sidebar navigation between 'Analytics' and 'Settings'"
+  },
+
+  "implementationPhases": {
+    "phase1Additions": {
+      "name": "Admin Layout & Sidebar - CMS Integration",
+      "tasks": [
+        {
+          "id": "1.5",
+          "name": "Add CMS to Navigation",
+          "description": "Include CMS navigation item in sidebar with submenu",
+          "file": "/lib/admin/navigation.ts",
+          "changes": [
+            "Add CMS main item to navigation array",
+            "Add CMS submenu items (Pages, Homepage, Testimonials, FAQ, Analytics)",
+            "Use FileText icon for main CMS item",
+            "Add proper href paths for all CMS routes"
+          ],
+          "dependencies": ["lucide-react icons"]
+        }
+      ]
+    },
+
+    "phase3Additions": {
+      "name": "CMS Pages Styling Upgrade",
+      "duration": "6-8 hours",
+      "priority": "MEDIUM",
+      "tasks": [
+        {
+          "id": "3.7",
+          "name": "Upgrade CMS Pages List Page",
+          "description": "Apply new admin styling to CMS pages list",
+          "file": "/app/admin/cms/pages/page.tsx",
+          "changes": [
+            "Update to use new admin layout wrapper",
+            "Apply heiwaOrange color scheme",
+            "Add framer-motion animations",
+            "Improve card hover effects",
+            "Add loading states",
+            "Add error boundaries"
+          ],
+          "dependencies": ["Admin layout", "framer-motion"]
+        },
+        {
+          "id": "3.8",
+          "name": "Upgrade CMS Page Editor",
+          "description": "Enhance page editor with new styling",
+          "file": "/app/admin/cms/pages/[slug]/page.tsx",
+          "changes": [
+            "Apply new admin theme",
+            "Improve section editing UI",
+            "Add drag-and-drop reordering",
+            "Add auto-save functionality",
+            "Add preview mode",
+            "Add version history UI"
+          ],
+          "dependencies": ["PageEditor component", "SectionEditModal component"]
+        },
+        {
+          "id": "3.9",
+          "name": "Upgrade CMS Components",
+          "description": "Update CMS-specific components to match new design",
+          "files": [
+            "/components/admin/cms/CMSNavigation.tsx",
+            "/components/admin/cms/CMSBreadcrumb.tsx",
+            "/components/admin/cms/PageEditor.tsx",
+            "/components/admin/cms/SectionCard.tsx",
+            "/components/admin/cms/SectionEditModal.tsx"
+          ],
+          "changes": [
+            "Apply heiwaOrange color scheme",
+            "Update button styles to match AdminButton",
+            "Add hover animations",
+            "Improve spacing and typography",
+            "Add loading states",
+            "Ensure responsive design"
+          ]
+        },
+        {
+          "id": "3.10",
+          "name": "Upgrade Homepage Editor",
+          "description": "Enhance homepage CMS editor",
+          "file": "/app/admin/homepage/page.tsx",
+          "changes": [
+            "Apply new admin layout",
+            "Update styling to match dashboard",
+            "Add section reordering",
+            "Improve image upload UI",
+            "Add preview functionality",
+            "Add auto-save"
+          ]
+        },
+        {
+          "id": "3.11",
+          "name": "Upgrade Testimonials Page",
+          "description": "Enhance testimonials management",
+          "file": "/app/admin/cms/testimonials/page.tsx",
+          "changes": [
+            "Apply new admin layout",
+            "Update TestimonialsManager component styling",
+            "Add search and filtering",
+            "Add pagination",
+            "Improve form UI"
+          ]
+        },
+        {
+          "id": "3.12",
+          "name": "Upgrade FAQ Page",
+          "description": "Enhance FAQ management",
+          "file": "/app/admin/cms/faq/page.tsx",
+          "changes": [
+            "Apply new admin layout",
+            "Update FAQManager component styling",
+            "Add search functionality",
+            "Add reordering",
+            "Improve form UI"
+          ]
+        },
+        {
+          "id": "3.13",
+          "name": "Upgrade CMS Analytics Page",
+          "description": "Enhance CMS analytics dashboard",
+          "file": "/app/admin/cms/analytics/page.tsx",
+          "changes": [
+            "Apply new admin layout",
+            "Add charts and visualizations",
+            "Update styling to match main analytics page",
+            "Add date range filtering",
+            "Add export functionality"
+          ]
+        }
+      ]
+    },
+
+    "phase4Additions": {
+      "name": "CMS Feature Enhancements",
+      "duration": "4-6 hours",
+      "priority": "LOW",
+      "tasks": [
+        {
+          "id": "4.6",
+          "name": "Enhance Media Library",
+          "description": "Improve media library component",
+          "file": "/components/admin/editors/MediaLibrary.tsx",
+          "changes": [
+            "Add bulk upload",
+            "Add image optimization preview",
+            "Add categorization",
+            "Add search functionality",
+            "Improve grid layout",
+            "Add drag-and-drop upload"
+          ]
+        },
+        {
+          "id": "4.7",
+          "name": "Add CMS Dashboard Card",
+          "description": "Add CMS overview card to main dashboard",
+          "file": "/components/admin/AdminDashboard.tsx",
+          "changes": [
+            "Add CMS action card",
+            "Show CMS stats (pages count, recent updates)",
+            "Link to CMS pages",
+            "Add quick actions"
+          ]
+        }
+      ]
+    }
+  },
+
+  "fileStructure": {
+    "existing_cms_files": [
+      "/app/admin/cms/page.tsx",
+      "/app/admin/cms/pages/page.tsx",
+      "/app/admin/cms/pages/[slug]/page.tsx",
+      "/app/admin/cms/testimonials/page.tsx",
+      "/app/admin/cms/faq/page.tsx",
+      "/app/admin/cms/analytics/page.tsx",
+      "/app/admin/homepage/page.tsx",
+      "/components/admin/cms/CMSNavigation.tsx",
+      "/components/admin/cms/CMSBreadcrumb.tsx",
+      "/components/admin/cms/PageEditor.tsx",
+      "/components/admin/cms/PageMetadataEditor.tsx",
+      "/components/admin/cms/SectionCard.tsx",
+      "/components/admin/cms/SectionEditModal.tsx",
+      "/components/admin/cms/SectionTypeSelector.tsx",
+      "/components/admin/cms/RichTextEditor.tsx",
+      "/components/admin/cms/ImageUpload.tsx",
+      "/components/admin/cms/AutoSaveManager.tsx",
+      "/components/admin/cms/VersionHistory.tsx",
+      "/components/admin/cms/CollaborationManager.tsx",
+      "/components/admin/editors/HomepageEditor.tsx",
+      "/components/admin/editors/TestimonialsManager.tsx",
+      "/components/admin/editors/FAQManager.tsx",
+      "/components/admin/editors/MediaLibrary.tsx"
+    ],
+    "files_to_modify": [
+      "/app/admin/cms/pages/page.tsx",
+      "/app/admin/cms/pages/[slug]/page.tsx",
+      "/app/admin/cms/testimonials/page.tsx",
+      "/app/admin/cms/faq/page.tsx",
+      "/app/admin/cms/analytics/page.tsx",
+      "/app/admin/homepage/page.tsx",
+      "/components/admin/cms/CMSNavigation.tsx",
+      "/components/admin/cms/CMSBreadcrumb.tsx",
+      "/components/admin/cms/PageEditor.tsx",
+      "/components/admin/cms/SectionCard.tsx",
+      "/components/admin/cms/SectionEditModal.tsx",
+      "/components/admin/editors/HomepageEditor.tsx",
+      "/components/admin/editors/TestimonialsManager.tsx",
+      "/components/admin/editors/FAQManager.tsx",
+      "/components/admin/editors/MediaLibrary.tsx"
+    ],
+    "note": "All CMS files exist but need styling updates to match new admin theme"
+  },
+
+  "keyFeatures": {
+    "cms": {
+      "description": "Content Management System for website pages and content",
+      "features": [
+        "Page content management (Flow, Play, Surf, The Spot, About, Contact)",
+        "Homepage section editing",
+        "Testimonials management",
+        "FAQ management",
+        "CMS analytics dashboard",
+        "Media library",
+        "Section-based editing",
+        "Auto-save functionality",
+        "Version history",
+        "Rich text editing",
+        "Image upload and management"
+      ],
+      "pages": [
+        "Pages List - /admin/cms/pages",
+        "Page Editor - /admin/cms/pages/[slug]",
+        "Homepage Editor - /admin/homepage",
+        "Testimonials - /admin/cms/testimonials",
+        "FAQ - /admin/cms/faq",
+        "Analytics - /admin/cms/analytics"
+      ],
+      "styling": "Needs upgrade to match heiwaOrange theme and new admin layout"
+    }
+  },
+
+  "integrationPoints": {
+    "dashboard": {
+      "action": "Add CMS card to dashboard action cards",
+      "stats": "Include CMS stats in dashboard (pages count, recent updates)",
+      "quickLinks": "Add quick links to CMS pages"
+    },
+    "navigation": {
+      "mainItem": "Add CMS to sidebar navigation",
+      "submenu": "Include CMS submenu items",
+      "icon": "Use FileText icon from lucide-react"
+    },
+    "styling": {
+      "theme": "Apply heiwaOrange color scheme",
+      "layout": "Use new admin layout wrapper",
+      "components": "Update all CMS components to match AdminButton, AdminInput, etc."
+    }
+  },
+
+  "updatedSuccessCriteria": [
+    "CMS accessible from sidebar navigation",
+    "All CMS pages use new admin layout",
+    "CMS components match new design system",
+    "CMS styling consistent with rest of admin panel",
+    "CMS features fully functional with new styling",
+    "CMS analytics integrated with main analytics",
+    "Media library matches admin theme"
+  ],
+
+  "estimatedAdditionalEffort": {
+    "phase1": "1 hour (navigation integration)",
+    "phase3": "6-8 hours (CMS styling upgrades)",
+    "phase4": "4-6 hours (CMS enhancements)",
+    "total": "11-15 hours additional to base plan"
+  }
+}
