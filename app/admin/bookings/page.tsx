@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock } from 'lucide-react'
+import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff } from 'lucide-react'
 import { BookingCalendar } from '@/components/ui/booking-calendar'
+import { useBookingsRealtime } from '@/lib/hooks/useBookingsRealtime'
 
 interface Booking {
   id: string
@@ -27,6 +28,7 @@ export default function BookingsPage() {
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [isRealtimeConnected, setIsRealtimeConnected] = useState(false)
   const itemsPerPage = 10
   const [filters, setFilters] = useState({
     status: 'all',
@@ -38,6 +40,31 @@ export default function BookingsPage() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [showViewModal, setShowViewModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
+
+  // Set up real-time updates
+  useBookingsRealtime({
+    onInsert: (newBooking) => {
+      console.log('📥 New booking received:', newBooking)
+      setBookings(prev => [newBooking, ...prev])
+      setIsRealtimeConnected(true)
+    },
+    onUpdate: (updatedBooking) => {
+      console.log('✏️ Booking updated:', updatedBooking)
+      setBookings(prev =>
+        prev.map(b => b.id === updatedBooking.id ? updatedBooking : b)
+      )
+      setIsRealtimeConnected(true)
+    },
+    onDelete: (bookingId) => {
+      console.log('🗑️ Booking deleted:', bookingId)
+      setBookings(prev => prev.filter(b => b.id !== bookingId))
+      setIsRealtimeConnected(true)
+    },
+    onError: (error) => {
+      console.error('❌ Real-time error:', error)
+      setIsRealtimeConnected(false)
+    }
+  })
 
   useEffect(() => {
     fetchBookings()
@@ -224,6 +251,19 @@ export default function BookingsPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Bookings Management</h1>
           <p className="text-gray-600 mt-2">Manage all bookings and reservations</p>
+          <div className="flex items-center gap-2 mt-2">
+            {isRealtimeConnected ? (
+              <>
+                <Wifi className="h-4 w-4 text-green-500 animate-pulse" />
+                <span className="text-sm text-green-600">Real-time updates active</span>
+              </>
+            ) : (
+              <>
+                <WifiOff className="h-4 w-4 text-gray-400" />
+                <span className="text-sm text-gray-500">Real-time updates connecting...</span>
+              </>
+            )}
+          </div>
         </div>
         <div className="flex gap-2">
           <button
