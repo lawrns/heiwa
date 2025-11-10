@@ -1,0 +1,85 @@
+import {
+  Home,
+  Users,
+  Building2,
+  Box,
+  Calendar,
+  ClipboardList,
+  BarChart3,
+  Settings,
+  FileText,
+  LucideIcon
+} from 'lucide-react'
+
+export interface NavigationItem {
+  name: string
+  href: string
+  icon: LucideIcon
+  description?: string
+}
+
+export const adminNavigationItems: NavigationItem[] = [
+  {
+    name: 'Dashboard',
+    href: '/admin',
+    icon: Home,
+    description: 'Overview and key metrics'
+  },
+  {
+    name: 'Clients',
+    href: '/admin/clients',
+    icon: Users,
+    description: 'Manage client information'
+  },
+  {
+    name: 'Surf Camps',
+    href: '/admin/surf-camps',
+    icon: Building2,
+    description: 'Manage surf camp sessions'
+  },
+  {
+    name: 'Rooms',
+    href: '/admin/rooms',
+    icon: Box,
+    description: 'Manage room inventory'
+  },
+  {
+    name: 'Bookings',
+    href: '/admin/bookings',
+    icon: ClipboardList,
+    description: 'View and manage bookings'
+  },
+  {
+    name: 'Calendar',
+    href: '/admin/calendar',
+    icon: Calendar,
+    description: 'View booking calendar'
+  },
+  {
+    name: 'Analytics',
+    href: '/admin/analytics',
+    icon: BarChart3,
+    description: 'View reports and analytics'
+  },
+  {
+    name: 'CMS',
+    href: '/admin/cms',
+    icon: FileText,
+    description: 'Manage content'
+  },
+  {
+    name: 'Settings',
+    href: '/admin/settings',
+    icon: Settings,
+    description: 'System settings'
+  }
+]
+
+export const getNavigationItem = (href: string): NavigationItem | undefined => {
+  return adminNavigationItems.find(item => item.href === href)
+}
+
+export const getNavigationItemsByCategory = (category: string): NavigationItem[] => {
+  // Can be extended for categorized navigation
+  return adminNavigationItems
+}
