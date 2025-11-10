@@ -65,13 +65,47 @@ export const adminNavigationItems: NavigationItem[] = [
     name: 'CMS',
     href: '/admin/cms',
     icon: FileText,
-    description: 'Manage content'
+    description: 'Manage website content'
   },
   {
     name: 'Settings',
     href: '/admin/settings',
     icon: Settings,
     description: 'System settings'
+  }
+]
+
+// CMS submenu items
+export const cmsNavigationItems: NavigationItem[] = [
+  {
+    name: 'Pages',
+    href: '/admin/cms/pages',
+    icon: FileText,
+    description: 'Manage website pages'
+  },
+  {
+    name: 'Homepage',
+    href: '/admin/homepage',
+    icon: Home,
+    description: 'Edit homepage sections'
+  },
+  {
+    name: 'Testimonials',
+    href: '/admin/cms/testimonials',
+    icon: FileText,
+    description: 'Manage testimonials'
+  },
+  {
+    name: 'FAQ',
+    href: '/admin/cms/faq',
+    icon: FileText,
+    description: 'Manage FAQ items'
+  },
+  {
+    name: 'Analytics',
+    href: '/admin/cms/analytics',
+    icon: BarChart3,
+    description: 'CMS analytics'
   }
 ]
 
