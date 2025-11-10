@@ -103,13 +103,7 @@ export async function POST(request: NextRequest) {
       const newClient = {
         name: clientName,
         email: email,
-        phone: phone,
-        brand: 'Heiwa House',
-        status: 'active',
-        registrationDate: new Date().toISOString(),
-        notes: `Created via booking widget ${widget_version || 'unknown'}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        phone: phone
       }
 
       const createResult = await supabaseAdmin
@@ -141,22 +135,21 @@ export async function POST(request: NextRequest) {
 
     // Create booking record
     const bookingData = {
-      client_id: clientId,
-      room_id: room_id,
-      clientName: clientName,
-      email: email,
-      phone: phone,
-      start_date: start_date,
-      end_date: end_date,
-      guests: guests,
+      client_ids: [clientId],
+      items: [{
+        type: 'room',
+        itemId: room_id,
+        quantity: 1,
+        unitPrice: pricing.basePrice || 0,
+        totalPrice: pricing.total || 0,
+        dates: {
+          checkIn: start_date,
+          checkOut: end_date
+        }
+      }],
       total_amount: pricing.total || 0,
       status: 'pending',
-      payment_status: 'pending',
-      payment_method: null,
-      notes: `Created via booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
-      source: 'dashboard',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      payment_status: 'pending'
     }
 
     const bookingResult = await supabaseAdmin

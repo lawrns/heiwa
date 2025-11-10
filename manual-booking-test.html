@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Booking Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🎯 Manual Booking Journey Test</h1>
+    
+    <div class="test-section">
+        <h2>Step 1: Open Room Page</h2>
+        <button onclick="openRoomPage()">Open Room Nr 2 in New Tab</button>
+        <div id="step1-status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 2: Test Booking Button</h2>
+        <p>Instructions:</p>
+        <ol>
+            <li>Click the button above to open the room page</li>
+            <li>Look for the "Check Availability" button on the room page</li>
+            <li>Click "Check Availability" to open the booking widget</li>
+            <li>Verify the booking widget opens with all steps</li>
+        </ol>
+        <button onclick="testBookingAPI()">Test Booking API Directly</button>
+        <div id="step2-status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 3: Complete Booking Flow</h2>
+        <p>In the booking widget:</p>
+        <ol>
+            <li>Select check-in and check-out dates</li>
+            <li>Select number of guests</li>
+            <li>Click "Next" to proceed</li>
+            <li>Fill guest details (name, email, phone)</li>
+            <li>Click "Next" to proceed to payment</li>
+            <li>Select payment method (Bank Wire recommended)</li>
+            <li>Accept terms and conditions</li>
+            <li>Click "Confirm Booking - Pay Later" or "Pay Now"</li>
+        </ol>
+        <button onclick="simulateCompleteBooking()">Simulate Complete Booking</button>
+        <div id="step3-status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        function updateStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<span class="${type}">${message}</span>`;
+        }
+
+        function openRoomPage() {
+            const roomUrl = 'http://localhost:3000/rooms/ac98fd46-5bd2-413c-98f3-17e71024e734';
+            window.open(roomUrl, '_blank');
+            updateStatus('step1-status', '✅ Room page opened in new tab', 'success');
+        }
+
+        async function testBookingAPI() {
+            updateStatus('step2-status', 'Testing booking API...', 'info');
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/bookings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        room_id: "ac98fd46-5bd2-413c-98f3-17e71024e734",
+                        start_date: "2025-12-01",
+                        end_date: "2025-12-03",
+                        clientName: "API Test User",
+                        email: "test@api.com",
+                        phone: "+351 912 345 678",
+                        guests: 1,
+                        participants: [{
+                            name: "API Test User",
+                            email: "test@api.com",
+                            phone: "+351 912 345 678"
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    updateStatus('step2-status', `✅ Booking API working! Booking #${data.data?.booking?.booking_number}`, 'success');
+                    addTestResult('✅ Booking API: Working correctly');
+                } else {
+                    updateStatus('step2-status', `❌ Booking API failed: ${data.error}`, 'error');
+                    addTestResult('❌ Booking API: Failed');
+                }
+            } catch (error) {
+                updateStatus('step2-status', `❌ Network error: ${error.message}`, 'error');
+                addTestResult('❌ Booking API: Network error');
+            }
+        }
+
+        async function simulateCompleteBooking() {
+            updateStatus('step3-status', 'Simulating complete booking flow...', 'info');
+            
+            // Test the widget/room-bookings endpoint (used by the booking widget)
+            try {
+                const response = await fetch('http://localhost:3000/api/widget/room-bookings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        room_id: "ac98fd46-5bd2-413c-98f3-17e71024e734",
+                        start_date: "2025-12-01",
+                        end_date: "2025-12-03",
+                        participants: [{
+                            name: "Widget Test User",
+                            email: "widget@test.com",
+                            phone: "+351 912 345 678"
+                        }],
+                        add_ons: [],
+                        pricing: {
+                            basePrice: 160,
+                            addOnsSubtotal: 0,
+                            roomUpgrade: 0,
+                            taxes: 16,
+                            fees: 8,
+                            total: 184,
+                            currency: 'EUR'
+                        },
+                        guests: 1,
+                        source_url: "http://localhost:3000/test",
+                        widget_version: "test"
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    updateStatus('step3-status', `✅ Widget booking working! Booking #${data.data?.booking?.booking_number}`, 'success');
+                    addTestResult('✅ Widget Booking: Working correctly');
+                    addTestResult('✅ Complete Flow: All endpoints functional');
+                } else {
+                    updateStatus('step3-status', `❌ Widget booking failed: ${data.error}`, 'error');
+                    addTestResult('❌ Widget Booking: Failed');
+                }
+            } catch (error) {
+                updateStatus('step3-status', `❌ Network error: ${error.message}`, 'error');
+                addTestResult('❌ Widget Booking: Network error');
+            }
+        }
+
+        function addTestResult(message) {
+            const results = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            results.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+        }
+
+        // Auto-check server status
+        window.onload = async function() {
+            try {
+                const response = await fetch('http://localhost:3000/rooms');
+                if (response.ok) {
+                    addTestResult('✅ Server: Running and accessible');
+                } else {
+                    addTestResult('❌ Server: Not responding correctly');
+                }
+            } catch (error) {
+                addTestResult('❌ Server: Not running - please start with "npm run dev"');
+            }
+        };
+    </script>
+</body>
+</html>
