@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Upload } from 'lucide-react'
+import { ImageUpload } from '@/components/admin/ImageUpload'
 
 interface RoomFormData {
   name: string
@@ -193,14 +194,29 @@ export default function NewRoomPage() {
             {/* Images */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Featured Image URL
+                Featured Image
               </label>
-              <input
-                type="url"
-                value={formData.featured_image}
-                onChange={(e) => setFormData(prev => ({ ...prev, featured_image: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="https://example.com/image.jpg"
+              <ImageUpload
+                value={formData.featured_image ? [formData.featured_image] : []}
+                onChange={(urls) => setFormData(prev => ({ ...prev, featured_image: urls[0] || '' }))}
+                maxFiles={1}
+                bucketName="room-images"
+                storagePath="featured"
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Additional Images
+              </label>
+              <ImageUpload
+                value={formData.images}
+                onChange={(urls) => setFormData(prev => ({ ...prev, images: urls }))}
+                maxFiles={10}
+                bucketName="room-images"
+                storagePath="gallery"
+                disabled={loading}
               />
             </div>
 

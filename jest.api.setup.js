@@ -1,12 +1,41 @@
-// Setup for API route testing in Node.js environment
+/**
+ * Setup file for API route tests
+ */
 
-// Mock console methods to avoid noise in tests
-global.console = {
-  ...console,
-  log: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn(),
-  info: jest.fn(),
+// Mock Next.js request/response
+global.NextRequest = class NextRequest {
+  constructor(url, init = {}) {
+    this.url = url
+    this.method = init.method || 'GET'
+    this.headers = new Headers(init.headers || {})
+    this._body = init.body
+  }
+
+  async json() {
+    if (typeof this._body === 'string') {
+      return JSON.parse(this._body)
+    }
+    return this._body
+  }
+
+  async formData() {
+    return this._body
+  }
+}
+
+global.NextResponse = class NextResponse {
+  constructor(body, init = {}) {
+    this._body = body
+    this.status = init.status || 200
+    this.headers = new Headers(init.headers || {})
+  }
+
+  async json() {
+    if (typeof this._body === 'string') {
+      return JSON.parse(this._body)
+    }
+    return this._body
+  }
 }
 
 // Mock environment variables

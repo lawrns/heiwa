@@ -16,7 +16,9 @@ import {
   ChevronRight,
   BarChart3,
   Settings,
-  FileText
+  FileText,
+  Key,
+  CreditCard
 } from 'lucide-react'
 
 interface ErrorBoundaryState {
@@ -82,6 +84,9 @@ const navigationItems = [
   { name: 'Surf Camps', href: '/admin/surf-camps', icon: Building2 },
   { name: 'Rooms', href: '/admin/rooms', icon: Box },
   { name: 'Bookings', href: '/admin/bookings', icon: ClipboardList },
+  { name: 'Assignments', href: '/admin/assignments', icon: Key },
+  { name: 'Invoices', href: '/admin/invoices', icon: FileText },
+  { name: 'Payments', href: '/admin/payments', icon: CreditCard },
   { name: 'Calendar', href: '/admin/calendar', icon: Calendar },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'CMS', href: '/admin/cms', icon: FileText },

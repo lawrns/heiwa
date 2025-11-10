@@ -1,7 +1,25 @@
 'use client'
 
 import { useState } from 'react'
-import { MoreVertical, Edit, Copy, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react'
+import { 
+  MoreVertical, 
+  Edit, 
+  Copy, 
+  Trash2, 
+  Eye, 
+  EyeOff, 
+  GripVertical,
+  Target,
+  FileText,
+  File,
+  Star,
+  Images,
+  DollarSign,
+  Image as ImageIcon,
+  Video,
+  Settings,
+  type LucideIcon
+} from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import { PageSection } from '@/lib/cms-types'
 
@@ -26,19 +44,19 @@ export default function SectionCard({
 }: SectionCardProps) {
   const [showMenu, setShowMenu] = useState(false)
 
-  const getSectionIcon = (sectionType: string) => {
-    const icons: Record<string, string> = {
-      hero: '🎯',
-      intro: '📝',
-      text: '📄',
-      features: '⭐',
-      gallery: '🖼️',
-      pricing: '💰',
-      image_text: '🖼️',
-      video: '🎥',
-      custom: '⚙️'
+  const getSectionIcon = (sectionType: string): LucideIcon => {
+    const icons: Record<string, LucideIcon> = {
+      hero: Target,
+      intro: FileText,
+      text: File,
+      features: Star,
+      gallery: Images,
+      pricing: DollarSign,
+      image_text: ImageIcon,
+      video: Video,
+      custom: Settings
     }
-    return icons[sectionType] || '📄'
+    return icons[sectionType] || File
   }
 
   const getSectionPreview = (section: PageSection) => {
@@ -69,50 +87,54 @@ export default function SectionCard({
     return labels[sectionType] || sectionType
   }
 
+  const IconComponent = getSectionIcon(section.section_type)
+
   return (
-    <div className="p-6 hover:bg-gray-50 transition-colors group">
-      <div className="flex items-start justify-between">
-        <div className="flex items-start flex-1">
+    <div className="p-4 sm:p-6 hover:bg-gray-50 transition-colors group">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+        <div className="flex items-start flex-1 w-full sm:w-auto">
           {/* Drag Handle */}
           <div
             {...dragHandleProps}
-            className="mr-4 p-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+            className="mr-2 sm:mr-4 p-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 flex-shrink-0"
           >
             <GripVertical className="w-5 h-5" />
           </div>
 
           {/* Section Icon */}
-          <div className="mr-4 text-2xl">
-            {getSectionIcon(section.section_type)}
+          <div className="mr-3 sm:mr-4 flex-shrink-0">
+            <div className="p-2 bg-gray-100 rounded-lg text-gray-600">
+              <IconComponent className="w-5 h-5" />
+            </div>
           </div>
 
           {/* Section Info */}
-          <div className="flex-1">
-            <div className="flex items-center mb-2">
-              <h3 className="font-medium text-gray-900 mr-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <h3 className="font-medium text-gray-900 break-words">
                 {getSectionPreview(section)}
               </h3>
-              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded whitespace-nowrap">
                 {getSectionTypeLabel(section.section_type)}
               </span>
               {!section.is_active && (
-                <span className="ml-2 text-xs text-gray-500 bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                <span className="text-xs text-gray-500 bg-yellow-100 text-yellow-800 px-2 py-1 rounded whitespace-nowrap">
                   Inactive
                 </span>
               )}
             </div>
             
-            <p className="text-sm text-gray-500 mb-2">
+            <p className="text-xs sm:text-sm text-gray-500 mb-2">
               Order: {section.order_index} • Last updated: {new Date(section.updated_at).toLocaleDateString()}
             </p>
 
             {/* Section Preview */}
-            <div className="text-sm text-gray-600 mb-3">
+            <div className="text-xs sm:text-sm text-gray-600 mb-3">
               {section.content?.title && (
-                <p className="font-medium mb-1">Title: {section.content.title}</p>
+                <p className="font-medium mb-1 truncate">Title: {section.content.title}</p>
               )}
               {section.content?.subtitle && (
-                <p className="text-gray-500">Subtitle: {section.content.subtitle}</p>
+                <p className="text-gray-500 truncate">Subtitle: {section.content.subtitle}</p>
               )}
               {section.content?.description && (
                 <p className="text-gray-500 line-clamp-2">
@@ -122,7 +144,7 @@ export default function SectionCard({
             </div>
 
             {/* Actions */}
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
               <label className="flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -130,14 +152,14 @@ export default function SectionCard({
                   onChange={(e) => onToggleActive(e.target.checked)}
                   className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <span className="text-sm text-gray-700">
+                <span className="text-xs sm:text-sm text-gray-700">
                   {section.is_active ? 'Active' : 'Inactive'}
                 </span>
               </label>
               
-              <AdminButton variant="outline" size="sm" onClick={onEdit}>
-                <Edit className="w-4 h-4 mr-1" />
-                Edit
+              <AdminButton variant="outline" size="sm" onClick={onEdit} className="text-xs sm:text-sm">
+                <Edit className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                <span className="hidden sm:inline">Edit</span>
               </AdminButton>
 
               <div className="relative">
@@ -201,7 +223,7 @@ export default function SectionCard({
         </div>
 
         {/* Quick Actions */}
-        <div className="ml-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="sm:ml-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
           <div className="flex items-center space-x-2">
             <button
               onClick={onEdit}

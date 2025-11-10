@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Edit, Trash2, Eye, Calendar, Users, Search, Filter, Download } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, Calendar, Users, Search, Filter, Download, UserPlus } from 'lucide-react'
 import { RoomCardSkeleton } from '@/components/ui/skeleton-loaders'
+import { EnrollmentModal } from '@/components/admin/enrollments/EnrollmentModal'
 
 interface SurfCamp {
   id: string
@@ -26,6 +27,8 @@ export default function SurfCampsPage() {
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [levelFilter, setLevelFilter] = useState('all')
+  const [enrollmentModalOpen, setEnrollmentModalOpen] = useState(false)
+  const [selectedCampId, setSelectedCampId] = useState<string>('')
 
   useEffect(() => {
     fetchSurfCamps()
@@ -235,7 +238,7 @@ export default function SurfCampsPage() {
                   </div>
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <Link
                     href={`/surf-weeks`}
                     className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
@@ -243,6 +246,16 @@ export default function SurfCampsPage() {
                     <Eye className="h-4 w-4" />
                     View
                   </Link>
+                  <button
+                    onClick={() => {
+                      setSelectedCampId(camp.id)
+                      setEnrollmentModalOpen(true)
+                    }}
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    Enroll
+                  </button>
                   <Link
                     href={`/admin/surf-camps/${camp.id}/edit`}
                     className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-heiwaOrange-600 rounded-lg hover:bg-heiwaOrange-700 transition-colors"
@@ -291,6 +304,19 @@ export default function SurfCampsPage() {
           )}
         </div>
       )}
+
+      {/* Enrollment Modal */}
+      <EnrollmentModal
+        open={enrollmentModalOpen}
+        onClose={() => {
+          setEnrollmentModalOpen(false)
+          setSelectedCampId('')
+        }}
+        surfCampId={selectedCampId}
+        onEnrolled={() => {
+          fetchSurfCamps() // Refresh the list
+        }}
+      />
     </div>
   )
 }

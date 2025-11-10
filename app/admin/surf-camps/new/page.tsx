@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, Save, Plus } from 'lucide-react'
+import { ImageUpload } from '@/components/admin/ImageUpload'
 
 interface SurfCampFormData {
   name: string
@@ -104,22 +105,6 @@ export default function NewSurfCampPage() {
     }))
   }
 
-  const addImage = () => {
-    const url = prompt('Enter image URL:')
-    if (url && !formData.images.includes(url)) {
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, url]
-      }))
-    }
-  }
-
-  const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }))
-  }
 
   return (
     <div className="p-8">
@@ -329,36 +314,14 @@ export default function NewSurfCampPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Images
               </label>
-              
-              {formData.images.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                  {formData.images.map((image, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={image}
-                        alt={`Surf camp ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              
-              <button
-                type="button"
-                onClick={addImage}
-                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <Plus className="h-4 w-4" />
-                Add Image
-              </button>
+              <ImageUpload
+                value={formData.images}
+                onChange={(urls) => setFormData(prev => ({ ...prev, images: urls }))}
+                maxFiles={10}
+                bucketName="surf-camp-images"
+                storagePath="gallery"
+                disabled={loading}
+              />
             </div>
 
             {/* Status */}

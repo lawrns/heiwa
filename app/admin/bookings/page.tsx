@@ -5,6 +5,8 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff } from 'lucide-react'
 import { BookingCalendar } from '@/components/ui/booking-calendar'
 import { useBookingsRealtime } from '@/lib/hooks/useBookingsRealtime'
+import { EditBookingModal } from '@/components/admin/bookings/EditBookingModal'
+import { toast } from 'react-toastify'
 
 interface Booking {
   id: string
@@ -128,6 +130,38 @@ export default function BookingsPage() {
     setShowEditModal(true)
   }
 
+  const handleUpdateBooking = async (updatedBooking: Booking) => {
+    try {
+      const response = await fetch(`/api/bookings/${updatedBooking.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedBooking)
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update booking')
+      }
+
+      toast.success('Booking updated successfully')
+      
+      // Update local state
+      setBookings(bookings.map(booking => 
+        booking.id === updatedBooking.id ? updatedBooking : booking
+      ))
+      
+      setShowEditModal(false)
+      setSelectedBooking(null)
+    } catch (error: any) {
+      console.error('Error updating booking:', error)
+      toast.error(error.message || 'Failed to update booking')
+      throw error
+    }
+  }
+
   const handleStatusChange = async (bookingId: string, newStatus: Booking['status']) => {
     try {
       // In a real implementation, this would be a PATCH request
@@ -144,11 +178,21 @@ export default function BookingsPage() {
     if (!confirm('Are you sure you want to delete this booking?')) return
     
     try {
-      // In a real implementation, this would be a DELETE request
-      console.log('Deleting booking:', bookingId)
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        method: 'DELETE'
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete booking')
+      }
+
+      toast.success('Booking deleted successfully')
       setBookings(bookings.filter(booking => booking.id !== bookingId))
-    } catch (err) {
-      console.error('Error deleting booking:', err)
+    } catch (error: any) {
+      console.error('Error deleting booking:', error)
+      toast.error(error.message || 'Failed to delete booking')
     }
   }
 
@@ -708,72 +752,15 @@ export default function BookingsPage() {
 
       {/* Edit Booking Modal */}
       {showEditModal && selectedBooking && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
-            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-900">Edit Booking</h3>
-              <button
-                onClick={() => setShowEditModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="px-6 py-4 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select
-                  value={selectedBooking.status}
-                  onChange={(e) => setSelectedBooking({...selectedBooking, status: e.target.value as Booking['status']})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="pending">Pending</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="cancelled">Cancelled</option>
-                  <option value="completed">Completed</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
-                <select
-                  value={selectedBooking.payment_status}
-                  onChange={(e) => setSelectedBooking({...selectedBooking, payment_status: e.target.value as Booking['payment_status']})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="pending">Pending</option>
-                  <option value="paid">Paid</option>
-                  <option value="refunded">Refunded</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
-                <textarea
-                  value={selectedBooking.special_requests || ''}
-                  onChange={(e) => setSelectedBooking({...selectedBooking, special_requests: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  rows={3}
-                />
-              </div>
-            </div>
-            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-              <button
-                onClick={() => setShowEditModal(false)}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  console.log('Saving booking:', selectedBooking)
-                  setShowEditModal(false)
-                }}
-                className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
+        <EditBookingModal
+          isOpen={showEditModal}
+          booking={selectedBooking}
+          onClose={() => {
+            setShowEditModal(false)
+            setSelectedBooking(null)
+          }}
+          onSubmit={handleUpdateBooking}
+        />
       )}
     </div>
   )

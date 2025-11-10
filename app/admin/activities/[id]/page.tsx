@@ -3,7 +3,21 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save } from 'lucide-react'
+import { 
+  ArrowLeft, 
+  Save, 
+  Gamepad2, 
+  Heart, 
+  Waves, 
+  Bike, 
+  Dumbbell, 
+  Thermometer, 
+  Wind, 
+  Droplets, 
+  Users, 
+  MapPin,
+  type LucideIcon
+} from 'lucide-react'
 
 interface Activity {
   id: string
@@ -34,17 +48,17 @@ interface FormData {
   features: string[]
 }
 
-const iconOptions = [
-  { value: 'play', label: 'Play', icon: '🎮' },
-  { value: 'heart', label: 'Heart', icon: '❤️' },
-  { value: 'waves', label: 'Waves', icon: '🌊' },
-  { value: 'bike', label: 'Bike', icon: '🚴' },
-  { value: 'dumbbell', label: 'Dumbbell', icon: '💪' },
-  { value: 'thermometer', label: 'Thermometer', icon: '🌡️' },
-  { value: 'wind', label: 'Wind', icon: '💨' },
-  { value: 'droplets', label: 'Droplets', icon: '💧' },
-  { value: 'users', label: 'Users', icon: '👥' },
-  { value: 'map-pin', label: 'Map Pin', icon: '📍' },
+const iconOptions: Array<{ value: string; label: string; icon: LucideIcon }> = [
+  { value: 'play', label: 'Play', icon: Gamepad2 },
+  { value: 'heart', label: 'Heart', icon: Heart },
+  { value: 'waves', label: 'Waves', icon: Waves },
+  { value: 'bike', label: 'Bike', icon: Bike },
+  { value: 'dumbbell', label: 'Dumbbell', icon: Dumbbell },
+  { value: 'thermometer', label: 'Thermometer', icon: Thermometer },
+  { value: 'wind', label: 'Wind', icon: Wind },
+  { value: 'droplets', label: 'Droplets', icon: Droplets },
+  { value: 'users', label: 'Users', icon: Users },
+  { value: 'map-pin', label: 'Map Pin', icon: MapPin },
 ]
 
 const categoryOptions = [

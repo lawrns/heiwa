@@ -191,3 +191,59 @@ export type CreateBookingForm = z.infer<typeof CreateBookingFormSchema>;
 
 export const CreateCampWeekSchema = CampWeekSchema.omit({ id: true, createdAt: true, updatedAt: true });
 export const UpdateCampWeekSchema = CreateCampWeekSchema.partial();
+
+// Invoice schema
+export const InvoiceSchema = z.object({
+  id: z.string(),
+  booking_id: z.string(),
+  invoice_number: z.string().min(1, 'Invoice number is required'),
+  amount: z.number().min(0, 'Amount must be non-negative'),
+  currency: z.string().default('EUR'),
+  status: z.enum(['draft', 'sent', 'paid', 'overdue', 'cancelled']),
+  due_date: TimestampSchema.optional(),
+  sent_date: TimestampSchema.optional(),
+  paid_date: TimestampSchema.optional(),
+  created_at: TimestampSchema,
+});
+
+export type Invoice = z.infer<typeof InvoiceSchema>;
+
+export const CreateInvoiceSchema = InvoiceSchema.omit({ id: true, created_at: true, invoice_number: true }).extend({
+  booking_id: z.string().min(1, 'Booking ID is required'),
+  amount: z.number().min(0, 'Amount must be non-negative'),
+  due_date: z.string().optional(),
+});
+
+export const UpdateInvoiceSchema = CreateInvoiceSchema.partial();
+
+// Payment schema
+export const PaymentSchema = z.object({
+  id: z.string(),
+  booking_id: z.string(),
+  amount: z.number().min(0, 'Amount must be non-negative'),
+  currency: z.string().default('EUR'),
+  payment_method: z.enum(['stripe', 'cash', 'transfer', 'paypal', 'other']),
+  payment_status: z.enum(['pending', 'completed', 'failed', 'refunded', 'partially_refunded']),
+  transaction_id: z.string().optional(),
+  payment_date: TimestampSchema.optional(),
+  refund_amount: z.number().min(0).optional(),
+  refund_reason: z.string().optional(),
+  notes: z.string().optional(),
+  created_at: TimestampSchema,
+});
+
+export type Payment = z.infer<typeof PaymentSchema>;
+
+export const CreatePaymentSchema = PaymentSchema.omit({ id: true, created_at: true }).extend({
+  booking_id: z.string().min(1, 'Booking ID is required'),
+  amount: z.number().min(0, 'Amount must be non-negative'),
+  payment_date: z.string().optional(),
+});
+
+export const UpdatePaymentSchema = CreatePaymentSchema.partial();
+
+export const RefundPaymentSchema = z.object({
+  amount: z.number().min(0.01, 'Refund amount must be greater than 0'),
+  reason: z.string().optional(),
+  notes: z.string().optional(),
+});

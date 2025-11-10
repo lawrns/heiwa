@@ -195,6 +195,244 @@ export const handlers = [
     )
   }),
 
+  // Payments API
+  rest.get('/api/payments', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: {
+          payments: [
+            {
+              id: 'payment-1',
+              booking_id: 'booking-1',
+              amount: 100,
+              currency: 'EUR',
+              payment_method: 'stripe',
+              payment_status: 'completed',
+              created_at: '2025-01-20T00:00:00Z',
+            },
+          ],
+        },
+      })
+    )
+  }),
+
+  rest.post('/api/payments', (req, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        success: true,
+        data: {
+          payment: {
+            id: 'payment-1',
+            booking_id: 'booking-1',
+            amount: 100,
+            currency: 'EUR',
+            payment_method: 'stripe',
+            payment_status: 'completed',
+            created_at: '2025-01-20T00:00:00Z',
+          },
+        },
+      })
+    )
+  }),
+
+  // Invoices API
+  rest.get('/api/invoices', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: {
+          invoices: [
+            {
+              id: 'invoice-1',
+              booking_id: 'booking-1',
+              invoice_number: 'HW-INV-2025-0001',
+              amount: 100,
+              currency: 'EUR',
+              status: 'sent',
+              created_at: '2025-01-20T00:00:00Z',
+            },
+          ],
+        },
+      })
+    )
+  }),
+
+  rest.post('/api/invoices', (req, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        success: true,
+        data: {
+          invoice: {
+            id: 'invoice-1',
+            booking_id: 'booking-1',
+            invoice_number: 'HW-INV-2025-0001',
+            amount: 100,
+            currency: 'EUR',
+            status: 'draft',
+            created_at: '2025-01-20T00:00:00Z',
+          },
+        },
+      })
+    )
+  }),
+
+  // Enrollments API
+  rest.get('/api/enrollments', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: {
+          enrollments: [
+            {
+              id: 'enrollment-1',
+              surf_camp_id: 'camp-1',
+              client_id: 'client-1',
+              status: 'confirmed',
+              skill_level: 'beginner',
+              created_at: '2025-01-20T00:00:00Z',
+            },
+          ],
+        },
+      })
+    )
+  }),
+
+  rest.post('/api/enrollments', (req, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        success: true,
+        data: {
+          enrollment: {
+            id: 'enrollment-1',
+            surf_camp_id: 'camp-1',
+            client_id: 'client-1',
+            status: 'pending',
+            created_at: '2025-01-20T00:00:00Z',
+          },
+        },
+      })
+    )
+  }),
+
+  // Assignments API
+  rest.get('/api/assignments/participants', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: {
+          participants: [
+            {
+              id: 'enrollment-1',
+              client_id: 'client-1',
+              surf_camp_id: 'camp-1',
+              status: 'confirmed',
+            },
+          ],
+        },
+      })
+    )
+  }),
+
+  rest.get('/api/assignments/rooms', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: {
+          rooms: [
+            {
+              id: 'room-1',
+              name: 'Dorm Room',
+              capacity: 6,
+            },
+          ],
+        },
+      })
+    )
+  }),
+
+  // Analytics API
+  rest.get('/api/analytics/revenue', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: {
+          revenue: [
+            { month: '2025-01', amount: 1000, growth: 0 },
+            { month: '2025-02', amount: 1200, growth: 20 },
+          ],
+        },
+      })
+    )
+  }),
+
+  // Calendar Events API
+  rest.get('/api/calendar-events', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: {
+          events: [
+            {
+              id: 'event-1',
+              title: 'Surf Lesson',
+              start_date: '2025-01-20T10:00:00Z',
+              end_date: '2025-01-20T12:00:00Z',
+              event_type: 'surf_camp',
+            },
+          ],
+        },
+      })
+    )
+  }),
+
+  rest.post('/api/calendar-events', (req, res, ctx) => {
+    return res(
+      ctx.status(201),
+      ctx.json({
+        success: true,
+        data: {
+          event: {
+            id: 'event-1',
+            title: 'Surf Lesson',
+            start_date: '2025-01-20T10:00:00Z',
+            end_date: '2025-01-20T12:00:00Z',
+            event_type: 'surf_camp',
+            created_at: '2025-01-20T00:00:00Z',
+          },
+        },
+      })
+    )
+  }),
+
+  // Upload API
+  rest.post('/api/upload', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        success: true,
+        data: {
+          url: 'https://example.com/test/image.jpg',
+          path: 'test/image.jpg',
+          bucket: 'room-images',
+          filename: 'test.jpg',
+          size: 1024,
+          type: 'image/jpeg',
+        },
+      })
+    )
+  }),
+
   // Error handlers for testing error scenarios
   rest.get('/api/rooms', (req, res, ctx) => {
     if (req.url.searchParams.get('error') === 'true') {

@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Package, Euro, Users, Calendar } from 'lucide-react'
+import { ImageUpload } from '@/components/admin/ImageUpload'
 
 export default function NewAddOnPage() {
   const router = useRouter()
@@ -199,16 +200,14 @@ export default function NewAddOnPage() {
             <div className="space-y-6">
               <div>
                 <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                  Image URL
+                  Image
                 </label>
-                <input
-                  type="url"
-                  name="imageUrl"
-                  id="imageUrl"
-                  value={formData.imageUrl}
-                  onChange={(e) => handleInputChange('imageUrl', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
-                  placeholder="https://example.com/image.jpg"
+                <ImageUpload
+                  value={formData.imageUrl ? [formData.imageUrl] : []}
+                  onChange={(urls) => handleInputChange('imageUrl', urls[0] || '')}
+                  maxFiles={1}
+                  bucketName="add-on-images"
+                  storagePath=""
                 />
               </div>
 

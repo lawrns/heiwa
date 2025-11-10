@@ -30,7 +30,7 @@ jest.mock('next/image', () => ({
 }))
 
 // Mock Supabase
-jest.mock('./lib/supabase', () => ({
+jest.mock('@/lib/supabase', () => ({
   supabase: {
     from: jest.fn(() => ({
       select: jest.fn(() => ({
@@ -50,6 +50,8 @@ jest.mock('./lib/supabase', () => ({
       from: jest.fn(() => ({
         upload: jest.fn(() => Promise.resolve({ data: null, error: null })),
         download: jest.fn(() => Promise.resolve({ data: null, error: null })),
+        getPublicUrl: jest.fn(() => ({ data: { publicUrl: 'https://example.com/test.jpg' } })),
+        remove: jest.fn(() => Promise.resolve({ error: null })),
       })),
     },
   },
@@ -63,7 +65,15 @@ jest.mock('./lib/supabase', () => ({
       insert: jest.fn(() => Promise.resolve({ data: null, error: null })),
       update: jest.fn(() => Promise.resolve({ data: null, error: null })),
       delete: jest.fn(() => Promise.resolve({ data: null, error: null })),
+      upsert: jest.fn(() => Promise.resolve({ data: null, error: null })),
     })),
+    storage: {
+      from: jest.fn(() => ({
+        upload: jest.fn(() => Promise.resolve({ data: { path: 'test/path.jpg' }, error: null })),
+        getPublicUrl: jest.fn(() => ({ data: { publicUrl: 'https://example.com/test.jpg' } })),
+        remove: jest.fn(() => Promise.resolve({ error: null })),
+      })),
+    },
   },
 }))
 
