@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff } from 'lucide-react'
 import { BookingCalendar } from '@/components/ui/booking-calendar'
 import { useBookingsRealtime } from '@/lib/hooks/useBookingsRealtime'
@@ -23,17 +24,27 @@ interface Booking {
 }
 
 export default function BookingsPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  
+  // Initialize state from URL params
+  const initialPage = parseInt(searchParams.get('page') || '1')
+  const initialSearch = searchParams.get('search') || ''
+  const initialStatus = searchParams.get('status') || 'all'
+  const initialType = searchParams.get('type') || 'all'
+  const initialPaymentStatus = searchParams.get('payment_status') || 'all'
+
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
+  const [searchTerm, setSearchTerm] = useState(initialSearch)
+  const [currentPage, setCurrentPage] = useState(initialPage)
   const [isRealtimeConnected, setIsRealtimeConnected] = useState(false)
   const itemsPerPage = 10
   const [filters, setFilters] = useState({
-    status: 'all',
-    type: 'all',
-    payment_status: 'all',
+    status: initialStatus,
+    type: initialType,
+    payment_status: initialPaymentStatus,
     date_range: 'all'
   })
   const [view, setView] = useState<'table' | 'calendar'>('table')
@@ -65,6 +76,26 @@ export default function BookingsPage() {
       setIsRealtimeConnected(false)
     }
   })
+
+  // Update URL when state changes
+  const updateUrlParams = useCallback((
+    page?: number,
+    search?: string,
+    status?: string,
+    type?: string,
+    paymentStatus?: string
+  ) => {
+    const params = new URLSearchParams()
+    
+    if (page && page > 1) params.set('page', page.toString())
+    if (search) params.set('search', search)
+    if (status && status !== 'all') params.set('status', status)
+    if (type && type !== 'all') params.set('type', type)
+    if (paymentStatus && paymentStatus !== 'all') params.set('payment_status', paymentStatus)
+    
+    const queryString = params.toString()
+    router.push(`/admin/bookings${queryString ? '?' + queryString : ''}`, { scroll: false })
+  }, [router])
 
   useEffect(() => {
     fetchBookings()
@@ -336,8 +367,10 @@ export default function BookingsPage() {
             placeholder="Search by booking ID, guest name, email, phone, or item..."
             value={searchTerm}
             onChange={(e) => {
-              setSearchTerm(e.target.value)
+              const newSearch = e.target.value
+              setSearchTerm(newSearch)
               setCurrentPage(1) // Reset to first page when searching
+              updateUrlParams(1, newSearch, filters.status, filters.type, filters.payment_status)
             }}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
@@ -349,7 +382,12 @@ export default function BookingsPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
               value={filters.status}
-              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+              onChange={(e) => {
+                const newStatus = e.target.value
+                setFilters(prev => ({ ...prev, status: newStatus }))
+                setCurrentPage(1)
+                updateUrlParams(1, searchTerm, newStatus, filters.type, filters.payment_status)
+              }}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="all">All Statuses</option>
@@ -364,7 +402,12 @@ export default function BookingsPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
             <select
               value={filters.type}
-              onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
+              onChange={(e) => {
+                const newType = e.target.value
+                setFilters(prev => ({ ...prev, type: newType }))
+                setCurrentPage(1)
+                updateUrlParams(1, searchTerm, filters.status, newType, filters.payment_status)
+              }}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="all">All Types</option>
@@ -377,7 +420,12 @@ export default function BookingsPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Payment</label>
             <select
               value={filters.payment_status}
-              onChange={(e) => setFilters(prev => ({ ...prev, payment_status: e.target.value }))}
+              onChange={(e) => {
+                const newPaymentStatus = e.target.value
+                setFilters(prev => ({ ...prev, payment_status: newPaymentStatus }))
+                setCurrentPage(1)
+                updateUrlParams(1, searchTerm, filters.status, filters.type, newPaymentStatus)
+              }}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="all">All Payments</option>
@@ -525,7 +573,11 @@ export default function BookingsPage() {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  onClick={() => {
+                    const newPage = Math.max(1, currentPage - 1)
+                    setCurrentPage(newPage)
+                    updateUrlParams(newPage, searchTerm, filters.status, filters.type, filters.payment_status)
+                  }}
                   disabled={currentPage === 1}
                   className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -534,7 +586,10 @@ export default function BookingsPage() {
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                   <button
                     key={page}
-                    onClick={() => setCurrentPage(page)}
+                    onClick={() => {
+                      setCurrentPage(page)
+                      updateUrlParams(page, searchTerm, filters.status, filters.type, filters.payment_status)
+                    }}
                     className={`px-3 py-1 rounded-lg text-sm font-medium ${
                       currentPage === page
                         ? 'bg-blue-600 text-white'
@@ -545,7 +600,11 @@ export default function BookingsPage() {
                   </button>
                 ))}
                 <button
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  onClick={() => {
+                    const newPage = Math.min(totalPages, currentPage + 1)
+                    setCurrentPage(newPage)
+                    updateUrlParams(newPage, searchTerm, filters.status, filters.type, filters.payment_status)
+                  }}
                   disabled={currentPage === totalPages}
                   className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
