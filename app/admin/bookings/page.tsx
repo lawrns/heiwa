@@ -25,6 +25,9 @@ export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
   const [filters, setFilters] = useState({
     status: 'all',
     type: 'all',
@@ -120,12 +123,32 @@ export default function BookingsPage() {
     window.URL.revokeObjectURL(url)
   }
 
+  // Filter and search bookings
   const filteredBookings = bookings.filter(booking => {
+    // Apply status filter
     if (filters.status !== 'all' && booking.status !== filters.status) return false
+    // Apply type filter
     if (filters.type !== 'all' && booking.type !== filters.type) return false
+    // Apply payment status filter
     if (filters.payment_status !== 'all' && booking.payment_status !== filters.payment_status) return false
+    // Apply search term
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase()
+      const matchesSearch = 
+        booking.id.toLowerCase().includes(searchLower) ||
+        booking.guest_name.toLowerCase().includes(searchLower) ||
+        booking.guest_email.toLowerCase().includes(searchLower) ||
+        booking.guest_phone.toLowerCase().includes(searchLower) ||
+        booking.item_name.toLowerCase().includes(searchLower)
+      if (!matchesSearch) return false
+    }
     return true
   })
+
+  // Pagination
+  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const paginatedBookings = filteredBookings.slice(startIndex, startIndex + itemsPerPage)
 
   const getStatusIcon = (status: Booking['status']) => {
     switch (status) {
@@ -263,8 +286,24 @@ export default function BookingsPage() {
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Search and Filters */}
       <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        {/* Search Input */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+          <input
+            type="text"
+            placeholder="Search by booking ID, guest name, email, phone, or item..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value)
+              setCurrentPage(1) // Reset to first page when searching
+            }}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        {/* Filters */}
         <div className="flex flex-wrap gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -329,10 +368,13 @@ export default function BookingsPage() {
         />
       ) : (
         <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
             <h3 className="text-lg font-medium text-gray-900">
               Bookings ({filteredBookings.length})
             </h3>
+            <span className="text-sm text-gray-500">
+              Page {currentPage} of {totalPages || 1}
+            </span>
           </div>
           
           <div className="overflow-x-auto">
@@ -363,7 +405,7 @@ export default function BookingsPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredBookings.map((booking) => (
+                {paginatedBookings.map((booking) => (
                   <tr key={booking.id} className="hover:bg-gray-50">
                     <td className="px-6 py-3 whitespace-nowrap">
                       <div>
@@ -434,6 +476,44 @@ export default function BookingsPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+              <div className="text-sm text-gray-600">
+                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredBookings.length)} of {filteredBookings.length} bookings
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-3 py-1 rounded-lg text-sm font-medium ${
+                      currentPage === page
+                        ? 'bg-blue-600 text-white'
+                        : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
