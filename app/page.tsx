@@ -385,8 +385,8 @@ export default function HomePage() {
 
           {/* Reviews Grid - Using CMS Data */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(reviewsSection?.testimonials || reviews).map((review: any) => (
-              <div key={review.id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
+            {(reviewsSection?.testimonials || reviews).map((review: any, index: number) => (
+              <div key={review.id || `review-${index}`} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center space-x-2">
