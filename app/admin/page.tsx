@@ -34,59 +34,115 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch('/api/bookings')
-        const result = await response.json()
+        setLoading(true)
         
-        if (result.success && result.data.bookings) {
-          const bookings = result.data.bookings
-          const confirmedCount = bookings.filter((b: any) => b.status === 'confirmed').length
-          const pendingCount = bookings.filter((b: any) => b.status === 'pending').length
-          const totalRevenue = bookings.reduce((sum: number, b: any) => sum + (b.total_price || 0), 0)
-          
-          const stats = [
-            {
-              name: 'Total Bookings',
-              value: bookings.length.toString(),
-              icon: 'Calendar',
-              change: '+12%',
-              changeType: 'positive' as const
-            },
-            {
-              name: 'Confirmed',
-              value: confirmedCount.toString(),
-              icon: 'CheckCircle',
-              change: '+8%',
-              changeType: 'positive' as const
-            },
-            {
-              name: 'Pending',
-              value: pendingCount.toString(),
-              icon: 'Clock',
-              change: '+4%',
-              changeType: 'positive' as const
-            },
-            {
-              name: 'Revenue',
-              value: `€${totalRevenue.toFixed(0)}`,
-              icon: 'TrendingUp',
-              change: '+23%',
-              changeType: 'positive' as const
-            }
-          ]
-          
-          const recentBookings = bookings.slice(0, 5).map((b: any) => ({
-            id: b.id.substring(0, 8) + '...',
-            guest: b.guest_name || 'Unknown',
-            room: b.item_name || 'N/A',
-            checkIn: b.check_in || 'N/A',
-            status: b.status || 'pending'
-          }))
-          
-          setData({ stats, recentBookings })
-        } else {
+        // Fetch bookings data
+        const bookingsResponse = await fetch('/api/bookings')
+        const bookingsResult = await bookingsResponse.json()
+        
+        if (!bookingsResult.success || !bookingsResult.data.bookings) {
           setError('Failed to fetch dashboard data')
+          setLoading(false)
+          return
         }
+
+        const bookings = bookingsResult.data.bookings
+        
+        // Calculate statistics
+        const totalBookings = bookings.length
+        const confirmedCount = bookings.filter((b: any) => b.status === 'confirmed').length
+        const pendingCount = bookings.filter((b: any) => b.status === 'pending').length
+        const cancelledCount = bookings.filter((b: any) => b.status === 'cancelled').length
+        const totalRevenue = bookings.reduce((sum: number, b: any) => sum + (b.total_price || 0), 0)
+        
+        // Calculate month-over-month growth
+        const thisMonthBookings = bookings.filter((b: any) => {
+          const bookingDate = new Date(b.created_at)
+          const today = new Date()
+          return bookingDate.getMonth() === today.getMonth() && 
+                 bookingDate.getFullYear() === today.getFullYear()
+        }).length
+        
+        const lastMonthBookings = bookings.filter((b: any) => {
+          const bookingDate = new Date(b.created_at)
+          const today = new Date()
+          const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1)
+          return bookingDate.getMonth() === lastMonth.getMonth() && 
+                 bookingDate.getFullYear() === lastMonth.getFullYear()
+        }).length
+        
+        const bookingGrowth = lastMonthBookings > 0 
+          ? Math.round(((thisMonthBookings - lastMonthBookings) / lastMonthBookings) * 100)
+          : 0
+        
+        // Calculate revenue growth
+        const thisMonthRevenue = bookings
+          .filter((b: any) => {
+            const bookingDate = new Date(b.created_at)
+            const today = new Date()
+            return bookingDate.getMonth() === today.getMonth() && 
+                   bookingDate.getFullYear() === today.getFullYear()
+          })
+          .reduce((sum: number, b: any) => sum + (b.total_price || 0), 0)
+        
+        const lastMonthRevenue = bookings
+          .filter((b: any) => {
+            const bookingDate = new Date(b.created_at)
+            const today = new Date()
+            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1)
+            return bookingDate.getMonth() === lastMonth.getMonth() && 
+                   bookingDate.getFullYear() === lastMonth.getFullYear()
+          })
+          .reduce((sum: number, b: any) => sum + (b.total_price || 0), 0)
+        
+        const revenueGrowth = lastMonthRevenue > 0 
+          ? Math.round(((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100)
+          : 0
+        
+        // Create stats array
+        const stats: Stat[] = [
+          {
+            name: 'Total Bookings',
+            value: totalBookings.toString(),
+            icon: 'Calendar',
+            change: `${bookingGrowth > 0 ? '+' : ''}${bookingGrowth}%`,
+            changeType: bookingGrowth >= 0 ? 'positive' : 'negative'
+          },
+          {
+            name: 'Confirmed',
+            value: confirmedCount.toString(),
+            icon: 'CheckCircle',
+            change: `${((confirmedCount / totalBookings) * 100).toFixed(0)}%`,
+            changeType: 'positive'
+          },
+          {
+            name: 'Pending',
+            value: pendingCount.toString(),
+            icon: 'Clock',
+            change: `${((pendingCount / totalBookings) * 100).toFixed(0)}%`,
+            changeType: 'positive'
+          },
+          {
+            name: 'Revenue',
+            value: `€${(totalRevenue / 1000).toFixed(1)}k`,
+            icon: 'TrendingUp',
+            change: `${revenueGrowth > 0 ? '+' : ''}${revenueGrowth}%`,
+            changeType: revenueGrowth >= 0 ? 'positive' : 'negative'
+          }
+        ]
+        
+        // Get recent bookings
+        const recentBookings = bookings.slice(0, 5).map((b: any) => ({
+          id: b.id.substring(0, 8) + '...',
+          guest: b.guest_name || 'Unknown',
+          room: b.item_name || 'N/A',
+          checkIn: b.check_in ? new Date(b.check_in).toLocaleDateString() : 'N/A',
+          status: b.status || 'pending'
+        }))
+        
+        setData({ stats, recentBookings })
       } catch (err) {
+        console.error('Dashboard error:', err)
         setError('Error loading dashboard data')
       } finally {
         setLoading(false)
@@ -94,6 +150,10 @@ export default function AdminDashboard() {
     }
 
     fetchDashboardData()
+    
+    // Set up auto-refresh every 30 seconds
+    const interval = setInterval(fetchDashboardData, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   if (loading) {
