@@ -32,6 +32,9 @@ export default function BookingsPage() {
     date_range: 'all'
   })
   const [view, setView] = useState<'table' | 'calendar'>('table')
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+  const [showViewModal, setShowViewModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   useEffect(() => {
     fetchBookings()
@@ -52,6 +55,16 @@ export default function BookingsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleViewBooking = (booking: Booking) => {
+    setSelectedBooking(booking)
+    setShowViewModal(true)
+  }
+
+  const handleEditBooking = (booking: Booking) => {
+    setSelectedBooking(booking)
+    setShowEditModal(true)
   }
 
   const handleStatusChange = async (bookingId: string, newStatus: Booking['status']) => {
@@ -394,20 +407,23 @@ export default function BookingsPage() {
                     <td className="px-6 py-3 whitespace-nowrap text-sm font-medium">
                       <div className="flex gap-2">
                         <button
-                          onClick={() => console.log('View booking:', booking.id)}
-                          className="text-blue-600 hover:text-blue-900"
+                          onClick={() => handleViewBooking(booking)}
+                          className="text-blue-600 hover:text-blue-900 transition-colors"
+                          title="View booking details"
                         >
                           <Eye className="h-4 w-4" />
                         </button>
                         <button
-                          onClick={() => console.log('Edit booking:', booking.id)}
-                          className="text-gray-600 hover:text-gray-900"
+                          onClick={() => handleEditBooking(booking)}
+                          className="text-gray-600 hover:text-gray-900 transition-colors"
+                          title="Edit booking"
                         >
                           <Edit className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(booking.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-red-600 hover:text-red-900 transition-colors"
+                          title="Delete booking"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -425,6 +441,159 @@ export default function BookingsPage() {
         <div className="text-center py-12">
           <h3 className="text-lg font-medium text-gray-900 mb-2">No bookings found</h3>
           <p className="text-gray-600">No bookings match your current filters.</p>
+        </div>
+      )}
+
+      {/* View Booking Modal */}
+      {showViewModal && selectedBooking && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900">Booking Details</h3>
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="px-6 py-4 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Booking ID</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.id}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Status</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.status}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Guest Name</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.guest_name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.guest_email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Phone</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.guest_phone}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Type</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.type}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Item</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.item_name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Guests</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.guests}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Check-in</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.check_in}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Check-out</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.check_out}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Total Price</p>
+                  <p className="text-sm font-medium text-gray-900">€{selectedBooking.total_price}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Payment Status</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.payment_status}</p>
+                </div>
+              </div>
+              {selectedBooking.special_requests && (
+                <div>
+                  <p className="text-sm text-gray-500">Special Requests</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.special_requests}</p>
+                </div>
+              )}
+            </div>
+            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Booking Modal */}
+      {showEditModal && selectedBooking && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900">Edit Booking</h3>
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="px-6 py-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select
+                  value={selectedBooking.status}
+                  onChange={(e) => setSelectedBooking({...selectedBooking, status: e.target.value as Booking['status']})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="cancelled">Cancelled</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
+                <select
+                  value={selectedBooking.payment_status}
+                  onChange={(e) => setSelectedBooking({...selectedBooking, payment_status: e.target.value as Booking['payment_status']})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="paid">Paid</option>
+                  <option value="refunded">Refunded</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
+                <textarea
+                  value={selectedBooking.special_requests || ''}
+                  onChange={(e) => setSelectedBooking({...selectedBooking, special_requests: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  rows={3}
+                />
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  console.log('Saving booking:', selectedBooking)
+                  setShowEditModal(false)
+                }}
+                className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
