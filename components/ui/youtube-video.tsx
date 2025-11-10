@@ -15,7 +15,9 @@ export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProp
   const images = [
     '/optimized/photography_010_dsc03491.webp',
     '/optimized/photography_011_dsc03521-scaled.webp',
-    '/optimized/photography_012_dsc03530-scaled.webp'
+    '/optimized/photography_012_dsc03530-scaled.webp',
+    '/optimized/photography_001_dji_0098-scaled.webp',
+    '/optimized/photography_004_dsc02099-scaled.webp'
   ]
   
   const nextImage = () => {

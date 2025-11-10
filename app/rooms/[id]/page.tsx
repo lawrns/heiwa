@@ -8,7 +8,6 @@ import { BookingButton } from '@/components/booking-button'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { getRooms } from '@/lib/content'
 import type { Room } from '@/lib/types'
-import { supabase } from '@/lib/supabase'
 
 interface RoomPageProps {
   params: Promise<{

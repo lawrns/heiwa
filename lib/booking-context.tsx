@@ -69,8 +69,8 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     try {
       const bookingType = selectedSurfWeek ? 'surf-week' : 'room'
       const payload: any = {
-        ...bookingData,
         booking_type: bookingType,
+        room_id: bookingData.roomId || 'default-room',
         start_date: bookingData.checkIn,
         end_date: bookingData.checkOut,
         participants: [{
@@ -78,12 +78,16 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           email: bookingData.email,
           phone: bookingData.phone,
           message: bookingData.message
-        }]
+        }],
+        clientName: bookingData.clientName,
+        email: bookingData.email,
+        phone: bookingData.phone,
+        guests: bookingData.guests || 1
       }
 
       // Add surf week data if selected
       if (selectedSurfWeek) {
-        payload.surf_camp_id = selectedSurfWeek.id
+        payload.camp_id = selectedSurfWeek.id
         payload.surf_week_name = selectedSurfWeek.name
         payload.surf_week_dates = `${selectedSurfWeek.start_date} to ${selectedSurfWeek.end_date}`
       }
