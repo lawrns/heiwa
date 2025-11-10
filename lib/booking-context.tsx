@@ -10,6 +10,7 @@ interface Booking {
   checkIn: string
   checkOut: string
   roomType: string
+  roomId?: string
   guests: number
   message?: string
   status: 'pending' | 'confirmed' | 'cancelled'

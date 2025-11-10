@@ -42,53 +42,11 @@ export async function generateMetadata({ params }: RoomPageProps): Promise<Metad
 export default async function RoomDetailPage({ params }: RoomPageProps) {
   const { id } = await params
   
-  // Try to get room from content function first (with Supabase fallback)
+  // Try to get room from content function first
   const rooms = await getRooms()
   let room = rooms.find(r => r.id === id)
   
-  // If not found, try direct Supabase query (for dynamic routes)
-  if (!room) {
-    try {
-      const { data: directRoom, error } = await supabase
-        .from('rooms')
-        .select('*')
-        .eq('id', id)
-        .eq('is_active', true)
-        .single()
-      
-      if (!error && directRoom) {
-        // Type the directRoom properly
-        const dbRoom = directRoom as {
-          id: string
-          name: string
-          images?: string[]
-          description?: string
-          capacity?: number
-          pricing?: { standard?: number; offSeason?: number }
-          booking_type?: string
-          amenities?: string[]
-          is_active?: boolean
-        }
-        
-        // Transform to Room interface
-        room = {
-          id: dbRoom.id,
-          name: dbRoom.name,
-          image: dbRoom.images?.[0] || '',
-          images: dbRoom.images || [],
-          description: dbRoom.description || '',
-          capacity: dbRoom.capacity,
-          pricing: dbRoom.pricing || {},
-          bookingType: dbRoom.booking_type || 'whole',
-          amenities: dbRoom.amenities || [],
-          isActive: dbRoom.is_active !== false
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching room directly from Supabase:', error)
-    }
-  }
-
+  // If not found in static content, return 404
   if (!room) {
     notFound()
   }
