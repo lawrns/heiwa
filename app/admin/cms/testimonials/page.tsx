@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import TestimonialsManager from '@/components/admin/editors/TestimonialsManager'
-import CMSNavigation from '@/components/admin/cms/CMSNavigation'
-import CMSBreadcrumb from '@/components/admin/cms/CMSBreadcrumb'
+import { CMSLayout } from '@/components/admin/cms/CMSLayout'
 
 export default function CMSTestimonialsPage() {
   const [loading, setLoading] = useState(true)
@@ -14,46 +13,13 @@ export default function CMSTestimonialsPage() {
     return () => clearTimeout(timer)
   }, [])
 
-  if (loading) {
-    return (
-      <div className="flex">
-        <CMSNavigation />
-        <div className="flex-1 p-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
-            <div className="space-y-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white border border-gray-200 rounded-lg p-6">
-                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="flex">
-      <CMSNavigation />
-      <div className="flex-1">
-        {/* Header */}
-        <div className="p-8 border-b border-gray-200">
-          <CMSBreadcrumb />
-          <div className="mt-4">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Testimonials</h1>
-            <p className="text-gray-600">Manage guest testimonials and reviews</p>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-8">
-          <TestimonialsManager />
-        </div>
-      </div>
-    </div>
+    <CMSLayout
+      title="Testimonials"
+      description="Manage guest testimonials and reviews"
+      loading={loading}
+    >
+      <TestimonialsManager />
+    </CMSLayout>
   )
 }
