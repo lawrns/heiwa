@@ -47,9 +47,33 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Transform database fields to admin UI format
+    const transformedData = (data || []).map((booking: any) => {
+      const firstItem = booking.items?.[0]
+      
+      return {
+        id: booking.id,
+        guest_name: booking.guest_name || 'Unknown',
+        guest_email: booking.guest_email || '',
+        guest_phone: booking.guest_phone || '',
+        type: firstItem?.type || 'room',
+        item_name: firstItem?.itemId || 'Unknown',
+        check_in: firstItem?.dates?.checkIn || '',
+        check_out: firstItem?.dates?.checkOut || '',
+        guests: firstItem?.quantity || 1,
+        total_price: booking.total_amount || 0,
+        status: booking.status || 'pending',
+        payment_status: booking.payment_status || 'pending',
+        created_at: booking.created_at,
+        special_requests: booking.notes || ''
+      }
+    })
+
+    console.log('✅ Transformed', transformedData.length, 'bookings for admin panel')
+
     return NextResponse.json({
       success: true,
-      data: data || [],
+      data: { bookings: transformedData },
       count,
       limit,
       offset

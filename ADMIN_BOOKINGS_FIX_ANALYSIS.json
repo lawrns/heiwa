@@ -1,0 +1,206 @@
+{
+  "issue": "Bookings not appearing in admin panel after creation",
+  "root_causes": [
+    {
+      "cause": "Database schema mismatch",
+      "description": "Bookings are created with fields like client_ids, items, total_amount but admin expects guest_name, guest_email, check_in, check_out",
+      "severity": "CRITICAL",
+      "location": "/app/api/bookings/route.ts - GET endpoint"
+    },
+    {
+      "cause": "Missing field transformation",
+      "description": "API returns raw database fields without mapping to admin UI expectations",
+      "severity": "HIGH",
+      "location": "/app/api/bookings/route.ts - lines 50-63"
+    },
+    {
+      "cause": "Browser extension errors",
+      "description": "Chrome extension errors (1Password, DeviceTrust) causing connection issues",
+      "severity": "MEDIUM",
+      "location": "Browser console - not app code"
+    }
+  ],
+  "database_schema_analysis": {
+    "current_bookings_table_structure": {
+      "id": "UUID",
+      "client_ids": "UUID[]",
+      "items": "JSONB - contains type, itemId, quantity, unitPrice, totalPrice, dates",
+      "total_amount": "NUMERIC",
+      "status": "TEXT - pending/confirmed/cancelled/completed",
+      "payment_status": "TEXT - pending/paid/refunded",
+      "created_at": "TIMESTAMP",
+      "updated_at": "TIMESTAMP"
+    },
+    "admin_page_expects": {
+      "id": "string",
+      "guest_name": "string",
+      "guest_email": "string",
+      "guest_phone": "string",
+      "type": "room | surf_camp",
+      "item_name": "string",
+      "check_in": "string (ISO date)",
+      "check_out": "string (ISO date)",
+      "guests": "number",
+      "total_price": "number",
+      "status": "pending | confirmed | cancelled | completed",
+      "payment_status": "pending | paid | refunded",
+      "created_at": "string (ISO date)",
+      "special_requests": "string (optional)"
+    }
+  },
+  "solutions": [
+    {
+      "solution": "Fix API endpoint to transform database fields",
+      "priority": "CRITICAL",
+      "steps": [
+        {
+          "step": 1,
+          "description": "Update GET /api/bookings to join with clients table and transform fields",
+          "file": "/app/api/bookings/route.ts",
+          "changes": [
+            "Join bookings with clients table on client_ids[0]",
+            "Extract guest_name from clients.name",
+            "Extract guest_email from clients.email",
+            "Extract guest_phone from clients.phone",
+            "Extract check_in from items[0].dates.checkIn",
+            "Extract check_out from items[0].dates.checkOut",
+            "Extract item_name from items[0].itemId",
+            "Extract type from items[0].type",
+            "Map total_amount to total_price"
+          ]
+        }
+      ],
+      "estimated_effort": "30 minutes",
+      "risk": "LOW - only affects API response format"
+    },
+    {
+      "solution": "Create database view for admin bookings",
+      "priority": "HIGH",
+      "steps": [
+        {
+          "step": 1,
+          "description": "Create a PostgreSQL view that flattens the bookings structure",
+          "sql": "CREATE VIEW admin_bookings AS SELECT b.id, c.name as guest_name, c.email as guest_email, c.phone as guest_phone, (b.items->0->>'type') as type, (b.items->0->>'itemId') as item_name, (b.items->0->'dates'->>'checkIn') as check_in, (b.items->0->'dates'->>'checkOut') as check_out, b.total_amount as total_price, b.status, b.payment_status, b.created_at FROM bookings b LEFT JOIN clients c ON b.client_ids[1] = c.id"
+        }
+      ],
+      "estimated_effort": "15 minutes",
+      "risk": "LOW - read-only view"
+    },
+    {
+      "solution": "Add caching and real-time updates",
+      "priority": "MEDIUM",
+      "steps": [
+        {
+          "step": 1,
+          "description": "Add cache invalidation when bookings are created",
+          "file": "/app/api/widget/room-bookings/route.ts",
+          "changes": [
+            "After successful booking creation, invalidate /api/bookings cache",
+            "Use revalidateTag('bookings') from next/cache"
+          ]
+        }
+      ],
+      "estimated_effort": "20 minutes",
+      "risk": "LOW"
+    }
+  ],
+  "implementation_plan": {
+    "phase_1_immediate": {
+      "title": "Fix API response transformation",
+      "tasks": [
+        {
+          "task": "Update GET /api/bookings endpoint",
+          "file": "/app/api/bookings/route.ts",
+          "action": "Transform database fields to admin UI format",
+          "time": "30 min"
+        },
+        {
+          "task": "Test admin bookings page",
+          "action": "Create test booking and verify it appears in admin",
+          "time": "15 min"
+        }
+      ],
+      "total_time": "45 min"
+    },
+    "phase_2_optimization": {
+      "title": "Add database view for performance",
+      "tasks": [
+        {
+          "task": "Create admin_bookings view in PostgreSQL",
+          "action": "Run SQL to create view",
+          "time": "15 min"
+        },
+        {
+          "task": "Update API to use view",
+          "file": "/app/api/bookings/route.ts",
+          "action": "Query admin_bookings view instead of bookings table",
+          "time": "15 min"
+        }
+      ],
+      "total_time": "30 min"
+    },
+    "phase_3_realtime": {
+      "title": "Add cache invalidation",
+      "tasks": [
+        {
+          "task": "Add revalidateTag to booking creation",
+          "file": "/app/api/widget/room-bookings/route.ts",
+          "action": "Invalidate cache after booking created",
+          "time": "20 min"
+        }
+      ],
+      "total_time": "20 min"
+    }
+  },
+  "sql_queries": {
+    "check_bookings_table_structure": "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'bookings' ORDER BY ordinal_position;",
+    "check_clients_table_structure": "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'clients' ORDER BY ordinal_position;",
+    "count_bookings": "SELECT COUNT(*) FROM bookings;",
+    "view_recent_bookings": "SELECT id, client_ids, items, total_amount, status, payment_status, created_at FROM bookings ORDER BY created_at DESC LIMIT 10;",
+    "create_admin_view": "CREATE OR REPLACE VIEW admin_bookings AS SELECT b.id, c.name as guest_name, c.email as guest_email, c.phone as guest_phone, (b.items->0->>'type') as type, (b.items->0->>'itemId') as item_name, (b.items->0->'dates'->>'checkIn') as check_in, (b.items->0->'dates'->>'checkOut') as check_out, b.total_amount::numeric as total_price, b.status, b.payment_status, b.created_at FROM bookings b LEFT JOIN clients c ON b.client_ids[1] = c.id ORDER BY b.created_at DESC;"
+  },
+  "connection_string": "postgresql://postgres:Hennie@@12Hennie@@12@db.zejrhceuuujzgyukdwnb.supabase.co:5432/postgres",
+  "code_fixes": [
+    {
+      "file": "/app/api/bookings/route.ts",
+      "section": "GET method",
+      "current_code": "const { data, error, count } = await query\n\nif (error) {\n  console.error('Error fetching bookings:', error)\n  return NextResponse.json(\n    { success: false, error: 'Failed to fetch bookings' },\n    { status: 500 }\n  )\n}\n\nreturn NextResponse.json({\n  success: true,\n  data: data || [],\n  count,\n  limit,\n  offset\n})",
+      "fixed_code": "const { data, error, count } = await query\n\nif (error) {\n  console.error('Error fetching bookings:', error)\n  return NextResponse.json(\n    { success: false, error: 'Failed to fetch bookings' },\n    { status: 500 }\n  )\n}\n\n// Transform database fields to admin UI format\nconst transformedData = (data || []).map((booking: any) => {\n  const firstClient = booking.client_ids?.[0]\n  const firstItem = booking.items?.[0]\n  \n  return {\n    id: booking.id,\n    guest_name: booking.guest_name || 'Unknown',\n    guest_email: booking.guest_email || '',\n    guest_phone: booking.guest_phone || '',\n    type: firstItem?.type || 'room',\n    item_name: firstItem?.itemId || 'Unknown',\n    check_in: firstItem?.dates?.checkIn || '',\n    check_out: firstItem?.dates?.checkOut || '',\n    guests: firstItem?.quantity || 1,\n    total_price: booking.total_amount || 0,\n    status: booking.status || 'pending',\n    payment_status: booking.payment_status || 'pending',\n    created_at: booking.created_at,\n    special_requests: booking.notes || ''\n  }\n})\n\nreturn NextResponse.json({\n  success: true,\n  data: { bookings: transformedData },\n  count,\n  limit,\n  offset\n})",
+      "reason": "Admin page expects flattened structure with guest_name, guest_email, etc. Database stores nested structure with client_ids and items array."
+    }
+  ],
+  "testing_steps": [
+    {
+      "step": 1,
+      "description": "Create a test booking via the booking widget",
+      "action": "Click BOOK button -> Complete booking flow"
+    },
+    {
+      "step": 2,
+      "description": "Check database directly",
+      "action": "Run: SELECT * FROM bookings ORDER BY created_at DESC LIMIT 1;"
+    },
+    {
+      "step": 3,
+      "description": "Check API response",
+      "action": "curl http://localhost:3000/api/bookings"
+    },
+    {
+      "step": 4,
+      "description": "Check admin panel",
+      "action": "Navigate to http://localhost:3000/admin/bookings"
+    },
+    {
+      "step": 5,
+      "description": "Verify booking appears",
+      "action": "Booking should be visible in table with all details"
+    }
+  ],
+  "browser_extension_errors_note": "The 1Password and DeviceTrust errors are from browser extensions and don't affect the app functionality. They can be ignored.",
+  "next_steps": [
+    "Fix API endpoint to transform fields (Phase 1)",
+    "Test with new booking",
+    "Create database view (Phase 2)",
+    "Add cache invalidation (Phase 3)"
+  ]
+}
