@@ -1,6 +1,8 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { PlusCircle, Edit, Trash2, Package, Euro, Users } from 'lucide-react'
+import { PlusCircle, Edit, Trash2, Package, Euro, Users, Search, Filter, Download } from 'lucide-react'
 
 interface AddOn {
   id: string
@@ -14,6 +16,9 @@ interface AddOn {
 }
 
 export default function AdminAddOnsPage() {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('all')
+
   // This will eventually fetch add-ons from the database
   const addOns: AddOn[] = [
     {
@@ -98,6 +103,13 @@ export default function AdminAddOnsPage() {
     }
   }
 
+  // Filter add-ons
+  const filteredAddOns = addOns.filter(addon => {
+    const matchesSearch = addon.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesCategory = categoryFilter === 'all' || addon.category === categoryFilter
+    return matchesSearch && matchesCategory
+  })
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -107,17 +119,50 @@ export default function AdminAddOnsPage() {
         </div>
         <Link
           href="/admin/add-ons/new"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-heiwaOrange-600 hover:bg-heiwaOrange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-heiwaOrange-500"
         >
           <PlusCircle className="mr-2 h-5 w-5" />
           Add New Add-on
         </Link>
       </div>
 
+      {/* Search and Filter */}
+      <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search add-ons by name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+          >
+            <option value="all">All Categories</option>
+            <option value="equipment">Equipment</option>
+            <option value="service">Service</option>
+            <option value="experience">Experience</option>
+            <option value="transport">Transport</option>
+          </select>
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+            <Download className="h-4 w-4" />
+            Export
+          </button>
+        </div>
+      </div>
+
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
-          <div className="flex-shrink-0 bg-accent/10 text-accent rounded-full p-3">
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4 border border-gray-200">
+          <div className="flex-shrink-0 bg-heiwaOrange-100 text-heiwaOrange-600 rounded-full p-3">
             <Package size={20} />
           </div>
           <div>
@@ -193,7 +238,7 @@ export default function AdminAddOnsPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {addOns.map((addOn) => (
+              {filteredAddOns.map((addOn) => (
                 <tr key={addOn.id} className="hover:bg-gray-50">
                   <td className="px-6 py-3 whitespace-nowrap">
                     <div>
@@ -231,7 +276,7 @@ export default function AdminAddOnsPage() {
                   </td>
                   <td className="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex gap-2">
-                      <Link href={`/admin/add-ons/${addOn.id}`} className="text-accent hover:text-accent-hover">
+                      <Link href={`/admin/add-ons/${addOn.id}`} className="text-heiwaOrange-600 hover:text-heiwaOrange-700">
                         <Edit className="h-5 w-5 inline-block" />
                       </Link>
                       <button className="text-red-600 hover:text-red-900">
