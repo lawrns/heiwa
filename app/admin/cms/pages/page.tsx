@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FileText, Edit, Clock, ChevronRight, Plus } from 'lucide-react'
-import AdminButton from '@/components/admin/ui/AdminButton'
-import AdminAlert from '@/components/admin/ui/AdminAlert'
-import CMSNavigation from '@/components/admin/cms/CMSNavigation'
-import CMSBreadcrumb from '@/components/admin/cms/CMSBreadcrumb'
+import { FileText, Edit, Clock, ChevronRight, Plus, Eye, Trash2 } from 'lucide-react'
+import { CMSLayout } from '@/components/admin/cms/CMSLayout'
+import { CMSCard } from '@/components/admin/cms/CMSCard'
+import { CMSHeader } from '@/components/admin/cms/CMSHeader'
 import { supabaseAdmin } from '@/lib/supabase'
 
 interface PageData {
@@ -92,11 +91,11 @@ export default function CMSPagesPage() {
       // Calculate stats for each page
       const stats: Record<string, { count: number; lastModified: string }> = {}
       pages.forEach(page => {
-        const pageSections = data?.filter(section => section.page_slug === page.slug) || []
+        const pageSections = (data as any[])?.filter((section: any) => section.page_slug === page.slug) || []
         stats[page.slug] = {
           count: pageSections.length,
           lastModified: pageSections.length > 0 
-            ? new Date(Math.max(...pageSections.map(s => new Date(s.updated_at).getTime()))).toLocaleDateString()
+            ? new Date(Math.max(...pageSections.map((s: any) => new Date(s.updated_at).getTime()))).toLocaleDateString()
             : 'Never'
         }
       })
@@ -128,136 +127,72 @@ export default function CMSPagesPage() {
     )
   }
 
-  if (loading) {
-    return (
-      <div className="p-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="bg-white border border-gray-200 rounded-lg p-6">
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="flex">
-      <CMSNavigation />
-      <div className="flex-1">
-        {/* Header */}
-        <div className="p-8 border-b border-gray-200">
-          <CMSBreadcrumb />
-          <div className="mt-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Pages</h1>
-                <p className="text-gray-600">Manage and edit your website pages</p>
-              </div>
-              <AdminButton variant="primary">
-                <Plus className="w-4 h-4 mr-2" />
-                Create New Page
-              </AdminButton>
-            </div>
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-8">
-          {/* Error Alert */}
-          {error && (
-            <div className="mb-6">
-              <AdminAlert variant="error">
-                {error}
-              </AdminAlert>
-            </div>
-          )}
-
-          {/* Search Bar */}
-          <div className="mb-8">
-            <div className="max-w-md">
-              <input
-                type="text"
-                placeholder="Search pages..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          {/* Pages Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredPages.map((page) => {
-              const stats = pageStats[page.slug] || { count: 0, lastModified: 'Never' }
-              
-              return (
-                <div key={page.slug} className="bg-white border border-gray-200 rounded-lg hover:shadow-lg transition-shadow">
-                  <div className="p-6">
-                    {/* Page Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center">
-                        <FileText className="w-5 h-5 text-gray-400 mr-3" />
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-900">{page.title}</h3>
-                          <p className="text-sm text-gray-500">/{page.slug}</p>
-                        </div>
-                      </div>
-                      {getStatusBadge(page.status)}
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      {page.description}
-                    </p>
-
-                    {/* Stats */}
-                    <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                      <div className="flex items-center">
-                        <span className="mr-4">{stats.count} sections</span>
-                        <div className="flex items-center">
-                          <Clock className="w-4 h-4 mr-1" />
-                          {stats.lastModified}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center justify-between">
-                      <Link href={`/admin/cms/pages/${page.slug}`}>
-                        <AdminButton variant="primary" size="sm">
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit
-                        </AdminButton>
-                      </Link>
-                      <Link href={`/admin/cms/pages/${page.slug}`}>
-                        <AdminButton variant="outline" size="sm">
-                          <ChevronRight className="w-4 h-4" />
-                        </AdminButton>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* Empty State */}
-          {filteredPages.length === 0 && !loading && (
-            <div className="text-center py-12">
-              <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No pages found</h3>
-              <p className="text-gray-500">Try adjusting your search terms</p>
-            </div>
-          )}
+    <CMSLayout
+      title="Pages"
+      description="Manage and edit your website pages"
+      loading={loading}
+      error={error}
+      action={{
+        label: 'Create New Page',
+        icon: <Plus className="w-4 h-4" />,
+      }}
+    >
+      {/* Search Bar */}
+      <div className="mb-8">
+        <div className="max-w-md">
+          <input
+            type="text"
+            placeholder="Search pages..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+          />
         </div>
       </div>
-    </div>
+
+      {/* Pages Grid */}
+      {filteredPages.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredPages.map((page) => {
+            const stats = pageStats[page.slug] || { count: 0, lastModified: 'Never' }
+            
+            return (
+              <CMSCard
+                key={page.slug}
+                title={page.title}
+                description={page.description}
+                icon={<FileText className="w-5 h-5" />}
+                status={page.status}
+                metadata={[
+                  { label: 'Sections', value: stats.count.toString() },
+                  { label: 'Last Modified', value: stats.lastModified }
+                ]}
+                actions={[
+                  {
+                    label: 'Edit',
+                    icon: <Edit className="w-4 h-4" />,
+                    variant: 'primary',
+                    href: `/admin/cms/pages/${page.slug}`
+                  },
+                  {
+                    label: 'View',
+                    icon: <Eye className="w-4 h-4" />,
+                    variant: 'secondary'
+                  }
+                ]}
+                href={`/admin/cms/pages/${page.slug}`}
+              />
+            )
+          })}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No pages found</h3>
+          <p className="text-gray-500">Try adjusting your search terms</p>
+        </div>
+      )}
+    </CMSLayout>
   )
 }
