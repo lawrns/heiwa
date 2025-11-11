@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { X, Bed, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import { useBooking } from '@/lib/booking-context'
 
 interface MobileNavOverlayProps {
@@ -16,17 +17,25 @@ interface MobileNavOverlayProps {
 export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: MobileNavOverlayProps) {
   const { openBooking } = useBooking()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [mounted, setMounted] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Handle body scroll lock
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
     }
     return () => {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
     }
   }, [isOpen])
 
@@ -62,65 +71,89 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
     }
   }, [isOpen, onClose])
 
+  const menuVariants = {
+    hidden: { opacity: 0, x: 300 },
+    visible: {
+      opacity: 1,
+      x: 0,
+    },
+    exit: {
+      opacity: 0,
+      x: 300,
+    },
+  }
+
   const overlayVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
     exit: { opacity: 0 },
   }
 
-  const menuVariants = {
-    hidden: { opacity: 0, scale: 0.95, y: -20 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      y: -20,
-    },
-  }
-
   const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
+    hidden: { opacity: 0, x: -20 },
     visible: (i: number) => ({
       opacity: 1,
-      y: 0,
+      x: 0,
       transition: {
         delay: i * 0.05,
-        duration: 0.2,
+        duration: 0.3,
       },
     }),
   }
 
-  return (
+  if (!mounted || typeof document === 'undefined') return null
+
+  const overlayContent = (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop - solid dark background */}
+          {/* Backdrop - Full viewport coverage, above nav (z-50) */}
           <motion.div
             variants={overlayVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
             onClick={onClose}
-            className="fixed inset-0 bg-black/80 z-40 lg:hidden"
-            style={{ pointerEvents: 'auto' }}
+            className="lg:hidden"
+            style={{ 
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              width: '100vw',
+              height: '100vh',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              zIndex: 9999,
+              pointerEvents: 'auto'
+            }}
+            aria-hidden="true"
           />
 
-          {/* Menu Panel - centered overlay */}
+          {/* Menu Panel */}
           <motion.div
             ref={menuRef}
             variants={menuVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-x-4 top-20 bottom-20 bg-gray-900 rounded-lg shadow-2xl z-50 lg:hidden overflow-hidden flex flex-col"
-            style={{ maxWidth: 'calc(100vw - 2rem)', maxHeight: 'calc(100vh - 10rem)' }}
+            className="lg:hidden shadow-2xl overflow-y-auto"
+            style={{ 
+              position: 'fixed',
+              top: 0,
+              bottom: 0,
+              right: 0,
+              width: '20rem',
+              height: '100vh',
+              backgroundColor: '#111827',
+              zIndex: 10000
+            }}
+            role="dialog"
+            aria-modal="true"
+            id="mobile-menu"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-700 flex-shrink-0">
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
               <h2 className="text-lg font-bold text-white">Menu</h2>
               <button
                 onClick={onClose}
@@ -131,8 +164,8 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
               </button>
             </div>
 
-            {/* Navigation Items - scrollable */}
-            <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+            {/* Navigation Items */}
+            <nav className="p-4 space-y-2">
               {items.map((item, i) => {
                 const isActivities = item.name === 'ACTIVITIES'
                 const isExpanded = expandedItems.includes('activities')
@@ -199,8 +232,8 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
               })}
             </nav>
 
-            {/* Footer CTA - fixed at bottom */}
-            <div className="p-4 border-t border-gray-700 flex-shrink-0">
+            {/* Footer CTA */}
+            <div className="sticky bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-gray-900">
               <button
                 className="w-full px-4 py-3 text-white font-semibold rounded-lg transition-colors uppercase text-sm flex items-center justify-center gap-2"
                 style={{ backgroundColor: '#ec681c' }}
@@ -220,4 +253,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
       )}
     </AnimatePresence>
   )
+
+  // Use portal to render outside nav hierarchy, directly to body
+  return createPortal(overlayContent, document.body)
 }
