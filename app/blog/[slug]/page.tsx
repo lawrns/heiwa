@@ -43,6 +43,7 @@ async function getPost(slug: string) {
       reading_minutes: post.reading_minutes,
       published_at: post.published_at,
       created_at: post.created_at,
+      updated_at: post.translation.updated_at || post.updated_at,
       locale: post.translation.locale
     }
   } catch (error) {
@@ -61,20 +62,53 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     }
   }
 
+  const seoTitle = post.seo_title || post.title
+  const seoDescription = post.seo_description || post.excerpt || ''
+  const canonicalUrl = post.canonical_url || `/blog/${slug}`
+  const ogImage = post.cover_image_url || '/images/og/heiwa-house-og.jpg'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://heiwahouse.com'
+
   return {
-    title: post.seo_title || post.title,
-    description: post.seo_description || post.excerpt || '',
+    title: seoTitle,
+    description: seoDescription,
     openGraph: {
-      title: post.seo_title || post.title,
-      description: post.seo_description || post.excerpt || '',
-      images: post.cover_image_url ? [{ url: post.cover_image_url }] : [],
+      title: seoTitle,
+      description: seoDescription,
+      url: `${siteUrl}${canonicalUrl}`,
+      siteName: 'Heiwa House',
+      images: [
+        {
+          url: ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`,
+          width: 1200,
+          height: 630,
+          alt: post.cover_alt_text || post.title,
+        },
+      ],
+      locale: 'en_US',
+      type: 'article',
+      publishedTime: post.published_at || undefined,
+      modifiedTime: post.updated_at || post.published_at || undefined,
+      authors: post.author ? [post.author.name] : ['Heiwa House'],
+      section: post.category?.name,
+      tags: post.tags?.map(t => t.name) || [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seoTitle,
+      description: seoDescription,
+      images: [ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`],
+      creator: '@heiwahouse',
     },
     alternates: {
-      canonical: post.canonical_url || `/blog/${slug}`,
+      canonical: `${siteUrl}${canonicalUrl}`,
     },
     robots: {
       index: !post.noindex,
       follow: !post.noindex,
+      googleBot: {
+        index: !post.noindex,
+        follow: !post.noindex,
+      },
     },
   }
 }
@@ -153,13 +187,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             '@context': 'https://schema.org',
             '@type': 'BlogPosting',
             headline: post.title,
-            description: post.excerpt || '',
-            image: post.cover_image_url || '',
+            description: post.seo_description || post.excerpt || '',
+            image: post.cover_image_url ? (post.cover_image_url.startsWith('http') ? post.cover_image_url : `${process.env.NEXT_PUBLIC_SITE_URL || 'https://heiwahouse.com'}${post.cover_image_url}`) : '',
             datePublished: post.published_at,
-            dateModified: post.published_at,
+            dateModified: post.updated_at || post.published_at,
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': `${process.env.NEXT_PUBLIC_SITE_URL || 'https://heiwahouse.com'}/blog/${post.slug}`
+            },
             author: {
               '@type': 'Person',
-              name: post.author?.name || 'Heiwa House'
+              name: post.author?.name || 'Heiwa House',
+              ...(post.author?.avatar_url && {
+                image: post.author.avatar_url
+              })
             },
             publisher: {
               '@type': 'Organization',
@@ -168,7 +209,26 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 '@type': 'ImageObject',
                 url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://heiwahouse.com'}/logo.png`
               }
-            }
+            },
+            ...(post.category && {
+              articleSection: post.category.name
+            }),
+            ...(post.tags && post.tags.length > 0 && {
+              keywords: post.tags.map((t: any) => t.name).join(', ')
+            }),
+            ...(post.faq_json && Array.isArray(post.faq_json) && post.faq_json.length > 0 && {
+              mainEntity: {
+                '@type': 'FAQPage',
+                mainEntity: post.faq_json.map((faq: any) => ({
+                  '@type': 'Question',
+                  name: faq.question,
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: faq.answer
+                  }
+                }))
+              }
+            })
           })
         }}
       />
