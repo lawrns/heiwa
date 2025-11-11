@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { SurfWeeksClient } from '@/components/surf-weeks/SurfWeeksClient'
 import { SurfWeeksTable } from '@/components/surf-weeks/SurfWeeksTable'
 import { BookNowButton } from '@/components/surf-weeks/BookNowButton'
+import { GoogleReviews } from '@/components/ui/google-reviews'
 
 export const metadata: Metadata = {
   title: 'Surf Weeks in Santa Cruz, Portugal - Learn Surfing With Heiwa',
