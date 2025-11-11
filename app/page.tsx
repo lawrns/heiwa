@@ -273,25 +273,28 @@ export default function HomePage() {
                 Upcoming Surf Weeks
               </h3>
               
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                {/* Table Header - Hidden on mobile */}
-                <div className="hidden md:grid bg-gray-50 px-4 sm:px-6 py-4 border-b border-gray-200">
-                  <div className="grid grid-cols-4 gap-4 text-sm font-semibold text-gray-700">
-                    <div>Dates</div>
-                    <div className="flex items-center gap-2">
-                      Price
-                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+              <div className="relative">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                  {/* Table Header - Hidden on mobile */}
+                  <div className="hidden md:grid bg-gray-50 px-4 sm:px-6 py-4 border-b border-gray-200">
+                    <div className="grid grid-cols-4 gap-4 text-sm font-semibold text-gray-700">
+                      <div>Dates</div>
+                      <div className="flex items-center gap-2">
+                        Price
+                        <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>Available Spots</div>
+                      <div></div>
                     </div>
-                    <div>Available Spots</div>
-                    <div></div>
                   </div>
-                </div>
 
-                {/* Table Body */}
-                <div className="divide-y divide-gray-200">
-                  {(surfWeeksSection?.bookingData || surfWeeks).map((surfWeek: any, idx: number) => (
+                  {/* Table Body with fade effect */}
+                  <div className="divide-y divide-gray-200 relative">
+                    {surfWeeks.length > 0 ? (
+                      <>
+                        {surfWeeks.map((surfWeek: any, idx: number) => (
                     <div key={surfWeek.id || idx} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
                       {/* Mobile Layout */}
                       <div className="md:hidden space-y-3">
@@ -340,13 +343,22 @@ export default function HomePage() {
                           </button>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                        </div>
+                        ))}
+                        {/* Fade gradient overlay at bottom */}
+                        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
+                      </>
+                    ) : (
+                      <div className="px-4 sm:px-6 py-8 text-center text-gray-600">
+                        Loading surf weeks...
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-
-              {/* Show All Button */}
-              <div className="mt-6 text-center">
+                
+                {/* Find More Button */}
+                {surfWeeks.length > 0 && (
+                  <div className="mt-6 text-center">
                 <Link
                   href="/surf-weeks"
                   className="px-8 py-3 bg-accent hover:bg-accent-hover text-white font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
