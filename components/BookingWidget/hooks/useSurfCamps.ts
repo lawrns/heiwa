@@ -39,23 +39,23 @@ export function useSurfCamps(): UseSurfCampsResult {
         const data = await response.json();
       
       if (data.success && data.data?.surf_camps) {
-        // Transform WordPress API response to our SurfWeek interface
+        // Transform API response to our SurfWeek interface
         const transformedCamps: SurfWeek[] = data.data.surf_camps.map((camp: any) => ({
           id: camp.id,
           name: camp.name,
-          description: camp.description,
-          startDate: camp.dates.start_date,
-          endDate: camp.dates.end_date,
-          maxParticipants: camp.details.max_participants,
-          price: camp.pricing.base_price,
-          level: camp.details.skill_level as 'beginner' | 'intermediate' | 'advanced',
-          includes: camp.details.includes,
-          images: camp.media.images || [],
-          isActive: true, // All returned camps are active
+          description: camp.description || '',
+          startDate: camp.start_date,
+          endDate: camp.end_date,
+          maxParticipants: camp.max_participants || 0,
+          price: camp.price || 0,
+          level: (camp.level || 'all') as 'beginner' | 'intermediate' | 'advanced' | 'all',
+          includes: Array.isArray(camp.includes) ? camp.includes : [],
+          images: Array.isArray(camp.images) ? camp.images : [],
+          isActive: camp.is_active !== false,
           // Enhanced fields
-          priceFrom: camp.pricing?.price_from ?? camp.pricing?.base_price,
-          confirmedBooked: camp.details?.confirmed_booked ?? 0,
-          availableSpots: camp.details?.available_spots ?? camp.details?.max_participants
+          priceFrom: camp.price || 0,
+          confirmedBooked: camp.enrolled_count || 0,
+          availableSpots: camp.available_spots ?? camp.max_participants ?? 0
         }));
 
         setSurfCamps(transformedCamps);
