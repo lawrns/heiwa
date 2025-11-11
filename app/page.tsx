@@ -9,7 +9,7 @@ import { HostSection } from '@/components/ui/host-section'
 import { ActivitiesCarousel } from '@/components/ui/activity-card'
 import { AnimatedHeroHeading } from '@/components/ui/animated-hero-heading'
 import { ScrollIndicator } from '@/components/ui/scroll-indicator'
-import { GoogleRatingSummary } from '@/components/ui/google-reviews'
+import { GoogleRatingSummary, GoogleReviews } from '@/components/ui/google-reviews'
 import { YouTubeVideo } from '@/components/ui/youtube-video'
 import { ActivityCardEnhanced } from '@/components/ui/activity-card-enhanced'
 import { DynamicActivities } from '@/components/ui/dynamic-activities'
@@ -28,12 +28,7 @@ export default function HomePage() {
     { id: '3', dates: '01 May - 12 May', price: 'From €485', availableSpots: '5/18', totalSpots: 18 },
   ]
 
-  const defaultReviews = [
-    { id: '1', name: 'Jesús MR', rating: 5, text: 'Amazing experience at Heiwa House! The surf lessons were incredible and the yoga sessions were perfect for recovery.', timeAgo: '6 days ago', verified: true },
-    { id: '2', name: 'Ernesto Guevara', rating: 5, text: 'Best surf camp I\'ve ever been to. The instructors are professional and the atmosphere is amazing.', timeAgo: '1 week ago', verified: true },
-    { id: '3', name: 'John Z', rating: 5, text: 'Heiwa House exceeded all my expectations. The facilities are top-notch and the food is delicious.', timeAgo: '2 weeks ago', verified: true },
-    { id: '4', name: 'Paul Egan', rating: 5, text: 'Perfect place to learn surfing and meet like-minded people. Highly recommended!', timeAgo: '3 weeks ago', verified: true },
-  ]
+  // Reviews will be fetched from Google Reviews API via GoogleReviews component
 
   // Fetch homepage content from CMS
   useEffect(() => {
@@ -121,7 +116,6 @@ export default function HomePage() {
   
   // Use CMS data or fallback to defaults
   const surfWeeks = surfWeeksSection?.data || defaultSurfWeeks
-  const reviews = reviewsSection?.data || defaultReviews
 
 
   return (
@@ -438,80 +432,8 @@ export default function HomePage() {
             </p>
           )}
           
-          {/* Google Reviews Header - Using CMS Data */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 rounded flex items-center justify-center text-white font-bold" style={{ backgroundColor: '#ec681c' }}>
-                G
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Reviews</h3>
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl font-bold text-gray-900">{reviewsSection?.googleRating?.rating || '4.7'}</span>
-                  <div className="flex items-center space-x-1">
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <svg key={i} className={`w-5 h-5 ${i < Math.floor(reviewsSection?.googleRating?.rating || 4.7) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    ))}
-                  </div>
-                  <span className="text-sm text-gray-600">({reviewsSection?.googleRating?.totalReviews?.toLocaleString() || '16,940'})</span>
-                </div>
-              </div>
-            </div>
-            <Link
-              href={reviewsSection?.googleRating?.url || 'https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 text-sm font-semibold rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 btn-accent"
-            >
-              Review us on Google
-            </Link>
-          </div>
-
-          {/* Reviews Grid - Using CMS Data */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(reviewsSection?.testimonials || reviews).map((review: any, index: number) => (
-              <div key={review.id || `review-${index}`} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold" style={{ backgroundColor: '#ec681c' }}>
-                      G
-                    </div>
-                    <div>
-                      <div className="flex items-center space-x-1">
-                        <span className="font-semibold text-gray-900 text-sm">{review.name}</span>
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" style={{ color: '#ec681c' }}>
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <span className="text-xs text-gray-500">{review.timeAgo}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Rating */}
-                <div className="flex items-center space-x-1 mb-3">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <svg key={i} className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                  ))}
-                </div>
-
-                {/* Review Text */}
-                <p className="text-gray-700 text-sm leading-relaxed mb-2">
-                  {review.text}
-                </p>
-
-                {/* Read More Link */}
-                <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                  Read more
-                </button>
-              </div>
-            ))}
-          </div>
+          {/* Google Reviews Component - Fetches real reviews from API */}
+          <GoogleReviews showReviews={true} maxReviews={4} />
         </div>
       </section>
 
