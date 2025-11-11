@@ -107,14 +107,13 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop - Full viewport coverage, above nav (z-50) */}
+          {/* Backdrop - MUST be above nav z-50 */}
           <motion.div
             variants={overlayVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
             onClick={onClose}
-            className="lg:hidden"
             style={{ 
               position: 'fixed',
               top: 0,
@@ -127,6 +126,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
               zIndex: 9999,
               pointerEvents: 'auto'
             }}
+            className="lg:hidden"
             aria-hidden="true"
           />
 
@@ -137,7 +137,6 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="lg:hidden shadow-2xl overflow-y-auto"
             style={{ 
               position: 'fixed',
               top: 0,
@@ -146,8 +145,10 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
               width: '20rem',
               height: '100vh',
               backgroundColor: '#111827',
-              zIndex: 10000
+              zIndex: 10000,
+              boxShadow: '0 0 50px rgba(0, 0, 0, 0.5)'
             }}
+            className="lg:hidden overflow-y-auto"
             role="dialog"
             aria-modal="true"
             id="mobile-menu"
@@ -254,6 +255,6 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
     </AnimatePresence>
   )
 
-  // Use portal to render outside nav hierarchy, directly to body
+  // Portal MUST render to body, not inside nav
   return createPortal(overlayContent, document.body)
 }
