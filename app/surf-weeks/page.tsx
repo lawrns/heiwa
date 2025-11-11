@@ -319,7 +319,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* Book Now + Google Reviews Section */}
-      <section className="py-12 bg-white border-b border-gray-200">
+      <section className="py-8 bg-white border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Google Reviews */}
@@ -352,9 +352,9 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* Available Surf Weeks */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-10 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Available Surf Weeks</h2>
             <p className="text-lg text-gray-600">Choose your perfect week and start your surfing adventure</p>
           </div>
@@ -370,9 +370,9 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* How a Surf Week Works - With Images */}
-      <section className="py-20 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               How a surf week works
             </h2>
@@ -381,7 +381,7 @@ export default async function SurfWeeksPage() {
             </p>
           </div>
 
-          <div className="space-y-12">
+          <div className="space-y-8">
             {surfWeekSteps.map((step, index) => (
               <div key={index} className="flex flex-col md:flex-row gap-8 items-center">
                 <div className="w-full md:w-1/3">
@@ -413,7 +413,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* Photo Gallery */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {galleryImages.map((image, index) => (
@@ -435,9 +435,9 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* Customer Reviews Section */}
-      <section className="py-16 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">What Our Customers Say</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">What Our Customers Say</h2>
           
           <div className="bg-gray-50 rounded-lg p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
@@ -488,7 +488,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* What is Included Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">What is included</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -523,7 +523,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* Pricing Section - Redesigned */}
-      <section className="py-16 bg-gradient-to-br from-orange-50 to-white">
+      <section className="py-12 bg-gradient-to-br from-orange-50 to-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Pricing</h2>
@@ -572,7 +572,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Frequently Asked Questions</h2>
           

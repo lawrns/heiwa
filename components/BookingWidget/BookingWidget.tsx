@@ -35,10 +35,19 @@ export function BookingWidget({
   isWebComponent = false,
   onModalStateChange
 }: BookingWidgetProps) {
+  const { isBookingOpen, closeBooking: closeBookingContext } = useBooking();
   const [isOpen, setIsOpen] = useState(isWebComponent);
   const [bookingSuccess, setBookingSuccess] = useState<any>(null);
   const { state, actions, computed } = useBookingFlow();
   const { setBookingSuccess: setBookingSuccessInContext, selectedSurfWeek, setSelectedSurfWeek } = useBooking();
+
+  // Sync internal isOpen state with context's isBookingOpen when used in FloatingBookingWidget
+  useEffect(() => {
+    if (!isWebComponent) {
+      // When used in FloatingBookingWidget, sync with context state
+      setIsOpen(isBookingOpen);
+    }
+  }, [isBookingOpen, isWebComponent]);
 
   useEffect(() => {
     // Handle body overflow and modal classes
