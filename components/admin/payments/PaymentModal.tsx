@@ -115,7 +115,7 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Booking Information Section */}
-          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Booking Information</h3>
             
             <div>
@@ -133,7 +133,7 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
           </div>
 
           {/* Payment Information Section */}
-          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Payment Information</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -294,7 +294,7 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
           )}
 
           {/* Notes Section */}
-          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Additional Information</h3>
             
             <div>

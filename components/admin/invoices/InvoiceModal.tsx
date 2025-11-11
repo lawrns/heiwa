@@ -118,7 +118,7 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Booking Details Section */}
-          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Booking Details</h3>
             
             <div>
@@ -141,7 +141,7 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
           </div>
 
           {/* Invoice Details Section */}
-          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Invoice Details</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

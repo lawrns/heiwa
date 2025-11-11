@@ -92,7 +92,7 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Event Details Section */}
-          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Event Details</h3>
             
             <div>
@@ -121,7 +121,7 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
           </div>
 
           {/* Scheduling Section */}
-          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Scheduling</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -157,7 +157,7 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
           </div>
 
           {/* Event Settings Section */}
-          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Event Settings</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

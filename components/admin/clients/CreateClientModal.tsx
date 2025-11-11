@@ -83,7 +83,7 @@ export function CreateClientModal({ open, onClose, onCreated }: CreateClientModa
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Client Information */}
-          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Client Information</h3>
             
             <div>
