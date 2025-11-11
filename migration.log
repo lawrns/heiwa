@@ -1,0 +1,150 @@
+🔄 Starting database migration...
+
+📁 Using temp directory: /var/folders/5j/lg5934p5529bqb2w8jbf12sw0000gn/T/tmp.AGuRyGIZDg
+
+📋 Getting list of tables from old database...
+Found tables:
+     1	activity_categories
+     2	activity_log
+     3	add_ons
+     4	automations
+     5	blog_authors
+     6	blog_categories
+     7	blog_post_tags
+     8	blog_post_translations
+     9	blog_posts
+    10	blog_tags
+    11	bookings
+    12	camp_weeks
+    13	clients
+    14	cta_buttons
+    15	custom_events
+    16	experiences
+    17	external_calendar_events
+    18	faq_items
+    19	feature_flags
+    20	homepage_content
+    21	homepage_sections
+    22	invoices
+    23	media_library
+    24	navigation_items
+    25	page_content
+    26	page_versions
+    27	pages
+    28	pages_meta
+    29	payments
+    30	room_assignments
+    31	rooms
+    32	surf_camp_enrollments
+    33	surf_camps
+    34	surf_week_assignments
+    35	testimonials
+
+🔄 Migrating table: activity_categories
+  ⚠️  Table activity_categories doesn't exist in new database, skipping...
+
+🔄 Migrating table: activity_log
+  ⚠️  Table activity_log doesn't exist in new database, skipping...
+
+🔄 Migrating table: add_ons
+  ⚠️  Table add_ons doesn't exist in new database, skipping...
+
+🔄 Migrating table: automations
+  ⚠️  Table automations doesn't exist in new database, skipping...
+
+🔄 Migrating table: blog_authors
+  ⚠️  Table blog_authors doesn't exist in new database, skipping...
+
+🔄 Migrating table: blog_categories
+  ⚠️  Table blog_categories doesn't exist in new database, skipping...
+
+🔄 Migrating table: blog_post_tags
+  ⚠️  Table blog_post_tags doesn't exist in new database, skipping...
+
+🔄 Migrating table: blog_post_translations
+  ⚠️  Table blog_post_translations doesn't exist in new database, skipping...
+
+🔄 Migrating table: blog_posts
+  ⚠️  Table blog_posts doesn't exist in new database, skipping...
+
+🔄 Migrating table: blog_tags
+  ⚠️  Table blog_tags doesn't exist in new database, skipping...
+
+🔄 Migrating table: bookings
+  ⚠️  Table bookings doesn't exist in new database, skipping...
+
+🔄 Migrating table: camp_weeks
+  ⚠️  Table camp_weeks doesn't exist in new database, skipping...
+
+🔄 Migrating table: clients
+  ⚠️  Table clients doesn't exist in new database, skipping...
+
+🔄 Migrating table: cta_buttons
+  ⚠️  Table cta_buttons doesn't exist in new database, skipping...
+
+🔄 Migrating table: custom_events
+  ⚠️  Table custom_events doesn't exist in new database, skipping...
+
+🔄 Migrating table: experiences
+  ⚠️  Table experiences doesn't exist in new database, skipping...
+
+🔄 Migrating table: external_calendar_events
+  ⚠️  Table external_calendar_events doesn't exist in new database, skipping...
+
+🔄 Migrating table: faq_items
+  ⚠️  Table faq_items doesn't exist in new database, skipping...
+
+🔄 Migrating table: feature_flags
+  ⚠️  Table feature_flags doesn't exist in new database, skipping...
+
+🔄 Migrating table: homepage_content
+  ⚠️  Table homepage_content doesn't exist in new database, skipping...
+
+🔄 Migrating table: homepage_sections
+  ⚠️  Table homepage_sections doesn't exist in new database, skipping...
+
+🔄 Migrating table: invoices
+  ⚠️  Table invoices doesn't exist in new database, skipping...
+
+🔄 Migrating table: media_library
+  ⚠️  Table media_library doesn't exist in new database, skipping...
+
+🔄 Migrating table: navigation_items
+  ⚠️  Table navigation_items doesn't exist in new database, skipping...
+
+🔄 Migrating table: page_content
+  ⚠️  Table page_content doesn't exist in new database, skipping...
+
+🔄 Migrating table: page_versions
+  ⚠️  Table page_versions doesn't exist in new database, skipping...
+
+🔄 Migrating table: pages
+  ⚠️  Table pages doesn't exist in new database, skipping...
+
+🔄 Migrating table: pages_meta
+  ⚠️  Table pages_meta doesn't exist in new database, skipping...
+
+🔄 Migrating table: payments
+  ⚠️  Table payments doesn't exist in new database, skipping...
+
+🔄 Migrating table: room_assignments
+  ⚠️  Table room_assignments doesn't exist in new database, skipping...
+
+🔄 Migrating table: rooms
+  ⚠️  Table rooms doesn't exist in new database, skipping...
+
+🔄 Migrating table: surf_camp_enrollments
+  ⚠️  Table surf_camp_enrollments doesn't exist in new database, skipping...
+
+🔄 Migrating table: surf_camps
+  ⚠️  Table surf_camps doesn't exist in new database, skipping...
+
+🔄 Migrating table: surf_week_assignments
+  ⚠️  Table surf_week_assignments doesn't exist in new database, skipping...
+
+🔄 Migrating table: testimonials
+  ⚠️  Table testimonials doesn't exist in new database, skipping...
+
+🧹 Cleaning up temp files...
+
+✅ Migration complete!
