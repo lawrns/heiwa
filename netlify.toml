@@ -9,7 +9,7 @@
   NODE_OPTIONS = "--max-old-space-size=4096"
   NODE_VERSION = "18"
   # Optimize build performance
-  NPM_FLAGS = "--prefer-offline --no-audit"
+  NPM_FLAGS = "--prefer-offline --no-audit --legacy-peer-deps"
 
 # Cache static assets for better performance
 [[headers]]
