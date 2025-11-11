@@ -38,12 +38,34 @@ export default function HomePage() {
     const fetchContent = async () => {
       try {
         const response = await fetch('/api/admin/homepage?t=' + Date.now(), {
-        cache: 'no-store'
-      })
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
         const result = await response.json()
         if (result.success && result.data && result.data.length > 0) {
           console.log('✅ CMS content loaded:', result.data.length, 'sections')
-          setHomepageContent(result.data)
+          // Update cards in about section if they have old "Heiwa" prefix
+          const updatedData = result.data.map((section: any) => {
+            if (section.section === 'about' && section.cards) {
+              const updatedCards = section.cards.map((card: any) => {
+                const cleanTitle = card.title?.replace(/^Heiwa /, '') || card.title
+                return {
+                  ...card,
+                  title: cleanTitle,
+                  // Update images to use better ones based on cleaned title
+                  image: cleanTitle === 'Play' ? '/images/skatepark-1.jpg' :
+                         cleanTitle === 'Surf' ? '/images/surf4.jpg' :
+                         cleanTitle === 'Flow' ? '/images/yoga_dome1.jpg' : card.image
+                }
+              })
+              return { ...section, cards: updatedCards }
+            }
+            return section
+          })
+          setHomepageContent(updatedData)
         } else {
           console.log('⚠️ No CMS content, using defaults')
         }

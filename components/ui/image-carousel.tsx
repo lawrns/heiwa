@@ -25,6 +25,8 @@ export function ImageCarousel({
   autoAdvance = true,
   autoAdvanceInterval = 5000
 }: ImageCarouselProps) {
+  // Filter out empty or invalid image URLs
+  const validImages = images.filter(img => img && img.trim() !== '')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
@@ -32,26 +34,28 @@ export function ImageCarousel({
 
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+      prevIndex === 0 ? validImages.length - 1 : prevIndex - 1
     )
   }
 
   const goToNext = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+      prevIndex === validImages.length - 1 ? 0 : prevIndex + 1
     )
   }
 
   const goToSlide = (index: number) => {
-    setCurrentIndex(index)
+    if (index >= 0 && index < validImages.length) {
+      setCurrentIndex(index)
+    }
   }
 
   // Auto-advance carousel every N seconds when not hovered and not paused
   useEffect(() => {
-    if (autoAdvance && images.length > 1 && !isHovered && !isPaused) {
+    if (autoAdvance && validImages.length > 1 && !isHovered && !isPaused) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex((prevIndex) =>
-          prevIndex === images.length - 1 ? 0 : prevIndex + 1
+          prevIndex === validImages.length - 1 ? 0 : prevIndex + 1
         )
       }, autoAdvanceInterval)
 
@@ -61,9 +65,23 @@ export function ImageCarousel({
         }
       }
     }
-  }, [autoAdvance, images.length, isHovered, isPaused, autoAdvanceInterval])
+  }, [autoAdvance, validImages.length, isHovered, isPaused, autoAdvanceInterval])
 
-  if (images.length === 0) return null
+  // Reset currentIndex if it's out of bounds
+  useEffect(() => {
+    if (currentIndex >= validImages.length) {
+      setCurrentIndex(0)
+    }
+  }, [validImages.length, currentIndex])
+
+  if (validImages.length === 0) {
+    // Return placeholder if no valid images
+    return (
+      <div className={`relative ${aspectRatio} overflow-hidden rounded-lg bg-gray-200 flex items-center justify-center ${className}`}>
+        <span className="text-gray-400">No image available</span>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -74,16 +92,17 @@ export function ImageCarousel({
       {/* Main Image */}
       <div className={`relative ${aspectRatio} overflow-hidden rounded-lg`}>
         <Image
-          src={images[currentIndex]}
+          src={validImages[currentIndex]}
           alt={`${alt} ${currentIndex + 1}`}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           priority={currentIndex === 0}
+          unoptimized={validImages[currentIndex]?.includes('supabase.co')}
         />
         
         {/* Navigation Arrows */}
-        {showArrows && images.length > 1 && (
+        {showArrows && validImages.length > 1 && (
           <>
             <button
               onClick={goToPrevious}
@@ -103,7 +122,7 @@ export function ImageCarousel({
         )}
         
         {/* Pause/Play Button */}
-        {autoAdvance && images.length > 1 && (
+        {autoAdvance && validImages.length > 1 && (
           <button
             onClick={() => setIsPaused(!isPaused)}
             className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 min-h-[44px] min-w-[44px] flex items-center justify-center"
@@ -115,16 +134,16 @@ export function ImageCarousel({
       </div>
 
       {/* Image Counter */}
-      {images.length > 1 && (
+      {validImages.length > 1 && (
         <div className="absolute top-4 right-4 bg-black/50 text-white text-sm px-2 py-1 rounded">
-          {currentIndex + 1}/{images.length}
+          {currentIndex + 1}/{validImages.length}
         </div>
       )}
 
       {/* Dots Indicator */}
-      {showDots && images.length > 1 && (
+      {showDots && validImages.length > 1 && (
         <div className="flex justify-center mt-4 space-x-2">
-          {images.map((_, index) => (
+          {validImages.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
