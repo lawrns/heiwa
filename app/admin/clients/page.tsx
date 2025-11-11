@@ -25,64 +25,40 @@ export default function ClientsPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const itemsPerPage = 10
 
-  // Mock data for demonstration
-  const mockClients: Client[] = [
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john@example.com',
-      phone: '+1 (555) 123-4567',
-      company: 'Tech Corp',
-      status: 'active',
-      totalBookings: 5,
-      totalSpent: 2500,
-      joinDate: '2024-01-15',
-      lastBooking: '2024-11-05'
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      phone: '+1 (555) 234-5678',
-      company: 'Design Studio',
-      status: 'active',
-      totalBookings: 3,
-      totalSpent: 1800,
-      joinDate: '2024-02-20',
-      lastBooking: '2024-10-28'
-    },
-    {
-      id: '3',
-      name: 'Bob Johnson',
-      email: 'bob@example.com',
-      phone: '+1 (555) 345-6789',
-      status: 'pending',
-      totalBookings: 1,
-      totalSpent: 500,
-      joinDate: '2024-11-01',
-      lastBooking: undefined
-    },
-  ]
-
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setClients(mockClients)
-      setLoading(false)
-    }, 500)
-    return () => clearTimeout(timer)
-  }, [])
+    const fetchClients = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        const response = await fetch(`/api/clients?status=${statusFilter}&include_archived=false`)
+        const data = await response.json()
 
-  // Filter and search
+        if (data.success) {
+          setClients(data.clients || [])
+        } else {
+          setError(data.error || 'Failed to fetch clients')
+        }
+      } catch (err) {
+        console.error('Error fetching clients:', err)
+        setError('Failed to load clients. Please try again.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchClients()
+  }, [statusFilter])
+
+  // Filter and search (search is now handled server-side, but we keep client-side filtering for status)
   const filteredClients = clients.filter(client => {
     const matchesSearch = 
       client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.phone.toLowerCase().includes(searchTerm.toLowerCase())
     
-    const matchesStatus = statusFilter === 'all' || client.status === statusFilter
-    
-    return matchesSearch && matchesStatus
+    // Status filter is handled server-side, but keep for client-side search results
+    return matchesSearch
   })
 
   // Pagination

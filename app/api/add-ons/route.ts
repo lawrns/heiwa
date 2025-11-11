@@ -1,16 +1,33 @@
-import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { NextRequest, NextResponse } from 'next/server'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
 
 // API endpoint for getting all add-ons
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // Get all active add-ons
-    const { data: addOns, error: addOnsError } = await supabase
+    const { searchParams } = new URL(request.url)
+    const includeInactive = searchParams.get('include_inactive') === 'true'
+    const category = searchParams.get('category')
+    
+    // Use admin client for admin requests (to get inactive items)
+    const client = includeInactive ? supabaseAdmin : supabase
+
+    let query = client
       .from('add_ons')
       .select('*')
-      .eq('is_active', true)
       .order('category', { ascending: true })
       .order('name', { ascending: true })
+
+    // Filter by active status (unless admin requests all)
+    if (!includeInactive) {
+      query = query.eq('is_active', true)
+    }
+
+    // Filter by category
+    if (category && category !== 'all') {
+      query = query.eq('category', category)
+    }
+
+    const { data: addOns, error: addOnsError } = await query
 
     if (addOnsError) {
       console.error('Error fetching add-ons:', addOnsError)
@@ -32,6 +49,56 @@ export async function GET() {
       success: true,
       addOns: [] // Return empty array for graceful degradation
     })
+  }
+}
+
+// POST - Create new add-on
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { name, description, price, category, is_active, max_quantity, images } = body
+
+    if (!name || !price || !category) {
+      return NextResponse.json(
+        { success: false, error: 'Name, price, and category are required' },
+        { status: 400 }
+      )
+    }
+
+    const { data: addOn, error } = await supabaseAdmin
+      .from('add_ons')
+      .insert([
+        {
+          name,
+          description: description || '',
+          price: parseFloat(price),
+          category,
+          is_active: is_active !== false,
+          max_quantity: max_quantity || null,
+          images: images || [],
+        },
+      ])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error creating add-on:', error)
+      return NextResponse.json(
+        { success: false, error: 'Failed to create add-on' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      addOn,
+    })
+  } catch (error) {
+    console.error('Error in add-ons POST API:', error)
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }
 

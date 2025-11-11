@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { PlusCircle, Edit, Trash2, Package, Euro, Users, Search, Filter, Download } from 'lucide-react'
 
@@ -19,59 +19,46 @@ export default function AdminAddOnsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
 
-  // This will eventually fetch add-ons from the database
-  const addOns: AddOn[] = [
-    {
-      id: '1',
-      name: 'Surfboard Rental',
-      description: 'High-quality surfboard rental for your stay',
-      price: 25,
-      category: 'equipment',
-      isActive: true,
-      maxQuantity: 10,
-      requiresBooking: true
-    },
-    {
-      id: '2',
-      name: 'Airport Transfer',
-      description: 'Private transfer from/to Lisbon Airport',
-      price: 80,
-      category: 'transport',
-      isActive: true,
-      maxQuantity: 1,
-      requiresBooking: true
-    },
-    {
-      id: '3',
-      name: 'Photography Session',
-      description: 'Professional surf photography session',
-      price: 150,
-      category: 'service',
-      isActive: true,
-      maxQuantity: 5,
-      requiresBooking: true
-    },
-    {
-      id: '4',
-      name: 'Skateboard Rental',
-      description: 'Skateboard rental for exploring the local skatepark',
-      price: 15,
-      category: 'equipment',
-      isActive: false,
-      maxQuantity: 8,
-      requiresBooking: false
-    },
-    {
-      id: '5',
-      name: 'Yoga Class',
-      description: 'Private yoga session with certified instructor',
-      price: 45,
-      category: 'experience',
-      isActive: true,
-      maxQuantity: 12,
-      requiresBooking: true
+  const [addOns, setAddOns] = useState<AddOn[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchAddOns = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        const categoryParam = categoryFilter !== 'all' ? `&category=${categoryFilter}` : ''
+        const response = await fetch(`/api/add-ons?include_inactive=true${categoryParam}`)
+        const data = await response.json()
+
+        if (data.success) {
+          // Transform database format to component format
+          const transformedAddOns = (data.addOns || []).map((addOn: any) => ({
+            id: addOn.id,
+            name: addOn.name,
+            description: addOn.description || '',
+            price: parseFloat(addOn.price) || 0,
+            category: addOn.category,
+            isActive: addOn.is_active !== false,
+            maxQuantity: addOn.max_quantity || undefined,
+            requiresBooking: addOn.max_quantity !== null && addOn.max_quantity > 0,
+          }))
+          setAddOns(transformedAddOns)
+        } else {
+          setError(data.error || 'Failed to fetch add-ons')
+        }
+      } catch (err) {
+        console.error('Error fetching add-ons:', err)
+        setError('Failed to load add-ons. Please try again.')
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchAddOns()
+  }, [categoryFilter])
 
   const getCategoryIcon = (category: AddOn['category']) => {
     switch (category) {
@@ -109,6 +96,35 @@ export default function AdminAddOnsPage() {
     const matchesCategory = categoryFilter === 'all' || addon.category === categoryFilter
     return matchesSearch && matchesCategory
   })
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+              </div>
+            ))}
+          </div>
+          <div className="h-64 bg-gray-200 rounded-lg"></div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">

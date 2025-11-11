@@ -38,39 +38,95 @@ export default function EditMediaPage({ params }: { params: { id: string } }) {
   const [newTag, setNewTag] = useState('')
 
   useEffect(() => {
-    // TODO: Fetch media item from API
-    // For now, simulate loading with mock data
-    setTimeout(() => {
-      setFormData({
-        id: params.id,
-        title: 'Dorm Room Interior',
-        type: 'image',
-        url: '/images/rooms/dorm-room-1.jpg',
-        thumbnailUrl: '/images/rooms/dorm-room-1-thumb.jpg',
-        category: 'rooms',
-        tags: ['dorm', 'interior', 'bunk-beds'],
-        isActive: true,
-        uploadedAt: '2024-01-15T10:30:00Z',
-        fileSize: 2048576,
-        dimensions: { width: 1920, height: 1080 }
-      })
-      setLoading(false)
-    }, 1000)
+    const fetchMediaItem = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/gallery/${params.id}`)
+        const data = await response.json()
+
+        if (data.success && data.galleryItem) {
+          setFormData({
+            id: data.galleryItem.id,
+            title: data.galleryItem.title,
+            type: data.galleryItem.type,
+            url: data.galleryItem.url,
+            thumbnailUrl: data.galleryItem.thumbnailUrl,
+            category: data.galleryItem.category,
+            tags: data.galleryItem.tags || [],
+            isActive: data.galleryItem.isActive,
+            uploadedAt: data.galleryItem.uploadedAt,
+            fileSize: data.galleryItem.fileSize,
+            dimensions: data.galleryItem.dimensions,
+          })
+        } else {
+          console.error('Failed to fetch media item:', data.error)
+        }
+      } catch (err) {
+        console.error('Error fetching media item:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMediaItem()
   }, [params.id])
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement actual API call to update media item
-    console.log('Updating media item:', formData)
-    router.push('/admin/gallery')
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/gallery/${params.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title,
+          category: formData.category,
+          url: formData.url,
+          thumbnailUrl: formData.thumbnailUrl,
+          alt_text: formData.title,
+          description: formData.tags.join(', '),
+          isActive: formData.isActive,
+          tags: formData.tags,
+        }),
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        router.push('/admin/gallery')
+      } else {
+        console.error('Failed to update:', data.error)
+        alert('Failed to update media item. Please try again.')
+      }
+    } catch (err) {
+      console.error('Error updating media item:', err)
+      alert('An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this media item? This action cannot be undone.')) return
     
-    // TODO: Implement actual API call to delete media item
-    console.log('Deleting media item:', params.id)
-    router.push('/admin/gallery')
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/gallery/${params.id}`, {
+        method: 'DELETE',
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        router.push('/admin/gallery')
+      } else {
+        console.error('Failed to delete:', data.error)
+        alert('Failed to delete media item. Please try again.')
+      }
+    } catch (err) {
+      console.error('Error deleting media item:', err)
+      alert('An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const addTag = () => {

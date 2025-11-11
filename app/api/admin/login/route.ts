@@ -1,5 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Check authentication status
+export async function GET(request: NextRequest) {
+  try {
+    const adminAuth = request.cookies.get('admin_auth')?.value
+    const adminPassword = process.env.ADMIN_PASSWORD || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'heiwa_admin_2024'
+
+    if (adminAuth && adminAuth === adminPassword) {
+      return NextResponse.json(
+        { authenticated: true },
+        { status: 200 }
+      )
+    }
+
+    return NextResponse.json(
+      { authenticated: false },
+      { status: 401 }
+    )
+  } catch (error) {
+    return NextResponse.json(
+      { authenticated: false },
+      { status: 401 }
+    )
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { password } = await request.json()

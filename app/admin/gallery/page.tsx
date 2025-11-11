@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { PlusCircle, Edit, Trash2, Upload, Image as ImageIcon, Video, Eye, Download, Search, Filter } from 'lucide-react'
@@ -24,73 +24,35 @@ export default function AdminGalleryPage() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
-  // This will eventually fetch gallery items from the database
-  const galleryItems: GalleryItem[] = [
-    {
-      id: '1',
-      title: 'Dorm Room Interior',
-      type: 'image',
-      url: '/images/rooms/dorm-room-1.jpg',
-      thumbnailUrl: '/images/rooms/dorm-room-1-thumb.jpg',
-      category: 'rooms',
-      tags: ['dorm', 'interior', 'bunk-beds'],
-      isActive: true,
-      uploadedAt: '2024-01-15T10:30:00Z',
-      fileSize: 2048576,
-      dimensions: { width: 1920, height: 1080 }
-    },
-    {
-      id: '2',
-      title: 'Surf Session Video',
-      type: 'video',
-      url: '/images/videos/surf-session.mp4',
-      thumbnailUrl: '/images/videos/surf-session-thumb.jpg',
-      category: 'surf',
-      tags: ['surfing', 'waves', 'lesson'],
-      isActive: true,
-      uploadedAt: '2024-01-14T15:45:00Z',
-      fileSize: 15728640
-    },
-    {
-      id: '3',
-      title: 'Yoga Deck Sunset',
-      type: 'image',
-      url: '/images/activities/yoga-deck-sunset.jpg',
-      thumbnailUrl: '/images/activities/yoga-deck-sunset-thumb.jpg',
-      category: 'activities',
-      tags: ['yoga', 'sunset', 'deck', 'peaceful'],
-      isActive: true,
-      uploadedAt: '2024-01-13T18:20:00Z',
-      fileSize: 3145728,
-      dimensions: { width: 2560, height: 1440 }
-    },
-    {
-      id: '4',
-      title: 'Skatepark Overview',
-      type: 'image',
-      url: '/images/facilities/skatepark-overview.jpg',
-      thumbnailUrl: '/images/facilities/skatepark-overview-thumb.jpg',
-      category: 'facilities',
-      tags: ['skatepark', 'facilities', 'outdoor'],
-      isActive: false,
-      uploadedAt: '2024-01-12T09:15:00Z',
-      fileSize: 1835008,
-      dimensions: { width: 1600, height: 900 }
-    },
-    {
-      id: '5',
-      title: 'Common Area Evening',
-      type: 'image',
-      url: '/images/facilities/common-area-evening.jpg',
-      thumbnailUrl: '/images/facilities/common-area-evening-thumb.jpg',
-      category: 'facilities',
-      tags: ['common-area', 'evening', 'cozy'],
-      isActive: true,
-      uploadedAt: '2024-01-11T20:30:00Z',
-      fileSize: 2621440,
-      dimensions: { width: 1920, height: 1280 }
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchGalleryItems = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        const categoryParam = selectedCategory !== 'all' ? `&category=${selectedCategory}` : ''
+        const response = await fetch(`/api/gallery${categoryParam ? `?${categoryParam.substring(1)}` : ''}`)
+        const data = await response.json()
+
+        if (data.success) {
+          setGalleryItems(data.galleryItems || [])
+        } else {
+          setError(data.error || 'Failed to fetch gallery items')
+        }
+      } catch (err) {
+        console.error('Error fetching gallery items:', err)
+        setError('Failed to load gallery items. Please try again.')
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchGalleryItems()
+  }, [selectedCategory])
 
   const filteredItems = galleryItems.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -149,6 +111,35 @@ export default function AdminGalleryPage() {
       hour: '2-digit',
       minute: '2-digit'
     })
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="bg-white border border-gray-200 rounded-lg p-5">
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+              </div>
+            ))}
+          </div>
+          <div className="h-64 bg-gray-200 rounded-lg"></div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    )
   }
 
   return (

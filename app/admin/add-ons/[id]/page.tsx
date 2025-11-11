@@ -34,38 +34,93 @@ export default function EditAddOnPage({ params }: { params: { id: string } }) {
   })
 
   useEffect(() => {
-    // TODO: Fetch add-on data from API
-    // For now, simulate loading with mock data
-    setTimeout(() => {
-      setFormData({
-        id: params.id,
-        name: 'Surfboard Rental',
-        description: 'High-quality surfboard rental for your stay',
-        price: 25,
-        category: 'equipment',
-        isActive: true,
-        maxQuantity: 10,
-        requiresBooking: true,
-        imageUrl: '/images/add-ons/surfboard.jpg',
-        detailedDescription: 'Professional surfboard rental including wetsuit and leash. Boards are regularly maintained and suitable for all skill levels.'
-      })
-      setLoading(false)
-    }, 1000)
+    const fetchAddOn = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/add-ons/${params.id}`)
+        const data = await response.json()
+
+        if (data.success && data.addOn) {
+          setFormData({
+            id: data.addOn.id,
+            name: data.addOn.name,
+            description: data.addOn.description || '',
+            price: parseFloat(data.addOn.price) || 0,
+            category: data.addOn.category,
+            isActive: data.addOn.is_active !== false,
+            maxQuantity: data.addOn.max_quantity || undefined,
+            requiresBooking: data.addOn.max_quantity !== null && data.addOn.max_quantity > 0,
+            imageUrl: data.addOn.images?.[0] || '',
+            detailedDescription: data.addOn.description || '',
+          })
+        } else {
+          console.error('Failed to fetch add-on:', data.error)
+        }
+      } catch (err) {
+        console.error('Error fetching add-on:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAddOn()
   }, [params.id])
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement actual API call to update add-on
-    console.log('Updating add-on:', formData)
-    router.push('/admin/add-ons')
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/add-ons/${params.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          description: formData.detailedDescription || formData.description,
+          price: formData.price,
+          category: formData.category,
+          is_active: formData.isActive,
+          max_quantity: formData.maxQuantity || null,
+          images: formData.imageUrl ? [formData.imageUrl] : [],
+        }),
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        router.push('/admin/add-ons')
+      } else {
+        console.error('Failed to update:', data.error)
+        alert('Failed to update add-on. Please try again.')
+      }
+    } catch (err) {
+      console.error('Error updating add-on:', err)
+      alert('An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this add-on? This action cannot be undone.')) return
     
-    // TODO: Implement actual API call to delete add-on
-    console.log('Deleting add-on:', params.id)
-    router.push('/admin/add-ons')
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/add-ons/${params.id}`, {
+        method: 'DELETE',
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        router.push('/admin/add-ons')
+      } else {
+        console.error('Failed to delete:', data.error)
+        alert('Failed to delete add-on. Please try again.')
+      }
+    } catch (err) {
+      console.error('Error deleting add-on:', err)
+      alert('An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleInputChange = (field: keyof AddOn, value: any) => {

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Lock } from 'lucide-react'
 
@@ -9,6 +9,32 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [checkingAuth, setCheckingAuth] = useState(true)
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        // Check if admin_auth cookie exists by making a request to a protected endpoint
+        const response = await fetch('/api/admin/login', {
+          method: 'GET',
+          credentials: 'include',
+        })
+        
+        if (response.ok) {
+          // Already authenticated, redirect to dashboard
+          router.push('/admin')
+          return
+        }
+      } catch (err) {
+        // Not authenticated, show login form
+      } finally {
+        setCheckingAuth(false)
+      }
+    }
+    
+    checkAuth()
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,6 +49,8 @@ export default function AdminLoginPage() {
       })
 
       if (response.ok) {
+        // Clear password field
+        setPassword('')
         // Redirect to admin dashboard
         window.location.href = '/admin'
       } else {
@@ -34,6 +62,18 @@ export default function AdminLoginPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Show loading state while checking authentication
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center px-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
