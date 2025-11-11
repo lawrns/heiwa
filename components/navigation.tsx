@@ -84,6 +84,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                             : 'text-white'
                         )}
                         aria-current={currentPath === item.path ? 'page' : undefined}
+                        aria-label={`Navigate to ${item.name} page`}
                       >
                         {item.name}
                       </Link>
@@ -125,6 +126,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       ? 'text-orange-400'
                       : 'text-white'
                   )}
+                  aria-label="Open activities menu"
+                  aria-expanded={activitiesOpen}
+                  aria-haspopup="true"
                 >
                   ACTIVITIES
                   <ChevronDown className="w-3 h-3" />
@@ -142,6 +146,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                               ? 'text-orange-400'
                               : 'text-white'
                           )}
+                          aria-label={`Navigate to ${item.name} page`}
                         >
                           {item.name}
                         </Link>
@@ -163,6 +168,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       : 'text-white'
                   )}
                   aria-current={currentPath === item.path ? 'page' : undefined}
+                  aria-label={`Navigate to ${item.name} page`}
                 >
                   {item.name}
                 </Link>

@@ -263,6 +263,7 @@ export default async function SurfWeeksPage() {
           fill
           className="object-cover"
           priority
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-black/50" />
 
@@ -354,6 +355,7 @@ export default async function SurfWeeksPage() {
                       alt={step.title}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 33vw"
                     />
                   </div>
                 </div>
@@ -388,6 +390,7 @@ export default async function SurfWeeksPage() {
                   alt={`Surf Week ${index + 1}`}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                 />
               </div>
             ))}

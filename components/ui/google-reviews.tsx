@@ -76,10 +76,13 @@ export function GoogleReviews({
       <div className={`flex items-center gap-4 ${className}`}>
         <div className="flex items-center gap-1">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="w-4 h-4 bg-gray-200 rounded animate-pulse" />
+            <div key={i} className="w-4 h-4 bg-white/20 rounded animate-pulse" />
           ))}
         </div>
-        <div className="text-sm text-white">Loading reviews...</div>
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-8 bg-white/20 rounded animate-pulse" />
+          <div className="h-4 w-24 bg-white/20 rounded animate-pulse" />
+        </div>
       </div>
     )
   }

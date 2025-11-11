@@ -62,6 +62,7 @@ export default function TheSpotPage() {
           fill
           className="object-cover"
           priority
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative h-full flex items-center justify-center text-center px-4">

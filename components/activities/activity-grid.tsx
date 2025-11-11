@@ -68,7 +68,11 @@ export function ActivityGrid({
       const result = await response.json()
       
       if (result.success) {
-        setActivities(result.data)
+        // Remove duplicates by id
+        const uniqueActivities = result.data.filter((activity: Activity, index: number, self: Activity[]) =>
+          index === self.findIndex((a: Activity) => a.id === activity.id)
+        )
+        setActivities(uniqueActivities)
       } else {
         setError(result.error)
       }
@@ -120,11 +124,18 @@ export function ActivityGrid({
           >
             <div className="relative h-48">
               <Image
-                src={activity.image_url}
+                src={activity.image_url || '/images/placeholder-activity.jpg'}
                 alt={activity.title}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                onError={(e) => {
+                  // Fallback to placeholder if image fails to load
+                  const target = e.target as HTMLImageElement
+                  if (target.src !== '/images/placeholder-activity.jpg') {
+                    target.src = '/images/placeholder-activity.jpg'
+                  }
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               

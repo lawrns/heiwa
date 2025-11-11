@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 
 interface ImageCarouselProps {
   images: string[]
@@ -27,6 +27,7 @@ export function ImageCarousel({
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const goToPrevious = () => {
@@ -45,9 +46,9 @@ export function ImageCarousel({
     setCurrentIndex(index)
   }
 
-  // Auto-advance carousel every N seconds when not hovered
+  // Auto-advance carousel every N seconds when not hovered and not paused
   useEffect(() => {
-    if (autoAdvance && images.length > 1 && !isHovered) {
+    if (autoAdvance && images.length > 1 && !isHovered && !isPaused) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex((prevIndex) =>
           prevIndex === images.length - 1 ? 0 : prevIndex + 1
@@ -60,7 +61,7 @@ export function ImageCarousel({
         }
       }
     }
-  }, [autoAdvance, images.length, isHovered, autoAdvanceInterval])
+  }, [autoAdvance, images.length, isHovered, isPaused, autoAdvanceInterval])
 
   if (images.length === 0) return null
 
@@ -99,6 +100,17 @@ export function ImageCarousel({
               <ChevronRight className="w-5 h-5" />
             </button>
           </>
+        )}
+        
+        {/* Pause/Play Button */}
+        {autoAdvance && images.length > 1 && (
+          <button
+            onClick={() => setIsPaused(!isPaused)}
+            className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label={isPaused ? 'Resume slideshow' : 'Pause slideshow'}
+          >
+            {isPaused ? <Play className="w-5 h-5" /> : <Pause className="w-5 h-5" />}
+          </button>
         )}
       </div>
 
