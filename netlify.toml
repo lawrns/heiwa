@@ -1,12 +1,9 @@
 [build]
   command = "npm run build"
-  # Publish directory is handled by @netlify/plugin-nextjs - do not set it here
+  publish = ".next"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    # Let the plugin handle all routing
-    functionsDir = ".netlify/functions"
 
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"
