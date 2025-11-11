@@ -5,6 +5,10 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { FileText, Plus, Eye, Edit, Trash2, Filter, Download, Search } from 'lucide-react'
 import { InvoiceModal } from '@/components/admin/invoices/InvoiceModal'
 import { InvoiceViewModal } from '@/components/admin/invoices/InvoiceViewModal'
+import { BulkActions } from '@/components/admin/BulkActions'
+import { CheckboxCell } from '@/components/admin/CheckboxCell'
+import { DateRangeFilter } from '@/components/admin/DateRangeFilter'
+import { AmountRangeFilter } from '@/components/admin/AmountRangeFilter'
 import { toast } from 'react-toastify'
 
 interface Invoice {
@@ -39,6 +43,9 @@ export default function InvoicesPage() {
   const [showViewModal, setShowViewModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
+  const [selectedInvoices, setSelectedInvoices] = useState<Set<string>>(new Set())
+  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' })
+  const [amountRange, setAmountRange] = useState({ minAmount: '', maxAmount: '' })
   const itemsPerPage = 20
 
   useEffect(() => {
@@ -108,6 +115,118 @@ export default function InvoicesPage() {
     // Set booking ID in modal
   }
 
+  // Bulk operations handlers
+  const handleSelectInvoice = (invoiceId: string, checked: boolean) => {
+    setSelectedInvoices(prev => {
+      const newSet = new Set(prev)
+      if (checked) {
+        newSet.add(invoiceId)
+      } else {
+        newSet.delete(invoiceId)
+      }
+      return newSet
+    })
+  }
+
+  const handleSelectAll = () => {
+    setSelectedInvoices(new Set(filteredInvoices.map(i => i.id)))
+  }
+
+  const handleDeselectAll = () => {
+    setSelectedInvoices(new Set())
+  }
+
+  const handleBulkStatusUpdate = async (status: string) => {
+    if (selectedInvoices.size === 0) return
+
+    if (!confirm(`Update ${selectedInvoices.size} invoice(s) to ${status}?`)) return
+
+    try {
+      const response = await fetch('/api/invoices/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_status',
+          invoiceIds: Array.from(selectedInvoices),
+          status,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Updated ${selectedInvoices.size} invoice(s)`)
+        setSelectedInvoices(new Set())
+        fetchInvoices()
+      } else {
+        throw new Error(data.error || 'Failed to update invoices')
+      }
+    } catch (error: any) {
+      console.error('Error updating invoices:', error)
+      toast.error(error.message || 'Failed to update invoices')
+    }
+  }
+
+  const handleBulkSend = async () => {
+    if (selectedInvoices.size === 0) return
+
+    if (!confirm(`Send ${selectedInvoices.size} invoice(s) to clients?`)) return
+
+    try {
+      const response = await fetch('/api/invoices/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'send',
+          invoiceIds: Array.from(selectedInvoices),
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Sent ${selectedInvoices.size} invoice(s)`)
+        setSelectedInvoices(new Set())
+        fetchInvoices()
+      } else {
+        throw new Error(data.error || 'Failed to send invoices')
+      }
+    } catch (error: any) {
+      console.error('Error sending invoices:', error)
+      toast.error(error.message || 'Failed to send invoices')
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedInvoices.size === 0) return
+
+    if (!confirm(`Delete ${selectedInvoices.size} invoice(s)? This action cannot be undone.`)) return
+
+    try {
+      const response = await fetch('/api/invoices/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'delete',
+          invoiceIds: Array.from(selectedInvoices),
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Deleted ${selectedInvoices.size} invoice(s)`)
+        setSelectedInvoices(new Set())
+        fetchInvoices()
+      } else {
+        throw new Error(data.error || 'Failed to delete invoices')
+      }
+    } catch (error: any) {
+      console.error('Error deleting invoices:', error)
+      toast.error(error.message || 'Failed to delete invoices')
+    }
+  }
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'paid':
@@ -124,13 +243,34 @@ export default function InvoicesPage() {
   }
 
   const filteredInvoices = invoices.filter(invoice => {
+    // Apply status filter
+    if (statusFilter !== 'all' && invoice.status !== statusFilter) return false
+    
+    // Apply search term
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
-      return (
+      const matchesSearch = 
         invoice.invoice_number.toLowerCase().includes(searchLower) ||
         invoice.booking_id.toLowerCase().includes(searchLower)
-      )
+      if (!matchesSearch) return false
     }
+    
+    // Apply date range filter (due date)
+    if (dateRange.startDate || dateRange.endDate) {
+      if (invoice.due_date) {
+        const dueDate = new Date(invoice.due_date)
+        if (dateRange.startDate && dueDate < new Date(dateRange.startDate)) return false
+        if (dateRange.endDate && dueDate > new Date(dateRange.endDate)) return false
+      }
+    }
+    
+    // Apply amount range filter
+    if (amountRange.minAmount || amountRange.maxAmount) {
+      const amount = invoice.amount
+      if (amountRange.minAmount && amount < parseFloat(amountRange.minAmount)) return false
+      if (amountRange.maxAmount && amount > parseFloat(amountRange.maxAmount)) return false
+    }
+    
     return true
   })
 
@@ -269,7 +409,67 @@ export default function InvoicesPage() {
             </select>
           </div>
         </div>
+
+        {/* Advanced Filters */}
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <DateRangeFilter
+            startDate={dateRange.startDate}
+            endDate={dateRange.endDate}
+            onStartDateChange={(date) => {
+              setDateRange(prev => ({ ...prev, startDate: date }))
+              setCurrentPage(1)
+            }}
+            onEndDateChange={(date) => {
+              setDateRange(prev => ({ ...prev, endDate: date }))
+              setCurrentPage(1)
+            }}
+            label="Filter by Due Date"
+          />
+          <AmountRangeFilter
+            minAmount={amountRange.minAmount}
+            maxAmount={amountRange.maxAmount}
+            onMinAmountChange={(amount) => {
+              setAmountRange(prev => ({ ...prev, minAmount: amount }))
+              setCurrentPage(1)
+            }}
+            onMaxAmountChange={(amount) => {
+              setAmountRange(prev => ({ ...prev, maxAmount: amount }))
+              setCurrentPage(1)
+            }}
+            label="Filter by Amount"
+          />
+        </div>
       </div>
+
+      {/* Bulk Actions Bar */}
+      {selectedInvoices.size > 0 && (
+        <BulkActions
+          selectedCount={selectedInvoices.size}
+          totalCount={filteredInvoices.length}
+          onSelectAll={handleSelectAll}
+          onDeselectAll={handleDeselectAll}
+          actions={[
+            {
+              label: 'Mark Paid',
+              onClick: () => handleBulkStatusUpdate('paid'),
+            },
+            {
+              label: 'Mark Sent',
+              onClick: () => handleBulkStatusUpdate('sent'),
+            },
+            {
+              label: 'Send Emails',
+              onClick: handleBulkSend,
+            },
+            {
+              label: 'Delete',
+              onClick: handleBulkDelete,
+              variant: 'destructive',
+            },
+          ]}
+          className="mb-4"
+        />
+      )}
 
       {/* Invoices Table */}
       <div className="bg-white shadow rounded-lg overflow-hidden">
@@ -283,6 +483,18 @@ export default function InvoicesPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                  <CheckboxCell
+                    checked={filteredInvoices.length > 0 && filteredInvoices.every(i => selectedInvoices.has(i.id))}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        handleSelectAll()
+                      } else {
+                        handleDeselectAll()
+                      }
+                    }}
+                  />
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Invoice Number
                 </th>
@@ -309,6 +521,12 @@ export default function InvoicesPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredInvoices.map((invoice) => (
                 <tr key={invoice.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <CheckboxCell
+                      checked={selectedInvoices.has(invoice.id)}
+                      onCheckedChange={(checked) => handleSelectInvoice(invoice.id, checked)}
+                    />
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{invoice.invoice_number}</div>
                   </td>

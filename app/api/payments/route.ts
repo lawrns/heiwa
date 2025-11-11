@@ -127,6 +127,37 @@ export async function POST(request: NextRequest) {
         .eq('id', booking_id)
     }
 
+    // Fetch client details for email
+    const { data: booking } = await supabaseAdmin
+      .from('bookings')
+      .select(`
+        id,
+        client_ids,
+        clients:client_ids (
+          name,
+          email
+        )
+      `)
+      .eq('id', booking_id)
+      .single()
+
+    // Send payment confirmation email
+    if (payment_status === 'completed' && booking?.clients?.[0]?.email) {
+      import('@/lib/email-service').then(({ emailService }) => {
+        emailService.sendPaymentConfirmation({
+          paymentId: data.id,
+          clientName: booking.clients[0].name || 'Guest',
+          clientEmail: booking.clients[0].email,
+          amount: data.amount,
+          currency: data.currency,
+          paymentMethod: data.payment_method,
+          transactionId: data.transaction_id,
+          bookingId: booking_id,
+          status: data.payment_status,
+        }).catch(err => console.error('Failed to send payment confirmation email:', err))
+      })
+    }
+
     return NextResponse.json({
       success: true,
       data: { payment: data }

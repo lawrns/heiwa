@@ -84,6 +84,36 @@ export async function POST(
         .eq('id', payment.booking_id)
     }
 
+    // Fetch client details for email
+    const { data: booking } = await supabaseAdmin
+      .from('bookings')
+      .select(`
+        id,
+        client_ids,
+        clients:client_ids (
+          name,
+          email
+        )
+      `)
+      .eq('id', payment.booking_id)
+      .single()
+
+    // Send refund notification email
+    if (booking?.clients?.[0]?.email) {
+      import('@/lib/email-service').then(({ emailService }) => {
+        emailService.sendRefundNotification({
+          refundId: updatedPayment.id,
+          clientName: booking.clients[0].name || 'Guest',
+          clientEmail: booking.clients[0].email,
+          refundAmount: amount,
+          currency: payment.currency,
+          originalPaymentAmount: payment.amount,
+          reason: reason || payment.refund_reason,
+          bookingId: payment.booking_id,
+        }).catch(err => console.error('Failed to send refund notification email:', err))
+      })
+    }
+
     return NextResponse.json({
       success: true,
       data: { payment: updatedPayment },

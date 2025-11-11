@@ -6,6 +6,9 @@ import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Cl
 import { BookingCalendar } from '@/components/ui/booking-calendar'
 import { useBookingsRealtime } from '@/lib/hooks/useBookingsRealtime'
 import { EditBookingModal } from '@/components/admin/bookings/EditBookingModal'
+import { BulkActions } from '@/components/admin/BulkActions'
+import { CheckboxCell } from '@/components/admin/CheckboxCell'
+import { DateRangeFilter } from '@/components/admin/DateRangeFilter'
 import { toast } from 'react-toastify'
 
 interface Booking {
@@ -49,10 +52,15 @@ export default function BookingsPage() {
     payment_status: initialPaymentStatus,
     date_range: 'all'
   })
+  const [dateRange, setDateRange] = useState({
+    startDate: '',
+    endDate: '',
+  })
   const [view, setView] = useState<'table' | 'calendar'>('table')
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [showViewModal, setShowViewModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedBookings, setSelectedBookings] = useState<Set<string>>(new Set())
 
   // Set up real-time updates
   useBookingsRealtime({
@@ -196,6 +204,119 @@ export default function BookingsPage() {
     }
   }
 
+  // Bulk operations handlers
+  const handleSelectBooking = (bookingId: string, checked: boolean) => {
+    setSelectedBookings(prev => {
+      const newSet = new Set(prev)
+      if (checked) {
+        newSet.add(bookingId)
+      } else {
+        newSet.delete(bookingId)
+      }
+      return newSet
+    })
+  }
+
+  const handleSelectAll = () => {
+    setSelectedBookings(new Set(paginatedBookings.map(b => b.id)))
+  }
+
+  const handleDeselectAll = () => {
+    setSelectedBookings(new Set())
+  }
+
+  const handleBulkStatusUpdate = async (status: string) => {
+    if (selectedBookings.size === 0) return
+
+    if (!confirm(`Update ${selectedBookings.size} booking(s) to ${status}?`)) return
+
+    try {
+      const response = await fetch('/api/bookings/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_status',
+          bookingIds: Array.from(selectedBookings),
+          status,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Updated ${selectedBookings.size} booking(s)`)
+        setSelectedBookings(new Set())
+        fetchBookings()
+      } else {
+        throw new Error(data.error || 'Failed to update bookings')
+      }
+    } catch (error: any) {
+      console.error('Error updating bookings:', error)
+      toast.error(error.message || 'Failed to update bookings')
+    }
+  }
+
+  const handleBulkPaymentStatusUpdate = async (paymentStatus: string) => {
+    if (selectedBookings.size === 0) return
+
+    if (!confirm(`Update payment status for ${selectedBookings.size} booking(s) to ${paymentStatus}?`)) return
+
+    try {
+      const response = await fetch('/api/bookings/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_payment_status',
+          bookingIds: Array.from(selectedBookings),
+          payment_status: paymentStatus,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Updated ${selectedBookings.size} booking(s)`)
+        setSelectedBookings(new Set())
+        fetchBookings()
+      } else {
+        throw new Error(data.error || 'Failed to update bookings')
+      }
+    } catch (error: any) {
+      console.error('Error updating bookings:', error)
+      toast.error(error.message || 'Failed to update bookings')
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedBookings.size === 0) return
+
+    if (!confirm(`Delete ${selectedBookings.size} booking(s)? This action cannot be undone.`)) return
+
+    try {
+      const response = await fetch('/api/bookings/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'delete',
+          bookingIds: Array.from(selectedBookings),
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Deleted ${selectedBookings.size} booking(s)`)
+        setSelectedBookings(new Set())
+        fetchBookings()
+      } else {
+        throw new Error(data.error || 'Failed to delete bookings')
+      }
+    } catch (error: any) {
+      console.error('Error deleting bookings:', error)
+      toast.error(error.message || 'Failed to delete bookings')
+    }
+  }
+
   const exportBookings = () => {
     const csvContent = [
       ['ID', 'Guest Name', 'Email', 'Phone', 'Type', 'Item', 'Check-in', 'Check-out', 'Guests', 'Total Price', 'Status', 'Payment Status', 'Created'],
@@ -233,6 +354,12 @@ export default function BookingsPage() {
     if (filters.type !== 'all' && booking.type !== filters.type) return false
     // Apply payment status filter
     if (filters.payment_status !== 'all' && booking.payment_status !== filters.payment_status) return false
+    // Apply date range filter
+    if (dateRange.startDate || dateRange.endDate) {
+      const checkInDate = new Date(booking.check_in)
+      if (dateRange.startDate && checkInDate < new Date(dateRange.startDate)) return false
+      if (dateRange.endDate && checkInDate > new Date(dateRange.endDate)) return false
+    }
     // Apply search term
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
@@ -479,6 +606,23 @@ export default function BookingsPage() {
             </select>
           </div>
         </div>
+
+        {/* Date Range Filter */}
+        <div className="mt-4">
+          <DateRangeFilter
+            startDate={dateRange.startDate}
+            endDate={dateRange.endDate}
+            onStartDateChange={(date) => {
+              setDateRange(prev => ({ ...prev, startDate: date }))
+              setCurrentPage(1)
+            }}
+            onEndDateChange={(date) => {
+              setDateRange(prev => ({ ...prev, endDate: date }))
+              setCurrentPage(1)
+            }}
+            label="Filter by Check-in Date"
+          />
+        </div>
       </div>
 
       {/* Calendar or Table View */}
@@ -499,23 +643,66 @@ export default function BookingsPage() {
           onBookingClick={(booking) => console.log('Booking clicked:', booking)}
         />
       ) : (
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">
-              Bookings ({filteredBookings.length})
-            </h3>
-            <span className="text-sm text-gray-500">
-              Page {currentPage} of {totalPages || 1}
-            </span>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Booking
-                  </th>
+        <>
+          {/* Bulk Actions Bar */}
+          {selectedBookings.size > 0 && (
+            <BulkActions
+              selectedCount={selectedBookings.size}
+              totalCount={filteredBookings.length}
+              onSelectAll={handleSelectAll}
+              onDeselectAll={handleDeselectAll}
+              actions={[
+                {
+                  label: 'Mark Confirmed',
+                  onClick: () => handleBulkStatusUpdate('confirmed'),
+                },
+                {
+                  label: 'Mark Cancelled',
+                  onClick: () => handleBulkStatusUpdate('cancelled'),
+                },
+                {
+                  label: 'Mark Paid',
+                  onClick: () => handleBulkPaymentStatusUpdate('paid'),
+                },
+                {
+                  label: 'Delete',
+                  onClick: handleBulkDelete,
+                  variant: 'destructive',
+                },
+              ]}
+              className="mb-4"
+            />
+          )}
+
+          <div className="bg-white shadow rounded-lg overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="text-lg font-medium text-gray-900">
+                Bookings ({filteredBookings.length})
+              </h3>
+              <span className="text-sm text-gray-500">
+                Page {currentPage} of {totalPages || 1}
+              </span>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                      <CheckboxCell
+                        checked={paginatedBookings.length > 0 && paginatedBookings.every(b => selectedBookings.has(b.id))}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            handleSelectAll()
+                          } else {
+                            handleDeselectAll()
+                          }
+                        }}
+                      />
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Booking
+                    </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Guest
                   </th>
@@ -539,6 +726,12 @@ export default function BookingsPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {paginatedBookings.map((booking) => (
                   <tr key={booking.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-3 whitespace-nowrap">
+                      <CheckboxCell
+                        checked={selectedBookings.has(booking.id)}
+                        onCheckedChange={(checked) => handleSelectBooking(booking.id, checked)}
+                      />
+                    </td>
                     <td className="px-6 py-3 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">#{booking.id}</div>
@@ -658,6 +851,7 @@ export default function BookingsPage() {
             </div>
           )}
         </div>
+        </>
       )}
 
       {filteredBookings.length === 0 && (

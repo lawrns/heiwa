@@ -21,6 +21,14 @@ export const env = {
     publicServerUrl: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3000',
   },
 
+  // Email Configuration (Resend)
+  email: {
+    apiKey: process.env.RESEND_API_KEY,
+    fromEmail: process.env.FROM_EMAIL || 'Heiwa House <noreply@heiwahouse.com>',
+    adminEmail: process.env.ADMIN_EMAIL || 'info@heiwahouse.com',
+    replyToEmail: process.env.REPLY_TO_EMAIL || 'info@heiwahouse.com',
+  },
+
   // Application Configuration
   app: {
     isDevelopment: process.env.NODE_ENV === 'development',

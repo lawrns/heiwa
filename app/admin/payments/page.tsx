@@ -6,6 +6,10 @@ import { CreditCard, Plus, Eye, Edit, Trash2, Search, RotateCcw, CheckCircle, XC
 import { PaymentModal } from '@/components/admin/payments/PaymentModal'
 import { PaymentViewModal } from '@/components/admin/payments/PaymentViewModal'
 import { RefundModal } from '@/components/admin/payments/RefundModal'
+import { BulkActions } from '@/components/admin/BulkActions'
+import { CheckboxCell } from '@/components/admin/CheckboxCell'
+import { DateRangeFilter } from '@/components/admin/DateRangeFilter'
+import { AmountRangeFilter } from '@/components/admin/AmountRangeFilter'
 import { toast } from 'react-toastify'
 
 interface Payment {
@@ -43,6 +47,9 @@ export default function PaymentsPage() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showRefundModal, setShowRefundModal] = useState(false)
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null)
+  const [selectedPayments, setSelectedPayments] = useState<Set<string>>(new Set())
+  const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' })
+  const [amountRange, setAmountRange] = useState({ minAmount: '', maxAmount: '' })
   const itemsPerPage = 20
 
   useEffect(() => {
@@ -151,14 +158,120 @@ export default function PaymentsPage() {
     return labels[method] || method
   }
 
+  // Bulk operations handlers
+  const handleSelectPayment = (paymentId: string, checked: boolean) => {
+    setSelectedPayments(prev => {
+      const newSet = new Set(prev)
+      if (checked) {
+        newSet.add(paymentId)
+      } else {
+        newSet.delete(paymentId)
+      }
+      return newSet
+    })
+  }
+
+  const handleSelectAll = () => {
+    setSelectedPayments(new Set(payments.map(p => p.id)))
+  }
+
+  const handleDeselectAll = () => {
+    setSelectedPayments(new Set())
+  }
+
+  const handleBulkStatusUpdate = async (paymentStatus: string) => {
+    if (selectedPayments.size === 0) return
+
+    if (!confirm(`Update ${selectedPayments.size} payment(s) to ${paymentStatus}?`)) return
+
+    try {
+      const response = await fetch('/api/payments/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_status',
+          paymentIds: Array.from(selectedPayments),
+          payment_status: paymentStatus,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Updated ${selectedPayments.size} payment(s)`)
+        setSelectedPayments(new Set())
+        fetchPayments()
+      } else {
+        throw new Error(data.error || 'Failed to update payments')
+      }
+    } catch (error: any) {
+      console.error('Error updating payments:', error)
+      toast.error(error.message || 'Failed to update payments')
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedPayments.size === 0) return
+
+    if (!confirm(`Delete ${selectedPayments.size} payment(s)? This action cannot be undone.`)) return
+
+    try {
+      const response = await fetch('/api/payments/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'delete',
+          paymentIds: Array.from(selectedPayments),
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Deleted ${selectedPayments.size} payment(s)`)
+        setSelectedPayments(new Set())
+        fetchPayments()
+      } else {
+        throw new Error(data.error || 'Failed to delete payments')
+      }
+    } catch (error: any) {
+      console.error('Error deleting payments:', error)
+      toast.error(error.message || 'Failed to delete payments')
+    }
+  }
+
   const filteredPayments = payments.filter(payment => {
+    // Apply status filter
+    if (statusFilter !== 'all' && payment.payment_status !== statusFilter) return false
+    
+    // Apply method filter
+    if (methodFilter !== 'all' && payment.payment_method !== methodFilter) return false
+    
+    // Apply search term
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
-      return (
+      const matchesSearch = 
         payment.transaction_id?.toLowerCase().includes(searchLower) ||
         payment.booking_id.toLowerCase().includes(searchLower)
-      )
+      if (!matchesSearch) return false
     }
+    
+    // Apply date range filter (payment date)
+    if (dateRange.startDate || dateRange.endDate) {
+      if (payment.payment_date) {
+        const paymentDate = new Date(payment.payment_date)
+        if (dateRange.startDate && paymentDate < new Date(dateRange.startDate)) return false
+        if (dateRange.endDate && paymentDate > new Date(dateRange.endDate)) return false
+      }
+    }
+    
+    // Apply amount range filter
+    if (amountRange.minAmount || amountRange.maxAmount) {
+      const amount = payment.amount
+      if (amountRange.minAmount && amount < parseFloat(amountRange.minAmount)) return false
+      if (amountRange.maxAmount && amount > parseFloat(amountRange.maxAmount)) return false
+    }
+    
     return true
   })
 
@@ -314,7 +427,63 @@ export default function PaymentsPage() {
             </select>
           </div>
         </div>
+
+        {/* Advanced Filters */}
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <DateRangeFilter
+            startDate={dateRange.startDate}
+            endDate={dateRange.endDate}
+            onStartDateChange={(date) => {
+              setDateRange(prev => ({ ...prev, startDate: date }))
+              setCurrentPage(1)
+            }}
+            onEndDateChange={(date) => {
+              setDateRange(prev => ({ ...prev, endDate: date }))
+              setCurrentPage(1)
+            }}
+            label="Filter by Payment Date"
+          />
+          <AmountRangeFilter
+            minAmount={amountRange.minAmount}
+            maxAmount={amountRange.maxAmount}
+            onMinAmountChange={(amount) => {
+              setAmountRange(prev => ({ ...prev, minAmount: amount }))
+              setCurrentPage(1)
+            }}
+            onMaxAmountChange={(amount) => {
+              setAmountRange(prev => ({ ...prev, maxAmount: amount }))
+              setCurrentPage(1)
+            }}
+            label="Filter by Amount"
+          />
+        </div>
       </div>
+
+      {/* Bulk Actions Bar */}
+      {selectedPayments.size > 0 && (
+        <BulkActions
+          selectedCount={selectedPayments.size}
+          totalCount={payments.length}
+          onSelectAll={handleSelectAll}
+          onDeselectAll={handleDeselectAll}
+          actions={[
+            {
+              label: 'Mark Completed',
+              onClick: () => handleBulkStatusUpdate('completed'),
+            },
+            {
+              label: 'Mark Failed',
+              onClick: () => handleBulkStatusUpdate('failed'),
+            },
+            {
+              label: 'Delete',
+              onClick: handleBulkDelete,
+              variant: 'destructive',
+            },
+          ]}
+          className="mb-4"
+        />
+      )}
 
       {/* Payments Table */}
       <div className="bg-white shadow rounded-lg overflow-hidden">
@@ -328,6 +497,18 @@ export default function PaymentsPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                  <CheckboxCell
+                    checked={payments.length > 0 && payments.every(p => selectedPayments.has(p.id))}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        handleSelectAll()
+                      } else {
+                        handleDeselectAll()
+                      }
+                    }}
+                  />
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Transaction
                 </th>
@@ -356,6 +537,12 @@ export default function PaymentsPage() {
                 const remainingAmount = payment.amount - (payment.refund_amount || 0)
                 return (
                   <tr key={payment.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <CheckboxCell
+                        checked={selectedPayments.has(payment.id)}
+                        onCheckedChange={(checked) => handleSelectPayment(payment.id, checked)}
+                      />
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
                         {payment.transaction_id || 'N/A'}

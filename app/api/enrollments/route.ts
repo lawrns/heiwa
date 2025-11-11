@@ -147,6 +147,35 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Fetch client and surf camp details for email
+    const { data: client } = await supabaseAdmin
+      .from('clients')
+      .select('name, email')
+      .eq('id', client_id)
+      .single()
+
+    const { data: camp } = await supabaseAdmin
+      .from('surf_camps')
+      .select('name, start_date, end_date')
+      .eq('id', surf_camp_id)
+      .single()
+
+    // Send enrollment confirmation email
+    if (client?.email && camp) {
+      import('@/lib/email-service').then(({ emailService }) => {
+        emailService.sendEnrollmentConfirmation({
+          enrollmentId: enrollment.id,
+          participantName: client.name || 'Participant',
+          participantEmail: client.email,
+          surfCampName: camp.name,
+          startDate: camp.start_date,
+          endDate: camp.end_date,
+          skillLevel: enrollment.skill_level,
+          status: enrollment.status,
+        }).catch(err => console.error('Failed to send enrollment confirmation email:', err))
+      })
+    }
+
     return NextResponse.json({
       success: true,
       data: enrollment

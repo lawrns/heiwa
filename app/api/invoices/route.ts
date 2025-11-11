@@ -112,6 +112,37 @@ export async function POST(request: NextRequest) {
       status: status || 'draft',
     })
 
+    // Fetch client and booking details for email
+    const { data: booking } = await supabaseAdmin
+      .from('bookings')
+      .select(`
+        id,
+        total_amount,
+        client_ids,
+        clients:client_ids (
+          name,
+          email
+        )
+      `)
+      .eq('id', booking_id)
+      .single()
+
+    // Send invoice email if status is not draft and client email exists
+    if (status !== 'draft' && booking?.clients?.[0]?.email) {
+      import('@/lib/email-service').then(({ emailService }) => {
+        emailService.sendInvoice({
+          invoiceNumber: invoice.invoice_number,
+          clientName: booking.clients[0].name || 'Guest',
+          clientEmail: booking.clients[0].email,
+          amount: invoice.amount,
+          currency: invoice.currency,
+          dueDate: invoice.due_date,
+          status: invoice.status,
+          bookingId: booking_id,
+        }).catch(err => console.error('Failed to send invoice email:', err))
+      })
+    }
+
     return NextResponse.json({
       success: true,
       data: invoice
