@@ -8,6 +8,10 @@ import { BookingButton } from '@/components/booking-button'
 import { getRooms } from '@/lib/content'
 import type { Room } from '@/lib/types'
 
+// Force dynamic rendering to ensure rooms are fetched at request time
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 interface RoomPageProps {
   params: Promise<{
     id: string
@@ -15,10 +19,15 @@ interface RoomPageProps {
 }
 
 export async function generateStaticParams() {
-  const rooms = await getRooms()
-  return rooms.map((room) => ({
-    id: room.id,
-  }))
+  try {
+    const rooms = await getRooms()
+    return rooms.map((room) => ({
+      id: room.id,
+    }))
+  } catch (error) {
+    console.error('Error generating static params for rooms:', error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: RoomPageProps): Promise<Metadata> {
@@ -41,14 +50,16 @@ export async function generateMetadata({ params }: RoomPageProps): Promise<Metad
 export default async function RoomDetailPage({ params }: RoomPageProps) {
   const { id } = await params
   
-  // Try to get room from content function first
-  const rooms = await getRooms()
-  let room = rooms.find(r => r.id === id)
-  
-  // If not found in static content, return 404
-  if (!room) {
-    notFound()
-  }
+  try {
+    // Fetch rooms at request time to ensure we have the latest data
+    const rooms = await getRooms()
+    let room = rooms.find(r => r.id === id)
+    
+    // If not found, return 404
+    if (!room) {
+      console.warn(`Room not found: ${id}. Available rooms:`, rooms.map(r => r.id))
+      notFound()
+    }
 
   // Enhanced room data with actual database images
   const isDorm = room.name.toLowerCase().includes('dorm') || room.bookingType === 'perBed'
@@ -298,4 +309,8 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
 
     </div>
   )
+  } catch (error) {
+    console.error('Error loading room page:', error)
+    notFound()
+  }
 }
