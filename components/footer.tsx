@@ -7,9 +7,20 @@ import { Instagram, Mail, Phone, MapPin } from 'lucide-react'
 import { getNavigationItems } from '@/lib/content'
 import type { NavigationItem } from '@/lib/types'
 
+// Fallback navigation items - use immediately to prevent flash
+const fallbackNavigationItems: NavigationItem[] = [
+  { path: '/', name: 'HOME' },
+  { path: '/the-spot', name: 'THE SPOT' },
+  { path: '/rooms', name: 'ROOM RENTALS' },
+  { path: '/surf-weeks', name: 'SURF CAMP' },
+  { path: '/play', name: 'PLAY' },
+  { path: '/flow', name: 'FLOW' }
+]
+
 export function Footer() {
   const pathname = usePathname()
-  const [navigationItems, setNavigationItems] = useState<NavigationItem[]>([])
+  // Initialize with fallback items immediately to prevent flash
+  const [navigationItems, setNavigationItems] = useState<NavigationItem[]>(fallbackNavigationItems)
 
   // Hide footer for admin routes
   if (pathname.startsWith('/admin')) {
@@ -18,15 +29,13 @@ export function Footer() {
 
   useEffect(() => {
     getNavigationItems().then(items => {
-      setNavigationItems(items)
+      // Only update if we got items from CMS, otherwise keep fallback
+      if (items && items.length > 0) {
+        setNavigationItems(items)
+      }
     }).catch(() => {
-      // Fallback to static items
-      setNavigationItems([
-        { path: '/', name: 'Home' },
-        { path: '/the-spot', name: 'The Spot' },
-        { path: '/rooms', name: 'Room Rentals' },
-        { path: '/surf-weeks', name: 'Surf Weeks' }
-      ])
+      // Keep fallback items on error
+      setNavigationItems(fallbackNavigationItems)
     })
   }, [])
 

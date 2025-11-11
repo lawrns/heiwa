@@ -16,6 +16,14 @@ const globalForSupabase = globalThis as unknown as {
   supabaseAdminInstance: ReturnType<typeof createClient> | undefined
 }
 
+// No-op storage implementation to prevent multiple GoTrueClient instances
+const noOpStorage = {
+  getItem: () => null,
+  setItem: () => {},
+  removeItem: () => {},
+  clear: () => {}
+}
+
 // Create Supabase client for public operations (booking system integration)
 export const supabase = (() => {
   if (!globalForSupabase.supabaseInstance) {
@@ -23,7 +31,15 @@ export const supabase = (() => {
       auth: {
         persistSession: false,
         autoRefreshToken: false,
-        detectSessionInUrl: false
+        detectSessionInUrl: false,
+        storage: noOpStorage, // Use no-op storage to prevent multiple instances
+        storageKey: 'heiwa-supabase-auth-unique',
+        flowType: 'pkce'
+      },
+      global: {
+        headers: {
+          'x-client-info': 'heiwa-house-website'
+        }
       }
     })
     if (typeof window === 'undefined') {
@@ -45,7 +61,15 @@ export const supabaseAdmin = (() => {
       auth: {
         autoRefreshToken: false,
         persistSession: false,
-        detectSessionInUrl: false
+        detectSessionInUrl: false,
+        storage: noOpStorage, // Use no-op storage to prevent multiple instances
+        storageKey: 'heiwa-supabase-admin-auth-unique',
+        flowType: 'pkce'
+      },
+      global: {
+        headers: {
+          'x-client-info': 'heiwa-house-admin'
+        }
       }
     })
   }

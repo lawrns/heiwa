@@ -27,8 +27,20 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Error fetching calendar events:', error)
+      // Check if table doesn't exist (common error code)
+      if (error.code === '42P01' || error.message?.includes('does not exist')) {
+        return NextResponse.json({
+          success: true,
+          data: { events: [] },
+          message: 'Calendar events table not configured'
+        })
+      }
       return NextResponse.json(
-        { success: false, error: 'Failed to fetch calendar events' },
+        { 
+          success: false, 
+          error: 'Failed to fetch calendar events',
+          details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        },
         { status: 500 }
       )
     }
