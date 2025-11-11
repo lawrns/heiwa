@@ -97,6 +97,13 @@ export function BookingWidget({
           actions.setDates(checkIn, checkOut);
         }
       }
+      
+      // Skip experience and options steps when surf week is pre-selected
+      // This will modify the step flow to start directly at room selection
+      actions.setSkippedSteps(['experience', 'options']);
+    } else if (isOpen && !selectedSurfWeek) {
+      // Reset skipped steps when no surf week is pre-selected
+      actions.setSkippedSteps([]);
     }
   }, [isOpen, selectedSurfWeek, actions]);
 
@@ -241,6 +248,7 @@ export function BookingWidget({
                 currentStep={state.currentStep}
                 stepFlow={computed.stepFlow}
                 totalSteps={computed.totalSteps}
+                skippedSteps={state.skippedSteps || []}
               />
             </div>
 

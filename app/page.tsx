@@ -215,7 +215,7 @@ export default function HomePage() {
 
           {/* Booking Table */}
           <div className="mt-16">
-            <div className="w-full">
+            <div className="w-full max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
                 Upcoming Surf Weeks
               </h3>

@@ -353,7 +353,7 @@ export default async function SurfWeeksPage() {
 
       {/* Available Surf Weeks */}
       <section className="py-10 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Available Surf Weeks</h2>
             <p className="text-lg text-gray-600">Choose your perfect week and start your surfing adventure</p>
@@ -573,7 +573,7 @@ export default async function SurfWeeksPage() {
 
       {/* FAQ Section */}
       <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Frequently Asked Questions</h2>
           
           <Accordion type="single" collapsible className="space-y-4">

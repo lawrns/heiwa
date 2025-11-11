@@ -17,6 +17,7 @@ export interface BookingState {
   pricing: PricingBreakdown;
   isLoading: boolean;
   errors: Record<string, string>;
+  skippedSteps?: string[]; // Track which steps were skipped (e.g., ['experience', 'options'])
 }
 
 export interface GuestInfo {
@@ -122,4 +123,5 @@ export type BookingAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: { field: string; message: string } }
   | { type: 'CLEAR_ERROR'; payload: string }
+  | { type: 'SET_SKIPPED_STEPS'; payload: string[] }
   | { type: 'RESET' };

@@ -29,6 +29,7 @@ const initialState: BookingState = {
   },
   isLoading: false,
   errors: {},
+  skippedSteps: [],
 };
 
 function bookingReducer(state: BookingState, action: BookingAction): BookingState {
@@ -114,6 +115,9 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
       const { [action.payload]: removed, ...remainingErrors } = state.errors;
       return { ...state, errors: remainingErrors };
     
+    case 'SET_SKIPPED_STEPS':
+      return { ...state, skippedSteps: action.payload };
+    
     case 'RESET':
       return initialState;
     
@@ -127,6 +131,12 @@ export function useBookingFlow() {
 
   // Enhanced room assignment: Reordered step flow to collect guest details before room assignment
   const getStepFlow = useCallback(() => {
+    // If steps were skipped (e.g., when surf week is pre-selected), start from room selection
+    if (state.skippedSteps && state.skippedSteps.length > 0) {
+      const steps = ['surf-week-room-selection', 'guest-details', 'add-ons', 'review-pay'];
+      return steps;
+    }
+
     const baseSteps = ['experience', 'options'];
 
     if (state.experienceType === 'surf-week') {
@@ -148,7 +158,7 @@ export function useBookingFlow() {
 
     baseSteps.push('add-ons', 'review-pay');
     return baseSteps;
-  }, [state.experienceType, state.guests]);
+  }, [state.experienceType, state.guests, state.skippedSteps]);
 
   const stepFlow = getStepFlow();
   const totalSteps = stepFlow.length;
@@ -161,10 +171,19 @@ export function useBookingFlow() {
   }, [state.currentStep, maxStep]);
 
   const prevStep = useCallback(() => {
+    // Don't allow going back to skipped steps
     if (state.currentStep > 1) {
-      dispatch({ type: 'SET_STEP', payload: state.currentStep - 1 });
+      const newStep = state.currentStep - 1;
+      // If we're trying to go back to a skipped step, skip it
+      if (state.skippedSteps && state.skippedSteps.length > 0) {
+        // When steps are skipped, step 1 is already the first non-skipped step
+        // So we can safely go back
+        dispatch({ type: 'SET_STEP', payload: newStep });
+      } else {
+        dispatch({ type: 'SET_STEP', payload: newStep });
+      }
     }
-  }, [state.currentStep]);
+  }, [state.currentStep, state.skippedSteps]);
 
   const setExperienceType = useCallback((type: 'room' | 'surf-week') => {
     dispatch({ type: 'SET_EXPERIENCE_TYPE', payload: type });
@@ -236,6 +255,14 @@ export function useBookingFlow() {
 
   const reset = useCallback(() => {
     dispatch({ type: 'RESET' });
+  }, []);
+
+  const setSkippedSteps = useCallback((steps: string[]) => {
+    dispatch({ type: 'SET_SKIPPED_STEPS', payload: steps });
+    // When steps are skipped, set initial step to 1 (first non-skipped step)
+    if (steps.length > 0) {
+      dispatch({ type: 'SET_STEP', payload: 1 });
+    }
   }, []);
 
   const canProceedToNextStep = useCallback(() => {
@@ -358,6 +385,7 @@ export function useBookingFlow() {
       setError,
       clearError,
       reset,
+      setSkippedSteps,
       // API integration actions
       checkAvailability,
       submitBooking,

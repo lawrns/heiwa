@@ -5,6 +5,7 @@ interface ProgressIndicatorProps {
   currentStep: number;
   stepFlow?: string[];
   totalSteps?: number;
+  skippedSteps?: string[];
 }
 
 const stepLabels = {
@@ -17,17 +18,22 @@ const stepLabels = {
   'review-pay': { label: 'Review', shortLabel: 'Rev', title: 'Review & Pay' },
 };
 
-export function ProgressIndicator({ currentStep, stepFlow, totalSteps }: ProgressIndicatorProps) {
+export function ProgressIndicator({ currentStep, stepFlow, totalSteps, skippedSteps = [] }: ProgressIndicatorProps) {
   // Use provided stepFlow or default to basic 5-step flow
   const currentStepFlow = stepFlow || ['experience', 'options', 'add-ons', 'guest-details', 'review-pay'];
   const maxSteps = totalSteps || currentStepFlow.length;
+  
+  // Filter out skipped steps from display
+  const visibleSteps = currentStepFlow.filter(step => !skippedSteps.includes(step));
 
   return (
     <div className="w-full px-4">
       {/* Mobile-optimized stepper with horizontal scroll */}
       <div className="overflow-x-auto py-4">
         <div className="flex items-center justify-center relative min-w-max px-4">
-          {currentStepFlow.map((stepType, index) => {
+          {visibleSteps.map((stepType, index) => {
+            // When steps are skipped, the stepFlow is already filtered, so we use the index directly
+            // The currentStep refers to the position in the filtered flow
             const stepNumber = index + 1;
             const isCompleted = currentStep > stepNumber;
             const isCurrent = currentStep === stepNumber;
@@ -37,7 +43,7 @@ export function ProgressIndicator({ currentStep, stepFlow, totalSteps }: Progres
             return (
               <div key={stepType} className="flex flex-col items-center relative">
                 {/* Connector Line with Wave Pattern */}
-                {index < currentStepFlow.length - 1 && (
+                {index < visibleSteps.length - 1 && (
                   <div className="absolute top-4 left-1/2 w-8 sm:w-12 md:w-16 h-0.5 -translate-y-1/2 z-0">
                     <div className={`
                       h-full transition-all duration-500 ease-out relative overflow-hidden
