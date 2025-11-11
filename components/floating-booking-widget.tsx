@@ -1,10 +1,30 @@
 'use client'
 
+import { useEffect } from 'react'
 import { StandaloneWidget } from './BookingWidget/StandaloneWidget'
 import { useBooking } from '@/lib/booking-context'
 
 export function FloatingBookingWidget() {
-  const { isBookingOpen, closeBooking } = useBooking()
+  const { isBookingOpen, closeBooking, openBooking } = useBooking()
+
+  // Listen for custom events to open booking widget globally
+  useEffect(() => {
+    const handleOpenBooking = () => {
+      openBooking()
+    }
+
+    const handleOpenBookingForWeek = (event: CustomEvent) => {
+      openBooking(event.detail)
+    }
+
+    window.addEventListener('openBooking', handleOpenBooking)
+    window.addEventListener('openBookingForWeek', handleOpenBookingForWeek as EventListener)
+
+    return () => {
+      window.removeEventListener('openBooking', handleOpenBooking)
+      window.removeEventListener('openBookingForWeek', handleOpenBookingForWeek as EventListener)
+    }
+  }, [openBooking])
 
   return (
     <>
