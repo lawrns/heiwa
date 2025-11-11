@@ -41,10 +41,19 @@ export function GoogleReviews({
     const fetchGoogleReviews = async () => {
       try {
         // Using Google Places API via proxy to avoid CORS issues
-        const response = await fetch('/api/google-reviews')
+        const response = await fetch('/api/google-reviews', {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+          }
+        })
         const data = await response.json()
         
         if (data.success) {
+          // If we got fallback data, log it but still use it
+          if (data.fallback) {
+            console.warn('Google Reviews API:', data.message || data.error || 'Using fallback data')
+          }
           setReviewsData(data.data)
         } else {
           setError('Failed to fetch reviews')

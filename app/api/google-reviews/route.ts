@@ -41,9 +41,15 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch reviews from Google Places API
+    // Note: If API key has referer restrictions, this will fail server-side
+    // In that case, the component should fetch client-side or use a server-side API key without restrictions
     const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=rating,user_ratings_total,reviews&key=${apiKey}`
     
-    const response = await fetch(url)
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; HeiwaHouse/1.0)',
+      }
+    })
     const data = await response.json()
 
     if (data.status !== 'OK') {
