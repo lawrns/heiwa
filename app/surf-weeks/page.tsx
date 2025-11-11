@@ -15,19 +15,55 @@ export const metadata: Metadata = {
 // Fetch surf weeks from database
 async function getSurfWeeks() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/surf-camps?category=surf-week`, {
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    // Use direct Supabase query for server-side rendering
+    const { supabaseAdmin } = await import('@/lib/supabase')
+    
+    const { data: surfCamps, error: surfCampsError } = await supabaseAdmin
+      .from('surf_camps')
+      .select('*')
+      .eq('is_active', true)
+      .eq('category', 'surf-week')
+      .order('start_date', { ascending: true })
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch surf weeks')
+    if (surfCampsError) {
+      console.error('Error fetching surf camps:', surfCampsError)
+      return []
     }
 
-    const result = await response.json()
-    return result.success ? result.data.surf_camps : []
+    if (!surfCamps || surfCamps.length === 0) {
+      return []
+    }
+
+    // Get enrollment counts for each surf camp
+    const surfCampsWithAvailability = await Promise.all(
+      surfCamps.map(async (camp: any) => {
+        const { count: enrolledCount } = await supabaseAdmin
+          .from('surf_camp_enrollments')
+          .select('*', { count: 'exact', head: true })
+          .eq('surf_camp_id', camp.id)
+          .eq('status', 'confirmed')
+        
+        const availableSpots = camp.max_participants - (enrolledCount || 0)
+        
+        return {
+          id: camp.id,
+          name: camp.name,
+          description: camp.description,
+          start_date: camp.start_date,
+          end_date: camp.end_date,
+          price: camp.price,
+          max_participants: camp.max_participants,
+          enrolled_count: enrolledCount || 0,
+          available_spots: Math.max(0, availableSpots),
+          is_full: availableSpots <= 0,
+          level: camp.level,
+          images: camp.images,
+          includes: camp.includes
+        }
+      })
+    )
+
+    return surfCampsWithAvailability
   } catch (error) {
     console.error('Error fetching surf weeks:', error)
     return []
