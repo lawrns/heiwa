@@ -75,7 +75,19 @@ export function BookingWidget({
     if (isOpen && selectedSurfWeek) {
       // Pre-select surf week in the booking flow
       actions.setExperienceType('surf-week');
+      
+      // Set surf week ID
       actions.setSurfWeek(selectedSurfWeek.id);
+      
+      // Set dates from surf week's start_date and end_date
+      if (selectedSurfWeek.start_date && selectedSurfWeek.end_date) {
+        const checkIn = new Date(selectedSurfWeek.start_date);
+        const checkOut = new Date(selectedSurfWeek.end_date);
+        // Ensure dates are valid before setting
+        if (!isNaN(checkIn.getTime()) && !isNaN(checkOut.getTime())) {
+          actions.setDates(checkIn, checkOut);
+        }
+      }
     }
   }, [isOpen, selectedSurfWeek, actions]);
 

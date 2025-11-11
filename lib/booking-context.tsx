@@ -43,7 +43,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
 
   const openBooking = useCallback((surfWeekId?: string) => {
     if (surfWeekId) {
-      // Fetch surf week data and pre-select it
+      // Fetch surf week data first, then open widget after data is loaded
       fetch(`/api/surf-camps?category=surf-week`)
         .then(res => res.json())
         .then(data => {
@@ -51,14 +51,23 @@ export function BookingProvider({ children }: { children: ReactNode }) {
             const surfWeek = data.data.surf_camps.find((camp: any) => camp.id === surfWeekId)
             if (surfWeek) {
               setSelectedSurfWeek(surfWeek)
+              setIsBookingOpen(true) // Open AFTER setting surf week
+            } else {
+              console.error('Surf week not found:', surfWeekId)
+              setIsBookingOpen(true) // Still open widget even if not found
             }
+          } else {
+            setIsBookingOpen(true)
           }
         })
-        .catch(console.error)
+        .catch((error) => {
+          console.error('Error fetching surf week:', error)
+          setIsBookingOpen(true) // Open widget even on error
+        })
     } else {
       setSelectedSurfWeek(null)
+      setIsBookingOpen(true)
     }
-    setIsBookingOpen(true)
   }, [])
   const closeBooking = useCallback(() => {
     setIsBookingOpen(false)

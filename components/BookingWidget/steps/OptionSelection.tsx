@@ -71,9 +71,12 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   }, [checkInDate, checkOutDate, fetchDateAvailability]);
 
   // For surf weeks, if a surf week was already selected in step 2, auto-select it here
-  if (state.experienceType === 'surf-week' && state.selectedSurfWeek && !state.selectedOption) {
-    actions.selectOption(state.selectedSurfWeek);
-  }
+  useEffect(() => {
+    if (state.experienceType === 'surf-week' && state.selectedSurfWeek && !state.selectedOption) {
+      // Auto-select the surf week option
+      actions.selectOption(state.selectedSurfWeek);
+    }
+  }, [state.experienceType, state.selectedSurfWeek, state.selectedOption, actions]);
 
   const loading = state.experienceType === 'room' ? roomsLoading : campsLoading;
   const error = state.experienceType === 'room' ? roomsError : campsError;
