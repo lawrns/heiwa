@@ -35,7 +35,8 @@ export function TipTapRenderer({ content, className = '' }: TipTapRendererProps)
             1: 'text-4xl font-bold mb-6 mt-8',
             2: 'text-3xl font-bold mb-4 mt-6',
             3: 'text-2xl font-bold mb-3 mt-4',
-          }[level] || 'text-xl font-bold mb-2 mt-3'
+            4: 'text-xl font-bold mb-2 mt-3',
+          }[level] || 'text-lg font-bold mb-2 mt-2'
           
           return (
             <HeadingTag className={headingClasses}>
