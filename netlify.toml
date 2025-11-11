@@ -4,6 +4,9 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+  [plugins.inputs]
+    # Let the plugin handle all routing
+    functionsDir = ".netlify/functions"
 
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"
