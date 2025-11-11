@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  # Publish directory is handled by @netlify/plugin-nextjs
   # Enable incremental builds for faster deployments
 
 [build.environment]
@@ -41,4 +41,10 @@
   to = "/admin/login"
   status = 302
   force = false
+
+# Catch-all redirect for Next.js routing (handled by plugin, but kept for safety)
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/___netlify-handler"
+  status = 200
 
