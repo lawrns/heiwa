@@ -23,7 +23,6 @@ async function getSurfWeeks() {
       .from('surf_camps')
       .select('*')
       .eq('is_active', true)
-      .eq('category', 'surf-week')
       .order('start_date', { ascending: true })
 
     if (surfCampsError) {
@@ -44,7 +43,11 @@ async function getSurfWeeks() {
           .eq('surf_camp_id', camp.id)
           .eq('status', 'confirmed')
         
-        const availableSpots = camp.max_participants - (enrolledCount || 0)
+        // Use available_spots from database, or calculate from total_spots - enrollments
+        const totalSpots = camp.total_spots || 18
+        const dbAvailableSpots = camp.available_spots
+        const calculatedAvailableSpots = totalSpots - (enrolledCount || 0)
+        const availableSpots = dbAvailableSpots !== undefined ? dbAvailableSpots : calculatedAvailableSpots
         
         return {
           id: camp.id,
@@ -53,13 +56,13 @@ async function getSurfWeeks() {
           start_date: camp.start_date,
           end_date: camp.end_date,
           price: camp.price,
-          max_participants: camp.max_participants,
+          max_participants: totalSpots,
           enrolled_count: enrolledCount || 0,
           available_spots: Math.max(0, availableSpots),
           is_full: availableSpots <= 0,
-          level: camp.level,
-          images: camp.images,
-          includes: camp.includes
+          level: camp.level || 'all',
+          images: camp.images || [],
+          includes: camp.includes || []
         }
       })
     )
