@@ -87,7 +87,7 @@ export const getRooms = async (): Promise<Room[]> => {
       } else {
         // Fallback: Try to find similar room in fallback data
         const fallbackRoom = getFallbackRooms().find(r => r.name === room.name);
-        images = fallbackRoom ? [fallbackRoom.image] : [getFallbackRooms()[0].image];
+        images = fallbackRoom ? [fallbackRoom.image] : (getFallbackRooms().length > 0 ? [getFallbackRooms()[0].image] : ['/images/rooms/room1.jpg']);
       }
 
       return {
@@ -221,17 +221,17 @@ export const homePageContent: HomePageContent = {
   },
   featureCards: [
     {
-      title: 'Heiwa Play',
+      title: 'Play',
       image: '/images/skatepark-1.jpg',
       href: '/play'
     },
     {
-      title: 'Heiwa Surf',
+      title: 'Surf',
       image: '/images/surf4.jpg',
       href: '/surf-weeks'
     },
     {
-      title: 'Heiwa Flow',
+      title: 'Flow',
       image: '/images/yoga_dome1.jpg',
       href: '/flow'
     }

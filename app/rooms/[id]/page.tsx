@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { BedDouble, Bath, Maximize2, Users } from 'lucide-react'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { BookingButton } from '@/components/booking-button'
-import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { getRooms } from '@/lib/content'
 import type { Room } from '@/lib/types'
 
@@ -58,11 +57,11 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
   // Use actual images from database, fallback to single image if not available
   const roomImages = room.images && Array.isArray(room.images) && room.images.length > 0
     ? room.images
-    : room.image ? [room.image] : []
+    : room.image ? [room.image] : ['/images/rooms/room1.jpg'] // Fallback placeholder
 
   const enhancedRoom = {
     ...room,
-    images: roomImages.length > 0 ? roomImages : [room.image],
+    images: roomImages.length > 0 ? roomImages : (room.image ? [room.image] : ['/images/rooms/room1.jpg']),
     price: room.pricing?.standard || room.pricing?.offSeason || (isDorm ? 30 : 80),
     beds: isDorm ? 6 : isTwin ? 2 : room.capacity || 1,
     bathrooms: isDorm ? 0 : 1,
@@ -100,7 +99,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
         ...similarRoom,
         price: similarRoom.pricing?.standard || similarRoom.pricing?.offSeason || (similarIsDorm ? 30 : 80),
         beds: similarIsDorm ? 6 : similarIsTwin ? 2 : similarRoom.capacity || 1,
-        image: similarRoom.images?.[0] || similarRoom.image
+        image: similarRoom.images?.[0] || similarRoom.image || '/images/rooms/room1.jpg'
       }
     })
 
@@ -297,8 +296,6 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
         )}
       </div>
 
-      {/* Floating Check Availability Button */}
-      <FloatingCheckAvailability />
     </div>
   )
 }

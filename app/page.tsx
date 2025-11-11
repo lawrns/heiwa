@@ -267,9 +267,9 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* About Cards - Using CMS Data */}
             {(aboutSection?.cards || [
-              { title: 'Heiwa Play', description: 'Explore activities and experiences around our location', image: '/optimized/photography_009_dsc03491.webp', link: '/play' },
-              { title: 'Heiwa Surf', description: 'Discover the best surfing spots and conditions', image: '/images/hh1.webp', link: '/surf' },
-              { title: 'Heiwa Flow', description: 'Wellness, yoga, and mindfulness experiences', image: '/images/hh2.webp', link: '/flow' }
+              { title: 'Play', description: 'Explore activities and experiences around our location', image: '/images/skatepark-1.jpg', link: '/play' },
+              { title: 'Surf', description: 'Discover the best surfing spots and conditions', image: '/images/surf4.jpg', link: '/surf' },
+              { title: 'Flow', description: 'Wellness, yoga, and mindfulness experiences', image: '/images/yoga_dome1.jpg', link: '/flow' }
             ]).map((card: any, idx: number) => (
               <Link key={idx} href={card.link || '#'} className="group">
                 <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">

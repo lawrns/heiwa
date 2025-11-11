@@ -36,24 +36,24 @@ const CMS_CONTENT = [
     section: 'about',
     title: 'What we are about',
     subtitle: 'Discover what makes Heiwa House special',
-    description: 'Three pillars of our experience: Heiwa Play (activities), Heiwa Surf (surfing), and Heiwa Flow (wellness)',
+    description: 'Three pillars of our experience: Play (activities), Surf (surfing), and Flow (wellness)',
     cards: [
       {
-        title: 'Heiwa Play',
+        title: 'Play',
         description: 'Explore activities and experiences around our location',
-        image: '/optimized/photography_009_dsc03491.webp',
+        image: '/images/skatepark-1.jpg',
         link: '/play'
       },
       {
-        title: 'Heiwa Surf',
+        title: 'Surf',
         description: 'Discover the best surfing spots and conditions',
-        image: '/images/hh1.webp',
+        image: '/images/surf4.jpg',
         link: '/surf'
       },
       {
-        title: 'Heiwa Flow',
+        title: 'Flow',
         description: 'Wellness, yoga, and mindfulness experiences',
-        image: '/images/hh2.webp',
+        image: '/images/yoga_dome1.jpg',
         link: '/flow'
       }
     ],
