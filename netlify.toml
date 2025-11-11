@@ -42,9 +42,3 @@
   status = 302
   force = false
 
-# Catch-all redirect for Next.js routing (handled by plugin, but kept for safety)
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/___netlify-handler"
-  status = 200
-
