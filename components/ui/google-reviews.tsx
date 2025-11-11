@@ -90,23 +90,58 @@ export function GoogleReviews({
   if (error || !reviewsData) {
     // Fallback to static data if API fails
     return (
-      <div className={`flex items-center gap-4 ${className}`}>
-        <div className="flex items-center gap-1">
-          {renderStars(5)}
-        </div>
-             <div className="text-sm text-white">
-               <span className="font-semibold">5.0</span> based on{' '}
-               <span className="font-semibold">70</span> reviews
-             </div>
-        <a
-          href="https://www.google.com/maps/place/Heiwa+House/@39.123456,-9.123456,15z"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-white hover:text-white/80 text-xs flex items-center gap-1"
-        >
-          View on Google
-          <ExternalLink className="w-3 h-3" />
-        </a>
+      <div className={className}>
+        {!showReviews ? (
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              {renderStars(5)}
+            </div>
+            <div className="text-sm text-white">
+              <span className="font-semibold">5.0</span> based on{' '}
+              <span className="font-semibold">73</span> reviews
+            </div>
+            <a
+              href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-white/80 text-xs flex items-center gap-1"
+            >
+              View on Google
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        ) : (
+          <div className="bg-gray-50 rounded-lg p-8 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center">
+                  {renderStars(5)}
+                </div>
+                <span className="text-lg font-semibold text-gray-900">5.0</span>
+                <span className="text-gray-600">(73 reviews)</span>
+              </div>
+              <a
+                href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-sm"
+              >
+                Review us on Google
+              </a>
+            </div>
+            <div className="text-center py-8 text-gray-600">
+              <p>Reviews are loading... Please configure GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID environment variables to display real reviews.</p>
+              <a
+                href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 mt-4 inline-block"
+              >
+                View reviews on Google Maps →
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -115,56 +150,77 @@ export function GoogleReviews({
 
   return (
     <div className={className}>
-      {/* Rating Summary */}
-      <div className="flex items-center gap-4 mb-4">
-        <div className="flex items-center gap-1">
-          {renderStars(rating)}
+      {/* Rating Summary - Only show if not showing individual reviews */}
+      {!showReviews && (
+        <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-1">
+            {renderStars(rating)}
+          </div>
+          <div className="text-sm text-white">
+            <span className="font-semibold">{rating}</span> based on{' '}
+            <span className="font-semibold">{user_ratings_total.toLocaleString()}</span> reviews
+          </div>
+          <a
+            href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-white/80 text-xs flex items-center gap-1"
+          >
+            View on Google
+            <ExternalLink className="w-3 h-3" />
+          </a>
         </div>
-        <div className="text-sm text-white">
-          <span className="font-semibold">{rating}</span> based on{' '}
-          <span className="font-semibold">{user_ratings_total.toLocaleString()}</span> reviews
+      )}
+      
+      {/* Show rating summary above reviews if showing reviews */}
+      {showReviews && (
+        <div className="bg-gray-50 rounded-lg p-8 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center">
+                {renderStars(rating)}
+              </div>
+              <span className="text-lg font-semibold text-gray-900">{rating}</span>
+              <span className="text-gray-600">({user_ratings_total} reviews)</span>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-sm"
+            >
+              Review us on Google
+            </a>
+          </div>
         </div>
-        <a
-          href="https://www.google.com/maps/place/Heiwa+House/@39.123456,-9.123456,15z"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-white hover:text-white/80 text-xs flex items-center gap-1"
-        >
-          View on Google
-          <ExternalLink className="w-3 h-3" />
-        </a>
-      </div>
+      )}
 
       {/* Individual Reviews */}
       {showReviews && reviews && reviews.length > 0 && (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {reviews.slice(0, maxReviews).map((review, index) => (
-            <div key={index} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                {review.profile_photo_url && (
+            <div key={index} className="bg-white border border-gray-200 rounded-lg p-6">
+              <div className="flex items-center gap-3 mb-4">
+                {review.profile_photo_url ? (
                   <img
                     src={review.profile_photo_url}
                     alt={review.author_name}
-                    className="w-8 h-8 rounded-full"
+                    className="w-10 h-10 rounded-full"
                   />
-                )}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-gray-900 text-sm">
-                      {review.author_name}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      {renderStars(review.rating)}
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      {review.relative_time_description}
-                    </span>
+                ) : (
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold">
+                    {review.author_name.split(' ').map((n: string) => n[0]).join('')}
                   </div>
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    {review.text}
-                  </p>
+                )}
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">{review.author_name}</p>
+                  <p className="text-gray-500 text-xs">{review.relative_time_description}</p>
                 </div>
               </div>
+              <div className="flex mb-2">
+                {renderStars(review.rating)}
+              </div>
+              <p className="text-gray-700 text-sm leading-relaxed">{review.text}</p>
             </div>
           ))}
         </div>

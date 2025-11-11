@@ -460,7 +460,7 @@ export default function HomePage() {
               </div>
             </div>
             <Link
-              href={reviewsSection?.googleRating?.url || 'https://www.google.com/search?q=Heiwa+House+reviews'}
+              href={reviewsSection?.googleRating?.url || 'https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9'}
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 text-sm font-semibold rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 btn-accent"
