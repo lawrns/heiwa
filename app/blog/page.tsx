@@ -104,11 +104,12 @@ export default async function BlogPage() {
             >
               <div className="md:flex">
                 {featuredPost.cover_image_url && (
-                  <div className="md:w-1/2 h-64 md:h-auto relative">
+                  <div className="md:w-1/2 h-64 md:h-auto relative overflow-hidden bg-gray-200">
                     <Image
                       src={featuredPost.cover_image_url}
                       alt={featuredPost.cover_alt_text || featuredPost.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover"
                       unoptimized={featuredPost.cover_image_url.includes('unsplash.com')}
                     />
@@ -161,20 +162,21 @@ export default async function BlogPage() {
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
-                className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden group"
+                className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden group flex flex-col"
               >
                 {post.cover_image_url && (
-                  <div className="relative h-48 w-full">
+                  <div className="relative h-48 w-full overflow-hidden bg-gray-200">
                     <Image
                       src={post.cover_image_url}
                       alt={post.cover_alt_text || post.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       unoptimized={post.cover_image_url.includes('unsplash.com')}
                     />
                   </div>
                 )}
-                <div className="p-6">
+                <div className="p-6 flex-1">
                   {post.category && (
                     <span className="text-sm font-medium text-orange-600 mb-2 block">
                       {post.category.name}
