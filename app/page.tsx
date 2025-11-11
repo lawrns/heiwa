@@ -221,8 +221,8 @@ export default function HomePage() {
               </h3>
               
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                {/* Table Header */}
-                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                {/* Table Header - Hidden on mobile */}
+                <div className="hidden md:grid bg-gray-50 px-4 sm:px-6 py-4 border-b border-gray-200">
                   <div className="grid grid-cols-4 gap-4 text-sm font-semibold text-gray-700">
                     <div>Dates</div>
                     <div className="flex items-center gap-2">
@@ -239,19 +239,52 @@ export default function HomePage() {
                 {/* Table Body */}
                 <div className="divide-y divide-gray-200">
                   {(surfWeeksSection?.bookingData || surfWeeks).map((surfWeek: any, idx: number) => (
-                    <div key={surfWeek.id || idx} className="px-6 py-4 hover:bg-gray-50 transition-colors">
-                      <div className="grid grid-cols-4 gap-4 items-center">
+                    <div key={surfWeek.id || idx} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
+                      {/* Mobile Layout */}
+                      <div className="md:hidden space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="text-gray-900 font-medium text-base mb-1">{surfWeek.dates}</div>
+                            <div className="text-sm text-gray-600">{surfWeek.availableSpots} spots available</div>
+                          </div>
+                          <div className="text-right ml-4">
+                            <div className="text-gray-900 font-semibold text-lg">{surfWeek.price}</div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            if (surfWeek.id) {
+                              window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: surfWeek.id }))
+                            } else {
+                              window.dispatchEvent(new CustomEvent('openBooking'))
+                            }
+                          }}
+                          className="w-full px-6 py-2.5 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 min-h-[44px]"
+                          style={{ backgroundColor: '#ec681c' }}
+                        >
+                          Book Now
+                        </button>
+                      </div>
+                      
+                      {/* Desktop Layout */}
+                      <div className="hidden md:grid grid-cols-4 gap-4 items-center">
                         <div className="text-gray-900 font-medium">{surfWeek.dates}</div>
                         <div className="text-gray-900 font-medium">{surfWeek.price}</div>
                         <div className="text-gray-600">{surfWeek.availableSpots}</div>
                         <div className="flex justify-end">
-                          <Link
-                            href="/surf-weeks"
-                            className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
+                          <button
+                            onClick={() => {
+                              if (surfWeek.id) {
+                                window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: surfWeek.id }))
+                              } else {
+                                window.dispatchEvent(new CustomEvent('openBooking'))
+                              }
+                            }}
+                            className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 min-h-[44px]"
                             style={{ backgroundColor: '#ec681c' }}
                           >
                             Book
-                          </Link>
+                          </button>
                         </div>
                       </div>
                     </div>

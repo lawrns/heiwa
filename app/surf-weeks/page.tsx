@@ -537,7 +537,7 @@ export default async function SurfWeeksPage() {
 
       {/* FAQ Section */}
       <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Frequently Asked Questions</h2>
           
           <Accordion type="single" collapsible className="space-y-4">
