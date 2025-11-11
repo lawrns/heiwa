@@ -15,7 +15,6 @@ import {
   X,
   ChevronRight,
   BarChart3,
-  Settings,
   FileText,
   Key,
   CreditCard
@@ -90,7 +89,6 @@ const navigationItems = [
   { name: 'Calendar', href: '/admin/calendar', icon: Calendar },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'CMS', href: '/admin/cms', icon: FileText },
-  { name: 'Settings', href: '/admin/settings', icon: Settings },
 ]
 
 // Admin Logo component

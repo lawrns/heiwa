@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react'
 import { Users, Search, Filter, Download, Plus, Eye, Edit, Trash2, Mail, Phone } from 'lucide-react'
 import { ViewClientModal } from '@/components/admin/clients/ViewClientModal'
 import { CreateClientModal } from '@/components/admin/clients/CreateClientModal'
+import { EditClientModal } from '@/components/admin/clients/EditClientModal'
+import { BulkActions } from '@/components/admin/BulkActions'
+import { CheckboxCell } from '@/components/admin/CheckboxCell'
+import { toast } from 'react-toastify'
 
 interface Client {
   id: string
@@ -27,31 +31,12 @@ export default function ClientsPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showViewModal, setShowViewModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
+  const [selectedClients, setSelectedClients] = useState<Set<string>>(new Set())
   const itemsPerPage = 10
 
   useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        
-        const response = await fetch(`/api/clients?status=${statusFilter}&include_archived=false`)
-        const data = await response.json()
-
-        if (data.success) {
-          setClients(data.clients || [])
-        } else {
-          setError(data.error || 'Failed to fetch clients')
-        }
-      } catch (err) {
-        console.error('Error fetching clients:', err)
-        setError('Failed to load clients. Please try again.')
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchClients()
   }, [statusFilter])
 
@@ -81,6 +66,130 @@ export default function ClientsPage() {
         return 'bg-yellow-100 text-yellow-800'
       default:
         return 'bg-blue-100 text-blue-800'
+    }
+  }
+
+  const fetchClients = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const response = await fetch(`/api/clients?status=${statusFilter}&include_archived=false`)
+      const data = await response.json()
+
+      if (data.success) {
+        setClients(data.clients || [])
+      } else {
+        setError(data.error || 'Failed to fetch clients')
+      }
+    } catch (err) {
+      console.error('Error fetching clients:', err)
+      setError('Failed to load clients. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDelete = async (clientId: string) => {
+    if (!confirm('Are you sure you want to archive this client?')) return
+    
+    try {
+      const response = await fetch(`/api/clients/${clientId}`, {
+        method: 'DELETE'
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to archive client')
+      }
+
+      toast.success('Client archived successfully')
+      fetchClients()
+    } catch (error: any) {
+      console.error('Error archiving client:', error)
+      toast.error(error.message || 'Failed to archive client')
+    }
+  }
+
+  const handleSelectClient = (clientId: string, checked: boolean) => {
+    setSelectedClients(prev => {
+      const newSet = new Set(prev)
+      if (checked) {
+        newSet.add(clientId)
+      } else {
+        newSet.delete(clientId)
+      }
+      return newSet
+    })
+  }
+
+  const handleSelectAll = () => {
+    setSelectedClients(new Set(paginatedClients.map(c => c.id)))
+  }
+
+  const handleDeselectAll = () => {
+    setSelectedClients(new Set())
+  }
+
+  const handleBulkStatusUpdate = async (status: string) => {
+    if (selectedClients.size === 0) return
+
+    if (!confirm(`Update ${selectedClients.size} client(s) to ${status}?`)) return
+
+    try {
+      const response = await fetch('/api/clients/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_status',
+          clientIds: Array.from(selectedClients),
+          status,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Updated ${selectedClients.size} client(s)`)
+        setSelectedClients(new Set())
+        fetchClients()
+      } else {
+        throw new Error(data.error || 'Failed to update clients')
+      }
+    } catch (error: any) {
+      console.error('Error updating clients:', error)
+      toast.error(error.message || 'Failed to update clients')
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedClients.size === 0) return
+
+    if (!confirm(`Archive ${selectedClients.size} client(s)? This action cannot be undone.`)) return
+
+    try {
+      const response = await fetch('/api/clients/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'delete',
+          clientIds: Array.from(selectedClients),
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success(data.message || `Archived ${selectedClients.size} client(s)`)
+        setSelectedClients(new Set())
+        fetchClients()
+      } else {
+        throw new Error(data.error || 'Failed to archive clients')
+      }
+    } catch (error: any) {
+      console.error('Error archiving clients:', error)
+      toast.error(error.message || 'Failed to archive clients')
     }
   }
 
@@ -175,12 +284,53 @@ export default function ClientsPage() {
         </div>
       </div>
 
+      {/* Bulk Actions */}
+      {selectedClients.size > 0 && (
+        <BulkActions
+          selectedCount={selectedClients.size}
+          totalCount={filteredClients.length}
+          onSelectAll={handleSelectAll}
+          onDeselectAll={handleDeselectAll}
+          actions={[
+            {
+              label: 'Set Active',
+              onClick: () => handleBulkStatusUpdate('active'),
+            },
+            {
+              label: 'Set Inactive',
+              onClick: () => handleBulkStatusUpdate('inactive'),
+            },
+            {
+              label: 'Set Pending',
+              onClick: () => handleBulkStatusUpdate('pending'),
+            },
+            {
+              label: 'Archive',
+              onClick: handleBulkDelete,
+              variant: 'destructive',
+            },
+          ]}
+        />
+      )}
+
       {/* Clients Table */}
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                  <CheckboxCell
+                    checked={paginatedClients.length > 0 && paginatedClients.every(c => selectedClients.has(c.id))}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        handleSelectAll()
+                      } else {
+                        handleDeselectAll()
+                      }
+                    }}
+                  />
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -193,6 +343,12 @@ export default function ClientsPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {paginatedClients.map((client, index) => (
                 <tr key={client.id} className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    <CheckboxCell
+                      checked={selectedClients.has(client.id)}
+                      onCheckedChange={(checked) => handleSelectClient(client.id, checked)}
+                    />
+                  </td>
                   <td className="px-6 py-3 whitespace-nowrap">
                     <div>
                       <p className="text-sm font-medium text-gray-900">{client.name}</p>
@@ -231,10 +387,21 @@ export default function ClientsPage() {
                       >
                         <Eye className="h-4 w-4" />
                       </button>
-                      <button className="text-gray-600 hover:text-gray-900 transition-colors">
+                      <button 
+                        onClick={() => {
+                          setSelectedClient(client)
+                          setShowEditModal(true)
+                        }}
+                        className="text-gray-600 hover:text-gray-900 transition-colors"
+                        title="Edit client"
+                      >
                         <Edit className="h-4 w-4" />
                       </button>
-                      <button className="text-red-600 hover:text-red-900 transition-colors">
+                      <button 
+                        onClick={() => handleDelete(client.id)}
+                        className="text-red-600 hover:text-red-900 transition-colors"
+                        title="Archive client"
+                      >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -300,18 +467,6 @@ export default function ClientsPage() {
           onClose={() => setShowCreateModal(false)}
           onCreated={() => {
             setShowCreateModal(false)
-            // Refetch clients
-            const fetchClients = async () => {
-              try {
-                const response = await fetch(`/api/clients?status=${statusFilter}&include_archived=false`)
-                const data = await response.json()
-                if (data.success) {
-                  setClients(data.clients || [])
-                }
-              } catch (err) {
-                console.error('Error fetching clients:', err)
-              }
-            }
             fetchClients()
           }}
         />
@@ -325,6 +480,22 @@ export default function ClientsPage() {
             setSelectedClient(null)
           }}
           client={selectedClient}
+        />
+      )}
+
+      {showEditModal && selectedClient && (
+        <EditClientModal
+          open={showEditModal}
+          client={selectedClient}
+          onClose={() => {
+            setShowEditModal(false)
+            setSelectedClient(null)
+          }}
+          onUpdated={() => {
+            setShowEditModal(false)
+            setSelectedClient(null)
+            fetchClients()
+          }}
         />
       )}
     </div>

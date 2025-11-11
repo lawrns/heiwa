@@ -6,7 +6,6 @@ import {
   Calendar,
   ClipboardList,
   BarChart3,
-  Settings,
   FileText,
   LucideIcon
 } from 'lucide-react'
@@ -67,12 +66,6 @@ export const adminNavigationItems: NavigationItem[] = [
     icon: FileText,
     description: 'Manage website content'
   },
-  {
-    name: 'Settings',
-    href: '/admin/settings',
-    icon: Settings,
-    description: 'System settings'
-  }
 ]
 
 // CMS submenu items
