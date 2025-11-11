@@ -60,8 +60,8 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       fetch(`/api/surf-camps?category=surf-week`)
         .then(res => res.json())
         .then(data => {
-          if (data.success) {
-            const surfWeek = data.data.surf_camps.find((camp: any) => camp.id === weekId)
+          if (data.success && Array.isArray(data.data)) {
+            const surfWeek = data.data.find((camp: any) => camp.id === weekId)
             if (surfWeek) {
               // Set surf week first, then open widget
               // React 18+ automatically batches these updates
