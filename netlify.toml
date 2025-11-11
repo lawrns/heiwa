@@ -1,20 +1,15 @@
 [build]
   command = "npm run build"
-  # Publish directory is handled by @netlify/plugin-nextjs
-  # Enable incremental builds for faster deployments
-
-[build.environment]
-  NODE_OPTIONS = "--max-old-space-size=4096"
-  BUILD_ID = "2025-11-09-23-53-final-fixes"
-  NODE_VERSION = "18"
-  # Optimize build performance
-  NPM_FLAGS = "--prefer-offline --no-audit"
-  # Enable caching for faster builds
-  NETLIFY_USE_YARN = "true"
-  YARN_CACHE_FOLDER = ".yarn/cache"
+  # Publish directory is handled by @netlify/plugin-nextjs - do not set it here
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_OPTIONS = "--max-old-space-size=4096"
+  NODE_VERSION = "18"
+  # Optimize build performance
+  NPM_FLAGS = "--prefer-offline --no-audit"
 
 # Cache static assets for better performance
 [[headers]]
