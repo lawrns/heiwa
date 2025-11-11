@@ -3,8 +3,19 @@
 
 import { Resend } from 'resend'
 
-// Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Lazy initialization of Resend client to avoid build-time errors
+let resend: Resend | null = null
+
+function getResendClient(): Resend {
+  if (!resend) {
+    const apiKey = process.env.RESEND_API_KEY
+    if (!apiKey && process.env.NODE_ENV !== 'development') {
+      throw new Error('RESEND_API_KEY is not configured')
+    }
+    resend = new Resend(apiKey || 'dummy-key-for-build')
+  }
+  return resend
+}
 
 // Email configuration
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Heiwa House <noreply@heiwahouse.com>'
@@ -100,7 +111,7 @@ class EmailService {
         throw new Error('RESEND_API_KEY is not configured')
       }
 
-      const result = await resend.emails.send({
+      const result = await getResendClient().emails.send({
         from: FROM_EMAIL,
         to: Array.isArray(options.to) ? options.to : [options.to],
         subject: options.subject,
