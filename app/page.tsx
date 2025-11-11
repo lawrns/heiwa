@@ -220,7 +220,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-6xl mx-auto pl-8 lg:pl-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* YouTube Video */}
               <div className="w-full">
