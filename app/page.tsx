@@ -20,13 +20,7 @@ export default function HomePage() {
   const [homepageContent, setHomepageContent] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [blogPosts, setBlogPosts] = useState<any[]>([])
-
-  // Default data for fallback
-  const defaultSurfWeeks = [
-    { id: '1', dates: '01 Feb. - 12 Feb.', price: 'From €485', availableSpots: '5/18', totalSpots: 18 },
-    { id: '2', dates: '01 May - 12 May', price: 'From €485', availableSpots: '5/18', totalSpots: 18 },
-    { id: '3', dates: '01 May - 12 May', price: 'From €485', availableSpots: '5/18', totalSpots: 18 },
-  ]
+  const [surfWeeks, setSurfWeeks] = useState<any[]>([])
 
   // Reviews will be fetched from Google Reviews API via GoogleReviews component
 
@@ -110,12 +104,46 @@ export default function HomePage() {
       fetchBlogPosts()
     }
   }, [homepageContent])
+
+  // Fetch real surf weeks from API
+  useEffect(() => {
+    const fetchSurfWeeks = async () => {
+      try {
+        const response = await fetch('/api/surf-camps?is_active=true&limit=3')
+        const result = await response.json()
+        if (result.success && result.data && Array.isArray(result.data)) {
+          // Format the data to match the expected structure
+          const formattedWeeks = result.data.map((week: any) => {
+            const startDate = new Date(week.start_date)
+            const endDate = new Date(week.end_date)
+            const dateOptions: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' }
+            const dates = `${startDate.toLocaleDateString('en-US', dateOptions)} - ${endDate.toLocaleDateString('en-US', dateOptions)}`
+            
+            const totalSpots = week.total_spots || week.max_participants || 18
+            const availableSpots = week.available_spots !== undefined ? week.available_spots : totalSpots
+            
+            return {
+              id: week.id,
+              dates: dates,
+              price: `From €${week.price}`,
+              availableSpots: `${availableSpots}/${totalSpots}`,
+              totalSpots: totalSpots,
+              start_date: week.start_date,
+              end_date: week.end_date
+            }
+          })
+          setSurfWeeks(formattedWeeks)
+        }
+      } catch (error) {
+        console.error('Error fetching surf weeks:', error)
+      }
+    }
+
+    fetchSurfWeeks()
+  }, [])
   
   const heroTitle = heroSection?.title || 'Welcome to Heiwa House'
   const heroSubtitle = heroSection?.subtitle || 'Your surf and lifestyle destination in Santa Cruz, Portugal'
-  
-  // Use CMS data or fallback to defaults
-  const surfWeeks = surfWeeksSection?.data || defaultSurfWeeks
 
 
   return (
