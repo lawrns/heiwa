@@ -66,13 +66,24 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
   const isTwin = room.name.toLowerCase().includes('twin') || room.capacity === 2
 
   // Use actual images from database, fallback to single image if not available
-  const roomImages = room.images && Array.isArray(room.images) && room.images.length > 0
-    ? room.images
-    : room.image ? [room.image] : ['/images/rooms/room1.jpg'] // Fallback placeholder
+  // Filter out null/undefined/empty strings from images array
+  let roomImages: string[] = [];
+  if (room.images && Array.isArray(room.images) && room.images.length > 0) {
+    roomImages = room.images.filter(img => img && img.trim() !== '');
+  }
+  
+  // If no valid images after filtering, use fallback
+  if (roomImages.length === 0) {
+    if (room.image && room.image.trim() !== '') {
+      roomImages = [room.image];
+    } else {
+      roomImages = ['/images/rooms/room1.jpg']; // Fallback placeholder
+    }
+  }
 
   const enhancedRoom = {
     ...room,
-    images: roomImages.length > 0 ? roomImages : (room.image ? [room.image] : ['/images/rooms/room1.jpg']),
+    images: roomImages,
     price: room.pricing?.standard || room.pricing?.offSeason || (isDorm ? 30 : 80),
     beds: isDorm ? 6 : isTwin ? 2 : room.capacity || 1,
     bathrooms: isDorm ? 0 : 1,
