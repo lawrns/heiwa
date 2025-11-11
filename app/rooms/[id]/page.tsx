@@ -162,9 +162,11 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
             {/* Image Gallery with Functional Carousel */}
             <div className="mb-8 bg-white rounded-lg shadow-sm overflow-hidden">
               <ImageCarousel
-                images={enhancedRoom.images}
+                images={enhancedRoom.images || []}
                 alt={room.name}
-                aspectRatio="video"
+                aspectRatio="aspect-video"
+                showDots={true}
+                showArrows={true}
               />
             </div>
 
