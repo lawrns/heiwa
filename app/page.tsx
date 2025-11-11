@@ -189,55 +189,58 @@ export default function HomePage() {
       {/* Heiwa Surf Weeks Section - Using CMS Data */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               {surfWeeksSection?.title || 'Heiwa Surf Weeks'}
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               {surfWeeksSection?.subtitle || 'Experience the ultimate surf camp with professional instructors, yoga, amazing food, day trips, and unforgettable memories'}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* YouTube Video */}
-            <div className="flex justify-center">
-              <YouTubeVideo 
-                videoId={surfWeeksSection?.videoId || '9nhQiKGsgHg'}
-                title="Heiwa Surf Weeks Video"
-              />
-            </div>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* YouTube Video */}
+              <div className="w-full">
+                <YouTubeVideo 
+                  videoId={surfWeeksSection?.videoId || '9nhQiKGsgHg'}
+                  title="Heiwa Surf Weeks Video"
+                  className="w-full"
+                />
+              </div>
 
-            {/* Content */}
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-gray-900">
-                Why Join Our Surf Camps?
-              </h3>
-              <ul className="space-y-4 text-gray-600">
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Professional surf instruction for all levels</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Daily yoga and meditation sessions</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Amazing food prepared by our chef</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Exciting day trips to explore Portugal</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Skateboarding and other activities</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Prices starting at 450€</span>
-                </li>
-              </ul>
+              {/* Content */}
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Why Join Our Surf Camps?
+                </h3>
+                <ul className="space-y-4 text-gray-600">
+                  <li className="flex items-start gap-3">
+                    <span className="text-accent font-bold mt-1">•</span>
+                    <span>Professional surf instruction for all levels</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-accent font-bold mt-1">•</span>
+                    <span>Daily yoga and meditation sessions</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-accent font-bold mt-1">•</span>
+                    <span>Amazing food prepared by our chef</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-accent font-bold mt-1">•</span>
+                    <span>Exciting day trips to explore Portugal</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-accent font-bold mt-1">•</span>
+                    <span>Skateboarding and other activities</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-accent font-bold mt-1">•</span>
+                    <span>Prices starting at 450€</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 
