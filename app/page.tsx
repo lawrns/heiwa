@@ -14,7 +14,6 @@ import { YouTubeVideo } from '@/components/ui/youtube-video'
 import { ActivityCardEnhanced } from '@/components/ui/activity-card-enhanced'
 import { DynamicActivities } from '@/components/ui/dynamic-activities'
 import { useEffect, useState } from 'react'
-import { BookOpen, Calendar, Clock } from 'lucide-react'
 
 export default function HomePage() {
   const [homepageContent, setHomepageContent] = useState<any>(null)
