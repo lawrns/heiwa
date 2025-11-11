@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
+import { supabase } from '@/lib/supabase'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://heiwahouse.com'
   
   // Static pages
@@ -13,22 +14,42 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/booking',
     '/privacy',
     '/terms',
+    '/blog',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
-    priority: route === '' ? 1 : 0.8,
+    priority: route === '' ? 1 : route === '/blog' ? 0.9 : 0.8,
   }))
 
-  // TODO: Fetch dynamic room pages from database
-  // const rooms = await getRooms()
-  // const roomPages = rooms.map((room) => ({
-  //   url: `${baseUrl}/rooms/${room.id}`,
-  //   lastModified: new Date(room.updatedAt),
-  //   changeFrequency: 'weekly' as const,
-  //   priority: 0.7,
-  // }))
+  // Fetch blog posts
+  let blogPosts: MetadataRoute.Sitemap = []
+  try {
+    const { data: posts } = await supabase
+      .from('blog_posts')
+      .select(`
+        published_at,
+        updated_at,
+        translations:blog_post_translations!inner(slug_localized, locale)
+      `)
+      .eq('status', 'published')
+      .eq('translations.locale', 'en')
 
-  return [...staticPages]
+    if (posts) {
+      blogPosts = posts.map((post: any) => {
+        const translation = post.translations?.[0] || post.translations
+        return {
+          url: `${baseUrl}/blog/${translation.slug_localized}`,
+          lastModified: post.updated_at ? new Date(post.updated_at) : new Date(post.published_at),
+          changeFrequency: 'weekly' as const,
+          priority: 0.7,
+        }
+      })
+    }
+  } catch (error) {
+    console.error('Error fetching blog posts for sitemap:', error)
+  }
+
+  return [...staticPages, ...blogPosts]
 }
 

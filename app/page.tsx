@@ -14,10 +14,12 @@ import { YouTubeVideo } from '@/components/ui/youtube-video'
 import { ActivityCardEnhanced } from '@/components/ui/activity-card-enhanced'
 import { DynamicActivities } from '@/components/ui/dynamic-activities'
 import { useEffect, useState } from 'react'
+import { BookOpen, Calendar, Clock } from 'lucide-react'
 
 export default function HomePage() {
   const [homepageContent, setHomepageContent] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [blogPosts, setBlogPosts] = useState<any[]>([])
 
   // Default data for fallback
   const defaultSurfWeeks = [
@@ -87,6 +89,32 @@ export default function HomePage() {
   const hostsSection = homepageContent?.find((s: any) => s.section === 'hosts')
   const reviewsSection = homepageContent?.find((s: any) => s.section === 'reviews')
   const facilitiesSection = homepageContent?.find((s: any) => s.section === 'facilities')
+  const blogSection = homepageContent?.find((s: any) => s.section === 'blog')
+
+  // Fetch blog posts for blog section
+  useEffect(() => {
+    if (!homepageContent) return
+    
+    const blogSectionData = homepageContent.find((s: any) => s.section === 'blog')
+    
+    const fetchBlogPosts = async () => {
+      try {
+        const limit = blogSectionData?.blogConfig?.limit || 6
+        const response = await fetch(`/api/blog/posts?limit=${limit}&page=1`)
+        const result = await response.json()
+        if (result.success && result.data) {
+          setBlogPosts(result.data)
+        }
+      } catch (error) {
+        console.error('Error fetching blog posts:', error)
+      }
+    }
+
+    // Only fetch if blog section is active
+    if (blogSectionData?.isActive !== false) {
+      fetchBlogPosts()
+    }
+  }, [homepageContent])
   
   const heroTitle = heroSection?.title || 'Welcome to Heiwa House'
   const heroSubtitle = heroSection?.subtitle || 'Your surf and lifestyle destination in Santa Cruz, Portugal'
@@ -548,6 +576,98 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Blog Section - Latest Posts */}
+      {blogSection?.isActive !== false && blogPosts.length > 0 && (
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                {blogSection?.title || 'From the Journal'}
+              </h2>
+              <p className="text-lg text-gray-600">
+                {blogSection?.subtitle || 'Stories, tips, and insights from Heiwa House'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {blogPosts.map((post) => (
+                <Link
+                  key={post.id}
+                  href={`/blog/${post.slug}`}
+                  className="group bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
+                >
+                  {/* Cover Image */}
+                  {post.cover_image_url && (
+                    <div className="relative h-48 overflow-hidden bg-gray-200">
+                      <Image
+                        src={post.cover_image_url}
+                        alt={post.cover_alt_text || post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        unoptimized={post.cover_image_url?.includes('unsplash.com')}
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Content */}
+                  <div className="p-6">
+                    {/* Category */}
+                    {post.category && (
+                      <span className="inline-block px-3 py-1 text-xs font-semibold text-accent bg-accent/10 rounded-full mb-3">
+                        {post.category.name}
+                      </span>
+                    )}
+                    
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-accent transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                    
+                    {/* Excerpt */}
+                    {post.excerpt && (
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                        {post.excerpt}
+                      </p>
+                    )}
+                    
+                    {/* Meta Info */}
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <div className="flex items-center gap-4">
+                        {post.published_at && (
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            <span>{new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                          </div>
+                        )}
+                        {post.reading_minutes && (
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            <span>{post.reading_minutes} min read</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* View All Button */}
+            <div className="text-center mt-12">
+              <Link
+                href="/blog"
+                className="inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
+                style={{ backgroundColor: '#ec681c' }}
+              >
+                <BookOpen className="w-5 h-5 inline-block mr-2" />
+                View All Posts
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Activities Around Section */}
       <section className="py-20 bg-white">

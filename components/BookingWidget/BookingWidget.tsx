@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Calendar, CheckCircle } from 'lucide-react';
 import { useBookingFlow } from './hooks/useBookingFlow';
 import { useBooking } from '@/lib/booking-context';
@@ -56,15 +56,7 @@ export function BookingWidget({
       document.body.classList.add('heiwa-modal-open');
 
       // For Web Component, modal stays within shadow DOM
-      if (!isWebComponent) {
-        // Move modal to body to break out of container (legacy behavior)
-        setTimeout(() => {
-          const modal = document.querySelector('.heiwa-modal-overlay');
-          if (modal && modal.parentElement !== document.body) {
-            document.body.appendChild(modal);
-          }
-        }, 0);
-      }
+      // Removed setTimeout to prevent flickering - modal positioning handled by CSS
     } else {
       document.body.style.overflow = '';
       document.body.classList.remove('heiwa-modal-open');
@@ -79,13 +71,27 @@ export function BookingWidget({
     };
   }, [isOpen, isWebComponent, onModalStateChange]);
 
-  // Handle pre-selected surf week
+  // Handle pre-selected surf week - use a ref to prevent multiple runs
+  const prevSurfWeekRef = React.useRef<string | null>(null);
+  
   useEffect(() => {
-    if (isOpen && selectedSurfWeek) {
+    // Only run when widget opens or surf week changes
+    if (!isOpen) {
+      prevSurfWeekRef.current = null;
+      return;
+    }
+
+    const currentSurfWeekId = selectedSurfWeek?.id || null;
+    
+    // Skip if we've already processed this surf week
+    if (prevSurfWeekRef.current === currentSurfWeekId) {
+      return;
+    }
+
+    // Batch all state updates to prevent flickering
+    if (selectedSurfWeek) {
       // Pre-select surf week in the booking flow
       actions.setExperienceType('surf-week');
-      
-      // Set surf week ID
       actions.setSurfWeek(selectedSurfWeek.id);
       
       // Set dates from surf week's start_date and end_date
@@ -99,13 +105,15 @@ export function BookingWidget({
       }
       
       // Skip experience and options steps when surf week is pre-selected
-      // This will modify the step flow to start directly at room selection
       actions.setSkippedSteps(['experience', 'options']);
-    } else if (isOpen && !selectedSurfWeek) {
+      
+      prevSurfWeekRef.current = currentSurfWeekId;
+    } else {
       // Reset skipped steps when no surf week is pre-selected
       actions.setSkippedSteps([]);
+      prevSurfWeekRef.current = null;
     }
-  }, [isOpen, selectedSurfWeek, actions]);
+  }, [isOpen, selectedSurfWeek?.id, actions]);
 
   const openWidget = () => {
     setIsOpen(true);

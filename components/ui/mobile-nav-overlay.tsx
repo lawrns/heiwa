@@ -28,13 +28,11 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
   }, [isOpen])
 
   const menuVariants = {
-    hidden: { opacity: 0, x: 300 },
+    hidden: { x: 300 },
     visible: {
-      opacity: 1,
       x: 0,
     },
     exit: {
-      opacity: 0,
       x: 300,
     },
   }
@@ -78,7 +76,26 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed right-0 top-0 bottom-0 w-80 bg-black/40 backdrop-blur-md z-50 lg:hidden shadow-xl"
+            className="fixed right-0 top-0 bottom-0 w-80 z-50 lg:hidden shadow-xl bg-gray-900"
+            style={{ 
+              backgroundColor: '#111827',
+              backdropFilter: 'none',
+              WebkitBackdropFilter: 'none',
+              opacity: 1
+            } as React.CSSProperties}
+            ref={(el) => {
+              if (el) {
+                // Force solid background with !important - use requestAnimationFrame to ensure it runs after Framer Motion
+                requestAnimationFrame(() => {
+                  el.style.setProperty('background-color', '#111827', 'important');
+                  el.style.setProperty('backdrop-filter', 'none', 'important');
+                  el.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+                  el.style.setProperty('opacity', '1', 'important');
+                  // Also ensure no transparency from parent or other sources
+                  el.style.setProperty('background', '#111827', 'important');
+                });
+              }
+            }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-white/10">

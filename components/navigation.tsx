@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, X, Bed, ChevronDown } from 'lucide-react'
@@ -12,20 +12,27 @@ import { MobileNavOverlay } from '@/components/ui/mobile-nav-overlay'
 
 export function Navigation({ items: initialItems, currentPath, className }: NavigationProps & { items?: NavigationItem[] }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [items, setItems] = useState<NavigationItem[]>(initialItems || [])
+  const [fetchedItems, setFetchedItems] = useState<NavigationItem[]>([])
   const [activitiesOpen, setActivitiesOpen] = useState(false)
   const { openBooking } = useBooking()
 
   useEffect(() => {
     if (!initialItems) {
-      getNavigationItems().then(fetchedItems => {
-        setItems(fetchedItems)
+      getNavigationItems().then(items => {
+        setFetchedItems(items)
       }).catch(() => {
-        // Fallback to static items if fetch fails
-        setItems([])
+        setFetchedItems([])
       })
     }
   }, [initialItems])
+
+  // Filter out activity items that should be in dropdown
+  const items = useMemo(() => {
+    const allItems = initialItems || fetchedItems
+    return allItems.filter(item => 
+      !['/play', '/surf', '/flow'].includes(item.path)
+    )
+  }, [initialItems, fetchedItems])
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => {
@@ -254,6 +261,51 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       </Link>
                     </li>
                   ))}
+                  
+                  {/* Activities Dropdown */}
+                  <li>
+                    <div 
+                      className="relative"
+                      onMouseEnter={() => setActivitiesOpen(true)}
+                      onMouseLeave={() => setActivitiesOpen(false)}
+                    >
+                      <button
+                        className={cn(
+                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1 flex items-center gap-1',
+                          (currentPath?.includes('/flow') || currentPath?.includes('/play') || currentPath?.includes('/surf'))
+                            ? 'text-orange-400'
+                            : 'text-white'
+                        )}
+                        aria-label="Open activities menu"
+                        aria-expanded={activitiesOpen}
+                        aria-haspopup="true"
+                      >
+                        ACTIVITIES
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                      {activitiesOpen && (
+                        <div className="absolute top-full left-0 pt-2 z-50">
+                          <div className="w-40 bg-gray-900 border border-gray-700 rounded-md shadow-lg py-1">
+                            {activitiesItems.map((item) => (
+                              <Link
+                                key={item.path}
+                                href={item.path}
+                                className={cn(
+                                  'block px-4 py-2 text-sm font-medium tracking-wide transition-colors hover:bg-gray-800 hover:text-orange-400 uppercase',
+                                  currentPath === item.path
+                                    ? 'text-orange-400'
+                                    : 'text-white'
+                                )}
+                                aria-label={`Navigate to ${item.name} page`}
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </li>
                 </ul>
               </nav>
 
