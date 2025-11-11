@@ -56,6 +56,22 @@ export function TipTapEditor({ content, onChange, placeholder = 'Start writing..
     },
   })
 
+  // Close heading menu when clicking outside - MUST be before early return
+  useEffect(() => {
+    if (!editor) return
+    
+    const handleClickOutside = (event: MouseEvent) => {
+      if (headingMenuRef.current && !headingMenuRef.current.contains(event.target as Node)) {
+        setHeadingMenuOpen(false)
+      }
+    }
+
+    if (headingMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [headingMenuOpen, editor])
+
   if (!editor) {
     return null
   }
@@ -114,20 +130,6 @@ export function TipTapEditor({ content, onChange, placeholder = 'Start writing..
     if (editor.isActive('heading', { level: 4 })) return 4
     return 0
   }
-
-  // Close heading menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (headingMenuRef.current && !headingMenuRef.current.contains(event.target as Node)) {
-        setHeadingMenuOpen(false)
-      }
-    }
-
-    if (headingMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [headingMenuOpen])
 
   const addLink = () => {
     const url = window.prompt('Enter URL:')
