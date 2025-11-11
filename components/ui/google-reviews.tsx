@@ -220,7 +220,15 @@ export function GoogleReviews({
               <div className="flex mb-2">
                 {renderStars(review.rating)}
               </div>
-              <p className="text-gray-700 text-sm leading-relaxed">{review.text}</p>
+              <p className="text-gray-700 text-sm leading-relaxed mb-2">{review.text}</p>
+              <a
+                href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium inline-block"
+              >
+                Read more
+              </a>
             </div>
           ))}
         </div>
