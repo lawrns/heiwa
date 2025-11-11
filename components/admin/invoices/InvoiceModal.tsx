@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -107,7 +108,7 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{invoice ? 'Edit Invoice' : 'Create Invoice'}</DialogTitle>
           <DialogDescription>
@@ -115,94 +116,137 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="booking_id">Booking ID *</Label>
-            <Input
-              id="booking_id"
-              value={formData.booking_id}
-              onChange={(e) => setFormData(prev => ({ ...prev, booking_id: e.target.value }))}
-              disabled={!!invoice}
-              required
-            />
-            {booking && (
-              <p className="text-sm text-gray-500 mt-1">
-                Booking total: €{booking.total_price || booking.total_amount}
-              </p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Booking Details Section */}
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Booking Details</h3>
+            
             <div>
-              <Label htmlFor="amount">Amount (€) *</Label>
+              <Label htmlFor="booking_id">Booking ID *</Label>
               <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.amount}
-                onChange={(e) => setFormData(prev => ({ ...prev, amount: parseFloat(e.target.value) || 0 }))}
+                id="booking_id"
+                value={formData.booking_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, booking_id: e.target.value }))}
+                disabled={!!invoice}
                 required
+                placeholder="Enter booking ID"
+                className="mt-1.5"
               />
-            </div>
-
-            <div>
-              <Label htmlFor="currency">Currency</Label>
-              <Select
-                value={formData.currency}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="EUR">EUR</SelectItem>
-                  <SelectItem value="USD">USD</SelectItem>
-                  <SelectItem value="GBP">GBP</SelectItem>
-                </SelectContent>
-              </Select>
+              {booking && (
+                <p className="text-sm text-gray-500 mt-2">
+                  Booking total: €{booking.total_price || booking.total_amount}
+                </p>
+              )}
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="status">Status</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value: any) => setFormData(prev => ({ ...prev, status: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="sent">Sent</SelectItem>
-                  <SelectItem value="paid">Paid</SelectItem>
-                  <SelectItem value="overdue">Overdue</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                </SelectContent>
-              </Select>
+          {/* Invoice Details Section */}
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Invoice Details</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="amount">Amount *</Label>
+                <Input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.amount}
+                  onChange={(e) => setFormData(prev => ({ ...prev, amount: parseFloat(e.target.value) || 0 }))}
+                  required
+                  placeholder="0.00"
+                  className="mt-1.5"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="currency">Currency</Label>
+                <Select
+                  value={formData.currency}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value }))}
+                >
+                  <SelectTrigger className="mt-1.5">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="EUR">EUR (€)</SelectItem>
+                    <SelectItem value="USD">USD ($)</SelectItem>
+                    <SelectItem value="GBP">GBP (£)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div>
-              <Label htmlFor="due_date">Due Date</Label>
-              <Input
-                id="due_date"
-                type="date"
-                value={formData.due_date}
-                onChange={(e) => setFormData(prev => ({ ...prev, due_date: e.target.value }))}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value: any) => setFormData(prev => ({ ...prev, status: value }))}
+                >
+                  <SelectTrigger className="mt-1.5">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-gray-500"></span>
+                        Draft
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="sent">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                        Sent
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="paid">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                        Paid
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="overdue">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                        Overdue
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="cancelled">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-gray-400"></span>
+                        Cancelled
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="due_date">Due Date</Label>
+                <div className="relative mt-1.5">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                  <Input
+                    id="due_date"
+                    type="date"
+                    value={formData.due_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, due_date: e.target.value }))}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <DialogFooter className="pt-6 border-t">
             <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : invoice ? 'Update Invoice' : 'Create Invoice'}
+              {loading ? 'Creating...' : invoice ? 'Update Invoice' : 'Create Invoice'}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

@@ -21,6 +21,8 @@ import {
   type LucideIcon
 } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import { PageSection } from '@/lib/cms-types'
 
 interface SectionCardProps {
@@ -90,7 +92,7 @@ export default function SectionCard({
   const IconComponent = getSectionIcon(section.section_type)
 
   return (
-    <div className="p-4 sm:p-6 hover:bg-gray-50 transition-colors group">
+    <div className="p-6 border-b border-gray-200 hover:bg-gray-50 transition-colors group shadow-sm bg-white rounded-lg mb-4">
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div className="flex items-start flex-1 w-full sm:w-auto">
           {/* Drag Handle */}
@@ -144,18 +146,20 @@ export default function SectionCard({
             </div>
 
             {/* Actions */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+              <div className="flex items-center gap-3">
+                <Switch
+                  id={`active-${section.id}`}
                   checked={section.is_active}
-                  onChange={(e) => onToggleActive(e.target.checked)}
-                  className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  onCheckedChange={onToggleActive}
                 />
-                <span className="text-xs sm:text-sm text-gray-700">
+                <Label 
+                  htmlFor={`active-${section.id}`}
+                  className="text-sm font-medium text-gray-700 cursor-pointer"
+                >
                   {section.is_active ? 'Active' : 'Inactive'}
-                </span>
-              </label>
+                </Label>
+              </div>
               
               <AdminButton variant="outline" size="sm" onClick={onEdit} className="text-xs sm:text-sm">
                 <Edit className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />

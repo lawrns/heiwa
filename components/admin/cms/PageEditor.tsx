@@ -507,7 +507,7 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  className="divide-y divide-gray-200"
+                  className="space-y-4"
                 >
                   {pageData.sections.map((section, index) => (
                     <Draggable key={section.id} draggableId={section.id} index={index}>

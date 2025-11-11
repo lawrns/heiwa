@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ColorPicker } from '@/components/ui/color-picker'
+import { Calendar } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 interface CreateEventModalProps {
@@ -80,7 +82,7 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create New Event</DialogTitle>
           <DialogDescription>
@@ -88,101 +90,127 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="title">Title *</Label>
-            <Input
-              id="title"
-              value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              rows={4}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Event Details Section */}
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Event Details</h3>
+            
             <div>
-              <Label htmlFor="start_date">Start Date *</Label>
+              <Label htmlFor="title">Title *</Label>
               <Input
-                id="start_date"
-                type="date"
-                value={formData.start_date}
-                onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))}
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                placeholder="Enter event title"
                 required
+                className="mt-1.5"
               />
             </div>
 
             <div>
-              <Label htmlFor="end_date">End Date</Label>
-              <Input
-                id="end_date"
-                type="date"
-                value={formData.end_date}
-                onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))}
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                rows={4}
+                placeholder="Add event description..."
+                className="mt-1.5"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="event_type">Event Type</Label>
-              <Select
-                value={formData.event_type}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, event_type: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="general">General</SelectItem>
-                  <SelectItem value="booking">Booking</SelectItem>
-                  <SelectItem value="surf_camp">Surf Camp</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                  <SelectItem value="event">Event</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+          {/* Scheduling Section */}
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Scheduling</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="start_date">Start Date *</Label>
+                <div className="relative mt-1.5">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                  <Input
+                    id="start_date"
+                    type="date"
+                    value={formData.start_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="end_date">End Date</Label>
+                <div className="relative mt-1.5">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                  <Input
+                    id="end_date"
+                    type="date"
+                    value={formData.end_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Event Settings Section */}
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Event Settings</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="event_type">Event Type</Label>
+                <Select
+                  value={formData.event_type}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, event_type: value }))}
+                >
+                  <SelectTrigger className="mt-1.5">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="general">General</SelectItem>
+                    <SelectItem value="booking">Booking</SelectItem>
+                    <SelectItem value="surf_camp">Surf Camp</SelectItem>
+                    <SelectItem value="maintenance">Maintenance</SelectItem>
+                    <SelectItem value="event">Event</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                  placeholder="e.g., Main Building, Beach"
+                  className="mt-1.5"
+                />
+              </div>
             </div>
 
             <div>
-              <Label htmlFor="color">Color</Label>
-              <Input
+              <ColorPicker
                 id="color"
-                type="color"
                 value={formData.color}
-                onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
-                className="h-10"
+                onChange={(color) => setFormData(prev => ({ ...prev, color }))}
+                label="Event Color"
               />
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="location">Location</Label>
-            <Input
-              id="location"
-              value={formData.location}
-              onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-              placeholder="e.g., Main Building, Beach, etc."
-            />
-          </div>
-
-          <div className="flex justify-end gap-2 pt-4">
+          <DialogFooter className="pt-6 border-t">
             <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
               {loading ? 'Creating...' : 'Create Event'}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

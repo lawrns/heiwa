@@ -724,8 +724,8 @@ export default function BookingsPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {paginatedBookings.map((booking) => (
-                  <tr key={booking.id} className="hover:bg-gray-50">
+                {paginatedBookings.map((booking, index) => (
+                  <tr key={booking.id} className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
                     <td className="px-6 py-3 whitespace-nowrap">
                       <CheckboxCell
                         checked={selectedBookings.has(booking.id)}

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { Users, Search, Filter, Download, Plus, Eye, Edit, Trash2, Mail, Phone } from 'lucide-react'
+import { ViewClientModal } from '@/components/admin/clients/ViewClientModal'
+import { CreateClientModal } from '@/components/admin/clients/CreateClientModal'
 
 interface Client {
   id: string
@@ -23,6 +25,9 @@ export default function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState('all')
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null)
   const itemsPerPage = 10
 
   useEffect(() => {
@@ -106,7 +111,10 @@ export default function ClientsPage() {
           <h1 className="text-3xl font-bold text-gray-900">Clients</h1>
           <p className="text-gray-600 mt-2">Manage and view all client information</p>
         </div>
-        <button className="inline-flex items-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium">
+        <button 
+          onClick={() => setShowCreateModal(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium"
+        >
           <Plus className="h-4 w-4" />
           Add Client
         </button>
@@ -183,15 +191,15 @@ export default function ClientsPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {paginatedClients.map((client) => (
-                <tr key={client.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+              {paginatedClients.map((client, index) => (
+                <tr key={client.id} className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <div>
                       <p className="text-sm font-medium text-gray-900">{client.name}</p>
                       {client.company && <p className="text-sm text-gray-500">{client.company}</p>}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Mail className="h-4 w-4" />
@@ -203,17 +211,24 @@ export default function ClientsPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-3 whitespace-nowrap">
                     <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(client.status)}`}>
                       {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{client.totalBookings}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">€{client.totalSpent.toLocaleString()}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(client.joinDate).toLocaleDateString()}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900">{client.totalBookings}</td>
+                  <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900">€{client.totalSpent.toLocaleString()}</td>
+                  <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">{new Date(client.joinDate).toLocaleDateString()}</td>
+                  <td className="px-6 py-3 whitespace-nowrap text-sm font-medium">
                     <div className="flex gap-2">
-                      <button className="text-blue-600 hover:text-blue-900 transition-colors">
+                      <button 
+                        onClick={() => {
+                          setSelectedClient(client)
+                          setShowViewModal(true)
+                        }}
+                        className="text-blue-600 hover:text-blue-900 transition-colors"
+                        title="View client details"
+                      >
                         <Eye className="h-4 w-4" />
                       </button>
                       <button className="text-gray-600 hover:text-gray-900 transition-colors">
@@ -276,6 +291,41 @@ export default function ClientsPage() {
           <h3 className="text-lg font-medium text-gray-900 mb-2">No clients found</h3>
           <p className="text-gray-500">Try adjusting your search or filters</p>
         </div>
+      )}
+
+      {/* Modals */}
+      {showCreateModal && (
+        <CreateClientModal
+          open={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onCreated={() => {
+            setShowCreateModal(false)
+            // Refetch clients
+            const fetchClients = async () => {
+              try {
+                const response = await fetch(`/api/clients?status=${statusFilter}&include_archived=false`)
+                const data = await response.json()
+                if (data.success) {
+                  setClients(data.clients || [])
+                }
+              } catch (err) {
+                console.error('Error fetching clients:', err)
+              }
+            }
+            fetchClients()
+          }}
+        />
+      )}
+
+      {showViewModal && selectedClient && (
+        <ViewClientModal
+          open={showViewModal}
+          onClose={() => {
+            setShowViewModal(false)
+            setSelectedClient(null)
+          }}
+          client={selectedClient}
+        />
       )}
     </div>
   )

@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -104,7 +105,7 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{payment ? 'Edit Payment' : 'Record Payment'}</DialogTitle>
           <DialogDescription>
@@ -112,109 +113,153 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="booking_id">Booking ID *</Label>
-            <Input
-              id="booking_id"
-              value={formData.booking_id}
-              onChange={(e) => setFormData(prev => ({ ...prev, booking_id: e.target.value }))}
-              disabled={!!payment}
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Booking Information Section */}
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Booking Information</h3>
+            
             <div>
-              <Label htmlFor="amount">Amount (€) *</Label>
+              <Label htmlFor="booking_id">Booking ID *</Label>
               <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.amount}
-                onChange={(e) => setFormData(prev => ({ ...prev, amount: parseFloat(e.target.value) || 0 }))}
+                id="booking_id"
+                value={formData.booking_id}
+                onChange={(e) => setFormData(prev => ({ ...prev, booking_id: e.target.value }))}
+                disabled={!!payment}
                 required
+                placeholder="Enter booking ID"
+                className="mt-1.5"
               />
-            </div>
-
-            <div>
-              <Label htmlFor="currency">Currency</Label>
-              <Select
-                value={formData.currency}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="EUR">EUR</SelectItem>
-                  <SelectItem value="USD">USD</SelectItem>
-                  <SelectItem value="GBP">GBP</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="payment_method">Payment Method *</Label>
-              <Select
-                value={formData.payment_method}
-                onValueChange={(value: any) => setFormData(prev => ({ ...prev, payment_method: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="stripe">Stripe</SelectItem>
-                  <SelectItem value="cash">Cash</SelectItem>
-                  <SelectItem value="transfer">Bank Transfer</SelectItem>
-                  <SelectItem value="paypal">PayPal</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+          {/* Payment Information Section */}
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Payment Information</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="amount">Amount *</Label>
+                <Input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.amount}
+                  onChange={(e) => setFormData(prev => ({ ...prev, amount: parseFloat(e.target.value) || 0 }))}
+                  required
+                  placeholder="0.00"
+                  className="mt-1.5"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="currency">Currency</Label>
+                <Select
+                  value={formData.currency}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value }))}
+                >
+                  <SelectTrigger className="mt-1.5">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="EUR">EUR (€)</SelectItem>
+                    <SelectItem value="USD">USD ($)</SelectItem>
+                    <SelectItem value="GBP">GBP (£)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div>
-              <Label htmlFor="payment_status">Status</Label>
-              <Select
-                value={formData.payment_status}
-                onValueChange={(value: any) => setFormData(prev => ({ ...prev, payment_status: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
-                  <SelectItem value="refunded">Refunded</SelectItem>
-                  <SelectItem value="partially_refunded">Partially Refunded</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="payment_method">Payment Method *</Label>
+                <Select
+                  value={formData.payment_method}
+                  onValueChange={(value: any) => setFormData(prev => ({ ...prev, payment_method: value }))}
+                >
+                  <SelectTrigger className="mt-1.5">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="stripe">Stripe</SelectItem>
+                    <SelectItem value="cash">Cash</SelectItem>
+                    <SelectItem value="transfer">Bank Transfer</SelectItem>
+                    <SelectItem value="paypal">PayPal</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="transaction_id">Transaction ID</Label>
-              <Input
-                id="transaction_id"
-                value={formData.transaction_id}
-                onChange={(e) => setFormData(prev => ({ ...prev, transaction_id: e.target.value }))}
-                placeholder="e.g., ch_1234567890"
-              />
+              <div>
+                <Label htmlFor="payment_status">Status</Label>
+                <Select
+                  value={formData.payment_status}
+                  onValueChange={(value: any) => setFormData(prev => ({ ...prev, payment_status: value }))}
+                >
+                  <SelectTrigger className="mt-1.5">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
+                        Pending
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="completed">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                        Completed
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="failed">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                        Failed
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="refunded">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                        Refunded
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="partially_refunded">
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                        Partially Refunded
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div>
-              <Label htmlFor="payment_date">Payment Date</Label>
-              <Input
-                id="payment_date"
-                type="date"
-                value={formData.payment_date}
-                onChange={(e) => setFormData(prev => ({ ...prev, payment_date: e.target.value }))}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="transaction_id">Transaction ID</Label>
+                <Input
+                  id="transaction_id"
+                  value={formData.transaction_id}
+                  onChange={(e) => setFormData(prev => ({ ...prev, transaction_id: e.target.value }))}
+                  placeholder="e.g., ch_1234567890"
+                  className="mt-1.5"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="payment_date">Payment Date</Label>
+                <div className="relative mt-1.5">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                  <Input
+                    id="payment_date"
+                    type="date"
+                    value={formData.payment_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, payment_date: e.target.value }))}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -248,25 +293,31 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
             </div>
           )}
 
-          <div>
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea
-              id="notes"
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              rows={3}
-              placeholder="Additional notes about this payment..."
-            />
+          {/* Notes Section */}
+          <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Additional Information</h3>
+            
+            <div>
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea
+                id="notes"
+                value={formData.notes}
+                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                rows={3}
+                placeholder="Additional notes about this payment..."
+                className="mt-1.5"
+              />
+            </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <DialogFooter className="pt-6 border-t">
             <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
               {loading ? 'Saving...' : payment ? 'Update Payment' : 'Record Payment'}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
