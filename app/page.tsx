@@ -359,15 +359,19 @@ export default function HomePage() {
                 {/* Find More Button */}
                 {surfWeeks.length > 0 && (
                   <div className="mt-6 text-center">
-                <Link
-                  href="/surf-weeks"
-                  className="px-8 py-3 bg-accent hover:bg-accent-hover text-white font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-                  style={{ backgroundColor: '#ec681c' }}
-                >
-                  Show All Surf Weeks
-                </Link>
+                    <Link
+                      href="/surf-weeks"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-accent text-accent hover:bg-accent hover:text-white font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                      style={{ borderColor: '#ec681c', color: '#ec681c' }}
+                    >
+                      Find More Surf Weeks
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
+                )}
               </div>
-            </div>
           </div>
         </div>
       </section>
