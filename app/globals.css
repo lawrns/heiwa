@@ -87,6 +87,12 @@
     scroll-behavior: smooth;
   }
   
+  html.menu-open {
+    overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: none;
+  }
+  
   body {
     background-color: #FFFFFF;
     color: #1a1a1a;

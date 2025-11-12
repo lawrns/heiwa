@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { X, Bed, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import { useBooking } from '@/lib/booking-context'
 
 interface MobileNavOverlayProps {
@@ -16,16 +17,59 @@ interface MobileNavOverlayProps {
 export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: MobileNavOverlayProps) {
   const { openBooking } = useBooking()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [mounted, setMounted] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Handle body scroll lock
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
     }
     return () => {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
     }
   }, [isOpen])
+
+  // Handle click outside to close
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [isOpen, onClose])
+
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape)
+      return () => {
+        document.removeEventListener('keydown', handleEscape)
+      }
+    }
+  }, [isOpen, onClose])
 
   const menuVariants = {
     hidden: { opacity: 0, x: 300 },
@@ -57,28 +101,57 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
     }),
   }
 
-  return (
+  if (!mounted || typeof document === 'undefined') return null
+
+  const overlayContent = (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop - MUST be above nav z-50 */}
           <motion.div
             variants={overlayVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
-            style={{ pointerEvents: 'auto' }}
+            style={{ 
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              width: '100vw',
+              height: '100vh',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              zIndex: 9999,
+              pointerEvents: 'auto'
+            }}
+            className="lg:hidden"
+            aria-hidden="true"
           />
 
           {/* Menu Panel */}
           <motion.div
+            ref={menuRef}
             variants={menuVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed right-0 top-0 bottom-0 w-80 bg-black/40 backdrop-blur-md z-50 lg:hidden shadow-xl"
+            style={{ 
+              position: 'fixed',
+              top: 0,
+              bottom: 0,
+              right: 0,
+              width: '20rem',
+              height: '100vh',
+              backgroundColor: '#111827',
+              zIndex: 10000,
+              boxShadow: '0 0 50px rgba(0, 0, 0, 0.5)'
+            }}
+            className="lg:hidden overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            id="mobile-menu"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-white/10">
@@ -161,7 +234,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
             </nav>
 
             {/* Footer CTA */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+            <div className="sticky bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-gray-900">
               <button
                 className="w-full px-4 py-3 text-white font-semibold rounded-lg transition-colors uppercase text-sm flex items-center justify-center gap-2"
                 style={{ backgroundColor: '#ec681c' }}
@@ -181,4 +254,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
       )}
     </AnimatePresence>
   )
+
+  // Portal MUST render to body, not inside nav
+  return createPortal(overlayContent, document.body)
 }

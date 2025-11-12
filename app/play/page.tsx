@@ -4,6 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
+import { GoogleReviews } from '@/components/ui/google-reviews'
 
 export const metadata: Metadata = {
   title: 'Heiwa Play - Activities & Fun at Santa Cruz, Portugal',
@@ -40,41 +41,7 @@ export default function PlayPage() {
     },
   ]
 
-  // Sample reviews for Play page
-  const reviews = [
-    {
-      id: '1',
-      name: 'Sarah M.',
-      rating: 5,
-      text: 'The variety of activities at Heiwa Play is incredible! From table tennis tournaments to evening sauna sessions, there was never a dull moment.',
-      timeAgo: '1 week ago',
-      verified: true,
-    },
-    {
-      id: '2',
-      name: 'Mike R.',
-      rating: 5,
-      text: 'The skatepark was amazing! I loved trying surfskate for the first time, and the staff was super helpful. The pool was perfect for relaxing after surfing.',
-      timeAgo: '2 weeks ago',
-      verified: true,
-    },
-    {
-      id: '3',
-      name: 'Emma L.',
-      rating: 5,
-      text: 'Heiwa Play offers so much more than just surfing. The table games brought everyone together, and the bicycle rental let us explore beautiful coastal paths.',
-      timeAgo: '3 weeks ago',
-      verified: true,
-    },
-    {
-      id: '4',
-      name: 'Carlos D.',
-      rating: 5,
-      text: 'The sauna and ice bath experience was incredible for recovery. Combined with the gym and pool facilities, it\'s the perfect wellness destination.',
-      timeAgo: '1 month ago',
-      verified: true,
-    },
-  ]
+  // Reviews will be fetched from Google Reviews API via GoogleReviews component
 
   return (
     <div className="min-h-screen pt-20 bg-white">
@@ -164,7 +131,7 @@ export default function PlayPage() {
         </div>
       </section>
 
-      {/* Reviews Section */}
+      {/* Reviews Section - Using Real Google Reviews */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -176,38 +143,8 @@ export default function PlayPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {reviews.map((review) => (
-              <div key={review.id} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                {/* Rating */}
-                <div className="flex items-center space-x-1 mb-3">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <svg key={i} className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                  ))}
-                </div>
-
-                {/* Review Text */}
-                <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                  {review.text}
-                </p>
-
-                {/* Reviewer Info */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">{review.name}</p>
-                    <p className="text-xs text-gray-500">{review.timeAgo}</p>
-                  </div>
-                  {review.verified && (
-                    <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Google Reviews Component - Fetches real reviews from API */}
+          <GoogleReviews showReviews={true} maxReviews={4} />
         </div>
       </section>
 

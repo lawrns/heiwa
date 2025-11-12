@@ -17,7 +17,8 @@ import {
   BarChart3,
   FileText,
   Key,
-  CreditCard
+  CreditCard,
+  BookOpen
 } from 'lucide-react'
 
 interface ErrorBoundaryState {
@@ -89,6 +90,7 @@ const navigationItems = [
   { name: 'Calendar', href: '/admin/calendar', icon: Calendar },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'CMS', href: '/admin/cms', icon: FileText },
+  { name: 'Blog', href: '/admin/blog', icon: BookOpen },
 ]
 
 // Admin Logo component

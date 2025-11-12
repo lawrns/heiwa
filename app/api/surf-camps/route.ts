@@ -21,15 +21,22 @@ interface SurfCamp {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
-    const category = searchParams.get('category') || 'surf-week'
+    const category = searchParams.get('category')
+    const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
     
-    // Get all active surf camps for specific category
-    const { data: surfCamps, error: surfCampsError } = await supabase
+    // Build query - don't filter by category if it doesn't exist in schema
+    let query = supabase
       .from('surf_camps')
       .select('*')
       .eq('is_active', true)
-      .eq('category', category)
       .order('start_date', { ascending: true })
+    
+    // Apply limit if provided
+    if (limit) {
+      query = query.limit(limit)
+    }
+    
+    const { data: surfCamps, error: surfCampsError } = await query
 
     if (surfCampsError) {
       console.error('Error fetching surf camps:', surfCampsError)
@@ -48,7 +55,11 @@ export async function GET(request: Request) {
           .eq('surf_camp_id', camp.id)
           .eq('status', 'confirmed')
         
-        const availableSpots = camp.max_participants - (enrolledCount || 0)
+        // Handle both old schema (max_participants) and new schema (total_spots)
+        const totalSpots = (camp as any).total_spots || camp.max_participants || 18
+        const dbAvailableSpots = (camp as any).available_spots
+        const calculatedAvailableSpots = totalSpots - (enrolledCount || 0)
+        const availableSpots = dbAvailableSpots !== undefined ? dbAvailableSpots : calculatedAvailableSpots
         
         return {
           id: camp.id,
@@ -57,22 +68,21 @@ export async function GET(request: Request) {
           start_date: camp.start_date,
           end_date: camp.end_date,
           price: camp.price,
-          max_participants: camp.max_participants,
-          enrolled_count: enrolledCount || 0,
+          max_participants: totalSpots,
+          total_spots: totalSpots,
           available_spots: Math.max(0, availableSpots),
+          enrolled_count: enrolledCount || 0,
           is_full: availableSpots <= 0,
-          level: camp.level,
-          images: camp.images,
-          includes: camp.includes
+          level: camp.level || 'all',
+          images: camp.images || [],
+          includes: camp.includes || []
         }
       })
     )
 
     return NextResponse.json({
       success: true,
-      data: {
-        surf_camps: surfCampsWithAvailability
-      }
+      data: surfCampsWithAvailability
     })
 
   } catch (error) {

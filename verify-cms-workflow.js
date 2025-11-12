@@ -39,7 +39,7 @@ async function testCMSWorkflow() {
   try {
     // Step 1: Get current title from database
     console.log('\n📋 Step 1: Getting current title from database...');
-    const dbResult = execSync(`psql "postgresql://postgres:Hennie%40%4012Hennie%40%4012@db.zejrhceuuujzgyukdwnb.supabase.co:5432/postgres" -t -c "SELECT title FROM homepage_content WHERE section = 'hero';"`, { encoding: 'utf8' });
+    const dbResult = execSync(`psql "postgresql://postgres:cqv_kmb-WEP.vez6xze@db.pguipwhrxdzzrndbluxb.supabase.co:5432/postgres" -t -c "SELECT title FROM homepage_content WHERE section = 'hero';"`, { encoding: 'utf8' });
     originalTitle = dbResult.trim();
     console.log(`✅ Current title: "${originalTitle}"`);
     
@@ -77,7 +77,7 @@ async function testCMSWorkflow() {
     
     // Step 3: Verify database was updated
     console.log('\n🔍 Step 3: Verifying database update...');
-    const dbCheck = execSync(`psql "postgresql://postgres:Hennie%40%4012Hennie%40%4012@db.zejrhceuuujzgyukdwnb.supabase.co:5432/postgres" -t -c "SELECT title FROM homepage_content WHERE section = 'hero';"`, { encoding: 'utf8' });
+    const dbCheck = execSync(`psql "postgresql://postgres:cqv_kmb-WEP.vez6xze@db.pguipwhrxdzzrndbluxb.supabase.co:5432/postgres" -t -c "SELECT title FROM homepage_content WHERE section = 'hero';"`, { encoding: 'utf8' });
     const dbTitle = dbCheck.trim();
     
     if (dbTitle === testTitle) {

@@ -19,6 +19,14 @@ interface PageData {
 
 const pages: PageData[] = [
   {
+    slug: 'homepage',
+    title: 'Homepage',
+    description: 'Manage homepage sections and content',
+    sectionCount: 0,
+    lastModified: 'Never',
+    status: 'published'
+  },
+  {
     slug: 'flow',
     title: 'Heiwa Flow',
     description: 'Yoga, massage, ice bath, sauna, and wellness services',
@@ -81,22 +89,44 @@ export default function CMSPagesPage() {
   const fetchPageStats = async () => {
     try {
       setLoading(true)
-      const { data, error } = await supabaseAdmin
+      
+      // Fetch page_content stats
+      const { data: pageData, error: pageError } = await supabaseAdmin
         .from('page_content')
         .select('page_slug, updated_at')
         .eq('is_active', true)
 
-      if (error) throw error
+      if (pageError) throw pageError
+
+      // Fetch homepage_content stats
+      const { data: homepageData, error: homepageError } = await supabaseAdmin
+        .from('homepage_content')
+        .select('section, updated_at')
+        .eq('is_active', true)
+
+      if (homepageError) throw homepageError
 
       // Calculate stats for each page
       const stats: Record<string, { count: number; lastModified: string }> = {}
       pages.forEach(page => {
-        const pageSections = (data as any[])?.filter((section: any) => section.page_slug === page.slug) || []
-        stats[page.slug] = {
-          count: pageSections.length,
-          lastModified: pageSections.length > 0 
-            ? new Date(Math.max(...pageSections.map((s: any) => new Date(s.updated_at).getTime()))).toLocaleDateString()
-            : 'Never'
+        if (page.slug === 'homepage') {
+          // Special handling for homepage
+          const homepageSections = (homepageData as any[]) || []
+          stats[page.slug] = {
+            count: homepageSections.length,
+            lastModified: homepageSections.length > 0 
+              ? new Date(Math.max(...homepageSections.map((s: any) => new Date(s.updated_at).getTime()))).toLocaleDateString()
+              : 'Never'
+          }
+        } else {
+          // Regular pages
+          const pageSections = (pageData as any[])?.filter((section: any) => section.page_slug === page.slug) || []
+          stats[page.slug] = {
+            count: pageSections.length,
+            lastModified: pageSections.length > 0 
+              ? new Date(Math.max(...pageSections.map((s: any) => new Date(s.updated_at).getTime()))).toLocaleDateString()
+              : 'Never'
+          }
         }
       })
 
@@ -173,7 +203,7 @@ export default function CMSPagesPage() {
                     label: 'Edit',
                     icon: <Edit className="w-4 h-4" />,
                     variant: 'primary',
-                    href: `/admin/cms/pages/${page.slug}`
+                    href: page.slug === 'homepage' ? '/admin/homepage' : `/admin/cms/pages/${page.slug}`
                   },
                   {
                     label: 'View',
@@ -181,7 +211,7 @@ export default function CMSPagesPage() {
                     variant: 'secondary'
                   }
                 ]}
-                href={`/admin/cms/pages/${page.slug}`}
+                href={page.slug === 'homepage' ? '/admin/homepage' : `/admin/cms/pages/${page.slug}`}
               />
             )
           })}

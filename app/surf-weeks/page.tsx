@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { SurfWeeksClient } from '@/components/surf-weeks/SurfWeeksClient'
 import { SurfWeeksTable } from '@/components/surf-weeks/SurfWeeksTable'
 import { BookNowButton } from '@/components/surf-weeks/BookNowButton'
+import { GoogleReviews } from '@/components/ui/google-reviews'
 
 export const metadata: Metadata = {
   title: 'Surf Weeks in Santa Cruz, Portugal - Learn Surfing With Heiwa',
@@ -22,7 +23,6 @@ async function getSurfWeeks() {
       .from('surf_camps')
       .select('*')
       .eq('is_active', true)
-      .eq('category', 'surf-week')
       .order('start_date', { ascending: true })
 
     if (surfCampsError) {
@@ -43,7 +43,11 @@ async function getSurfWeeks() {
           .eq('surf_camp_id', camp.id)
           .eq('status', 'confirmed')
         
-        const availableSpots = camp.max_participants - (enrolledCount || 0)
+        // Use available_spots from database, or calculate from total_spots - enrollments
+        const totalSpots = camp.total_spots || 18
+        const dbAvailableSpots = camp.available_spots
+        const calculatedAvailableSpots = totalSpots - (enrolledCount || 0)
+        const availableSpots = dbAvailableSpots !== undefined ? dbAvailableSpots : calculatedAvailableSpots
         
         return {
           id: camp.id,
@@ -52,13 +56,13 @@ async function getSurfWeeks() {
           start_date: camp.start_date,
           end_date: camp.end_date,
           price: camp.price,
-          max_participants: camp.max_participants,
+          max_participants: totalSpots,
           enrolled_count: enrolledCount || 0,
           available_spots: Math.max(0, availableSpots),
           is_full: availableSpots <= 0,
-          level: camp.level,
-          images: camp.images,
-          includes: camp.includes
+          level: camp.level || 'all',
+          images: camp.images || [],
+          includes: camp.includes || []
         }
       })
     )
@@ -256,37 +260,7 @@ export default async function SurfWeeksPage() {
     }
   ]
 
-  // Real Google reviews (sample data - should be fetched from Google API)
-  const googleReviews = [
-    {
-      author_name: 'Sarah Johnson',
-      rating: 5,
-      text: 'Absolutely incredible experience! The surf instruction was top-notch, the food was amazing, and the atmosphere was so welcoming. Can\'t wait to come back!',
-      relative_time_description: '1 week ago',
-      profile_photo_url: null
-    },
-    {
-      author_name: 'Marco Rodriguez',
-      rating: 5,
-      text: 'Best surf camp I\'ve ever been to. The instructors are patient and knowledgeable, the accommodation is comfortable, and the location is perfect. Highly recommend!',
-      relative_time_description: '2 weeks ago',
-      profile_photo_url: null
-    },
-    {
-      author_name: 'Emma Thompson',
-      rating: 5,
-      text: 'Life-changing week! I went from barely standing on the board to catching real waves. The yoga sessions were the perfect complement to surfing. Thank you Heiwa House!',
-      relative_time_description: '3 weeks ago',
-      profile_photo_url: null
-    },
-    {
-      author_name: 'David Chen',
-      rating: 5,
-      text: 'Perfect blend of surfing, relaxation, and fun. The staff goes above and beyond to make sure everyone has an amazing time. The video analysis really helped improve my technique.',
-      relative_time_description: '1 month ago',
-      profile_photo_url: null
-    }
-  ]
+  // Google reviews will be fetched client-side via GoogleReviews component
 
   return (
     <div className="min-h-screen pt-20 bg-white">
@@ -333,9 +307,9 @@ export default async function SurfWeeksPage() {
                 <span className="text-3xl font-bold ml-3">5.0</span>
               </div>
               <div>
-                <p className="text-lg font-semibold text-gray-900">Based on 70 reviews</p>
+                <p className="text-lg font-semibold text-gray-900">Based on 73 reviews</p>
                 <a 
-                  href="https://maps.app.goo.gl/PacVHHFxPnAcGxcbA" 
+                  href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-sm text-blue-600 hover:text-blue-800 font-medium"
@@ -439,51 +413,8 @@ export default async function SurfWeeksPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">What Our Customers Say</h2>
           
-          <div className="bg-gray-50 rounded-lg p-8 mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <span className="text-lg font-semibold text-gray-900">5.0</span>
-                <span className="text-gray-600">(70 reviews)</span>
-              </div>
-              <a
-                href="https://maps.app.goo.gl/PacVHHFxPnAcGxcbA"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-sm"
-              >
-                Review us on Google
-              </a>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {googleReviews.map((review, index) => (
-              <div key={index} className="bg-white border border-gray-200 rounded-lg p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold">
-                    {review.author_name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">{review.author_name}</p>
-                    <p className="text-gray-500 text-xs">{review.relative_time_description}</p>
-                  </div>
-                </div>
-                <div className="flex mb-2">
-                  {Array.from({ length: review.rating }, (_, i) => (
-                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {review.text}
-                </p>
-              </div>
-            ))}
-          </div>
+          {/* Google Reviews Component - Fetches real reviews from API */}
+          <GoogleReviews showReviews={true} maxReviews={4} />
         </div>
       </section>
 

@@ -65,6 +65,14 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-gray-300 hover:text-accent transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                >
+                  Blog
+                </Link>
+              </li>
             </ul>
           </div>
 

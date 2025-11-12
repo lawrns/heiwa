@@ -7,6 +7,7 @@ import {
   ClipboardList,
   BarChart3,
   FileText,
+  BookOpen,
   LucideIcon
 } from 'lucide-react'
 
@@ -65,6 +66,12 @@ export const adminNavigationItems: NavigationItem[] = [
     href: '/admin/cms',
     icon: FileText,
     description: 'Manage website content'
+  },
+  {
+    name: 'Blog',
+    href: '/admin/blog',
+    icon: BookOpen,
+    description: 'Manage blog posts and content'
   },
 ]
 

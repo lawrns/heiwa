@@ -1,4 +1,4 @@
-import { useReducer, useCallback } from 'react';
+import { useReducer, useCallback, useMemo } from 'react';
 import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelection, BankWireDetails, RoomAssignment } from '../types';
 import { availabilityService } from '@/lib/availability';
 import { bookingService } from '@/lib/booking-service';
@@ -362,34 +362,61 @@ export function useBookingFlow() {
     }
   }, [state.guestDetails, state.dates, state.selectedOption, state.guests, setError, setLoading]);
 
+  // Memoize actions object to prevent unnecessary re-renders
+  const actions = useMemo(() => ({
+    nextStep,
+    prevStep,
+    setExperienceType,
+    setDates,
+    setGuests,
+    selectOption,
+    setSurfWeek,
+    setSurfWeekRoom,
+    setRoomAssignments,
+    addRoomAssignment,
+    removeRoomAssignment,
+    setAddOns,
+    setPaymentMethod,
+    setBankWireDetails,
+    updateGuestDetails,
+    updatePricing,
+    setLoading,
+    setError,
+    clearError,
+    reset,
+    setSkippedSteps,
+    // API integration actions
+    checkAvailability,
+    submitBooking,
+  }), [
+    nextStep,
+    prevStep,
+    setExperienceType,
+    setDates,
+    setGuests,
+    selectOption,
+    setSurfWeek,
+    setSurfWeekRoom,
+    setRoomAssignments,
+    addRoomAssignment,
+    removeRoomAssignment,
+    setAddOns,
+    setPaymentMethod,
+    setBankWireDetails,
+    updateGuestDetails,
+    updatePricing,
+    setLoading,
+    setError,
+    clearError,
+    reset,
+    setSkippedSteps,
+    checkAvailability,
+    submitBooking,
+  ]);
+
   return {
     state,
-    actions: {
-      nextStep,
-      prevStep,
-      setExperienceType,
-      setDates,
-      setGuests,
-      selectOption,
-      setSurfWeek,
-      setSurfWeekRoom,
-      setRoomAssignments,
-      addRoomAssignment,
-      removeRoomAssignment,
-      setAddOns,
-      setPaymentMethod,
-      setBankWireDetails,
-      updateGuestDetails,
-      updatePricing,
-      setLoading,
-      setError,
-      clearError,
-      reset,
-      setSkippedSteps,
-      // API integration actions
-      checkAvailability,
-      submitBooking,
-    },
+    actions,
     computed: {
       canProceedToNextStep: canProceedToNextStep(),
       isFirstStep: state.currentStep === 1,

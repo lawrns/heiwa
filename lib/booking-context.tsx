@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react'
 
 interface Booking {
   id: string
@@ -41,19 +41,34 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const [currentBooking, setCurrentBooking] = useState<Booking | null>(null)
   const [selectedSurfWeek, setSelectedSurfWeek] = useState<any | null>(null)
 
-  const openBooking = useCallback((surfWeekId?: string) => {
+  const openBooking = useCallback((surfWeekId?: string | any) => {
+    // Handle case where an object is passed instead of a string ID
+    let weekId: string | undefined
     if (surfWeekId) {
+      if (typeof surfWeekId === 'string') {
+        weekId = surfWeekId
+      } else if (typeof surfWeekId === 'object' && surfWeekId.id) {
+        weekId = surfWeekId.id
+      } else {
+        console.warn('Invalid surfWeekId provided:', surfWeekId)
+        weekId = undefined
+      }
+    }
+
+    if (weekId) {
       // Fetch surf week data first, then open widget after data is loaded
       fetch(`/api/surf-camps?category=surf-week`)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            const surfWeek = data.data.surf_camps.find((camp: any) => camp.id === surfWeekId)
+            const surfWeek = data.data.surf_camps.find((camp: any) => camp.id === weekId)
             if (surfWeek) {
+              // Set surf week first, then open widget
+              // React 18+ automatically batches these updates
               setSelectedSurfWeek(surfWeek)
               setIsBookingOpen(true) // Open AFTER setting surf week
             } else {
-              console.error('Surf week not found:', surfWeekId)
+              console.error('Surf week not found:', weekId)
               setIsBookingOpen(true) // Still open widget even if not found
             }
           } else {
@@ -65,6 +80,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
           setIsBookingOpen(true) // Open widget even on error
         })
     } else {
+      // React 18+ automatically batches these updates
       setSelectedSurfWeek(null)
       setIsBookingOpen(true)
     }

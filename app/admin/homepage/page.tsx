@@ -49,7 +49,8 @@ export default function HomepageCMSPage() {
             linkUrl: item.link_url,
             linkText: item.link_text,
             isActive: item.is_active,
-            order: item.order_index
+            order: item.order_index,
+            blogConfig: item.blog_config ? (typeof item.blog_config === 'string' ? JSON.parse(item.blog_config) : item.blog_config) : undefined
           })))
         } else {
           // If no data exists, show empty state instead of template
@@ -85,7 +86,8 @@ export default function HomepageCMSPage() {
           linkUrl: section.linkUrl,
           linkText: section.linkText,
           isActive: section.isActive,
-          order: section.order
+          order: section.order,
+          blogConfig: section.blogConfig
         }
 
         // Check if section exists (has a real UUID from database)
@@ -366,6 +368,81 @@ export default function HomepageCMSPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
                     />
                   </div>
+
+                  {/* Blog Configuration - Only show for blog section */}
+                  {section.section === 'blog' && (
+                    <div className="border-t border-gray-200 pt-4 mt-4">
+                      <h4 className="text-sm font-semibold text-gray-700 mb-3">Blog Configuration</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Number of Posts to Display
+                          </label>
+                          <input
+                            type="number"
+                            min="1"
+                            max="12"
+                            value={section.blogConfig?.limit || 6}
+                            onChange={(e) => {
+                              const newConfig = {
+                                ...(section.blogConfig || {}),
+                                limit: parseInt(e.target.value) || 6
+                              }
+                              updateContent(section.id, 'blogConfig', newConfig)
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={section.blogConfig?.showCategory !== false}
+                              onChange={(e) => {
+                                const newConfig = {
+                                  ...(section.blogConfig || {}),
+                                  showCategory: e.target.checked
+                                }
+                                updateContent(section.id, 'blogConfig', newConfig)
+                              }}
+                              className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
+                            />
+                            <span className="ml-2 text-sm text-gray-700">Show Category</span>
+                          </label>
+                          <label className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={section.blogConfig?.showDate !== false}
+                              onChange={(e) => {
+                                const newConfig = {
+                                  ...(section.blogConfig || {}),
+                                  showDate: e.target.checked
+                                }
+                                updateContent(section.id, 'blogConfig', newConfig)
+                              }}
+                              className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
+                            />
+                            <span className="ml-2 text-sm text-gray-700">Show Date</span>
+                          </label>
+                          <label className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={section.blogConfig?.showReadingTime !== false}
+                              onChange={(e) => {
+                                const newConfig = {
+                                  ...(section.blogConfig || {}),
+                                  showReadingTime: e.target.checked
+                                }
+                                updateContent(section.id, 'blogConfig', newConfig)
+                              }}
+                              className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
+                            />
+                            <span className="ml-2 text-sm text-gray-700">Show Reading Time</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>

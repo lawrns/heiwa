@@ -22,6 +22,14 @@ export interface HomepageSection {
   testimonials?: TestimonialData[]
   facilities?: FacilityData[]
   googleRating?: GoogleRatingData
+  blogConfig?: BlogConfigData
+}
+
+export interface BlogConfigData {
+  limit?: number
+  showCategory?: boolean
+  showDate?: boolean
+  showReadingTime?: boolean
 }
 
 export interface CardData {
@@ -107,6 +115,7 @@ export async function GET() {
           testimonials: item.testimonials ? JSON.parse(item.testimonials) : undefined,
           facilities: item.facilities ? JSON.parse(item.facilities) : undefined,
           googleRating: item.google_rating ? JSON.parse(item.google_rating) : undefined,
+          blogConfig: item.blog_config ? JSON.parse(item.blog_config) : undefined,
           videoId: item.video_id || undefined
         }
       } catch (parseError) {
@@ -166,7 +175,8 @@ export async function POST(request: NextRequest) {
       bookingData,
       testimonials,
       facilities,
-      googleRating
+      googleRating,
+      blogConfig
     } = body
 
     if (!section || !title) {
@@ -194,6 +204,7 @@ export async function POST(request: NextRequest) {
         testimonials: testimonials ? JSON.stringify(testimonials) : null,
         facilities: facilities ? JSON.stringify(facilities) : null,
         google_rating: googleRating ? JSON.stringify(googleRating) : null,
+        blog_config: blogConfig ? JSON.stringify(blogConfig) : null,
         is_active: isActive ?? true,
         order_index: order ?? 0
       } as any)
@@ -277,6 +288,9 @@ export async function PUT(request: NextRequest) {
     }
     if (googleRating !== undefined) {
       updateData.google_rating = googleRating ? JSON.stringify(googleRating) : null
+    }
+    if (blogConfig !== undefined) {
+      updateData.blog_config = blogConfig ? JSON.stringify(blogConfig) : null
     }
 
     const { data, error } = await supabaseAdmin

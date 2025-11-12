@@ -119,8 +119,8 @@ export default function AdminLoginPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading || !password}
-              className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              disabled={loading || !password.trim()}
+              className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
               {loading ? 'Verifying...' : 'Sign In'}
             </button>
