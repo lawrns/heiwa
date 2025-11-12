@@ -1,0 +1,93 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - button "📊" [ref=e2]
+  - button "100 Performance Score" [ref=e4]:
+    - generic [ref=e5]: "100"
+    - generic:
+      - generic: Performance Score
+  - main [ref=e6]:
+    - generic [ref=e8]:
+      - complementary [ref=e9]:
+        - generic [ref=e10]:
+          - link "H" [ref=e12] [cursor=pointer]:
+            - /url: /admin
+            - generic [ref=e14]: H
+          - button "Collapse sidebar" [ref=e15]:
+            - img [ref=e16]
+        - navigation "Navigation menu" [ref=e17]:
+          - generic [ref=e18]:
+            - link "Dashboard" [ref=e19] [cursor=pointer]:
+              - /url: /admin
+              - img [ref=e20]
+              - generic [ref=e23]: Dashboard
+            - link "Clients" [ref=e24] [cursor=pointer]:
+              - /url: /admin/clients
+              - img [ref=e25]
+              - generic [ref=e30]: Clients
+            - link "Surf Camps" [ref=e31] [cursor=pointer]:
+              - /url: /admin/surf-camps
+              - img [ref=e32]
+              - generic [ref=e36]: Surf Camps
+            - link "Rooms" [ref=e37] [cursor=pointer]:
+              - /url: /admin/rooms
+              - img [ref=e38]
+              - generic [ref=e41]: Rooms
+            - link "Bookings" [ref=e42] [cursor=pointer]:
+              - /url: /admin/bookings
+              - img [ref=e43]
+              - generic [ref=e46]: Bookings
+            - link "Assignments" [ref=e47] [cursor=pointer]:
+              - /url: /admin/assignments
+              - img [ref=e48]
+              - generic [ref=e52]: Assignments
+            - link "Invoices" [ref=e53] [cursor=pointer]:
+              - /url: /admin/invoices
+              - img [ref=e54]
+              - generic [ref=e57]: Invoices
+            - link "Payments" [ref=e58] [cursor=pointer]:
+              - /url: /admin/payments
+              - img [ref=e59]
+              - generic [ref=e61]: Payments
+            - link "Calendar" [ref=e62] [cursor=pointer]:
+              - /url: /admin/calendar
+              - img [ref=e63]
+              - generic [ref=e65]: Calendar
+            - link "Analytics" [ref=e66] [cursor=pointer]:
+              - /url: /admin/analytics
+              - img [ref=e67]
+              - generic [ref=e69]: Analytics
+            - link "CMS" [ref=e70] [cursor=pointer]:
+              - /url: /admin/cms
+              - img [ref=e71]
+              - generic [ref=e74]: CMS
+            - link "Blog" [ref=e75] [cursor=pointer]:
+              - /url: /admin/blog
+              - img [ref=e76]
+              - generic [ref=e78]: Blog
+      - main [ref=e79]:
+        - generic [ref=e81]:
+          - generic [ref=e83]: A
+          - generic [ref=e84]: admin@heiwa.house
+          - button "Sign out" [ref=e85]:
+            - img [ref=e86]
+            - generic [ref=e89]: Logout
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - img [ref=e96]
+            - heading "Admin Access" [level=1] [ref=e99]
+            - paragraph [ref=e100]: Enter your password to continue
+          - generic [ref=e101]:
+            - generic [ref=e102]:
+              - generic [ref=e103]: Password
+              - textbox "Password" [active] [ref=e104]:
+                - /placeholder: Enter admin password
+            - button "Sign In" [disabled] [ref=e105]
+          - paragraph [ref=e107]: Heiwa House Admin Dashboard
+  - button "Contact us on WhatsApp" [ref=e108]:
+    - img [ref=e109]
+  - button "Open Next.js Dev Tools" [ref=e116] [cursor=pointer]:
+    - img [ref=e117]
+  - alert [ref=e120]
+```

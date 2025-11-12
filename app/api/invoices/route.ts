@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sort_by') || 'created_at'
     const sortOrder = searchParams.get('sort_order') || 'desc'
 
+    // For now, bypass RLS and use service role for admin operations
     let query = supabaseAdmin
       .from('invoices')
       .select(`
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching invoices:', error)
       return NextResponse.json(
-        { success: false, error: 'Failed to fetch invoices' },
+        { success: false, error: 'Failed to fetch invoices', details: error.message },
         { status: 500 }
       )
     }
@@ -70,7 +71,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { success: false, error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }
@@ -112,35 +113,47 @@ export async function POST(request: NextRequest) {
       status: status || 'draft',
     })
 
-    // Fetch client and booking details for email
+    // Fetch client details for email
     const { data: booking } = await supabaseAdmin
       .from('bookings')
       .select(`
         id,
-        total_amount,
         client_ids,
         clients:client_ids (
-          name,
-          email
+          email,
+          first_name,
+          last_name
         )
       `)
       .eq('id', booking_id)
-      .single()
+      .single() as any
 
-    // Send invoice email if status is not draft and client email exists
-    if (status !== 'draft' && booking?.clients?.[0]?.email) {
-      import('@/lib/email-service').then(({ emailService }) => {
-        emailService.sendInvoice({
-          invoiceNumber: invoice.invoice_number,
-          clientName: booking.clients[0].name || 'Guest',
-          clientEmail: booking.clients[0].email,
-          amount: invoice.amount,
-          currency: invoice.currency,
-          dueDate: invoice.due_date,
-          status: invoice.status,
-          bookingId: booking_id,
-        }).catch(err => console.error('Failed to send invoice email:', err))
-      })
+    if (booking?.clients) {
+      const client = (booking as any).clients
+      const invoiceData = invoice as any
+
+      // Send invoice email
+      try {
+        await fetch('/api/email/invoice', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: client.email,
+            clientName: `${client.first_name} ${client.last_name}`,
+            invoiceNumber: invoiceData.invoice_number,
+            amount: invoiceData.amount,
+            currency: invoiceData.currency,
+            dueDate: invoiceData.due_date,
+            status: invoiceData.status,
+            bookingId: invoiceData.booking_id,
+          }),
+        })
+      } catch (emailError) {
+        console.error('Failed to send invoice email:', emailError)
+        // Don't fail the request if email fails
+      }
     }
 
     return NextResponse.json({

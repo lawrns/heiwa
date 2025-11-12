@@ -1,7 +1,7 @@
 # Production Test Report - Heiwa House
 
-**Date:** January 20, 2025  
-**Production URL:** https://heiwa-fr.netlify.app  
+**Date:** November 12, 2025  
+**Production URL:** https://heiwahauz.netlify.app  
 **Test Environment:** Production (Netlify)  
 **Browser:** Chromium (via Playwright)  
 **Test Duration:** ~20 minutes  

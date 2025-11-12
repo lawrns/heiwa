@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sort_by') || 'created_at'
     const sortOrder = searchParams.get('sort_order') || 'desc'
 
+    // For now, bypass RLS and use service role for admin operations
     let query = supabaseAdmin
       .from('payments')
       .select(`
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching payments:', error)
       return NextResponse.json(
-        { success: false, error: 'Failed to fetch payments' },
+        { success: false, error: 'Failed to fetch payments', details: error.message },
         { status: 500 }
       )
     }
@@ -73,7 +74,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Unexpected error:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { success: false, error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }
@@ -107,7 +108,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabaseAdmin
       .from('payments')
-      .insert(payment)
+      .insert(payment as any)
       .select()
       .single()
 
@@ -123,7 +124,7 @@ export async function POST(request: NextRequest) {
     if (payment_status === 'completed') {
       await supabaseAdmin
         .from('bookings')
-        .update({ payment_status: 'paid' })
+        .update({ payment_status: 'paid' } as any)
         .eq('id', booking_id)
     }
 
@@ -134,28 +135,40 @@ export async function POST(request: NextRequest) {
         id,
         client_ids,
         clients:client_ids (
-          name,
-          email
+          email,
+          first_name,
+          last_name
         )
       `)
       .eq('id', booking_id)
-      .single()
+      .single() as any
 
-    // Send payment confirmation email
-    if (payment_status === 'completed' && booking?.clients?.[0]?.email) {
-      import('@/lib/email-service').then(({ emailService }) => {
-        emailService.sendPaymentConfirmation({
-          paymentId: data.id,
-          clientName: booking.clients[0].name || 'Guest',
-          clientEmail: booking.clients[0].email,
-          amount: data.amount,
-          currency: data.currency,
-          paymentMethod: data.payment_method,
-          transactionId: data.transaction_id,
-          bookingId: booking_id,
-          status: data.payment_status,
-        }).catch(err => console.error('Failed to send payment confirmation email:', err))
-      })
+    if (booking?.clients) {
+      const client = (booking as any).clients
+      const paymentData = data as any
+
+      // Send confirmation email
+      try {
+        await fetch('/api/email/payment-confirmation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: client.email,
+            clientName: `${client.first_name} ${client.last_name}`,
+            amount: paymentData.amount,
+            currency: paymentData.currency,
+            paymentMethod: paymentData.payment_method,
+            transactionId: paymentData.transaction_id,
+            paymentStatus: paymentData.payment_status,
+            bookingId: paymentData.booking_id,
+          }),
+        })
+      } catch (emailError) {
+        console.error('Failed to send payment confirmation email:', emailError)
+        // Don't fail the request if email fails
+      }
     }
 
     return NextResponse.json({

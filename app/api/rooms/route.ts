@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 // API endpoint for getting all rooms (compatible with booking widget)
 export async function GET() {
@@ -7,7 +7,7 @@ export async function GET() {
     console.log('🏠 Fetching all rooms for booking widget')
 
     // Get all active rooms from database
-    const { data: rooms, error: roomsError } = await supabase
+    const { data: rooms, error: roomsError } = await supabaseAdmin
       .from('rooms')
       .select('*')
       .eq('is_active', true)

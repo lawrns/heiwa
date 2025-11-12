@@ -1,5 +1,11 @@
 import { describe, test, expect, beforeAll, afterAll } from '@jest/globals'
 
+// Polyfill fetch for Node.js environment
+if (!globalThis.fetch) {
+  const nodeFetch = require('node-fetch')
+  globalThis.fetch = nodeFetch
+}
+
 describe('Bookings API Integration', () => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'
 
