@@ -55,6 +55,16 @@ export default function CMSBreadcrumb() {
 
   return (
     <nav className="flex items-center space-x-1 text-sm text-gray-500">
+      {/* Add Admin Dashboard link at the start */}
+      <Link
+        href="/admin"
+        className="flex items-center hover:text-gray-700 transition-colors"
+      >
+        <Home className="w-4 h-4 mr-1" />
+        Admin
+      </Link>
+      <ChevronRight className="w-4 h-4 mx-1 text-gray-400" />
+      
       {breadcrumbs.map((item, index) => {
         const isLast = index === breadcrumbs.length - 1
         

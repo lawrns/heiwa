@@ -115,7 +115,17 @@ export default function CMSNavigation({ className, onClose }: CMSNavigationProps
   return (
     <nav className={cn('w-64 h-full bg-white border-r border-gray-200 overflow-y-auto', className)}>
       <div className="p-4">
-        <h2 className="text-lg font-semibold text-gray-900 mb-6">CMS</h2>
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">CMS</h2>
+          <Link
+            href="/admin"
+            className="inline-flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-900 transition-colors"
+            onClick={handleLinkClick}
+          >
+            <Home className="w-3 h-3" />
+            <span>Back to Admin</span>
+          </Link>
+        </div>
         
         <ul className="space-y-1">
           {navigation.map((item) => {

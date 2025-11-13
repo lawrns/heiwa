@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ChevronRight, Menu, X } from 'lucide-react'
+import Link from 'next/link'
+import { ChevronRight, Menu, X, ArrowLeft } from 'lucide-react'
 import CMSNavigation from './CMSNavigation'
 import CMSBreadcrumb from './CMSBreadcrumb'
 
@@ -53,18 +54,30 @@ export function CMSLayout({
         {/* Header */}
         <div className="bg-white border-b border-gray-200 shadow-sm">
           <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden mb-4 p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6 text-gray-700" />
-              ) : (
-                <Menu className="w-6 h-6 text-gray-700" />
-              )}
-            </button>
+            {/* Mobile Menu Button and Back to Admin Link */}
+            <div className="flex items-center justify-between mb-4 lg:mb-0">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-6 h-6 text-gray-700" />
+                ) : (
+                  <Menu className="w-6 h-6 text-gray-700" />
+                )}
+              </button>
+              
+              {/* Back to Admin Dashboard Link */}
+              <Link
+                href="/admin"
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Back to Admin Dashboard</span>
+                <span className="sm:hidden">Admin</span>
+              </Link>
+            </div>
 
             <CMSBreadcrumb />
             <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
