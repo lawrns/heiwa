@@ -169,21 +169,21 @@ export default function CMSPagesPage() {
       }}
     >
       {/* Search Bar */}
-      <div className="mb-8">
-        <div className="max-w-md">
+      <div className="mb-6 sm:mb-8">
+        <div className="max-w-full sm:max-w-md">
           <input
             type="text"
             placeholder="Search pages..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+            className="w-full px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
           />
         </div>
       </div>
 
       {/* Pages Grid */}
       {filteredPages.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredPages.map((page) => {
             const stats = pageStats[page.slug] || { count: 0, lastModified: 'Never' }
             

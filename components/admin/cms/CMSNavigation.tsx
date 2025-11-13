@@ -89,9 +89,10 @@ const navigation: NavItem[] = [
 
 interface CMSNavigationProps {
   className?: string
+  onClose?: () => void
 }
 
-export default function CMSNavigation({ className }: CMSNavigationProps) {
+export default function CMSNavigation({ className, onClose }: CMSNavigationProps) {
   const pathname = usePathname()
 
   const isActive = (href: string) => {
@@ -105,8 +106,14 @@ export default function CMSNavigation({ className }: CMSNavigationProps) {
     return children.some(child => pathname === child.href)
   }
 
+  const handleLinkClick = () => {
+    if (onClose) {
+      onClose()
+    }
+  }
+
   return (
-    <nav className={cn('w-64 bg-white border-r border-gray-200', className)}>
+    <nav className={cn('w-64 h-full bg-white border-r border-gray-200 overflow-y-auto', className)}>
       <div className="p-4">
         <h2 className="text-lg font-semibold text-gray-900 mb-6">CMS</h2>
         
@@ -120,6 +127,7 @@ export default function CMSNavigation({ className }: CMSNavigationProps) {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  onClick={handleLinkClick}
                   className={cn(
                     'flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors',
                     active || childActive
@@ -127,7 +135,7 @@ export default function CMSNavigation({ className }: CMSNavigationProps) {
                       : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                   )}
                 >
-                  <Icon className="mr-3 h-4 w-4" />
+                  <Icon className="mr-3 h-4 w-4 flex-shrink-0" />
                   <span className="flex-1">{item.title}</span>
                   {item.badge && (
                     <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
@@ -147,6 +155,7 @@ export default function CMSNavigation({ className }: CMSNavigationProps) {
                         <li key={child.href}>
                           <Link
                             href={child.href}
+                            onClick={handleLinkClick}
                             className={cn(
                               'flex items-center px-3 py-2 text-sm rounded-lg transition-colors',
                               childActive
@@ -154,7 +163,7 @@ export default function CMSNavigation({ className }: CMSNavigationProps) {
                                 : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                             )}
                           >
-                            <ChildIcon className="mr-3 h-3 w-3" />
+                            <ChildIcon className="mr-3 h-3 w-3 flex-shrink-0" />
                             {child.title}
                           </Link>
                         </li>

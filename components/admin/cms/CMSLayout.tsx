@@ -1,7 +1,7 @@
 'use client'
 
-import React from 'react'
-import { ChevronRight } from 'lucide-react'
+import React, { useState } from 'react'
+import { ChevronRight, Menu, X } from 'lucide-react'
 import CMSNavigation from './CMSNavigation'
 import CMSBreadcrumb from './CMSBreadcrumb'
 
@@ -27,29 +27,59 @@ export function CMSLayout({
   loading = false,
   error = null,
 }: CMSLayoutProps) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   return (
     <div className="flex h-screen bg-gray-50">
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
       {/* CMS Navigation Sidebar */}
-      <CMSNavigation />
+      <div className={`
+        fixed lg:static inset-y-0 left-0 z-50
+        transform transition-transform duration-300 ease-in-out
+        ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <CMSNavigation onClose={() => setMobileMenuOpen(false)} />
+      </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden w-full lg:w-auto">
         {/* Header */}
         <div className="bg-white border-b border-gray-200 shadow-sm">
-          <div className="px-8 py-6">
+          <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden mb-4 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6 text-gray-700" />
+              ) : (
+                <Menu className="w-6 h-6 text-gray-700" />
+              )}
+            </button>
+
             <CMSBreadcrumb />
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
-                <p className="text-gray-600 mt-1">{description}</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{title}</h1>
+                <p className="text-gray-600 mt-1 text-sm sm:text-base">{description}</p>
               </div>
               {action && (
                 <button
                   onClick={action.onClick}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium text-sm sm:text-base w-full sm:w-auto"
                 >
                   {action.icon}
-                  {action.label}
+                  <span className="hidden sm:inline">{action.label}</span>
+                  <span className="sm:hidden">Create</span>
                 </button>
               )}
             </div>
@@ -58,7 +88,7 @@ export function CMSLayout({
 
         {/* Content Area */}
         <div className="flex-1 overflow-auto">
-          <div className="p-8">
+          <div className="p-4 sm:p-6 lg:p-8">
             {/* Error Alert */}
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
