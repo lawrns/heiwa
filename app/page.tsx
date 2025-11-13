@@ -264,10 +264,11 @@ export default function HomePage() {
                   </div>
 
                   {/* Table Body with fade effect */}
-                  <div className="divide-y divide-gray-200 relative">
+                  <div className="divide-y divide-gray-200 relative overflow-hidden">
                     {surfWeeks.length > 0 ? (
                       <>
-                        {(showAllSurfWeeks ? surfWeeks : surfWeeks.slice(0, 4)).map((surfWeek: any, idx: number) => (
+                        <div className={showAllSurfWeeks ? '' : 'max-h-[600px] overflow-hidden'}>
+                          {(showAllSurfWeeks ? surfWeeks : surfWeeks.slice(0, 4)).map((surfWeek: any, idx: number) => (
                     <div key={surfWeek.id || idx} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
                       {/* Mobile Layout */}
                       <div className="md:hidden space-y-3">
@@ -318,9 +319,10 @@ export default function HomePage() {
                       </div>
                     </div>
                         ))}
+                        </div>
                         {/* Fade gradient overlay at bottom - only show when not expanded and more than 4 items */}
                         {!showAllSurfWeeks && surfWeeks.length > 4 && (
-                          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none"></div>
+                          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none z-10"></div>
                         )}
                       </>
                     ) : (
