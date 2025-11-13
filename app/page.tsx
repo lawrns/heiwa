@@ -19,6 +19,7 @@ export default function HomePage() {
   const [homepageContent, setHomepageContent] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [surfWeeks, setSurfWeeks] = useState<any[]>([])
+  const [showAllSurfWeeks, setShowAllSurfWeeks] = useState(false)
 
   // Reviews will be fetched from Google Reviews API via GoogleReviews component
 
@@ -266,7 +267,7 @@ export default function HomePage() {
                   <div className="divide-y divide-gray-200 relative">
                     {surfWeeks.length > 0 ? (
                       <>
-                        {surfWeeks.map((surfWeek: any, idx: number) => (
+                        {(showAllSurfWeeks ? surfWeeks : surfWeeks.slice(0, 4)).map((surfWeek: any, idx: number) => (
                     <div key={surfWeek.id || idx} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
                       {/* Mobile Layout */}
                       <div className="md:hidden space-y-3">
@@ -317,8 +318,10 @@ export default function HomePage() {
                       </div>
                     </div>
                         ))}
-                        {/* Fade gradient overlay at bottom */}
-                        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none"></div>
+                        {/* Fade gradient overlay at bottom - only show when not expanded and more than 4 items */}
+                        {!showAllSurfWeeks && surfWeeks.length > 4 && (
+                          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none"></div>
+                        )}
                       </>
                     ) : (
                       <div className="px-4 sm:px-6 py-8 text-center text-gray-600">
@@ -328,18 +331,36 @@ export default function HomePage() {
                   </div>
                 </div>
                 
-                {/* Find More Button */}
-                {surfWeeks.length > 0 && (
+                {/* Show More / Show Less Button */}
+                {surfWeeks.length > 4 && (
                   <div className="mt-6 text-center">
-                    <Link
-                      href="/surf-weeks"
+                    <button
+                      onClick={() => setShowAllSurfWeeks(!showAllSurfWeeks)}
                       className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-accent text-accent hover:bg-accent hover:text-white font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                       style={{ borderColor: '#ec681c', color: '#ec681c' }}
                     >
-                      Find More Surf Weeks
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      {showAllSurfWeeks ? 'Show Less' : `Show More (${surfWeeks.length - 4} more)`}
+                      <svg 
+                        className={`w-5 h-5 transition-transform ${showAllSurfWeeks ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
+                    </button>
+                  </div>
+                )}
+                
+                {/* Link to Surf Weeks Page */}
+                {surfWeeks.length > 0 && (
+                  <div className="mt-4 text-center">
+                    <Link
+                      href="/surf-weeks"
+                      className="text-sm text-gray-600 hover:text-accent transition-colors"
+                      style={{ color: '#ec681c' }}
+                    >
+                      View all surf weeks →
                     </Link>
                   </div>
                 )}

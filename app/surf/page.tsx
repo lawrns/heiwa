@@ -1,19 +1,56 @@
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Waves, MapPin, Clock, Car, Mail } from 'lucide-react'
+import { Waves } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
 import { SeasonalSurfLevelChart } from '@/components/surf/SeasonalSurfLevelChart'
+import { SurfWeekPromoCard } from '@/components/surf/SurfWeekPromoCard'
 
 export const metadata: Metadata = {
   title: 'Heiwa Surf - Surf Lessons & Ocean Adventures in Santa Cruz, Portugal',
   description: 'Learn to surf at Heiwa House in Santa Cruz, Portugal. Professional surf instruction for all levels with equipment provided and beachside accommodation.',
 }
 
-export default function SurfPage() {
+// Fetch next upcoming surf week
+async function getNextSurfWeek() {
+  try {
+    const { supabaseAdmin } = await import('@/lib/supabase')
+    
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    const { data: surfCamps, error } = await supabaseAdmin
+      .from('surf_camps')
+      .select('*')
+      .eq('is_active', true)
+      .gte('end_date', today.toISOString().split('T')[0])
+      .order('start_date', { ascending: true })
+      .limit(1)
+      .single()
+
+    if (error || !surfCamps) {
+      return null
+    }
+
+    return {
+      id: surfCamps.id,
+      name: surfCamps.name,
+      start_date: surfCamps.start_date,
+      end_date: surfCamps.end_date,
+      price: surfCamps.price,
+      images: surfCamps.images || []
+    }
+  } catch (error) {
+    console.error('Error fetching next surf week:', error)
+    return null
+  }
+}
+
+export default async function SurfPage() {
+  const nextSurfWeek = await getNextSurfWeek()
   const faqItems = [
     {
       question: 'What is the best time of year to surf in Santa Cruz?',
@@ -386,6 +423,15 @@ export default function SurfPage() {
           </Accordion>
         </div>
       </section>
+
+      {/* Promotional Surf Week Card Section */}
+      {nextSurfWeek && (
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <SurfWeekPromoCard surfWeek={nextSurfWeek} />
+          </div>
+        </section>
+      )}
 
       {/* CTA Section - Surf Weeks */}
       <section className="py-20 bg-gray-50">
