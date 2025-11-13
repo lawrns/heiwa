@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Bed, Users, Star, ArrowRight } from 'lucide-react';
+import { Bed, Users, Star, ArrowRight, Calendar } from 'lucide-react';
 import { BookingState, Room } from '../types';
 import { useRooms } from '../hooks/useRooms';
+import { useSurfCamps } from '../hooks/useSurfCamps';
 import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
 
 interface SurfWeekRoomSelectionProps {
@@ -46,6 +47,21 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     checkOut: null,
     guests: 1
   });
+
+  // Fetch surf week details to display selected surf week info
+  const { surfCamps } = useSurfCamps();
+  const selectedSurfWeekData = surfCamps.find(camp => camp.id === state.selectedSurfWeek);
+  
+  // Format dates for display
+  const formatDateRange = (checkIn: Date | null, checkOut: Date | null) => {
+    if (!checkIn || !checkOut) return null;
+    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+    const start = checkIn.toLocaleDateString('en-US', options);
+    const end = checkOut.toLocaleDateString('en-US', options);
+    return `${start} - ${end}`;
+  };
+  
+  const dateRange = formatDateRange(state.dates.checkIn, state.dates.checkOut);
 
   // Transform real rooms for surf week display, with dorm first
   const surfWeekRooms = rooms
@@ -138,6 +154,37 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           Select your preferred room type for your surf week experience
         </p>
       </div>
+
+      {/* Selected Surf Week Summary - Show what they're booking for */}
+      {(selectedSurfWeekData || state.selectedSurfWeek) && (
+        <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-4 border-2 border-orange-200 shadow-sm">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                <span className="text-xs font-semibold text-orange-700 uppercase tracking-wide">Selected Surf Week</span>
+              </div>
+              <h4 className="text-lg font-bold text-gray-900 mb-1">
+                {selectedSurfWeekData?.name || 'Surf Week'}
+              </h4>
+              {dateRange && (
+                <div className="flex items-center gap-2 text-sm text-gray-700">
+                  <Calendar className="w-4 h-4 text-orange-600" />
+                  <span>{dateRange}</span>
+                </div>
+              )}
+            </div>
+            {selectedSurfWeekData?.price && (
+              <div className="text-right">
+                <div className="text-xs text-gray-600 mb-1">Starting from</div>
+                <div className="text-xl font-bold text-orange-600">
+                  {formatPrice(selectedSurfWeekData.price)}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Room Options */}
       <div className="space-y-4">
