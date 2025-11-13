@@ -21,6 +21,8 @@ export const supabase = (() => {
   if (!globalForSupabase.supabaseInstance) {
     globalForSupabase.supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
+        // Use a dedicated storage key to avoid GoTrue warnings when multiple clients exist
+        storageKey: 'heiwa-public-auth',
         persistSession: false,
         autoRefreshToken: false,
         detectSessionInUrl: false
@@ -43,6 +45,8 @@ export const supabaseAdmin = (() => {
   if (!globalForSupabase.supabaseAdminInstance) {
     globalForSupabase.supabaseAdminInstance = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
+        // Separate storage key so admin client doesn't conflict with public client
+        storageKey: 'heiwa-admin-auth',
         autoRefreshToken: false,
         persistSession: false,
         detectSessionInUrl: false
