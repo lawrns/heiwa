@@ -6,9 +6,6 @@ import { BookingProvider } from '@/lib/booking-context'
 import { SupabaseProvider } from '@/lib/supabase-context'
 import { FloatingBookingWidget } from '@/components/floating-booking-widget'
 import { SkipToContent } from '@/components/ui/skip-to-content'
-import { PerformanceMonitor } from '@/components/ui/performance-monitor'
-import { PerformanceDashboard } from '@/components/ui/performance-dashboard'
-import { PerformanceBadge } from '@/components/ui/performance-badge'
 import { PageTransition } from '@/components/ui/page-transition'
 import { WhatsAppButton } from '@/components/ui/whatsapp-button'
 import './globals.css'
@@ -98,9 +95,6 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className="font-sans antialiased bg-surface text-text">
-        <PerformanceMonitor />
-        <PerformanceDashboard />
-        <PerformanceBadge />
         <SkipToContent />
         <SupabaseProvider>
           <BookingProvider>

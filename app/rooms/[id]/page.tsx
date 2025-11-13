@@ -284,13 +284,17 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
                   href={`/rooms/${similarRoom.id}`}
                   className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
                 >
-                  <div className="relative h-64 overflow-hidden rounded-t-lg">
+                  <div className="relative h-64 overflow-hidden rounded-t-lg bg-gray-200">
                     <Image
-                      src={similarRoom.image}
+                      src={similarRoom.image || '/images/rooms/room1.jpg'}
                       alt={similarRoom.name}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
                       sizes="(max-width: 768px) 100vw, 50vw"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.src = '/images/rooms/room1.jpg'
+                      }}
                     />
                     <div className="absolute top-4 right-4 bg-accent text-white px-4 py-2 rounded-lg shadow-lg">
                       <span className="text-xl font-bold">{similarRoom.price}€</span>

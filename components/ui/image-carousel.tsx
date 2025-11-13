@@ -99,6 +99,13 @@ export function ImageCarousel({
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           priority={currentIndex === 0}
           unoptimized={validImages[currentIndex]?.includes('supabase.co')}
+          onError={(e) => {
+            const target = e.target as HTMLImageElement
+            // Try fallback image
+            if (target.src !== '/images/rooms/room1.jpg') {
+              target.src = '/images/rooms/room1.jpg'
+            }
+          }}
         />
         
         {/* Navigation Arrows */}

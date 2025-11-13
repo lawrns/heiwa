@@ -387,25 +387,47 @@ export default async function SurfWeeksPage() {
         </div>
       </section>
 
-      {/* Photo Gallery - Horizontal Scroll */}
+      {/* Photo Gallery - 2 Rows, Horizontal Scroll */}
       <section className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <div className="flex gap-4" style={{ width: 'max-content' }}>
-              {galleryImages.map((image, index) => (
-                <div
-                  key={index}
-                  className="relative w-64 h-64 flex-shrink-0 overflow-hidden group cursor-pointer rounded-lg"
-                >
-                  <Image
-                    src={image}
-                    alt={`Surf Week ${index + 1}`}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="256px"
-                  />
-                </div>
-              ))}
+          <div className="space-y-4">
+            {/* First Row */}
+            <div className="overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div className="flex gap-4" style={{ width: 'max-content' }}>
+                {galleryImages.slice(0, Math.ceil(galleryImages.length / 2)).map((image, index) => (
+                  <div
+                    key={index}
+                    className="relative w-64 h-64 flex-shrink-0 overflow-hidden group cursor-pointer rounded-lg"
+                  >
+                    <Image
+                      src={image}
+                      alt={`Surf Week ${index + 1}`}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="256px"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Second Row */}
+            <div className="overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div className="flex gap-4" style={{ width: 'max-content' }}>
+                {galleryImages.slice(Math.ceil(galleryImages.length / 2)).map((image, index) => (
+                  <div
+                    key={index + Math.ceil(galleryImages.length / 2)}
+                    className="relative w-64 h-64 flex-shrink-0 overflow-hidden group cursor-pointer rounded-lg"
+                  >
+                    <Image
+                      src={image}
+                      alt={`Surf Week ${index + Math.ceil(galleryImages.length / 2) + 1}`}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="256px"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

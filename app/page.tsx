@@ -264,71 +264,71 @@ export default function HomePage() {
                   </div>
 
                   {/* Table Body with fade effect */}
-                  <div className="divide-y divide-gray-200 relative overflow-hidden">
-                    {surfWeeks.length > 0 ? (
-                      <>
-                        <div className={showAllSurfWeeks ? '' : 'max-h-[600px] overflow-hidden'}>
+                  <div className="relative">
+                    <div className={`divide-y divide-gray-200 ${showAllSurfWeeks ? '' : 'max-h-[600px] overflow-hidden'}`}>
+                      {surfWeeks.length > 0 ? (
+                        <>
                           {(showAllSurfWeeks ? surfWeeks : surfWeeks.slice(0, 4)).map((surfWeek: any, idx: number) => (
-                    <div key={surfWeek.id || idx} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
-                      {/* Mobile Layout */}
-                      <div className="md:hidden space-y-3">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="text-gray-900 font-medium text-base mb-1">{surfWeek.dates}</div>
-                            <div className="text-sm text-gray-600">{surfWeek.availableSpots} spots available</div>
-                          </div>
-                          <div className="text-right ml-4">
-                            <div className="text-gray-900 font-semibold text-lg">{surfWeek.price}</div>
-                          </div>
+                            <div key={surfWeek.id || idx} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
+                              {/* Mobile Layout */}
+                              <div className="md:hidden space-y-3">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <div className="text-gray-900 font-medium text-base mb-1">{surfWeek.dates}</div>
+                                    <div className="text-sm text-gray-600">{surfWeek.availableSpots} spots available</div>
+                                  </div>
+                                  <div className="text-right ml-4">
+                                    <div className="text-gray-900 font-semibold text-lg">{surfWeek.price}</div>
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    if (surfWeek.id) {
+                                      window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: surfWeek.id }))
+                                    } else {
+                                      window.dispatchEvent(new CustomEvent('openBooking'))
+                                    }
+                                  }}
+                                  className="w-full px-6 py-2.5 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 min-h-[44px]"
+                                  style={{ backgroundColor: '#ec681c' }}
+                                >
+                                  Book Now
+                                </button>
+                              </div>
+                              
+                              {/* Desktop Layout */}
+                              <div className="hidden md:grid grid-cols-4 gap-4 items-center">
+                                <div className="text-gray-900 font-medium">{surfWeek.dates}</div>
+                                <div className="text-gray-900 font-medium">{surfWeek.price}</div>
+                                <div className="text-gray-600">{surfWeek.availableSpots}</div>
+                                <div className="flex justify-end">
+                                  <button
+                                    onClick={() => {
+                                      if (surfWeek.id) {
+                                        window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: surfWeek.id }))
+                                      } else {
+                                        window.dispatchEvent(new CustomEvent('openBooking'))
+                                      }
+                                    }}
+                                    className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 min-h-[44px]"
+                                    style={{ backgroundColor: '#ec681c' }}
+                                  >
+                                    Book
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </>
+                      ) : (
+                        <div className="px-4 sm:px-6 py-8 text-center text-gray-600">
+                          Loading surf weeks...
                         </div>
-                        <button
-                          onClick={() => {
-                            if (surfWeek.id) {
-                              window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: surfWeek.id }))
-                            } else {
-                              window.dispatchEvent(new CustomEvent('openBooking'))
-                            }
-                          }}
-                          className="w-full px-6 py-2.5 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 min-h-[44px]"
-                          style={{ backgroundColor: '#ec681c' }}
-                        >
-                          Book Now
-                        </button>
-                      </div>
-                      
-                      {/* Desktop Layout */}
-                      <div className="hidden md:grid grid-cols-4 gap-4 items-center">
-                        <div className="text-gray-900 font-medium">{surfWeek.dates}</div>
-                        <div className="text-gray-900 font-medium">{surfWeek.price}</div>
-                        <div className="text-gray-600">{surfWeek.availableSpots}</div>
-                        <div className="flex justify-end">
-                          <button
-                            onClick={() => {
-                              if (surfWeek.id) {
-                                window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: surfWeek.id }))
-                              } else {
-                                window.dispatchEvent(new CustomEvent('openBooking'))
-                              }
-                            }}
-                            className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 min-h-[44px]"
-                            style={{ backgroundColor: '#ec681c' }}
-                          >
-                            Book
-                          </button>
-                        </div>
-                      </div>
+                      )}
                     </div>
-                        ))}
-                        </div>
-                        {/* Fade gradient overlay at bottom - only show when not expanded and more than 4 items */}
-                        {!showAllSurfWeeks && surfWeeks.length > 4 && (
-                          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none z-10"></div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="px-4 sm:px-6 py-8 text-center text-gray-600">
-                        Loading surf weeks...
-                      </div>
+                    {/* Fade gradient overlay at bottom - only show when not expanded and more than 4 items */}
+                    {!showAllSurfWeeks && surfWeeks.length > 4 && (
+                      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white via-white/95 to-transparent pointer-events-none z-10 rounded-b-lg"></div>
                     )}
                   </div>
                 </div>

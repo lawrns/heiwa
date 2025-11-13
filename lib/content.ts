@@ -26,7 +26,12 @@ export const getNavigationItems = async (): Promise<NavigationItem[]> => {
       return getFallbackNavigationItems()
     }
 
-    return data?.map((item: { name: string; path: string }) => ({
+    // Filter out THE SPOT and activity items (they're in dropdown)
+    const filteredData = data?.filter((item: { name: string; path: string }) => 
+      !['/the-spot', '/play', '/flow', '/surf'].includes(item.path)
+    ) || []
+
+    return filteredData.map((item: { name: string; path: string }) => ({
       name: item.name,
       path: item.path
     })) || getFallbackNavigationItems()

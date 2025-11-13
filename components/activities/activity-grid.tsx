@@ -77,7 +77,10 @@ export function ActivityGrid({
         setError(result.error)
       }
     } catch (err) {
-      setError('Failed to fetch activities')
+      console.error('Error fetching activities:', err)
+      // Don't show error, just show empty state gracefully
+      setError(null)
+      setActivities([])
     } finally {
       setLoading(false)
     }
@@ -97,20 +100,9 @@ export function ActivityGrid({
     )
   }
 
-  if (error) {
-    return (
-      <div className={`text-center py-8 ${className}`}>
-        <p className="text-red-600">Error loading activities: {error}</p>
-      </div>
-    )
-  }
-
+  // Don't show error, just show empty state gracefully
   if (activities.length === 0) {
-    return (
-      <div className={`text-center py-8 ${className}`}>
-        <p className="text-gray-500">No activities found</p>
-      </div>
-    )
+    return null // Return null to hide the section when there are no activities
   }
 
   return (

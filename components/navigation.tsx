@@ -26,11 +26,11 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
     }
   }, [initialItems])
 
-  // Filter out activity items that should be in dropdown (including SURF)
+  // Filter out activity items that should be in dropdown (including SURF) and THE SPOT
   const items = useMemo(() => {
     const allItems = initialItems || fetchedItems
     return allItems.filter(item => 
-      !['/play', '/flow', '/surf'].includes(item.path)
+      !['/play', '/flow', '/surf', '/the-spot'].includes(item.path)
     )
   }, [initialItems, fetchedItems])
 

@@ -7,7 +7,6 @@ import { FloatingCheckAvailability } from '@/components/floating-check-availabil
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
 import { SeasonalSurfLevelChart } from '@/components/surf/SeasonalSurfLevelChart'
-import { SurfWeekPromoCard } from '@/components/surf/SurfWeekPromoCard'
 
 export const metadata: Metadata = {
   title: 'Heiwa Surf - Surf Lessons & Ocean Adventures in Santa Cruz, Portugal',
@@ -29,19 +28,19 @@ async function getNextSurfWeek() {
       .gte('end_date', today.toISOString().split('T')[0])
       .order('start_date', { ascending: true })
       .limit(1)
-      .single()
 
-    if (error || !surfCamps) {
+    if (error || !surfCamps || surfCamps.length === 0) {
       return null
     }
 
+    const surfCamp = surfCamps[0]
     return {
-      id: surfCamps.id,
-      name: surfCamps.name,
-      start_date: surfCamps.start_date,
-      end_date: surfCamps.end_date,
-      price: surfCamps.price,
-      images: surfCamps.images || []
+      id: surfCamp.id,
+      name: surfCamp.name,
+      start_date: surfCamp.start_date,
+      end_date: surfCamp.end_date,
+      price: surfCamp.price,
+      images: surfCamp.images || []
     }
   } catch (error) {
     console.error('Error fetching next surf week:', error)
@@ -112,6 +111,72 @@ export default async function SurfPage() {
         </div>
       </section>
 
+      {/* Promotional Surf Week Card Section - Moved to top */}
+      {nextSurfWeek && nextSurfWeek.id && nextSurfWeek.start_date && nextSurfWeek.end_date && typeof nextSurfWeek.price === 'number' && (
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Temporarily render content directly to avoid component error */}
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
+              <div className="text-center py-6 bg-gray-50 border-b border-gray-200">
+                <h3 className="text-3xl font-bold text-gray-900">
+                  {new Date(nextSurfWeek.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} to {new Date(nextSurfWeek.end_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}, {new Date(nextSurfWeek.end_date).getFullYear()}!
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                <div className="relative aspect-[4/3] lg:aspect-auto lg:h-[500px]">
+                  <Image
+                    src={nextSurfWeek.images?.[0] || '/images/surf-weeks-front-page.jpg'}
+                    alt={nextSurfWeek.name || 'Surf Week Group Photo'}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                </div>
+                <div className="p-8 lg:p-12 flex flex-col justify-center bg-white">
+                  <ul className="space-y-4 text-gray-900 mb-8">
+                    <li className="flex items-start gap-3">
+                      <span className="text-accent font-semibold text-lg mt-0.5">-</span>
+                      <span className="text-lg italic text-gray-900">Professional instructors for all levels</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-accent font-semibold text-lg mt-0.5">-</span>
+                      <span className="text-lg italic text-gray-900">Amazing food prepared by our chef</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-accent font-semibold text-lg mt-0.5">-</span>
+                      <span className="text-lg italic text-gray-900">Daily yoga and meditation sessions</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-accent font-semibold text-lg mt-0.5">-</span>
+                      <span className="text-lg italic text-gray-900">Surfskate and other activities!</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-accent font-semibold text-lg mt-0.5">-</span>
+                      <span className="text-lg italic text-gray-900">Prices starting from EUR {nextSurfWeek.price || 450}!</span>
+                    </li>
+                  </ul>
+                  <Link
+                    href="/surf-weeks"
+                    className="w-full lg:w-auto px-8 py-4 bg-accent hover:bg-accent-hover text-white font-bold text-xl rounded-lg transition-colors mb-6 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                    style={{ backgroundColor: '#ec681c' }}
+                  >
+                    Book Now
+                  </Link>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-0.5">
+                      <span className="text-yellow-400">★★★★★</span>
+                    </div>
+                    <div className="text-sm text-gray-700">
+                      5 based on 73 reviews
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Seasonal Surf Level Chart */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -151,14 +216,11 @@ export default async function SurfPage() {
             {/* Right: Realistic Video */}
             <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
               <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/9nhQiKGsgHg?controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0"
-                title="Realistic Santa Cruz surf conditions"
+                src="https://www.youtube.com/embed/9nhQiKGsgHg?controls=0&modestbranding=1&rel=0"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                className="absolute inset-0"
+                className="absolute inset-0 w-full h-full"
               />
               <p className="absolute bottom-4 left-4 right-4 text-white text-sm bg-black/50 px-3 py-2 rounded backdrop-blur-sm">
                 Small and mid surf in Santa Cruz - realistic conditions for most visitors
@@ -378,18 +440,14 @@ export default async function SurfPage() {
             </div>
           </div>
 
-          {/* Interactive Map */}
+          {/* Interactive Map - replaced with custom image */}
           <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d198721.82397165!2d-9.4679!3d39.2845!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0xd1ec5bfc7c5c5c5%3A0x5c5c5c5c5c5c5c5!2sEriceira%2C%20Portugal!3m2!1d38.9633!2d-9.4178!4m5!1s0xd1ed8c5c5c5c5c5%3A0x5c5c5c5c5c5c5c5!2sPeniche%2C%20Portugal!3m2!1d39.3558!2d-9.3813!5e0!3m2!1sen!2s!4v1620000000000!5m2!1sen!2s"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Surf spots map - Ericeira to Peniche"
-              className="absolute inset-0"
+            <Image
+              src="/images/surf-map.jpg"
+              alt="Surf spots map - Ericeira to Peniche"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 70vw"
             />
           </div>
 
@@ -405,7 +463,7 @@ export default async function SurfPage() {
 
       {/* FAQ Section */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
             Surfing FAQs
           </h2>
@@ -424,15 +482,6 @@ export default async function SurfPage() {
         </div>
       </section>
 
-      {/* Promotional Surf Week Card Section */}
-      {nextSurfWeek && (
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <SurfWeekPromoCard surfWeek={nextSurfWeek} />
-          </div>
-        </section>
-      )}
-
       {/* CTA Section - Surf Weeks */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -440,14 +489,11 @@ export default async function SurfPage() {
             {/* YouTube Video */}
             <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
               <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/9nhQiKGsgHg?controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0"
-                title="Heiwa Surf Weeks Video"
+                src="https://www.youtube.com/embed/9nhQiKGsgHg?controls=0&modestbranding=1&rel=0"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                className="absolute inset-0"
+                className="absolute inset-0 w-full h-full"
               />
             </div>
 
