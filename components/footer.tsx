@@ -18,9 +18,11 @@ export function Footer() {
 
   useEffect(() => {
     getNavigationItems().then(items => {
-      setNavigationItems(items)
+      // Filter out THE SPOT from navigation items
+      const filteredItems = items.filter(item => item.path !== '/the-spot')
+      setNavigationItems(filteredItems)
     }).catch(() => {
-      // Fallback to static items
+      // Fallback to static items (already excludes THE SPOT)
       setNavigationItems([
         { path: '/', name: 'Home' },
         { path: '/rooms', name: 'Room Rentals' },

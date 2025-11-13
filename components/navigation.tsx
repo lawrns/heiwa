@@ -26,22 +26,13 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
     }
   }, [initialItems])
 
-  // Filter out activity items that should be in dropdown (but keep SURF visible)
+  // Filter out activity items that should be in dropdown (including SURF)
   const items = useMemo(() => {
     const allItems = initialItems || fetchedItems
     return allItems.filter(item => 
-      !['/play', '/flow'].includes(item.path)
+      !['/play', '/flow', '/surf'].includes(item.path)
     )
   }, [initialItems, fetchedItems])
-  
-  // Add SURF as direct link for all pages
-  const itemsWithSurf = useMemo(() => {
-    const hasSurf = items.some(item => item.path === '/surf')
-    if (!hasSurf) {
-      return [...items, { path: '/surf', name: 'SURF' }]
-    }
-    return items
-  }, [items])
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => {
@@ -247,7 +238,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             <div className="hidden lg:flex items-center space-x-8">
               <nav aria-label="Main navigation">
                 <ul className="flex items-center space-x-8">
-                  {itemsWithSurf.map((item) => (
+                  {items.map((item) => (
                     <li key={item.path}>
                       <Link
                         href={item.path}
