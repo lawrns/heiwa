@@ -21,7 +21,7 @@ export function VideoPlayer({
   title,
   description,
   autoPlay = false,
-  controls = true,
+  controls = false,
   className = '',
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)

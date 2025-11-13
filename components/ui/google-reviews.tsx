@@ -129,14 +129,6 @@ export function GoogleReviews({
                 <span className="text-lg font-semibold text-gray-900">5.0</span>
                 <span className="text-gray-600">(73 reviews)</span>
               </div>
-              <a
-                href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-sm"
-              >
-                Review us on Google
-              </a>
             </div>
             <div className="text-center py-8 text-gray-600">
               <p>Reviews are loading... Please configure GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID environment variables to display real reviews.</p>
@@ -192,14 +184,6 @@ export function GoogleReviews({
               <span className="text-lg font-semibold text-gray-900">{rating}</span>
               <span className="text-gray-600">({user_ratings_total} reviews)</span>
             </div>
-            <a
-              href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors text-sm"
-            >
-              Review us on Google
-            </a>
           </div>
         </div>
       )}

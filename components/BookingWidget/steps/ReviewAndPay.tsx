@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2, ShoppingBag } from 'lucide-react';
 import { BookingState, PricingBreakdown } from '../types';
 import { PaymentMethodSelector } from '../components/PaymentMethodSelector';
@@ -19,6 +19,8 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [pricing, setPricing] = useState<PricingBreakdown>(state.pricing);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [bookingCompleted, setBookingCompleted] = useState(false);
+  const bankInstructionsRef = useRef<HTMLDivElement>(null);
 
   // Calculate pricing from established base price and current add-ons
   useEffect(() => {
@@ -127,7 +129,20 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         // Redirect to Stripe checkout
         window.location.href = data.data.payment.payment_link;
       } else {
-        // For bank wire or if no payment link, show success with booking data
+        // For bank wire - mark as completed and scroll to instructions
+        setBookingCompleted(true);
+        
+        // Scroll to bank instructions after a short delay to ensure DOM is updated
+        setTimeout(() => {
+          if (bankInstructionsRef.current) {
+            bankInstructionsRef.current.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start' 
+            });
+          }
+        }, 100);
+        
+        // Still call onComplete for booking context
         onComplete(data.data);
       }
     } catch (error: any) {
@@ -341,13 +356,35 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         onMethodChange={actions.setPaymentMethod}
       />
 
+      {/* Booking Success Message for Bank Transfer */}
+      {bookingCompleted && state.paymentMethod === 'bank_wire' && (
+        <div className="p-6 bg-green-50 border-2 border-green-200 rounded-xl">
+          <div className="flex items-start gap-3">
+            <CheckCircle size={24} className="text-green-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h4 className="text-lg font-semibold text-green-900 mb-2">
+                Booking Confirmed! 🎉
+              </h4>
+              <p className="text-green-800 mb-3">
+                Your booking has been confirmed. Please complete the bank transfer below to secure your reservation.
+              </p>
+              <p className="text-sm text-green-700">
+                <strong>Next step:</strong> Check your email for booking confirmation and complete the bank transfer using the instructions below.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Bank Wire Instructions */}
       {state.paymentMethod === 'bank_wire' && (
-        <BankWireInstructions
-          totalAmount={pricing.total}
-          currency={pricing.currency}
-          bookingReference={`HW-${Date.now().toString().slice(-6)}`}
-        />
+        <div ref={bankInstructionsRef}>
+          <BankWireInstructions
+            totalAmount={pricing.total}
+            currency={pricing.currency}
+            bookingReference={`HW-${Date.now().toString().slice(-6)}`}
+          />
+        </div>
       )}
 
       {/* Payment Button */}
@@ -382,19 +419,21 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             ) : (
               <>
                 <CheckCircle size={20} />
-                Confirm Booking - Pay Later
+                Complete Booking
               </>
             )}
           </button>
 
-          <div className="text-center">
-            <p className="text-xs text-gray-500">
-              {state.paymentMethod === 'card_stripe'
-                ? 'Secure payment powered by Stripe • Your payment information is encrypted and secure'
-                : 'Your booking will be confirmed. Complete the bank transfer to secure your reservation.'
-              }
-            </p>
-          </div>
+          {!bookingCompleted && (
+            <div className="text-center">
+              <p className="text-xs text-gray-500">
+                {state.paymentMethod === 'card_stripe'
+                  ? 'Secure payment powered by Stripe • Your payment information is encrypted and secure'
+                  : 'Your booking will be confirmed. Complete the bank transfer below to secure your reservation.'
+                }
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

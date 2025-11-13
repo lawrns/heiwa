@@ -68,3 +68,4 @@ CREATE POLICY "Authenticated users can delete enrollments"
 -- Add comment
 COMMENT ON TABLE surf_camp_enrollments IS 'Tracks client enrollments in surf camps for room assignment purposes';
 
+

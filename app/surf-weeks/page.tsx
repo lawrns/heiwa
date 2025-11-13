@@ -19,10 +19,15 @@ async function getSurfWeeks() {
     // Use direct Supabase query for server-side rendering
     const { supabaseAdmin } = await import('@/lib/supabase')
     
+    // Get current date to filter out past surf weeks
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
     const { data: surfCamps, error: surfCampsError } = await supabaseAdmin
       .from('surf_camps')
       .select('*')
       .eq('is_active', true)
+      .gte('end_date', today.toISOString().split('T')[0])
       .order('start_date', { ascending: true })
 
     if (surfCampsError) {
@@ -294,7 +299,7 @@ export default async function SurfWeeksPage() {
 
       {/* Book Now + Google Reviews Section */}
       <section className="py-8 bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Google Reviews */}
             <div className="flex items-center gap-4">
@@ -327,7 +332,7 @@ export default async function SurfWeeksPage() {
 
       {/* Available Surf Weeks */}
       <section className="py-10 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Available Surf Weeks</h2>
             <p className="text-lg text-gray-600">Choose your perfect week and start your surfing adventure</p>
@@ -345,7 +350,7 @@ export default async function SurfWeeksPage() {
 
       {/* How a Surf Week Works - With Images */}
       <section className="py-12 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               How a surf week works
@@ -355,29 +360,25 @@ export default async function SurfWeeksPage() {
             </p>
           </div>
 
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {surfWeekSteps.map((step, index) => (
-              <div key={index} className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="w-full md:w-1/3">
-                  <div className="relative aspect-video rounded-lg overflow-hidden">
-                    <Image
-                      src={step.image}
-                      alt={step.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  </div>
+              <div key={index} className="flex flex-col gap-4">
+                <div className="relative aspect-video rounded-lg overflow-hidden">
+                  <Image
+                    src={step.image}
+                    alt={step.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
                 </div>
-                <div className="w-full md:w-2/3">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{step.title}</h3>
-                      <p className="text-gray-600 leading-relaxed">{step.description}</p>
-                    </div>
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    {index + 1}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
+                    <p className="text-gray-600 leading-relaxed text-sm">{step.description}</p>
                   </div>
                 </div>
               </div>
@@ -386,24 +387,26 @@ export default async function SurfWeeksPage() {
         </div>
       </section>
 
-      {/* Photo Gallery */}
+      {/* Photo Gallery - Horizontal Scroll */}
       <section className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {galleryImages.map((image, index) => (
-              <div
-                key={index}
-                className="relative aspect-square overflow-hidden group cursor-pointer"
-              >
-                <Image
-                  src={image}
-                  alt={`Surf Week ${index + 1}`}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                />
-              </div>
-            ))}
+          <div className="overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex gap-4" style={{ width: 'max-content' }}>
+              {galleryImages.map((image, index) => (
+                <div
+                  key={index}
+                  className="relative w-64 h-64 flex-shrink-0 overflow-hidden group cursor-pointer rounded-lg"
+                >
+                  <Image
+                    src={image}
+                    alt={`Surf Week ${index + 1}`}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="256px"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -455,7 +458,7 @@ export default async function SurfWeeksPage() {
 
       {/* Pricing Section - Redesigned */}
       <section className="py-12 bg-gradient-to-br from-orange-50 to-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Pricing</h2>
             <p className="text-xl text-gray-600">All-inclusive surf week experience with flexible add-ons</p>
@@ -504,7 +507,7 @@ export default async function SurfWeeksPage() {
 
       {/* FAQ Section */}
       <section className="py-12 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Frequently Asked Questions</h2>
           
           <Accordion type="single" collapsible className="space-y-4">

@@ -19,7 +19,7 @@ export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProp
   }
 
   const cleanVideoId = extractVideoId(videoId)
-  const embedUrl = `https://www.youtube.com/embed/${cleanVideoId}`
+  const embedUrl = `https://www.youtube.com/embed/${cleanVideoId}?controls=0`
 
   return (
     <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900 ${className}`}>

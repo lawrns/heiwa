@@ -6,6 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
+import { SeasonalSurfLevelChart } from '@/components/surf/SeasonalSurfLevelChart'
 
 export const metadata: Metadata = {
   title: 'Heiwa Surf - Surf Lessons & Ocean Adventures in Santa Cruz, Portugal',
@@ -70,6 +71,62 @@ export default function SurfPage() {
               Whether you&apos;re catching your first wave or perfecting advanced techniques, our experienced instructors and pristine conditions 
               create the perfect environment for your surfing journey.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Seasonal Surf Level Chart */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SeasonalSurfLevelChart />
+        </div>
+      </section>
+
+      {/* What People Can Surf Near Heiwa */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              What People Can Surf Near Heiwa
+            </h2>
+            <p className="text-lg text-gray-600">
+              Experience the softer side of Santa Cruz waves - perfect for learning and progression
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left: Epic Picture */}
+            <div className="space-y-4">
+              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
+                <Image
+                  src="/images/surf4.jpg"
+                  alt="Epic Santa Cruz surf day"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+              <p className="text-sm italic text-gray-600 text-center">
+                once in a blue moon it is like this
+              </p>
+            </div>
+            
+            {/* Right: Realistic Video */}
+            <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/9nhQiKGsgHg?controls=0&modestbranding=1"
+                title="Realistic Santa Cruz surf conditions"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0"
+              />
+              <p className="absolute bottom-4 left-4 right-4 text-white text-sm bg-black/50 px-3 py-2 rounded backdrop-blur-sm">
+                Small and mid surf in Santa Cruz - realistic conditions for most visitors
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -339,7 +396,7 @@ export default function SurfPage() {
               <iframe
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/9nhQiKGsgHg"
+                src="https://www.youtube.com/embed/9nhQiKGsgHg?controls=0"
                 title="Heiwa Surf Weeks Video"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

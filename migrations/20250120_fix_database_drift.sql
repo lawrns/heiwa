@@ -121,3 +121,4 @@ COMMENT ON COLUMN surf_camp_enrollments.dietary_restrictions IS 'Dietary restric
 COMMENT ON COLUMN surf_camp_enrollments.emergency_contact IS 'Emergency contact information (JSON)';
 COMMENT ON COLUMN surf_camp_enrollments.enrolled_at IS 'Timestamp when enrollment was confirmed';
 
+

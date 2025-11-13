@@ -483,3 +483,4 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
   )
 }
 
+

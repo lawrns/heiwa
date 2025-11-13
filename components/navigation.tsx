@@ -26,13 +26,22 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
     }
   }, [initialItems])
 
-  // Filter out activity items that should be in dropdown
+  // Filter out activity items that should be in dropdown (but keep SURF visible)
   const items = useMemo(() => {
     const allItems = initialItems || fetchedItems
     return allItems.filter(item => 
-      !['/play', '/surf', '/flow'].includes(item.path)
+      !['/play', '/flow'].includes(item.path)
     )
   }, [initialItems, fetchedItems])
+  
+  // Add SURF as direct link for all pages
+  const itemsWithSurf = useMemo(() => {
+    const hasSurf = items.some(item => item.path === '/surf')
+    if (!hasSurf) {
+      return [...items, { path: '/surf', name: 'SURF' }]
+    }
+    return items
+  }, [items])
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => {
@@ -47,9 +56,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
     { path: '/surf-weeks', name: 'SURF WEEK' }
   ]
 
-  const rightNavItems = [
-    { path: '/the-spot', name: 'LOCATION' }
-  ]
+  const rightNavItems: NavigationItem[] = []
 
   const activitiesItems = [
     { path: '/play', name: 'PLAY' },
@@ -110,9 +117,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 <Image
                   src="/images/heiwalogo.webp"
                   alt="Heiwa House"
-                  width={140}
-                  height={46}
-                  className="h-12 w-auto"
+                  width={112}
+                  height={37}
+                  className="h-9 w-auto"
                   style={{ height: 'auto' }}
                 />
               </Link>
@@ -228,9 +235,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 <Image
                   src="/images/heiwalogo.webp"
                   alt="Heiwa House"
-                  width={120}
-                  height={40}
-                  className="h-10 w-auto"
+                  width={96}
+                  height={32}
+                  className="h-8 w-auto"
                   style={{ height: 'auto' }}
                 />
               </Link>
@@ -240,7 +247,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             <div className="hidden lg:flex items-center space-x-8">
               <nav aria-label="Main navigation">
                 <ul className="flex items-center space-x-8">
-                  {items.map((item) => (
+                  {itemsWithSurf.map((item) => (
                     <li key={item.path}>
                       <Link
                         href={item.path}
@@ -355,8 +362,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
           { path: '/', name: 'HOME' },
           { path: '/rooms', name: 'ROOM RENTALS' },
           { path: '/surf-weeks', name: 'SURF WEEK' },
-          { path: '/activities', name: 'ACTIVITIES' },
-          { path: '/the-spot', name: 'THE SPOT' }
+          { path: '/surf', name: 'SURF' },
+          { path: '/play', name: 'PLAY' },
+          { path: '/flow', name: 'FLOW' }
         ]}
         currentPath={currentPath || '/'}
       />

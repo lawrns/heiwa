@@ -30,6 +30,7 @@ export function HeroVideo({
           muted
           playsInline
           preload="metadata"
+          controls={false}
           className="absolute inset-0 w-full h-full object-cover"
           onError={() => setVideoError(true)}
           poster={imageUrl}

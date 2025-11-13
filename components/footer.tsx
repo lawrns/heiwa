@@ -23,7 +23,6 @@ export function Footer() {
       // Fallback to static items
       setNavigationItems([
         { path: '/', name: 'Home' },
-        { path: '/the-spot', name: 'The Spot' },
         { path: '/rooms', name: 'Room Rentals' },
         { path: '/surf-weeks', name: 'Surf Weeks' }
       ])

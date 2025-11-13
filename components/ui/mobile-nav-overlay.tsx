@@ -72,13 +72,11 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
   }, [isOpen, onClose])
 
   const menuVariants = {
-    hidden: { opacity: 0, x: 300 },
+    hidden: { x: 300 },
     visible: {
-      opacity: 1,
       x: 0,
     },
     exit: {
-      opacity: 0,
       x: 300,
     },
   }
