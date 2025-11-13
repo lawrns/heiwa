@@ -43,7 +43,7 @@ export function VideoEmbed({
   const getEmbedUrl = () => {
     if (provider === 'youtube') {
       const videoId = src.split('/').pop()?.split('?')[0]
-      return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&controls=0&modestbranding=1`
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&controls=0&modestbranding=1&showinfo=0&disablekb=1&fs=0`
     } else if (provider === 'vimeo') {
       const videoId = src.split('/').pop()?.split('?')[0]
       return `https://player.vimeo.com/video/${videoId}?autoplay=1`
