@@ -396,7 +396,7 @@ export default function SurfPage() {
               <iframe
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/9nhQiKGsgHg?controls=0"
+                src="https://www.youtube.com/embed/9nhQiKGsgHg?controls=0&modestbranding=1"
                 title="Heiwa Surf Weeks Video"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
