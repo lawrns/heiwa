@@ -39,7 +39,6 @@ export const getNavigationItems = async (): Promise<NavigationItem[]> => {
 // Fallback navigation items
 const getFallbackNavigationItems = (): NavigationItem[] => [
   { path: '/', name: 'HOME' },
-  { path: '/the-spot', name: 'THE SPOT' },
   { path: '/rooms', name: 'ROOM RENTALS' },
   { path: '/surf-weeks', name: 'SURF CAMP' },
   { path: '/play', name: 'PLAY' },
