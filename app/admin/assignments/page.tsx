@@ -38,7 +38,7 @@ export default function AdminAssignmentsPage() {
       setLoading(true)
       const { data, error } = await supabase
         .from('surf_camps')
-        .select('id, name, start_date, end_date, max_participants, is_active')
+        .select('id, name, start_date, end_date, max_participants, total_spots, available_spots, is_active')
         .eq('is_active', true)
         .order('start_date', { ascending: true })
 

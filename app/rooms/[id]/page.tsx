@@ -7,6 +7,7 @@ import { ImageCarousel } from '@/components/ui/image-carousel'
 import { BookingButton } from '@/components/booking-button'
 import { getRooms } from '@/lib/content'
 import type { Room } from '@/lib/types'
+import { normalizeImageUrls, getFirstImageUrl } from '@/lib/image-utils'
 
 // Force dynamic rendering to ensure rooms are fetched at request time
 export const dynamic = 'force-dynamic'
@@ -65,19 +66,13 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
   const isDorm = room.name.toLowerCase().includes('dorm') || room.bookingType === 'perBed'
   const isTwin = room.name.toLowerCase().includes('twin') || room.capacity === 2
 
-  // Use actual images from database, fallback to single image if not available
-  // Filter out null/undefined/empty strings from images array
-  let roomImages: string[] = [];
-  if (room.images && Array.isArray(room.images) && room.images.length > 0) {
-    roomImages = room.images.filter(img => img && img.trim() !== '');
-  }
+  // Use actual images from database, normalize URLs, fallback to single image if not available
+  let roomImages: string[] = normalizeImageUrls(room.images);
   
-  // If no valid images after filtering, use fallback
-  if (roomImages.length === 0) {
+  // If no valid images after normalization, try single image field
+  if (roomImages.length === 0 || (roomImages.length === 1 && roomImages[0] === '/images/rooms/room1.jpg')) {
     if (room.image && room.image.trim() !== '') {
-      roomImages = [room.image];
-    } else {
-      roomImages = ['/images/rooms/room1.jpg']; // Fallback placeholder
+      roomImages = normalizeImageUrls([room.image]);
     }
   }
 
@@ -121,7 +116,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
         ...similarRoom,
         price: similarRoom.pricing?.standard || similarRoom.pricing?.offSeason || (similarIsDorm ? 30 : 80),
         beds: similarIsDorm ? 6 : similarIsTwin ? 2 : similarRoom.capacity || 1,
-        image: similarRoom.images?.[0] || similarRoom.image || '/images/rooms/room1.jpg'
+        image: getFirstImageUrl(similarRoom.images, similarRoom.image || '/images/rooms/room1.jpg')
       }
     })
 
@@ -291,9 +286,12 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
                       sizes="(max-width: 768px) 100vw, 50vw"
+                      unoptimized={similarRoom.image?.includes('supabase.co')}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement
-                        target.src = '/images/rooms/room1.jpg'
+                        if (target.src !== '/images/rooms/room1.jpg') {
+                          target.src = '/images/rooms/room1.jpg'
+                        }
                       }}
                     />
                     <div className="absolute top-4 right-4 bg-accent text-white px-4 py-2 rounded-lg shadow-lg">
