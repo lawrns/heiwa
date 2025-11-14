@@ -71,8 +71,8 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     )
 
-    // Set cookie via headers - this works better on Netlify
-    response.headers.set('Set-Cookie', `admin_auth=${password}; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax${isProduction ? '; Secure' : ''}; HttpOnly`)
+    // Set cookie via headers - remove HttpOnly for better browser compatibility
+    response.headers.set('Set-Cookie', `admin_auth=${password}; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax${isProduction ? '; Secure' : ''}`)
 
     return response
   } catch (error) {
