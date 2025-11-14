@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
     setLoading(true)
 
     try {
-      // Use fetch API to submit login and handle redirect
+      // Use fetch API to submit login and handle JSON response
       const response = await fetch('/api/admin/login', {
         method: 'POST',
         headers: {
@@ -52,19 +52,15 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ password }),
       })
 
-      if (response.ok || response.redirected) {
+      const data = await response.json()
+
+      if (response.ok && data.success) {
         // Store email before redirect
         localStorage.setItem('userEmail', 'admin@heiwa.house')
-        
-        // If response is a redirect, follow it
-        if (response.redirected) {
-          window.location.href = response.url
-        } else {
-          // Otherwise redirect to admin dashboard
-          router.push('/admin')
-        }
+
+        // Redirect to admin dashboard
+        router.push('/admin')
       } else {
-        const data = await response.json()
         setError(data.message || 'Invalid password. Please try again.')
         setLoading(false)
       }
