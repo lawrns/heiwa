@@ -31,9 +31,4 @@
     Expires = "0"
 
 # Redirect rules for better UX
-[[redirects]]
-  from = "/admin"
-  to = "/admin/login"
-  status = 302
-  force = false
 
