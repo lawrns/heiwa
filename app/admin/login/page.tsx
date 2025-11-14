@@ -50,23 +50,39 @@ export default function AdminLoginPage() {
         redirect: 'manual' // Handle redirect manually to check status
       })
 
-      // Handle redirect (302/307) or success (200)
+      // Handle any successful response (200, 302, 307) or redirect
+      // Even if API returns 200 with JSON, we should redirect after successful auth
       if (response.status === 200 || response.status === 302 || response.status === 307 || response.redirected) {
-        // Clear password field
-        setPassword('')
-        // Store user email
-        localStorage.setItem('userEmail', 'admin@heiwa.house')
+        // Parse response to check if authentication was successful
+        let authSuccess = false
+        try {
+          const data = await response.json()
+          authSuccess = data.message === 'Authenticated' || response.status === 302 || response.status === 307
+        } catch {
+          // If response is not JSON (e.g., redirect), consider it successful
+          authSuccess = response.status === 302 || response.status === 307 || response.redirected
+        }
         
-        // Get redirect URL from Location header or use default
-        const redirectUrl = response.headers.get('Location') || '/admin'
-        
-        // Wait a brief moment to ensure cookie is set
-        await new Promise(resolve => setTimeout(resolve, 200))
-        
-        // Use window.location for hard redirect to ensure cookie is sent
-        window.location.href = redirectUrl
-        return
-      } else {
+        if (authSuccess) {
+          // Clear password field
+          setPassword('')
+          // Store user email
+          localStorage.setItem('userEmail', 'admin@heiwa.house')
+          
+          // Get redirect URL from Location header or use default
+          const redirectUrl = response.headers.get('Location') || '/admin'
+          
+          // Wait a brief moment to ensure cookie is set
+          await new Promise(resolve => setTimeout(resolve, 300))
+          
+          // Use window.location for hard redirect to ensure cookie is sent
+          window.location.href = redirectUrl
+          return
+        }
+      }
+      
+      // If we get here, authentication failed
+      {
         // Try to parse error message
         try {
           const data = await response.json()
