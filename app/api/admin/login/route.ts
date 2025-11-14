@@ -27,12 +27,31 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { password } = await request.json()
+    // Handle both JSON and form data
+    let password: string
+    const contentType = request.headers.get('content-type') || ''
+    
+    if (contentType.includes('application/json')) {
+      const body = await request.json()
+      password = body.password
+    } else if (contentType.includes('application/x-www-form-urlencoded')) {
+      const formData = await request.formData()
+      password = formData.get('password') as string
+    } else {
+      // Try JSON first, fallback to form data
+      try {
+        const body = await request.json()
+        password = body.password
+      } catch {
+        const formData = await request.formData()
+        password = formData.get('password') as string
+      }
+    }
 
     // Validate password
     const adminPassword = process.env.ADMIN_PASSWORD || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'heiwa_admin_2024'
 
-    if (password !== adminPassword) {
+    if (!password || password !== adminPassword) {
       return NextResponse.json(
         { message: 'Invalid password' },
         { status: 401 }

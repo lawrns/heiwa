@@ -42,81 +42,51 @@ export default function AdminLoginPage() {
     setLoading(true)
 
     try {
+      // Use fetch to check authentication first
       const response = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
-        credentials: 'include', // Important: include credentials to receive cookie
-        redirect: 'manual' // Handle redirect manually to check status
+        credentials: 'include',
       })
 
-      // Handle any successful response (200, 302, 307) or redirect
-      // Even if API returns 200 with JSON, we should redirect after successful auth
-      if (response.status === 200 || response.status === 302 || response.status === 307 || response.redirected) {
-        // Parse response to check if authentication was successful
-        // Read response body only once
-        const text = await response.text()
-        let authSuccess = false
-        let data = null
-        
-        try {
-          data = JSON.parse(text)
-          authSuccess = data.message === 'Authenticated' || response.status === 302 || response.status === 307
-        } catch {
-          // If response is not JSON (e.g., redirect), consider it successful
-          authSuccess = response.status === 302 || response.status === 307 || response.redirected
-        }
-        
-        if (authSuccess) {
-          // Clear password field
-          setPassword('')
-          // Store user email
-          localStorage.setItem('userEmail', 'admin@heiwa.house')
-          
-          // Set cookie manually as fallback (since httpOnly cookies from API might not work with redirect: manual)
-          // This ensures the cookie is set before redirect
-          // Note: This is a non-httpOnly cookie for client-side setting, which is acceptable for admin auth
-          const isSecure = window.location.protocol === 'https:'
-          const cookieValue = `admin_auth=${password}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax${isSecure ? '; Secure' : ''}`
-          document.cookie = cookieValue
-          
-          // Verify cookie was set
-          const cookieSet = document.cookie.includes('admin_auth')
-          if (!cookieSet) {
-            console.error('Failed to set cookie, retrying...')
-            // Retry without Secure flag if on HTTP (for local dev)
-            if (!isSecure) {
-              document.cookie = `admin_auth=${password}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
-            }
-          }
-          
-          // Get redirect URL from Location header or use default
-          const redirectUrl = response.headers.get('Location') || '/admin'
-          
-          // Wait a brief moment to ensure cookie is set
-          await new Promise(resolve => setTimeout(resolve, 100))
-          
-          // Use window.location for hard redirect to ensure cookie is sent
-          window.location.href = redirectUrl
-          return
-        } else {
-          // Authentication failed even though status was 200
-          setError(data?.message || 'Invalid password')
-          setLoading(false)
-          return
-        }
-      }
-      
-      // If we get here, authentication failed (non-200 status)
-      // Try to parse error message
+      // Parse response
+      const text = await response.text()
+      let data = null
       try {
-        const text = await response.text()
-        const data = JSON.parse(text)
-        setError(data.message || 'Invalid password')
+        data = JSON.parse(text)
       } catch {
-        setError('Invalid password')
+        // If not JSON, might be a redirect - let browser handle it
+        if (response.redirected || response.status === 302 || response.status === 307) {
+          // Browser should have followed redirect and set cookie
+          window.location.href = '/admin'
+          return
+        }
       }
-      setLoading(false)
+
+      // Check if authentication was successful
+      if (response.ok && data?.message === 'Authenticated') {
+        // Authentication successful - now submit form normally to let browser handle redirect and cookie
+        // Create a hidden form and submit it to trigger proper cookie handling
+        const form = document.createElement('form')
+        form.method = 'POST'
+        form.action = '/api/admin/login'
+        form.style.display = 'none'
+        
+        const passwordField = document.createElement('input')
+        passwordField.type = 'hidden'
+        passwordField.name = 'password'
+        passwordField.value = password
+        form.appendChild(passwordField)
+        
+        document.body.appendChild(form)
+        form.submit()
+        return
+      } else {
+        // Authentication failed
+        setError(data?.message || 'Invalid password')
+        setLoading(false)
+      }
     } catch (err) {
       setError('An error occurred. Please try again.')
       setLoading(false)
