@@ -75,8 +75,20 @@ export default function AdminLoginPage() {
           
           // Set cookie manually as fallback (since httpOnly cookies from API might not work with redirect: manual)
           // This ensures the cookie is set before redirect
+          // Note: This is a non-httpOnly cookie for client-side setting, which is acceptable for admin auth
           const isSecure = window.location.protocol === 'https:'
-          document.cookie = `admin_auth=${password}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax${isSecure ? '; Secure' : ''}`
+          const cookieValue = `admin_auth=${password}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax${isSecure ? '; Secure' : ''}`
+          document.cookie = cookieValue
+          
+          // Verify cookie was set
+          const cookieSet = document.cookie.includes('admin_auth')
+          if (!cookieSet) {
+            console.error('Failed to set cookie, retrying...')
+            // Retry without Secure flag if on HTTP (for local dev)
+            if (!isSecure) {
+              document.cookie = `admin_auth=${password}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
+            }
+          }
           
           // Get redirect URL from Location header or use default
           const redirectUrl = response.headers.get('Location') || '/admin'
