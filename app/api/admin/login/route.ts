@@ -43,23 +43,16 @@ export async function POST(request: NextRequest) {
     // On Netlify, always use secure=true for HTTPS
     const isProduction = process.env.NODE_ENV === 'production' || process.env.NETLIFY === 'true'
     
-    // Set cookie using NextResponse with headers
-    const response = NextResponse.json(
-      { message: 'Authenticated' },
-      { 
-        status: 200,
-        headers: {
-          'Set-Cookie': `admin_auth=${password}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax${isProduction ? '; Secure' : ''}`
-        }
-      }
-    )
+    // Use redirect response to set cookie (works better on Netlify Edge Functions)
+    const redirectUrl = new URL('/admin', request.url)
+    const response = NextResponse.redirect(redirectUrl)
 
-    // Also set via cookies API as fallback
+    // Set cookie using cookies API
     response.cookies.set('admin_auth', password, {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
     })
 

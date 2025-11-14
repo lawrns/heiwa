@@ -49,11 +49,17 @@ export default function AdminLoginPage() {
         credentials: 'include', // Important: include credentials to receive cookie
       })
 
-      if (response.ok) {
+      if (response.ok || response.redirected) {
         // Clear password field
         setPassword('')
         // Store user email
         localStorage.setItem('userEmail', 'admin@heiwa.house')
+        
+        // If redirected, follow the redirect (cookie is set in redirect response)
+        if (response.redirected) {
+          window.location.href = response.url
+          return
+        }
         
         // Wait a brief moment to ensure cookie is set
         await new Promise(resolve => setTimeout(resolve, 100))
