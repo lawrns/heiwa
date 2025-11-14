@@ -37,10 +37,15 @@ export function normalizeImageUrls(urls: (string | null | undefined)[] | null | 
   }
   
   const normalized = urls
-    .map(normalizeImageUrl)
-    .filter(url => url && url.trim() !== '')
+    .map(url => normalizeImageUrl(url))
+    .filter(url => url && url.trim() !== '' && url !== '/images/rooms/room1.jpg')
   
-  return normalized.length > 0 ? normalized : ['/images/rooms/room1.jpg']
+  // If all were invalid, return fallback
+  if (normalized.length === 0) {
+    return ['/images/rooms/room1.jpg']
+  }
+  
+  return normalized
 }
 
 /**
