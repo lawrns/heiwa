@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const offset = parseInt(searchParams.get('offset') || '0')
 
+    // Fetch bookings
     let query = supabaseAdmin
       .from('bookings')
       .select('*')
@@ -47,15 +48,53 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Collect all client IDs from bookings
+    const allClientIds = new Set<string>()
+    ;(data || []).forEach((booking: any) => {
+      if (booking.client_ids && Array.isArray(booking.client_ids)) {
+        booking.client_ids.forEach((id: string) => allClientIds.add(id))
+      }
+    })
+    
+    // Fetch all clients in one query
+    let clientMap = new Map()
+    if (allClientIds.size > 0) {
+      const { data: clients } = await supabaseAdmin
+        .from('clients')
+        .select('id, name, email, phone')
+        .in('id', Array.from(allClientIds))
+      
+      if (clients) {
+        clients.forEach((client: any) => {
+          clientMap.set(client.id, client)
+        })
+      }
+    }
+    
     // Transform database fields to admin UI format
     const transformedData = (data || []).map((booking: any) => {
       const firstItem = booking.items?.[0]
       
+      // Get guest name from client_ids - use first client
+      let guestName = 'Unknown'
+      let guestEmail = ''
+      let guestPhone = ''
+      
+      if (booking.client_ids && booking.client_ids.length > 0) {
+        const firstClientId = booking.client_ids[0]
+        const client = clientMap.get(firstClientId)
+        if (client) {
+          guestName = client.name || 'Unknown'
+          guestEmail = client.email || ''
+          guestPhone = client.phone || ''
+        }
+      }
+      
       return {
         id: booking.id,
-        guest_name: booking.guest_name || 'Unknown',
-        guest_email: booking.guest_email || '',
-        guest_phone: booking.guest_phone || '',
+        guest_name: guestName,
+        guest_email: guestEmail,
+        guest_phone: guestPhone,
         type: firstItem?.type || 'room',
         item_name: firstItem?.itemId || 'Unknown',
         check_in: firstItem?.dates?.checkIn || '',
@@ -65,7 +104,8 @@ export async function GET(request: NextRequest) {
         status: booking.status || 'pending',
         payment_status: booking.payment_status || 'pending',
         created_at: booking.created_at,
-        special_requests: booking.notes || ''
+        special_requests: booking.notes || '',
+        client_ids: booking.client_ids || []
       }
     })
 

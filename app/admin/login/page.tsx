@@ -51,8 +51,10 @@ export default function AdminLoginPage() {
       if (response.ok) {
         // Clear password field
         setPassword('')
-        // Redirect to admin dashboard
-        window.location.href = '/admin'
+        // Store user email
+        localStorage.setItem('userEmail', 'admin@heiwa.house')
+        // Redirect to admin dashboard using router
+        router.push('/admin')
       } else {
         const data = await response.json()
         setError(data.message || 'Invalid password')
@@ -106,6 +108,7 @@ export default function AdminLoginPage() {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                 disabled={loading}
                 autoFocus
+                autoComplete="current-password"
               />
             </div>
 

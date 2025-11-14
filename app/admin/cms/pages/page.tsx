@@ -6,7 +6,6 @@ import { FileText, Edit, Clock, ChevronRight, Plus, Eye, Trash2 } from 'lucide-r
 import { CMSLayout } from '@/components/admin/cms/CMSLayout'
 import { CMSCard } from '@/components/admin/cms/CMSCard'
 import { CMSHeader } from '@/components/admin/cms/CMSHeader'
-import { supabaseAdmin } from '@/lib/supabase'
 
 interface PageData {
   slug: string
@@ -89,49 +88,38 @@ export default function CMSPagesPage() {
   const fetchPageStats = async () => {
     try {
       setLoading(true)
+      setError(null)
       
-      // Fetch page_content stats
-      const { data: pageData, error: pageError } = await supabaseAdmin
-        .from('page_content')
-        .select('page_slug, updated_at')
-        .eq('is_active', true)
-
-      if (pageError) throw pageError
-
-      // Fetch homepage_content stats
-      const { data: homepageData, error: homepageError } = await supabaseAdmin
-        .from('homepage_content')
-        .select('section, updated_at')
-        .eq('is_active', true)
-
-      if (homepageError) throw homepageError
-
-      // Calculate stats for each page
-      const stats: Record<string, { count: number; lastModified: string }> = {}
-      pages.forEach(page => {
-        if (page.slug === 'homepage') {
-          // Special handling for homepage
-          const homepageSections = (homepageData as any[]) || []
-          stats[page.slug] = {
-            count: homepageSections.length,
-            lastModified: homepageSections.length > 0 
-              ? new Date(Math.max(...homepageSections.map((s: any) => new Date(s.updated_at).getTime()))).toLocaleDateString()
-              : 'Never'
-          }
-        } else {
-          // Regular pages
-          const pageSections = (pageData as any[])?.filter((section: any) => section.page_slug === page.slug) || []
-          stats[page.slug] = {
-            count: pageSections.length,
-            lastModified: pageSections.length > 0 
-              ? new Date(Math.max(...pageSections.map((s: any) => new Date(s.updated_at).getTime()))).toLocaleDateString()
-              : 'Never'
-          }
-        }
+      // Use API route instead of direct Supabase call
+      const response = await fetch('/api/admin/cms/page-stats', {
+        method: 'GET',
+        credentials: 'include',
       })
 
-      setPageStats(stats)
+      if (!response.ok) {
+        throw new Error('Failed to fetch page statistics')
+      }
+
+      const result = await response.json()
+      
+      if (result.success && result.stats) {
+        // Convert ISO dates to locale date strings
+        const formattedStats: Record<string, { count: number; lastModified: string }> = {}
+        Object.keys(result.stats).forEach(pageSlug => {
+          const stat = result.stats[pageSlug]
+          formattedStats[pageSlug] = {
+            count: stat.count,
+            lastModified: stat.lastModified 
+              ? new Date(stat.lastModified).toLocaleDateString()
+              : 'Never'
+          }
+        })
+        setPageStats(formattedStats)
+      } else {
+        throw new Error('Invalid response format')
+      }
     } catch (err) {
+      console.error('Error fetching page stats:', err)
       setError('Failed to load page statistics')
     } finally {
       setLoading(false)

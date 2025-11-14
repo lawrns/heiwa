@@ -759,16 +759,18 @@ export default function BookingsPage() {
                       €{booking.total_price}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(booking.status)}
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`}>
-                          {booking.status}
-                        </span>
-                      </div>
-                      <div className="mt-1">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(booking.payment_status)}`}>
-                          {booking.payment_status}
-                        </span>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(booking.status)}
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`}>
+                            {booking.status}
+                          </span>
+                        </div>
+                        {booking.payment_status && booking.payment_status !== booking.status && (
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(booking.payment_status)}`}>
+                            Payment: {booking.payment_status}
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap text-sm font-medium">

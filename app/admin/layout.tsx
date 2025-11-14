@@ -115,30 +115,84 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isClient, setIsClient] = useState(false)
   const [userEmail, setUserEmail] = useState<string>('')
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoginPage, setIsLoginPage] = useState(false)
+  const [checkingAuth, setCheckingAuth] = useState(true)
 
   useEffect(() => {
     setIsClient(true)
-    // Get user email from localStorage or session
-    const email = localStorage.getItem('userEmail') || 'admin@heiwa.house'
-    setUserEmail(email)
-  }, [])
+    // Check if we're on login page
+    const pathname = window.location.pathname
+    setIsLoginPage(pathname === '/admin/login')
+    
+    // Check authentication
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/admin/login', {
+          method: 'GET',
+          credentials: 'include',
+        })
+        
+        if (response.ok) {
+          setIsAuthenticated(true)
+          const email = localStorage.getItem('userEmail') || 'admin@heiwa.house'
+          setUserEmail(email)
+        } else {
+          setIsAuthenticated(false)
+          // If not on login page and not authenticated, redirect to login
+          if (pathname !== '/admin/login') {
+            router.push('/admin/login')
+          }
+        }
+      } catch (err) {
+        setIsAuthenticated(false)
+        if (pathname !== '/admin/login') {
+          router.push('/admin/login')
+        }
+      } finally {
+        setCheckingAuth(false)
+      }
+    }
+    
+    checkAuth()
+  }, [router])
 
   const handleLogout = async () => {
     try {
+      await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' })
       localStorage.removeItem('userEmail')
       localStorage.removeItem('authToken')
       router.push('/admin/login')
     } catch (error) {
       console.error('Logout error:', error)
+      router.push('/admin/login')
     }
   }
 
-  if (!isClient) {
+  // Show loading state while checking auth or if not client
+  if (!isClient || checkingAuth) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading admin dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // If on login page, don't show sidebar - just render children
+  if (isLoginPage) {
+    return <ErrorBoundary>{children}</ErrorBoundary>
+  }
+
+  // If not authenticated and not on login page, show loading (will redirect)
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to login...</p>
         </div>
       </div>
     )

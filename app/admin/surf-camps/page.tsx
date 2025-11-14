@@ -36,16 +36,27 @@ export default function SurfCampsPage() {
 
   const fetchSurfCamps = async () => {
     try {
-      const response = await fetch('/api/surf-camps')
+      setLoading(true)
+      setError(null)
+      const response = await fetch('/api/surf-camps', {
+        credentials: 'include',
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+      
       const data = await response.json()
       
       if (data.success) {
-        setSurfCamps(data.data.surf_camps || [])
+        const camps = data.data?.surf_camps || data.data || []
+        setSurfCamps(Array.isArray(camps) ? camps : [])
       } else {
-        setError('Failed to fetch surf camps')
+        setError(data.error || 'Failed to fetch surf camps')
       }
-    } catch (err) {
-      setError('Error loading surf camps')
+    } catch (err: any) {
+      console.error('Error fetching surf camps:', err)
+      setError(err.message || 'Error loading surf camps')
     } finally {
       setLoading(false)
     }
