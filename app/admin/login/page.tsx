@@ -73,11 +73,16 @@ export default function AdminLoginPage() {
           // Store user email
           localStorage.setItem('userEmail', 'admin@heiwa.house')
           
+          // Set cookie manually as fallback (since httpOnly cookies from API might not work with redirect: manual)
+          // This ensures the cookie is set before redirect
+          const isSecure = window.location.protocol === 'https:'
+          document.cookie = `admin_auth=${password}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax${isSecure ? '; Secure' : ''}`
+          
           // Get redirect URL from Location header or use default
           const redirectUrl = response.headers.get('Location') || '/admin'
           
           // Wait a brief moment to ensure cookie is set
-          await new Promise(resolve => setTimeout(resolve, 300))
+          await new Promise(resolve => setTimeout(resolve, 100))
           
           // Use window.location for hard redirect to ensure cookie is sent
           window.location.href = redirectUrl
