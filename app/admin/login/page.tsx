@@ -46,6 +46,7 @@ export default function AdminLoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
+        credentials: 'include', // Important: include credentials to receive cookie
       })
 
       if (response.ok) {
@@ -53,15 +54,19 @@ export default function AdminLoginPage() {
         setPassword('')
         // Store user email
         localStorage.setItem('userEmail', 'admin@heiwa.house')
-        // Redirect to admin dashboard using router
-        router.push('/admin')
+        
+        // Wait a brief moment to ensure cookie is set
+        await new Promise(resolve => setTimeout(resolve, 100))
+        
+        // Use window.location for hard redirect to ensure cookie is sent
+        window.location.href = '/admin'
       } else {
         const data = await response.json()
         setError(data.message || 'Invalid password')
+        setLoading(false)
       }
     } catch (err) {
       setError('An error occurred. Please try again.')
-    } finally {
       setLoading(false)
     }
   }

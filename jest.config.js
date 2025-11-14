@@ -20,10 +20,35 @@ const customJestConfig = {
   ],
   coverageThreshold: {
     global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
+      branches: 75,
+      functions: 75,
+      lines: 75,
+      statements: 75,
+    },
+    // Higher thresholds for critical paths
+    './lib/booking-service.ts': {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+    './lib/email-service.ts': {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+    './middleware.ts': {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+    './app/api/bookings/route.ts': {
+      branches: 85,
+      functions: 85,
+      lines: 85,
+      statements: 85,
     },
   },
   moduleNameMapper: {

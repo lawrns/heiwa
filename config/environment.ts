@@ -3,9 +3,10 @@
 
 export const env = {
   // Supabase Configuration
+  // CRITICAL: Must use zejrhceuuujzgyukdwnb project (where the actual data is stored)
   supabase: {
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pguipwhrxdzzrndbluxb.supabase.co',
-    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBndWlwd2hyeGR6enJuZGJsdXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NjU4ODUsImV4cCI6MjA3ODQ0MTg4NX0.9Kq4rka92XmoJj_BWu4eEYvbhaasljZX6yTp8FMof7o',
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zejrhceuuujzgyukdwnb.supabase.co',
+    anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
   },
 
   // Booking Widget Configuration

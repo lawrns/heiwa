@@ -1,0 +1,35 @@
+[
+  {
+    "id": "test-room-1",
+    "name": "Ocean View Room",
+    "description": "Beautiful room with ocean view",
+    "capacity": 2,
+    "booking_type": "whole",
+    "pricing": {
+      "standard": 100,
+      "offSeason": 80
+    },
+    "amenities": ["wifi", "kitchen", "ocean-view"],
+    "images": ["/images/rooms/room1.jpg"],
+    "is_active": true,
+    "created_at": "2025-01-21T00:00:00Z",
+    "updated_at": "2025-01-21T00:00:00Z"
+  },
+  {
+    "id": "test-room-2",
+    "name": "Garden Room",
+    "description": "Cozy room with garden view",
+    "capacity": 1,
+    "booking_type": "whole",
+    "pricing": {
+      "standard": 80,
+      "offSeason": 60
+    },
+    "amenities": ["wifi"],
+    "images": ["/images/rooms/room2.jpg"],
+    "is_active": true,
+    "created_at": "2025-01-21T00:00:00Z",
+    "updated_at": "2025-01-21T00:00:00Z"
+  }
+]
+

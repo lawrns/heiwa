@@ -5,9 +5,33 @@ import { createClient } from '@supabase/supabase-js'
 
 // Use the same Supabase instance as the wavecampdashboard
 // This ensures booking data consistency between the website and admin dashboard
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pguipwhrxdzzrndbluxb.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBndWlwd2hyeGR6enJuZGJsdXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NjU4ODUsImV4cCI6MjA3ODQ0MTg4NX0.9Kq4rka92XmoJj_BWu4eEYvbhaasljZX6yTp8FMof7o'
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBndWlwd2hyeGR6enJuZGJsdXhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2Mjg2NTg4NSwiZXhwIjoyMDc4NDQxODg1fQ.Fe7nN1GEVbgAh0M55HML0ppDgMyyMsCeSk6ugd37TWA'
+// CRITICAL: Must use zejrhceuuujzgyukdwnb project (where the actual data is stored)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zejrhceuuujzgyukdwnb.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+
+// Validate that API keys are set (only check server-side for service role key)
+if (typeof window === 'undefined') {
+  // Server-side validation
+  if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
+    console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
+    console.error('   Please get the API key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
+    console.error('   Then update your .env.local file')
+  }
+
+  if (!supabaseServiceKey || supabaseServiceKey === 'YOUR_SERVICE_ROLE_KEY_HERE') {
+    console.error('❌ ERROR: SUPABASE_SERVICE_ROLE_KEY is not set!')
+    console.error('   Please get the service role key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
+    console.error('   Then update your .env.local file')
+  }
+} else {
+  // Client-side validation (only check anon key)
+  if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
+    console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
+    console.error('   Please get the API key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
+    console.error('   Then update your .env.local file')
+  }
+}
 
 // Singleton pattern to prevent multiple client instances
 // Use globalThis to ensure singleton across module reloads in Next.js

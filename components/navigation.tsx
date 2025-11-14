@@ -61,7 +61,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-40 transition-all duration-300 lg:z-50',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isHomepage 
           ? 'bg-black/20 backdrop-blur-md' 
           : 'bg-gray-800 backdrop-blur-sm',
@@ -108,9 +108,10 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 <Image
                   src="/images/heiwalogo.webp"
                   alt="Heiwa House"
-                  width={112}
-                  height={37}
-                  className="h-9 w-auto"
+                  width={140}
+                  height={46}
+                  className="h-12 w-auto"
+                  priority
                   style={{ height: 'auto' }}
                 />
               </Link>
