@@ -45,9 +45,13 @@ export async function POST(request: NextRequest) {
     
     // Use redirect response to set cookie (works better on Netlify Edge Functions)
     const redirectUrl = new URL('/admin', request.url)
-    const response = NextResponse.redirect(redirectUrl)
+    
+    // Create redirect response
+    const response = NextResponse.redirect(redirectUrl, {
+      status: 302,
+    })
 
-    // Set cookie using cookies API
+    // Set cookie using cookies API - ensure it's set before redirect
     response.cookies.set('admin_auth', password, {
       httpOnly: true,
       secure: isProduction,
@@ -55,6 +59,9 @@ export async function POST(request: NextRequest) {
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
     })
+
+    // Also set via Set-Cookie header as fallback for Netlify
+    response.headers.set('Set-Cookie', `admin_auth=${password}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax${isProduction ? '; Secure' : ''}`)
 
     return response
   } catch (error) {
