@@ -1,3 +1,5 @@
+'use client'
+
 import { Metadata } from 'next'
 import { Mail } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
@@ -5,13 +7,41 @@ import { FloatingCheckAvailability } from '@/components/floating-check-availabil
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
 import { GoogleReviews } from '@/components/ui/google-reviews'
+import { useEffect, useState } from 'react'
 
-export const metadata: Metadata = {
-  title: 'Heiwa Play - Activities & Fun at Santa Cruz, Portugal',
-  description: 'Discover endless fun at Heiwa Play! Enjoy table games, sauna & ice bath, giant pool, gym, bicycles, and more exciting activities in Santa Cruz, Portugal.',
+interface CMSSection {
+  id: string
+  section_type: string
+  section_name?: string
+  content: any
+  order_index: number
 }
 
 export default function PlayPage() {
+  const [cmsContent, setCmsContent] = useState<CMSSection[]>([])
+
+  // Fetch CMS content
+  useEffect(() => {
+    const fetchCMSContent = async () => {
+      try {
+        const response = await fetch(`/api/cms/page-content?page_slug=play&is_active=true&sort_by=order_index&sort_order=asc&limit=50`)
+        const result = await response.json()
+        if (result.data && Array.isArray(result.data)) {
+          console.log('✅ CMS content loaded for play page:', result.data.length, 'sections')
+          setCmsContent(result.data)
+        }
+      } catch (error) {
+        console.error('❌ Error fetching CMS content:', error)
+      }
+    }
+
+    fetchCMSContent()
+  }, [])
+
+  // Extract CMS sections
+  const heroSection = cmsContent.find(s => s.section_type === 'hero')
+  const introSection = cmsContent.find(s => s.section_type === 'intro')
+  const ctaSection = cmsContent.find(s => s.section_type === 'text' && s.section_name?.toLowerCase().includes('cta'))
 
   // FAQ items for Play page
   const faqItems = [
@@ -47,28 +77,53 @@ export default function PlayPage() {
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
-        title="Heiwa Play"
-        description="Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."
-        videoUrl="/images/videos/play-activities.mp4"
-        imageUrl="/images/games.jpg"
+        title={heroSection?.content?.title || "Heiwa Play"}
+        description={heroSection?.content?.description || "Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."}
+        videoUrl={heroSection?.content?.video_url || "/images/videos/play-activities.mp4"}
+        imageUrl={heroSection?.content?.image_url || "/images/games.jpg"}
       />
 
       {/* Introduction Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-6">
-            <p className="text-lg text-gray-700 leading-relaxed">
-              At Heiwa Play, we believe that adventure and fun are essential parts of the perfect surf holiday. 
-              When you&apos;re not catching waves, you&apos;ll find countless ways to stay active, connect with others, 
-              and create unforgettable memories.
-            </p>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Whether you&apos;re competing in table tennis, relaxing in our giant pool, pushing your limits at the skatepark, 
-              or finding your zen in the sauna, there&apos;s something for everyone at Heiwa Play.
-            </p>
+      {introSection ? (
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-6">
+              {typeof introSection.content === 'string' ? (
+                <div dangerouslySetInnerHTML={{ __html: introSection.content }} />
+              ) : (
+                <>
+                  {introSection.content?.description && (
+                    <p className="text-lg text-gray-700 leading-relaxed">
+                      {introSection.content.description}
+                    </p>
+                  )}
+                  {introSection.content?.text && (
+                    <p className="text-lg text-gray-700 leading-relaxed">
+                      {introSection.content.text}
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-6">
+              <p className="text-lg text-gray-700 leading-relaxed">
+                At Heiwa Play, we believe that adventure and fun are essential parts of the perfect surf holiday. 
+                When you&apos;re not catching waves, you&apos;ll find countless ways to stay active, connect with others, 
+                and create unforgettable memories.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                Whether you&apos;re competing in table tennis, relaxing in our giant pool, pushing your limits at the skatepark, 
+                or finding your zen in the sauna, there&apos;s something for everyone at Heiwa Play.
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Always Available Activities Section */}
       <section className="py-20 bg-white">
@@ -149,25 +204,58 @@ export default function PlayPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            Ready to Play?
-          </h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Join our surf weeks and experience all the amazing activities Heiwa Play has to offer. 
-            From adventure to relaxation, we have it all!
-          </p>
-          <a
-            href="mailto:info@heiwahouse.com"
-            className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-            style={{ backgroundColor: '#ec681c' }}
-          >
-            <Mail className="w-5 h-5" />
-            Book Your Adventure
-          </a>
-        </div>
-      </section>
+      {ctaSection ? (
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            {typeof ctaSection.content === 'string' ? (
+              <div dangerouslySetInnerHTML={{ __html: ctaSection.content }} />
+            ) : (
+              <>
+                {ctaSection.content?.title && (
+                  <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                    {ctaSection.content.title}
+                  </h2>
+                )}
+                {ctaSection.content?.description && (
+                  <p className="text-lg text-gray-600 mb-8">
+                    {ctaSection.content.description}
+                  </p>
+                )}
+                {ctaSection.content?.button_text && ctaSection.content?.button_url && (
+                  <a
+                    href={ctaSection.content.button_url}
+                    className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
+                    style={{ backgroundColor: '#ec681c' }}
+                  >
+                    <Mail className="w-5 h-5" />
+                    {ctaSection.content.button_text}
+                  </a>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+      ) : (
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+              Ready to Play?
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Join our surf weeks and experience all the amazing activities Heiwa Play has to offer. 
+              From adventure to relaxation, we have it all!
+            </p>
+            <a
+              href="mailto:info@heiwahouse.com"
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
+              style={{ backgroundColor: '#ec681c' }}
+            >
+              <Mail className="w-5 h-5" />
+              Book Your Adventure
+            </a>
+          </div>
+        </section>
+      )}
 
       {/* Floating Check Availability Button */}
       <FloatingCheckAvailability />

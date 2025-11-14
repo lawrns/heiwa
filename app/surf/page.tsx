@@ -1,3 +1,5 @@
+'use client'
+
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -7,49 +9,72 @@ import { FloatingCheckAvailability } from '@/components/floating-check-availabil
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
 import { SeasonalSurfLevelChart } from '@/components/surf/SeasonalSurfLevelChart'
+import { useEffect, useState } from 'react'
 
 export const metadata: Metadata = {
   title: 'Heiwa Surf - Surf Lessons & Ocean Adventures in Santa Cruz, Portugal',
   description: 'Learn to surf at Heiwa House in Santa Cruz, Portugal. Professional surf instruction for all levels with equipment provided and beachside accommodation.',
 }
 
-// Fetch next upcoming surf week
-async function getNextSurfWeek() {
-  try {
-    const { supabaseAdmin } = await import('@/lib/supabase')
-    
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    
-    const { data: surfCamps, error } = await supabaseAdmin
-      .from('surf_camps')
-      .select('*')
-      .eq('is_active', true)
-      .gte('end_date', today.toISOString().split('T')[0])
-      .order('start_date', { ascending: true })
-      .limit(1)
-
-    if (error || !surfCamps || surfCamps.length === 0) {
-      return null
-    }
-
-    const surfCamp = surfCamps[0]
-    return {
-      id: surfCamp.id,
-      name: surfCamp.name,
-      start_date: surfCamp.start_date,
-      end_date: surfCamp.end_date,
-      price: surfCamp.price,
-      images: surfCamp.images || []
-    }
-  } catch (error) {
-    console.error('Error fetching next surf week:', error)
-    return null
-  }
+interface CMSSection {
+  id: string
+  section_type: string
+  section_name?: string
+  content: any
+  order_index: number
 }
 
-export default async function SurfPage() {
-  const nextSurfWeek = await getNextSurfWeek()
+export default function SurfPage() {
+  const [cmsContent, setCmsContent] = useState<CMSSection[]>([])
+  const [nextSurfWeek, setNextSurfWeek] = useState<any>(null)
+
+  // Fetch CMS content
+  useEffect(() => {
+    const fetchCMSContent = async () => {
+      try {
+        const response = await fetch(`/api/cms/page-content?page_slug=surf&is_active=true&sort_by=order_index&sort_order=asc&limit=50`)
+        const result = await response.json()
+        if (result.data && Array.isArray(result.data)) {
+          console.log('✅ CMS content loaded for surf page:', result.data.length, 'sections')
+          setCmsContent(result.data)
+        }
+      } catch (error) {
+        console.error('❌ Error fetching CMS content:', error)
+      }
+    }
+
+    fetchCMSContent()
+  }, [])
+
+  // Fetch next upcoming surf week
+  useEffect(() => {
+    const fetchNextSurfWeek = async () => {
+      try {
+        const response = await fetch('/api/surf-camps?is_active=true&limit=1')
+        const result = await response.json()
+        if (result.success && result.data && result.data.length > 0) {
+          const surfCamp = result.data[0]
+          setNextSurfWeek({
+            id: surfCamp.id,
+            name: surfCamp.name,
+            start_date: surfCamp.start_date,
+            end_date: surfCamp.end_date,
+            price: surfCamp.price,
+            images: surfCamp.images || []
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching next surf week:', error)
+      }
+    }
+
+    fetchNextSurfWeek()
+  }, [])
+
+  // Extract CMS sections
+  const heroSection = cmsContent.find(s => s.section_type === 'hero')
+  const introSection = cmsContent.find(s => s.section_type === 'intro')
+  const ctaSection = cmsContent.find(s => s.section_type === 'text' && s.section_name?.toLowerCase().includes('cta'))
   const faqItems = [
     {
       question: 'What is the best time of year to surf in Santa Cruz?',
@@ -89,15 +114,37 @@ export default async function SurfPage() {
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
-        title="Heiwa Surf"
-        description="Experience the thrill of surfing in Portugal's pristine waters. From beginner lessons to advanced coaching, discover your perfect wave at our doorstep."
-        videoUrl="/images/videos/surf-ocean.mp4"
-        imageUrl="/images/surf4.jpg"
+        title={heroSection?.content?.title || "Heiwa Surf"}
+        description={heroSection?.content?.description || "Experience the thrill of surfing in Portugal's pristine waters. From beginner lessons to advanced coaching, discover your perfect wave at our doorstep."}
+        videoUrl={heroSection?.content?.video_url || "/images/videos/surf-ocean.mp4"}
+        imageUrl={heroSection?.content?.image_url || "/images/surf4.jpg"}
       />
 
       {/* Introduction Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {introSection ? (
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            {typeof introSection.content === 'string' ? (
+              <div dangerouslySetInnerHTML={{ __html: introSection.content }} />
+            ) : (
+              <>
+                {introSection.content?.description && (
+                  <p className="text-lg text-gray-700 leading-relaxed text-center">
+                    {introSection.content.description}
+                  </p>
+                )}
+                {introSection.content?.text && (
+                  <p className="text-lg text-gray-700 leading-relaxed text-center">
+                    {introSection.content.text}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+      ) : (
+        <section className="py-20 bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6">
             <p className="text-lg text-gray-700 leading-relaxed">
               Located in the heart of Portugal&apos;s surf paradise, Heiwa House offers direct access to some of Europe&apos;s most beautiful beaches. 
