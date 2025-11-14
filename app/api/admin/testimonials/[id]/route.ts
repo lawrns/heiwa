@@ -21,9 +21,18 @@ export async function GET(
       )
     }
 
+    // Transform database fields to frontend format
+    const transformedData = {
+      ...data,
+      guest_name: (data as any).author_name || (data as any).guest_name || 'Unknown',
+      guest_email: (data as any).author_email || (data as any).guest_email || '',
+      guest_image_url: (data as any).author_image || (data as any).guest_image_url || null,
+      text: (data as any).content || (data as any).text || ''
+    }
+
     return NextResponse.json({
       success: true,
-      data
+      data: transformedData
     })
   } catch (error) {
     console.error('Unexpected error:', error)
@@ -59,18 +68,23 @@ export async function PUT(
       )
     }
 
+    // Map frontend fields to database fields
+    const updateData: any = {
+      rating,
+      is_featured,
+      updated_by,
+      updated_at: new Date().toISOString()
+    }
+
+    // Map guest_name to author_name, text to content, etc.
+    if (guest_name !== undefined) updateData.author_name = guest_name
+    if (guest_email !== undefined) updateData.author_email = guest_email
+    if (guest_image_url !== undefined) updateData.author_image = guest_image_url
+    if (text !== undefined) updateData.content = text
+
     const { data, error } = await supabaseAdmin
       .from('testimonials')
-      .update({
-        guest_name,
-        guest_email,
-        rating,
-        text,
-        is_featured,
-        guest_image_url,
-        updated_by,
-        updated_at: new Date().toISOString()
-      } as any)
+      .update(updateData)
       .eq('id', id)
       .select()
       .single()

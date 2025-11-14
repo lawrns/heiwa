@@ -37,9 +37,18 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Transform database fields to frontend format
+    // Database uses author_name, frontend expects guest_name
+    const transformedData = (data || []).map((testimonial: any) => ({
+      ...testimonial,
+      guest_name: testimonial.author_name || testimonial.guest_name || 'Unknown',
+      guest_email: testimonial.author_email || testimonial.guest_email || '',
+      guest_image_url: testimonial.author_image || testimonial.guest_image_url || null
+    }))
+
     return NextResponse.json({
       success: true,
-      data: data || []
+      data: transformedData
     })
   } catch (error) {
     console.error('Unexpected error:', error)
@@ -79,15 +88,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Map frontend fields to database fields
+    // Frontend uses guest_name, database uses author_name
     const { data, error } = await supabaseAdmin
       .from('testimonials')
       .insert({
-        guest_name,
-        guest_email,
+        author_name: guest_name,
+        author_email: guest_email,
+        author_image: guest_image_url,
         rating,
-        text,
+        content: text,
         is_featured,
-        guest_image_url,
         created_by,
         updated_by: created_by
       } as any)

@@ -28,15 +28,15 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Fetch homepage_content stats
+    // Fetch homepage_sections stats (the actual table name)
     const { data: homepageData, error: homepageError } = await supabaseAdmin
-      .from('homepage_content')
-      .select('section, updated_at')
+      .from('homepage_sections')
+      .select('section_type, updated_at')
       .eq('is_active', true)
 
     if (homepageError) {
-      console.error('Error fetching homepage_content:', homepageError)
-      // Don't fail completely if homepage_content doesn't exist
+      console.error('Error fetching homepage_sections:', homepageError)
+      // Don't fail completely if homepage_sections doesn't exist
     }
 
     // Calculate stats for each page
