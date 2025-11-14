@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { ChevronRight, Menu, X, ArrowLeft } from 'lucide-react'
+import { ChevronRight, Menu, X, ArrowLeft, AlertCircle } from 'lucide-react'
 import CMSNavigation from './CMSNavigation'
 import CMSBreadcrumb from './CMSBreadcrumb'
 
@@ -104,9 +104,24 @@ export function CMSLayout({
           <div className="p-4 sm:p-6 lg:p-8">
             {/* Error Alert */}
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-800 font-medium">Error</p>
-                <p className="text-red-700 text-sm mt-1">{error}</p>
+              <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0">
+                    <AlertCircle className="h-5 w-5 text-red-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-red-800 font-semibold mb-1">Error</p>
+                    <p className="text-red-700 text-sm">{error}</p>
+                    {error.includes('Failed to') && (
+                      <button
+                        onClick={() => window.location.reload()}
+                        className="mt-3 text-sm text-red-700 underline hover:text-red-900"
+                      >
+                        Try refreshing the page
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 

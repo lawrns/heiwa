@@ -752,81 +752,84 @@ export default function BookingsPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {paginatedBookings.map((booking, index) => (
                   <tr key={booking.id} className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
                       <CheckboxCell
                         checked={selectedBookings.has(booking.id)}
                         onCheckedChange={(checked) => handleSelectBooking(booking.id, checked)}
                       />
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-3 whitespace-nowrap hidden sm:table-cell">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">#{booking.id}</div>
-                        <div className="text-sm text-gray-500">{booking.item_name}</div>
+                        <div className="text-xs sm:text-sm font-medium text-gray-900">#{booking.id.substring(0, 8)}...</div>
+                        <div className="text-xs sm:text-sm text-gray-500 truncate max-w-[120px]">{booking.item_name}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-3">
                       <div>
                         {booking.client_ids && booking.client_ids.length > 0 ? (
                           <Link 
                             href={`/admin/clients?search=${encodeURIComponent(booking.guest_email || booking.guest_name)}`}
-                            className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                            className="text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
                           >
                             {booking.guest_name}
                           </Link>
                         ) : (
-                          <div className="text-sm font-medium text-gray-900">{booking.guest_name}</div>
+                          <div className="text-xs sm:text-sm font-medium text-gray-900">{booking.guest_name}</div>
                         )}
-                        <div className="text-sm text-gray-500">{booking.guest_email}</div>
+                        <div className="text-xs sm:text-sm text-gray-500 truncate max-w-[150px] sm:max-w-none">{booking.guest_email}</div>
+                        <div className="text-xs text-gray-400 sm:hidden mt-1">{booking.item_name}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-3 whitespace-nowrap hidden md:table-cell">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         booking.type === 'room' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
                       }`}>
                         {booking.type === 'room' ? 'Room' : 'Surf Camp'}
                       </span>
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">
-                      <div>{booking.check_in}</div>
-                      <div>{booking.check_out}</div>
+                    <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden lg:table-cell">
+                      <div>{booking.check_in ? new Date(booking.check_in).toLocaleDateString() : 'N/A'}</div>
+                      <div>{booking.check_out ? new Date(booking.check_out).toLocaleDateString() : 'N/A'}</div>
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900">
-                      €{booking.total_price}
+                    <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">
+                      €{booking.total_price.toFixed(2)}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-3">
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 sm:gap-2">
                           {getStatusIcon(booking.status)}
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`}>
-                            {booking.status}
+                          <span className={`inline-flex px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`}>
+                            <span className="hidden sm:inline">{booking.status}</span>
+                            <span className="sm:hidden">{booking.status.substring(0, 3)}</span>
                           </span>
                         </div>
                         {booking.payment_status && booking.payment_status !== booking.status && (
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(booking.payment_status)}`}>
-                            Payment: {booking.payment_status}
+                          <span className={`inline-flex px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(booking.payment_status)}`}>
+                            <span className="hidden sm:inline">Payment: {booking.payment_status}</span>
+                            <span className="sm:hidden">{booking.payment_status.substring(0, 3)}</span>
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-sm font-medium">
-                      <div className="flex gap-2">
+                    <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
+                      <div className="flex gap-1 sm:gap-2">
                         <button
                           onClick={() => handleViewBooking(booking)}
-                          className="text-blue-600 hover:text-blue-900 transition-colors"
+                          className="text-blue-600 hover:text-blue-900 transition-colors p-1 rounded hover:bg-blue-50"
                           title="View booking details"
                         >
                           <Eye className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleEditBooking(booking)}
-                          className="text-gray-600 hover:text-gray-900 transition-colors"
+                          className="text-gray-600 hover:text-gray-900 transition-colors p-1 rounded hover:bg-gray-50"
                           title="Edit booking"
                         >
                           <Edit className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(booking.id)}
-                          className="text-red-600 hover:text-red-900 transition-colors"
+                          className="text-red-600 hover:text-red-900 transition-colors p-1 rounded hover:bg-red-50"
                           title="Delete booking"
                         >
                           <Trash2 className="h-4 w-4" />
