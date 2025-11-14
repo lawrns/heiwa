@@ -13,14 +13,8 @@ export function normalizeImageUrl(url: string | null | undefined): string {
   // If it's already a relative path, return as-is
   if (url.startsWith('/')) return url
   
-  // If it's a full URL, check if it needs conversion
+  // If it's a full URL, return as-is (no conversion needed - using old project)
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    // Convert old Supabase project URLs to new project URLs
-    // Old: zejrhceuuujzgyukdwnb.supabase.co
-    // New: pguipwhrxdzzrndbluxb.supabase.co
-    if (url.includes('zejrhceuuujzgyukdwnb.supabase.co')) {
-      return url.replace('zejrhceuuujzgyukdwnb.supabase.co', 'pguipwhrxdzzrndbluxb.supabase.co')
-    }
     return url
   }
   
