@@ -65,3 +65,4 @@ This site is automatically deployed to Netlify on commits to the `cms` branch.
 - ✅ Fixed missing image assets
 - ✅ Enhanced error handling and logging
 - ✅ Optimized caching for faster deployments
+# Admin login redirect fix deployed
