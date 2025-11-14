@@ -63,34 +63,50 @@ export function EditBookingModal({
 
   const validateForm = () => {
     if (!formData) return false
+    
+    const errors: string[] = []
+    
     if (!formData.guest_name.trim()) {
-      setError('Guest name is required')
-      return false
+      errors.push('Guest name is required')
     }
+    
     if (!formData.guest_email.trim()) {
-      setError('Guest email is required')
-      return false
+      errors.push('Guest email is required')
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.guest_email)) {
+      errors.push('Please enter a valid email address')
     }
+    
     if (!formData.guest_phone.trim()) {
-      setError('Guest phone is required')
-      return false
+      errors.push('Guest phone is required')
     }
+    
     if (!formData.item_name.trim()) {
-      setError('Item name is required')
-      return false
+      errors.push('Item name is required')
     }
+    
     if (!formData.check_in) {
-      setError('Check-in date is required')
-      return false
+      errors.push('Check-in date is required')
     }
+    
     if (!formData.check_out) {
-      setError('Check-out date is required')
+      errors.push('Check-out date is required')
+    } else if (formData.check_in && formData.check_out && new Date(formData.check_out) <= new Date(formData.check_in)) {
+      errors.push('Check-out date must be after check-in date')
+    }
+    
+    if (!formData.total_price || formData.total_price <= 0) {
+      errors.push('Total price must be greater than 0')
+    }
+    
+    if (formData.guests && formData.guests <= 0) {
+      errors.push('Number of guests must be greater than 0')
+    }
+    
+    if (errors.length > 0) {
+      setError(errors.join('. '))
       return false
     }
-    if (!formData.total_price) {
-      setError('Total price is required')
-      return false
-    }
+    
     return true
   }
 

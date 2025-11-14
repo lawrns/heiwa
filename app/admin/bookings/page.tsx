@@ -472,45 +472,47 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Bookings Management</h1>
-          <p className="text-gray-600 mt-2">Manage all bookings and reservations</p>
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Bookings Management</h1>
+          <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Manage all bookings and reservations</p>
           <div className="flex items-center gap-2 mt-2">
             {isRealtimeConnected ? (
               <>
                 <Wifi className="h-4 w-4 text-green-500 animate-pulse" />
-                <span className="text-sm text-green-600">Real-time updates active</span>
+                <span className="text-xs sm:text-sm text-green-600">Real-time updates active</span>
               </>
             ) : (
               <>
                 <WifiOff className="h-4 w-4 text-gray-400" />
-                <span className="text-sm text-gray-500">Real-time updates connecting...</span>
+                <span className="text-xs sm:text-sm text-gray-500">Real-time updates connecting...</span>
               </>
             )}
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 sm:flex-nowrap">
           <button
             onClick={() => setView(view === 'table' ? 'calendar' : 'table')}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base flex-1 sm:flex-none"
           >
             <Calendar className="h-4 w-4" />
-            {view === 'table' ? 'Calendar View' : 'Table View'}
+            <span className="hidden sm:inline">{view === 'table' ? 'Calendar View' : 'Table View'}</span>
+            <span className="sm:hidden">{view === 'table' ? 'Calendar' : 'Table'}</span>
           </button>
           <button
             onClick={exportBookings}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base flex-1 sm:flex-none"
           >
             <Download className="h-4 w-4" />
-            Export CSV
+            <span className="hidden sm:inline">Export CSV</span>
+            <span className="sm:hidden">Export</span>
           </button>
         </div>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
         <div className="bg-white rounded-lg shadow-md p-6 flex items-center space-x-4">
           <div className="flex-shrink-0 bg-blue-100 text-blue-600 rounded-full p-3">
             <Calendar size={20} />
