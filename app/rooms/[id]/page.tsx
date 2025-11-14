@@ -62,19 +62,32 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
       notFound()
     }
 
-  // Enhanced room data with actual database images
-  const isDorm = room.name.toLowerCase().includes('dorm') || room.bookingType === 'perBed'
-  const isTwin = room.name.toLowerCase().includes('twin') || room.capacity === 2
+    // Enhanced room data with actual database images
+    const isDorm = room.name.toLowerCase().includes('dorm') || room.bookingType === 'perBed'
+    const isTwin = room.name.toLowerCase().includes('twin') || room.capacity === 2
 
-  // Use actual images from database, normalize URLs, fallback to single image if not available
-  let roomImages: string[] = normalizeImageUrls(room.images);
-  
-  // If no valid images after normalization, try single image field
-  if (roomImages.length === 0 || (roomImages.length === 1 && roomImages[0] === '/images/rooms/room1.jpg')) {
-    if (room.image && room.image.trim() !== '') {
-      roomImages = normalizeImageUrls([room.image]);
+    // Use actual images from database, normalize URLs, fallback to single image if not available
+    let roomImages: string[] = []
+    try {
+      roomImages = normalizeImageUrls(room.images || [])
+    } catch (error) {
+      console.error('Error normalizing room images:', error)
+      roomImages = ['/images/rooms/room1.jpg']
     }
-  }
+    
+    // If no valid images after normalization, try single image field
+    if (roomImages.length === 0 || (roomImages.length === 1 && roomImages[0] === '/images/rooms/room1.jpg')) {
+      if (room.image && room.image.trim() !== '') {
+        try {
+          const singleImage = normalizeImageUrls([room.image])
+          if (singleImage.length > 0 && singleImage[0] !== '/images/rooms/room1.jpg') {
+            roomImages = singleImage
+          }
+        } catch (error) {
+          console.error('Error normalizing single image:', error)
+        }
+      }
+    }
 
   const enhancedRoom = {
     ...room,

@@ -30,16 +30,30 @@ export function normalizeImageUrls(urls: (string | null | undefined)[] | null | 
     return ['/images/rooms/room1.jpg']
   }
   
-  const normalized = urls
-    .map(url => normalizeImageUrl(url))
-    .filter(url => url && url.trim() !== '' && url !== '/images/rooms/room1.jpg')
-  
-  // If all were invalid, return fallback
-  if (normalized.length === 0) {
+  try {
+    const normalized = urls
+      .map(url => {
+        try {
+          return normalizeImageUrl(url)
+        } catch (e) {
+          console.warn('Error normalizing image URL:', url, e)
+          return null
+        }
+      })
+      .filter((url): url is string => {
+        return url !== null && url.trim() !== '' && url !== '/images/rooms/room1.jpg'
+      })
+    
+    // If all were invalid, return fallback
+    if (normalized.length === 0) {
+      return ['/images/rooms/room1.jpg']
+    }
+    
+    return normalized
+  } catch (error) {
+    console.error('Error in normalizeImageUrls:', error)
     return ['/images/rooms/room1.jpg']
   }
-  
-  return normalized
 }
 
 /**
