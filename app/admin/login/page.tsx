@@ -42,24 +42,32 @@ export default function AdminLoginPage() {
     setLoading(true)
 
     try {
-      // Submit form directly to API - browser will handle redirect and cookie
-      const form = document.createElement('form')
-      form.method = 'POST'
-      form.action = '/api/admin/login'
-      form.style.display = 'none'
-      
-      const passwordField = document.createElement('input')
-      passwordField.type = 'hidden'
-      passwordField.name = 'password'
-      passwordField.value = password
-      form.appendChild(passwordField)
-      
-      // Store email before redirect
-      localStorage.setItem('userEmail', 'admin@heiwa.house')
-      
-      document.body.appendChild(form)
-      form.submit()
-      // Form submission will cause page navigation, so we don't need to return
+      // Use fetch API to submit login and handle redirect
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ password }),
+      })
+
+      if (response.ok || response.redirected) {
+        // Store email before redirect
+        localStorage.setItem('userEmail', 'admin@heiwa.house')
+        
+        // If response is a redirect, follow it
+        if (response.redirected) {
+          window.location.href = response.url
+        } else {
+          // Otherwise redirect to admin dashboard
+          router.push('/admin')
+        }
+      } else {
+        const data = await response.json()
+        setError(data.message || 'Invalid password. Please try again.')
+        setLoading(false)
+      }
     } catch (err) {
       setError('An error occurred. Please try again.')
       setLoading(false)
