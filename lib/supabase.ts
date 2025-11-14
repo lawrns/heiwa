@@ -66,9 +66,15 @@ export const supabase = (() => {
 })()
 
 // Create Supabase client with service role for admin operations (CMS)
+// Note: Service role key should only be used server-side, but we provide fallback for client-side compatibility
 export const supabaseAdmin = (() => {
   if (!globalForSupabase.supabaseAdminInstance) {
-    globalForSupabase.supabaseAdminInstance = createClient(supabaseUrl, supabaseServiceKey, {
+    // Use service role key if available, otherwise fall back to anon key for client-side
+    const adminKey = supabaseServiceKey || supabaseAnonKey
+    if (!adminKey) {
+      throw new Error('Supabase admin key is required. Set SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    }
+    globalForSupabase.supabaseAdminInstance = createClient(supabaseUrl, adminKey, {
       auth: {
         // Separate storage key so admin client doesn't conflict with public client
         storageKey: 'heiwa-admin-auth',
