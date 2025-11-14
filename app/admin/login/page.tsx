@@ -54,9 +54,13 @@ export default function AdminLoginPage() {
       // Even if API returns 200 with JSON, we should redirect after successful auth
       if (response.status === 200 || response.status === 302 || response.status === 307 || response.redirected) {
         // Parse response to check if authentication was successful
+        // Read response body only once
+        const text = await response.text()
         let authSuccess = false
+        let data = null
+        
         try {
-          const data = await response.json()
+          data = JSON.parse(text)
           authSuccess = data.message === 'Authenticated' || response.status === 302 || response.status === 307
         } catch {
           // If response is not JSON (e.g., redirect), consider it successful
@@ -78,13 +82,19 @@ export default function AdminLoginPage() {
           // Use window.location for hard redirect to ensure cookie is sent
           window.location.href = redirectUrl
           return
+        } else {
+          // Authentication failed even though status was 200
+          setError(data?.message || 'Invalid password')
+          setLoading(false)
+          return
         }
       }
       
-      // If we get here, authentication failed
+      // If we get here, authentication failed (non-200 status)
       // Try to parse error message
       try {
-        const data = await response.json()
+        const text = await response.text()
+        const data = JSON.parse(text)
         setError(data.message || 'Invalid password')
       } catch {
         setError('Invalid password')
