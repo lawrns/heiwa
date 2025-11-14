@@ -11,6 +11,7 @@ import type {
   SurfWeeksPageContent
 } from './types'
 import { supabase } from './supabase'
+import { normalizeImageUrls } from './image-utils'
 
 // Navigation structure - fetch from CMS or use fallback
 export const getNavigationItems = async (): Promise<NavigationItem[]> => {
@@ -85,8 +86,6 @@ export const getRooms = async (): Promise<Room[]> => {
       is_active?: boolean;
     }) => {
       // Priority: Use database images first, normalize URLs, then fallback to WordPress URLs
-      // Import normalizeImageUrls at top of file
-      const { normalizeImageUrls } = await import('./image-utils')
       let images = normalizeImageUrls(room.images);
       
       // If no valid images after normalization, use fallback
