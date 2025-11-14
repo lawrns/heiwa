@@ -77,19 +77,39 @@ export default function CMSPagesPage() {
     fetchPageStats()
   }, [])
 
-  const fetchPageStats = async () => {
+  const fetchPageStats = async (retryCount = 0) => {
     try {
       setLoading(true)
       setError(null)
       
-      // Use API route instead of direct Supabase call
-      const response = await fetch('/api/admin/cms/page-stats', {
-        method: 'GET',
-        credentials: 'include',
-      })
+      // Use API route instead of direct Supabase call with retry logic
+      let response: Response | null = null
+      let lastError: Error | null = null
+      
+      for (let attempt = 0; attempt <= 2; attempt++) {
+        try {
+          response = await fetch('/api/admin/cms/page-stats', {
+            method: 'GET',
+            credentials: 'include',
+          })
+          
+          if (response.ok) break
+          
+          if (attempt < 2 && [408, 429, 500, 502, 503, 504].includes(response.status)) {
+            await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)))
+            continue
+          }
+        } catch (err) {
+          lastError = err instanceof Error ? err : new Error('Network error')
+          if (attempt < 2) {
+            await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)))
+            continue
+          }
+        }
+      }
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch page statistics')
+      if (!response || !response.ok) {
+        throw lastError || new Error('Failed to fetch page statistics')
       }
 
       const result = await response.json()
@@ -107,12 +127,14 @@ export default function CMSPagesPage() {
           }
         })
         setPageStats(formattedStats)
+        setError(null)
       } else {
-        throw new Error('Invalid response format')
+        throw new Error(result.error || 'Invalid response format')
       }
     } catch (err) {
       console.error('Error fetching page stats:', err)
-      setError('Failed to load page statistics')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load page statistics'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

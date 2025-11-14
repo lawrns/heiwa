@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff } from 'lucide-react'
 import { BookingCalendar } from '@/components/ui/booking-calendar'
 import { useBookingsRealtime } from '@/lib/hooks/useBookingsRealtime'
