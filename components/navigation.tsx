@@ -354,9 +354,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
           { path: '/', name: 'HOME' },
           { path: '/rooms', name: 'ROOM RENTALS' },
           { path: '/surf-weeks', name: 'SURF WEEK' },
-          { path: '/surf', name: 'SURF' },
-          { path: '/play', name: 'PLAY' },
-          { path: '/flow', name: 'FLOW' }
+          { path: '#', name: 'ACTIVITIES' }, // This will trigger the dropdown
         ]}
         currentPath={currentPath || '/'}
       />
