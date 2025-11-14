@@ -299,13 +299,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
                       sizes="(max-width: 768px) 100vw, 50vw"
-                      unoptimized={similarRoom.image?.includes('supabase.co')}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement
-                        if (target.src !== '/images/rooms/room1.jpg') {
-                          target.src = '/images/rooms/room1.jpg'
-                        }
-                      }}
+                      unoptimized={true}
                     />
                     <div className="absolute top-4 right-4 bg-accent text-white px-4 py-2 rounded-lg shadow-lg">
                       <span className="text-xl font-bold">{similarRoom.price}€</span>
