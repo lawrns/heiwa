@@ -1,6 +1,5 @@
 'use client'
 
-import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Waves, Clock, Car, MapPin } from 'lucide-react'
@@ -10,11 +9,6 @@ import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
 import { SeasonalSurfLevelChart } from '@/components/surf/SeasonalSurfLevelChart'
 import { useEffect, useState } from 'react'
-
-export const metadata: Metadata = {
-  title: 'Heiwa Surf - Surf Lessons & Ocean Adventures in Santa Cruz, Portugal',
-  description: 'Learn to surf at Heiwa House in Santa Cruz, Portugal. Professional surf instruction for all levels with equipment provided and beachside accommodation.',
-}
 
 interface CMSSection {
   id: string
@@ -145,18 +139,19 @@ export default function SurfPage() {
       ) : (
         <section className="py-20 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-6">
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Located in the heart of Portugal&apos;s surf paradise, Heiwa House offers direct access to some of Europe&apos;s most beautiful beaches. 
-              Our prime location between Ericeira and Peniche puts you within minutes of world-class surf breaks suitable for all levels.
-            </p>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Whether you&apos;re catching your first wave or perfecting advanced techniques, our experienced instructors and pristine conditions 
-              create the perfect environment for your surfing journey.
-            </p>
+            <div className="text-center space-y-6">
+              <p className="text-lg text-gray-700 leading-relaxed">
+                Located in the heart of Portugal&apos;s surf paradise, Heiwa House offers direct access to some of Europe&apos;s most beautiful beaches. 
+                Our prime location between Ericeira and Peniche puts you within minutes of world-class surf breaks suitable for all levels.
+              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                Whether you&apos;re catching your first wave or perfecting advanced techniques, our experienced instructors and pristine conditions 
+                create the perfect environment for your surfing journey.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Promotional Surf Week Card Section - Moved to top */}
       {nextSurfWeek && nextSurfWeek.id && nextSurfWeek.start_date && nextSurfWeek.end_date && typeof nextSurfWeek.price === 'number' && (

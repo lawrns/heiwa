@@ -1,6 +1,5 @@
 'use client'
 
-import { Metadata } from 'next'
 import { Mail } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
