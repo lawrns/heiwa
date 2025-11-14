@@ -67,23 +67,23 @@ export default function BookingsPage() {
     onInsert: (newBooking) => {
       console.log('📥 New booking received:', newBooking)
       setBookings(prev => [newBooking, ...prev])
-      setIsRealtimeConnected(true)
     },
     onUpdate: (updatedBooking) => {
       console.log('✏️ Booking updated:', updatedBooking)
       setBookings(prev =>
         prev.map(b => b.id === updatedBooking.id ? updatedBooking : b)
       )
-      setIsRealtimeConnected(true)
     },
     onDelete: (bookingId) => {
       console.log('🗑️ Booking deleted:', bookingId)
       setBookings(prev => prev.filter(b => b.id !== bookingId))
-      setIsRealtimeConnected(true)
     },
     onError: (error) => {
       console.error('❌ Real-time error:', error)
       setIsRealtimeConnected(false)
+    },
+    onConnect: (connected) => {
+      setIsRealtimeConnected(connected)
     }
   })
 
@@ -318,32 +318,55 @@ export default function BookingsPage() {
   }
 
   const exportBookings = () => {
-    const csvContent = [
-      ['ID', 'Guest Name', 'Email', 'Phone', 'Type', 'Item', 'Check-in', 'Check-out', 'Guests', 'Total Price', 'Status', 'Payment Status', 'Created'],
-      ...bookings.map(booking => [
-        booking.id,
-        booking.guest_name,
-        booking.guest_email,
-        booking.guest_phone,
-        booking.type,
-        booking.item_name,
-        booking.check_in,
-        booking.check_out,
-        booking.guests.toString(),
-        `€${booking.total_price}`,
-        booking.status,
-        booking.payment_status,
-        booking.created_at
-      ])
-    ].map(row => row.join(',')).join('\n')
+    try {
+      // Use filtered bookings for export, not all bookings
+      const bookingsToExport = filteredBookings.length > 0 ? filteredBookings : bookings
+      
+      // Escape CSV values properly
+      const escapeCsvValue = (value: any): string => {
+        if (value === null || value === undefined) return ''
+        const stringValue = String(value)
+        // If contains comma, quote, or newline, wrap in quotes and escape quotes
+        if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+          return `"${stringValue.replace(/"/g, '""')}"`
+        }
+        return stringValue
+      }
 
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `bookings-${new Date().toISOString().split('T')[0]}.csv`
-    a.click()
-    window.URL.revokeObjectURL(url)
+      const csvContent = [
+        ['ID', 'Guest Name', 'Email', 'Phone', 'Type', 'Item', 'Check-in', 'Check-out', 'Guests', 'Total Price', 'Status', 'Payment Status', 'Created'],
+        ...bookingsToExport.map(booking => [
+          escapeCsvValue(booking.id),
+          escapeCsvValue(booking.guest_name),
+          escapeCsvValue(booking.guest_email),
+          escapeCsvValue(booking.guest_phone),
+          escapeCsvValue(booking.type),
+          escapeCsvValue(booking.item_name),
+          escapeCsvValue(booking.check_in),
+          escapeCsvValue(booking.check_out),
+          escapeCsvValue(booking.guests),
+          escapeCsvValue(`€${booking.total_price}`),
+          escapeCsvValue(booking.status),
+          escapeCsvValue(booking.payment_status),
+          escapeCsvValue(new Date(booking.created_at).toLocaleDateString())
+        ])
+      ].map(row => row.join(',')).join('\n')
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `bookings-${new Date().toISOString().split('T')[0]}.csv`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+      
+      toast.success(`Exported ${bookingsToExport.length} booking(s) to CSV`)
+    } catch (error) {
+      console.error('Error exporting bookings:', error)
+      toast.error('Failed to export bookings')
+    }
   }
 
   // Filter and search bookings
@@ -740,7 +763,16 @@ export default function BookingsPage() {
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{booking.guest_name}</div>
+                        {booking.client_ids && booking.client_ids.length > 0 ? (
+                          <Link 
+                            href={`/admin/clients?search=${encodeURIComponent(booking.guest_email || booking.guest_name)}`}
+                            className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                          >
+                            {booking.guest_name}
+                          </Link>
+                        ) : (
+                          <div className="text-sm font-medium text-gray-900">{booking.guest_name}</div>
+                        )}
                         <div className="text-sm text-gray-500">{booking.guest_email}</div>
                       </div>
                     </td>

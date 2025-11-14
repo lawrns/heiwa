@@ -50,14 +50,6 @@ const pages: PageData[] = [
     status: 'published'
   },
   {
-    slug: 'the-spot',
-    title: 'The Spot',
-    description: 'Beach club, restaurant, and local attractions',
-    sectionCount: 0,
-    lastModified: 'Never',
-    status: 'published'
-  },
-  {
     slug: 'about',
     title: 'About Us',
     description: 'Company story, team, and mission',

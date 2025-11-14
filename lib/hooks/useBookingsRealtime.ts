@@ -25,10 +25,11 @@ interface UseBookingsRealtimeOptions {
   onUpdate?: (booking: Booking) => void
   onDelete?: (bookingId: string) => void
   onError?: (error: Error) => void
+  onConnect?: (connected: boolean) => void
 }
 
 export function useBookingsRealtime(options: UseBookingsRealtimeOptions = {}) {
-  const { onInsert, onUpdate, onDelete, onError } = options
+  const { onInsert, onUpdate, onDelete, onError, onConnect } = options
 
   useEffect(() => {
     let subscription: any = null
@@ -69,13 +70,19 @@ export function useBookingsRealtime(options: UseBookingsRealtimeOptions = {}) {
           .subscribe((status: string) => {
             if (status === 'SUBSCRIBED') {
               console.log('✅ Real-time bookings subscription active')
+              onConnect?.(true)
             } else if (status === 'CLOSED') {
               console.log('❌ Real-time bookings subscription closed')
+              onConnect?.(false)
+            } else if (status === 'CHANNEL_ERROR') {
+              console.error('❌ Real-time channel error')
+              onConnect?.(false)
             }
           })
       } catch (err) {
         console.error('Failed to setup realtime subscription:', err)
         onError?.(err instanceof Error ? err : new Error('Failed to setup subscription'))
+        onConnect?.(false)
       }
     }
 
@@ -87,7 +94,7 @@ export function useBookingsRealtime(options: UseBookingsRealtimeOptions = {}) {
         subscription.unsubscribe()
       }
     }
-  }, [onInsert, onUpdate, onDelete, onError])
+  }, [onInsert, onUpdate, onDelete, onError, onConnect])
 }
 
 /**

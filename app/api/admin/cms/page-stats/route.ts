@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     // Calculate stats for each page
     const stats: Record<string, { count: number; lastModified: string }> = {}
     
-    const pages = ['homepage', 'flow', 'play', 'surf', 'the-spot', 'about', 'contact']
+    const pages = ['homepage', 'flow', 'play', 'surf', 'about', 'contact']
     
     pages.forEach(pageSlug => {
       if (pageSlug === 'homepage') {
