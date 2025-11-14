@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'react-toastify'
-import { supabase } from '@/lib/supabase'
+import { useSupabase } from '@/lib/supabase-context'
 
 interface Client {
   id: string
@@ -25,6 +25,7 @@ interface EnrollmentModalProps {
 }
 
 export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: EnrollmentModalProps) {
+  const { supabase } = useSupabase()
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, Users, MapPin } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { useSupabase } from '@/lib/supabase-context'
 import { toast } from 'react-toastify'
 import AssignmentBoard from '@/components/admin/assignments/AssignmentBoard'
 
@@ -27,6 +27,7 @@ interface WeekData {
 }
 
 export default function AdminAssignmentsPage() {
+  const { supabase } = useSupabase()
   const [selectedWeek, setSelectedWeek] = useState<string>('')
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [weeks, setWeeks] = useState<WeekData[]>([])

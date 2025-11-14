@@ -13,7 +13,7 @@ import SectionTypeSelector from './SectionTypeSelector'
 import AutoSaveManager from './AutoSaveManager'
 import VersionHistory from './VersionHistory'
 import CollaborationManager from './CollaborationManager'
-import { supabaseAdmin } from '@/lib/supabase'
+import { useSupabase } from '@/lib/supabase-context'
 import { PageSection, PageData } from '@/lib/cms-types'
 
 interface PageEditorProps {
@@ -41,6 +41,7 @@ const pageDescriptions: Record<string, string> = {
 }
 
 export default function PageEditor({ pageSlug, onBack, initialData }: PageEditorProps) {
+  const { supabaseAdmin } = useSupabase()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)

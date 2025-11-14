@@ -8,7 +8,6 @@ import AdminAlert from '@/components/admin/ui/AdminAlert'
 import CMSNavigation from '@/components/admin/cms/CMSNavigation'
 import CMSBreadcrumb from '@/components/admin/cms/CMSBreadcrumb'
 import PageEditor from '@/components/admin/cms/PageEditor'
-import { supabaseAdmin } from '@/lib/supabase'
 import { UpdatePageContentInput } from '@/lib/cms-types'
 
 export default function CMSPageEditor() {

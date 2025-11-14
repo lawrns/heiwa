@@ -13,7 +13,7 @@ import {
   AdminTable
 } from '../ui'
 import { MediaItem } from '@/lib/cms-validators'
-import { supabase } from '@/lib/supabase'
+import { useSupabase } from '@/lib/supabase-context'
 import { 
   Upload, 
   Image as ImageIcon,
@@ -48,6 +48,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
   multiSelect = false,
   maxSelections = 10
 }) => {
+  const { supabase } = useSupabase()
   const [media, setMedia] = useState<MediaItem[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)

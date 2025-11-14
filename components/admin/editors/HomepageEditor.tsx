@@ -14,7 +14,7 @@ import {
   AdminTable
 } from '../ui'
 import { HomepageSection } from '@/lib/cms-validators'
-import { supabase } from '@/lib/supabase'
+import { useSupabase } from '@/lib/supabase-context'
 import { 
   Eye, 
   EyeOff, 
@@ -35,6 +35,7 @@ const SECTION_TYPES = [
 ] as const
 
 const HomepageEditor: React.FC<HomepageEditorProps> = ({ className }) => {
+  const { supabase } = useSupabase()
   const [sections, setSections] = useState<HomepageSection[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -319,6 +320,7 @@ const HomepageSectionForm: React.FC<{
   onCancel: () => void
   onError: (message: string) => void
 }> = ({ section, onSave, onCancel, onError }) => {
+  const { supabase } = useSupabase()
   const [formData, setFormData] = useState({
     section_type: section?.section_type || 'hero',
     title: section?.title || '',

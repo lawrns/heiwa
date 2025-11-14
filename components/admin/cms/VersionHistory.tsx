@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Clock, User, Eye, RotateCcw, Trash2 } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminModal from '@/components/admin/ui/AdminModal'
-import { supabaseAdmin } from '@/lib/supabase'
+import { useSupabase } from '@/lib/supabase-context'
 
 interface VersionEntry {
   id: string
@@ -29,6 +29,7 @@ export default function VersionHistory({
   onClose,
   onRestore
 }: VersionHistoryProps) {
+  const { supabaseAdmin } = useSupabase()
   const [versions, setVersions] = useState<VersionEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
