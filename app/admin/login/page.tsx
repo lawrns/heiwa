@@ -82,16 +82,14 @@ export default function AdminLoginPage() {
       }
       
       // If we get here, authentication failed
-      {
-        // Try to parse error message
-        try {
-          const data = await response.json()
-          setError(data.message || 'Invalid password')
-        } catch {
-          setError('Invalid password')
-        }
-        setLoading(false)
+      // Try to parse error message
+      try {
+        const data = await response.json()
+        setError(data.message || 'Invalid password')
+      } catch {
+        setError('Invalid password')
       }
+      setLoading(false)
     } catch (err) {
       setError('An error occurred. Please try again.')
       setLoading(false)
