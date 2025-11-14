@@ -42,51 +42,24 @@ export default function AdminLoginPage() {
     setLoading(true)
 
     try {
-      // Use fetch to check authentication first
-      const response = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-        credentials: 'include',
-      })
-
-      // Parse response
-      const text = await response.text()
-      let data = null
-      try {
-        data = JSON.parse(text)
-      } catch {
-        // If not JSON, might be a redirect - let browser handle it
-        if (response.redirected || response.status === 302 || response.status === 307) {
-          // Browser should have followed redirect and set cookie
-          window.location.href = '/admin'
-          return
-        }
-      }
-
-      // Check if authentication was successful
-      if (response.ok && data?.message === 'Authenticated') {
-        // Authentication successful - now submit form normally to let browser handle redirect and cookie
-        // Create a hidden form and submit it to trigger proper cookie handling
-        const form = document.createElement('form')
-        form.method = 'POST'
-        form.action = '/api/admin/login'
-        form.style.display = 'none'
-        
-        const passwordField = document.createElement('input')
-        passwordField.type = 'hidden'
-        passwordField.name = 'password'
-        passwordField.value = password
-        form.appendChild(passwordField)
-        
-        document.body.appendChild(form)
-        form.submit()
-        return
-      } else {
-        // Authentication failed
-        setError(data?.message || 'Invalid password')
-        setLoading(false)
-      }
+      // Submit form directly to API - browser will handle redirect and cookie
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = '/api/admin/login'
+      form.style.display = 'none'
+      
+      const passwordField = document.createElement('input')
+      passwordField.type = 'hidden'
+      passwordField.name = 'password'
+      passwordField.value = password
+      form.appendChild(passwordField)
+      
+      // Store email before redirect
+      localStorage.setItem('userEmail', 'admin@heiwa.house')
+      
+      document.body.appendChild(form)
+      form.submit()
+      // Form submission will cause page navigation, so we don't need to return
     } catch (err) {
       setError('An error occurred. Please try again.')
       setLoading(false)
