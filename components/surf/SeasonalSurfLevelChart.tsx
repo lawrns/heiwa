@@ -13,53 +13,53 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 // Condition levels: 0 = not ideal, 1 = fair, 2 = good, 3 = best
 type ConditionLevel = 0 | 1 | 2 | 3
 
-// Wave conditions by month for each skill level
-// Using only 3 tones: 1 = Light green (Fair), 2 = Medium green (Good), 3 = Dark green (Best)
-// Advanced: only 2 tones (Best and Good)
-// Intermediate: only 2 tones (Best and Good)
-// Beginner: 3 tones (Best, Good, and Fair)
+// Wave conditions by month for each skill level - matching reference image exactly
+// Using 4 opacity levels: 0 = Very Light (0.35), 1 = Light (0.35), 2 = Medium Dark (0.65), 3 = Deep (1.0)
+// Advanced: 2 tones (Deep and Medium Dark)
+// Intermediate: 2 tones (Deep and Medium Dark) 
+// Beginner: 3 tones (Deep, Medium Dark, and Light)
 const waveConditionsByLevel: Record<string, ConditionLevel[]> = {
   'Beginner': [
-    0, // Jan - Not ideal (will show as lightest green)
-    0, // Feb - Not ideal
-    0, // Mar - Not ideal
-    1, // Apr - Fair (light green)
-    3, // May - Best (dark green)
-    3, // Jun - Best
-    3, // Jul - Best
-    3, // Aug - Best
-    2, // Sep - Good (medium green)
-    1, // Oct - Fair (light green)
-    0, // Nov - Not ideal
-    0, // Dec - Not ideal
+    0, // Jan - Very Light Teal
+    0, // Feb - Very Light Teal
+    0, // Mar - Very Light Teal
+    1, // Apr - Light Teal
+    3, // May - Deep Teal/Green
+    3, // Jun - Deep Teal/Green
+    3, // Jul - Deep Teal/Green
+    3, // Aug - Deep Teal/Green
+    2, // Sep - Medium Dark Teal
+    1, // Oct - Light Teal
+    0, // Nov - Very Light Teal
+    0, // Dec - Very Light Teal
   ],
   'Intermediate': [
-    0, // Jan - Not ideal
-    0, // Feb - Not ideal
-    0, // Mar - Not ideal
-    2, // Apr - Good (medium green)
-    3, // May - Best (dark green)
-    3, // Jun - Best
-    3, // Jul - Best
-    3, // Aug - Best
-    2, // Sep - Good (medium green)
-    2, // Oct - Good
-    0, // Nov - Not ideal
-    0, // Dec - Not ideal
+    0, // Jan - Very Light Teal
+    1, // Feb - Light Teal
+    1, // Mar - Light Teal
+    2, // Apr - Medium Dark Teal
+    3, // May - Deep Teal/Green
+    3, // Jun - Deep Teal/Green
+    3, // Jul - Deep Teal/Green
+    3, // Aug - Deep Teal/Green
+    3, // Sep - Deep Teal/Green
+    2, // Oct - Medium Dark Teal
+    1, // Nov - Light Teal
+    0, // Dec - Very Light Teal
   ],
   'Advanced': [
-    3, // Jan - Best (dark green)
-    3, // Feb - Best
-    3, // Mar - Best
-    2, // Apr - Good (medium green)
-    0, // May - Not ideal
-    0, // Jun - Not ideal
-    0, // Jul - Not ideal
-    0, // Aug - Not ideal
-    2, // Sep - Good (medium green)
-    2, // Oct - Good
-    3, // Nov - Best (dark green)
-    3, // Dec - Best
+    3, // Jan - Deep Teal/Green
+    3, // Feb - Deep Teal/Green
+    3, // Mar - Deep Teal/Green
+    1, // Apr - Light Teal
+    0, // May - Very Light Teal
+    0, // Jun - Very Light Teal
+    0, // Jul - Very Light Teal
+    0, // Aug - Very Light Teal
+    1, // Sep - Light Teal
+    2, // Oct - Medium Dark Teal
+    2, // Nov - Medium Dark Teal
+    2, // Dec - Medium Dark Teal
   ],
 }
 
