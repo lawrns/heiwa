@@ -14,52 +14,52 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 type ConditionLevel = 0 | 1 | 2 | 3
 
 // Wave conditions by month for each skill level - matching reference image EXACTLY
-// Using exactly 3 shades: 1 = Lightest green, 2 = Medium green, 3 = Darkest green
-// Beginner: Lightest (Jan-Apr, Nov-Dec), Medium (May-Oct)
-// Intermediate: Medium (Jan-Apr, Nov-Dec), Darkest (May-Oct)
-// Advanced: Darkest (Jan-May, Sep-Dec), Medium (Jun-Aug)
+// Using exactly 3 shades: 1 = Light, 2 = Medium, 3 = Dark
+// Beginner: Light (Jan-Mar), Medium (Apr, Oct), Dark (May-Sep), Light (Nov-Dec)
+// Intermediate: Medium (Jan-Apr), Dark (May-Oct), Medium (Nov-Dec)
+// Advanced: Dark (Jan-May, Sep-Dec), Medium (Jun-Aug)
 const waveConditionsByLevel: Record<string, ConditionLevel[]> = {
   'Beginner': [
-    1, // Jan - Lightest green
-    1, // Feb - Lightest green
-    1, // Mar - Lightest green
-    1, // Apr - Lightest green
-    2, // May - Medium green
-    2, // Jun - Medium green
-    2, // Jul - Medium green
-    2, // Aug - Medium green
-    2, // Sep - Medium green
-    2, // Oct - Medium green
-    1, // Nov - Lightest green
-    1, // Dec - Lightest green
+    1, // Jan - Light
+    1, // Feb - Light
+    1, // Mar - Light
+    2, // Apr - Medium
+    3, // May - Dark
+    3, // Jun - Dark
+    3, // Jul - Dark
+    3, // Aug - Dark
+    3, // Sep - Dark
+    2, // Oct - Medium
+    1, // Nov - Light
+    1, // Dec - Light
   ],
   'Intermediate': [
-    2, // Jan - Medium green
-    2, // Feb - Medium green
-    2, // Mar - Medium green
-    2, // Apr - Medium green
-    3, // May - Darkest green
-    3, // Jun - Darkest green
-    3, // Jul - Darkest green
-    3, // Aug - Darkest green
-    3, // Sep - Darkest green
-    3, // Oct - Darkest green
-    2, // Nov - Medium green
-    2, // Dec - Medium green
+    2, // Jan - Medium
+    2, // Feb - Medium
+    2, // Mar - Medium
+    2, // Apr - Medium
+    3, // May - Dark
+    3, // Jun - Dark
+    3, // Jul - Dark
+    3, // Aug - Dark
+    3, // Sep - Dark
+    3, // Oct - Dark
+    2, // Nov - Medium
+    2, // Dec - Medium
   ],
   'Advanced': [
-    3, // Jan - Darkest green
-    3, // Feb - Darkest green
-    3, // Mar - Darkest green
-    3, // Apr - Darkest green
-    3, // May - Darkest green
-    2, // Jun - Medium green
-    2, // Jul - Medium green
-    2, // Aug - Medium green
-    3, // Sep - Darkest green
-    3, // Oct - Darkest green
-    3, // Nov - Darkest green
-    3, // Dec - Darkest green
+    3, // Jan - Dark
+    3, // Feb - Dark
+    3, // Mar - Dark
+    3, // Apr - Dark
+    3, // May - Dark
+    2, // Jun - Medium
+    2, // Jul - Medium
+    2, // Aug - Medium
+    3, // Sep - Dark
+    3, // Oct - Dark
+    3, // Nov - Dark
+    3, // Dec - Dark
   ],
 }
 
