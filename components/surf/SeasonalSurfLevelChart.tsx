@@ -9,11 +9,11 @@ interface SurfLevel {
 }
 
 const surfLevels: SurfLevel[] = [
-  { name: 'Beginner', color: '#10b981', description: 'First time surfing' },
-  { name: 'Beginner-Intermediate', color: '#3b82f6', description: 'Catching whitewater waves' },
-  { name: 'Intermediate', color: '#8b5cf6', description: 'Riding unbroken waves' },
-  { name: 'Intermediate-Advanced', color: '#f59e0b', description: 'Bottom turns and cutbacks' },
-  { name: 'Advanced', color: '#ef4444', description: 'Advanced maneuvers' },
+  { name: 'Beginner', color: '#1e7963', description: 'First time surfing' },
+  { name: 'Beginner-Intermediate', color: '#1e7963', description: 'Catching whitewater waves' },
+  { name: 'Intermediate', color: '#1e7963', description: 'Riding unbroken waves' },
+  { name: 'Intermediate-Advanced', color: '#1e7963', description: 'Bottom turns and cutbacks' },
+  { name: 'Advanced', color: '#1e7963', description: 'Advanced maneuvers' },
 ]
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -126,20 +126,20 @@ function LevelChart({ level, conditions }: LevelChartProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-md border border-gray-200">
-      <div className="mb-4">
-        <h4 className="text-xl font-bold text-gray-900 mb-2">{level.name}</h4>
+    <div className="bg-white rounded-xl p-6 sm:p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+      <div className="mb-6">
+        <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{level.name}</h4>
         <p className="text-sm text-gray-600">{level.description}</p>
       </div>
       
       {/* Chart */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {/* Month labels */}
-        <div className="grid grid-cols-12 gap-1">
+        <div className="grid grid-cols-12 gap-1.5 sm:gap-2">
           {months.map((month, index) => (
             <div
               key={month}
-              className="text-center text-xs font-medium text-gray-700"
+              className="text-center text-xs sm:text-sm font-semibold text-gray-700 py-1"
               onMouseEnter={() => setHoveredMonth(index)}
               onMouseLeave={() => setHoveredMonth(null)}
             >
@@ -149,9 +149,9 @@ function LevelChart({ level, conditions }: LevelChartProps) {
         </div>
 
         {/* Wave condition bars */}
-        <div className="flex items-center gap-3">
-          <div className="w-24 text-xs font-medium text-gray-600">Wave Conditions</div>
-          <div className="flex-1 grid grid-cols-12 gap-1">
+        <div className="flex items-center gap-4">
+          <div className="w-28 sm:w-32 text-xs sm:text-sm font-medium text-gray-700">Wave Conditions</div>
+          <div className="flex-1 grid grid-cols-12 gap-1.5 sm:gap-2">
             {months.map((_, monthIndex) => {
               const conditionLevel = conditions[monthIndex]
               const isHovered = hoveredMonth === monthIndex
@@ -160,12 +160,12 @@ function LevelChart({ level, conditions }: LevelChartProps) {
               return (
                 <div
                   key={monthIndex}
-                  className={`h-12 rounded transition-all ${
-                    isHovered ? 'ring-2 ring-gray-400 scale-105' : ''
+                  className={`h-14 sm:h-16 rounded-md transition-all duration-200 cursor-pointer ${
+                    isHovered ? 'ring-2 ring-[#1e7963] ring-opacity-50 scale-110 shadow-lg' : 'hover:scale-105'
                   }`}
                   style={{
-                    backgroundColor: conditionLevel === 0 ? '#e5e7eb' : level.color,
-                    opacity: opacity,
+                    backgroundColor: conditionLevel === 0 ? '#f3f4f6' : level.color,
+                    opacity: conditionLevel === 0 ? 1 : opacity,
                   }}
                   onMouseEnter={() => setHoveredMonth(monthIndex)}
                   onMouseLeave={() => setHoveredMonth(null)}
@@ -182,16 +182,16 @@ function LevelChart({ level, conditions }: LevelChartProps) {
 
 export function SeasonalSurfLevelChart() {
   return (
-    <div className="space-y-8">
-      <div className="text-center mb-8">
-        <h3 className="text-3xl font-bold text-gray-900 mb-4">Best Time to Visit by Surf Level</h3>
-        <p className="text-gray-600 text-lg max-w-3xl mx-auto">
+    <div className="space-y-10 py-12">
+      <div className="text-center mb-10">
+        <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Best Time to Visit by Surf Level</h3>
+        <p className="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed">
           Santa Cruz offers surfable conditions year-round. Here&apos;s when each skill level finds the best conditions.
         </p>
       </div>
       
       {/* Individual charts for each level */}
-      <div className="space-y-6">
+      <div className="space-y-6 sm:space-y-8">
         {surfLevels.map((level) => (
           <LevelChart
             key={level.name}
@@ -201,8 +201,26 @@ export function SeasonalSurfLevelChart() {
         ))}
       </div>
 
-      {/* Disclaimer */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
+      {/* Legend */}
+      <div className="mt-10 pt-8 border-t border-gray-200">
+        <div className="flex flex-wrap items-center justify-center gap-6 mb-6">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-md bg-[#1e7963] opacity-20"></div>
+            <span className="text-sm text-gray-600">Not ideal</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-md bg-[#1e7963] opacity-40"></div>
+            <span className="text-sm text-gray-600">Fair</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-md bg-[#1e7963] opacity-70"></div>
+            <span className="text-sm text-gray-600">Good</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-md bg-[#1e7963]"></div>
+            <span className="text-sm text-gray-600">Best</span>
+          </div>
+        </div>
         <p className="text-xs text-gray-500 italic text-center">
           * Conditions vary daily. This chart shows typical monthly patterns. Always check current conditions before your visit.
         </p>
