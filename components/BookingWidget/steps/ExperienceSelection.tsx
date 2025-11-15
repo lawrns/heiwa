@@ -131,26 +131,9 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                 </div>
 
                 {/* Description */}
-                <p className="text-white/95 text-base sm:text-lg leading-relaxed mb-4 drop-shadow-md">
+                <p className="text-white/95 text-base sm:text-lg leading-relaxed drop-shadow-md">
                   {experience.description}
                 </p>
-
-                {/* Features */}
-                <div className="flex flex-wrap gap-2">
-                  {experience.features.map((feature, idx) => (
-                    <span
-                      key={idx}
-                      className="
-                        px-4 py-2 text-sm font-medium
-                        bg-white/30 text-white rounded-lg
-                        backdrop-blur-sm border border-white/40
-                        shadow-md
-                      "
-                    >
-                      {feature}
-                    </span>
-                  ))}
-                </div>
               </div>
             </button>
           );
