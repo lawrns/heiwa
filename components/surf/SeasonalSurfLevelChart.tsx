@@ -14,52 +14,52 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 type ConditionLevel = 0 | 1 | 2 | 3
 
 // Wave conditions by month for each skill level - matching reference image exactly
-// Using 4 opacity levels: 0 = Very Light (0.35), 1 = Light (0.35), 2 = Medium Dark (0.65), 3 = Deep (1.0)
-// Advanced: 2 tones (Deep and Medium Dark)
-// Intermediate: 2 tones (Deep and Medium Dark) 
-// Beginner: 3 tones (Deep, Medium Dark, and Light)
+// Pattern: Each skill level has lighter shade for Jan-Apr/Oct-Dec, darker shade for May-Sep
+// Beginner: Light (Jan-Apr, Oct-Dec), Medium (May-Sep)
+// Intermediate: Medium (Jan-Apr, Oct-Dec), Dark (May-Sep)
+// Advanced: Dark (Jan-Apr, Oct-Dec), Very Dark (May-Sep)
 const waveConditionsByLevel: Record<string, ConditionLevel[]> = {
   'Beginner': [
-    0, // Jan - Very Light Teal
-    0, // Feb - Very Light Teal
-    0, // Mar - Very Light Teal
-    1, // Apr - Light Teal
-    3, // May - Deep Teal/Green
-    3, // Jun - Deep Teal/Green
-    3, // Jul - Deep Teal/Green
-    3, // Aug - Deep Teal/Green
-    2, // Sep - Medium Dark Teal
-    1, // Oct - Light Teal
-    0, // Nov - Very Light Teal
-    0, // Dec - Very Light Teal
+    1, // Jan - Light teal
+    1, // Feb - Light teal
+    1, // Mar - Light teal
+    1, // Apr - Light teal
+    2, // May - Medium teal
+    2, // Jun - Medium teal
+    2, // Jul - Medium teal
+    2, // Aug - Medium teal
+    2, // Sep - Medium teal
+    1, // Oct - Light teal
+    1, // Nov - Light teal
+    1, // Dec - Light teal
   ],
   'Intermediate': [
-    0, // Jan - Very Light Teal
-    1, // Feb - Light Teal
-    1, // Mar - Light Teal
-    2, // Apr - Medium Dark Teal
-    3, // May - Deep Teal/Green
-    3, // Jun - Deep Teal/Green
-    3, // Jul - Deep Teal/Green
-    3, // Aug - Deep Teal/Green
-    3, // Sep - Deep Teal/Green
-    2, // Oct - Medium Dark Teal
-    1, // Nov - Light Teal
-    0, // Dec - Very Light Teal
+    2, // Jan - Medium teal
+    2, // Feb - Medium teal
+    2, // Mar - Medium teal
+    2, // Apr - Medium teal
+    3, // May - Dark teal
+    3, // Jun - Dark teal
+    3, // Jul - Dark teal
+    3, // Aug - Dark teal
+    3, // Sep - Dark teal
+    2, // Oct - Medium teal
+    2, // Nov - Medium teal
+    2, // Dec - Medium teal
   ],
   'Advanced': [
-    3, // Jan - Deep Teal/Green
-    3, // Feb - Deep Teal/Green
-    3, // Mar - Deep Teal/Green
-    1, // Apr - Light Teal
-    0, // May - Very Light Teal
-    0, // Jun - Very Light Teal
-    0, // Jul - Very Light Teal
-    0, // Aug - Very Light Teal
-    1, // Sep - Light Teal
-    2, // Oct - Medium Dark Teal
-    2, // Nov - Medium Dark Teal
-    2, // Dec - Medium Dark Teal
+    3, // Jan - Dark teal
+    3, // Feb - Dark teal
+    3, // Mar - Dark teal
+    3, // Apr - Dark teal
+    3, // May - Very dark teal/deep green (will use highest opacity)
+    3, // Jun - Very dark teal/deep green
+    3, // Jul - Very dark teal/deep green
+    3, // Aug - Very dark teal/deep green
+    3, // Sep - Very dark teal/deep green
+    3, // Oct - Dark teal
+    3, // Nov - Dark teal
+    3, // Dec - Dark teal
   ],
 }
 
@@ -75,13 +75,21 @@ const getConditionLabel = (level: ConditionLevel): string => {
   }
 }
 
-// Map to 3 distinct green shades matching the reference image
-const getConditionOpacity = (conditionLevel: ConditionLevel): number => {
+// Map to green shades matching the reference image
+// Need to differentiate Advanced May-Sep (very dark) from Advanced Jan-Apr/Oct-Dec (dark)
+// We'll use condition level + month index to determine final opacity
+const getConditionOpacity = (conditionLevel: ConditionLevel, monthIndex: number, levelName: string): number => {
+  // Advanced level May-Sep (months 4-8) should be darkest
+  if (levelName === 'Advanced' && monthIndex >= 4 && monthIndex <= 8) {
+    return 1.0 // Very dark teal/deep green
+  }
+  
+  // Standard opacity mapping
   switch (conditionLevel) {
-    case 0: return 0.35 // Not ideal - lightest green (same as Fair for consistency)
-    case 1: return 0.35 // Fair - lightest green (first tone)
-    case 2: return 0.65 // Good - medium green (second tone)
-    case 3: return 1.0  // Best - darkest green (third tone)
+    case 0: return 0.35 // Not ideal - lightest green
+    case 1: return 0.35 // Light teal (Beginner Jan-Apr, Oct-Dec)
+    case 2: return 0.65 // Medium teal (Beginner May-Sep, Intermediate Jan-Apr/Oct-Dec)
+    case 3: return 0.85 // Dark teal (Intermediate May-Sep, Advanced Jan-Apr/Oct-Dec)
     default: return 0.35
   }
 }
@@ -138,7 +146,7 @@ export function SeasonalSurfLevelChart() {
                   {months.map((_, monthIndex) => {
                     const conditionLevel = conditions[monthIndex]
                     const isHovered = hoveredCell?.level === level.name && hoveredCell?.month === monthIndex
-                    const opacity = getConditionOpacity(conditionLevel)
+                    const opacity = getConditionOpacity(conditionLevel, monthIndex, level.name)
                     
                     return (
                       <div
