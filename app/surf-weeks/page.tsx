@@ -443,112 +443,136 @@ export default async function SurfWeeksPage() {
         </div>
       </section>
 
-      {/* What is Included & Pricing Section - Compact with Background Image */}
-      <section className="relative py-12 overflow-hidden">
-        {/* Background Image with Overlay */}
+      {/* What is Included & Pricing Section - Advertisement Style Overlay */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/surf-weeks.jpg"
             alt="Surf week experience"
             fill
-            className="object-cover brightness-110"
+            className="object-cover"
             priority
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-white/85 backdrop-blur-sm" />
+          {/* Subtle dark overlay for minimal text readability while showing image */}
+          <div className="absolute inset-0 bg-black/20" />
         </div>
         
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">What is included</h2>
-          </div>
-          
-          {/* Compact Features Grid - Icons Only */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-            {includedFeatures
-              .filter(feature => !feature.list) // Filter out "Other stuff" for main grid
-              .map((feature, index) => {
-                const Icon = feature.icon
-                return (
-                  <div
-                    key={index}
-                    className="group bg-white/90 backdrop-blur-sm p-4 rounded-lg border-2 border-white/50 hover:border-orange-300 transition-all duration-300 hover:shadow-lg text-center"
-                  >
-                    <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-300">
-                      <Icon className="w-6 h-6 text-orange-600" />
+        {/* Content Overlay - Advertisement Style Layout */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12 items-start">
+            
+            {/* Left Column - INCLUDED Section */}
+            <div className="lg:col-span-1">
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border-2 border-white/60">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-wide">
+                  Included
+                </h2>
+                <div className="space-y-4">
+                  {includedFeatures
+                    .filter(feature => !feature.list)
+                    .map((feature, index) => {
+                      const Icon = feature.icon
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-center gap-3 text-gray-900"
+                        >
+                          <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Icon className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <div className="font-semibold text-base">{feature.title}</div>
+                            {feature.title === 'Food' && (
+                              <div className="text-xs text-gray-600">(2 meals a day)</div>
+                            )}
+                            {feature.title === 'Yoga' && (
+                              <div className="text-xs text-gray-600">(5 lessons)</div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  
+                  {/* Other facilities */}
+                  {includedFeatures.find(f => f.list) && (
+                    <div className="pt-4 mt-4 border-t border-gray-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Star className="w-5 h-5 text-orange-500" />
+                        <h3 className="font-semibold text-gray-900">Other facilities</h3>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {includedFeatures
+                          .find(f => f.list)
+                          ?.list?.map((item, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-1.5 text-sm text-gray-700"
+                            >
+                              <CheckCircle className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                              <span>{item}</span>
+                            </div>
+                          ))}
+                      </div>
                     </div>
-                    <h4 className="text-sm font-semibold text-gray-900">{feature.title}</h4>
-                  </div>
-                )
-              })}
-          </div>
-
-          {/* Other Stuff - Compact */}
-          {includedFeatures.find(f => f.list) && (
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg border-2 border-white/50 p-6 mb-8">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-200 to-orange-300 rounded-lg flex items-center justify-center">
-                  <Star className="w-5 h-5 text-orange-700" />
+                  )}
                 </div>
-                <h3 className="text-lg font-bold text-gray-900">Other facilities</h3>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-                {includedFeatures
-                  .find(f => f.list)
-                  ?.list?.map((item, idx) => (
+            </div>
+
+            {/* Center Column - Price Display */}
+            <div className="lg:col-span-1 flex flex-col items-center justify-center">
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border-2 border-orange-500 text-center">
+                <div className="text-sm md:text-base font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                  Price Starting
+                </div>
+                <div className="text-sm md:text-base font-semibold text-gray-700 uppercase tracking-wider mb-4">
+                  From
+                </div>
+                <div className="text-5xl md:text-6xl lg:text-7xl font-bold text-orange-600 mb-6">
+                  450€
+                </div>
+                <div className="text-sm text-gray-600 max-w-xs mx-auto">
+                  All-inclusive package. Everything listed is included in your surf week experience.
+                </div>
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <p className="text-xs text-gray-600 mb-4">
+                    Note: Surf lessons are not included - see add-ons
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Popular Add-ons */}
+            <div className="lg:col-span-1">
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border-2 border-white/60">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-wide">
+                  Popular Addons
+                </h2>
+                <div className="space-y-4">
+                  {addOns.map((addon, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-center gap-1.5 text-sm text-gray-700 hover:text-orange-600 transition-colors duration-200"
+                      className="flex justify-between items-start gap-3 pb-3 border-b border-gray-200 last:border-b-0"
                     >
-                      <CheckCircle className="w-4 h-4 text-orange-600 flex-shrink-0" />
-                      <span className="font-medium">{item}</span>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900 text-base">{addon.title}</div>
+                        <div className="text-xs text-gray-600 mt-0.5">{addon.description}</div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <div className="text-lg md:text-xl font-bold text-orange-600">{addon.price}</div>
+                      </div>
                     </div>
                   ))}
+                </div>
               </div>
             </div>
-          )}
+          </div>
 
-          {/* Pricing Cards - Integrated without separate heading */}
-          <div className="grid md:grid-cols-2 gap-8 mt-12">
-            {/* Base Package */}
-            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-8 shadow-lg border-2 border-orange-500">
-              <h3 className="text-2xl font-bold mb-4">Surf Week Package</h3>
-              <div className="text-5xl font-bold text-orange-600 mb-6">
-                From €450
-              </div>
-              <div className="mb-6">
-                <p className="text-lg text-gray-700 font-medium mb-2">
-                  All-inclusive package
-                </p>
-                <p className="text-gray-600 leading-relaxed">
-                  Everything listed above is included in your surf week experience. From comfortable accommodation and delicious meals to yoga sessions, day trips, and all our facilities.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-gray-200">
-                <p className="text-sm text-gray-600 mb-4">
-                  <span className="font-semibold">Note:</span> Surf lessons are not included - see add-ons below
-                </p>
-                <BookNowButton fullWidth />
-              </div>
-            </div>
-            
-            {/* Add-ons */}
-            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-gray-100">
-              <h3 className="text-2xl font-bold mb-6">Popular Add-ons</h3>
-              <div className="space-y-4">
-                {addOns.map((addon, idx) => (
-                  <div key={idx} className="flex justify-between items-center pb-3 border-b last:border-b-0">
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900">{addon.title}</div>
-                      <div className="text-sm text-gray-600">{addon.description}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-bold text-orange-600">{addon.price}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {/* Bottom Center - Book Now Button */}
+          <div className="flex justify-center mt-8 lg:mt-12">
+            <BookNowButton />
           </div>
         </div>
       </section>
