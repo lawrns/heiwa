@@ -1,5 +1,6 @@
 'use client'
 
+import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -9,14 +10,28 @@ interface BookNowButtonProps {
 }
 
 export function BookNowButton({ className, fullWidth = false }: BookNowButtonProps) {
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Compute className consistently
+  const buttonClassName = React.useMemo(() => {
+    const classes = ["font-semibold", "hover:scale-105"]
+    if (fullWidth) {
+      classes.push("w-full")
+    }
+    if (className) {
+      classes.push(className)
+    }
+    return cn(...classes)
+  }, [fullWidth, className])
+
   return (
     <Button 
       size="lg"
-      className={cn(
-        "px-8 py-4 text-lg font-semibold rounded-lg transition-all hover:scale-105",
-        fullWidth && "w-full",
-        className
-      )}
+      className={buttonClassName}
       style={{ backgroundColor: '#ec681c' }}
       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
