@@ -65,14 +65,17 @@ const waveConditionsByLevel: Record<string, ConditionLevel[]> = {
 
 const GREEN_COLOR = '#1e7963'
 
-const getConditionLabel = (level: ConditionLevel): string => {
-  switch (level) {
-    case 0: return 'Not ideal'
-    case 1: return 'Fair'
-    case 2: return 'Good'
-    case 3: return 'Best'
-    default: return 'Unknown'
+// Get label based on actual visual representation (opacity level)
+const getConditionLabel = (opacity: number, levelName: string, monthIndex: number): string => {
+  // Advanced May-Sep is darkest
+  if (levelName === 'Advanced' && monthIndex >= 4 && monthIndex <= 8) {
+    return 'Best'
   }
+  
+  if (opacity >= 0.95) return 'Best'
+  if (opacity >= 0.8) return 'Good'
+  if (opacity >= 0.5) return 'Fair'
+  return 'Not ideal'
 }
 
 // Map to green shades matching the reference image
@@ -147,6 +150,7 @@ export function SeasonalSurfLevelChart() {
                     const conditionLevel = conditions[monthIndex]
                     const isHovered = hoveredCell?.level === level.name && hoveredCell?.month === monthIndex
                     const opacity = getConditionOpacity(conditionLevel, monthIndex, level.name)
+                    const label = getConditionLabel(opacity, level.name, monthIndex)
                     
                     return (
                       <div
@@ -162,11 +166,11 @@ export function SeasonalSurfLevelChart() {
                         }}
                         onMouseEnter={() => setHoveredCell({ level: level.name, month: monthIndex })}
                         onMouseLeave={() => setHoveredCell(null)}
-                        title={`${months[monthIndex]}: ${getConditionLabel(conditionLevel)} conditions for ${level.name.toLowerCase()}`}
+                        title={`${months[monthIndex]}: ${label} conditions for ${level.name.toLowerCase()}`}
                       >
                         {isHovered && (
                           <span className="text-xs font-semibold text-white drop-shadow-lg">
-                            {getConditionLabel(conditionLevel)}
+                            {label}
                           </span>
                         )}
                       </div>
