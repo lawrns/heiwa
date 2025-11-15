@@ -443,18 +443,28 @@ export default async function SurfWeeksPage() {
         </div>
       </section>
 
-      {/* What is Included & Pricing Section - Fully Merged */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">What is included</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Everything you need for an unforgettable surf week experience
-            </p>
+      {/* What is Included & Pricing Section - Compact with Background Image */}
+      <section className="relative py-12 overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/surf-weeks.jpg"
+            alt="Surf week experience"
+            fill
+            className="object-cover brightness-110"
+            priority
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-white/85 backdrop-blur-sm" />
+        </div>
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">What is included</h2>
           </div>
           
-          {/* Main Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Compact Features Grid - Icons Only */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             {includedFeatures
               .filter(feature => !feature.list) // Filter out "Other stuff" for main grid
               .map((feature, index) => {
@@ -462,40 +472,35 @@ export default async function SurfWeeksPage() {
                 return (
                   <div
                     key={index}
-                    className="group bg-white p-8 rounded-xl border-2 border-gray-100 hover:border-orange-300 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                    className="group bg-white/90 backdrop-blur-sm p-4 rounded-lg border-2 border-white/50 hover:border-orange-300 transition-all duration-300 hover:shadow-lg text-center"
                   >
-                    <div className="mb-5">
-                      <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                        <Icon className="w-8 h-8 text-orange-600" />
-                      </div>
-                      <h4 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h4>
+                    <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform duration-300">
+                      <Icon className="w-6 h-6 text-orange-600" />
                     </div>
-                    {feature.description && (
-                      <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-                    )}
+                    <h4 className="text-sm font-semibold text-gray-900">{feature.title}</h4>
                   </div>
                 )
               })}
           </div>
 
-          {/* Other Stuff Section - Full Width Card */}
+          {/* Other Stuff - Compact */}
           {includedFeatures.find(f => f.list) && (
-            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl border-2 border-orange-200 p-8 md:p-10 shadow-lg mb-12">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-200 to-orange-300 rounded-xl flex items-center justify-center">
-                  <Star className="w-8 h-8 text-orange-700" />
+            <div className="bg-white/90 backdrop-blur-sm rounded-lg border-2 border-white/50 p-6 mb-8">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-200 to-orange-300 rounded-lg flex items-center justify-center">
+                  <Star className="w-5 h-5 text-orange-700" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">Other stuff</h3>
+                <h3 className="text-lg font-bold text-gray-900">Other facilities</h3>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
                 {includedFeatures
                   .find(f => f.list)
                   ?.list?.map((item, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-2 text-gray-700 hover:text-orange-600 transition-colors duration-200"
+                      className="flex items-center justify-center gap-1.5 text-sm text-gray-700 hover:text-orange-600 transition-colors duration-200"
                     >
-                      <CheckCircle className="w-5 h-5 text-orange-600 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-orange-600 flex-shrink-0" />
                       <span className="font-medium">{item}</span>
                     </div>
                   ))}
