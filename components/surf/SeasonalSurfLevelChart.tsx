@@ -13,86 +13,75 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 // Condition levels: 0 = not ideal, 1 = fair, 2 = good, 3 = best
 type ConditionLevel = 0 | 1 | 2 | 3
 
-// Wave conditions by month for each skill level - matching reference image exactly
-// Pattern: Each skill level has lighter shade for Jan-Apr/Oct-Dec, darker shade for May-Sep
-// Beginner: Light (Jan-Apr, Oct-Dec), Medium (May-Sep)
-// Intermediate: Medium (Jan-Apr, Oct-Dec), Dark (May-Sep)
-// Advanced: Dark (Jan-Apr, Oct-Dec), Very Dark (May-Sep)
+// Wave conditions by month for each skill level - matching reference image EXACTLY
+// Using exactly 3 shades: 1 = Lightest green, 2 = Medium green, 3 = Darkest green
+// Beginner: Lightest (Jan-Apr, Nov-Dec), Medium (May-Oct)
+// Intermediate: Medium (Jan-Apr, Nov-Dec), Darkest (May-Oct)
+// Advanced: Darkest (Jan-May, Sep-Dec), Medium (Jun-Aug)
 const waveConditionsByLevel: Record<string, ConditionLevel[]> = {
   'Beginner': [
-    1, // Jan - Light teal
-    1, // Feb - Light teal
-    1, // Mar - Light teal
-    1, // Apr - Light teal
-    2, // May - Medium teal
-    2, // Jun - Medium teal
-    2, // Jul - Medium teal
-    2, // Aug - Medium teal
-    2, // Sep - Medium teal
-    1, // Oct - Light teal
-    1, // Nov - Light teal
-    1, // Dec - Light teal
+    1, // Jan - Lightest green
+    1, // Feb - Lightest green
+    1, // Mar - Lightest green
+    1, // Apr - Lightest green
+    2, // May - Medium green
+    2, // Jun - Medium green
+    2, // Jul - Medium green
+    2, // Aug - Medium green
+    2, // Sep - Medium green
+    2, // Oct - Medium green
+    1, // Nov - Lightest green
+    1, // Dec - Lightest green
   ],
   'Intermediate': [
-    2, // Jan - Medium teal
-    2, // Feb - Medium teal
-    2, // Mar - Medium teal
-    2, // Apr - Medium teal
-    3, // May - Dark teal
-    3, // Jun - Dark teal
-    3, // Jul - Dark teal
-    3, // Aug - Dark teal
-    3, // Sep - Dark teal
-    2, // Oct - Medium teal
-    2, // Nov - Medium teal
-    2, // Dec - Medium teal
+    2, // Jan - Medium green
+    2, // Feb - Medium green
+    2, // Mar - Medium green
+    2, // Apr - Medium green
+    3, // May - Darkest green
+    3, // Jun - Darkest green
+    3, // Jul - Darkest green
+    3, // Aug - Darkest green
+    3, // Sep - Darkest green
+    3, // Oct - Darkest green
+    2, // Nov - Medium green
+    2, // Dec - Medium green
   ],
   'Advanced': [
-    3, // Jan - Dark teal
-    3, // Feb - Dark teal
-    3, // Mar - Dark teal
-    3, // Apr - Dark teal
-    3, // May - Very dark teal/deep green (will use highest opacity)
-    3, // Jun - Very dark teal/deep green
-    3, // Jul - Very dark teal/deep green
-    3, // Aug - Very dark teal/deep green
-    3, // Sep - Very dark teal/deep green
-    3, // Oct - Dark teal
-    3, // Nov - Dark teal
-    3, // Dec - Dark teal
+    3, // Jan - Darkest green
+    3, // Feb - Darkest green
+    3, // Mar - Darkest green
+    3, // Apr - Darkest green
+    3, // May - Darkest green
+    2, // Jun - Medium green
+    2, // Jul - Medium green
+    2, // Aug - Medium green
+    3, // Sep - Darkest green
+    3, // Oct - Darkest green
+    3, // Nov - Darkest green
+    3, // Dec - Darkest green
   ],
 }
 
 const GREEN_COLOR = '#1e7963'
 
-// Get label based on actual visual representation (opacity level)
-const getConditionLabel = (opacity: number, levelName: string, monthIndex: number): string => {
-  // Advanced May-Sep is darkest
-  if (levelName === 'Advanced' && monthIndex >= 4 && monthIndex <= 8) {
-    return 'Best'
+// Get label based on condition level
+const getConditionLabel = (conditionLevel: ConditionLevel): string => {
+  switch (conditionLevel) {
+    case 1: return 'Fair'
+    case 2: return 'Good'
+    case 3: return 'Best'
+    default: return 'Not ideal'
   }
-  
-  if (opacity >= 0.95) return 'Best'
-  if (opacity >= 0.8) return 'Good'
-  if (opacity >= 0.5) return 'Fair'
-  return 'Not ideal'
 }
 
-// Map to green shades matching the reference image
-// Need to differentiate Advanced May-Sep (very dark) from Advanced Jan-Apr/Oct-Dec (dark)
-// We'll use condition level + month index to determine final opacity
-const getConditionOpacity = (conditionLevel: ConditionLevel, monthIndex: number, levelName: string): number => {
-  // Advanced level May-Sep (months 4-8) should be darkest
-  if (levelName === 'Advanced' && monthIndex >= 4 && monthIndex <= 8) {
-    return 1.0 // Very dark teal/deep green
-  }
-  
-  // Standard opacity mapping
+// Map to exactly 3 green shades matching the reference image
+// 1 = Lightest green (0.35), 2 = Medium green (0.65), 3 = Darkest green (1.0)
+const getConditionOpacity = (conditionLevel: ConditionLevel): number => {
   switch (conditionLevel) {
-    case 0: return 0.35 // Not ideal - lightest green
-    case 1: return 0.35 // Light teal (Beginner Jan-Apr, Oct-Dec)
-    case 2: return 0.65 // Medium teal (Beginner May-Sep, Intermediate Jan-Apr/Oct-Dec)
-    case 3: return 0.85 // Dark teal (Intermediate May-Sep, Advanced Jan-Apr/Oct-Dec)
+    case 1: return 0.35 // Lightest green
+    case 2: return 0.65 // Medium green
+    case 3: return 1.0  // Darkest green
     default: return 0.35
   }
 }
@@ -149,8 +138,8 @@ export function SeasonalSurfLevelChart() {
                   {months.map((_, monthIndex) => {
                     const conditionLevel = conditions[monthIndex]
                     const isHovered = hoveredCell?.level === level.name && hoveredCell?.month === monthIndex
-                    const opacity = getConditionOpacity(conditionLevel, monthIndex, level.name)
-                    const label = getConditionLabel(opacity, level.name, monthIndex)
+                    const opacity = getConditionOpacity(conditionLevel)
+                    const label = getConditionLabel(conditionLevel)
                     
                     return (
                       <div
