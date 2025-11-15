@@ -139,12 +139,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoginPage, setIsLoginPage] = useState(false)
   const [checkingAuth, setCheckingAuth] = useState(true)
+  const [showLayout, setShowLayout] = useState(false)
 
   useEffect(() => {
     setIsClient(true)
     // Check if we're on login page
     const pathname = window.location.pathname
     setIsLoginPage(pathname === '/admin/login')
+    
+    // For non-login pages, show layout immediately to prevent flash
+    if (pathname !== '/admin/login') {
+      setShowLayout(true)
+    }
     
     // Check authentication
     const checkAuth = async () => {
@@ -156,10 +162,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         
         if (response.ok) {
           setIsAuthenticated(true)
+          setShowLayout(true)
           const email = localStorage.getItem('userEmail') || 'admin@heiwa.house'
           setUserEmail(email)
         } else {
           setIsAuthenticated(false)
+          setShowLayout(false)
           // If not on login page and not authenticated, redirect to login
           if (pathname !== '/admin/login') {
             router.push('/admin/login')
@@ -167,6 +175,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         }
       } catch (err) {
         setIsAuthenticated(false)
+        setShowLayout(false)
         if (pathname !== '/admin/login') {
           router.push('/admin/login')
         }
@@ -190,8 +199,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     }
   }
 
-  // Show loading state while checking auth or if not client
-  if (!isClient || checkingAuth) {
+  // Show loading state while checking auth or if not client, but only for login page
+  if (!isClient || (checkingAuth && isLoginPage)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -207,8 +216,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return <ErrorBoundary>{children}</ErrorBoundary>
   }
 
-  // If not authenticated and not on login page, show loading (will redirect)
-  if (!isAuthenticated) {
+  // If not showing layout (not authenticated), show loading and redirect
+  if (!showLayout) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

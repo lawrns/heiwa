@@ -8,6 +8,7 @@ import { FloatingCheckAvailability } from '@/components/floating-check-availabil
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
 import { SeasonalSurfLevelChart } from '@/components/surf/SeasonalSurfLevelChart'
+import { ImageCarousel } from '@/components/ui/image-carousel'
 import { useEffect, useState } from 'react'
 
 interface CMSSection {
@@ -153,6 +154,81 @@ export default function SurfPage() {
         </section>
       )}
 
+      {/* Local Surfing Section - Moved to be first section after intro */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Content */}
+            <div className="space-y-6">
+              <h2 className="text-4xl font-bold text-gray-900">
+                Your Local Break
+              </h2>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Just a short walk or quick drive from Heiwa House, you&apos;ll find beautiful sandy beaches
+                with consistent waves. These local spots are perfect for morning sessions, sunset surfs,
+                or when you just want to grab your board and go.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">15-20 minute walk</h3>
+                    <p className="text-gray-600">
+                      Enjoy a beautiful coastal walk down to the beach. Perfect for warming up before your session.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Car className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">5 minute drive</h3>
+                    <p className="text-gray-600">
+                      Quick and easy access by car. We also offer bicycle rentals with board racks for 30€/week.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Waves className="w-6 h-6 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Long sandy beaches</h3>
+                    <p className="text-gray-600">
+                      Miles of coastline to explore. Find your own peak, avoid the crowds, and enjoy the Atlantic.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <p className="text-sm text-gray-500 italic">
+                  We don&apos;t name specific spots - part of the adventure is exploring and finding your own wave.
+                  But don&apos;t worry, we&apos;ll point you in the right direction 🙂
+                </p>
+              </div>
+            </div>
+
+            {/* Map */}
+            <div className="relative aspect-square rounded-lg overflow-hidden shadow-xl">
+              <Image
+                src="/images/thehouse.webp"
+                alt="Heiwa House location map"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Promotional Surf Week Card Section - Moved to top */}
       {nextSurfWeek && nextSurfWeek.id && nextSurfWeek.start_date && nextSurfWeek.end_date && typeof nextSurfWeek.price === 'number' && (
         <section className="py-20 bg-white">
@@ -272,117 +348,58 @@ export default function SurfPage() {
         </div>
       </section>
 
-      {/* Surf Activities Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Surf Programs & Services
-            </h2>
-            <p className="text-lg text-gray-600">
-              Professional surf instruction and ocean experiences
-            </p>
-          </div>
-
-          <ActivityGrid 
-            category="surf" 
-            tier="always" 
-            showTierBadge={false}
-          />
-        </div>
-      </section>
-
-      {/* Local Surfing Section */}
-      <section className="py-20 bg-white">
+      {/* Surf Lessons Section */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Content */}
-            <div className="space-y-6">
-              <h2 className="text-4xl font-bold text-gray-900">
-                Your Local Break
-              </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Just a short walk or quick drive from Heiwa House, you&apos;ll find beautiful sandy beaches
-                with consistent waves. These local spots are perfect for morning sessions, sunset surfs,
-                or when you just want to grab your board and go.
-              </p>
-
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">15-20 minute walk</h3>
-                    <p className="text-gray-600">
-                      Enjoy a beautiful coastal walk down to the beach. Perfect for warming up before your session.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Car className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">5 minute drive</h3>
-                    <p className="text-gray-600">
-                      Quick and easy access by car. We also offer bicycle rentals with board racks for 30€/week.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Waves className="w-6 h-6 text-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Long sandy beaches</h3>
-                    <p className="text-gray-600">
-                      Miles of coastline to explore. Find your own peak, avoid the crowds, and enjoy the Atlantic.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-4">
-                <p className="text-sm text-gray-500 italic">
-                  We don&apos;t name specific spots - part of the adventure is exploring and finding your own wave.
-                  But don&apos;t worry, we&apos;ll point you in the right direction 🙂
-                </p>
-              </div>
+            {/* Photo Carousel */}
+            <div>
+              <ImageCarousel
+                images={[
+                  '/images/surf4.jpg',
+                  '/images/surf3.jpg',
+                  '/images/DSC03081-scaled.jpg',
+                  '/images/DSC02099-scaled.jpg',
+                ]}
+                alt="Surf lessons in Santa Cruz and Peniche"
+                className="w-full"
+                aspectRatio="aspect-[4/3]"
+                autoAdvance={true}
+                autoAdvanceInterval={5000}
+              />
             </div>
 
-            {/* Map/Video */}
+            {/* Text Content */}
             <div className="space-y-6">
-              {/* Local Area Map */}
-              <div className="relative aspect-square rounded-lg overflow-hidden shadow-xl">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d97440.91857867094!2d-9.3897!3d39.1397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1ec4c3c5c5c5c5%3A0x5c5c5c5c5c5c5c5!2sSanta%20Cruz%2C%20Portugal!5e0!3m2!1sen!2s!4v1620000000000!5m2!1sen!2s"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Local surf area map"
-                  className="absolute inset-0"
-                />
+              <h2 className="text-4xl font-bold text-gray-900">
+                Surf Lessons
+              </h2>
+              <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
+                <p>
+                  We offer high quality surf lessons in Santa Cruz and Peniche. Professional instructors will help you to take the first steps or improve at whatever level you are.
+                </p>
+                <p>
+                  Surf lessons starting from 40€ per session, with all equipment included. Whether you&apos;re a complete beginner catching your first wave or an experienced surfer looking to refine your technique, our certified instructors provide personalized coaching tailored to your skill level.
+                </p>
+                <p>
+                  All lessons include professional instruction, surfboard and wetsuit rental, and video analysis to help you progress faster. We also offer package deals for multiple lessons and can organize trips to the best surf spots in Ericeira and Peniche based on current conditions.
+                </p>
               </div>
-
-              {/* Optional Video Section */}
-              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-100">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-gray-500 text-sm">
-                    {/* Placeholder for future surf video */}
-                    Video coming soon: Local surf sessions
-                  </p>
-                </div>
+              <div className="pt-4">
+                <Link
+                  href="/surf-weeks"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 text-white"
+                  style={{ backgroundColor: '#ec681c' }}
+                >
+                  <Waves className="w-5 h-5" />
+                  Book a Surf Lesson
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* World-Class Surfing Section */}
       <section className="py-20 bg-gray-50">
@@ -485,7 +502,7 @@ export default function SurfPage() {
           {/* Interactive Map - replaced with custom image */}
           <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
             <Image
-              src="/images/surf-map.jpg"
+              src="/images/heiwalocation.webp"
               alt="Surf spots map - Ericeira to Peniche"
               fill
               className="object-cover"

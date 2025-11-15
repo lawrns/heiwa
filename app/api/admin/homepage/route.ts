@@ -247,7 +247,8 @@ export async function PUT(request: NextRequest) {
       bookingData,
       testimonials,
       facilities,
-      googleRating
+      googleRating,
+      blogConfig
     } = body
 
     if (!id) {
@@ -307,9 +308,15 @@ export async function PUT(request: NextRequest) {
     })
   } catch (err) {
     console.error('Error updating homepage section:', err)
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+    console.error('Detailed error:', {
+      error: err,
+      message: errorMessage,
+      stack: err instanceof Error ? err.stack : undefined
+    })
     return NextResponse.json({
       success: false,
-      error: 'Failed to update homepage section'
+      error: `Failed to update homepage section: ${errorMessage}`
     }, { status: 500 })
   }
 }

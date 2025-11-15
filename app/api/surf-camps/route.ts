@@ -22,14 +22,24 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
+    const showAll = searchParams.get('admin') === 'true'
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
     
-    // Build query - don't filter by category if it doesn't exist in schema
+    // Build query 
     let query = supabase
       .from('surf_camps')
       .select('*')
-      .eq('is_active', true)
       .order('start_date', { ascending: true })
+
+    // Only filter active camps for non-admin requests
+    if (!showAll) {
+      query = query.eq('is_active', true)
+      
+      // Filter out past surf weeks - only show future ones
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      query = query.gte('end_date', today.toISOString().split('T')[0])
+    }
     
     // Apply limit if provided
     if (limit) {
@@ -43,7 +53,14 @@ export async function GET(request: Request) {
       return NextResponse.json({
         success: false,
         error: 'Failed to fetch surf camps'
-      }, { status: 500 })
+      }, { 
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      })
     }
 
     // Get enrollment counts for each surf camp
@@ -85,6 +102,12 @@ export async function GET(request: Request) {
       data: {
         surf_camps: surfCampsWithAvailability
       }
+    }, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     })
 
   } catch (error) {
@@ -92,7 +115,14 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : 'Internal server error'
-    }, { status: 500 })
+    }, { 
+      status: 500,
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    })
   }
 }
 

@@ -21,8 +21,6 @@ export default function HomePage() {
   const [surfWeeks, setSurfWeeks] = useState<any[]>([])
   const [showAllSurfWeeks, setShowAllSurfWeeks] = useState(false)
 
-  // Reviews will be fetched from Google Reviews API via GoogleReviews component
-
   // Fetch homepage content from CMS
   useEffect(() => {
     const fetchContent = async () => {
@@ -37,25 +35,7 @@ export default function HomePage() {
         const result = await response.json()
         if (result.success && result.data && result.data.length > 0) {
           console.log('✅ CMS content loaded:', result.data.length, 'sections')
-          // Update cards in about section if they have old "Heiwa" prefix
-          const updatedData = result.data.map((section: any) => {
-            if (section.section === 'about' && section.cards) {
-              const updatedCards = section.cards.map((card: any) => {
-                const cleanTitle = card.title?.replace(/^Heiwa /, '') || card.title
-                return {
-                  ...card,
-                  title: cleanTitle,
-                  // Update images to use better ones based on cleaned title
-                  image: cleanTitle === 'Play' ? '/images/skatepark-1.jpg' :
-                         cleanTitle === 'Surf' ? '/images/surf4.jpg' :
-                         cleanTitle === 'Flow' ? '/images/yoga_dome1.jpg' : card.image
-                }
-              })
-              return { ...section, cards: updatedCards }
-            }
-            return section
-          })
-          setHomepageContent(updatedData)
+          setHomepageContent(result.data)
         } else {
           console.log('⚠️ No CMS content, using defaults')
         }
@@ -69,27 +49,25 @@ export default function HomePage() {
     fetchContent()
   }, [])
 
-  // Extract CMS content or use defaults
-  const heroSection = homepageContent?.find((s: any) => s.section === 'hero')
-  const surfWeeksSection = homepageContent?.find((s: any) => s.section === 'surf-weeks')
-  const aboutSection = homepageContent?.find((s: any) => s.section === 'about')
-  const roomsSection = homepageContent?.find((s: any) => s.section === 'rooms')
-  const hostsSection = homepageContent?.find((s: any) => s.section === 'hosts')
-  const reviewsSection = homepageContent?.find((s: any) => s.section === 'reviews')
-  const facilitiesSection = homepageContent?.find((s: any) => s.section === 'facilities')
-
   // Fetch real surf weeks from API
   useEffect(() => {
     const fetchSurfWeeks = async () => {
       try {
-        const response = await fetch('/api/surf-camps?is_active=true&limit=3')
+        const response = await fetch('/api/surf-camps?is_active=true&limit=3&t=' + Date.now(), {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        })
         const result = await response.json()
-        if (result.success && result.data && Array.isArray(result.data)) {
+        
+        if (result.success && result.data && result.data.surf_camps && Array.isArray(result.data.surf_camps)) {
           // Format the data to match the expected structure
-          const formattedWeeks = result.data.map((week: any) => {
+          const formattedWeeks = result.data.surf_camps.map((week: any) => {
             const startDate = new Date(week.start_date)
             const endDate = new Date(week.end_date)
-            const dateOptions: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' }
+            const dateOptions: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' }
             const dates = `${startDate.toLocaleDateString('en-US', dateOptions)} - ${endDate.toLocaleDateString('en-US', dateOptions)}`
             
             const totalSpots = week.total_spots || week.max_participants || 18
@@ -114,6 +92,15 @@ export default function HomePage() {
 
     fetchSurfWeeks()
   }, [])
+
+  // Extract CMS content or use defaults
+  const heroSection = homepageContent?.find((s: any) => s.section === 'hero')
+  const surfWeeksSection = homepageContent?.find((s: any) => s.section === 'surf-weeks')
+  const aboutSection = homepageContent?.find((s: any) => s.section === 'about')
+  const roomsSection = homepageContent?.find((s: any) => s.section === 'rooms')
+  const hostsSection = homepageContent?.find((s: any) => s.section === 'hosts')
+  const reviewsSection = homepageContent?.find((s: any) => s.section === 'reviews')
+  const facilitiesSection = homepageContent?.find((s: any) => s.section === 'facilities')
   
   const heroTitle = heroSection?.title || 'Welcome to Heiwa House'
   const heroSubtitle = heroSection?.subtitle || 'Your surf and lifestyle destination in Santa Cruz, Portugal'
@@ -264,7 +251,7 @@ export default function HomePage() {
                   </div>
 
                   {/* Table Body with fade effect */}
-                  <div className="relative">
+                  <div className="relative" suppressHydrationWarning>
                     <div className={`divide-y divide-gray-200 ${showAllSurfWeeks ? '' : 'max-h-[600px] overflow-hidden'}`}>
                       {surfWeeks.length > 0 ? (
                         <>
@@ -423,25 +410,46 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Rooms Cards - Using CMS Data */}
             {(roomsSection?.cards || [
-              { title: 'Private Rooms', description: 'Step into the charm of our beautifully designed rooms, blending modern comfort with traditional Portuguese aesthetics. Perfect for couples or solo travelers seeking peace and style.', images: ['/images/rooms/room1.jpg', '/images/Freedomroutes-rooms-1.jpg', '/images/DSC03479.jpg'], link: '/rooms/private' },
-              { title: 'Shared Rooms', description: 'Join our vibrant community in spacious shared accommodations. Meet fellow travelers, share stories, and make lifelong friendships in our comfortable dorm-style rooms.', images: ['/images/rooms/dorm.webp', '/images/Freedomroutes-rooms-50.jpg', '/images/DSC03491.jpg'], link: '/rooms/shared' }
-            ]).map((room: any, idx: number) => (
-              <div key={idx} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <div className="relative w-full h-80">
-                  <ImageCarousel
-                    images={room.images || ['/images/placeholder.webp']}
-                    alt={room.title}
-                    className="h-80"
-                  />
+              { title: 'Private Rooms', description: 'Step into the charm of our beautifully designed rooms, blending modern comfort with traditional Portuguese aesthetics. Perfect for couples or solo travelers seeking peace and style.', images: ['/images/rooms/room1.jpg', '/images/rooms/room2.webp', '/images/rooms/room3.webp'], link: '/rooms/private' },
+              { title: 'Shared Rooms', description: 'Join our vibrant community in spacious shared accommodations. Meet fellow travelers, share stories, and make lifelong friendships in our comfortable dorm-style rooms.', images: ['/images/rooms/dorm.webp', '/images/Freedomroutes-rooms-50.jpg', '/images/rooms/room1.jpg'], link: '/rooms/shared' }
+            ]).map((room: any, idx: number) => {
+              // Filter images to only include room-related images
+              const validRoomImagePaths = [
+                '/images/rooms/',
+                '/images/Freedomroutes-rooms-',
+                '/images/DSC03479',
+                '/images/DSC03491'
+              ]
+              
+              const filteredImages = (room.images || []).filter((img: string) => 
+                validRoomImagePaths.some(path => img.includes(path))
+              )
+              
+              // Use fallback images if CMS provided invalid images
+              const finalImages = filteredImages.length > 0 
+                ? filteredImages 
+                : idx === 0 
+                  ? ['/images/rooms/room1.jpg', '/images/rooms/room2.webp', '/images/rooms/room3.webp']
+                  : ['/images/rooms/dorm.webp', '/images/Freedomroutes-rooms-50.jpg', '/images/rooms/room1.jpg']
+              
+              return (
+                <div key={idx} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                  <div className="relative w-full h-80">
+                    <ImageCarousel
+                      images={finalImages}
+                      alt={room.title}
+                      className="h-80"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-3">{room.title}</h3>
+                    <p className="text-gray-600 leading-relaxed line-clamp-3">
+                      {room.description}
+                    </p>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">{room.title}</h3>
-                  <p className="text-gray-600 leading-relaxed line-clamp-3">
-                    {room.description}
-                  </p>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
 
