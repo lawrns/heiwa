@@ -10,13 +10,7 @@ interface BookNowButtonProps {
 }
 
 export function BookNowButton({ className, fullWidth = false }: BookNowButtonProps) {
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  // Compute className consistently
+  // Compute className consistently to prevent hydration mismatches
   const buttonClassName = React.useMemo(() => {
     const classes = ["font-semibold", "hover:scale-105"]
     if (fullWidth) {
