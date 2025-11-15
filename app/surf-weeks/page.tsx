@@ -444,37 +444,64 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* What is Included Section */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">What is included</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {includedFeatures.map((feature, index) => {
-              const Icon = feature.icon
-              return (
-                <div key={index} className="bg-white p-6 rounded-lg border border-gray-200">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-6 h-6 text-orange-600" />
-                    </div>
-                    <h4 className="text-lg font-semibold text-gray-900">{feature.title}</h4>
-                  </div>
-                  {feature.description && (
-                    <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
-                  )}
-                  {feature.list && (
-                    <ul className="space-y-1 text-sm text-gray-600">
-                      {feature.list.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <CheckCircle className="w-3 h-3 text-orange-600 mt-0.5 flex-shrink-0" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              )
-            })}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">What is included</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Everything you need for an unforgettable surf week experience
+            </p>
           </div>
+          
+          {/* Main Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {includedFeatures
+              .filter(feature => !feature.list) // Filter out "Other stuff" for main grid
+              .map((feature, index) => {
+                const Icon = feature.icon
+                return (
+                  <div
+                    key={index}
+                    className="group bg-white p-8 rounded-xl border-2 border-gray-100 hover:border-orange-300 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                  >
+                    <div className="mb-5">
+                      <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <Icon className="w-8 h-8 text-orange-600" />
+                      </div>
+                      <h4 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h4>
+                    </div>
+                    {feature.description && (
+                      <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                    )}
+                  </div>
+                )
+              })}
+          </div>
+
+          {/* Other Stuff Section - Full Width Card */}
+          {includedFeatures.find(f => f.list) && (
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl border-2 border-orange-200 p-8 md:p-10 shadow-lg">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-200 to-orange-300 rounded-xl flex items-center justify-center">
+                  <Star className="w-8 h-8 text-orange-700" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900">Other stuff</h3>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {includedFeatures
+                  .find(f => f.list)
+                  ?.list?.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-2 text-gray-700 hover:text-orange-600 transition-colors duration-200"
+                    >
+                      <CheckCircle className="w-5 h-5 text-orange-600 flex-shrink-0" />
+                      <span className="font-medium">{item}</span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
