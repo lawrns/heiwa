@@ -55,10 +55,16 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
     lastSelectedTypeRef.current = type;
     
     // Auto-advance after brief delay for visual feedback
+    // Store nextStep in a variable to ensure we have the latest reference
+    const nextStepFn = actions.nextStep;
     timeoutRef.current = setTimeout(() => {
       // Use ref to check selection since state might not be updated yet
       if (lastSelectedTypeRef.current === type) {
-        actions.nextStep();
+        try {
+          nextStepFn();
+        } catch (error) {
+          console.error('[HeiwaWidget] Error auto-advancing:', error);
+        }
       }
       timeoutRef.current = null;
     }, 300);
