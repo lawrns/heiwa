@@ -14,47 +14,51 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 type ConditionLevel = 0 | 1 | 2 | 3
 
 // Wave conditions by month for each skill level
+// Using only 3 tones: 1 = Light green (Fair), 2 = Medium green (Good), 3 = Dark green (Best)
+// Advanced: only 2 tones (Best and Good)
+// Intermediate: only 2 tones (Best and Good)
+// Beginner: 3 tones (Best, Good, and Fair)
 const waveConditionsByLevel: Record<string, ConditionLevel[]> = {
   'Beginner': [
-    0, // Jan - Not ideal
+    0, // Jan - Not ideal (will show as lightest green)
     0, // Feb - Not ideal
     0, // Mar - Not ideal
-    1, // Apr - Fair
-    3, // May - Best
+    1, // Apr - Fair (light green)
+    3, // May - Best (dark green)
     3, // Jun - Best
     3, // Jul - Best
     3, // Aug - Best
-    2, // Sep - Good
-    1, // Oct - Fair
+    2, // Sep - Good (medium green)
+    1, // Oct - Fair (light green)
     0, // Nov - Not ideal
     0, // Dec - Not ideal
   ],
   'Intermediate': [
     0, // Jan - Not ideal
-    1, // Feb - Fair
-    1, // Mar - Fair
-    2, // Apr - Good
-    3, // May - Best
+    0, // Feb - Not ideal
+    0, // Mar - Not ideal
+    2, // Apr - Good (medium green)
+    3, // May - Best (dark green)
     3, // Jun - Best
     3, // Jul - Best
     3, // Aug - Best
-    2, // Sep - Good
+    2, // Sep - Good (medium green)
     2, // Oct - Good
-    1, // Nov - Fair
+    0, // Nov - Not ideal
     0, // Dec - Not ideal
   ],
   'Advanced': [
-    3, // Jan - Best
+    3, // Jan - Best (dark green)
     3, // Feb - Best
     3, // Mar - Best
-    1, // Apr - Fair
+    2, // Apr - Good (medium green)
     0, // May - Not ideal
     0, // Jun - Not ideal
     0, // Jul - Not ideal
     0, // Aug - Not ideal
-    1, // Sep - Fair
+    2, // Sep - Good (medium green)
     2, // Oct - Good
-    3, // Nov - Best
+    3, // Nov - Best (dark green)
     3, // Dec - Best
   ],
 }
@@ -71,12 +75,13 @@ const getConditionLabel = (level: ConditionLevel): string => {
   }
 }
 
+// Map to 3 distinct green shades matching the reference image
 const getConditionOpacity = (conditionLevel: ConditionLevel): number => {
   switch (conditionLevel) {
-    case 0: return 0.35 // Not ideal - light green
-    case 1: return 0.6 // Fair - darker
-    case 2: return 0.8 // Good - darker
-    case 3: return 1.0 // Best - darkest
+    case 0: return 0.35 // Not ideal - lightest green (same as Fair for consistency)
+    case 1: return 0.35 // Fair - lightest green (first tone)
+    case 2: return 0.65 // Good - medium green (second tone)
+    case 3: return 1.0  // Best - darkest green (third tone)
     default: return 0.35
   }
 }
