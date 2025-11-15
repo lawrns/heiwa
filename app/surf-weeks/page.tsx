@@ -506,26 +506,29 @@ export default async function SurfWeeksPage() {
           {/* Pricing Cards - Integrated without separate heading */}
           <div className="grid md:grid-cols-2 gap-8 mt-12">
             {/* Base Package */}
-            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-orange-500">
-              <h3 className="text-2xl font-bold mb-2">Surf Week Package</h3>
-              <div className="text-4xl font-bold text-orange-600 mb-4">
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-8 shadow-lg border-2 border-orange-500">
+              <h3 className="text-2xl font-bold mb-4">Surf Week Package</h3>
+              <div className="text-5xl font-bold text-orange-600 mb-6">
                 From €450
               </div>
-              <ul className="space-y-3 mb-6">
-                {pricingOptions[0].features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="text-sm text-gray-600 italic">
-                *Surf lessons not included - see add-ons
-              </p>
+              <div className="mb-6">
+                <p className="text-lg text-gray-700 font-medium mb-2">
+                  All-inclusive package
+                </p>
+                <p className="text-gray-600 leading-relaxed">
+                  Everything listed above is included in your surf week experience. From comfortable accommodation and delicious meals to yoga sessions, day trips, and all our facilities.
+                </p>
+              </div>
+              <div className="pt-4 border-t border-gray-200">
+                <p className="text-sm text-gray-600 mb-4">
+                  <span className="font-semibold">Note:</span> Surf lessons are not included - see add-ons below
+                </p>
+                <BookNowButton fullWidth />
+              </div>
             </div>
             
             {/* Add-ons */}
-            <div className="bg-white rounded-xl p-8 shadow-lg">
+            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-gray-100">
               <h3 className="text-2xl font-bold mb-6">Popular Add-ons</h3>
               <div className="space-y-4">
                 {addOns.map((addon, idx) => (
