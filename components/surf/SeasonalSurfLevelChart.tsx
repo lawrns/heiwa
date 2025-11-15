@@ -73,10 +73,10 @@ const getConditionLabel = (level: ConditionLevel): string => {
 
 const getConditionOpacity = (conditionLevel: ConditionLevel): number => {
   switch (conditionLevel) {
-    case 0: return 0.2 // Not ideal - very light
-    case 1: return 0.4 // Fair - light
-    case 2: return 0.7 // Good - medium
-    case 3: return 1.0 // Best - full
+    case 0: return 0.2 // Not ideal - gray/transparent
+    case 1: return 0.6 // Fair - darker
+    case 2: return 0.8 // Good - darker
+    case 3: return 1.0 // Best - darkest
     default: return 0.2
   }
 }
@@ -166,30 +166,6 @@ export function SeasonalSurfLevelChart() {
         </div>
       </div>
 
-      {/* Legend */}
-      <div className="mt-10 pt-8 border-t border-gray-200">
-        <div className="flex flex-wrap items-center justify-center gap-6 mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#1e7963] opacity-20 border border-gray-200"></div>
-            <span className="text-sm font-medium text-gray-700">Not ideal</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#1e7963] opacity-40 border border-gray-200"></div>
-            <span className="text-sm font-medium text-gray-700">Fair</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#1e7963] opacity-70 border border-gray-200"></div>
-            <span className="text-sm font-medium text-gray-700">Good</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#1e7963] border border-gray-200"></div>
-            <span className="text-sm font-medium text-gray-700">Best</span>
-          </div>
-        </div>
-        <p className="text-xs text-gray-500 italic text-center max-w-2xl mx-auto">
-          * Conditions vary daily. This chart shows typical monthly patterns. Always check current conditions before your visit.
-        </p>
-      </div>
     </div>
   )
 }
