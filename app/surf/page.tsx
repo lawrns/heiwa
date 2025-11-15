@@ -469,6 +469,7 @@ export default function SurfPage() {
                   alt="Peniche Surfing"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
               <div className="p-8">
