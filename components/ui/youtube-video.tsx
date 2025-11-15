@@ -19,15 +19,19 @@ export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProp
   }
 
   const cleanVideoId = extractVideoId(videoId)
-  // Minimal controls format
-  const embedUrl = `https://www.youtube.com/embed/${cleanVideoId}?controls=0&modestbranding=1&rel=0`
+  // No controls format
+  const embedUrl = `https://www.youtube.com/embed/${cleanVideoId}?si=WWXSAJs0SAnR0wHY&controls=0`
 
   return (
     <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900 ${className}`}>
       <iframe
+        width="560"
+        height="315"
         src={embedUrl}
+        title={title || "YouTube video player"}
         frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
         className="absolute inset-0 w-full h-full"
       />

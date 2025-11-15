@@ -43,8 +43,8 @@ export function VideoEmbed({
   const getEmbedUrl = () => {
     if (provider === 'youtube') {
       const videoId = src.split('/').pop()?.split('?')[0]
-      // Minimal controls format
-      return `https://www.youtube.com/embed/${videoId}?controls=0&modestbranding=1&rel=0`
+      // No controls format
+      return `https://www.youtube.com/embed/${videoId}?si=WWXSAJs0SAnR0wHY&controls=0`
     } else if (provider === 'vimeo') {
       const videoId = src.split('/').pop()?.split('?')[0]
       return `https://player.vimeo.com/video/${videoId}?autoplay=1`
@@ -89,13 +89,16 @@ export function VideoEmbed({
       ) : (
         // Embedded video player
         <iframe
+          width="560"
+          height="315"
           src={getEmbedUrl()}
           title={title}
-          className="w-full h-full"
           frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
           loading="lazy"
+          className="w-full h-full"
         />
       )}
     </div>
