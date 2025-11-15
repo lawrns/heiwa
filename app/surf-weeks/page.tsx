@@ -443,7 +443,7 @@ export default async function SurfWeeksPage() {
         </div>
       </section>
 
-      {/* What is Included & Pricing Section - Merged */}
+      {/* What is Included & Pricing Section - Fully Merged */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -503,49 +503,42 @@ export default async function SurfWeeksPage() {
             </div>
           )}
 
-          {/* Pricing Section */}
-          <div className="mt-16 pt-16 border-t-2 border-gray-200">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Pricing</h2>
-              <p className="text-xl text-gray-600">All-inclusive surf week experience with flexible add-ons</p>
+          {/* Pricing Cards - Integrated without separate heading */}
+          <div className="grid md:grid-cols-2 gap-8 mt-12">
+            {/* Base Package */}
+            <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-orange-500">
+              <h3 className="text-2xl font-bold mb-2">Surf Week Package</h3>
+              <div className="text-4xl font-bold text-orange-600 mb-4">
+                From €450
+              </div>
+              <ul className="space-y-3 mb-6">
+                {pricingOptions[0].features.map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-sm text-gray-600 italic">
+                *Surf lessons not included - see add-ons
+              </p>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Base Package */}
-              <div className="bg-white rounded-xl p-8 shadow-lg border-2 border-orange-500">
-                <h3 className="text-2xl font-bold mb-2">Surf Week Package</h3>
-                <div className="text-4xl font-bold text-orange-600 mb-4">
-                  From €450
-                </div>
-                <ul className="space-y-3 mb-6">
-                  {pricingOptions[0].features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-sm text-gray-600 italic">
-                  *Surf lessons not included - see add-ons
-                </p>
-              </div>
-              
-              {/* Add-ons */}
-              <div className="bg-white rounded-xl p-8 shadow-lg">
-                <h3 className="text-2xl font-bold mb-6">Popular Add-ons</h3>
-                <div className="space-y-4">
-                  {addOns.map((addon, idx) => (
-                    <div key={idx} className="flex justify-between items-center pb-3 border-b last:border-b-0">
-                      <div className="flex-1">
-                        <div className="font-semibold text-gray-900">{addon.title}</div>
-                        <div className="text-sm text-gray-600">{addon.description}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xl font-bold text-orange-600">{addon.price}</div>
-                      </div>
+            {/* Add-ons */}
+            <div className="bg-white rounded-xl p-8 shadow-lg">
+              <h3 className="text-2xl font-bold mb-6">Popular Add-ons</h3>
+              <div className="space-y-4">
+                {addOns.map((addon, idx) => (
+                  <div key={idx} className="flex justify-between items-center pb-3 border-b last:border-b-0">
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900">{addon.title}</div>
+                      <div className="text-sm text-gray-600">{addon.description}</div>
                     </div>
-                  ))}
-                </div>
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-orange-600">{addon.price}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
