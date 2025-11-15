@@ -144,8 +144,8 @@ export function SeasonalSurfLevelChart() {
                             : 'hover:ring-2 hover:ring-[#1e7963] hover:ring-opacity-40 hover:scale-105 hover:shadow-lg'
                         }`}
                         style={{
-                          backgroundColor: conditionLevel === 0 ? '#f3f4f6' : GREEN_COLOR,
-                          opacity: conditionLevel === 0 ? 1 : opacity,
+                          backgroundColor: GREEN_COLOR,
+                          opacity: opacity,
                         }}
                         onMouseEnter={() => setHoveredCell({ level: level.name, month: monthIndex })}
                         onMouseLeave={() => setHoveredCell(null)}
