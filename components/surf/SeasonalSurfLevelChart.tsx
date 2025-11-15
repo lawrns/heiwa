@@ -73,11 +73,11 @@ const getConditionLabel = (level: ConditionLevel): string => {
 
 const getConditionOpacity = (conditionLevel: ConditionLevel): number => {
   switch (conditionLevel) {
-    case 0: return 0.2 // Not ideal - gray/transparent
+    case 0: return 0.35 // Not ideal - light green
     case 1: return 0.6 // Fair - darker
     case 2: return 0.8 // Good - darker
     case 3: return 1.0 // Best - darkest
-    default: return 0.2
+    default: return 0.35
   }
 }
 
