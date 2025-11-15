@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Bed, Users, Star, ArrowRight, Calendar } from 'lucide-react';
 import { BookingState, Room } from '../types';
 import { useRooms } from '../hooks/useRooms';
@@ -10,6 +10,7 @@ interface SurfWeekRoomSelectionProps {
   actions: {
     setSurfWeekRoom: (roomId: string) => void;
     updatePricing: (pricing: any) => void;
+    nextStep: () => void;
   };
 }
 
@@ -34,6 +35,8 @@ const transformRoomForSurfWeek = (room: Room) => {
 
 export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionProps) {
   const [selectedRoom, setSelectedRoom] = useState<string | null>(state.selectedSurfWeekRoom);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSelectedRoomRef = useRef<string | null>(null);
 
   // Image gallery state
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -107,8 +110,15 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   }
 
   const handleRoomSelection = (roomId: string) => {
+    // Cancel any pending auto-advance
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     setSelectedRoom(roomId);
     actions.setSurfWeekRoom(roomId);
+    lastSelectedRoomRef.current = roomId;
 
     // Calculate pricing based on room selection
     const room = surfWeekRooms.find(r => r.id === roomId);
@@ -133,7 +143,25 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
         total,
       });
     }
+
+    // Auto-advance after brief delay
+    timeoutRef.current = setTimeout(() => {
+      // Use ref to check selection since state might not be updated yet
+      if (lastSelectedRoomRef.current === roomId) {
+        actions.nextStep();
+      }
+      timeoutRef.current = null;
+    }, 300);
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-EU', {

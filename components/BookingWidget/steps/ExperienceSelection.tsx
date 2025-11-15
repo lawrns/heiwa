@@ -1,4 +1,5 @@
 import { Home, Waves, Check } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { BookingState } from '../types';
 
 interface ExperienceSelectionProps {
@@ -37,14 +38,48 @@ const experiences = [
 ];
 
 export function ExperienceSelection({ state, actions }: ExperienceSelectionProps) {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSelectedTypeRef = useRef<'room' | 'surf-week' | null>(null);
+
   const handleSelection = (type: 'room' | 'surf-week') => {
+    // Cancel any pending auto-advance
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     // Debug: selection handler
     try { console.log('[HeiwaWidget] Experience selected:', type); } catch {}
-    actions.setExperienceType(type);
     
-    // Allow the user to manually click Next instead of auto-advancing
-    // This gives them time to review their selection and see the pricing update
+    actions.setExperienceType(type);
+    lastSelectedTypeRef.current = type;
+    
+    // Auto-advance after brief delay for visual feedback
+    timeoutRef.current = setTimeout(() => {
+      // Use ref to check selection since state might not be updated yet
+      if (lastSelectedTypeRef.current === type) {
+        actions.nextStep();
+      }
+      timeoutRef.current = null;
+    }, 300);
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Cancel auto-advance if user changes selection before timeout completes
+  useEffect(() => {
+    if (timeoutRef.current && state.experienceType !== lastSelectedTypeRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, [state.experienceType]);
 
   return (
     <div className="space-y-6">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Users, Bed, ArrowRight, Check } from 'lucide-react';
 import { BookingState, RoomAssignment as RoomAssignmentType } from '../types';
 import { useRooms } from '../hooks/useRooms';
@@ -10,6 +10,7 @@ interface RoomAssignmentProps {
     setRoomAssignments: (assignments: RoomAssignmentType[]) => void;
     addRoomAssignment: (assignment: RoomAssignmentType) => void;
     removeRoomAssignment: (assignmentId: string) => void;
+    nextStep: () => void;
   };
 }
 
@@ -28,6 +29,8 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
   const [galleryRoomName, setGalleryRoomName] = useState('');
   const [galleryRoom, setGalleryRoom] = useState<any>(null);
 
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   // Initialize guest IDs
   useEffect(() => {
     const guestIds = Array.from({ length: state.guests }, (_, i) => `guest-${i + 1}`);
@@ -35,6 +38,40 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
     const unassigned = guestIds.filter(id => !assignedGuestIds.includes(id));
     setUnassignedGuests(unassigned);
   }, [state.guests, state.roomAssignments]);
+
+  // Auto-advance when all guests are assigned (only for multiple guests)
+  useEffect(() => {
+    if (state.guests > 1) {
+      const guestIds = Array.from({ length: state.guests }, (_, i) => `guest-${i + 1}`);
+      const assignedGuestIds = state.roomAssignments.flatMap(a => a.guestIds);
+      const allAssigned = guestIds.length > 0 && 
+                         guestIds.every(id => assignedGuestIds.includes(id));
+
+      if (allAssigned) {
+        // Cancel any pending timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        // Auto-advance after brief delay
+        timeoutRef.current = setTimeout(() => {
+          // Double-check all guests are still assigned
+          const currentAssigned = state.roomAssignments.flatMap(a => a.guestIds);
+          const stillAllAssigned = guestIds.every(id => currentAssigned.includes(id));
+          if (stillAllAssigned && state.guests > 1) {
+            actions.nextStep();
+          }
+          timeoutRef.current = null;
+        }, 500);
+      }
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [state.roomAssignments, state.guests, actions]);
 
   const handleAssignGuestToRoom = (roomId: string, guestId: string) => {
     const room = rooms.find(r => r.id === roomId);

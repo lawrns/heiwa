@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { MapPin, Users, Star, Check, Clock, Wifi, Car, Utensils, Calendar, Minus, Plus } from 'lucide-react';
 import { BookingState, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
@@ -82,15 +82,89 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const error = state.experienceType === 'room' ? roomsError : campsError;
   const options = state.experienceType === 'room' ? rooms : surfCamps;
 
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSelectedOptionRef = useRef<string | null>(null);
+
   const handleOptionSelect = (optionId: string) => {
+    // Cancel any pending auto-advance
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     setSelectedOption(optionId);
     actions.selectOption(optionId);
+    lastSelectedOptionRef.current = optionId;
 
     // For surf weeks, also set the surf week state
     if (state.experienceType === 'surf-week') {
       actions.setSurfWeek(optionId);
+      
+      // Auto-advance for surf week selection
+      timeoutRef.current = setTimeout(() => {
+        // Use ref to check selection since state might not be updated yet
+        if (lastSelectedOptionRef.current === optionId) {
+          actions.nextStep();
+        }
+        timeoutRef.current = null;
+      }, 300);
     }
+    // For room bookings, auto-advance will be handled by useEffect when all fields are complete
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Auto-advance for room bookings when all required fields are complete
+  useEffect(() => {
+    // Only auto-advance for room bookings, not surf weeks (surf weeks auto-advance on selection)
+    if (state.experienceType === 'room' && 
+        state.dates.checkIn && 
+        state.dates.checkOut && 
+        state.guests > 0 && 
+        state.selectedOption &&
+        !loading &&
+        !dateAvailabilityLoading) {
+      
+      // Cancel any pending timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // Auto-advance after a brief delay
+      timeoutRef.current = setTimeout(() => {
+        // Double-check conditions are still met
+        if (state.dates.checkIn && 
+            state.dates.checkOut && 
+            state.guests > 0 && 
+            state.selectedOption &&
+            state.experienceType === 'room' &&
+            !loading) {
+          // Use a small delay to ensure state is stable
+          actions.nextStep();
+        }
+        timeoutRef.current = null;
+      }, 500);
+    } else {
+      // Cancel timeout if conditions are not met
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [state.dates.checkIn, state.dates.checkOut, state.guests, state.selectedOption, state.experienceType, loading, dateAvailabilityLoading, actions]);
 
   const handleCheckInChange = (dateStr: string) => {
     setCheckInDate(dateStr);
