@@ -108,9 +108,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 <Image
                   src="/images/heiwalogo.webp"
                   alt="Heiwa House"
-                  width={140}
-                  height={46}
-                  className="h-12 w-auto"
+                  width={96}
+                  height={32}
+                  className="h-8 w-auto"
                   priority
                   style={{ height: 'auto' }}
                 />
