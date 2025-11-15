@@ -237,13 +237,13 @@ export function BookingWidget({
             }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
               <h2 className="text-xl font-bold text-gray-900">
                 Book Your Surf Adventure
               </h2>
               <button
                 onClick={closeWidget}
-                className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 aria-label="Close booking widget"
               >
                 <X size={20} />
@@ -251,7 +251,7 @@ export function BookingWidget({
             </div>
 
             {/* Progress Indicator */}
-            <div className="px-6 py-4 bg-gray-50/50 border-b border-gray-100">
+            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
               <ProgressIndicator
                 currentStep={state.currentStep}
                 stepFlow={computed.stepFlow}
@@ -262,7 +262,7 @@ export function BookingWidget({
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto">
-              <div className="p-6">
+              <div className="p-4 sm:p-6 lg:p-8">
                 {bookingSuccess ? (
                   <div className="text-center space-y-6">
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -365,32 +365,39 @@ export function BookingWidget({
 
             {/* Footer Navigation */}
             {!bookingSuccess && (
-              <div className="flex items-center justify-between p-6 border-t border-gray-100 bg-gradient-to-r from-white to-gray-50">
+              <div className="flex items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white">
                 <button
                   onClick={actions.prevStep}
                   disabled={computed.isFirstStep}
-                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+                  className="px-4 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 rounded-lg min-h-[44px] flex items-center"
+                  aria-label="Go back to previous step"
                 >
                   Back
                 </button>
 
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="text-right hidden sm:block">
                     <div className="text-lg font-bold text-gray-900">
-                      €{state.pricing.total}
+                      €{state.pricing.total?.toFixed(2) || '0.00'}
                     </div>
                     <div className="text-xs text-gray-500">Total</div>
+                  </div>
+                  <div className="text-right sm:hidden">
+                    <div className="text-base font-bold text-gray-900">
+                      €{state.pricing.total?.toFixed(2) || '0.00'}
+                    </div>
                   </div>
 
                   <button
                     onClick={actions.nextStep}
                     disabled={!computed.canProceedToNextStep || state.isLoading}
-                    className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-[1.02] disabled:hover:scale-100 focus:outline-none focus:ring-4 focus:ring-orange-500/30 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-[1.02] disabled:hover:scale-100 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 disabled:cursor-not-allowed flex items-center gap-2 min-h-[44px]"
+                    aria-label={computed.isLastStep ? 'Complete booking' : 'Continue to next step'}
                   >
                     {state.isLoading ? (
                       <div className="flex items-center gap-2">
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Loading...
+                        <span className="hidden sm:inline">Loading...</span>
                       </div>
                     ) : computed.isLastStep ? (
                       'Complete Booking'

@@ -311,7 +311,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     value={checkInDate}
                     min={new Date().toISOString().split('T')[0]}
                     onChange={(e) => handleCheckInChange(e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 ${
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
                       checkInDate && isDateSoldOut(checkInDate)
                         ? 'border-red-300 bg-red-50 text-red-700'
                         : 'border-gray-300'
@@ -343,7 +343,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     value={checkOutDate}
                     min={checkInDate || new Date().toISOString().split('T')[0]}
                     onChange={(e) => handleCheckOutChange(e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 ${
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
                       checkOutDate && isDateSoldOut(checkOutDate)
                         ? 'border-red-300 bg-red-50 text-red-700'
                         : 'border-gray-300'
@@ -391,23 +391,23 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <button
                   onClick={() => adjustGuests(-1)}
                   disabled={state.guests <= 1}
-                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                  className="w-11 h-11 rounded-full border-2 border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px] min-w-[44px]"
                   aria-label="Decrease guest count"
                 >
-                  <Minus size={16} />
+                  <Minus size={18} />
                 </button>
 
-                <span className="w-12 text-center text-lg font-semibold text-gray-900">
+                <span className="w-12 text-center text-lg font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
                   {state.guests}
                 </span>
 
                 <button
                   onClick={() => adjustGuests(1)}
                   disabled={state.guests >= 12}
-                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                  className="w-11 h-11 rounded-full border-2 border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px] min-w-[44px]"
                   aria-label="Increase guest count"
                 >
-                  <Plus size={16} />
+                  <Plus size={18} />
                 </button>
               </div>
             </div>
@@ -433,23 +433,23 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               <button
                 onClick={() => adjustGuests(-1)}
                 disabled={state.guests <= 1}
-                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                className="w-11 h-11 rounded-full border-2 border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px] min-w-[44px]"
                 aria-label="Decrease participant count"
               >
-                <Minus size={16} />
+                <Minus size={18} />
               </button>
 
-              <span className="w-12 text-center text-lg font-semibold text-gray-900">
+              <span className="w-12 text-center text-lg font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
                 {state.guests}
               </span>
 
               <button
                 onClick={() => adjustGuests(1)}
                 disabled={state.guests >= 12}
-                className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                className="w-11 h-11 rounded-full border-2 border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px] min-w-[44px]"
                 aria-label="Increase participant count"
               >
-                <Plus size={16} />
+                <Plus size={18} />
               </button>
             </div>
           </div>

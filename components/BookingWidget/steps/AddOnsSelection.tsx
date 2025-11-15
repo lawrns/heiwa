@@ -180,19 +180,19 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                         onClick={() => updateAddOnQuantity(addOn.id, quantity - 1)}
                         disabled={quantity === 0}
                         className="
-                          w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-gray-300
+                          w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 border-gray-300
                           flex items-center justify-center
-                          hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed
+                          hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed
                           transition-colors duration-200
-                          focus:outline-none focus:ring-2 focus:ring-orange-500/30
-                          touch-action: manipulation
+                          focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2
+                          touch-action: manipulation min-h-[44px] min-w-[44px]
                         "
                         aria-label={`Decrease ${addOn.name} quantity`}
                       >
-                        <Minus size={14} />
+                        <Minus size={16} />
                       </button>
 
-                      <span className="w-8 sm:w-12 text-center text-base sm:text-lg font-semibold text-gray-900">
+                      <span className="w-10 sm:w-12 text-center text-base sm:text-lg font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
                         {quantity}
                       </span>
 
@@ -200,16 +200,16 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                         onClick={() => updateAddOnQuantity(addOn.id, quantity + 1)}
                         disabled={addOn.maxQuantity ? quantity >= addOn.maxQuantity : false}
                         className="
-                          w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-gray-300
+                          w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 border-gray-300
                           flex items-center justify-center
-                          hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed
+                          hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed
                           transition-colors duration-200
-                          focus:outline-none focus:ring-2 focus:ring-orange-500/30
-                          touch-action: manipulation
+                          focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2
+                          touch-action: manipulation min-h-[44px] min-w-[44px]
                         "
                         aria-label={`Increase ${addOn.name} quantity`}
                       >
-                        <Plus size={14} />
+                        <Plus size={16} />
                       </button>
                     </div>
                   </div>

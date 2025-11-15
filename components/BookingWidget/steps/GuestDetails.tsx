@@ -227,7 +227,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                     type="text"
                     value={guestForm.firstName}
                     onChange={(e) => handleInputChange(index, 'firstName', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
                     placeholder="Enter first name"
                   />
                 </div>
@@ -245,7 +245,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                     type="text"
                     value={guestForm.lastName}
                     onChange={(e) => handleInputChange(index, 'lastName', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
                     placeholder="Enter last name"
                   />
                 </div>
@@ -263,7 +263,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                     type="email"
                     value={guestForm.email}
                     onChange={(e) => handleInputChange(index, 'email', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 ${
+                    className={`w-full pl-10 pr-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
                       guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email)
                         ? 'border-red-300 bg-red-50'
                         : 'border-gray-300'
@@ -299,7 +299,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                     type="tel"
                     value={guestForm.phone}
                     onChange={(e) => handleInputChange(index, 'phone', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200"
+                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
                     placeholder="Enter phone number"
                   />
                 </div>
@@ -318,7 +318,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                   value={guestForm.dietaryRequirements}
                   onChange={(e) => handleInputChange(index, 'dietaryRequirements', e.target.value)}
                   rows={2}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 resize-none"
+                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 resize-none min-h-[44px]"
                   placeholder="Any dietary restrictions or preferences?"
                 />
               </div>
@@ -334,7 +334,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 value={guestForm.specialRequests}
                 onChange={(e) => handleInputChange(index, 'specialRequests', e.target.value)}
                 rows={2}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors duration-200 resize-none"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 resize-none min-h-[44px]"
                 placeholder="Any special requests or notes?"
               />
             </div>
@@ -343,7 +343,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             <div className="mt-4 flex justify-end">
               <button
                 onClick={() => handleSaveGuest(index)}
-                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm rounded-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500/30"
+                className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm rounded-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px]"
               >
                 Save Guest {index + 1}
               </button>

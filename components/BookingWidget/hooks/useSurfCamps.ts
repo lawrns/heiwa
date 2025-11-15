@@ -38,9 +38,12 @@ export function useSurfCamps(): UseSurfCampsResult {
 
         const data = await response.json();
       
-      if (data.success && data.data && Array.isArray(data.data)) {
+      // API returns { success: true, data: { surf_camps: [...] } }
+      const surfCampsArray = data.data?.surf_camps || data.data;
+      
+      if (data.success && surfCampsArray && Array.isArray(surfCampsArray)) {
         // Transform API response to our SurfWeek interface
-        const transformedCamps: SurfWeek[] = data.data.map((camp: any) => ({
+        const transformedCamps: SurfWeek[] = surfCampsArray.map((camp: any) => ({
           id: camp.id,
           name: camp.name,
           description: camp.description || '',
