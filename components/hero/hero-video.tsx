@@ -20,66 +20,64 @@ export function HeroVideo({
 }: HeroVideoProps) {
   const [videoError, setVideoError] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const [shouldTryVideo, setShouldTryVideo] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
-  }, [])
+    // Only try video after mount to prevent hydration mismatch
+    if (videoUrl) {
+      setShouldTryVideo(true)
+    }
+  }, [videoUrl])
 
-  // Always use image on server side to prevent hydration mismatch
-  // Only try video on client side if videoUrl is provided
-  const shouldUseVideo = isMounted && videoUrl && !videoError
+  // Always render image on server and initial client render
+  // Only switch to video after mount and if videoUrl exists
+  const useVideo = isMounted && shouldTryVideo && !videoError
 
-  if (shouldUseVideo) {
-    return (
-      <section className={`relative h-[60vh] min-h-[400px] w-full overflow-hidden ${className}`}>
-        {/* Background Video */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          controls={false}
-          className="absolute inset-0 w-full h-full object-cover"
-          onError={() => setVideoError(true)}
-          poster={imageUrl}
-        >
-          <source src={videoUrl} type="video/mp4" />
-          <source src={videoUrl?.replace('.mp4', '.webm')} type="video/webm" />
-          Your browser does not support the video tag.
-        </video>
-
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/40" />
-
-        {/* Hero Content */}
-        <div className="relative h-full flex items-center justify-center text-center px-4">
-          <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-              {title}
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 drop-shadow-md max-w-3xl mx-auto">
-              {description}
-            </p>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  // Fallback to image if video fails or not provided
   return (
     <section className={`relative h-[60vh] min-h-[400px] w-full overflow-hidden ${className}`}>
-      <Image
-        src={imageUrl || '/images/placeholder-hero.jpg'}
-        alt={title}
-        fill
-        className="object-cover"
-        priority
-        sizes="100vw"
-      />
+      {useVideo ? (
+        <>
+          {/* Background Video - only rendered on client after mount */}
+          <video
+            key="hero-video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            controls={false}
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={() => {
+              setVideoError(true)
+              setShouldTryVideo(false)
+            }}
+            poster={imageUrl}
+          >
+            <source src={videoUrl} type="video/mp4" />
+            <source src={videoUrl?.replace('.mp4', '.webm')} type="video/webm" />
+            Your browser does not support the video tag.
+          </video>
+        </>
+      ) : (
+        <>
+          {/* Fallback Image - always rendered on server and initial client render */}
+          <Image
+            key="hero-image"
+            src={imageUrl || '/images/placeholder-hero.jpg'}
+            alt={title}
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+        </>
+      )}
+
+      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/40" />
 
+      {/* Hero Content */}
       <div className="relative h-full flex items-center justify-center text-center px-4">
         <div className="max-w-4xl">
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
