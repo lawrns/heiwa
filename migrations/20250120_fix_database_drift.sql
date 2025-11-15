@@ -122,3 +122,4 @@ COMMENT ON COLUMN surf_camp_enrollments.emergency_contact IS 'Emergency contact 
 COMMENT ON COLUMN surf_camp_enrollments.enrolled_at IS 'Timestamp when enrollment was confirmed';
 
 
+

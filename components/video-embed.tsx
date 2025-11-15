@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { Play } from 'lucide-react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
@@ -40,17 +40,17 @@ export function VideoEmbed({
     setIsLoaded(true)
   }
 
-  const getEmbedUrl = () => {
+  const getEmbedUrl = useMemo(() => {
     if (provider === 'youtube') {
       const videoId = src.split('/').pop()?.split('?')[0]
-      // No controls format
-      return `https://www.youtube.com/embed/${videoId}?si=WWXSAJs0SAnR0wHY&controls=0`
+      // No controls format with all parameters to prevent hydration mismatch
+      return `https://www.youtube.com/embed/${videoId}?si=WWXSAJs0SAnR0wHY&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1`
     } else if (provider === 'vimeo') {
       const videoId = src.split('/').pop()?.split('?')[0]
       return `https://player.vimeo.com/video/${videoId}?autoplay=1`
     }
     return src
-  }
+  }, [provider, src])
 
   return (
     <div
@@ -91,7 +91,7 @@ export function VideoEmbed({
         <iframe
           width="560"
           height="315"
-          src={getEmbedUrl()}
+          src={getEmbedUrl}
           title={title}
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

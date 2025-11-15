@@ -103,7 +103,15 @@ export default function HomePage() {
   const facilitiesSection = homepageContent?.find((s: any) => s.section === 'facilities')
   
   const heroTitle = heroSection?.title || 'Welcome to Heiwa House'
-  const heroSubtitle = heroSection?.subtitle || 'Your surf and lifestyle destination in Santa Cruz, Portugal'
+  // Filter out invalid CMS content (like "Edjizz")
+  const rawSubtitle = heroSection?.subtitle || ''
+  const heroSubtitle = rawSubtitle && 
+    rawSubtitle.trim().length > 0 && 
+    !rawSubtitle.toLowerCase().includes('edjizz') &&
+    rawSubtitle !== 'Edjizz.' &&
+    rawSubtitle !== 'Edjizz'
+    ? rawSubtitle 
+    : 'Your surf and lifestyle destination in Santa Cruz, Portugal'
 
 
   return (

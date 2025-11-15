@@ -44,3 +44,4 @@ Each skill level now has its own dedicated chart showing:
 ## 📍 Files Changed
 - `components/surf/SeasonalSurfLevelChart.tsx` - Complete rewrite to show individual charts per level
 
+

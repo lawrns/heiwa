@@ -1,5 +1,7 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+
 interface VideoPlayerProps {
   videoId: string
   title: string
@@ -7,6 +9,9 @@ interface VideoPlayerProps {
 }
 
 export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProps) {
+  const [embedUrl, setEmbedUrl] = useState<string>('')
+  const [isMounted, setIsMounted] = useState(false)
+
   // Extract video ID from URL if full URL is provided
   const extractVideoId = (idOrUrl: string): string => {
     if (idOrUrl.includes('youtu.be/')) {
@@ -18,9 +23,23 @@ export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProp
     return idOrUrl
   }
 
-  const cleanVideoId = extractVideoId(videoId)
-  // No controls format
-  const embedUrl = `https://www.youtube.com/embed/${cleanVideoId}?si=WWXSAJs0SAnR0wHY&controls=0`
+  // Only set URL on client side to prevent hydration mismatch
+  useEffect(() => {
+    setIsMounted(true)
+    const cleanVideoId = extractVideoId(videoId)
+    setEmbedUrl(`https://www.youtube.com/embed/${cleanVideoId}?si=WWXSAJs0SAnR0wHY&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1`)
+  }, [videoId])
+
+  // Don't render iframe until mounted to prevent hydration mismatch
+  if (!isMounted || !embedUrl) {
+    return (
+      <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900 ${className}`}>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-white">Loading video...</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900 ${className}`}>

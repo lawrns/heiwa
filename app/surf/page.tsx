@@ -111,7 +111,7 @@ export default function SurfPage() {
       <HeroVideo
         title={heroSection?.content?.title || "Heiwa Surf"}
         description={heroSection?.content?.description || "Experience the thrill of surfing in Portugal's pristine waters. From beginner lessons to advanced coaching, discover your perfect wave at our doorstep."}
-        videoUrl={heroSection?.content?.video_url || "/images/videos/surf-ocean.mp4"}
+        videoUrl={heroSection?.content?.video_url || undefined}
         imageUrl={heroSection?.content?.image_url || "/images/surf4.jpg"}
       />
 

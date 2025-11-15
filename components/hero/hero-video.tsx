@@ -19,8 +19,17 @@ export function HeroVideo({
   className = '' 
 }: HeroVideoProps) {
   const [videoError, setVideoError] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
-  if (videoUrl && !videoError) {
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  // Always use image on server side to prevent hydration mismatch
+  // Only try video on client side if videoUrl is provided
+  const shouldUseVideo = isMounted && videoUrl && !videoError
+
+  if (shouldUseVideo) {
     return (
       <section className={`relative h-[60vh] min-h-[400px] w-full overflow-hidden ${className}`}>
         {/* Background Video */}
@@ -67,6 +76,7 @@ export function HeroVideo({
         fill
         className="object-cover"
         priority
+        sizes="100vw"
       />
       <div className="absolute inset-0 bg-black/40" />
 
