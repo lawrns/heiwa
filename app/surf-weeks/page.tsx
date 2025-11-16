@@ -455,8 +455,8 @@ export default async function SurfWeeksPage() {
             priority
             sizes="100vw"
           />
-          {/* Subtle dark overlay for minimal text readability while showing image */}
-          <div className="absolute inset-0 bg-black/20" />
+          {/* Very subtle dark overlay to maximize image visibility */}
+          <div className="absolute inset-0 bg-black/10" />
         </div>
         
         {/* Content Overlay - Advertisement Style Layout */}
@@ -465,8 +465,8 @@ export default async function SurfWeeksPage() {
             
             {/* Left Column - INCLUDED Section */}
             <div className="lg:col-span-1">
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border-2 border-white/60">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-wide">
+              <div className="bg-white/55 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border-2 border-white/50">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-wide drop-shadow-sm">
                   Included
                 </h2>
                 <div className="space-y-4">
@@ -523,7 +523,7 @@ export default async function SurfWeeksPage() {
 
             {/* Center Column - Price Display */}
             <div className="lg:col-span-1 flex flex-col items-center justify-center">
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border-2 border-orange-500 text-center">
+              <div className="bg-white/55 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border-2 border-orange-500 text-center">
                 <div className="text-sm md:text-base font-semibold text-gray-700 uppercase tracking-wider mb-2">
                   Price Starting
                 </div>
@@ -546,8 +546,8 @@ export default async function SurfWeeksPage() {
 
             {/* Right Column - Popular Add-ons */}
             <div className="lg:col-span-1">
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border-2 border-white/60">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-wide">
+              <div className="bg-white/55 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border-2 border-white/50">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-wide drop-shadow-sm">
                   Popular Addons
                 </h2>
                 <div className="space-y-4">
