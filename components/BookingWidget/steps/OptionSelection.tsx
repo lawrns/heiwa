@@ -109,7 +109,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         timeoutRef.current = null;
       }, 300);
     }
-    // For room bookings, auto-advance will be handled by useEffect when all fields are complete
+    // For room bookings, user must manually press Next button - no auto-advance
   };
 
   // Cleanup on unmount
@@ -121,50 +121,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     };
   }, []);
 
-  // Auto-advance for room bookings when all required fields are complete
-  useEffect(() => {
-    // Only auto-advance for room bookings, not surf weeks (surf weeks auto-advance on selection)
-    if (state.experienceType === 'room' && 
-        state.dates.checkIn && 
-        state.dates.checkOut && 
-        state.guests > 0 && 
-        state.selectedOption &&
-        !loading &&
-        !dateAvailabilityLoading) {
-      
-      // Cancel any pending timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      // Auto-advance after a brief delay
-      timeoutRef.current = setTimeout(() => {
-        // Double-check conditions are still met
-        if (state.dates.checkIn && 
-            state.dates.checkOut && 
-            state.guests > 0 && 
-            state.selectedOption &&
-            state.experienceType === 'room' &&
-            !loading) {
-          // Use a small delay to ensure state is stable
-          actions.nextStep();
-        }
-        timeoutRef.current = null;
-      }, 500);
-    } else {
-      // Cancel timeout if conditions are not met
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    }
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [state.dates.checkIn, state.dates.checkOut, state.guests, state.selectedOption, state.experienceType, loading, dateAvailabilityLoading, actions]);
+  // Removed auto-advance for room bookings - user must manually press Next button
 
   const handleCheckInChange = (dateStr: string) => {
     setCheckInDate(dateStr);

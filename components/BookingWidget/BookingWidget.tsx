@@ -40,6 +40,7 @@ export function BookingWidget({
   const [bookingSuccess, setBookingSuccess] = useState<any>(null);
   const { state, actions, computed } = useBookingFlow();
   const { setBookingSuccess: setBookingSuccessInContext, selectedSurfWeek, setSelectedSurfWeek } = useBooking();
+  const contentScrollRef = React.useRef<HTMLDivElement>(null);
 
   // Sync internal isOpen state with context's isBookingOpen when used in FloatingBookingWidget
   useEffect(() => {
@@ -70,6 +71,19 @@ export function BookingWidget({
       document.body.classList.remove('heiwa-modal-open');
     };
   }, [isOpen, isWebComponent, onModalStateChange]);
+
+  // Scroll to top of content area when step changes to ensure current step is visible
+  useEffect(() => {
+    if (contentScrollRef.current && isOpen) {
+      // Scroll to top when step changes to ensure the current step content is visible
+      // Use a small delay to allow the step content to render
+      const timeoutId = setTimeout(() => {
+        contentScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 150);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [computed.currentStepType, isOpen]);
 
   // Handle pre-selected surf week - use a ref to prevent multiple runs
   const prevSurfWeekRef = React.useRef<string | null>(null);
@@ -261,7 +275,7 @@ export function BookingWidget({
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div ref={contentScrollRef} className="flex-1 overflow-y-auto">
               <div className="p-4 sm:p-6 lg:p-8">
                 {bookingSuccess ? (
                   <div className="text-center space-y-6">
