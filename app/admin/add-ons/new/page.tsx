@@ -19,11 +19,40 @@ export default function NewAddOnPage() {
     detailedDescription: ''
   })
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement actual API call to save add-on
-    console.log('Saving add-on:', formData)
-    router.push('/admin/add-ons')
+    
+    try {
+      const response = await fetch('/api/add-ons', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          description: formData.description,
+          price: formData.price,
+          category: formData.category,
+          is_active: formData.isActive,
+          max_quantity: formData.maxQuantity ? parseInt(formData.maxQuantity) : null,
+          images: formData.imageUrl ? [formData.imageUrl] : [],
+          detailed_description: formData.detailedDescription
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        console.log('Add-on saved successfully:', result.addOn)
+        router.push('/admin/add-ons')
+      } else {
+        console.error('Failed to save add-on:', result.error)
+        alert(`Failed to save add-on: ${result.error}`)
+      }
+    } catch (error) {
+      console.error('Error saving add-on:', error)
+      alert('An error occurred while saving the add-on')
+    }
   }
 
   const handleInputChange = (field: string, value: any) => {

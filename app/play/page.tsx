@@ -6,6 +6,7 @@ import { FloatingCheckAvailability } from '@/components/floating-check-availabil
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
 import { GoogleReviews } from '@/components/ui/google-reviews'
+import { ActivityHighlight } from '@/components/activities/activity-highlight'
 import { useEffect, useState } from 'react'
 
 interface CMSSection {
@@ -124,12 +125,43 @@ export default function PlayPage() {
         </section>
       )}
 
-      {/* Always Available Activities Section */}
+      {/* Skateboarding & Music Highlights */}
       <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+          
+          <ActivityHighlight
+            title="Skateboarding"
+            description="Carve your own path in our custom-designed skatepark. Whether you're dropping in for the first time or perfecting your tricks, our concrete waves are waiting for you."
+            videoUrl="/images/videos/sk81.mp4"
+            videoPoster="/images/park4444.jpg"
+            carouselImages={[
+              '/images/park4444.jpg',
+              '/images/DSC03081-scaled.jpg',
+              '/images/DSC08054-scaled.jpg'
+            ]}
+          />
+
+          <ActivityHighlight
+            title="Music"
+            description="Find your rhythm in our fully equipped jam room. Connect with fellow musicians, create something new, or just enjoy the vibes."
+            videoUrl="/images/videos/Timeline-1.mp4"
+            videoPoster="/images/DSC08736-scaled.jpg"
+            carouselImages={[
+              '/images/DSC08736-scaled.jpg',
+              '/images/DSC01794.jpg',
+              '/images/DSC08054-scaled.jpg'
+            ]}
+          />
+
+        </div>
+      </section>
+
+      {/* Activities On-Site Section */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Always Included Activities
+              Activities On-Site
             </h2>
             <p className="text-lg text-gray-600">
               These fun experiences are included in your stay at Heiwa House
@@ -140,16 +172,17 @@ export default function PlayPage() {
             category="play" 
             tier="always" 
             showTierBadge={false}
+            hideIcons={true}
           />
         </div>
       </section>
 
-      {/* Available on Request Section */}
-      <section className="py-20 bg-gray-50">
+      {/* Activities Around Section */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Available as Add-ons
+              Activities Around
             </h2>
             <p className="text-lg text-gray-600">
               Special activities available upon request - contact us to arrange
@@ -160,6 +193,7 @@ export default function PlayPage() {
             category="play" 
             tier="on-request" 
             showTierBadge={true}
+            hideIcons={true}
           />
         </div>
       </section>

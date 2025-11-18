@@ -1,5 +1,6 @@
 'use client'
 
+import { ActivityHighlight } from '@/components/activities/activity-highlight'
 import { Mail } from 'lucide-react'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { HeroVideo } from '@/components/hero/hero-video'
@@ -125,8 +126,65 @@ export default function FlowPage() {
         </section>
       )}
 
-      {/* Main Flow Services Section */}
+      {/* Flow Highlights Section */}
       <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+          
+          <ActivityHighlight
+            title="Yoga Dome"
+            description="Practice in our beautiful geodesic dome, surrounded by nature. The perfect space for morning flows and evening meditation."
+            videoUrl="/images/videos/yoga-dome.mp4"
+            videoPoster="/images/yoga_dome1.jpg"
+            carouselImages={[
+              '/images/yoga_dome1.jpg',
+              '/images/yoga_dome2.jpg',
+              '/images/yoga_dome3.jpg'
+            ]}
+          />
+
+          <ActivityHighlight
+            title="Sauna & Ice Tub"
+            description="Recover and rejuvenate with our contrast therapy facilities. Boost your circulation, reduce inflammation, and feel invigorated."
+            videoUrl="/images/videos/sauna-ice.mp4"
+            videoPoster="/images/sauna1.jpg"
+            carouselImages={[
+              '/images/sauna1.jpg',
+              '/images/ice_tub.jpg',
+              '/images/sauna2.jpg'
+            ]}
+            reversed={true}
+          />
+
+          <ActivityHighlight
+            title="Yoga Lessons"
+            description="Join our expert instructors for guided sessions suitable for all levels. From dynamic Vinyasa to restorative Yin."
+            videoUrl="/images/videos/yoga-class.mp4"
+            videoPoster="/images/yoga_class1.jpg"
+            carouselImages={[
+              '/images/yoga_class1.jpg',
+              '/images/yoga_class2.jpg',
+              '/images/yoga_class3.jpg'
+            ]}
+          />
+
+          <ActivityHighlight
+            title="Massages"
+            description="Treat yourself to a relaxing massage. Our therapists offer various styles to help you release tension and unwind."
+            videoUrl="/images/videos/massage.mp4"
+            videoPoster="/images/massage1.jpg"
+            carouselImages={[
+              '/images/massage1.jpg',
+              '/images/massage2.jpg',
+              '/images/massage3.jpg'
+            ]}
+            reversed={true}
+          />
+
+        </div>
+      </section>
+
+      {/* Main Flow Services Section - Renamed/Modified */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -141,12 +199,13 @@ export default function FlowPage() {
             category="flow" 
             tier="always" 
             showTierBadge={false}
+            hideIcons={true}
           />
         </div>
       </section>
 
       {/* Available on Request Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -161,6 +220,7 @@ export default function FlowPage() {
             category="flow" 
             tier="on-request" 
             showTierBadge={true}
+            hideIcons={true}
           />
         </div>
       </section>

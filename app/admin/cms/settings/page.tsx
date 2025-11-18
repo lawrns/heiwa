@@ -15,14 +15,54 @@ export default function CMSSettingsPage() {
   })
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
+  useEffect(() => {
+    // Fetch initial settings
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/admin/cms/settings')
+        const data = await res.json()
+        if (data.success && data.settings) {
+          setSettings({
+            siteName: data.settings.site_name,
+            siteDescription: data.settings.site_description,
+            defaultLanguage: data.settings.default_language,
+            enableCache: data.settings.enable_cache,
+            cacheDuration: data.settings.cache_duration,
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching settings:', error)
+      }
+    }
+    fetchSettings()
+  }, [])
+
   const handleSave = async () => {
     setSaving(true)
     setMessage(null)
     
     try {
-      // TODO: Implement settings save API
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setMessage({ type: 'success', text: 'Settings saved successfully' })
+      const res = await fetch('/api/admin/cms/settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          site_name: settings.siteName,
+          site_description: settings.siteDescription,
+          default_language: settings.defaultLanguage,
+          enable_cache: settings.enableCache,
+          cache_duration: settings.cacheDuration,
+        }),
+      })
+      
+      const data = await res.json()
+      
+      if (data.success) {
+        setMessage({ type: 'success', text: 'Settings saved successfully' })
+      } else {
+        setMessage({ type: 'error', text: 'Failed to save settings' })
+      }
     } catch (error) {
       setMessage({ type: 'error', text: 'Failed to save settings' })
     } finally {
@@ -33,7 +73,8 @@ export default function CMSSettingsPage() {
   const handleClearCache = async () => {
     setLoading(true)
     try {
-      // TODO: Implement cache clear API
+      // In a real app, this would call an API to invalidate CDN/Server cache
+      // For now, we just simulate it
       await new Promise(resolve => setTimeout(resolve, 1000))
       setMessage({ type: 'success', text: 'Cache cleared successfully' })
     } catch (error) {

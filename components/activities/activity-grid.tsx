@@ -13,7 +13,7 @@ interface Activity {
   description?: string
   image_url: string
   category: string
-  icon?: string
+  icon?: keyof typeof iconMap
   availability_tier: 'always' | 'on-request'
   display_order: number
   active: boolean
@@ -27,9 +27,10 @@ interface ActivityGridProps {
   tier?: 'always' | 'on-request' | 'all'
   className?: string
   showTierBadge?: boolean
+  hideIcons?: boolean
 }
 
-const iconMap: Record<string, any> = {
+const iconMap = {
   play: Play,
   flow: Heart,
   surf: Waves,
@@ -40,13 +41,14 @@ const iconMap: Record<string, any> = {
   droplets: Droplets,
   users: Users,
   'map-pin': MapPin,
-}
+} as const
 
 export function ActivityGrid({ 
   category, 
   tier = 'all', 
   className = '', 
-  showTierBadge = false 
+  showTierBadge = false,
+  hideIcons = false
 }: ActivityGridProps) {
   const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
@@ -146,9 +148,11 @@ export function ActivityGrid({
               
               <div className="absolute bottom-4 left-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center">
-                    {IconComponent && <IconComponent className="w-6 h-6 text-accent" />}
-                  </div>
+                  {!hideIcons && (
+                    <div className="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center">
+                      {IconComponent && <IconComponent className="w-6 h-6 text-accent" />}
+                    </div>
+                  )}
                   <h3 className="text-xl font-bold text-white">{activity.title}</h3>
                 </div>
               </div>
