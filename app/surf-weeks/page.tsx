@@ -433,16 +433,6 @@ export default async function SurfWeeksPage() {
         </div>
       </section>
 
-      {/* Customer Reviews Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">What Our Customers Say</h2>
-          
-          {/* Google Reviews Component - Fetches real reviews from API */}
-          <GoogleReviews showReviews={true} maxReviews={4} />
-        </div>
-      </section>
-
       {/* What is Included & Pricing Section - Advertisement Style Overlay */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
@@ -574,6 +564,16 @@ export default async function SurfWeeksPage() {
           <div className="flex justify-center mt-8 lg:mt-12">
             <BookNowButton />
           </div>
+        </div>
+      </section>
+
+      {/* Customer Reviews Section */}
+      <section className="py-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">What Our Customers Say</h2>
+          
+          {/* Google Reviews Component - Fetches real reviews from API */}
+          <GoogleReviews showReviews={true} maxReviews={4} />
         </div>
       </section>
 

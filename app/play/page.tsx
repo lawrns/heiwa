@@ -5,7 +5,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
-import { GoogleReviews } from '@/components/ui/google-reviews'
 import { ActivityHighlight } from '@/components/activities/activity-highlight'
 import { useEffect, useState } from 'react'
 
@@ -216,23 +215,6 @@ export default function PlayPage() {
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
-      </section>
-
-      {/* Reviews Section - Using Real Google Reviews */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              What Our Guests Say About Play Activities
-            </h2>
-            <p className="text-lg text-gray-600">
-              Real experiences from real adventurers
-            </p>
-          </div>
-
-          {/* Google Reviews Component - Fetches real reviews from API */}
-          <GoogleReviews showReviews={true} maxReviews={4} />
         </div>
       </section>
 
