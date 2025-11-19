@@ -10,14 +10,6 @@ import { useEffect, useState } from 'react'
 // Note: Metadata export removed because this is now a client component
 // SEO metadata is handled via generateMetadata in layout or static metadata
 
-interface Testimonial {
-  id: string
-  author_name: string
-  content: string
-  rating: number
-  is_featured: boolean
-}
-
 interface CMSSection {
   id: string
   section_type: string
@@ -27,9 +19,7 @@ interface CMSSection {
 }
 
 export default function FlowPage() {
-  const [reviews, setReviews] = useState<Testimonial[]>([])
   const [cmsContent, setCmsContent] = useState<CMSSection[]>([])
-  const [loading, setLoading] = useState(true)
 
   // Fetch CMS content
   useEffect(() => {
@@ -49,24 +39,6 @@ export default function FlowPage() {
     fetchCMSContent()
   }, [])
 
-  useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        const response = await fetch('/api/admin/testimonials?featured=true')
-        const data = await response.json()
-        if (data.success && data.data) {
-          setReviews(data.data)
-        }
-      } catch (error) {
-        console.error('Error fetching testimonials:', error)
-        // Fallback to empty array - page still renders
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchTestimonials()
-  }, [])
 
   // Extract CMS sections
   const heroSection = cmsContent.find(s => s.section_type === 'hero')
@@ -146,11 +118,11 @@ export default function FlowPage() {
             title="Sauna & Ice Tub"
             description="Recover and rejuvenate with our contrast therapy facilities. Boost your circulation, reduce inflammation, and feel invigorated."
             videoUrl="/optimized/videos/video_005_location3.mp4"
-            videoPoster="/images/sauna1.jpg"
+            videoPoster="/images/pool333.jpg"
             carouselImages={[
-              '/images/sauna1.jpg',
-              '/images/ice_tub.jpg',
-              '/images/sauna2.jpg'
+              '/images/pool333.jpg',
+              '/images/pool4444.jpg',
+              '/images/pool333.jpg'
             ]}
             reversed={true}
           />
@@ -159,11 +131,11 @@ export default function FlowPage() {
             title="Yoga Lessons"
             description="Join our expert instructors for guided sessions suitable for all levels. From dynamic Vinyasa to restorative Yin."
             videoUrl="/optimized/videos/video_002_fin1.mp4"
-            videoPoster="/images/yoga_class1.jpg"
+            videoPoster="/images/yoga_dome1.jpg"
             carouselImages={[
-              '/images/yoga_class1.jpg',
-              '/images/yoga_class2.jpg',
-              '/images/yoga_class3.jpg'
+              '/images/yoga_dome1.jpg',
+              '/images/yoga_dome2.jpg',
+              '/images/yoga_dome3.jpg'
             ]}
           />
 
@@ -171,11 +143,11 @@ export default function FlowPage() {
             title="Massages"
             description="Treat yourself to a relaxing massage. Our therapists offer various styles to help you release tension and unwind."
             videoUrl="/optimized/videos/video_003_fin2.mp4"
-            videoPoster="/images/massage1.jpg"
+            videoPoster="/images/hh1.jpg"
             carouselImages={[
-              '/images/massage1.jpg',
-              '/images/massage2.jpg',
-              '/images/massage3.jpg'
+              '/images/hh1.jpg',
+              '/images/hh2.jpg',
+              '/images/DSC03491.jpg'
             ]}
             reversed={true}
           />
@@ -278,52 +250,6 @@ export default function FlowPage() {
           </div>
         </section>
       )}
-
-      {/* Reviews Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              What Our Guests Say About Flow
-            </h2>
-            <p className="text-lg text-gray-600">
-              Real experiences from our wellness seekers
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {reviews.map((review) => (
-              <div key={review.id} className="bg-white rounded-lg p-6 border border-gray-200">
-                {/* Rating */}
-                <div className="flex items-center space-x-1 mb-3">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <svg key={i} className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                    </svg>
-                  ))}
-                </div>
-
-                {/* Review Text */}
-                <p className="text-gray-700 text-sm leading-relaxed mb-4">
-                  {review.content}
-                </p>
-
-                {/* Reviewer Info */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold text-gray-900 text-sm">{review.author_name}</p>
-                  </div>
-                  {review.is_featured && (
-                    <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Floating Check Availability Button */}
       <FloatingCheckAvailability />
