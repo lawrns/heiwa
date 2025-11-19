@@ -55,6 +55,15 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   const { surfCamps } = useSurfCamps();
   const selectedSurfWeekData = surfCamps.find(camp => camp.id === state.selectedSurfWeek);
   
+  // Cleanup on unmount - MUST be called before any conditional returns
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   // Format dates for display
   const formatDateRange = (checkIn: Date | null, checkOut: Date | null) => {
     if (!checkIn || !checkOut) return null;
@@ -153,15 +162,6 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
       timeoutRef.current = null;
     }, 300);
   };
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-EU', {
@@ -313,7 +313,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                   {/* View Photos Button */}
                   {(() => {
                     const originalRoom = rooms.find(r => r.id === room.id);
-                    return originalRoom?.images && originalRoom.images.length > 0 && (
+                    const imageCount = originalRoom?.images?.length || 0;
+                    return imageCount > 0 ? (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -321,9 +322,9 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                         }}
                         className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
                       >
-                        📸 View {originalRoom.images.length} Photo{originalRoom.images.length > 1 ? 's' : ''}
+                        📸 View {imageCount} Photo{imageCount > 1 ? 's' : ''}
                       </button>
-                    );
+                    ) : null;
                   })()}
 
                   {/* Selection Indicator */}
