@@ -29,7 +29,11 @@ export function ActivityHighlight({
         <div className={`relative aspect-video rounded-xl overflow-hidden shadow-lg bg-gray-100 ${reversed ? 'md:order-2' : ''}`}>
             <video 
               className="w-full h-full object-cover"
-              controls
+              controls={false}
+              autoPlay
+              loop
+              muted
+              playsInline
               preload="metadata"
               poster={videoPoster}
             >

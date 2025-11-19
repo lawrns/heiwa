@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Plus } from 'lucide-react'
+import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
 
 interface SurfCampFormData {

@@ -79,7 +79,7 @@ export default function FlowPage() {
       <HeroVideo
         title={heroSection?.content?.title || "Heiwa Flow"}
         description={heroSection?.content?.description || "Find your inner flow through yoga, wellness, and mindful practices. Balance your body, mind, and spirit in our peaceful Portuguese sanctuary."}
-        videoUrl={heroSection?.content?.video_url || "/images/videos/flow-wellness.mp4"}
+        videoUrl={heroSection?.content?.video_url || "/optimized/videos/video_001_timeline-1.mp4"}
         imageUrl={heroSection?.content?.image_url || "/images/yoga_dome3.jpg"}
       />
 
@@ -133,7 +133,7 @@ export default function FlowPage() {
           <ActivityHighlight
             title="Yoga Dome"
             description="Practice in our beautiful geodesic dome, surrounded by nature. The perfect space for morning flows and evening meditation."
-            videoUrl="/images/videos/yoga-dome.mp4"
+            videoUrl="/optimized/videos/video_004_location2.mp4"
             videoPoster="/images/yoga_dome1.jpg"
             carouselImages={[
               '/images/yoga_dome1.jpg',
@@ -145,7 +145,7 @@ export default function FlowPage() {
           <ActivityHighlight
             title="Sauna & Ice Tub"
             description="Recover and rejuvenate with our contrast therapy facilities. Boost your circulation, reduce inflammation, and feel invigorated."
-            videoUrl="/images/videos/sauna-ice.mp4"
+            videoUrl="/optimized/videos/video_005_location3.mp4"
             videoPoster="/images/sauna1.jpg"
             carouselImages={[
               '/images/sauna1.jpg',
@@ -158,7 +158,7 @@ export default function FlowPage() {
           <ActivityHighlight
             title="Yoga Lessons"
             description="Join our expert instructors for guided sessions suitable for all levels. From dynamic Vinyasa to restorative Yin."
-            videoUrl="/images/videos/yoga-class.mp4"
+            videoUrl="/optimized/videos/video_002_fin1.mp4"
             videoPoster="/images/yoga_class1.jpg"
             carouselImages={[
               '/images/yoga_class1.jpg',
@@ -170,7 +170,7 @@ export default function FlowPage() {
           <ActivityHighlight
             title="Massages"
             description="Treat yourself to a relaxing massage. Our therapists offer various styles to help you release tension and unwind."
-            videoUrl="/images/videos/massage.mp4"
+            videoUrl="/optimized/videos/video_003_fin2.mp4"
             videoPoster="/images/massage1.jpg"
             carouselImages={[
               '/images/massage1.jpg',

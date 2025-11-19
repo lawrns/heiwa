@@ -68,12 +68,86 @@ export async function GET(
   }
 }
 
+// PUT /api/surf-camps/[id] - Update a specific surf camp
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+    const body = await request.json()
+    const { 
+      name, 
+      description, 
+      start_date, 
+      end_date, 
+      max_participants, 
+      price, 
+      level, 
+      includes, 
+      images, 
+      is_active 
+    } = body
+
+    // Validate required fields
+    if (!name || !start_date || !end_date || !max_participants || price === undefined) {
+      return NextResponse.json(
+        { success: false, error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
+
+    const updateData = {
+      name,
+      description: description || '',
+      start_date,
+      end_date,
+      max_participants,
+      price,
+      level: level || 'All Levels',
+      includes: includes || [],
+      images: images || [],
+      is_active: is_active !== undefined ? is_active : true,
+      updated_at: new Date().toISOString()
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('surf_camps')
+      .update(updateData as any)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error updating surf camp:', error)
+      return NextResponse.json(
+        { success: false, error: 'Failed to update surf camp' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: { surf_camp: data }
+    })
+  } catch (error) {
+    console.error('Error updating surf camp:', error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
+      },
+      { status: 500 }
+    )
+  }
+}
+
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   })
