@@ -568,9 +568,9 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* Customer Reviews Section */}
-      <section className="py-12 bg-white">
+      <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">What Our Customers Say</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center">What Our Customers Say</h2>
           
           {/* Google Reviews Component - Fetches real reviews from API */}
           <GoogleReviews showReviews={true} maxReviews={4} />
@@ -579,59 +579,61 @@ export default async function SurfWeeksPage() {
 
       {/* FAQ Section */}
       <section className="py-12 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Frequently Asked Questions</h2>
           
-          <Accordion type="single" collapsible className="space-y-4">
-            <AccordionItem value="item-1" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left">
-                How much does Surf Week cost?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                Our prices start at 450€ for a bed in the dorm room. Prices increase if you prefer a private room. 
-                Send us an email with your request, and we&apos;ll provide you with all the options. 
-                Please note that surf lessons are not included. You can find more details in the add-ons section.
-              </AccordionContent>
-            </AccordionItem>
-            
-            <AccordionItem value="item-2" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left">
-                Do I have to know how to surf or skateboard?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                No! Everyone is welcome—first-timers, improvers, intermediates, and pros 🙂
-              </AccordionContent>
-            </AccordionItem>
-            
-            <AccordionItem value="item-3" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left">
-                How does a typical day during Surf Week look?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                We start the day with yoga, followed by breakfast. Afterward, we head out to surf. 
-                Lunch is next, and in the afternoon, we enjoy activities like day trips, skateboarding, 
-                relaxing at the house, or playing games. Dinner is at home, and sometimes, we even throw a party 🙂
-              </AccordionContent>
-            </AccordionItem>
-            
-            <AccordionItem value="item-4" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left">
-                How many people are in Surf Week groups?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                We usually have up to 18 people in the house.
-              </AccordionContent>
-            </AccordionItem>
-            
-            <AccordionItem value="item-5" className="border border-gray-200 rounded-lg px-6">
-              <AccordionTrigger className="text-left">
-                What is the age of people who sign up?
-              </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
-                Generally 24+
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <div className="max-w-4xl mx-auto">
+            <Accordion type="single" collapsible className="space-y-4">
+              <AccordionItem value="item-1" className="border border-gray-200 rounded-lg px-4 sm:px-6">
+                <AccordionTrigger className="text-left text-sm sm:text-base">
+                  How much does Surf Week cost?
+                </AccordionTrigger>
+                <AccordionContent className="text-gray-600 text-sm sm:text-base">
+                  Our prices start at 450€ for a bed in the dorm room. Prices increase if you prefer a private room. 
+                  Send us an email with your request, and we&apos;ll provide you with all the options. 
+                  Please note that surf lessons are not included. You can find more details in the add-ons section.
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-2" className="border border-gray-200 rounded-lg px-4 sm:px-6">
+                <AccordionTrigger className="text-left text-sm sm:text-base">
+                  Do I have to know how to surf or skateboard?
+                </AccordionTrigger>
+                <AccordionContent className="text-gray-600 text-sm sm:text-base">
+                  No! Everyone is welcome—first-timers, improvers, intermediates, and pros 🙂
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-3" className="border border-gray-200 rounded-lg px-4 sm:px-6">
+                <AccordionTrigger className="text-left text-sm sm:text-base">
+                  How does a typical day during Surf Week look?
+                </AccordionTrigger>
+                <AccordionContent className="text-gray-600 text-sm sm:text-base">
+                  We start the day with yoga, followed by breakfast. Afterward, we head out to surf. 
+                  Lunch is next, and in the afternoon, we enjoy activities like day trips, skateboarding, 
+                  relaxing at the house, or playing games. Dinner is at home, and sometimes, we even throw a party 🙂
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-4" className="border border-gray-200 rounded-lg px-4 sm:px-6">
+                <AccordionTrigger className="text-left text-sm sm:text-base">
+                  How many people are in Surf Week groups?
+                </AccordionTrigger>
+                <AccordionContent className="text-gray-600 text-sm sm:text-base">
+                  We usually have up to 18 people in the house.
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="item-5" className="border border-gray-200 rounded-lg px-4 sm:px-6">
+                <AccordionTrigger className="text-left text-sm sm:text-base">
+                  What is the age of people who sign up?
+                </AccordionTrigger>
+                <AccordionContent className="text-gray-600 text-sm sm:text-base">
+                  Generally 24+
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
         </div>
       </section>
     </div>

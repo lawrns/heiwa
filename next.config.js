@@ -50,8 +50,8 @@ const nextConfig = {
   
   // Performance optimizations
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
-    optimizeCss: true,
+    // optimizePackageImports: ['lucide-react', 'framer-motion'], // Disabled due to malloc errors on macOS
+    optimizeCss: false,
     scrollRestoration: true,
   },
   

@@ -86,18 +86,41 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
             roomType = 'shared';
           }
 
-          // Handle images: prefer images array, fallback to featured_image, then fallback URL
+          // Handle images: prefer valid images array, fallback to featured_image, then local fallback
           let images: string[] = [];
+          
+          // Helper to check if URL is valid and accessible
+          const isValidImageUrl = (url: string): boolean => {
+            if (!url) return false;
+            // Skip broken heiwahouse.com URLs
+            if (url.includes('heiwahouse.com/wp-content')) return false;
+            // Accept local images and valid external URLs
+            return url.startsWith('/') || url.startsWith('http');
+          };
+          
           if (room.images && Array.isArray(room.images) && room.images.length > 0) {
-            images = room.images;
-          } else if (room.featured_image) {
+            // Filter out invalid URLs
+            images = room.images.filter(isValidImageUrl);
+          }
+          
+          if (images.length === 0 && room.featured_image && isValidImageUrl(room.featured_image)) {
             images = [room.featured_image];
-          } else {
-            // Fallback to heiwahouse.com images based on room type
+          }
+          
+          if (images.length === 0) {
+            // Fallback to local images based on room type
             if (roomType === 'dorm') {
-              images = ['https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-1-scaled-570x600.webp'];
+              images = [
+                '/images/Freedomroutes-rooms-1.jpg',
+                '/images/Freedomroutes-rooms-50.jpg',
+                '/images/DSC03521-scaled.jpg'
+              ];
             } else {
-              images = ['https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-52-scaled-570x600.jpg'];
+              images = [
+                '/images/DSC02099-scaled.jpg',
+                '/images/DSC02102-scaled.jpg',
+                '/images/DSC03530-scaled.jpg'
+              ];
             }
           }
 
