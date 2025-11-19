@@ -378,7 +378,7 @@ export function BookingWidget({
             </div>
 
             {/* Footer Navigation */}
-            {!bookingSuccess && (
+            {!bookingSuccess && computed.currentStepType !== 'review-pay' && (
               <div className="flex items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white">
                 <button
                   onClick={actions.prevStep}

@@ -1,0 +1,924 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2025-01-15",
+    "purpose": "Comprehensive browser testing context for Heiwa House website - booking flows and admin journeys",
+    "targetAudience": "AI agents performing automated browser testing",
+    "productionUrl": "https://heiwahauz.netlify.app"
+  },
+  "credentials": {
+    "admin": {
+      "loginUrl": "/admin/login",
+      "password": "heiwa_admin_2024",
+      "note": "Password is set in environment variables. Default fallback is 'heiwa_admin_2024'",
+      "cookieName": "admin_auth",
+      "cookieValue": "heiwa_admin_2024",
+      "sessionDuration": "7 days"
+    },
+    "testData": {
+      "testEmail": "test@example.com",
+      "testPhone": "+351912345678",
+      "testName": "Test User",
+      "testDates": {
+        "checkIn": "2026-06-15",
+        "checkOut": "2026-06-22"
+      }
+    }
+  },
+  "visitorJourneys": {
+    "roomBookingFlow": {
+      "name": "Complete Room Booking Flow",
+      "description": "Full end-to-end room booking process from homepage to confirmation",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to homepage",
+          "url": "/",
+          "expected": "Homepage loads with hero section, surf weeks section, and navigation"
+        },
+        {
+          "step": 2,
+          "action": "Click 'BOOK' button in header",
+          "selector": "button[aria-label='Open booking widget'] or button containing 'BOOK'",
+          "expected": "Booking widget modal opens from right side"
+        },
+        {
+          "step": 3,
+          "action": "Select 'Book a Room' option",
+          "selector": "button containing 'Book a Room'",
+          "expected": "Selected card highlights, progress indicator shows step 1/4 completed"
+        },
+        {
+          "step": 4,
+          "action": "Click 'Next' button",
+          "selector": "button containing 'Next'",
+          "expected": "Advances to Options step (step 2/4)"
+        },
+        {
+          "step": 5,
+          "action": "Select check-in date",
+          "selector": "input[type='date'] or date picker for check-in",
+          "expected": "Date picker opens, date is selected and displayed"
+        },
+        {
+          "step": 6,
+          "action": "Select check-out date",
+          "selector": "input[type='date'] or date picker for check-out",
+          "expected": "Date picker opens, date is selected, availability is checked"
+        },
+        {
+          "step": 7,
+          "action": "Set number of guests",
+          "selector": "input[type='number'] or guest counter",
+          "expected": "Guest count updates, available rooms filter based on capacity"
+        },
+        {
+          "step": 8,
+          "action": "Select a room from available options",
+          "selector": "Room card or room selection button",
+          "expected": "Room is selected (highlighted), but does NOT auto-advance (user must click Next manually)",
+          "criticalNote": "Room selection should NOT auto-advance - user must manually press Next button"
+        },
+        {
+          "step": 9,
+          "action": "Click 'Next' button after room selection",
+          "selector": "button containing 'Next'",
+          "expected": "Advances to Guest Details step (step 3/4)"
+        },
+        {
+          "step": 10,
+          "action": "Fill in guest details form",
+          "fields": [
+            {
+              "name": "Full Name",
+              "selector": "input[name='guest_name'] or input[placeholder*='name']",
+              "value": "Test User"
+            },
+            {
+              "name": "Email",
+              "selector": "input[type='email'] or input[name='guest_email']",
+              "value": "test@example.com"
+            },
+            {
+              "name": "Phone",
+              "selector": "input[type='tel'] or input[name='guest_phone']",
+              "value": "+351912345678"
+            }
+          ],
+          "expected": "All fields are filled, form validation passes"
+        },
+        {
+          "step": 11,
+          "action": "Click 'Next' button",
+          "selector": "button containing 'Next'",
+          "expected": "If multiple guests (>1), goes to Room Assignment step. If single guest, goes to Add-ons step"
+        },
+        {
+          "step": 12,
+          "action": "Assign guests to rooms (if multiple guests)",
+          "condition": "Only if guests > 1",
+          "selector": "Room assignment interface",
+          "expected": "All guests are assigned to rooms, can proceed to next step"
+        },
+        {
+          "step": 13,
+          "action": "Select add-ons (optional)",
+          "selector": "Add-on checkboxes or selection interface",
+          "expected": "Selected add-ons are added to total price"
+        },
+        {
+          "step": 14,
+          "action": "Click 'Next' button",
+          "selector": "button containing 'Next'",
+          "expected": "Advances to Review & Pay step (final step)"
+        },
+        {
+          "step": 15,
+          "action": "Review booking details",
+          "expected": "Review area is visible and scrollable, shows all booking details, pricing breakdown, total amount"
+        },
+        {
+          "step": 16,
+          "action": "Select payment method",
+          "selector": "Radio buttons or payment method selector",
+          "options": ["Credit Card (Stripe)", "Bank Transfer"],
+          "expected": "Payment method is selected"
+        },
+        {
+          "step": 17,
+          "action": "Click 'Complete Booking' button",
+          "selector": "button containing 'Complete Booking'",
+          "expected": "Booking is submitted, success message appears with booking confirmation"
+        }
+      ],
+      "validationPoints": [
+        "Room selection does NOT auto-advance",
+        "Review area scrolls into view and stays visible",
+        "All form fields validate correctly",
+        "Pricing calculations are accurate",
+        "Booking confirmation displays correctly"
+      ]
+    },
+    "surfWeekBookingFlow": {
+      "name": "Complete Surf Week Booking Flow",
+      "description": "Full end-to-end surf week booking process",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to surf weeks page",
+          "url": "/surf-weeks",
+          "expected": "Surf weeks page loads with available weeks table"
+        },
+        {
+          "step": 2,
+          "action": "Click 'Book' button on a surf week",
+          "selector": "button containing 'Book' in surf weeks table",
+          "expected": "Booking widget opens with surf week pre-selected, dates pre-filled"
+        },
+        {
+          "step": 3,
+          "action": "Verify pre-selected experience",
+          "expected": "Experience step is skipped, Options step shows selected surf week"
+        },
+        {
+          "step": 4,
+          "action": "Verify surf week is auto-selected",
+          "expected": "Surf week option is already selected, dates are pre-filled"
+        },
+        {
+          "step": 5,
+          "action": "Click 'Next' button (surf week auto-advances)",
+          "selector": "button containing 'Next'",
+          "expected": "Auto-advances to Surf Week Room Selection step after 300ms delay"
+        },
+        {
+          "step": 6,
+          "action": "Select room type for surf week",
+          "selector": "Room selection cards",
+          "options": ["Dorm Room", "Private Room"],
+          "expected": "Room is selected, pricing updates, auto-advances after 300ms"
+        },
+        {
+          "step": 7,
+          "action": "Fill in guest details",
+          "fields": [
+            {
+              "name": "Full Name",
+              "value": "Test User"
+            },
+            {
+              "name": "Email",
+              "value": "test@example.com"
+            },
+            {
+              "name": "Phone",
+              "value": "+351912345678"
+            }
+          ],
+          "expected": "Form is filled and validated"
+        },
+        {
+          "step": 8,
+          "action": "Click 'Next' button",
+          "expected": "Advances to Add-ons step"
+        },
+        {
+          "step": 9,
+          "action": "Select surf lesson add-ons",
+          "selector": "Add-on selection interface",
+          "expected": "Add-ons are selected, pricing updates"
+        },
+        {
+          "step": 10,
+          "action": "Click 'Next' button",
+          "expected": "Advances to Review & Pay step, review area is visible"
+        },
+        {
+          "step": 11,
+          "action": "Review booking and complete",
+          "expected": "All details are correct, booking can be completed"
+        }
+      ],
+      "validationPoints": [
+        "Surf week selection auto-advances (unlike room selection)",
+        "Dates are pre-filled from surf week",
+        "Room selection for surf week auto-advances",
+        "Review area is visible and scrollable"
+      ]
+    },
+    "homepageJourney": {
+      "name": "Homepage Exploration",
+      "description": "User exploring homepage features",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to homepage",
+          "url": "/",
+          "expected": "Page loads without errors"
+        },
+        {
+          "step": 2,
+          "action": "Check hero section",
+          "expected": "Video or image displays, welcome message visible"
+        },
+        {
+          "step": 3,
+          "action": "Scroll to surf weeks section",
+          "expected": "Surf weeks section shows dates with year (2026), booking buttons work"
+        },
+        {
+          "step": 4,
+          "action": "Check room images",
+          "expected": "Only room-related images, no basketball/bikes in room galleries"
+        },
+        {
+          "step": 5,
+          "action": "Check YouTube video",
+          "expected": "Video embeds without controls, plays correctly"
+        },
+        {
+          "step": 6,
+          "action": "Check Google reviews",
+          "expected": "Reviews display correctly, rating shows 5.0"
+        },
+        {
+          "step": 7,
+          "action": "Test navigation menu",
+          "expected": "All links work, dropdown menus function"
+        }
+      ]
+    },
+    "surfWeeksPageJourney": {
+      "name": "Surf Weeks Page Exploration",
+      "description": "User exploring surf weeks page",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to surf weeks page",
+          "url": "/surf-weeks",
+          "expected": "Page loads, hero section with background image visible"
+        },
+        {
+          "step": 2,
+          "action": "Check 'What is included' section",
+          "expected": "Background image is visible (55% opacity cards), three-column layout with Included, Price, Add-ons",
+          "criticalNote": "Cards should be semi-transparent (bg-white/55) allowing background image to show through"
+        },
+        {
+          "step": 3,
+          "action": "Check pricing section",
+          "expected": "Price card shows 'FROM 450€' prominently, orange border"
+        },
+        {
+          "step": 4,
+          "action": "Check add-ons section",
+          "expected": "Popular add-ons list displays with prices"
+        },
+        {
+          "step": 5,
+          "action": "Check 'Book Now' button",
+          "expected": "Button has no white background wrapper, appears directly on background"
+        },
+        {
+          "step": 6,
+          "action": "Scroll to FAQ section",
+          "expected": "FAQ section is max-w-4xl width, accordion works"
+        },
+        {
+          "step": 7,
+          "action": "Check surf weeks table",
+          "expected": "Available weeks display with dates, prices, availability"
+        }
+      ]
+    }
+  },
+  "adminJourneys": {
+    "adminLogin": {
+      "name": "Admin Login Flow",
+      "description": "Complete admin authentication process",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to admin login page",
+          "url": "/admin/login",
+          "expected": "Login page loads with password input field"
+        },
+        {
+          "step": 2,
+          "action": "Enter admin password",
+          "selector": "input[type='password']",
+          "value": "heiwa_admin_2024",
+          "expected": "Password is entered (masked)"
+        },
+        {
+          "step": 3,
+          "action": "Submit login form",
+          "selector": "button[type='submit'] or form submit",
+          "expected": "Form submits, cookie is set, redirects to /admin dashboard"
+        },
+        {
+          "step": 4,
+          "action": "Verify authentication",
+          "expected": "Admin dashboard loads, sidebar navigation visible, no redirect to login"
+        },
+        {
+          "step": 5,
+          "action": "Check cookie is set",
+          "cookieName": "admin_auth",
+          "cookieValue": "heiwa_admin_2024",
+          "expected": "Cookie exists with correct value"
+        }
+      ],
+      "validationPoints": [
+        "Invalid password shows error message",
+        "Valid password sets cookie and redirects",
+        "Cookie persists across page navigations",
+        "Middleware protects admin routes"
+      ]
+    },
+    "adminDashboard": {
+      "name": "Admin Dashboard Overview",
+      "description": "Admin viewing dashboard statistics",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to admin dashboard",
+          "url": "/admin",
+          "prerequisite": "Must be logged in",
+          "expected": "Dashboard loads with stat cards and recent bookings"
+        },
+        {
+          "step": 2,
+          "action": "Check stat cards",
+          "expected": "Four stat cards display: Total Bookings, Confirmed, Pending, Total Revenue"
+        },
+        {
+          "step": 3,
+          "action": "Check recent bookings table",
+          "expected": "Table shows recent bookings with details"
+        },
+        {
+          "step": 4,
+          "action": "Check action cards",
+          "expected": "Quick action cards are visible and clickable"
+        }
+      ]
+    },
+    "adminBookingsManagement": {
+      "name": "Admin Bookings Management",
+      "description": "Admin managing bookings - view, edit, filter, search",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to bookings page",
+          "url": "/admin/bookings",
+          "prerequisite": "Must be logged in",
+          "expected": "Bookings page loads with table view"
+        },
+        {
+          "step": 2,
+          "action": "Check bookings table",
+          "expected": "Table displays bookings with columns: ID, Guest, Type, Dates, Status, Payment Status, Actions"
+        },
+        {
+          "step": 3,
+          "action": "Test search functionality",
+          "selector": "input[type='search'] or search input",
+          "testValue": "test@example.com",
+          "expected": "Table filters to show matching bookings"
+        },
+        {
+          "step": 4,
+          "action": "Test status filter",
+          "selector": "select or filter dropdown for status",
+          "options": ["all", "pending", "confirmed", "cancelled", "completed"],
+          "expected": "Table filters by selected status"
+        },
+        {
+          "step": 5,
+          "action": "Test type filter",
+          "selector": "select or filter dropdown for type",
+          "options": ["all", "room", "surf_camp"],
+          "expected": "Table filters by booking type"
+        },
+        {
+          "step": 6,
+          "action": "Test payment status filter",
+          "selector": "select or filter dropdown for payment status",
+          "options": ["all", "pending", "paid", "refunded"],
+          "expected": "Table filters by payment status"
+        },
+        {
+          "step": 7,
+          "action": "Click 'View' button on a booking",
+          "selector": "button containing 'View' or eye icon",
+          "expected": "View modal opens showing all booking details in read-only format"
+        },
+        {
+          "step": 8,
+          "action": "Close view modal",
+          "selector": "Close button or X button in modal",
+          "expected": "Modal closes, returns to bookings table"
+        },
+        {
+          "step": 9,
+          "action": "Click 'Edit' button on a booking",
+          "selector": "button containing 'Edit' or edit icon",
+          "expected": "Edit modal opens with editable fields"
+        },
+        {
+          "step": 10,
+          "action": "Edit booking status",
+          "selector": "select dropdown for status in edit modal",
+          "newValue": "confirmed",
+          "expected": "Status dropdown updates"
+        },
+        {
+          "step": 11,
+          "action": "Edit payment status",
+          "selector": "select dropdown for payment status",
+          "newValue": "paid",
+          "expected": "Payment status dropdown updates"
+        },
+        {
+          "step": 12,
+          "action": "Save changes",
+          "selector": "button containing 'Save'",
+          "expected": "Changes are saved, modal closes, table updates, toast notification appears"
+        },
+        {
+          "step": 13,
+          "action": "Test pagination",
+          "selector": "Pagination controls",
+          "expected": "Can navigate between pages, URL updates with page parameter"
+        },
+        {
+          "step": 14,
+          "action": "Toggle to calendar view",
+          "selector": "Button or toggle for calendar view",
+          "expected": "View switches to calendar format showing bookings on dates"
+        },
+        {
+          "step": 15,
+          "action": "Export bookings to CSV",
+          "selector": "Button containing 'Export' or 'Download'",
+          "expected": "CSV file downloads with all booking data"
+        }
+      ],
+      "validationPoints": [
+        "Real-time updates work (if another admin makes changes)",
+        "URL state persists filters and pagination",
+        "Modals are responsive and scrollable",
+        "Form validation works correctly",
+        "Toast notifications appear for actions"
+      ]
+    },
+    "adminCMSManagement": {
+      "name": "Admin CMS Content Management",
+      "description": "Admin managing website content through CMS",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to CMS pages",
+          "url": "/admin/cms/pages",
+          "prerequisite": "Must be logged in",
+          "expected": "CMS pages list loads"
+        },
+        {
+          "step": 2,
+          "action": "Click on a page to edit",
+          "selector": "Page name or edit button",
+          "expected": "Page editor opens"
+        },
+        {
+          "step": 3,
+          "action": "Edit page content",
+          "selector": "Content editor or text fields",
+          "expected": "Content can be edited"
+        },
+        {
+          "step": 4,
+          "action": "Save changes",
+          "selector": "Save button",
+          "expected": "Changes are saved, success message appears"
+        },
+        {
+          "step": 5,
+          "action": "Navigate to homepage CMS",
+          "url": "/admin/homepage",
+          "expected": "Homepage CMS editor loads"
+        },
+        {
+          "step": 6,
+          "action": "Edit homepage sections",
+          "expected": "Can edit hero, surf weeks, rooms sections"
+        },
+        {
+          "step": 7,
+          "action": "Navigate to FAQ management",
+          "url": "/admin/cms/faq",
+          "expected": "FAQ management page loads"
+        },
+        {
+          "step": 8,
+          "action": "Add new FAQ item",
+          "selector": "Add FAQ button",
+          "expected": "Form opens to add new FAQ"
+        },
+        {
+          "step": 9,
+          "action": "Edit existing FAQ",
+          "selector": "Edit button on FAQ item",
+          "expected": "FAQ editor opens"
+        }
+      ]
+    },
+    "adminSurfCampsManagement": {
+      "name": "Admin Surf Camps Management",
+      "description": "Admin managing surf week offerings",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to surf camps page",
+          "url": "/admin/surf-camps",
+          "prerequisite": "Must be logged in",
+          "expected": "Surf camps list loads"
+        },
+        {
+          "step": 2,
+          "action": "Click 'New Surf Camp' button",
+          "selector": "Button containing 'New' or 'Create'",
+          "expected": "Create form opens"
+        },
+        {
+          "step": 3,
+          "action": "Fill in surf camp details",
+          "fields": [
+            {
+              "name": "Name",
+              "value": "Test Surf Week"
+            },
+            {
+              "name": "Start Date",
+              "value": "2026-07-01"
+            },
+            {
+              "name": "End Date",
+              "value": "2026-07-08"
+            },
+            {
+              "name": "Price",
+              "value": "450"
+            },
+            {
+              "name": "Total Spots",
+              "value": "18"
+            }
+          ],
+          "expected": "Form is filled"
+        },
+        {
+          "step": 4,
+          "action": "Save surf camp",
+          "selector": "Save button",
+          "expected": "Surf camp is created, appears in list"
+        },
+        {
+          "step": 5,
+          "action": "Edit existing surf camp",
+          "selector": "Edit button",
+          "expected": "Edit form opens with existing data"
+        },
+        {
+          "step": 6,
+          "action": "Update surf camp",
+          "expected": "Changes are saved"
+        }
+      ]
+    },
+    "adminRoomsManagement": {
+      "name": "Admin Rooms Management",
+      "description": "Admin managing room inventory",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Navigate to rooms page",
+          "url": "/admin/rooms",
+          "prerequisite": "Must be logged in",
+          "expected": "Rooms list loads"
+        },
+        {
+          "step": 2,
+          "action": "View room details",
+          "selector": "Room name or view button",
+          "expected": "Room details page or modal opens"
+        },
+        {
+          "step": 3,
+          "action": "Edit room",
+          "selector": "Edit button",
+          "expected": "Edit form opens"
+        },
+        {
+          "step": 4,
+          "action": "Update room availability",
+          "expected": "Changes are saved"
+        }
+      ]
+    }
+  },
+  "criticalBehaviors": {
+    "bookingWidget": {
+      "roomSelection": {
+        "behavior": "Does NOT auto-advance",
+        "description": "When a room is selected in the booking widget, the user MUST manually click 'Next' button. The widget should NOT automatically advance to the next step.",
+        "implementation": "Auto-advance logic was removed from OptionSelection.tsx for room bookings",
+        "validation": "Select a room, verify it does not auto-advance, manually click Next"
+      },
+      "surfWeekSelection": {
+        "behavior": "Auto-advances",
+        "description": "When a surf week is selected, the widget automatically advances to the next step after 300ms delay",
+        "validation": "Select a surf week, verify it auto-advances without manual Next click"
+      },
+      "reviewAreaVisibility": {
+        "behavior": "Scrolls into view",
+        "description": "When navigating to the Review & Pay step, the content area should scroll to top to ensure the review section is visible",
+        "implementation": "Scroll behavior added in BookingWidget.tsx using contentScrollRef",
+        "validation": "Complete booking flow, verify review area is visible and scrollable"
+      }
+    },
+    "surfWeeksPage": {
+      "cardTransparency": {
+        "behavior": "Semi-transparent cards",
+        "description": "White cards in 'What is included' section should be 55% opacity (bg-white/55) allowing background image to show through",
+        "validation": "Check that background image is visible through the cards"
+      },
+      "buttonBackground": {
+        "behavior": "No white background wrapper",
+        "description": "Book Now button should appear directly on background image without white background wrapper",
+        "validation": "Verify button has no white card wrapper around it"
+      }
+    }
+  },
+  "testScenarios": {
+    "happyPath": {
+      "name": "Happy Path - Complete Room Booking",
+      "description": "Ideal user journey with no errors",
+      "steps": [
+        "Navigate to homepage",
+        "Click BOOK button",
+        "Select 'Book a Room'",
+        "Click Next",
+        "Select dates and guests",
+        "Select room",
+        "Click Next (manual)",
+        "Fill guest details",
+        "Click Next",
+        "Skip add-ons",
+        "Click Next",
+        "Review booking",
+        "Select payment method",
+        "Complete booking"
+      ],
+      "expectedOutcome": "Booking confirmation displayed"
+    },
+    "errorHandling": {
+      "name": "Error Handling Scenarios",
+      "scenarios": [
+        {
+          "scenario": "Invalid dates selected",
+          "action": "Select check-out date before check-in",
+          "expected": "Error message displayed, cannot proceed"
+        },
+        {
+          "scenario": "No availability",
+          "action": "Select dates with no available rooms",
+          "expected": "No rooms shown, message displayed"
+        },
+        {
+          "scenario": "Invalid email",
+          "action": "Enter invalid email in guest details",
+          "expected": "Form validation error, cannot proceed"
+        },
+        {
+          "scenario": "Admin wrong password",
+          "action": "Enter incorrect admin password",
+          "expected": "Error message, stay on login page"
+        }
+      ]
+    },
+    "edgeCases": {
+      "name": "Edge Cases",
+      "scenarios": [
+        {
+          "scenario": "Single guest booking",
+          "action": "Book room for 1 guest",
+          "expected": "Room assignment step is skipped"
+        },
+        {
+          "scenario": "Multiple guests booking",
+          "action": "Book room for 3+ guests",
+          "expected": "Room assignment step appears"
+        },
+        {
+          "scenario": "Surf week with pre-selected dates",
+          "action": "Click Book on surf week from table",
+          "expected": "Dates are pre-filled, experience step skipped"
+        },
+        {
+          "scenario": "Long booking duration",
+          "action": "Select dates 2+ weeks apart",
+          "expected": "Pricing calculates correctly for extended stay"
+        }
+      ]
+    }
+  },
+  "validationChecklist": {
+    "functionality": [
+      "All buttons are clickable and functional",
+      "Forms validate input correctly",
+      "Navigation works across all pages",
+      "Booking widget opens and closes correctly",
+      "Admin login works with correct password",
+      "Admin routes are protected",
+      "Real-time updates work in admin panel",
+      "Search and filters work correctly",
+      "Pagination works correctly",
+      "Modals open and close correctly"
+    ],
+    "visual": [
+      "Logo size is consistent (h-8 / 32px)",
+      "Color scheme is consistent (orange #ec681c)",
+      "Cards are properly styled",
+      "Background images are visible through transparent cards",
+      "Buttons have proper hover states",
+      "Loading states are displayed",
+      "Error messages are visible",
+      "Success messages are visible"
+    ],
+    "ux": [
+      "Room selection does not auto-advance",
+      "Surf week selection auto-advances",
+      "Review area is visible when reached",
+      "Progress indicator shows correct step",
+      "Form fields are clearly labeled",
+      "Error messages are helpful",
+      "Navigation is intuitive",
+      "Mobile experience is good"
+    ],
+    "performance": [
+      "Pages load quickly",
+      "Images are optimized",
+      "No console errors",
+      "No hydration mismatches",
+      "API calls are efficient",
+      "Real-time updates don't cause lag"
+    ]
+  },
+  "commonIssues": {
+    "knownIssues": [
+      {
+        "issue": "GoTrueClient instances warning",
+        "severity": "low",
+        "description": "Console may show 'Multiple GoTrueClient instances detected' - this is expected and not critical",
+        "action": "Can be ignored"
+      },
+      {
+        "issue": "Google Reviews API fallback",
+        "severity": "low",
+        "description": "If Google Reviews API key not configured, falls back gracefully",
+        "action": "Verify reviews still display"
+      }
+    ],
+    "fixedIssues": [
+      {
+        "issue": "Room selection auto-advance",
+        "status": "fixed",
+        "fix": "Removed auto-advance logic for room bookings in OptionSelection.tsx"
+      },
+      {
+        "issue": "Review area visibility",
+        "status": "fixed",
+        "fix": "Added scroll behavior to ensure review area is visible"
+      },
+      {
+        "issue": "Surf weeks card transparency",
+        "status": "fixed",
+        "fix": "Reduced card opacity to 55% (bg-white/55)"
+      },
+      {
+        "issue": "Book Now button background",
+        "status": "fixed",
+        "fix": "Removed white background wrapper from button"
+      }
+    ]
+  },
+  "testingInstructions": {
+    "setup": [
+      "1. Navigate to production URL: https://heiwahauz.netlify.app",
+      "2. Open browser DevTools (F12)",
+      "3. Open Console tab to monitor errors",
+      "4. Open Network tab to monitor API calls",
+      "5. Clear browser cache if needed"
+    ],
+    "execution": [
+      "1. Start with visitor journeys (booking flows)",
+      "2. Test both room and surf week booking flows",
+      "3. Verify critical behaviors (auto-advance, scroll behavior)",
+      "4. Test admin login with password: heiwa_admin_2024",
+      "5. Test admin journeys (bookings, CMS, etc.)",
+      "6. Document any issues found",
+      "7. Take screenshots of problems",
+      "8. Verify fixes are working"
+    ],
+    "reporting": {
+      "format": "JSON or Markdown",
+      "include": [
+        "Test scenario name",
+        "Steps executed",
+        "Expected vs actual results",
+        "Screenshots (if issues found)",
+        "Console errors",
+        "Browser and version",
+        "Date and time"
+      ]
+    }
+  },
+  "apiEndpoints": {
+    "booking": {
+      "create": "/api/bookings",
+      "method": "POST",
+      "auth": "Not required for public booking"
+    },
+    "admin": {
+      "login": "/api/admin/login",
+      "method": "POST",
+      "auth": "Password in body"
+    },
+    "bookings": {
+      "list": "/api/bookings",
+      "method": "GET",
+      "auth": "Admin cookie required"
+    },
+    "rooms": {
+      "list": "/api/rooms",
+      "method": "GET",
+      "auth": "Not required"
+    },
+    "surfCamps": {
+      "list": "/api/surf-camps",
+      "method": "GET",
+      "auth": "Not required"
+    }
+  },
+  "notes": {
+    "password": "The admin password 'heiwa_admin_2024' is set as a fallback in the code. In production, it should be set via environment variables (ADMIN_PASSWORD or NEXT_PUBLIC_ADMIN_PASSWORD).",
+    "cookie": "Admin authentication uses a cookie named 'admin_auth' with value matching the password. Cookie is set with 7-day expiration.",
+    "middleware": "All /admin routes are protected by middleware that checks for the admin_auth cookie. Invalid or missing cookie redirects to /admin/login.",
+    "bookingWidget": "The booking widget is a modal that slides in from the right. It can be opened from multiple places (header BOOK button, surf weeks table, etc.).",
+    "autoAdvance": "Room selection does NOT auto-advance (user must click Next). Surf week selection DOES auto-advance (300ms delay).",
+    "scrollBehavior": "When navigating to Review & Pay step, the content area scrolls to top to ensure review section is visible."
+  }
+}
+
+
