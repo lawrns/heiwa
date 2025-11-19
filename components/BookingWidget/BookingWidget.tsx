@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Calendar, CheckCircle } from 'lucide-react';
+import { X, Calendar, CheckCircle, ArrowLeft, Info } from 'lucide-react';
 import { useBookingFlow } from './hooks/useBookingFlow';
 import { useBooking } from '@/lib/booking-context';
 import { ProgressIndicator } from './ui/ProgressIndicator';
@@ -267,10 +267,11 @@ export function BookingWidget({
             {/* Progress Indicator */}
             <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
               <ProgressIndicator
-                currentStep={state.currentStep}
+                currentStep={computed.currentStep}
                 stepFlow={computed.stepFlow}
                 totalSteps={computed.totalSteps}
-                skippedSteps={state.skippedSteps || []}
+                skippedSteps={state.skippedSteps}
+                onStepClick={actions.jumpToStep}
               />
             </div>
 
@@ -380,14 +381,48 @@ export function BookingWidget({
             {/* Footer Navigation */}
             {!bookingSuccess && computed.currentStepType !== 'review-pay' && (
               <div className="flex items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white">
-                <button
-                  onClick={actions.prevStep}
-                  disabled={computed.isFirstStep}
-                  className="px-4 py-3 text-sm font-medium text-gray-600 hover:text-gray-900 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 rounded-lg min-h-[44px] flex items-center"
-                  aria-label="Go back to previous step"
-                >
-                  Back
-                </button>
+                <div className="relative group">
+                  <button
+                    onClick={actions.prevStep}
+                    disabled={computed.isFirstStep}
+                    className="
+                      inline-flex items-center gap-2 px-4 py-3
+                      text-sm font-medium
+                      bg-white hover:bg-gray-50
+                      text-gray-700 hover:text-gray-900
+                      border border-gray-300 hover:border-gray-400
+                      disabled:text-gray-400 disabled:bg-gray-100 disabled:border-gray-200 disabled:cursor-not-allowed
+                      rounded-lg shadow-sm hover:shadow-md
+                      transition-all duration-200 ease-out
+                      focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2
+                      min-h-[44px] min-w-[100px]
+                      hover:scale-[1.02] disabled:hover:scale-100
+                    "
+                    aria-label="Go back to previous step"
+                  >
+                    <ArrowLeft size={16} className="flex-shrink-0" />
+                    <span>Back</span>
+                  </button>
+                  
+                  {/* Tooltip */}
+                  {!computed.isFirstStep && (
+                    <div className="
+                      absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2
+                      px-3 py-2 bg-gray-900 text-white text-xs rounded-lg
+                      opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                      pointer-events-none whitespace-nowrap z-50
+                    ">
+                      <div className="flex items-center gap-2">
+                        <Info size={12} />
+                        <span>Edit previous step</span>
+                      </div>
+                      {/* Arrow */}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                        <div className="border-4 border-transparent border-t-gray-900" />
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="text-right hidden sm:block">

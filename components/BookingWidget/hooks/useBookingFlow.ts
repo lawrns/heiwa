@@ -185,6 +185,22 @@ export function useBookingFlow() {
     }
   }, [state.currentStep, state.skippedSteps]);
 
+  const jumpToStep = useCallback((targetStep: number) => {
+    // Validate target step
+    if (targetStep < 1 || targetStep > maxStep) {
+      console.warn('Invalid step number:', targetStep);
+      return;
+    }
+    
+    // Only allow jumping to completed steps or current step
+    // Users can't jump to future steps they haven't completed yet
+    if (targetStep <= state.currentStep) {
+      dispatch({ type: 'SET_STEP', payload: targetStep });
+    } else {
+      console.warn('Cannot jump to future step:', targetStep, 'Current step:', state.currentStep);
+    }
+  }, [state.currentStep, maxStep]);
+
   const setExperienceType = useCallback((type: 'room' | 'surf-week') => {
     dispatch({ type: 'SET_EXPERIENCE_TYPE', payload: type });
   }, []);
@@ -366,6 +382,7 @@ export function useBookingFlow() {
   const actions = useMemo(() => ({
     nextStep,
     prevStep,
+    jumpToStep,
     setExperienceType,
     setDates,
     setGuests,
@@ -391,6 +408,7 @@ export function useBookingFlow() {
   }), [
     nextStep,
     prevStep,
+    jumpToStep,
     setExperienceType,
     setDates,
     setGuests,
@@ -418,6 +436,7 @@ export function useBookingFlow() {
     state,
     actions,
     computed: {
+      currentStep: state.currentStep,
       canProceedToNextStep: canProceedToNextStep(),
       isFirstStep: state.currentStep === 1,
       isLastStep: state.currentStep === maxStep,

@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2, ShoppingBag } from 'lucide-react';
+import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2, ShoppingBag, ChevronDown } from 'lucide-react';
 import { BookingState, PricingBreakdown } from '../types';
 import { PaymentMethodSelector } from '../components/PaymentMethodSelector';
 import { BankWireInstructions } from '../components/BankWireInstructions';
+import { ScrollIndicator } from '../components/ScrollIndicator';
 import { apiFetch } from '../lib/api';
 
 interface ReviewAndPayProps {
@@ -20,7 +21,9 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
   const [pricing, setPricing] = useState<PricingBreakdown>(state.pricing);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [bookingCompleted, setBookingCompleted] = useState(false);
+  const [showJumpButton, setShowJumpButton] = useState(false);
   const bankInstructionsRef = useRef<HTMLDivElement>(null);
+  const paymentSectionRef = useRef<HTMLDivElement>(null);
 
   // Calculate pricing from established base price and current add-ons
   useEffect(() => {
@@ -45,6 +48,36 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
     setPricing(newPricing);
     actions.updatePricing(newPricing);
   }, [state.pricing.basePrice, state.pricing.roomUpgrade, state.selectedAddOns]);
+
+  // Check if bank instructions are below viewport and show jump button
+  useEffect(() => {
+    if (state.paymentMethod === 'bank_wire' && bankInstructionsRef.current && paymentSectionRef.current) {
+      const checkVisibility = () => {
+        const paymentRect = paymentSectionRef.current?.getBoundingClientRect();
+        const instructionsRect = bankInstructionsRef.current?.getBoundingClientRect();
+        
+        if (paymentRect && instructionsRect) {
+          const instructionsBelow = instructionsRect.top > window.innerHeight;
+          setShowJumpButton(instructionsBelow);
+        }
+      };
+
+      checkVisibility();
+      window.addEventListener('resize', checkVisibility);
+      return () => window.removeEventListener('resize', checkVisibility);
+    } else {
+      setShowJumpButton(false);
+    }
+  }, [state.paymentMethod]);
+
+  const scrollToInstructions = () => {
+    if (bankInstructionsRef.current) {
+      bankInstructionsRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    }
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-EU', {
@@ -126,15 +159,28 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
       // Handle payment flow based on method
       if (state.paymentMethod === 'card_stripe') {
-        // Create payment intent
+        // Get customer details from first guest
+        const primaryGuest = state.guestDetails[0];
+        const customerEmail = primaryGuest?.email;
+        const customerName = `${primaryGuest?.firstName} ${primaryGuest?.lastName}`.trim();
+
+        if (!customerEmail) {
+          throw new Error('Guest email is required for payment processing');
+        }
+
+        // Create payment intent with customer creation
         const paymentIntentRes = await apiFetch('/create-payment-intent', {
           method: 'POST',
           body: JSON.stringify({
             amount: pricing.total,
             currency: 'eur',
+            customerEmail,
+            customerName,
             metadata: {
               bookingId: data.data?.booking?.id,
               bookingNumber: data.data?.booking?.booking_number,
+              experienceType: state.experienceType,
+              source: 'heiwa_house_widget'
             },
           }),
         });
@@ -145,24 +191,13 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           throw new Error(paymentIntentData?.error || 'Failed to initialize payment');
         }
 
-        // Initialize Stripe Elements or redirect to checkout based on your implementation preference
-        // For now, we'll simulate a redirect or show the Elements form
-        // If you're using Stripe Checkout (hosted page):
-        /*
-        const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-        await stripe?.redirectToCheckout({ sessionId: paymentIntentData.sessionId });
-        */
-       
-        // Or if using Elements (embedded):
-        // onComplete(data.data); // Pass booking data and let parent component render Elements
+        console.log('✅ Stripe Payment Intent created:', {
+          id: paymentIntentData.id,
+          customerId: paymentIntentData.customerId
+        });
         
-        // For this iteration, let's assume we'll show success and handle payment asynchronously or in a separate step
-        // Ideally, ReviewAndPay should render Stripe Elements when 'card_stripe' is selected
-        
-        console.log('Stripe Payment Intent created:', paymentIntentData.id);
-        // Here you would typically render <Elements> provider and form
-        
-        // Temporary: Mark as completed for testing user flow without full frontend Elements implementation in this step
+        // For now, mark as completed for testing user flow
+        // In production, you would render Stripe Elements here with the clientSecret
         setBookingCompleted(true);
         onComplete(data.data);
 
@@ -389,10 +424,33 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       </div>
 
       {/* Payment Method Selection */}
-      <PaymentMethodSelector
-        selectedMethod={state.paymentMethod}
-        onMethodChange={actions.setPaymentMethod}
-      />
+      <div ref={paymentSectionRef}>
+        <PaymentMethodSelector
+          selectedMethod={state.paymentMethod}
+          onMethodChange={actions.setPaymentMethod}
+        />
+      </div>
+
+      {/* Jump to Instructions Button for Bank Transfer */}
+      {showJumpButton && state.paymentMethod === 'bank_wire' && (
+        <div className="flex justify-center">
+          <button
+            onClick={scrollToInstructions}
+            className="
+              inline-flex items-center gap-2 px-4 py-2
+              bg-orange-100 hover:bg-orange-200
+              text-orange-700 hover:text-orange-800
+              font-medium text-sm rounded-lg
+              border border-orange-200 hover:border-orange-300
+              transition-all duration-200
+              focus:outline-none focus:ring-2 focus:ring-orange-500/50
+            "
+          >
+            <ChevronDown size={16} className="animate-bounce" />
+            View Bank Transfer Instructions
+          </button>
+        </div>
+      )}
 
       {/* Booking Success Message for Bank Transfer */}
       {bookingCompleted && state.paymentMethod === 'bank_wire' && (
@@ -416,11 +474,17 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
       {/* Bank Wire Instructions */}
       {state.paymentMethod === 'bank_wire' && (
-        <div ref={bankInstructionsRef}>
+        <div ref={bankInstructionsRef} className="relative">
           <BankWireInstructions
             totalAmount={pricing.total}
             currency={pricing.currency}
             bookingReference={`HW-${Date.now().toString().slice(-6)}`}
+          />
+          
+          {/* Scroll indicator for bank instructions - reference parent container */}
+          <ScrollIndicator 
+            text="Bank transfer details below"
+            className="mt-4"
           />
         </div>
       )}
