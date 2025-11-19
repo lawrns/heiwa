@@ -312,19 +312,21 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                 <div className="flex items-center gap-3">
                   {/* View Photos Button */}
                   {(() => {
-                    const originalRoom = rooms.find(r => r.id === room.id);
-                    const imageCount = originalRoom?.images?.length || 0;
-                    return imageCount > 0 ? (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openGallery(room);
-                        }}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
-                      >
-                        📸 View {imageCount} Photo{imageCount > 1 ? 's' : ''}
-                      </button>
-                    ) : null;
+                    const roomImages = rooms.find(r => r.id === room.id)?.images;
+                    if (roomImages && roomImages.length > 0) {
+                      return (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openGallery(room);
+                          }}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
+                        >
+                          📸 View {roomImages.length} Photo{roomImages.length > 1 ? 's' : ''}
+                        </button>
+                      );
+                    }
+                    return null;
                   })()}
 
                   {/* Selection Indicator */}
