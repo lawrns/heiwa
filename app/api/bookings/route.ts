@@ -276,6 +276,13 @@ export async function POST(request: NextRequest) {
         console.log('✅ Existing client found:', clientId)
       }
 
+      // Fetch surf camp details for dates
+      const { data: surfCamp } = await supabaseAdmin
+        .from('surf_camps')
+        .select('name, start_date, end_date')
+        .eq('id', camp_id)
+        .single()
+
       // Create surf week booking record
       const bookingData = {
         client_ids: [clientId],
@@ -291,6 +298,9 @@ export async function POST(request: NextRequest) {
         status: 'pending',
         payment_status: 'pending',
         payment_method: null,
+        guests: participants.length, // Save actual guest count
+        check_in: surfCamp?.start_date || null, // Set check_in from surf camp start date
+        check_out: surfCamp?.end_date || null, // Set check_out from surf camp end date
         notes: `Created via surf week booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
         source: 'dashboard'
       }
@@ -311,13 +321,6 @@ export async function POST(request: NextRequest) {
 
       const bookingId = (bookingResult.data as any).id
       console.log('✅ Surf week booking created:', bookingId)
-
-      // Fetch surf camp details for email
-      const { data: surfCamp } = await supabaseAdmin
-        .from('surf_camps')
-        .select('name, start_date, end_date')
-        .eq('id', camp_id)
-        .single()
 
       // Send booking confirmation email (non-blocking)
       import('@/lib/email-service').then(({ emailService }) => {
@@ -463,6 +466,13 @@ export async function POST(request: NextRequest) {
     // Step 2: Create booking record
     let bookingData
     try {
+      // Fetch room details for room_type
+      const { data: room } = await supabaseAdmin
+        .from('rooms')
+        .select('name, id')
+        .eq('id', room_id)
+        .single()
+
       const booking = {
         client_ids: [clientData.id],
         items: [{
@@ -480,6 +490,10 @@ export async function POST(request: NextRequest) {
         status: 'pending',
         payment_status: 'pending',
         payment_method: null,
+        guests: guests || participants.length || 1, // Save guest count
+        check_in: start_date, // Set check_in date
+        check_out: end_date, // Set check_out date
+        room_type: room?.name || room_id, // Set room_type from room name
         notes: message || '',
         source: 'api'
       }

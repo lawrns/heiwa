@@ -133,6 +133,13 @@ export async function POST(request: NextRequest) {
       console.log('✅ Existing client found:', clientId)
     }
 
+    // Fetch room details for room_type
+    const { data: room } = await supabaseAdmin
+      .from('rooms')
+      .select('name, id')
+      .eq('id', room_id)
+      .single()
+
     // Create booking record
     const bookingData = {
       client_ids: [clientId],
@@ -149,7 +156,11 @@ export async function POST(request: NextRequest) {
       }],
       total_amount: pricing.total || 0,
       status: 'pending',
-      payment_status: 'pending'
+      payment_status: 'pending',
+      guests: guests || participants.length, // Save guest count (use guests param or participants length)
+      check_in: start_date, // Set check_in date
+      check_out: end_date, // Set check_out date
+      room_type: room?.name || room_id // Set room_type from room name or fallback to room_id
     }
 
     const bookingResult = await supabaseAdmin
