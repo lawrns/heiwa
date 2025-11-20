@@ -221,7 +221,7 @@ export default function BookingsPage() {
     }
   }
 
-  const handleDelete = async (bookingId: string) => {
+  const handleDeleteBooking = async (bookingId: string) => {
     if (!confirm('Are you sure you want to delete this booking?')) return
     
     try {
@@ -866,7 +866,7 @@ export default function BookingsPage() {
                           <Edit className="h-4 w-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(booking.id)}
+                          onClick={() => handleDeleteBooking(booking.id)}
                           className="text-red-600 hover:text-red-900 transition-colors p-1 rounded hover:bg-red-50"
                           title="Delete booking"
                         >
