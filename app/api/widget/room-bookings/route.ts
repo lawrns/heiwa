@@ -180,14 +180,8 @@ export async function POST(request: NextRequest) {
     const bookingId = (bookingResult.data as any).id
     console.log('✅ Booking created:', bookingId)
 
-    // Fetch room details for email
-    const { data: room } = await supabaseAdmin
-      .from('rooms')
-      .select('name')
-      .eq('id', room_id)
-      .single()
-
     // Send booking confirmation email (non-blocking)
+    // Note: room variable already fetched above for room_type
     import('@/lib/email-service').then(({ emailService }) => {
       emailService.sendBookingConfirmation({
         bookingId,
