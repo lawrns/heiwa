@@ -231,7 +231,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   // If not showing layout (not authenticated), show loading and redirect
-  if (!showLayout || !isAuthenticated) {
+  // But allow rendering if authenticated even if showLayout is temporarily false
+  if (!showLayout && !isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
