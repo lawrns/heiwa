@@ -141,25 +141,15 @@ export async function POST(request: NextRequest) {
       .single()
 
     // Create booking record
+    // Note: Database schema does NOT have 'items' field - removed to match actual schema
     const bookingData = {
       client_ids: [clientId],
-      items: [{
-        type: 'room',
-        itemId: room_id,
-        quantity: 1,
-        unitPrice: pricing.basePrice || 0,
-        totalPrice: pricing.total || 0,
-        dates: {
-          checkIn: start_date,
-          checkOut: end_date
-        }
-      }],
       total_amount: pricing.total || 0,
       status: 'pending',
       payment_status: 'pending',
       guests: guests || participants.length, // Save guest count (use guests param or participants length)
-      check_in: start_date, // Set check_in date
-      check_out: end_date, // Set check_out date
+      check_in: start_date, // REQUIRED - NOT NULL field
+      check_out: end_date, // REQUIRED - NOT NULL field
       room_type: room?.name || room_id // Set room_type from room name or fallback to room_id
     }
 

@@ -276,31 +276,40 @@ export async function POST(request: NextRequest) {
         console.log('✅ Existing client found:', clientId)
       }
 
-      // Fetch surf camp details for dates
-      const { data: surfCamp } = await supabaseAdmin
+      // Fetch surf camp details for dates (REQUIRED - check_in and check_out are NOT NULL)
+      const { data: surfCamp, error: surfCampError } = await supabaseAdmin
         .from('surf_camps')
         .select('name, start_date, end_date')
         .eq('id', camp_id)
         .single()
 
+      if (surfCampError || !surfCamp) {
+        console.error('Failed to fetch surf camp:', surfCampError)
+        return NextResponse.json({
+          success: false,
+          error: `Surf camp not found: ${camp_id}`
+        }, { status: 404 })
+      }
+
+      if (!surfCamp.start_date || !surfCamp.end_date) {
+        console.error('Surf camp missing dates:', surfCamp)
+        return NextResponse.json({
+          success: false,
+          error: `Surf camp ${surfCamp.name || camp_id} is missing start_date or end_date`
+        }, { status: 400 })
+      }
+
       // Create surf week booking record
+      // Note: Database schema does NOT have 'items' field - removed to match actual schema
       const bookingData = {
         client_ids: [clientId],
-        items: [{
-          type: 'surfCamp',
-          itemId: camp_id,
-          quantity: 1,
-          unitPrice: pricing.basePrice || 0,
-          totalPrice: pricing.total || 0,
-          dates: null // Surf camps don't have specific dates like rooms
-        }],
         total_amount: pricing.total || 0,
         status: 'pending',
         payment_status: 'pending',
-        payment_method: null,
         guests: participants.length, // Save actual guest count
-        check_in: surfCamp?.start_date || null, // Set check_in from surf camp start date
-        check_out: surfCamp?.end_date || null, // Set check_out from surf camp end date
+        check_in: surfCamp.start_date, // REQUIRED - NOT NULL field
+        check_out: surfCamp.end_date, // REQUIRED - NOT NULL field
+        room_type: null, // Not applicable for surf camps
         notes: `Created via surf week booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
         source: 'dashboard'
       }
@@ -313,9 +322,11 @@ export async function POST(request: NextRequest) {
 
       if (bookingResult.error) {
         console.error('Failed to create surf week booking:', bookingResult.error)
+        console.error('Booking data attempted:', JSON.stringify(bookingData, null, 2))
         return NextResponse.json({
           success: false,
-          error: 'Failed to create surf week booking record'
+          error: `Failed to create surf week booking record: ${bookingResult.error.message}`,
+          details: bookingResult.error
         }, { status: 500 })
       }
 
@@ -473,26 +484,15 @@ export async function POST(request: NextRequest) {
         .eq('id', room_id)
         .single()
 
+      // Note: Database schema does NOT have 'items' field - removed to match actual schema
       const booking = {
         client_ids: [clientData.id],
-        items: [{
-          type: 'room',
-          itemId: room_id,
-          quantity: 1,
-          unitPrice: 0, // Will be calculated later
-          totalPrice: 0, // Will be calculated later
-          dates: {
-            checkIn: start_date,
-            checkOut: end_date
-          }
-        }],
         total_amount: 0, // Will be calculated based on room pricing
         status: 'pending',
         payment_status: 'pending',
-        payment_method: null,
         guests: guests || participants.length || 1, // Save guest count
-        check_in: start_date, // Set check_in date
-        check_out: end_date, // Set check_out date
+        check_in: start_date, // REQUIRED - NOT NULL field
+        check_out: end_date, // REQUIRED - NOT NULL field
         room_type: room?.name || room_id, // Set room_type from room name
         notes: message || '',
         source: 'api'

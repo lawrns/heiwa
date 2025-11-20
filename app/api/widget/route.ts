@@ -113,30 +113,6 @@ export async function POST(request: NextRequest) {
     // Step 2: Create booking record with pricing and add-ons
     let bookingData
     try {
-      // Build items array with add-ons
-      const bookingItems: any[] = [{
-        type: 'room_booking',
-        room_id,
-        start_date,
-        end_date,
-        guests,
-        check_in: start_date,
-        check_out: end_date
-      }]
-
-      // Add add-ons to items
-      if (add_ons && add_ons.length > 0) {
-        add_ons.forEach((addon: any) => {
-          bookingItems.push({
-            type: 'add_on',
-            item_id: addon.id,
-            quantity: addon.quantity || 1,
-            unit_price: addon.price || 0,
-            total_price: (addon.price || 0) * (addon.quantity || 1)
-          })
-        })
-      }
-
       // Fetch room details for room_type
       const { data: room } = await supabaseAdmin
         .from('rooms')
@@ -144,20 +120,23 @@ export async function POST(request: NextRequest) {
         .eq('id', room_id)
         .single()
 
+      // Note: Database schema does NOT have 'items' field - removed to match actual schema
+      // Add-ons information can be stored in notes if needed
+      const addOnsNote = add_ons && add_ons.length > 0 
+        ? ` Add-ons: ${add_ons.map((a: any) => `${a.name || a.id} (x${a.quantity || 1})`).join(', ')}.`
+        : ''
+
       const booking = {
         client_ids: [clientData.id],
-        items: bookingItems,
         total_amount: pricing.total || 0,
         payment_status: 'pending',
-        payment_method: 'stripe', // Widget uses Stripe by default
         guests: guests || participants.length, // Save guest count as field
-        check_in: start_date, // Set check_in date
-        check_out: end_date, // Set check_out date
+        check_in: start_date, // REQUIRED - NOT NULL field
+        check_out: end_date, // REQUIRED - NOT NULL field
         room_type: room?.name || room_id, // Set room_type from room name
-        notes: `Widget booking - ${guests || participants.length} guest(s)`,
+        notes: `Widget booking - ${guests || participants.length} guest(s).${addOnsNote}`,
         source: 'api', // Widget bookings are API submissions
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        status: 'pending'
       }
 
       const { data: newBooking, error: bookingError } = await supabaseAdmin
