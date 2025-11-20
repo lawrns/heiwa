@@ -73,12 +73,11 @@ export async function GET(request: NextRequest) {
     
     // Transform database fields to admin UI format
     const transformedData = (data || []).map((booking: any) => {
-      const firstItem = booking.items?.[0]
-      
       // Get guest name from client_ids - use first client
       let guestName = 'Unknown'
       let guestEmail = ''
       let guestPhone = ''
+      let clientNotes = ''
       
       if (booking.client_ids && booking.client_ids.length > 0) {
         const firstClientId = booking.client_ids[0]
@@ -87,7 +86,31 @@ export async function GET(request: NextRequest) {
           guestName = client.name || 'Unknown'
           guestEmail = client.email || ''
           guestPhone = client.phone || ''
+          clientNotes = client.notes || ''
         }
+      }
+      
+      // Parse notes to extract dietary preferences and other details
+      // Notes may contain JSON or plain text with dietary info
+      let dietaryPreferences = ''
+      let specialRequests = booking.notes || ''
+      
+      try {
+        // Try to parse notes as JSON first
+        const notesData = booking.notes ? JSON.parse(booking.notes) : null
+        if (notesData && typeof notesData === 'object') {
+          dietaryPreferences = notesData.dietaryRequirements || notesData.dietary || notesData.diet || ''
+          specialRequests = notesData.specialRequests || notesData.requests || notesData.message || booking.notes || ''
+        } else if (booking.notes) {
+          // Check if notes contain dietary keywords
+          const notesLower = booking.notes.toLowerCase()
+          if (notesLower.includes('diet') || notesLower.includes('vegetarian') || notesLower.includes('vegan') || notesLower.includes('gluten')) {
+            specialRequests = booking.notes
+          }
+        }
+      } catch {
+        // If not JSON, use notes as-is for special requests
+        specialRequests = booking.notes || ''
       }
       
       return {
@@ -95,16 +118,19 @@ export async function GET(request: NextRequest) {
         guest_name: guestName,
         guest_email: guestEmail,
         guest_phone: guestPhone,
-        type: firstItem?.type || 'room',
-        item_name: firstItem?.itemId || 'Unknown',
-        check_in: firstItem?.dates?.checkIn || '',
-        check_out: firstItem?.dates?.checkOut || '',
-        guests: firstItem?.quantity || 1,
+        type: booking.room_type ? 'room' : 'surf_camp', // Infer from room_type field
+        item_name: booking.room_type || 'Unknown',
+        check_in: booking.check_in || '',
+        check_out: booking.check_out || '',
+        guests: booking.guests || 1,
         total_price: booking.total_amount || 0,
         status: booking.status || 'pending',
         payment_status: booking.payment_status || 'pending',
         created_at: booking.created_at,
-        special_requests: booking.notes || '',
+        special_requests: specialRequests,
+        dietary_preferences: dietaryPreferences,
+        client_notes: clientNotes,
+        notes: booking.notes || '', // Keep raw notes
         client_ids: booking.client_ids || []
       }
     })

@@ -17,6 +17,9 @@ interface Booking {
   payment_status: 'pending' | 'paid' | 'refunded'
   created_at: string
   special_requests?: string
+  dietary_preferences?: string
+  client_notes?: string
+  notes?: string
 }
 
 interface ViewBookingModalProps {
@@ -174,12 +177,42 @@ export function ViewBookingModal({
             </div>
           </div>
 
+          {/* Dietary Preferences */}
+          {booking.dietary_preferences && (
+            <div className="border-t pt-4">
+              <h4 className="font-medium text-gray-900 mb-3">Dietary Preferences</h4>
+              <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+                {booking.dietary_preferences}
+              </p>
+            </div>
+          )}
+
           {/* Special Requests */}
           {booking.special_requests && (
             <div className="border-t pt-4">
               <h4 className="font-medium text-gray-900 mb-3">Special Requests</h4>
-              <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+              <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 whitespace-pre-wrap">
                 {booking.special_requests}
+              </p>
+            </div>
+          )}
+
+          {/* Client Notes */}
+          {booking.client_notes && (
+            <div className="border-t pt-4">
+              <h4 className="font-medium text-gray-900 mb-3">Client Notes</h4>
+              <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 whitespace-pre-wrap">
+                {booking.client_notes}
+              </p>
+            </div>
+          )}
+
+          {/* Raw Notes (if different from special requests) */}
+          {booking.notes && booking.notes !== booking.special_requests && (
+            <div className="border-t pt-4">
+              <h4 className="font-medium text-gray-900 mb-3">Additional Notes</h4>
+              <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 whitespace-pre-wrap">
+                {booking.notes}
               </p>
             </div>
           )}

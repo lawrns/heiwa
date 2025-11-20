@@ -27,6 +27,9 @@ interface Booking {
   payment_status: 'pending' | 'paid' | 'refunded'
   created_at: string
   special_requests?: string
+  dietary_preferences?: string
+  client_notes?: string
+  notes?: string
 }
 
 export default function BookingsPage() {
