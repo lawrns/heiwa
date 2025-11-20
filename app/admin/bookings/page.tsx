@@ -557,7 +557,7 @@ export default function BookingsPage() {
           </div>
           <div>
             <p className="text-gray-500 text-sm">Total Bookings</p>
-            <p className="text-2xl font-bold text-gray-900">{bookings.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{filteredBookings.length}</p>
           </div>
         </div>
         

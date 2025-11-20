@@ -20,15 +20,23 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const roomId = searchParams.get('roomId')
-    const limit = parseInt(searchParams.get('limit') || '10')
+    const limitParam = searchParams.get('limit')
+    const limit = limitParam ? parseInt(limitParam) : null // null means no limit
     const offset = parseInt(searchParams.get('offset') || '0')
 
     // Fetch bookings
     let query = supabaseAdmin
       .from('bookings')
-      .select('*')
+      .select('*', { count: 'exact' }) // Get count for total
       .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1)
+    
+    // Only apply range if limit is specified
+    if (limit !== null) {
+      query = query.range(offset, offset + limit - 1)
+    } else if (offset > 0) {
+      // If offset but no limit, still apply offset
+      query = query.range(offset, offset + 999999) // Large number to get all after offset
+    }
 
     if (status) {
       query = query.eq('payment_status', status)
@@ -140,8 +148,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: { bookings: transformedData },
-      count,
-      limit,
+      count: count || transformedData.length, // Use count from query or fallback to array length
+      total: count || transformedData.length, // Add total field for clarity
+      limit: limit || transformedData.length,
       offset
     }, {
       headers: {

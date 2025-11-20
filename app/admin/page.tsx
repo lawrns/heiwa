@@ -36,8 +36,8 @@ export default function AdminDashboard() {
       try {
         setLoading(true)
         
-        // Fetch bookings data
-        const bookingsResponse = await fetch('/api/bookings')
+        // Fetch bookings data - get all bookings (no limit)
+        const bookingsResponse = await fetch('/api/bookings?limit=10000') // Large limit to get all
         const bookingsResult = await bookingsResponse.json()
         
         if (!bookingsResult.success || !bookingsResult.data.bookings) {
@@ -47,9 +47,10 @@ export default function AdminDashboard() {
         }
 
         const bookings = bookingsResult.data.bookings
+        const totalCount = bookingsResult.count || bookingsResult.total || bookings.length
         
-        // Calculate statistics
-        const totalBookings = bookings.length
+        // Calculate statistics - use totalCount from API, not just returned bookings length
+        const totalBookings = totalCount
         const confirmedCount = bookings.filter((b: any) => b.status === 'confirmed').length
         const pendingCount = bookings.filter((b: any) => b.status === 'pending').length
         const cancelledCount = bookings.filter((b: any) => b.status === 'cancelled').length
