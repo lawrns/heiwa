@@ -172,12 +172,20 @@ API Key: ${nextConfig.settings.apiKey}`}
 
         /* Override any conflicting styles */
         .heiwa-react-widget-container button {
-          background: none;
           border: none;
           padding: 0;
           font: inherit;
           cursor: pointer;
           outline: inherit;
+        }
+        
+        /* Preserve gradient backgrounds for progress indicator buttons */
+        .heiwa-react-widget-container button.bg-gradient-to-br.from-orange-500.to-orange-600 {
+          background: linear-gradient(to bottom right, #f97316, #ea580c) !important;
+        }
+        
+        .heiwa-react-widget-container button.bg-gradient-to-r.from-orange-500.to-orange-600 {
+          background: linear-gradient(to right, #f97316, #ea580c) !important;
         }
 
         /* Enhanced CTA buttons with premium styling */

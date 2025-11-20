@@ -5,8 +5,8 @@
 
 import { Client } from 'pg'
 
-const DB_CONNECTION_STRING = process.env.DATABASE_URL || 
-  'postgresql://postgres:Hennie@@12Hennie@@12@db.zejrhceuuujzgyukdwnb.supabase.co:5432/postgres'
+const DB_CONNECTION_STRING = process.env.DATABASE_URL ||
+  'postgresql://postgres:cqv_kmb-WEP.vez6xze@db.pguipwhrxdzzrndbluxb.supabase.co:5432/postgres'
 
 /**
  * Get PostgreSQL client

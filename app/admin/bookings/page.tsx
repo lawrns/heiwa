@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff } from 'lucide-react'
@@ -27,6 +27,9 @@ interface Booking {
   payment_status: 'pending' | 'paid' | 'refunded'
   created_at: string
   special_requests?: string
+  dietary_preferences?: string
+  client_notes?: string
+  notes?: string
 }
 
 export default function BookingsPage() {
@@ -63,29 +66,58 @@ export default function BookingsPage() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedBookings, setSelectedBookings] = useState<Set<string>>(new Set())
 
-  // Set up real-time updates
-  useBookingsRealtime({
-    onInsert: (newBooking) => {
+  // Memoize callbacks to prevent re-subscription loops
+  const handleInsert = useCallback((newBooking: Booking) => {
+    if (process.env.NODE_ENV === 'development') {
       console.log('📥 New booking received:', newBooking)
-      setBookings(prev => [newBooking, ...prev])
-    },
-    onUpdate: (updatedBooking) => {
-      console.log('✏️ Booking updated:', updatedBooking)
-      setBookings(prev =>
-        prev.map(b => b.id === updatedBooking.id ? updatedBooking : b)
-      )
-    },
-    onDelete: (bookingId) => {
-      console.log('🗑️ Booking deleted:', bookingId)
-      setBookings(prev => prev.filter(b => b.id !== bookingId))
-    },
-    onError: (error) => {
-      console.error('❌ Real-time error:', error)
-      setIsRealtimeConnected(false)
-    },
-    onConnect: (connected) => {
-      setIsRealtimeConnected(connected)
     }
+    // Check if booking already exists to prevent duplicates
+    setBookings(prev => {
+      const exists = prev.some(b => b.id === newBooking.id)
+      if (exists) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('⚠️ Booking already exists, skipping duplicate:', newBooking.id)
+        }
+        return prev
+      }
+      return [newBooking, ...prev]
+    })
+  }, [])
+
+  const handleUpdate = useCallback((updatedBooking: Booking) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✏️ Booking updated:', updatedBooking)
+    }
+    setBookings(prev =>
+      prev.map(b => b.id === updatedBooking.id ? updatedBooking : b)
+    )
+  }, [])
+
+  const handleDelete = useCallback((bookingId: string) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🗑️ Booking deleted:', bookingId)
+    }
+    setBookings(prev => prev.filter(b => b.id !== bookingId))
+  }, [])
+
+  const handleError = useCallback((error: Error) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('❌ Real-time error:', error)
+    }
+    setIsRealtimeConnected(false)
+  }, [])
+
+  const handleConnect = useCallback((connected: boolean) => {
+    setIsRealtimeConnected(connected)
+  }, [])
+
+  // Set up real-time updates with memoized callbacks
+  useBookingsRealtime({
+    onInsert: handleInsert,
+    onUpdate: handleUpdate,
+    onDelete: handleDelete,
+    onError: handleError,
+    onConnect: handleConnect
   })
 
   // Update URL when state changes
@@ -108,9 +140,14 @@ export default function BookingsPage() {
     router.push(`/admin/bookings${queryString ? '?' + queryString : ''}`, { scroll: false })
   }, [router])
 
+  const [bookingsFetched, setBookingsFetched] = useState(false)
+
   useEffect(() => {
-    fetchBookings()
-  }, [])
+    if (!bookingsFetched) {
+      fetchBookings()
+      setBookingsFetched(true)
+    }
+  }, [bookingsFetched])
 
   const fetchBookings = async () => {
     try {
@@ -118,6 +155,7 @@ export default function BookingsPage() {
       const data = await response.json()
       
       if (data.success) {
+        // Replace all bookings to avoid duplicates from realtime updates
         setBookings(data.data.bookings || [])
       } else {
         setError('Failed to fetch bookings')
@@ -965,10 +1003,22 @@ export default function BookingsPage() {
                   <p className="text-sm font-medium text-gray-900">{selectedBooking.payment_status}</p>
                 </div>
               </div>
+              {selectedBooking.dietary_preferences && (
+                <div className="border-t pt-4">
+                  <p className="text-sm text-gray-500">Dietary Preferences</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.dietary_preferences}</p>
+                </div>
+              )}
               {selectedBooking.special_requests && (
-                <div>
+                <div className="border-t pt-4">
                   <p className="text-sm text-gray-500">Special Requests</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.special_requests}</p>
+                  <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap">{selectedBooking.special_requests}</p>
+                </div>
+              )}
+              {selectedBooking.client_notes && (
+                <div className="border-t pt-4">
+                  <p className="text-sm text-gray-500">Client Notes</p>
+                  <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap">{selectedBooking.client_notes}</p>
                 </div>
               )}
             </div>

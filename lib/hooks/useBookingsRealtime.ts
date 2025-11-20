@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 
 interface Booking {
@@ -29,15 +29,25 @@ interface UseBookingsRealtimeOptions {
 }
 
 export function useBookingsRealtime(options: UseBookingsRealtimeOptions = {}) {
-  const { onInsert, onUpdate, onDelete, onError, onConnect } = options
+  // Use refs to store callbacks so they don't trigger re-subscriptions
+  const callbacksRef = useRef(options)
+  
+  // Update refs when options change (without triggering re-subscription)
+  useEffect(() => {
+    callbacksRef.current = options
+  }, [options])
 
   useEffect(() => {
     let subscription: any = null
+    let isSubscribed = false
 
     const setupRealtimeSubscription = async () => {
-      try {
-        // Use the existing Supabase client
+      // Prevent multiple subscriptions
+      if (isSubscribed) {
+        return
+      }
 
+      try {
         // Subscribe to all changes on the bookings table
         subscription = supabase
           .channel('bookings_changes')
@@ -51,38 +61,52 @@ export function useBookingsRealtime(options: UseBookingsRealtimeOptions = {}) {
             (payload: any) => {
               try {
                 const event = payload.eventType as BookingEvent
+                const callbacks = callbacksRef.current
 
                 if (event === 'INSERT' && payload.new) {
                   const newBooking = transformBookingData(payload.new)
-                  onInsert?.(newBooking)
+                  callbacks.onInsert?.(newBooking)
                 } else if (event === 'UPDATE' && payload.new) {
                   const updatedBooking = transformBookingData(payload.new)
-                  onUpdate?.(updatedBooking)
+                  callbacks.onUpdate?.(updatedBooking)
                 } else if (event === 'DELETE' && payload.old) {
-                  onDelete?.(payload.old.id)
+                  callbacks.onDelete?.(payload.old.id)
                 }
               } catch (err) {
-                console.error('Error processing realtime event:', err)
-                onError?.(err instanceof Error ? err : new Error('Unknown error'))
+                const callbacks = callbacksRef.current
+                if (process.env.NODE_ENV === 'development') {
+                  console.error('Error processing realtime event:', err)
+                }
+                callbacks.onError?.(err instanceof Error ? err : new Error('Unknown error'))
               }
             }
           )
           .subscribe((status: string) => {
+            const callbacks = callbacksRef.current
+            // Suppress all status logs - they're too noisy
             if (status === 'SUBSCRIBED') {
-              console.log('✅ Real-time bookings subscription active')
-              onConnect?.(true)
+              isSubscribed = true
+              callbacks.onConnect?.(true)
             } else if (status === 'CLOSED') {
-              console.log('❌ Real-time bookings subscription closed')
-              onConnect?.(false)
+              isSubscribed = false
+              callbacks.onConnect?.(false)
+              // Don't log CLOSED - it's normal during reconnection
             } else if (status === 'CHANNEL_ERROR') {
-              console.error('❌ Real-time channel error')
-              onConnect?.(false)
+              isSubscribed = false
+              if (process.env.NODE_ENV === 'development') {
+                console.error('❌ Real-time channel error')
+              }
+              callbacks.onConnect?.(false)
             }
           })
       } catch (err) {
-        console.error('Failed to setup realtime subscription:', err)
-        onError?.(err instanceof Error ? err : new Error('Failed to setup subscription'))
-        onConnect?.(false)
+        isSubscribed = false
+        const callbacks = callbacksRef.current
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Failed to setup realtime subscription:', err)
+        }
+        callbacks.onError?.(err instanceof Error ? err : new Error('Failed to setup subscription'))
+        callbacks.onConnect?.(false)
       }
     }
 
@@ -90,11 +114,12 @@ export function useBookingsRealtime(options: UseBookingsRealtimeOptions = {}) {
 
     // Cleanup subscription on unmount
     return () => {
+      isSubscribed = false
       if (subscription) {
         subscription.unsubscribe()
       }
     }
-  }, [onInsert, onUpdate, onDelete, onError, onConnect])
+  }, []) // Empty deps - only setup once, use refs for callbacks
 }
 
 /**

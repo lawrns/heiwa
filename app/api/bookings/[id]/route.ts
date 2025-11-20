@@ -31,23 +31,66 @@ export async function GET(
       )
     }
 
+    // Fetch client details
+    let guestName = 'Unknown'
+    let guestEmail = ''
+    let guestPhone = ''
+    let clientNotes = ''
+    
+    if (data.client_ids && data.client_ids.length > 0) {
+      const firstClientId = data.client_ids[0]
+      const { data: client } = await supabaseAdmin
+        .from('clients')
+        .select('id, name, email, phone, notes')
+        .eq('id', firstClientId)
+        .single()
+      
+      if (client) {
+        guestName = client.name || 'Unknown'
+        guestEmail = client.email || ''
+        guestPhone = client.phone || ''
+        clientNotes = client.notes || ''
+      }
+    }
+    
+    // Parse notes to extract dietary preferences
+    let dietaryPreferences = ''
+    let specialRequests = data.notes || ''
+    
+    try {
+      const notesData = data.notes ? JSON.parse(data.notes) : null
+      if (notesData && typeof notesData === 'object') {
+        dietaryPreferences = notesData.dietaryRequirements || notesData.dietary || notesData.diet || ''
+        specialRequests = notesData.specialRequests || notesData.requests || notesData.message || data.notes || ''
+      } else if (data.notes) {
+        const notesLower = data.notes.toLowerCase()
+        if (notesLower.includes('diet') || notesLower.includes('vegetarian') || notesLower.includes('vegan') || notesLower.includes('gluten')) {
+          specialRequests = data.notes
+        }
+      }
+    } catch {
+      specialRequests = data.notes || ''
+    }
+    
     // Transform to admin UI format
-    const firstItem = data.items?.[0]
     const transformedBooking = {
       id: data.id,
-      guest_name: data.guest_name || 'Unknown',
-      guest_email: data.guest_email || '',
-      guest_phone: data.guest_phone || '',
-      type: firstItem?.type || 'room',
-      item_name: firstItem?.itemId || 'Unknown',
-      check_in: firstItem?.dates?.checkIn || '',
-      check_out: firstItem?.dates?.checkOut || '',
-      guests: firstItem?.quantity || 1,
+      guest_name: guestName,
+      guest_email: guestEmail,
+      guest_phone: guestPhone,
+      type: data.room_type ? 'room' : 'surf_camp',
+      item_name: data.room_type || 'Unknown',
+      check_in: data.check_in || '',
+      check_out: data.check_out || '',
+      guests: data.guests || 1,
       total_price: data.total_amount || 0,
       status: data.status || 'pending',
       payment_status: data.payment_status || 'pending',
       created_at: data.created_at,
-      special_requests: data.notes || ''
+      special_requests: specialRequests,
+      dietary_preferences: dietaryPreferences,
+      client_notes: clientNotes,
+      notes: data.notes || ''
     }
 
     return NextResponse.json({

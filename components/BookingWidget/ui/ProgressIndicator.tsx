@@ -86,7 +86,7 @@ export function ProgressIndicator({
                     <div className={`
                       h-full transition-all duration-500 ease-out relative overflow-hidden
                       ${isCompleted
-                        ? 'bg-gradient-to-r from-green-500 to-orange-500'
+                        ? 'bg-gradient-to-r from-orange-500 to-orange-600'
                         : 'bg-gray-200'
                       }
                     `}>
@@ -131,8 +131,8 @@ export function ProgressIndicator({
                       }
                       ${isCompleted
                         ? clickable
-                          ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30 hover:from-green-600 hover:to-green-700 animate-in zoom-in-50 duration-300'
-                          : 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30 animate-in zoom-in-50 duration-300'
+                          ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/30 hover:from-orange-600 hover:to-orange-700 animate-in zoom-in-50 duration-300'
+                          : 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/30 animate-in zoom-in-50 duration-300'
                         : isCurrent
                           ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/40 scale-110'
                           : 'bg-white border-2 border-gray-300 text-gray-500'
@@ -176,7 +176,7 @@ export function ProgressIndicator({
                       ${isCurrent
                         ? 'text-orange-600'
                         : isCompleted
-                          ? 'text-green-600'
+                          ? 'text-orange-600'
                           : 'text-gray-500'
                       }
                     `}>

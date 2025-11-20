@@ -37,6 +37,12 @@ export async function POST(request: NextRequest) {
       case 'refund_notification':
         result = await emailService.sendRefundNotification(data)
         break
+      case 'pre_trip':
+        result = await emailService.sendPreTripEmail(data)
+        break
+      case 'post_trip_feedback':
+        result = await emailService.sendPostTripFeedbackRequest(data)
+        break
       case 'custom':
         result = await emailService.sendEmail(data)
         break

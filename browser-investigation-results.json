@@ -1,0 +1,151 @@
+{
+  "investigation_date": "2025-01-22",
+  "branch": "innovation",
+  "admin_credentials": {
+    "password": "heiwa_admin_2024",
+    "login_url": "/admin/login",
+    "cookie_name": "admin_auth",
+    "note": "Password is set via ADMIN_PASSWORD env var, defaults to 'heiwa_admin_2024'"
+  },
+  "findings": {
+    "bookings_appearing_in_backend": {
+      "status": "CONFIRMED - Bookings ARE appearing",
+      "evidence": {
+        "admin_dashboard": {
+          "total_bookings": 10,
+          "confirmed": 0,
+          "pending": 10,
+          "url": "https://heiwahauz.netlify.app/admin/bookings"
+        },
+        "bookings_list": {
+          "visible_bookings": 10,
+          "types": {
+            "room_bookings": 6,
+            "surf_camp_bookings": 4
+          },
+          "date_display": {
+            "room_bookings": "Show proper dates (e.g., 11/29/2025 - 12/9/2025)",
+            "surf_camp_bookings": "Show 'N/A N/A' (expected - surf camps don't have check-in/check-out dates in items structure)"
+          },
+          "status": "All bookings show 'pending' status",
+          "real_time_status": "Real-time updates connecting..."
+        }
+      },
+      "conclusion": "Bookings created from frontend ARE appearing in the backend admin panel. The issue reported may have been resolved or was a temporary display issue."
+    },
+    "progress_indicator_styling": {
+      "status": "NEEDS VERIFICATION",
+      "user_report": "Progress indicator 'looks terrible' and was 'orange before and looked ok'",
+      "code_analysis": {
+        "file": "components/BookingWidget/ui/ProgressIndicator.tsx",
+        "issues_found": [
+          {
+            "line": 89,
+            "current": "bg-gradient-to-r from-green-500 to-orange-500",
+            "issue": "Completed connector line uses green-to-orange gradient instead of orange gradient",
+            "should_be": "bg-gradient-to-r from-orange-500 to-orange-600"
+          },
+          {
+            "line": 134,
+            "current": "bg-gradient-to-br from-green-500 to-green-600",
+            "issue": "Completed step circles use green gradient instead of orange",
+            "should_be": "bg-gradient-to-br from-orange-500 to-orange-600"
+          },
+          {
+            "line": 179,
+            "current": "text-green-600",
+            "issue": "Completed step labels use green text instead of orange",
+            "should_be": "text-orange-600"
+          }
+        ]
+      },
+      "browser_investigation": {
+        "widget_found": true,
+        "progress_section_found": false,
+        "note": "Could not directly inspect progress indicator colors via browser automation, but code analysis confirms green colors are used for completed steps instead of orange"
+      },
+      "conclusion": "Code analysis confirms the issue - completed steps use green colors instead of orange. This needs to be fixed to match Heiwa House branding (#ec681c)."
+    }
+  },
+  "issues": [
+    {
+      "id": "progress-indicator-styling",
+      "title": "Progress Indicator Using Green Instead of Orange",
+      "severity": "medium",
+      "location": "components/BookingWidget/ui/ProgressIndicator.tsx",
+      "description": "The progress indicator shows completed steps in green instead of orange (#ec681c), which doesn't match Heiwa House branding. Previously it was orange and looked correct.",
+      "affected_lines": [
+        {
+          "line": 89,
+          "code": "bg-gradient-to-r from-green-500 to-orange-500",
+          "issue": "Completed connector line uses green-to-orange gradient instead of orange gradient",
+          "should_be": "bg-gradient-to-r from-orange-500 to-orange-600"
+        },
+        {
+          "line": 134,
+          "code": "bg-gradient-to-br from-green-500 to-green-600",
+          "issue": "Completed step circles use green gradient instead of orange",
+          "should_be": "bg-gradient-to-br from-orange-500 to-orange-600"
+        },
+        {
+          "line": 179,
+          "code": "text-green-600",
+          "issue": "Completed step labels use green text instead of orange",
+          "should_be": "text-orange-600"
+        }
+      ],
+      "current_behavior": "Completed steps show green colors, only current step shows orange",
+      "expected_behavior": "All completed steps should use orange (#ec681c) colors to match Heiwa House branding"
+    },
+    {
+      "id": "bookings-not-appearing-backend",
+      "title": "Frontend Bookings Not Appearing in Backend Admin Panel",
+      "severity": "resolved_or_false_alarm",
+      "description": "User reported bookings not appearing, but browser investigation confirms bookings ARE visible in admin panel.",
+      "evidence": {
+        "admin_panel_url": "https://heiwahauz.netlify.app/admin/bookings",
+        "total_bookings": 10,
+        "bookings_visible": true,
+        "real_time_updates": "connecting..."
+      },
+      "possible_explanations": [
+        "Issue was temporary and resolved",
+        "User may have been looking at wrong page or had filters applied",
+        "Real-time updates may have had a delay",
+        "Browser cache issue on user's side"
+      ],
+      "recommendation": "Verify user can see bookings now. If issue persists, check browser console for errors and verify real-time connection status."
+    }
+  ],
+  "quick_fixes": {
+    "progress_indicator": {
+      "file": "components/BookingWidget/ui/ProgressIndicator.tsx",
+      "changes": [
+        {
+          "line": 89,
+          "old": "bg-gradient-to-r from-green-500 to-orange-500",
+          "new": "bg-gradient-to-r from-orange-500 to-orange-600"
+        },
+        {
+          "line": 134,
+          "old": "bg-gradient-to-br from-green-500 to-green-600",
+          "new": "bg-gradient-to-br from-orange-500 to-orange-600"
+        },
+        {
+          "line": 179,
+          "old": "text-green-600",
+          "new": "text-orange-600"
+        }
+      ]
+    }
+  },
+  "files_to_check": [
+    "components/BookingWidget/ui/ProgressIndicator.tsx"
+  ],
+  "next_steps": [
+    "Fix progress indicator styling (change green to orange for completed steps)",
+    "Verify bookings are visible to user (may have been temporary issue)",
+    "Test booking flow end-to-end to ensure no regressions"
+  ]
+}
+

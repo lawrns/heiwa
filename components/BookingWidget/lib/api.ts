@@ -52,7 +52,19 @@ export async function apiFetch(inputPath: string, init: RequestInit = {}): Promi
 
   try {
     const res = await fetch(url, { ...init, headers, signal });
+    
+    // If fetch fails, throw a more descriptive error
+    if (!res.ok && res.status === 0) {
+      throw new Error(`Network error: Failed to fetch ${url}. Check if the server is running and the endpoint exists.`);
+    }
+    
     return res;
+  } catch (error) {
+    // Provide better error messages
+    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+      throw new Error(`Network error: Unable to reach ${url}. Make sure the development server is running on ${apiEndpoint || '/api'}`);
+    }
+    throw error;
   } finally {
     clearTimeout(timeout);
   }
