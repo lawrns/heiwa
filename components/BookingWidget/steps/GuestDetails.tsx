@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, Utensils, AlertCircle, Edit3, ChevronDown } from 'lucide-react';
+import { User, Mail, Phone, Utensils, AlertCircle, Edit3, ChevronDown, CheckCircle } from 'lucide-react';
 import { BookingState, GuestInfo } from '../types';
 
 interface GuestDetailsProps {
@@ -24,6 +24,8 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [initializedGuestCount, setInitializedGuestCount] = useState(0);
   const [userManuallyExpanded, setUserManuallyExpanded] = useState(false);
+  const [savedGuests, setSavedGuests] = useState<Set<number>>(new Set());
+  const [showSuccessMessage, setShowSuccessMessage] = useState<number | null>(null);
 
   // Initialize guest forms based on guest count - only when guest count changes
   useEffect(() => {
@@ -147,6 +149,37 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     };
 
     actions.updateGuestDetails(guestInfo);
+    
+    // Mark guest as saved
+    setSavedGuests(prev => new Set(prev).add(index));
+    setShowSuccessMessage(index);
+    
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      setShowSuccessMessage(null);
+    }, 3000);
+    
+    // Scroll to next guest if there is one, otherwise scroll to summary
+    setTimeout(() => {
+      const nextGuestIndex = index + 1;
+      if (nextGuestIndex < state.guests) {
+        const nextGuestElement = document.getElementById(`guest-form-${nextGuestIndex}`);
+        if (nextGuestElement) {
+          nextGuestElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Focus first input of next guest
+          const firstInput = nextGuestElement.querySelector('input') as HTMLInputElement;
+          if (firstInput) {
+            setTimeout(() => firstInput.focus(), 500);
+          }
+        }
+      } else {
+        // Scroll to summary section
+        const summaryElement = document.querySelector('[data-testid="guest-completion-status"]')?.closest('.bg-orange-50');
+        if (summaryElement) {
+          summaryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }, 300);
   };
 
   const allGuestsValid = () => {
@@ -203,17 +236,49 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
       {/* Guest Forms - Show when not collapsed */}
       {!isCollapsed && (
         <div className="space-y-6 transition-all duration-300">
-          {guestForms.map((guestForm, index) => (
-            <div key={`guest-${index}`} className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+          {guestForms.map((guestForm, index) => {
+            const isSaved = savedGuests.has(index);
+            const showSuccess = showSuccessMessage === index;
+            
+            return (
+            <div 
+              key={`guest-${index}`} 
+              id={`guest-form-${index}`}
+              className={`bg-gray-50 rounded-xl p-6 border-2 transition-all duration-300 ${
+                isSaved 
+                  ? 'border-green-300 bg-green-50/30' 
+                  : showSuccessMessage === index + 1 || (index === 0 && showSuccessMessage === null && savedGuests.has(1))
+                  ? 'border-orange-300 ring-2 ring-orange-200'
+                  : 'border-gray-200'
+              }`}
+            >
             {/* Guest Header */}
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                {index + 1}
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm transition-all duration-300 ${
+                isSaved 
+                  ? 'bg-gradient-to-br from-green-500 to-green-600' 
+                  : 'bg-gradient-to-br from-orange-500 to-orange-600'
+              }`}>
+                {isSaved ? <CheckCircle size={20} /> : index + 1}
               </div>
-              <h4 className="text-lg font-semibold text-gray-900">
-                Guest {index + 1} {index === 0 && '(Primary Guest)'}
-              </h4>
+              <div className="flex-1">
+                <h4 className="text-lg font-semibold text-gray-900">
+                  Guest {index + 1} {index === 0 && '(Primary Guest)'}
+                  {isSaved && <span className="ml-2 text-sm font-normal text-green-600">✓ Saved</span>}
+                </h4>
+              </div>
             </div>
+
+            {/* Success Message */}
+            {showSuccess && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700 animate-in fade-in-0 slide-in-from-top-2 duration-300" data-testid={`guest-${index}-success`}>
+                <CheckCircle size={16} className="flex-shrink-0" />
+                <span className="text-sm font-medium">
+                  Guest {index + 1} saved successfully!
+                  {index + 1 < state.guests && ` Continue with Guest ${index + 2} below.`}
+                </span>
+              </div>
+            )}
 
             {/* Error Message */}
             {errors[`guest-${index}`] && (
@@ -353,13 +418,26 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             <div className="mt-4 flex justify-end">
               <button
                 onClick={() => handleSaveGuest(index)}
-                className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm rounded-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px]"
+                disabled={isSaved}
+                className={`px-6 py-3 text-white font-semibold text-sm rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 min-h-[44px] ${
+                  isSaved
+                    ? 'bg-green-500 cursor-not-allowed opacity-75'
+                    : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:scale-105 focus:ring-orange-500/30'
+                }`}
               >
-                Save Guest {index + 1}
+                {isSaved ? (
+                  <span className="flex items-center gap-2">
+                    <CheckCircle size={16} />
+                    Saved
+                  </span>
+                ) : (
+                  `Save Guest ${index + 1}${index + 1 < state.guests ? ' & Continue' : ''}`
+                )}
               </button>
             </div>
           </div>
-        ))}
+        );
+          })}
         </div>
       )}
 
