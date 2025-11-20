@@ -169,6 +169,41 @@ export async function POST(request: NextRequest) {
     const bookingId = (bookingResult.data as any).id
     console.log('✅ Booking created:', bookingId)
 
+    // Fetch room details for email
+    const { data: room } = await supabaseAdmin
+      .from('rooms')
+      .select('name')
+      .eq('id', room_id)
+      .single()
+
+    // Send booking confirmation email (non-blocking)
+    import('@/lib/email-service').then(({ emailService }) => {
+      emailService.sendBookingConfirmation({
+        bookingId,
+        guestName: clientName,
+        guestEmail: email,
+        checkIn: start_date,
+        checkOut: end_date,
+        roomName: room?.name || 'Room',
+        totalAmount: pricing.total || 0,
+        currency: 'EUR',
+        status: 'pending',
+      }).catch(err => console.error('Failed to send booking confirmation email:', err))
+
+      // Send admin notification
+      emailService.sendBookingNotificationToAdmin({
+        bookingId,
+        guestName: clientName,
+        guestEmail: email,
+        checkIn: start_date,
+        checkOut: end_date,
+        roomName: room?.name || 'Room',
+        totalAmount: pricing.total || 0,
+        currency: 'EUR',
+        status: 'pending',
+      }).catch(err => console.error('Failed to send admin notification email:', err))
+    })
+
     // Return success response
     return NextResponse.json({
       success: true,
