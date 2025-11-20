@@ -140,6 +140,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [isLoginPage, setIsLoginPage] = useState(false)
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [showLayout, setShowLayout] = useState(false)
+  const [sidebarInitialized, setSidebarInitialized] = useState(false)
 
   useEffect(() => {
     setIsClient(true)
@@ -165,6 +166,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           setShowLayout(true)
           const email = localStorage.getItem('userEmail') || 'admin@heiwa.house'
           setUserEmail(email)
+          setSidebarInitialized(true)
         } else {
           setIsAuthenticated(false)
           setShowLayout(false)
@@ -186,6 +188,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     
     checkAuth()
   }, [router])
+
+  // Open sidebar on desktop after authentication is confirmed
+  useEffect(() => {
+    if (isAuthenticated && sidebarInitialized && typeof window !== 'undefined') {
+      // On desktop (md breakpoint), sidebar should be visible
+      // The CSS handles this with md:translate-x-0, but we ensure state is correct
+      if (window.innerWidth >= 768) {
+        // Sidebar is visible via CSS on desktop, but ensure mobile state is correct
+        // Don't force sidebarOpen to true on desktop as CSS handles visibility
+      }
+    }
+  }, [isAuthenticated, sidebarInitialized])
 
   const handleLogout = async () => {
     try {

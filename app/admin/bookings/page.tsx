@@ -67,7 +67,15 @@ export default function BookingsPage() {
   useBookingsRealtime({
     onInsert: (newBooking) => {
       console.log('📥 New booking received:', newBooking)
-      setBookings(prev => [newBooking, ...prev])
+      // Check if booking already exists to prevent duplicates
+      setBookings(prev => {
+        const exists = prev.some(b => b.id === newBooking.id)
+        if (exists) {
+          console.log('⚠️ Booking already exists, skipping duplicate:', newBooking.id)
+          return prev
+        }
+        return [newBooking, ...prev]
+      })
     },
     onUpdate: (updatedBooking) => {
       console.log('✏️ Booking updated:', updatedBooking)
@@ -108,9 +116,14 @@ export default function BookingsPage() {
     router.push(`/admin/bookings${queryString ? '?' + queryString : ''}`, { scroll: false })
   }, [router])
 
+  const [bookingsFetched, setBookingsFetched] = useState(false)
+
   useEffect(() => {
-    fetchBookings()
-  }, [])
+    if (!bookingsFetched) {
+      fetchBookings()
+      setBookingsFetched(true)
+    }
+  }, [bookingsFetched])
 
   const fetchBookings = async () => {
     try {
@@ -118,6 +131,7 @@ export default function BookingsPage() {
       const data = await response.json()
       
       if (data.success) {
+        // Replace all bookings to avoid duplicates from realtime updates
         setBookings(data.data.bookings || [])
       } else {
         setError('Failed to fetch bookings')
