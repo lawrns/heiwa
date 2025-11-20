@@ -148,7 +148,15 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
       const data = await res.json();
       if (!res.ok || !data?.success) {
-        throw new Error(data?.error || `Request failed (${res.status})`);
+        const errorMessage = data?.error || `Request failed (${res.status})`;
+        console.error('❌ Booking API error:', {
+          status: res.status,
+          error: data?.error,
+          errorCode: data?.errorCode,
+          debug: data?.debug,
+          details: data?.details
+        });
+        throw new Error(errorMessage);
       }
 
       console.log('✅ Booking created successfully:', {
@@ -390,13 +398,21 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         </div>
       </div>
 
-      {/* Payment Error */}
-      {paymentError && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
-          <AlertCircle size={16} />
-          <span className="text-sm">{paymentError}</span>
-        </div>
-      )}
+        {/* Payment Error */}
+        {paymentError && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700" data-testid="payment-error">
+            <div className="flex items-start gap-2">
+              <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium mb-1">Booking Failed</p>
+                <p className="text-sm">{paymentError}</p>
+                <p className="text-xs mt-2 text-red-600">
+                  Please check your information and try again. If the problem persists, contact support.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* Terms and Conditions */}
       <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">

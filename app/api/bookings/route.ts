@@ -198,7 +198,8 @@ export async function POST(request: NextRequest) {
         participants: participants.length,
         pricing,
         source_url,
-        widget_version
+        widget_version,
+        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || 'default'
       })
 
       // Validate required fields
@@ -279,23 +280,103 @@ export async function POST(request: NextRequest) {
       // Fetch surf camp details for dates (REQUIRED - check_in and check_out are NOT NULL)
       const { data: surfCamp, error: surfCampError } = await supabaseAdmin
         .from('surf_camps')
-        .select('name, start_date, end_date')
+        .select('id, name, start_date, end_date, is_active')
         .eq('id', camp_id)
         .single()
 
       if (surfCampError || !surfCamp) {
-        console.error('Failed to fetch surf camp:', surfCampError)
+        console.error('❌ Failed to fetch surf camp:', {
+          camp_id,
+          error: surfCampError,
+          errorCode: surfCampError?.code,
+          errorMessage: surfCampError?.message,
+          supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || 'default'
+        })
         return NextResponse.json({
           success: false,
-          error: `Surf camp not found: ${camp_id}`
+          error: `Surf camp not found: ${camp_id}`,
+          errorCode: surfCampError?.code,
+          debug: process.env.NODE_ENV === 'development' ? {
+            camp_id,
+            error: surfCampError
+          } : undefined
         }, { status: 404 })
       }
+
+      console.log('✅ Surf camp found:', {
+        id: surfCamp.id,
+        name: surfCamp.name,
+        start_date: surfCamp.start_date,
+        end_date: surfCamp.end_date,
+        is_active: surfCamp.is_active
+      })
 
       if (!surfCamp.start_date || !surfCamp.end_date) {
         console.error('Surf camp missing dates:', surfCamp)
         return NextResponse.json({
           success: false,
           error: `Surf camp ${surfCamp.name || camp_id} is missing start_date or end_date`
+        }, { status: 400 })
+      }
+
+      // Normalize dates to YYYY-MM-DD format for PostgreSQL DATE type
+      // Supabase returns DATE fields as strings, but we need to ensure format is correct
+      const normalizeDate = (date: any): string => {
+        if (!date) throw new Error('Date is null or undefined');
+        if (typeof date === 'string') {
+          // Extract YYYY-MM-DD from ISO string if needed (e.g., "2025-02-01T00:00:00" -> "2025-02-01")
+          return date.split('T')[0];
+        }
+        if (date instanceof Date) {
+          return date.toISOString().split('T')[0];
+        }
+        return String(date).split('T')[0];
+      };
+
+      let checkInDate: string;
+      let checkOutDate: string;
+      
+      try {
+        checkInDate = normalizeDate(surfCamp.start_date);
+        checkOutDate = normalizeDate(surfCamp.end_date);
+      } catch (dateError) {
+        console.error('Failed to normalize dates:', {
+          start_date: surfCamp.start_date,
+          start_date_type: typeof surfCamp.start_date,
+          end_date: surfCamp.end_date,
+          end_date_type: typeof surfCamp.end_date,
+          error: dateError
+        });
+        return NextResponse.json({
+          success: false,
+          error: `Invalid date format for surf camp ${surfCamp.name || camp_id}`,
+          debug: {
+            start_date: surfCamp.start_date,
+            start_date_type: typeof surfCamp.start_date,
+            end_date: surfCamp.end_date,
+            end_date_type: typeof surfCamp.end_date
+          }
+        }, { status: 400 })
+      }
+
+      // Validate date format (YYYY-MM-DD)
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(checkInDate) || !dateRegex.test(checkOutDate)) {
+        console.error('Invalid date format after normalization:', {
+          checkInDate,
+          checkOutDate,
+          original_start_date: surfCamp.start_date,
+          original_end_date: surfCamp.end_date
+        });
+        return NextResponse.json({
+          success: false,
+          error: `Invalid date format for surf camp ${surfCamp.name || camp_id}`,
+          debug: {
+            checkInDate,
+            checkOutDate,
+            original_start_date: surfCamp.start_date,
+            original_end_date: surfCamp.end_date
+          }
         }, { status: 400 })
       }
 
@@ -307,8 +388,8 @@ export async function POST(request: NextRequest) {
         status: 'pending',
         payment_status: 'pending',
         guests: participants.length, // Save actual guest count
-        check_in: surfCamp.start_date, // REQUIRED - NOT NULL field
-        check_out: surfCamp.end_date, // REQUIRED - NOT NULL field
+        check_in: checkInDate, // Normalized date string in YYYY-MM-DD format
+        check_out: checkOutDate, // Normalized date string in YYYY-MM-DD format
         room_type: null, // Not applicable for surf camps
         notes: `Created via surf week booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
         source: 'dashboard'
@@ -321,17 +402,63 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (bookingResult.error) {
-        console.error('Failed to create surf week booking:', bookingResult.error)
-        console.error('Booking data attempted:', JSON.stringify(bookingData, null, 2))
+        console.error('❌ Failed to create surf week booking:', {
+          error: bookingResult.error,
+          errorCode: bookingResult.error.code,
+          errorMessage: bookingResult.error.message,
+          errorDetails: bookingResult.error.details,
+          errorHint: bookingResult.error.hint,
+          bookingData: JSON.stringify(bookingData, null, 2),
+          surfCamp: {
+            id: camp_id,
+            name: surfCamp.name,
+            start_date: surfCamp.start_date,
+            start_date_type: typeof surfCamp.start_date,
+            end_date: surfCamp.end_date,
+            end_date_type: typeof surfCamp.end_date,
+            normalized_check_in: checkInDate,
+            normalized_check_out: checkOutDate
+          },
+          clientId: clientId
+        })
+        
+        // Provide user-friendly error message based on error code
+        let errorMessage = 'Failed to create surf week booking record';
+        if (bookingResult.error.code === '23502') { // NOT NULL violation
+          errorMessage = 'Missing required booking information. Please contact support.';
+        } else if (bookingResult.error.code === '23505') { // Unique violation
+          errorMessage = 'A booking with these details already exists.';
+        } else if (bookingResult.error.code === '22007') { // Invalid date format
+          errorMessage = 'Invalid date format. Please contact support.';
+        } else if (bookingResult.error.message) {
+          errorMessage = `Database error: ${bookingResult.error.message}`;
+        }
+        
         return NextResponse.json({
           success: false,
-          error: `Failed to create surf week booking record: ${bookingResult.error.message}`,
-          details: bookingResult.error
+          error: errorMessage,
+          errorCode: bookingResult.error.code,
+          details: process.env.NODE_ENV === 'development' ? bookingResult.error : undefined,
+          debug: process.env.NODE_ENV === 'development' ? {
+            surfCampFound: !!surfCamp,
+            checkInDate,
+            checkOutDate,
+            clientId,
+            bookingDataKeys: Object.keys(bookingData)
+          } : undefined
         }, { status: 500 })
       }
 
       const bookingId = (bookingResult.data as any).id
-      console.log('✅ Surf week booking created:', bookingId)
+      console.log('✅ Surf week booking created successfully:', {
+        bookingId,
+        campId: camp_id,
+        campName: surfCamp.name,
+        guests: participants.length,
+        checkIn: checkInDate,
+        checkOut: checkOutDate,
+        clientId
+      })
 
       // Send booking confirmation email (non-blocking)
       import('@/lib/email-service').then(({ emailService }) => {

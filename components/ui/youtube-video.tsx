@@ -10,7 +10,6 @@ interface VideoPlayerProps {
 
 export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProps) {
   const [embedUrl, setEmbedUrl] = useState<string>('')
-  const [isMounted, setIsMounted] = useState(false)
 
   // Extract video ID from URL if full URL is provided
   const extractVideoId = (idOrUrl: string): string => {
@@ -25,34 +24,37 @@ export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProp
 
   // Only set URL on client side to prevent hydration mismatch
   useEffect(() => {
-    setIsMounted(true)
     const cleanVideoId = extractVideoId(videoId)
     setEmbedUrl(`https://www.youtube.com/embed/${cleanVideoId}?si=WWXSAJs0SAnR0wHY&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1`)
   }, [videoId])
 
-  // Don't render iframe until mounted to prevent hydration mismatch
-  if (!isMounted || !embedUrl) {
-    return (
-      <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900 ${className}`}>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-white">Loading video...</div>
-        </div>
-      </div>
-    )
-  }
-
+  // Always render the same structure to prevent hydration mismatch
+  // The src will be empty on server, then set on client after mount
   return (
-    <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900 ${className}`}>
+    <div className={`relative aspect-video rounded-lg overflow-hidden shadow-lg bg-gray-900 ${className}`} suppressHydrationWarning>
+      {/* Loading overlay - always rendered, visibility controlled by CSS */}
+      <div 
+        className={`absolute inset-0 flex items-center justify-center z-10 bg-gray-900 transition-opacity duration-300 ${
+          embedUrl ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
+        suppressHydrationWarning
+      >
+        <div className="text-white">Loading video...</div>
+      </div>
+      
+      {/* Always render iframe with same structure to prevent hydration mismatch */}
+      {/* Use empty string instead of undefined to ensure consistent rendering */}
       <iframe
         width="560"
         height="315"
-        src={embedUrl}
+        src={embedUrl || ''} // Empty string on server, set on client
         title={title || "YouTube video player"}
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
         className="absolute inset-0 w-full h-full"
+        suppressHydrationWarning // Suppress warning for src attribute that changes after hydration
       />
     </div>
   )

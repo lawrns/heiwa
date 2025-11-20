@@ -14,7 +14,12 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   const [isOpen, setIsOpen] = useState(false)
   const [fetchedItems, setFetchedItems] = useState<NavigationItem[]>([])
   const [activitiesOpen, setActivitiesOpen] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const { openBooking } = useBooking()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!initialItems) {
@@ -56,7 +61,13 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   ]
 
   // Check if we're on the homepage to apply special layout
-  const isHomepage = currentPath === '/'
+  // Only evaluate after mount to prevent hydration mismatch
+  // Default to false on server, then update on client
+  const [isHomepage, setIsHomepage] = useState(false)
+  
+  useEffect(() => {
+    setIsHomepage(currentPath === '/')
+  }, [currentPath])
 
   return (
     <nav
@@ -113,6 +124,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   className="h-8 w-auto"
                   priority
                   style={{ height: 'auto' }}
+                  suppressHydrationWarning
                 />
               </Link>
             </div>
@@ -231,6 +243,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   height={32}
                   className="h-8 w-auto"
                   style={{ height: 'auto' }}
+                  suppressHydrationWarning
                 />
               </Link>
             </div>
