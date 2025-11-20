@@ -23,6 +23,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [initializedGuestCount, setInitializedGuestCount] = useState(0);
+  const [userManuallyExpanded, setUserManuallyExpanded] = useState(false);
 
   // Initialize guest forms based on guest count - only when guest count changes
   useEffect(() => {
@@ -67,17 +68,21 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     }) && state.guestDetails.length === state.guests;
   };
 
-  // Auto-collapse when all guests are completed
+  // Auto-collapse when all guests are completed (but only if user hasn't manually expanded)
   useEffect(() => {
     const allCompleted = checkAllGuestsCompleted();
-    if (allCompleted && !isCollapsed) {
+    if (allCompleted && !isCollapsed && !userManuallyExpanded) {
       // Add a small delay for better UX
       const timer = setTimeout(() => {
         setIsCollapsed(true);
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [guestForms, state.guestDetails, state.guests, isCollapsed]);
+    // Reset the manual expansion flag when guests are no longer all completed
+    if (!allCompleted && userManuallyExpanded) {
+      setUserManuallyExpanded(false);
+    }
+  }, [guestForms, state.guestDetails, state.guests, isCollapsed, userManuallyExpanded]);
 
   const validateForm = (formData: GuestFormData, index: number): string[] => {
     const formErrors: string[] = [];
@@ -179,7 +184,12 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
               </div>
             </div>
             <button
-              onClick={() => setIsCollapsed(false)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setUserManuallyExpanded(true);
+                setIsCollapsed(false);
+              }}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-green-300 text-green-700 rounded-lg hover:bg-green-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/30"
             >
               <Edit3 size={16} />
