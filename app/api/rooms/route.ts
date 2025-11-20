@@ -21,7 +21,14 @@ export async function GET() {
       return NextResponse.json({
         success: false,
         error: 'Failed to fetch rooms'
-      }, { status: 500 })
+      }, { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Heiwa-API-Key',
+        }
+      })
     }
 
     console.log('✅ Rooms fetched successfully:', activeRooms.length)
@@ -68,6 +75,12 @@ export async function GET() {
       data: {
         rooms: transformedRooms
       }
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Heiwa-API-Key',
+      }
     })
 
   } catch (error) {
@@ -75,7 +88,14 @@ export async function GET() {
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : 'Internal server error'
-    }, { status: 500 })
+    }, { 
+      status: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Heiwa-API-Key',
+      }
+    })
   }
 }
 
@@ -86,7 +106,7 @@ export async function OPTIONS() {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Heiwa-API-Key',
     },
   })
 }

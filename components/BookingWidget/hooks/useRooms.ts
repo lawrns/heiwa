@@ -169,7 +169,13 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
   }, [checkInTime, checkOutTime, guests]);
 
   useEffect(() => {
-    fetchRooms();
+    // Only fetch if we're in the browser (client-side)
+    if (typeof window === 'undefined') return;
+    
+    fetchRooms().catch((err) => {
+      console.error('Failed to fetch rooms in useEffect:', err);
+      // Error is already handled in fetchRooms
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkInTime, checkOutTime, guests]);
 

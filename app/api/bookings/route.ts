@@ -210,10 +210,8 @@ export async function POST(request: NextRequest) {
           phone: phone,
           brand: 'Heiwa House',
           status: 'active',
-          registrationDate: new Date().toISOString(),
-          notes: `Created via surf week booking widget ${widget_version || 'unknown'}`,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          notes: `Created via surf week booking widget ${widget_version || 'unknown'}`
+          // created_at, updated_at, and registration_date have DEFAULT NOW() in schema
         }
 
         const createResult = await supabaseAdmin

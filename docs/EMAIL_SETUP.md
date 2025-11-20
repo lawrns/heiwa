@@ -10,6 +10,8 @@ The Heiwa House application uses [Resend](https://resend.com) for sending transa
 - **Payment Confirmations** - Sent to clients when payments are completed
 - **Enrollment Confirmations** - Sent to participants when enrolled in surf camps
 - **Refund Notifications** - Sent to clients when refunds are processed
+- **Pre-Trip Planning Emails** - Sent automatically X days before check-in (default: 7 days) with packing lists, travel tips, and affiliate links
+- **Post-Trip Feedback Requests** - Sent automatically X days after check-out (default: 1 day) with review requests and feedback forms
 
 ## Setup Instructions
 
@@ -48,6 +50,9 @@ RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
 FROM_EMAIL=Heiwa House <noreply@heiwahouse.com>
 ADMIN_EMAIL=info@heiwahouse.com
 REPLY_TO_EMAIL=info@heiwahouse.com
+
+# Scheduled Email Cron Secret (for scheduled email endpoint)
+CRON_SECRET=your-secret-key-here
 ```
 
 ### 5. Development Mode
@@ -129,6 +134,27 @@ curl -X POST http://localhost:3000/api/email/send \
 - **Trigger**: When a refund is processed
 - **Recipient**: Client email address
 - **Includes**: Refund amount, reason, original payment amount
+
+### Pre-Trip Planning Email
+- **Trigger**: Automatically sent X days before check-in (default: 7 days) via scheduled email service
+- **Recipient**: Guest email address
+- **Includes**: 
+  - Packing checklist (surf gear, clothing, essentials)
+  - Travel tips and local information
+  - Affiliate links for recommended products (surfboards, wetsuits, travel gear)
+  - Weather forecast (if available)
+  - Map/directions to Heiwa House
+- **Configuration**: Set `pre_trip_email_days_before` on booking (default: 7)
+
+### Post-Trip Feedback Request
+- **Trigger**: Automatically sent X days after check-out (default: 1 day) via scheduled email service
+- **Recipient**: Guest email address
+- **Includes**:
+  - Thank you message
+  - Feedback form link
+  - Review request links (Google Reviews, TripAdvisor, etc.)
+  - Social media sharing options
+  - Special offers for return visits
 
 ## Troubleshooting
 
