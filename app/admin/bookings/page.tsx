@@ -1003,10 +1003,22 @@ export default function BookingsPage() {
                   <p className="text-sm font-medium text-gray-900">{selectedBooking.payment_status}</p>
                 </div>
               </div>
+              {selectedBooking.dietary_preferences && (
+                <div className="border-t pt-4">
+                  <p className="text-sm text-gray-500">Dietary Preferences</p>
+                  <p className="text-sm font-medium text-gray-900">{selectedBooking.dietary_preferences}</p>
+                </div>
+              )}
               {selectedBooking.special_requests && (
-                <div>
+                <div className="border-t pt-4">
                   <p className="text-sm text-gray-500">Special Requests</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.special_requests}</p>
+                  <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap">{selectedBooking.special_requests}</p>
+                </div>
+              )}
+              {selectedBooking.client_notes && (
+                <div className="border-t pt-4">
+                  <p className="text-sm text-gray-500">Client Notes</p>
+                  <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap">{selectedBooking.client_notes}</p>
                 </div>
               )}
             </div>
