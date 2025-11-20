@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff } from 'lucide-react'
@@ -63,37 +63,58 @@ export default function BookingsPage() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedBookings, setSelectedBookings] = useState<Set<string>>(new Set())
 
-  // Set up real-time updates
-  useBookingsRealtime({
-    onInsert: (newBooking) => {
+  // Memoize callbacks to prevent re-subscription loops
+  const handleInsert = useCallback((newBooking: Booking) => {
+    if (process.env.NODE_ENV === 'development') {
       console.log('📥 New booking received:', newBooking)
-      // Check if booking already exists to prevent duplicates
-      setBookings(prev => {
-        const exists = prev.some(b => b.id === newBooking.id)
-        if (exists) {
-          console.log('⚠️ Booking already exists, skipping duplicate:', newBooking.id)
-          return prev
-        }
-        return [newBooking, ...prev]
-      })
-    },
-    onUpdate: (updatedBooking) => {
-      console.log('✏️ Booking updated:', updatedBooking)
-      setBookings(prev =>
-        prev.map(b => b.id === updatedBooking.id ? updatedBooking : b)
-      )
-    },
-    onDelete: (bookingId) => {
-      console.log('🗑️ Booking deleted:', bookingId)
-      setBookings(prev => prev.filter(b => b.id !== bookingId))
-    },
-    onError: (error) => {
-      console.error('❌ Real-time error:', error)
-      setIsRealtimeConnected(false)
-    },
-    onConnect: (connected) => {
-      setIsRealtimeConnected(connected)
     }
+    // Check if booking already exists to prevent duplicates
+    setBookings(prev => {
+      const exists = prev.some(b => b.id === newBooking.id)
+      if (exists) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('⚠️ Booking already exists, skipping duplicate:', newBooking.id)
+        }
+        return prev
+      }
+      return [newBooking, ...prev]
+    })
+  }, [])
+
+  const handleUpdate = useCallback((updatedBooking: Booking) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✏️ Booking updated:', updatedBooking)
+    }
+    setBookings(prev =>
+      prev.map(b => b.id === updatedBooking.id ? updatedBooking : b)
+    )
+  }, [])
+
+  const handleDelete = useCallback((bookingId: string) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🗑️ Booking deleted:', bookingId)
+    }
+    setBookings(prev => prev.filter(b => b.id !== bookingId))
+  }, [])
+
+  const handleError = useCallback((error: Error) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('❌ Real-time error:', error)
+    }
+    setIsRealtimeConnected(false)
+  }, [])
+
+  const handleConnect = useCallback((connected: boolean) => {
+    setIsRealtimeConnected(connected)
+  }, [])
+
+  // Set up real-time updates with memoized callbacks
+  useBookingsRealtime({
+    onInsert: handleInsert,
+    onUpdate: handleUpdate,
+    onDelete: handleDelete,
+    onError: handleError,
+    onConnect: handleConnect
   })
 
   // Update URL when state changes

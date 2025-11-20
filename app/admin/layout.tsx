@@ -231,7 +231,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   // If not showing layout (not authenticated), show loading and redirect
-  if (!showLayout) {
+  if (!showLayout || !isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -256,13 +256,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           )}
 
-          {/* Sidebar */}
+          {/* Sidebar - Always visible on desktop (md:translate-x-0), controlled by sidebarOpen on mobile */}
           <aside className={`
             fixed md:sticky inset-y-0 md:top-0 left-0 z-40 md:z-auto
             bg-gray-800 shadow-lg md:shadow-none
             transform transition-transform duration-300 ease-in-out
             ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-            md:translate-x-0
+            md:translate-x-0 md:!translate-x-0
             ${sidebarCollapsed ? 'md:w-16' : 'md:w-64'}
             w-64 md:block
             flex flex-col
