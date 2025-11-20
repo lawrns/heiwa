@@ -151,7 +151,8 @@ export default function BookingsPage() {
 
   const fetchBookings = async () => {
     try {
-      const response = await fetch('/api/bookings')
+      // Fetch all bookings (no limit) for accurate counts
+      const response = await fetch('/api/bookings?limit=10000')
       const data = await response.json()
       
       if (data.success) {

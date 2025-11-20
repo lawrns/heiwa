@@ -49,17 +49,22 @@ export async function GET(request: NextRequest) {
     // Calculate statistics for each client
     const clientsWithStats = await Promise.all(
       filteredClients.map(async (client: any) => {
-        // Get booking count and total spent
-        const { data: bookings } = await supabaseAdmin
+        // Get booking count using count query (more efficient)
+        const { count: totalBookings } = await supabaseAdmin
           .from('bookings')
-          .select('id, total_amount, payment_status')
+          .select('*', { count: 'exact', head: true })
           .contains('client_ids', [client.id])
 
-        const totalBookings = bookings?.length || 0
+        // Get total spent from confirmed bookings only
+        const { data: confirmedBookings } = await supabaseAdmin
+          .from('bookings')
+          .select('total_amount')
+          .contains('client_ids', [client.id])
+          .eq('payment_status', 'confirmed')
+
         const totalSpent =
-          bookings
-            ?.filter((b: any) => b.payment_status === 'confirmed')
-            .reduce((sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
+          confirmedBookings
+            ?.reduce((sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
 
         return {
           id: client.id,
