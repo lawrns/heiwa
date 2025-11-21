@@ -701,18 +701,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
               {/* Capacity Validation Message */}
               {selectedOptions.length > 0 && capacityMessage && (
-                <div className={`p-4 rounded-lg border-2 ${hasInsufficientCapacity ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}>
+                <div className={`p-3 rounded-lg border-l-4 flex items-center justify-between ${hasInsufficientCapacity ? 'bg-red-50 border-l-red-500' : 'bg-green-50 border-l-green-500'}`}>
                   <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${hasInsufficientCapacity ? 'bg-red-500' : 'bg-green-500'}`} />
-                    <span className={`text-sm font-medium ${hasInsufficientCapacity ? 'text-red-800' : 'text-green-800'}`}>
+                    <div className={`${hasInsufficientCapacity ? 'text-red-600' : 'text-green-600'}`}>
+                      {hasInsufficientCapacity ? '⚠️' : '✓'}
+                    </div>
+                    <span className={`text-sm font-medium ${hasInsufficientCapacity ? 'text-red-900' : 'text-green-900'}`}>
                       Capacity: {capacityMessage}
                     </span>
                   </div>
-                  {hasInsufficientCapacity && (
-                    <p className="text-xs text-red-700 mt-2">
-                      ⚠️ Selected rooms have insufficient capacity. Please select additional rooms.
-                    </p>
-                  )}
                 </div>
               )}
 
@@ -735,26 +732,26 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         onClick={() => handleOptionSelect(option.id)}
                         disabled={false}
                         className={`
-                          w-full p-6 rounded-xl border-2 text-left
-                          transition-all duration-300 ease-out
-                          focus:outline-none focus:ring-4 focus:ring-orange-500/30
-                          animate-in fade-in-0 slide-in-from-bottom-4 relative
+                          w-full p-6 rounded-lg border text-left
+                          transition-all duration-200
+                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-500
+                          relative
                           ${isSelected
-                            ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
-                            : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1'
+                            ? 'border-orange-500 bg-white shadow-md'
+                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
                           }
                         `}
-                        style={{ animationDelay: `${index * 100}ms` }}
+                        style={{ animationDelay: `${index * 50}ms` }}
                       >
                         {/* Checkbox indicator for multi-select */}
-                        <div className="absolute top-4 right-4 w-6 h-6 rounded border-2 border-gray-300 bg-white flex items-center justify-center transition-all"
+                        <div className="absolute top-4 right-4 w-5 h-5 rounded border border-gray-400 bg-white flex items-center justify-center transition-all"
                           style={{
-                            borderColor: isSelected ? '#ec681c' : '#d1d5db',
+                            borderColor: isSelected ? '#ec681c' : '#9ca3af',
                             backgroundColor: isSelected ? '#ec681c' : 'white'
                           }}
                         >
                           {isSelected && (
-                            <Check size={16} className="text-white" />
+                            <Check size={14} className="text-white" />
                           )}
                         </div>
                         <div className="flex gap-6">
