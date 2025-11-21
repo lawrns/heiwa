@@ -300,6 +300,8 @@ export function useBookingFlow() {
         if (state.experienceType === 'surf-week') {
           return state.selectedSurfWeek !== null;
         }
+        // For rooms: must have dates, guest count, and at least one room selected
+        // Note: Multi-room selection is supported - selectedOption stores the first selected room
         return state.dates.checkIn && state.dates.checkOut && state.guests > 0 && state.selectedOption !== null;
 
       case 'surf-week-room-selection':
