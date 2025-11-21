@@ -174,6 +174,14 @@ export function useBookingFlow() {
     // Don't allow going back to skipped steps
     if (state.currentStep > 1) {
       const newStep = state.currentStep - 1;
+      const targetStepType = stepFlow[newStep - 1];
+
+      // Clear selectedOption when going back to options step (room selection)
+      // This allows users to change their room selection
+      if (targetStepType === 'options') {
+        dispatch({ type: 'SET_SELECTED_OPTION', payload: '' });
+      }
+
       // If we're trying to go back to a skipped step, skip it
       if (state.skippedSteps && state.skippedSteps.length > 0) {
         // When steps are skipped, step 1 is already the first non-skipped step
@@ -183,7 +191,7 @@ export function useBookingFlow() {
         dispatch({ type: 'SET_STEP', payload: newStep });
       }
     }
-  }, [state.currentStep, state.skippedSteps]);
+  }, [state.currentStep, state.skippedSteps, stepFlow]);
 
   const jumpToStep = useCallback((targetStep: number) => {
     // Validate target step
