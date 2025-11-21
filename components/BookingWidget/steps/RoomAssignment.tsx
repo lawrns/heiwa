@@ -10,6 +10,7 @@ interface RoomAssignmentProps {
     setRoomAssignments: (assignments: RoomAssignmentType[]) => void;
     addRoomAssignment: (assignment: RoomAssignmentType) => void;
     removeRoomAssignment: (assignmentId: string) => void;
+    updatePricing?: (pricing: any) => void;
     nextStep: () => void;
   };
 }
@@ -39,12 +40,54 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
     setUnassignedGuests(unassigned);
   }, [state.guests, state.roomAssignments]);
 
+  // Calculate pricing based on room assignments
+  useEffect(() => {
+    if (state.roomAssignments.length === 0 || rooms.length === 0) return;
+
+    // Calculate total price across all assigned rooms
+    let totalBasePrice = 0;
+
+    // Calculate nights
+    if (state.dates.checkIn && state.dates.checkOut) {
+      const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
+      const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
+      const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
+
+      // Sum prices for each room assignment
+      state.roomAssignments.forEach(assignment => {
+        const room = rooms.find(r => r.id === assignment.roomId);
+        if (room) {
+          // Price per room per night × number of guests in that room × nights
+          const roomPrice = room.pricePerNight * assignment.guestIds.length * nights;
+          totalBasePrice += roomPrice;
+        }
+      });
+
+      // Update pricing with new base price
+      if (totalBasePrice > 0 && actions.updatePricing) {
+        const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
+        const taxes = Math.round((totalBasePrice + addOnsSubtotal) * 0.1);
+        const fees = Math.round((totalBasePrice + addOnsSubtotal) * 0.05);
+        const total = totalBasePrice + addOnsSubtotal + taxes + fees;
+
+        actions.updatePricing({
+          ...state.pricing,
+          basePrice: totalBasePrice,
+          taxes,
+          fees,
+          total,
+          currency: 'EUR'
+        });
+      }
+    }
+  }, [state.roomAssignments, state.dates.checkIn, state.dates.checkOut, rooms, state.pricing, actions]);
+
   // Auto-advance when all guests are assigned (only for multiple guests)
   useEffect(() => {
     if (state.guests > 1) {
       const guestIds = Array.from({ length: state.guests }, (_, i) => `guest-${i + 1}`);
       const assignedGuestIds = state.roomAssignments.flatMap(a => a.guestIds);
-      const allAssigned = guestIds.length > 0 && 
+      const allAssigned = guestIds.length > 0 &&
                          guestIds.every(id => assignedGuestIds.includes(id));
 
       if (allAssigned) {
