@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 // GET method to provide room booking availability info
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('📋 Room Booking Widget - GET request received')
     
@@ -36,35 +36,43 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json()
+    const body = await req.json()
     console.log('🏄‍♂️ Room Booking Widget received:', {
       room_id: body.room_id,
+      room_assignments: body.room_assignments?.length,
       start_date: body.start_date,
       end_date: body.end_date,
       participants: body.participants?.length,
-      add_ons: body.add_ons?.length,
       pricing: body.pricing
     })
 
     const {
       room_id,
+      room_assignments = [],
       start_date,
       end_date,
       participants = [],
-      add_ons = [],
       pricing = {},
-      guests = 1,
-      source_url,
-      widget_version
+      guests = 1
     } = body
 
+    // Support both single room_id (legacy) and room_assignments array (new format)
+    const hasRoomAssignments = room_assignments && room_assignments.length > 0
+
     // Validate required fields
-    if (!room_id || !start_date || !end_date || !participants.length) {
+    if (!start_date || !end_date || !participants.length) {
       return NextResponse.json({
         success: false,
-        error: 'Missing required fields: room_id, start_date, end_date, participants'
+        error: 'Missing required fields: start_date, end_date, participants'
+      }, { status: 400 })
+    }
+
+    if (!hasRoomAssignments && !room_id) {
+      return NextResponse.json({
+        success: false,
+        error: 'Must provide either room_id or room_assignments array'
       }, { status: 400 })
     }
 
@@ -90,7 +98,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Check if client exists or create new one
-    let clientResult = await supabaseAdmin
+    const clientResult = await supabaseAdmin
       .from('clients')
       .select('id, name, email')
       .eq('email', email)
@@ -169,6 +177,33 @@ export async function POST(request: NextRequest) {
 
     const bookingId = (bookingResult.data as any).id
     console.log('✅ Booking created:', bookingId)
+
+    // Process room assignments if provided (new format)
+    if (hasRoomAssignments) {
+      console.log('📦 Processing room assignments...')
+      const assignmentPromises = room_assignments.map((assignment: any) =>
+        supabaseAdmin
+          .from('room_assignments')
+          .insert({
+            booking_id: bookingId,
+            room_id: assignment.roomId,
+            check_in_date: start_date,
+            check_out_date: end_date,
+            status: 'confirmed',
+            guest_count: assignment.guestIds?.length || 1
+          })
+      )
+
+      const assignmentResults = await Promise.all(assignmentPromises)
+      const failedAssignments = assignmentResults.filter(r => r.error)
+
+      if (failedAssignments.length > 0) {
+        console.warn(`⚠️ ${failedAssignments.length} room assignment(s) failed to create`)
+        failedAssignments.forEach(r => console.error('Assignment error:', r.error))
+      } else {
+        console.log('✅ All room assignments created successfully')
+      }
+    }
 
     // Send booking confirmation email (non-blocking)
     // Note: room variable already fetched above for room_type

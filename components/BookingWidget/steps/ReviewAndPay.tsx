@@ -148,7 +148,15 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
       const data = await res.json();
       if (!res.ok || !data?.success) {
-        throw new Error(data?.error || `Request failed (${res.status})`);
+        const errorMessage = data?.error || `Request failed (${res.status})`;
+        console.error('❌ Booking API error:', {
+          status: res.status,
+          error: data?.error,
+          errorCode: data?.errorCode,
+          debug: data?.debug,
+          details: data?.details
+        });
+        throw new Error(errorMessage);
       }
 
       console.log('✅ Booking created successfully:', {
@@ -300,9 +308,9 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       {/* Guest Details Summary */}
       <div className="bg-gray-50 rounded-xl p-6 border border-gray-200" data-testid="guest-completion-status">
         <h4 className="text-lg font-semibold text-gray-900 mb-4">Guest Information</h4>
-        
+
         <div className="space-y-3">
-          {state.guestDetails.map((guest, index) => (
+          {state.guestDetails.map((guest) => (
             <div key={guest.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
               <div>
                 <div className="font-medium text-gray-900">
@@ -325,6 +333,40 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           ))}
         </div>
       </div>
+
+      {/* Room Assignments Summary */}
+      {state.roomAssignments.length > 0 && (
+        <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+          <h4 className="text-lg font-semibold text-blue-900 mb-4 flex items-center gap-2">
+            <MapPin size={20} className="text-blue-600" />
+            Room Assignments
+          </h4>
+
+          <div className="space-y-3">
+            {state.roomAssignments.map((assignment) => {
+              return (
+                <div key={assignment.id} className="p-3 bg-white rounded-lg border border-blue-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="font-medium text-gray-900">
+                      {assignment.roomId}
+                    </div>
+                    <div className="text-sm text-blue-600 font-medium">
+                      {assignment.guestIds.length} {assignment.guestIds.length === 1 ? 'guest' : 'guests'}
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {assignment.guestIds.map((guestId) => {
+                      const guestNumber = parseInt(guestId.split('-')[1]) - 1;
+                      const guest = state.guestDetails[guestNumber];
+                      return guest ? `${guest.firstName} ${guest.lastName}` : `Guest ${guestNumber + 1}`;
+                    }).join(', ')}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Add-ons Summary */}
       {state.selectedAddOns.length > 0 && (
@@ -390,13 +432,21 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         </div>
       </div>
 
-      {/* Payment Error */}
-      {paymentError && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
-          <AlertCircle size={16} />
-          <span className="text-sm">{paymentError}</span>
-        </div>
-      )}
+        {/* Payment Error */}
+        {paymentError && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700" data-testid="payment-error">
+            <div className="flex items-start gap-2">
+              <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium mb-1">Booking Failed</p>
+                <p className="text-sm">{paymentError}</p>
+                <p className="text-xs mt-2 text-red-600">
+                  Please check your information and try again. If the problem persists, contact support.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* Terms and Conditions */}
       <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
