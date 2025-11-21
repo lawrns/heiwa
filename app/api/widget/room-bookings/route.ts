@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 // GET method to provide room booking availability info
@@ -141,12 +141,21 @@ export async function POST(req: NextRequest) {
       console.log('✅ Existing client found:', clientId)
     }
 
-    // Fetch room details for room_type
-    const { data: room } = await supabaseAdmin
-      .from('rooms')
-      .select('name, id')
-      .eq('id', room_id)
-      .single()
+    // Fetch room details for room_type (only if room_id is provided for single-room bookings)
+    let room = null
+    if (room_id) {
+      const roomResult = await supabaseAdmin
+        .from('rooms')
+        .select('name, id')
+        .eq('id', room_id)
+        .single()
+
+      if (roomResult.error) {
+        console.warn('Warning: Could not fetch room details:', roomResult.error)
+      } else {
+        room = roomResult.data
+      }
+    }
 
     // Create booking record
     // Note: Database schema does NOT have 'items' field - removed to match actual schema
@@ -168,7 +177,12 @@ export async function POST(req: NextRequest) {
       .single()
 
     if (bookingResult.error) {
-      console.error('Failed to create booking:', bookingResult.error)
+      console.error('Failed to create booking:', {
+        code: bookingResult.error.code,
+        message: bookingResult.error.message,
+        hint: bookingResult.error.hint,
+        details: bookingResult.error.details
+      })
       return NextResponse.json({
         success: false,
         error: 'Failed to create booking record'
