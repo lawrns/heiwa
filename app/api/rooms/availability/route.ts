@@ -63,11 +63,6 @@ export async function GET(request: NextRequest) {
 
     // Filter available rooms
     const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; [key: string]: unknown }) => {
-      // Check if room has capacity for requested guests
-      if (room.capacity && room.capacity < guests) {
-        return false
-      }
-
       // Check if room is already booked for these dates
       const isBooked = existingBookings.some(booking =>
         booking.room_id === room.id
