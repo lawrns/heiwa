@@ -398,3 +398,68 @@ Running 345 tests using 2 workers
 (Use `node --trace-warnings ...` to show where the warning was created)
 (node:50374) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   78 [firefox] › e2e/admin-bookings-realtime.spec.ts:9:7 › Admin Bookings Real-time Updates › should show real-time booking updates (30.0s)
+(node:53409) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:53409) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   79 [firefox] › e2e/admin-bookings-realtime.spec.ts:44:7 › Admin Bookings Real-time Updates › should show real-time status changes (30.0s)
+(node:53424) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:53424) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   80 [firefox] › e2e/admin-bookings-realtime.spec.ts:76:7 › Admin Bookings Real-time Updates › should show real-time booking deletions (30.0s)
+(node:54096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   81 [firefox] › e2e/admin-bookings-realtime.spec.ts:110:7 › Admin Bookings Real-time Updates › should show real-time booking modifications (30.0s)
+(node:54099) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54099) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   83 [firefox] › e2e/admin-bookings-realtime.spec.ts:201:7 › Admin Bookings Real-time Updates › should show real-time connection status (6.1s)
+(node:54254) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54254) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   82 [firefox] › e2e/admin-bookings-realtime.spec.ts:147:7 › Admin Bookings Real-time Updates › should handle concurrent booking updates (30.0s)
+(node:54680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   84 [firefox] › e2e/admin-bookings-realtime.spec.ts:240:7 › Admin Bookings Real-time Updates › should handle real-time search updates (30.0s)
+(node:54828) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54828) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   85 [firefox] › e2e/admin-bookings-realtime.spec.ts:273:7 › Admin Bookings Real-time Updates › should show real-time statistics updates (30.0s)
+(node:55706) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55706) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   86 [firefox] › e2e/admin-bookings-realtime.spec.ts:298:7 › Admin Bookings Real-time Updates › should handle real-time pagination updates (30.0s)
+(node:55849) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55849) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   87 [firefox] › e2e/admin-bookings-search.spec.ts:9:7 › Admin Bookings Search and Filter › should search bookings by guest name (30.0s)
+(node:56387) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56387) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   88 [firefox] › e2e/admin-bookings-search.spec.ts:49:7 › Admin Bookings Search and Filter › should search bookings by email (30.0s)
+(node:56558) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56558) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   89 [firefox] › e2e/admin-bookings-search.spec.ts:89:7 › Admin Bookings Search and Filter › should search bookings by phone number (30.1s)
+(node:58134) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58134) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   90 [firefox] › e2e/admin-bookings-search.spec.ts:130:7 › Admin Bookings Search and Filter › should search bookings by booking ID (30.1s)
+(node:58907) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58907) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
