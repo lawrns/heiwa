@@ -1,0 +1,1116 @@
+
+> heiwa-page@1.0.0 test:integration
+> jest __tests__/integration
+
+PASS __tests__/integration/database/data-transformation.test.ts
+PASS __tests__/integration/admin-pages.test.tsx
+FAIL __tests__/integration/room-listing.test.tsx
+  ● Console
+
+    console.error
+      <RoomsPage> is an async Client Component. Only Server Components can be async at the moment. This error is often caused by accidentally adding `'use client'` to a module that was originally written for the server.
+
+      45 |     mockGetRooms.mockImplementation(() => new Promise(() => {}));
+      46 |
+    > 47 |     render(<RoomsPage />);
+         |           ^
+      48 |
+      49 |     expect(screen.getByText('Loading rooms...')).toBeInTheDocument();
+      50 |   });
+
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7645:21)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16504:11)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/room-listing.test.tsx:47:11)
+
+    console.error
+      A component suspended inside an `act` scope, but the `act` call was not awaited. When testing React components that depend on asynchronous data, you must await the result:
+      
+      await act(() => ...)
+
+      at node_modules/react/cjs/react.development.js:890:23
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  ● Room Listing Integration › displays loading state initially
+
+    TestingLibraryElementError: Unable to find an element with the text: Loading rooms.... This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      47 |     render(<RoomsPage />);
+      48 |
+    > 49 |     expect(screen.getByText('Loading rooms...')).toBeInTheDocument();
+         |                   ^
+      50 |   });
+      51 |
+      52 |   test('displays rooms when data loads successfully', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/room-listing.test.tsx:49:19)
+
+  ● Room Listing Integration › displays rooms when data loads successfully
+
+    TestingLibraryElementError: Unable to find an element with the text: Ocean View Suite. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      61 |
+      62 |     // Check that room names are displayed
+    > 63 |     expect(screen.getByText('Ocean View Suite')).toBeInTheDocument();
+         |                   ^
+      64 |     expect(screen.getByText('Garden Villa')).toBeInTheDocument();
+      65 |
+      66 |     // Check that descriptions are displayed
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/room-listing.test.tsx:63:19)
+
+  ● Room Listing Integration › displays fallback rooms when API fails
+
+    TestingLibraryElementError: Unable to find an element with the text: Room Rentals. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      87 |     // Note: This test assumes fallback data contains rooms with names
+      88 |     // In a real scenario, we'd check for specific fallback room names
+    > 89 |     expect(screen.getByText('Room Rentals')).toBeInTheDocument();
+         |                   ^
+      90 |   });
+      91 |
+      92 |   test('displays hero section content', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/room-listing.test.tsx:89:19)
+
+  ● Room Listing Integration › displays hero section content
+
+    TestingLibraryElementError: Unable to find an element with the text: Choose from our beautifully appointed rooms and dorm accommodations with stunning ocean views. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+       99 |     });
+      100 |
+    > 101 |     expect(screen.getByText('Choose from our beautifully appointed rooms and dorm accommodations with stunning ocean views')).toBeInTheDocument();
+          |                   ^
+      102 |   });
+      103 |
+      104 |   test('displays booking CTA section', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/room-listing.test.tsx:101:19)
+
+  ● Room Listing Integration › displays booking CTA section
+
+    TestingLibraryElementError: Unable to find an element with the text: Ready to book your stay? Check availability and reserve your room below.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      111 |     });
+      112 |
+    > 113 |     expect(screen.getByText('Ready to book your stay? Check availability and reserve your room below.')).toBeInTheDocument();
+          |                   ^
+      114 |   });
+      115 |
+      116 |   test('handles empty rooms array', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/room-listing.test.tsx:113:19)
+
+  ● Room Listing Integration › handles empty rooms array
+
+    TestingLibraryElementError: Unable to find an element with the text: Room Rentals. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      124 |
+      125 |     // Should still render the page structure even with no rooms
+    > 126 |     expect(screen.getByText('Room Rentals')).toBeInTheDocument();
+          |                   ^
+      127 |     expect(screen.getByText('Our Accommodations')).toBeInTheDocument();
+      128 |   });
+      129 |
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/room-listing.test.tsx:126:19)
+
+FAIL __tests__/integration/booking-submission.test.tsx
+  ● Console
+
+    console.error
+      <RoomsPage> is an async Client Component. Only Server Components can be async at the moment. This error is often caused by accidentally adding `'use client'` to a module that was originally written for the server.
+
+      29 |
+      30 |   test('displays booking-related UI elements', async () => {
+    > 31 |     render(<RoomsPage />);
+         |           ^
+      32 |
+      33 |     await waitFor(() => {
+      34 |       expect(screen.queryByText('Loading rooms...')).not.toBeInTheDocument();
+
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7645:21)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16504:11)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/booking-submission.test.tsx:31:11)
+
+    console.error
+      A component suspended inside an `act` scope, but the `act` call was not awaited. When testing React components that depend on asynchronous data, you must await the result:
+      
+      await act(() => ...)
+
+      at node_modules/react/cjs/react.development.js:890:23
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  ● Booking Submission Integration › displays booking-related UI elements
+
+    TestingLibraryElementError: Unable to find an element with the text: Ready to book your stay? Check availability and reserve your room below.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      36 |
+      37 |     // Check for booking-related text
+    > 38 |     expect(screen.getByText('Ready to book your stay? Check availability and reserve your room below.')).toBeInTheDocument();
+         |                   ^
+      39 |   });
+      40 |
+      41 |   test('shows booking CTA in footer area', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/booking-submission.test.tsx:38:19)
+
+  ● Booking Submission Integration › shows booking CTA in footer area
+
+    TestingLibraryElementError: Unable to find an element with the text: /book|Book|BOOK/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      48 |     // The booking CTA should be present (this tests the UI structure)
+      49 |     // Note: The actual booking widget integration would be tested in the booking widget tests
+    > 50 |     const bookingElements = screen.getAllByText(/book|Book|BOOK/i);
+         |                                    ^
+      51 |     expect(bookingElements.length).toBeGreaterThan(0);
+      52 |   });
+      53 |
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:109:15
+      at Object.getAllByText (__tests__/integration/booking-submission.test.tsx:50:36)
+
+  ● Booking Submission Integration › integrates with floating booking widget
+
+    TestingLibraryElementError: Unable to find an element with the text: Click the "Check Availability" button below to book your room. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      60 |
+      61 |     // Check that the booking section guidance is present
+    > 62 |     expect(screen.getByText('Click the "Check Availability" button below to book your room')).toBeInTheDocument();
+         |                   ^
+      63 |   });
+      64 |
+      65 |   test('room page provides context for booking', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/booking-submission.test.tsx:62:19)
+
+  ● Booking Submission Integration › room page provides context for booking
+
+    TestingLibraryElementError: Unable to find an element with the text: Ocean View Suite. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      71 |
+      72 |     // Verify rooms are displayed with booking context
+    > 73 |     expect(screen.getByText('Ocean View Suite')).toBeInTheDocument();
+         |                   ^
+      74 |     expect(screen.getByText('Beautiful ocean view room')).toBeInTheDocument();
+      75 |
+      76 |     // Check for booking encouragement text
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/booking-submission.test.tsx:73:19)
+
+  ● Booking Submission Integration › handles booking flow initiation
+
+    TestingLibraryElementError: Unable to find an element with the text: Click the "Check Availability" button below to book your room. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      86 |
+      87 |     // Check that booking guidance is available
+    > 88 |     expect(screen.getByText('Click the "Check Availability" button below to book your room')).toBeInTheDocument();
+         |                   ^
+      89 |
+      90 |     // Note: The actual booking modal opening would be tested in booking widget integration tests
+      91 |     // This test verifies the UI integration point exists
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/booking-submission.test.tsx:88:19)
+
+  ● Booking Submission Integration › displays contact information for booking help
+
+    TestingLibraryElementError: Unable to find an element with the text: /info@heiwahouse.com/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      100 |
+      101 |     // Check for contact information
+    > 102 |     expect(screen.getByText(/info@heiwahouse.com/)).toBeInTheDocument();
+          |                   ^
+      103 |   });
+      104 |
+      105 |   test('provides booking policies information', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/booking-submission.test.tsx:102:19)
+
+  ● Booking Submission Integration › provides booking policies information
+
+    TestingLibraryElementError: Unable to find an element with the text: Booking Policies. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      111 |
+      112 |     // Check for booking policies section
+    > 113 |     expect(screen.getByText('Booking Policies')).toBeInTheDocument();
+          |                   ^
+      114 |     expect(screen.getByText('Free cancellation up to 48 hours before check-in')).toBeInTheDocument();
+      115 |     expect(screen.getByText('Minimum 2-night stay required')).toBeInTheDocument();
+      116 |   });
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/booking-submission.test.tsx:113:19)
+
+  ● Booking Submission Integration › shows amenities information
+
+    TestingLibraryElementError: Unable to find an element with the text: What's Included. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      124 |
+      125 |     // Check for amenities section
+    > 126 |     expect(screen.getByText("What's Included")).toBeInTheDocument();
+          |                   ^
+      127 |     expect(screen.getByText('Daily housekeeping service')).toBeInTheDocument();
+      128 |     expect(screen.getByText('High-speed WiFi throughout the property')).toBeInTheDocument();
+      129 |   });
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/booking-submission.test.tsx:126:19)
+
+FAIL __tests__/integration/availability-check.test.tsx
+  ● Console
+
+    console.error
+      <RoomsPage> is an async Client Component. Only Server Components can be async at the moment. This error is often caused by accidentally adding `'use client'` to a module that was originally written for the server.
+
+      28 |
+      29 |   test('displays availability checking interface', async () => {
+    > 30 |     render(<RoomsPage />);
+         |           ^
+      31 |
+      32 |     await waitFor(() => {
+      33 |       expect(screen.queryByText('Loading rooms...')).not.toBeInTheDocument();
+
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7645:21)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16504:11)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/availability-check.test.tsx:30:11)
+
+    console.error
+      A component suspended inside an `act` scope, but the `act` call was not awaited. When testing React components that depend on asynchronous data, you must await the result:
+      
+      await act(() => ...)
+
+      at node_modules/react/cjs/react.development.js:890:23
+      at invokeTheCallbackFunction (node_modules/jsdom/lib/jsdom/living/generated/Function.js:19:26)
+      at node_modules/jsdom/lib/jsdom/browser/Window.js:613:9
+
+  ● Availability Check Integration › displays availability checking interface
+
+    TestingLibraryElementError: Unable to find an element with the text: Click the "Check Availability" button below to book your room. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      35 |
+      36 |     // Check that the availability checking guidance is present
+    > 37 |     expect(screen.getByText('Click the "Check Availability" button below to book your room')).toBeInTheDocument();
+         |                   ^
+      38 |   });
+      39 |
+      40 |   test('provides date selection interface', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/availability-check.test.tsx:37:19)
+
+  ● Availability Check Integration › provides date selection interface
+
+    TestingLibraryElementError: Unable to find an element with the text: Click the "Check Availability" button below to book your room. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      47 |     // The booking section should provide guidance about checking availability
+      48 |     // This verifies the integration point exists
+    > 49 |     expect(screen.getByText('Click the "Check Availability" button below to book your room')).toBeInTheDocument();
+         |                   ^
+      50 |   });
+      51 |
+      52 |   test('shows room information with availability context', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/availability-check.test.tsx:49:19)
+
+  ● Availability Check Integration › shows room information with availability context
+
+    TestingLibraryElementError: Unable to find an element with the text: Ocean View Suite. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      58 |
+      59 |     // Verify rooms are displayed
+    > 60 |     expect(screen.getByText('Ocean View Suite')).toBeInTheDocument();
+         |                   ^
+      61 |     expect(screen.getByText('Beautiful ocean view room')).toBeInTheDocument();
+      62 |
+      63 |     // Availability checking guidance should be accessible from room listings
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/availability-check.test.tsx:60:19)
+
+  ● Availability Check Integration › integrates availability with booking flow
+
+    TestingLibraryElementError: Unable to find an element with the text: Ready to book your stay? Check availability and reserve your room below.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      73 |
+      74 |     // The availability check should be the first step in booking
+    > 75 |     expect(screen.getByText('Ready to book your stay? Check availability and reserve your room below.')).toBeInTheDocument();
+         |                   ^
+      76 |     expect(screen.getByText('Click the "Check Availability" button below to book your room')).toBeInTheDocument();
+      77 |   });
+      78 |
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/availability-check.test.tsx:75:19)
+
+  ● Availability Check Integration › displays availability policies
+
+    TestingLibraryElementError: Unable to find an element with the text: Ready to book your stay? Check availability and reserve your room below.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      85 |
+      86 |     // Check for availability-related messaging in the booking section
+    > 87 |     expect(screen.getByText('Ready to book your stay? Check availability and reserve your room below.')).toBeInTheDocument();
+         |                   ^
+      88 |     expect(screen.getByText('Click the "Check Availability" button below to book your room')).toBeInTheDocument();
+      89 |   });
+      90 |
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/availability-check.test.tsx:87:19)
+
+  ● Availability Check Integration › shows contact info for availability inquiries
+
+    TestingLibraryElementError: Unable to find an element with the text: /info@heiwahouse.com/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+       97 |
+       98 |     // Contact information should be available for availability questions
+    >  99 |     expect(screen.getByText(/info@heiwahouse.com/)).toBeInTheDocument();
+          |                   ^
+      100 |   });
+      101 |
+      102 |   test('provides clear call-to-action for availability checking', async () => {
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/availability-check.test.tsx:99:19)
+
+  ● Availability Check Integration › provides clear call-to-action for availability checking
+
+    TestingLibraryElementError: Unable to find an element with the text: Click the "Check Availability" button below to book your room. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      108 |
+      109 |     // Multiple CTAs should guide users to check availability
+    > 110 |     expect(screen.getByText('Click the "Check Availability" button below to book your room')).toBeInTheDocument();
+          |                   ^
+      111 |
+      112 |     expect(screen.getByText('Ready to book your stay? Check availability and reserve your room below.')).toBeInTheDocument();
+      113 |   });
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/availability-check.test.tsx:110:19)
+
+  ● Availability Check Integration › handles availability checking UI states
+
+    TestingLibraryElementError: Unable to find an element with the text: Click the "Check Availability" button below to book your room. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div />[39m
+    [36m</body>[39m
+
+      121 |
+      122 |     // The availability checking interface should be ready
+    > 123 |     expect(screen.getByText('Click the "Check Availability" button below to book your room')).toBeInTheDocument();
+          |                   ^
+      124 |
+      125 |     // Should not show loading states for availability checking
+      126 |     expect(screen.queryByText(/Checking availability/)).not.toBeInTheDocument();
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.getByText (__tests__/integration/availability-check.test.tsx:123:19)
+
+FAIL __tests__/integration/booking-flow.test.tsx
+  ● Booking Flow Integration › renders room options when experience type is room
+
+    TypeError: Cannot read properties of undefined (reading 'experienceType')
+
+      21 |   // Only fetch data for the selected experience type to improve performance
+      22 |   const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
+    > 23 |     checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+         |                    ^
+      24 |     checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+      25 |     guests: state.experienceType === 'room' ? state.guests : 1,
+      26 |   });
+
+      at experienceType (components/BookingWidget/steps/OptionSelection.tsx:23:20)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/booking-flow.test.tsx:67:11)
+
+  ● Booking Flow Integration › displays correct pricing for room options
+
+    TypeError: Cannot read properties of undefined (reading 'experienceType')
+
+      21 |   // Only fetch data for the selected experience type to improve performance
+      22 |   const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
+    > 23 |     checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+         |                    ^
+      24 |     checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+      25 |     guests: state.experienceType === 'room' ? state.guests : 1,
+      26 |   });
+
+      at experienceType (components/BookingWidget/steps/OptionSelection.tsx:23:20)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/booking-flow.test.tsx:80:11)
+
+  ● Booking Flow Integration › calculates total price correctly for room selection
+
+    TypeError: Cannot read properties of undefined (reading 'experienceType')
+
+      21 |   // Only fetch data for the selected experience type to improve performance
+      22 |   const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
+    > 23 |     checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+         |                    ^
+      24 |     checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+      25 |     guests: state.experienceType === 'room' ? state.guests : 1,
+      26 |   });
+
+      at experienceType (components/BookingWidget/steps/OptionSelection.tsx:23:20)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/booking-flow.test.tsx:95:11)
+
+  ● Booking Flow Integration › renders surf camp options when experience type is surf-week
+
+    TypeError: Cannot read properties of undefined (reading 'experienceType')
+
+      21 |   // Only fetch data for the selected experience type to improve performance
+      22 |   const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
+    > 23 |     checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+         |                    ^
+      24 |     checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+      25 |     guests: state.experienceType === 'room' ? state.guests : 1,
+      26 |   });
+
+      at experienceType (components/BookingWidget/steps/OptionSelection.tsx:23:20)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/booking-flow.test.tsx:127:11)
+
+  ● Booking Flow Integration › handles date selection correctly
+
+    TypeError: Cannot read properties of undefined (reading 'experienceType')
+
+      21 |   // Only fetch data for the selected experience type to improve performance
+      22 |   const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
+    > 23 |     checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+         |                    ^
+      24 |     checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+      25 |     guests: state.experienceType === 'room' ? state.guests : 1,
+      26 |   });
+
+      at experienceType (components/BookingWidget/steps/OptionSelection.tsx:23:20)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/booking-flow.test.tsx:141:11)
+
+  ● Booking Flow Integration › handles guest count selection
+
+    TypeError: Cannot read properties of undefined (reading 'experienceType')
+
+      21 |   // Only fetch data for the selected experience type to improve performance
+      22 |   const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
+    > 23 |     checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+         |                    ^
+      24 |     checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+      25 |     guests: state.experienceType === 'room' ? state.guests : 1,
+      26 |   });
+
+      at experienceType (components/BookingWidget/steps/OptionSelection.tsx:23:20)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/booking-flow.test.tsx:167:11)
+
+  ● Booking Flow Integration › shows loading state initially
+
+    TypeError: Cannot read properties of undefined (reading 'experienceType')
+
+      21 |   // Only fetch data for the selected experience type to improve performance
+      22 |   const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
+    > 23 |     checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+         |                    ^
+      24 |     checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+      25 |     guests: state.experienceType === 'room' ? state.guests : 1,
+      26 |   });
+
+      at experienceType (components/BookingWidget/steps/OptionSelection.tsx:23:20)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/booking-flow.test.tsx:185:11)
+
+  ● Booking Flow Integration › handles API errors gracefully
+
+    TypeError: Cannot read properties of undefined (reading 'experienceType')
+
+      21 |   // Only fetch data for the selected experience type to improve performance
+      22 |   const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
+    > 23 |     checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+         |                    ^
+      24 |     checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+      25 |     guests: state.experienceType === 'room' ? state.guests : 1,
+      26 |   });
+
+      at experienceType (components/BookingWidget/steps/OptionSelection.tsx:23:20)
+      at Object.react_stack_bottom_frame (node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+      at updateFunctionComponent (node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+      at beginWork (node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom-client.development.js:17450:11)
+      at performWorkOnRoot (node_modules/react-dom/cjs/react-dom-client.development.js:16583:35)
+      at performWorkOnRootViaSchedulerTask (node_modules/react-dom/cjs/react-dom-client.development.js:18957:7)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at process.env.NODE_ENV.exports.act (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:47:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:190:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:292:10)
+      at Object.<anonymous> (__tests__/integration/booking-flow.test.tsx:200:11)
+
+FAIL __tests__/integration/admin-payments.test.tsx
+  ● Test suite failed to run
+
+    ReferenceError: TextEncoder is not defined
+
+       8 | import { setupServer } from 'msw/node'
+       9 | import { handlers } from '../mocks/handlers'
+    > 10 |
+         | ^
+      11 | const server = setupServer(...handlers)
+      12 |
+      13 | beforeAll(() => server.listen())
+
+      at Object.<anonymous> (node_modules/@mswjs/interceptors/src/utils/bufferUtils.ts:1:17)
+      at Object.<anonymous> (node_modules/@mswjs/interceptors/lib/browser/index.js:4:24)
+      at Object.<anonymous> (node_modules/msw/src/core/utils/matching/matchRequestUrl.ts:2:29)
+      at Object.<anonymous> (node_modules/msw/src/core/handlers/HttpHandler.ts:13:8)
+      at Object.<anonymous> (node_modules/msw/src/core/http.ts:11:8)
+      at Object.<anonymous> (node_modules/msw/src/core/index.ts:7:22)
+      at Object.<anonymous> (__tests__/integration/admin-payments.test.tsx:10:14)
+
+FAIL __tests__/integration/admin-invoices.test.tsx
+  ● Test suite failed to run
+
+    ReferenceError: Response is not defined
+
+       8 | import { setupServer } from 'msw/node'
+       9 | import { handlers } from '../mocks/handlers'
+    > 10 |
+         | ^
+      11 | const server = setupServer(...handlers)
+      12 |
+      13 | beforeAll(() => server.listen())
+
+      at Object.<anonymous> (node_modules/@mswjs/interceptors/src/utils/fetchUtils.ts:27:8)
+      at Object.<anonymous> (node_modules/@mswjs/interceptors/lib/node/chunk-7Q53NNPV.js:4:24)
+      at Object.<anonymous> (node_modules/@mswjs/interceptors/lib/node/chunk-VYO5XDY2.js:9:24)
+      at Object.<anonymous> (node_modules/@mswjs/interceptors/lib/node/interceptors/ClientRequest/index.js:3:24)
+      at Object.<anonymous> (node_modules/msw/src/node/SetupServerApi.ts:3:42)
+      at Object.<anonymous> (__tests__/integration/admin-invoices.test.tsx:10:15)
+
+FAIL __tests__/integration/api-bookings.test.ts
+  ● Bookings API Integration › should fetch bookings list
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      12 |   test('should fetch bookings list', async () => {
+      13 |     const response = await fetch(`${baseUrl}/bookings`)
+    > 14 |     expect(response.status).toBe(200)
+         |                             ^
+      15 |     
+      16 |     const data = await response.json()
+      17 |     expect(data).toBeDefined()
+
+      at Object.toBe (__tests__/integration/api-bookings.test.ts:14:29)
+
+  ● Bookings API Integration › should validate booking creation payload
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected value: 404
+    Received array: [400, 422]
+
+      37 |     })
+      38 |
+    > 39 |     expect([400, 422]).toContain(response.status)
+         |                        ^
+      40 |   })
+      41 |
+      42 |   test('should handle API rate limiting', async () => {
+
+      at Object.toContain (__tests__/integration/api-bookings.test.ts:39:24)
+
+  ● Bookings API Integration › should handle API rate limiting
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      50 |     
+      51 |     // Should have mix of 200s and possibly 429s (rate limit)
+    > 52 |     expect(statuses.some(s => [200, 429].includes(s))).toBe(true)
+         |                                                        ^
+      53 |   })
+      54 |
+      55 |   test('should handle network timeouts', async () => {
+
+      at Object.toBe (__tests__/integration/api-bookings.test.ts:52:56)
+
+  ● Rooms API Integration › should fetch rooms list
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      72 |   test('should fetch rooms list', async () => {
+      73 |     const response = await fetch(`${baseUrl}/rooms`)
+    > 74 |     expect(response.status).toBe(200)
+         |                             ^
+      75 |     
+      76 |     const data = await response.json()
+      77 |     expect(data).toBeDefined()
+
+      at Object.toBe (__tests__/integration/api-bookings.test.ts:74:29)
+
+  ● Rooms API Integration › should fetch room by ID
+
+    FetchError: invalid json response body at http://localhost:3000/api/rooms reason: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+
+      82 |     // First get a room ID
+      83 |     const listResponse = await fetch(`${baseUrl}/rooms`)
+    > 84 |     const rooms = await listResponse.json()
+         |                   ^
+      85 |     
+      86 |     if (Array.isArray(rooms) && rooms.length > 0) {
+      87 |       const roomId = rooms[0].id
+
+      at node_modules/node-fetch/lib/index.js:273:32
+      at Object.<anonymous> (__tests__/integration/api-bookings.test.ts:84:19)
+
+  ● Rooms API Integration › should handle room filtering
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+       96 |   test('should handle room filtering', async () => {
+       97 |     const response = await fetch(`${baseUrl}/rooms?capacity=2`)
+    >  98 |     expect(response.status).toBe(200)
+          |                             ^
+       99 |     
+      100 |     const data = await response.json()
+      101 |     expect(data).toBeDefined()
+
+      at Object.toBe (__tests__/integration/api-bookings.test.ts:98:29)
+
+  ● Add-ons API Integration › should fetch add-ons list
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      108 |   test('should fetch add-ons list', async () => {
+      109 |     const response = await fetch(`${baseUrl}/add-ons`)
+    > 110 |     expect(response.status).toBe(200)
+          |                             ^
+      111 |     
+      112 |     const data = await response.json()
+      113 |     expect(data).toBeDefined()
+
+      at Object.toBe (__tests__/integration/api-bookings.test.ts:110:29)
+
+  ● Add-ons API Integration › should fetch add-on by ID
+
+    FetchError: invalid json response body at http://localhost:3000/api/add-ons reason: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+
+      118 |     // First get an add-on ID
+      119 |     const listResponse = await fetch(`${baseUrl}/add-ons`)
+    > 120 |     const addOns = await listResponse.json()
+          |                    ^
+      121 |     
+      122 |     if (Array.isArray(addOns) && addOns.length > 0) {
+      123 |       const addOnId = addOns[0].id
+
+      at node_modules/node-fetch/lib/index.js:273:32
+      at Object.<anonymous> (__tests__/integration/api-bookings.test.ts:120:20)
+
+  ● Availability API Integration › should check date availability
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      146 |     )
+      147 |     
+    > 148 |     expect(response.status).toBe(200)
+          |                             ^
+      149 |     const data = await response.json()
+      150 |     expect(data).toBeDefined()
+      151 |   })
+
+      at Object.toBe (__tests__/integration/api-bookings.test.ts:148:29)
+
+  ● Availability API Integration › should validate date range
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected value: 404
+    Received array: [200, 400]
+
+      158 |     )
+      159 |     
+    > 160 |     expect([200, 400]).toContain(response.status)
+          |                        ^
+      161 |   })
+      162 | })
+      163 |
+
+      at Object.toContain (__tests__/integration/api-bookings.test.ts:160:24)
+
+  ● API Error Handling › should handle 500 errors gracefully
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected value: 404
+    Received array: [200, 500]
+
+      173 |     // This test depends on the API having proper error handling
+      174 |     const response = await fetch(`${baseUrl}/bookings`)
+    > 175 |     expect([200, 500]).toContain(response.status)
+          |                        ^
+      176 |   })
+      177 |
+      178 |   test('should validate response headers', async () => {
+
+      at Object.toContain (__tests__/integration/api-bookings.test.ts:175:24)
+
+  ● API Error Handling › should handle CORS properly
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      186 |     const response = await fetch(`${baseUrl}/bookings`)
+      187 |     // CORS headers should be present or request should succeed
+    > 188 |     expect(response.ok || response.status === 401).toBe(true)
+          |                                                    ^
+      189 |   })
+      190 | })
+      191 |
+
+      at Object.toBe (__tests__/integration/api-bookings.test.ts:188:52)
+
+Test Suites: 7 failed, 2 passed, 9 total
+Tests:       42 failed, 25 passed, 67 total
+Snapshots:   0 total
+Time:        1.734 s, estimated 4 s
+Ran all test suites matching __tests__/integration.

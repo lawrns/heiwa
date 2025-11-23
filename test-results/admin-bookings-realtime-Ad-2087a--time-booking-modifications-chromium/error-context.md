@@ -5,36 +5,25 @@
   - generic [ref=e3]:
     - heading "404" [level=1] [ref=e4]
     - heading "This page could not be found." [level=2] [ref=e6]
-  - generic [ref=e9]:
-    - generic [ref=e10]:
-      - generic:
-        - generic:
-          - img "Racecar Background"
-      - generic [ref=e11]: 10% OFF
-      - heading "¡Obtén un cupón de descuento!" [level=2] [ref=e12]
-    - generic [ref=e13]:
-      - button "Cerrar" [ref=e14] [cursor=pointer]:
-        - img [ref=e15]
-      - paragraph [ref=e18]: Ingresa tus datos y recibe tu código por correo
-      - generic [ref=e19]:
-        - generic [ref=e20]:
-          - generic [ref=e21]: Nombre
-          - textbox "Nombre" [ref=e22]:
-            - /placeholder: Tu nombre
-        - generic [ref=e23]:
-          - generic [ref=e24]: Email
-          - textbox "Email" [ref=e25]:
-            - /placeholder: tu@email.com
-        - generic [ref=e26]:
-          - generic [ref=e27]: WhatsApp
-          - textbox "WhatsApp" [ref=e28]:
-            - /placeholder: 55 1234 5678
-        - button "🎁 Reclamar mi cupón" [ref=e29] [cursor=pointer]:
-          - generic [ref=e30]:
-            - generic [ref=e31]: 🎁
-            - text: Reclamar mi cupón
-      - button "No gracias, seguiré viendo" [ref=e32] [cursor=pointer]
-  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
-    - img [ref=e39]
-  - alert [ref=e42]
+  - generic [ref=e8]:
+    - link "Inicio" [ref=e10] [cursor=pointer]:
+      - /url: /
+      - img [ref=e11]
+      - text: Inicio
+    - link "Colección" [ref=e14] [cursor=pointer]:
+      - /url: /coleccion
+      - img [ref=e15]
+      - text: Colección
+    - button "10% 1ª compra" [ref=e20]:
+      - generic [ref=e21]:
+        - img [ref=e22]
+        - text: 10%
+      - text: 1ª compra
+    - button "Carrito" [ref=e25]:
+      - img [ref=e27]
+      - text: Carrito
+    - link "Cuenta" [ref=e30] [cursor=pointer]:
+      - /url: /account
+      - img [ref=e31]
+      - text: Cuenta
 ```
