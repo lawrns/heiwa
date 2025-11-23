@@ -1,4 +1,5 @@
 import { Room, SurfCamp, AddOn } from '@/lib/schemas';
+import { differenceInDays } from 'date-fns';
 
 export interface BookingItem {
   id: string;
@@ -39,7 +40,7 @@ export function calculateRoomPrice(
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    nights = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
+    nights = Math.max(1, differenceInDays(end, start));
   }
 
   // Handle different pricing models based on bookingType and camp pricing
@@ -197,17 +198,7 @@ function isDateInRange(
   }
 }
 
-/**
- * Format currency for display
- */
-export function formatCurrency(amount: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
+// formatCurrency is now imported from lib/utils.ts
 
 /**
  * Calculate booking duration in nights
@@ -215,7 +206,7 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
 export function calculateNights(startDate: string, endDate: string): number {
   const start = new Date(startDate);
   const end = new Date(endDate);
-  return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
+  return Math.max(1, differenceInDays(end, start));
 }
 
 /**

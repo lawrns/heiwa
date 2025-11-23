@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Calendar, CheckCircle, ArrowLeft, Info } from 'lucide-react';
 import { useBookingFlow } from './hooks/useBookingFlow';
 import { useBooking } from '@/lib/booking-context';
+import type { BookingSuccessData } from '@/lib/types';
 import { ProgressIndicator } from './ui/ProgressIndicator';
 import { ExperienceSelection } from './steps/ExperienceSelection';
 import { OptionSelection } from './steps/OptionSelection';
@@ -37,7 +38,7 @@ export function BookingWidget({
 }: BookingWidgetProps) {
   const { isBookingOpen, closeBooking: closeBookingContext } = useBooking();
   const [isOpen, setIsOpen] = useState(isWebComponent);
-  const [bookingSuccess, setBookingSuccess] = useState<any>(null);
+  const [bookingSuccess, setBookingSuccess] = useState<BookingSuccessData | null>(null);
   const { state, actions, computed } = useBookingFlow();
   const { setBookingSuccess: setBookingSuccessInContext, selectedSurfWeek, setSelectedSurfWeek } = useBooking();
   const contentScrollRef = React.useRef<HTMLDivElement>(null);
@@ -102,10 +103,24 @@ export function BookingWidget({
       return;
     }
 
+    // Log state changes for debugging (development only)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔄 BookingWidget state sync:', {
+        isOpen,
+        selectedSurfWeekId: currentSurfWeekId,
+        prevSurfWeekId: prevSurfWeekRef.current,
+        isWebComponent,
+      });
+    }
+
     // Batch all state updates to prevent flickering
-    if (selectedSurfWeek) {
-      // Pre-select surf week in the booking flow
-      actions.setExperienceType('surf-week');
+    // Add small delay for mobile Safari to ensure state is ready
+    const delay = typeof window !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 100 : 0;
+    
+    const timeoutId = setTimeout(() => {
+      if (selectedSurfWeek) {
+        // Pre-select surf week in the booking flow
+        actions.setExperienceType('surf-week');
       actions.setSurfWeek(selectedSurfWeek.id);
       
       // Set dates from surf week's start_date and end_date

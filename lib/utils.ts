@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { differenceInDays } from 'date-fns'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -7,19 +8,15 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Calculate the number of nights between two dates
- * Uses UTC dates to avoid timezone issues
+ * Uses date-fns for robust date calculations
  */
 export function calculateNights(checkIn: Date, checkOut: Date): number {
   if (!checkIn || !checkOut || isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
     return 0
   }
 
-  // Use UTC dates to avoid timezone issues
-  const checkInUTC = new Date(checkIn.getFullYear(), checkIn.getMonth(), checkIn.getDate())
-  const checkOutUTC = new Date(checkOut.getFullYear(), checkOut.getMonth(), checkOut.getDate())
-  
-  const timeDiff = checkOutUTC.getTime() - checkInUTC.getTime()
-  const nights = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
+  // Use date-fns differenceInDays for accurate calculation
+  const nights = differenceInDays(checkOut, checkIn)
   
   return Math.max(0, nights)
 }
@@ -57,13 +54,28 @@ export function formatPrice(price: number): string {
 
 /**
  * Format date for display
+ * Accepts both Date object and date string
  */
-export function formatDate(date: Date): string {
+export function formatDate(date: Date | string): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }).format(date)
+  }).format(dateObj)
+}
+
+/**
+ * Format currency for display
+ * Centralized currency formatting utility
+ */
+export function formatCurrency(amount: number, currency: string = 'EUR'): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount)
 }
 
 /**

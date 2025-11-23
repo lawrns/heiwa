@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Room } from '../types';
 import { apiFetch } from '../lib/api';
+import { transformApiRoomToRoom } from '@/lib/booking-utils';
 
 interface UseRoomsParams {
   checkIn: Date | null;
@@ -74,74 +75,18 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
         // Handle both availability endpoint (available_rooms) and general rooms endpoint (rooms)
         const roomsData = data.data.available_rooms || data.data.rooms;
 
-        // Transform API response to our Room interface
+        // Transform API response to our Room interface using utility function
         const transformedRooms: Room[] = roomsData.map((room: any) => {
-          // Determine room type based on booking type and capacity
-          let roomType: 'private' | 'shared' | 'dorm';
-          if (room.booking_type === 'perBed') {
-            roomType = 'dorm';
-          } else if (room.capacity === 1) {
-            roomType = 'private';
-          } else {
-            roomType = 'shared';
-          }
-
-          // Handle images: prefer valid images array, fallback to featured_image, then local fallback
-          let images: string[] = [];
+          const transformedRoom = transformApiRoomToRoom(room);
           
-          // Helper to check if URL is valid and accessible
-          const isValidImageUrl = (url: string): boolean => {
-            if (!url) return false;
-            // Skip broken heiwahouse.com URLs
-            if (url.includes('heiwahouse.com/wp-content')) return false;
-            // Accept local images and valid external URLs
-            return url.startsWith('/') || url.startsWith('http');
-          };
-          
-          if (room.images && Array.isArray(room.images) && room.images.length > 0) {
-            // Filter out invalid URLs
-            images = room.images.filter(isValidImageUrl);
-          }
-          
-          if (images.length === 0 && room.featured_image && isValidImageUrl(room.featured_image)) {
-            images = [room.featured_image];
-          }
-          
-          if (images.length === 0) {
-            // Fallback to local images based on room type
-            if (roomType === 'dorm') {
-              images = [
-                '/images/Freedomroutes-rooms-1.jpg',
-                '/images/Freedomroutes-rooms-50.jpg',
-                '/images/DSC03521-scaled.jpg'
-              ];
-            } else {
-              images = [
-                '/images/DSC02099-scaled.jpg',
-                '/images/DSC02102-scaled.jpg',
-                '/images/DSC03530-scaled.jpg'
-              ];
-            }
-          }
-
           console.log(`🖼️ Room ${room.name} images:`, {
             hasImagesArray: !!room.images,
             imagesCount: room.images?.length || 0,
             hasFeaturedImage: !!room.featured_image,
-            finalImagesCount: images.length
+            finalImagesCount: transformedRoom.images.length
           });
 
-          return {
-            id: room.id,
-            name: room.name,
-            description: room.description || '',
-            type: roomType,
-            maxOccupancy: room.capacity,
-            pricePerNight: room.price_per_night,
-            amenities: room.amenities || [],
-            images: images,
-            isAvailable: true, // All returned rooms are available or shown
-          };
+          return transformedRoom;
         });
 
         setRooms(transformedRooms);

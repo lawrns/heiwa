@@ -1,4 +1,63 @@
-import { logger } from './logger'
+// Error logging utility
+// Falls back to console if logger is not available
+const logger = {
+  error: (message: string, error?: any, context?: Record<string, any>) => {
+    console.error(`[ERROR] ${message}`, error, context)
+  },
+  warn: (message: string, context?: Record<string, any>) => {
+    console.warn(`[WARN] ${message}`, context)
+  },
+  apiError: (endpoint: string, error: any, context?: Record<string, any>) => {
+    console.error(`[API ERROR] ${endpoint}`, error, context)
+  },
+  validationError: (field: string, message: string, context?: Record<string, any>) => {
+    console.error(`[VALIDATION ERROR] ${field}: ${message}`, context)
+  },
+  bookingError: (step: string, error: any, context?: Record<string, any>) => {
+    console.error(`[BOOKING ERROR] ${step}`, error, context)
+  },
+}
+
+/**
+ * Log error with context for production debugging
+ */
+export function logError(error: Error, context?: {
+  component?: string
+  action?: string
+  userId?: string
+  bookingId?: string
+  [key: string]: any
+}) {
+  const errorInfo = {
+    message: error.message,
+    stack: error.stack,
+    name: error.name,
+    timestamp: new Date().toISOString(),
+    userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'server',
+    url: typeof window !== 'undefined' ? window.location.href : 'unknown',
+    ...context,
+  }
+
+  logger.error('Application error', error, errorInfo)
+
+  // TODO: Send to error reporting service
+  // Example:
+  // if (typeof window !== 'undefined' && window.Sentry) {
+  //   window.Sentry.captureException(error, { extra: errorInfo })
+  // }
+  
+  // Optional: Send to API endpoint for logging
+  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+    // Don't await to avoid blocking
+    fetch('/api/errors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(errorInfo),
+    }).catch(() => {
+      // Silently fail if error reporting fails
+    })
+  }
+}
 
 /**
  * Custom error classes for different error types
