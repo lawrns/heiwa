@@ -548,7 +548,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       {state.experienceType === 'surf-week' ? (
         <div className="space-y-4">
           {options.map((w: any, index: number) => {
-            const isSelected = selectedOption === w.id;
+            const isSelected = state.selectedSurfWeek === w.id;
             const from = typeof w.priceFrom === 'number' ? w.priceFrom : w.price;
             const start = new Date(w.startDate);
             const end = new Date(w.endDate);

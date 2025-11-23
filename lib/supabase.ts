@@ -75,28 +75,52 @@ const globalForSupabase = getGlobalForSupabase()
 // Create Supabase client for public operations (booking system integration)
 export const supabase = (() => {
   if (!globalForSupabase.supabaseInstance) {
-    globalForSupabase.supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        // Use a dedicated storage key to avoid GoTrue warnings when multiple clients exist
-        storageKey: 'heiwa-public-auth',
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false
-      },
-      // Disable realtime subscriptions to reduce overhead
-      realtime: {
-        params: {
-          eventsPerSecond: 2
-        }
+    // Double-check to prevent race conditions
+    if (typeof window !== 'undefined' && (window as any).__HEIWA_SUPABASE_CREATING__) {
+      // Wait for the other instance to finish creating
+      let attempts = 0
+      while ((window as any).__HEIWA_SUPABASE_CREATING__ && attempts < 50) {
+        attempts++
+        // Busy wait (only for a short time)
       }
-    })
-    if (typeof window === 'undefined') {
-      console.log('🏄‍♂️ Heiwa House Website - Supabase connection initialized:', {
-        url: supabaseUrl,
-        hasKey: !!supabaseAnonKey,
-        hasServiceKey: !!supabaseServiceKey,
-        project: 'heiwa-booking-integration'
+      if (globalForSupabase.supabaseInstance) {
+        return globalForSupabase.supabaseInstance
+      }
+    }
+    
+    if (typeof window !== 'undefined') {
+      (window as any).__HEIWA_SUPABASE_CREATING__ = true
+    }
+    
+    try {
+      globalForSupabase.supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          // Use a dedicated storage key to avoid GoTrue warnings when multiple clients exist
+          storageKey: 'heiwa-public-auth',
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false
+        },
+        // Disable realtime subscriptions to reduce overhead
+        realtime: {
+          params: {
+            eventsPerSecond: 2
+          }
+        }
       })
+      
+      if (typeof window === 'undefined') {
+        console.log('🏄‍♂️ Heiwa House Website - Supabase connection initialized:', {
+          url: supabaseUrl,
+          hasKey: !!supabaseAnonKey,
+          hasServiceKey: !!supabaseServiceKey,
+          project: 'heiwa-booking-integration'
+        })
+      }
+    } finally {
+      if (typeof window !== 'undefined') {
+        delete (window as any).__HEIWA_SUPABASE_CREATING__
+      }
     }
   }
   return globalForSupabase.supabaseInstance
@@ -106,26 +130,49 @@ export const supabase = (() => {
 // Note: Service role key should only be used server-side, but we provide fallback for client-side compatibility
 export const supabaseAdmin = (() => {
   if (!globalForSupabase.supabaseAdminInstance) {
-    // Use service role key if available, otherwise fall back to anon key for client-side
-    const adminKey = supabaseServiceKey || supabaseAnonKey
-    if (!adminKey) {
-      throw new Error('Supabase admin key is required. Set SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY')
-    }
-    globalForSupabase.supabaseAdminInstance = createClient(supabaseUrl, adminKey, {
-      auth: {
-        // Separate storage key so admin client doesn't conflict with public client
-        storageKey: 'heiwa-admin-auth',
-        autoRefreshToken: false,
-        persistSession: false,
-        detectSessionInUrl: false
-      },
-      // Disable realtime subscriptions to reduce overhead
-      realtime: {
-        params: {
-          eventsPerSecond: 2
-        }
+    // Double-check to prevent race conditions
+    if (typeof window !== 'undefined' && (window as any).__HEIWA_SUPABASE_ADMIN_CREATING__) {
+      // Wait for the other instance to finish creating
+      let attempts = 0
+      while ((window as any).__HEIWA_SUPABASE_ADMIN_CREATING__ && attempts < 50) {
+        attempts++
+        // Busy wait (only for a short time)
       }
-    })
+      if (globalForSupabase.supabaseAdminInstance) {
+        return globalForSupabase.supabaseAdminInstance
+      }
+    }
+    
+    if (typeof window !== 'undefined') {
+      (window as any).__HEIWA_SUPABASE_ADMIN_CREATING__ = true
+    }
+    
+    try {
+      // Use service role key if available, otherwise fall back to anon key for client-side
+      const adminKey = supabaseServiceKey || supabaseAnonKey
+      if (!adminKey) {
+        throw new Error('Supabase admin key is required. Set SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY')
+      }
+      globalForSupabase.supabaseAdminInstance = createClient(supabaseUrl, adminKey, {
+        auth: {
+          // Separate storage key so admin client doesn't conflict with public client
+          storageKey: 'heiwa-admin-auth',
+          autoRefreshToken: false,
+          persistSession: false,
+          detectSessionInUrl: false
+        },
+        // Disable realtime subscriptions to reduce overhead
+        realtime: {
+          params: {
+            eventsPerSecond: 2
+          }
+        }
+      })
+    } finally {
+      if (typeof window !== 'undefined') {
+        delete (window as any).__HEIWA_SUPABASE_ADMIN_CREATING__
+      }
+    }
   }
   return globalForSupabase.supabaseAdminInstance
 })()
