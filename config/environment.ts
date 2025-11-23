@@ -3,9 +3,9 @@
 
 export const env = {
   // Supabase Configuration
-  // CRITICAL: Must use zejrhceuuujzgyukdwnb project (where the actual data is stored)
+  // CRITICAL: Must use pguipwhrxdzzrndbluxb project (where the actual data is stored)
   supabase: {
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zejrhceuuujzgyukdwnb.supabase.co',
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pguipwhrxdzzrndbluxb.supabase.co',
     anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
   },
 

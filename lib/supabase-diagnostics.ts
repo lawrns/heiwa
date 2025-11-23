@@ -16,7 +16,7 @@ export interface SupabaseDiagnostics {
  * This helps identify connection issues
  */
 export async function diagnoseSupabaseConnection(): Promise<SupabaseDiagnostics> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zejrhceuuujzgyukdwnb.supabase.co'
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pguipwhrxdzzrndbluxb.supabase.co'
   const hasAnonKey = !!(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '')
   const hasServiceKey = !!(process.env.SUPABASE_SERVICE_ROLE_KEY || '')
   const environment = process.env.NODE_ENV === 'production' ? 'production' : 
