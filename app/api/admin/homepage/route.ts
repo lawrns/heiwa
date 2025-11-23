@@ -137,17 +137,29 @@ export async function GET() {
       }
     })
   } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+    const isNetworkError = errorMessage.includes('ERR_NAME_NOT_RESOLVED') || 
+                          errorMessage.includes('getaddrinfo') ||
+                          errorMessage.includes('ENOTFOUND') ||
+                          errorMessage.includes('fetch failed') ||
+                          errorMessage.includes('Supabase connection failed')
+    
     console.error('❌ Homepage API Error:', {
       error: err,
-      message: err instanceof Error ? err.message : 'Unknown error',
+      message: errorMessage,
       stack: err instanceof Error ? err.stack : undefined,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      isNetworkError
     })
+    
     return NextResponse.json({
       success: false,
-      error: 'Failed to fetch homepage content',
+      error: isNetworkError 
+        ? 'Unable to connect to database. Please verify your Supabase project is active and environment variables are configured correctly.'
+        : 'Failed to fetch homepage content',
       debug: process.env.NODE_ENV === 'development' ? {
-        message: err instanceof Error ? err.message : 'Unknown error',
+        message: errorMessage,
+        type: isNetworkError ? 'network_error' : 'unknown_error',
         timestamp: new Date().toISOString()
       } : undefined
     }, { status: 500 })

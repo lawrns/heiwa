@@ -112,9 +112,25 @@ export async function GET(request: Request) {
 
   } catch (error) {
     console.error('Error fetching surf camps:', error)
+    
+    // Check if it's a network/DNS error
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+    const isNetworkError = errorMessage.includes('ERR_NAME_NOT_RESOLVED') || 
+                          errorMessage.includes('getaddrinfo') ||
+                          errorMessage.includes('ENOTFOUND') ||
+                          errorMessage.includes('fetch failed')
+    
     return NextResponse.json({
       success: false,
-      error: error instanceof Error ? error.message : 'Internal server error'
+      error: isNetworkError 
+        ? 'Unable to connect to database. Please check your Supabase configuration.'
+        : errorMessage,
+      ...(process.env.NODE_ENV === 'development' && {
+        debug: {
+          message: errorMessage,
+          type: isNetworkError ? 'network_error' : 'unknown_error'
+        }
+      })
     }, { 
       status: 500,
       headers: {

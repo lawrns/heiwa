@@ -11,35 +11,66 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zejrhceuuuj
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMDQ4MDksImV4cCI6MjA3MjY4MDgwOX0.yIqpTz-OTqcaL5h7GIzoBmRezoJD-MC2yPTpxvo-aNA'
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzEwNDgwOSwiZXhwIjoyMDcyNjgwODA5fQ.RbzOLzCaOAsgaMixdACMLdPvLZjU9MPfXn8Y90gsxcc'
 
+// Validate Supabase URL format
+if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
+  console.error('❌ ERROR: Invalid Supabase URL format:', supabaseUrl)
+  console.error('   Expected format: https://[project-ref].supabase.co')
+}
+
 // Validate that API keys are set (only check server-side for service role key)
 if (typeof window === 'undefined') {
   // Server-side validation
   if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
     console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
     console.error('   Please get the API key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
-    console.error('   Then update your .env.local file')
+    console.error('   Then update your .env.local file or production environment variables')
   }
 
   if (!supabaseServiceKey || supabaseServiceKey === 'YOUR_SERVICE_ROLE_KEY_HERE') {
     console.error('❌ ERROR: SUPABASE_SERVICE_ROLE_KEY is not set!')
     console.error('   Please get the service role key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
-    console.error('   Then update your .env.local file')
+    console.error('   Then update your .env.local file or production environment variables')
+  }
+  
+  // Run diagnostics in development or when explicitly enabled
+  if (process.env.NODE_ENV === 'development' || process.env.ENABLE_SUPABASE_DIAGNOSTICS === 'true') {
+    import('./supabase-diagnostics').then(({ logSupabaseDiagnostics }) => {
+      logSupabaseDiagnostics().catch(console.error)
+    })
   }
 } else {
   // Client-side validation (only check anon key)
   if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
     console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
     console.error('   Please get the API key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
-    console.error('   Then update your .env.local file')
+    console.error('   Then update your .env.local file or production environment variables')
   }
 }
 
 // Singleton pattern to prevent multiple client instances
 // Use globalThis to ensure singleton across module reloads in Next.js
-const globalForSupabase = globalThis as unknown as {
-  supabaseInstance: ReturnType<typeof createClient> | undefined
-  supabaseAdminInstance: ReturnType<typeof createClient> | undefined
+// Separate singletons for server and client to avoid Next.js bundling issues
+const getGlobalForSupabase = () => {
+  if (typeof window === 'undefined') {
+    // Server-side: use globalThis
+    return globalThis as unknown as {
+      supabaseInstance: ReturnType<typeof createClient> | undefined
+      supabaseAdminInstance: ReturnType<typeof createClient> | undefined
+    }
+  } else {
+    // Client-side: use window object with a unique key to avoid conflicts
+    const key = '__HEIWA_SUPABASE__'
+    if (!(window as any)[key]) {
+      (window as any)[key] = {
+        supabaseInstance: undefined,
+        supabaseAdminInstance: undefined
+      }
+    }
+    return (window as any)[key]
+  }
 }
+
+const globalForSupabase = getGlobalForSupabase()
 
 // Create Supabase client for public operations (booking system integration)
 export const supabase = (() => {
@@ -51,6 +82,12 @@ export const supabase = (() => {
         persistSession: false,
         autoRefreshToken: false,
         detectSessionInUrl: false
+      },
+      // Disable realtime subscriptions to reduce overhead
+      realtime: {
+        params: {
+          eventsPerSecond: 2
+        }
       }
     })
     if (typeof window === 'undefined') {
@@ -81,6 +118,12 @@ export const supabaseAdmin = (() => {
         autoRefreshToken: false,
         persistSession: false,
         detectSessionInUrl: false
+      },
+      // Disable realtime subscriptions to reduce overhead
+      realtime: {
+        params: {
+          eventsPerSecond: 2
+        }
       }
     })
   }
