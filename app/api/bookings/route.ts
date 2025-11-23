@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (roomId) {
-      query = query.eq('room_id', roomId)
+      query = query.eq('room_type', roomId)
     }
 
     const { data, error, count } = await query

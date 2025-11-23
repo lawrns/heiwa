@@ -33,25 +33,25 @@ export async function GET(request: NextRequest) {
     }
 
     // Check for existing bookings that overlap with requested dates
-    // Handle case where bookings table might not exist yet
+    // Bookings table uses room_type (text/room name) instead of room_id
     interface RoomBooking {
-      room_id: string
-      check_in_date: string
-      check_out_date: string
+      room_type: string
+      check_in: string
+      check_out: string
     }
     let existingBookings: RoomBooking[] = []
 
     try {
       const { data, error: bookingsError } = await supabase
-        .from('room_assignments')
-        .select('room_id, check_in_date, check_out_date')
-        .gte('check_out_date', startDate)
-        .lte('check_in_date', endDate)
-        .eq('status', 'confirmed')
+        .from('bookings')
+        .select('room_type, check_in, check_out')
+        .gte('check_out', startDate)
+        .lte('check_in', endDate)
+        .in('status', ['pending', 'confirmed'])
 
       if (bookingsError) {
-        // If table doesn't exist, log warning but continue with empty bookings
-        console.warn('Bookings table not found or error:', bookingsError.message)
+        // If table doesn't exist or error, log warning but continue with empty bookings
+        console.warn('Bookings table error:', bookingsError.message)
         existingBookings = []
       } else {
         existingBookings = data || []
@@ -61,12 +61,21 @@ export async function GET(request: NextRequest) {
       existingBookings = []
     }
 
+    // Create a map of room names to IDs for matching
+    const roomNameToId = new Map<string, string>()
+    ;(allRooms || []).forEach((room: { id?: string; name?: string }) => {
+      if (room.id && room.name) {
+        roomNameToId.set(room.name, room.id)
+      }
+    })
+
     // Filter available rooms - only check date availability, not capacity
     // Users will select multiple rooms to accommodate all guests
-    const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; [key: string]: unknown }) => {
+    const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; name?: string; [key: string]: unknown }) => {
       // Check if room is already booked for these dates
+      // Match by room name since bookings table uses room_type (text)
       const isBooked = existingBookings.some(booking =>
-        booking.room_id === room.id
+        booking.room_type === room.name
       )
 
       return !isBooked

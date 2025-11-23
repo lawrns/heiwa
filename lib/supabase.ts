@@ -28,7 +28,7 @@ if (typeof window === 'undefined') {
 
   if (!supabaseServiceKey || supabaseServiceKey === 'YOUR_SERVICE_ROLE_KEY_HERE') {
     console.error('❌ ERROR: SUPABASE_SERVICE_ROLE_KEY is not set!')
-    console.error('   Please get the service role key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
+    console.error('   Please get the service role key from: https://supabase.com/dashboard/project/pguipwhrxdzzrndbluxb/settings/api')
     console.error('   Then update your .env.local file or production environment variables')
   }
   
