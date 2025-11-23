@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { executeWithTimeout } from '@/lib/supabase-timeout'
 
 // TypeScript interface for surf camp data
 interface SurfCamp {
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
     const showAll = searchParams.get('admin') === 'true'
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
     
-    // Build query 
+    // Build query with timeout protection
     let query = supabase
       .from('surf_camps')
       .select('*')
@@ -46,10 +47,39 @@ export async function GET(request: Request) {
       query = query.limit(limit)
     }
     
-    const { data: surfCamps, error: surfCampsError } = await query
+    // Execute with timeout to prevent long waits
+    const { data: surfCamps, error: surfCampsError } = await executeWithTimeout(
+      query,
+      1000 // 1 second timeout for fast failure
+    )
 
     if (surfCampsError) {
       console.error('Error fetching surf camps:', surfCampsError)
+      
+      // Check if it's a timeout/network error - return empty array gracefully
+      const errorMessage = surfCampsError?.message || String(surfCampsError)
+      const isNetworkError = errorMessage.includes('timeout') ||
+                            errorMessage.includes('NETWORK_ERROR') ||
+                            errorMessage.includes('TIMEOUT') ||
+                            errorMessage.includes('Supabase may be unreachable')
+      
+      // Return empty array instead of error to prevent site breakage
+      if (isNetworkError) {
+        console.warn('⚠️ Supabase unreachable - returning empty surf camps list')
+        return NextResponse.json({
+          success: true,
+          data: {
+            surf_camps: []
+          }
+        }, {
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        })
+      }
+      
       return NextResponse.json({
         success: false,
         error: 'Failed to fetch surf camps'
@@ -62,15 +92,37 @@ export async function GET(request: Request) {
         }
       })
     }
+    
+    // Handle null data (connection failure)
+    if (!surfCamps) {
+      console.warn('⚠️ No surf camps data returned - returning empty array')
+      return NextResponse.json({
+        success: true,
+        data: {
+          surf_camps: []
+        }
+      }, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      })
+    }
 
-    // Get enrollment counts for each surf camp
+    // Get enrollment counts for each surf camp (with timeout protection)
     const surfCampsWithAvailability = await Promise.all(
       (surfCamps || []).map(async (camp: SurfCamp) => {
-        const { count: enrolledCount } = await supabase
+        const enrollmentQuery = supabase
           .from('surf_camp_enrollments')
           .select('*', { count: 'exact', head: true })
           .eq('surf_camp_id', camp.id)
           .eq('status', 'confirmed')
+        
+        const { count: enrolledCount } = await executeWithTimeout(
+          enrollmentQuery,
+          500 // 500ms timeout for enrollment count
+        )
         
         // Handle both old schema (max_participants) and new schema (total_spots)
         const totalSpots = (camp as any).total_spots || camp.max_participants || 18
