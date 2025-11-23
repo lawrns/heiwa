@@ -120,16 +120,22 @@ async function runHealthChecks() {
   log('-'.repeat(60));
   
   const criticalAPIs = [
-    ['Homepage', `${PRODUCTION_URL}/`],
-    ['Bookings API', `${API_BASE}/bookings`],
-    ['Rooms API', `${API_BASE}/rooms`],
-    ['Surf Camps API', `${API_BASE}/surf-camps`],
-    ['Availability API', `${API_BASE}/availability`],
-    ['Dates Availability', `${API_BASE}/dates/availability?start_date=2026-02-01&end_date=2026-02-07&participants=2`],
+    ['Homepage', `${PRODUCTION_URL}/`, 200, (body) => {
+      // Homepage returns HTML, check for key content
+      return body.includes('<!DOCTYPE') || body.includes('<html') || body.includes('Heiwa');
+    }],
+    ['Bookings API', `${API_BASE}/bookings`, 200],
+    ['Rooms API', `${API_BASE}/rooms`, 200],
+    ['Surf Camps API', `${API_BASE}/surf-camps`, 200],
+    ['Availability API', `${API_BASE}/availability?roomId=room-1&checkIn=2026-02-01&checkOut=2026-02-03`, 200],
+    ['Dates Availability', `${API_BASE}/dates/availability?start_date=2026-02-01&end_date=2026-02-07&participants=2`, 200],
   ];
   
-  for (const [name, url] of criticalAPIs) {
-    const result = await checkJSONEndpoint(name, url);
+  for (const apiConfig of criticalAPIs) {
+    const [name, url, expectedStatus, validator] = apiConfig;
+    const result = validator 
+      ? await checkEndpoint(name, url, expectedStatus, validator)
+      : await checkJSONEndpoint(name, url, expectedStatus);
     results.critical.push({ name, ...result });
     await new Promise(resolve => setTimeout(resolve, 200)); // Rate limiting
   }
@@ -139,15 +145,18 @@ async function runHealthChecks() {
   log('-'.repeat(60));
   
   const importantAPIs = [
-    ['Add-ons API', `${API_BASE}/add-ons`],
-    ['CMS Homepage', `${API_BASE}/cms/homepage`],
-    ['Page Content', `${API_BASE}/cms/page-content?page_slug=surf`],
-    ['Google Reviews', `${API_BASE}/google-reviews`],
-    ['Rooms Availability', `${API_BASE}/rooms/availability?checkIn=2026-02-01&checkOut=2026-02-03&guests=2`],
+    ['Add-ons API', `${API_BASE}/add-ons`, 200],
+    ['CMS Homepage', `${API_BASE}/cms/homepage`, 200],
+    ['Page Content', `${API_BASE}/cms/page-content?page_slug=surf`, 200],
+    ['Google Reviews', `${API_BASE}/google-reviews`, 200],
+    ['Rooms Availability', `${API_BASE}/rooms/availability?start_date=2026-02-01&end_date=2026-02-03&guests=2`, 200],
   ];
   
-  for (const [name, url] of importantAPIs) {
-    const result = await checkJSONEndpoint(name, url);
+  for (const apiConfig of importantAPIs) {
+    const [name, url, expectedStatus, validator] = apiConfig;
+    const result = validator 
+      ? await checkEndpoint(name, url, expectedStatus, validator)
+      : await checkJSONEndpoint(name, url, expectedStatus);
     results.important.push({ name, ...result });
     await new Promise(resolve => setTimeout(resolve, 200));
   }
@@ -162,7 +171,16 @@ async function runHealthChecks() {
   ];
   
   for (const [name, url] of adminAPIs) {
-    const result = await checkJSONEndpoint(name, url, [200, 401, 403]); // May require auth
+    // Admin endpoints may return 200 (if accessible) or require auth (401/403)
+    // Accept any of these as valid responses
+    const result = await checkJSONEndpoint(name, url, 200, (json) => {
+      // Accept 200 with data or 401/403 for auth required
+      return true; // Always valid if we got a response
+    });
+    // Check actual status for reporting
+    if ([200, 401, 403].includes(result.status || 0)) {
+      result.success = true;
+    }
     results.optional.push({ name, ...result });
     await new Promise(resolve => setTimeout(resolve, 200));
   }
@@ -178,7 +196,15 @@ async function runHealthChecks() {
   ];
   
   for (const [name, url] of staticAssets) {
-    const result = await checkEndpoint(name, url, [200, 404]); // 404 is acceptable for some
+    // Static assets: 200 = exists, 404 = doesn't exist (both are OK)
+    const result = await checkEndpoint(name, url, 200, (body) => {
+      // Any response (200 or 404) is acceptable for static assets
+      return true;
+    });
+    // Accept 200 or 404 as success
+    if ([200, 404].includes(result.status || 0)) {
+      result.success = true;
+    }
     results.optional.push({ name, ...result });
     await new Promise(resolve => setTimeout(resolve, 200));
   }
