@@ -34,7 +34,18 @@
             - generic [ref=e31]: 🎁
             - text: Reclamar mi cupón
       - button "No gracias, seguiré viendo" [ref=e32] [cursor=pointer]
-  - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
-    - img [ref=e39]
-  - alert [ref=e42]
+  - generic [ref=e37] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e38]:
+      - img [ref=e39]
+    - generic [ref=e42]:
+      - button "Open issues overlay" [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]: "1"
+          - generic [ref=e46]: "2"
+        - generic [ref=e47]:
+          - text: Issue
+          - generic [ref=e48]: s
+      - button "Collapse issues badge" [ref=e49]:
+        - img [ref=e50]
+  - alert [ref=e52]
 ```

@@ -77,16 +77,16 @@ export class BookingFactory extends Factory<any> {
   build(overrides: TestDataOverrides = {}) {
     return {
       id: 'booking-1',
-      clientName: 'John Doe',
-      email: 'john@example.com',
-      phone: '+351 912 193 785',
-      checkIn: '2026-02-01',
-      checkOut: '2026-02-03',
-      roomId: 'room-1',
+      client_ids: ['client-1'],
+      check_in: '2026-02-01',
+      check_out: '2026-02-03',
+      room_type: 'Test Room',
       guests: 2,
       status: 'confirmed',
+      payment_status: 'confirmed',
       total_amount: 60,
-      message: 'Looking forward to our stay',
+      source: 'website',
+      notes: 'Looking forward to our stay',
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-01T00:00:00Z',
       ...overrides
@@ -96,6 +96,7 @@ export class BookingFactory extends Factory<any> {
   static confirmed(overrides: TestDataOverrides = {}) {
     return new BookingFactory().build({
       status: 'confirmed',
+      payment_status: 'confirmed',
       ...overrides
     })
   }
@@ -103,6 +104,7 @@ export class BookingFactory extends Factory<any> {
   static pending(overrides: TestDataOverrides = {}) {
     return new BookingFactory().build({
       status: 'pending',
+      payment_status: 'pending',
       ...overrides
     })
   }
@@ -110,6 +112,7 @@ export class BookingFactory extends Factory<any> {
   static cancelled(overrides: TestDataOverrides = {}) {
     return new BookingFactory().build({
       status: 'cancelled',
+      payment_status: 'cancelled',
       ...overrides
     })
   }

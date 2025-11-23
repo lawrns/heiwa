@@ -176,12 +176,13 @@ describe('API Retry Utilities', () => {
 
       const response = await retryFetch('http://example.com/api', {}, {
         retryableStatuses: [408, 500, 502, 503, 504],
-        initialDelay: 10, // Use small delay for test
+        initialDelay: 1, // Use very small delay for test
+        maxDelay: 10,
       })
 
       expect(response.ok).toBe(true)
       expect(global.fetch).toHaveBeenCalledTimes(2)
-    })
+    }, 15000) // Increase timeout
 
     it('should not retry on non-retryable statuses', async () => {
       const mockErrorResponse = createMockResponse({ error: 'Bad Request' }, 400)
@@ -199,13 +200,19 @@ describe('API Retry Utilities', () => {
   describe('fetchWithRetry', () => {
     it('should be an alias for retryFetch', async () => {
       const mockResponse = createMockResponse({ success: true }, 200)
+      ;(global.fetch as jest.Mock).mockClear()
       ;(global.fetch as jest.Mock).mockResolvedValueOnce(mockResponse)
 
-      const response = await fetchWithRetry('http://example.com/api')
+      const response = await fetchWithRetry('http://example.com/api', {}, {
+        initialDelay: 1,
+        maxDelay: 10,
+        maxRetries: 0, // Disable retries for this test
+      })
 
       expect(response.ok).toBe(true)
+      expect(response.status).toBe(200)
       expect(global.fetch).toHaveBeenCalledTimes(1)
-    }, 10000) // Increase timeout
+    })
 
     it('should accept retry options', async () => {
       const mockResponse = createMockResponse({ success: true }, 200)

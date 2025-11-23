@@ -16,16 +16,18 @@ export const createMockRoom = (overrides = {}) => ({
 
 export const createMockBooking = (overrides = {}) => ({
   id: 'booking-1',
-  clientName: 'John Doe',
-  email: 'john@example.com',
-  phone: '+351 912 193 785',
-  checkIn: '2026-02-01',
-  checkOut: '2026-02-03',
-  roomId: 'room-1',
+  client_ids: ['client-1'],
+  check_in: '2026-02-01',
+  check_out: '2026-02-03',
+  room_type: 'Test Room',
   guests: 2,
   status: 'confirmed',
+  payment_status: 'confirmed',
   total_amount: 60,
+  source: 'website',
+  notes: '',
   created_at: '2024-01-01T00:00:00Z',
+  updated_at: '2024-01-01T00:00:00Z',
   ...overrides
 })
 

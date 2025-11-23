@@ -32,22 +32,22 @@ export async function GET(request: NextRequest) {
       dateRange.map(async (date) => {
         // Check room bookings for this date
         const { data: roomBookings, error: roomError } = await supabase
-          .from('room_assignments')
-          .select('room_id')
-          .lte('check_in_date', date)
-          .gte('check_out_date', date)
-          .eq('status', 'confirmed')
+          .from('bookings')
+          .select('room_type')
+          .lte('check_in', date)
+          .gte('check_out', date)
+          .in('status', ['pending', 'confirmed'])
 
         if (roomError) {
           console.error('Error checking room bookings:', roomError)
         }
 
-        // Check surf camp bookings for this date
+        // Check surf camp bookings for this date (via enrollments)
         const { data: surfBookings, error: surfError } = await supabase
-          .from('surf_week_assignments')
+          .from('surf_camp_enrollments')
           .select('surf_camp_id')
-          .eq('status', 'confirmed')
-          // Note: You might need to add date fields to surf_week_assignments table
+          .in('status', ['pending', 'confirmed'])
+          // Note: Surf camp dates are stored in surf_camps table
 
         if (surfError) {
           console.error('Error checking surf bookings:', surfError)
