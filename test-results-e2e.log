@@ -783,3 +783,53 @@ Running 345 tests using 2 workers
 (Use `node --trace-warnings ...` to show where the warning was created)
 (node:17588) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  156 [webkit] › e2e/admin-bookings-realtime.spec.ts:298:7 › Admin Bookings Real-time Updates › should handle real-time pagination updates (30.0s)
+  ✘  155 [webkit] › e2e/admin-bookings-search.spec.ts:9:7 › Admin Bookings Search and Filter › should search bookings by guest name (30.0s)
+(node:19441) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19440) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19441) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19440) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  158 [webkit] › e2e/admin-bookings-search.spec.ts:89:7 › Admin Bookings Search and Filter › should search bookings by phone number (30.1s)
+  ✘  157 [webkit] › e2e/admin-bookings-search.spec.ts:49:7 › Admin Bookings Search and Filter › should search bookings by email (30.0s)
+(node:20929) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20929) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  160 [webkit] › e2e/admin-bookings-search.spec.ts:130:7 › Admin Bookings Search and Filter › should search bookings by booking ID (11.1s)
+  ✘  159 [webkit] › e2e/admin-bookings-search.spec.ts:168:7 › Admin Bookings Search and Filter › should filter bookings by experience type (11.1s)
+(node:21409) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21410) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21409) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21410) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  162 [webkit] › e2e/admin-bookings-search.spec.ts:248:7 › Admin Bookings Search and Filter › should filter bookings by payment status (30.0s)
+  ✘  161 [webkit] › e2e/admin-bookings-search.spec.ts:205:7 › Admin Bookings Search and Filter › should filter bookings by status (30.0s)
+(node:22913) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22912) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22912) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22913) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  164 [webkit] › e2e/admin-bookings-search.spec.ts:284:7 › Admin Bookings Search and Filter › should filter by date range (30.0s)
+  ✘  163 [webkit] › e2e/admin-bookings-search.spec.ts:323:7 › Admin Bookings Search and Filter › should combine multiple filters (30.0s)
+(node:24408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24407) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24407) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
