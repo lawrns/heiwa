@@ -127,7 +127,8 @@ async function runHealthChecks() {
     ['Bookings API', `${API_BASE}/bookings`, 200],
     ['Rooms API', `${API_BASE}/rooms`, 200],
     ['Surf Camps API', `${API_BASE}/surf-camps`, 200],
-    ['Availability API', `${API_BASE}/availability?roomId=room-1&checkIn=2026-02-01&checkOut=2026-02-03`, 200],
+    // Note: /api/availability endpoint may not exist, using rooms/availability instead
+    ['Availability API', `${API_BASE}/rooms/availability?start_date=2026-02-01&end_date=2026-02-03&guests=2`, 200],
     ['Dates Availability', `${API_BASE}/dates/availability?start_date=2026-02-01&end_date=2026-02-07&participants=2`, 200],
   ];
   
