@@ -1,5 +1,51 @@
 # Page snapshot
 
 ```yaml
-- generic [ref=e2]: Internal Server Error
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - heading "404" [level=1] [ref=e4]
+    - heading "This page could not be found." [level=2] [ref=e6]
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - generic:
+        - generic:
+          - img "Racecar Background"
+      - generic [ref=e11]: 10% OFF
+      - heading "¡Obtén un cupón de descuento!" [level=2] [ref=e12]
+    - generic [ref=e13]:
+      - button "Cerrar" [ref=e14] [cursor=pointer]:
+        - img [ref=e15]
+      - paragraph [ref=e18]: Ingresa tus datos y recibe tu código por correo
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21]: Nombre
+          - textbox "Nombre" [ref=e22]:
+            - /placeholder: Tu nombre
+        - generic [ref=e23]:
+          - generic [ref=e24]: Email
+          - textbox "Email" [ref=e25]:
+            - /placeholder: tu@email.com
+        - generic [ref=e26]:
+          - generic [ref=e27]: WhatsApp
+          - textbox "WhatsApp" [ref=e28]:
+            - /placeholder: 55 1234 5678
+        - button "🎁 Reclamar mi cupón" [ref=e29] [cursor=pointer]:
+          - generic [ref=e30]:
+            - generic [ref=e31]: 🎁
+            - text: Reclamar mi cupón
+      - button "No gracias, seguiré viendo" [ref=e32] [cursor=pointer]
+  - generic [ref=e37] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e38]:
+      - img [ref=e39]
+    - generic [ref=e44]:
+      - button "Open issues overlay" [ref=e45]:
+        - generic [ref=e46]:
+          - generic [ref=e47]: "1"
+          - generic [ref=e48]: "2"
+        - generic [ref=e49]:
+          - text: Issue
+          - generic [ref=e50]: s
+      - button "Collapse issues badge" [ref=e51]:
+        - img [ref=e52]
+  - alert [ref=e54]
 ```

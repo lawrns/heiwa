@@ -134,8 +134,7 @@ export default async function HomePage() {
           preload="metadata"
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="/images/videos/Timeline-1.mp4" type="video/mp4" />
-          <source src="/images/videos/Timeline-1.webm" type="video/webm" />
+          <source src="https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932934179_Timeline-1.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
@@ -207,20 +206,29 @@ export default async function HomePage() {
               { title: 'Play', description: 'Explore activities and experiences around our location', image: '/images/skatepark-1.jpg', link: '/play' },
               { title: 'Surf', description: 'Discover the best surfing spots and conditions', image: '/images/surf4.jpg', link: '/surf' },
               { title: 'Flow', description: 'Wellness, yoga, and mindfulness experiences', image: '/images/yoga_dome1.jpg', link: '/flow' }
-            ]).map((card: any, idx: number) => (
-              <Link key={idx} href={card.link || '#'} className="group">
-                <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
-                  <img src={card.image || '/images/placeholder.webp'} alt={card.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors"></div>
-                  <div className="absolute inset-0 flex items-end">
-                    <div className="w-full p-6">
-                      <h3 className="text-2xl font-bold text-white mb-2">{card.title}</h3>
-                      <p className="text-white/90 text-sm">{card.description}</p>
+            ]).map((card: any, idx: number) => {
+              // Use Supabase URL if available, otherwise use local path
+              const imageUrl = card.image?.startsWith('http') 
+                ? card.image 
+                : card.image?.startsWith('/images/')
+                  ? card.image
+                  : '/images/placeholder.webp'
+              
+              return (
+                <Link key={idx} href={card.link || '#'} className="group">
+                  <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
+                    <img src={imageUrl} alt={card.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors"></div>
+                    <div className="absolute inset-0 flex items-end">
+                      <div className="w-full p-6">
+                        <h3 className="text-2xl font-bold text-white mb-2">{card.title}</h3>
+                        <p className="text-white/90 text-sm">{card.description}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         </div>
       </section>

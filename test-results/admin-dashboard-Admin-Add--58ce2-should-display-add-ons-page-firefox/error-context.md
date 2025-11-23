@@ -1,5 +1,5 @@
 # Page snapshot
 
 ```yaml
-- generic [ref=e2]: Internal Server Error
+- generic [ref=e2]: missing required error components, refreshing...
 ```

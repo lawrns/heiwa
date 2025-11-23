@@ -1,0 +1,390 @@
+{
+  "startTime": "2025-11-23T21:21:19.738Z",
+  "dryRun": false,
+  "uploaded": [
+    {
+      "file": "003844190021-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932879741_003844190021-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC01794.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932881233_DSC01794.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC01829-Enhanced-NR-2.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932881710_DSC01829-Enhanced-NR-2.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC02099-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932882440_DSC02099-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC02102-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932883074_DSC02102-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC02767-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932884024_DSC02767-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC03081-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932884730_DSC03081-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC03479.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932885896_DSC03479.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC03491.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932886599_DSC03491.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC03521-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932887235_DSC03521-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC03530-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932888309_DSC03530-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC03534.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932889120_DSC03534.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC04163.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932889693_DSC04163.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC04325.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932890247_DSC04325.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC08054-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932890719_DSC08054-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC08600-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932891376_DSC08600-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSC08736-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932892007_DSC08736-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF7352.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932892910_DSF7352.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF7498.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932893477_DSF7498.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF8018-2-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932894324_DSF8018-2-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF8298-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932895673_DSF8298-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF8322-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932897002_DSF8322-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF8554-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932897559_DSF8554-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF8567.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932898172_DSF8567.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF8619-1.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932898677_DSF8619-1.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF8619-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932899252_DSF8619-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF8707-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932899837_DSF8707-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "DSF8812-scaled.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932900769_DSF8812-scaled.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "Freedomroutes-rooms-1.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932901813_Freedomroutes-rooms-1.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "Freedomroutes-rooms-50.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932902324_Freedomroutes-rooms-50.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "Freedroutes-telts-38.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932903102_Freedroutes-telts-38.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "Freedroutes-telts-49.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932903703_Freedroutes-telts-49.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "IMG_61411.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932904333_IMG_61411.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "Image_20250109_0002.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932905101_Image_20250109_0002.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "PXL_20240604_194826610-1.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932905558_PXL_20240604_194826610-1.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "cropped-favicon.png",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932906195_cropped-favicon.png",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932906686_dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "games.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932907448_games.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "heiwalocation.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932907980_heiwalocation.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "heiwalocation.webp",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932908618_heiwalocation.webp",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "heiwalogo-white.webp",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909067_heiwalogo-white.webp",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "heiwalogo.webp",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909543_heiwalogo.webp",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "image00002.jpeg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909938_image00002.jpeg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "ramp3.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932910592_ramp3.jpg",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "thehouse.png",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932911638_thehouse.png",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "thehouse.webp",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932913996_thehouse.webp",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "heiwa-hero.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932914644_heiwa-hero.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "heiwa-hero.svg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932915088_heiwa-hero.svg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "hh1.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932915493_hh1.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "hh1.webp",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932916037_hh1.webp",
+      "bucket": "page-images"
+    },
+    {
+      "file": "hh2.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932916471_hh2.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "hh2.webp",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932917133_hh2.webp",
+      "bucket": "page-images"
+    },
+    {
+      "file": "park333.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932917808_park333.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "park4444.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932918467_park4444.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "play.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/play/1763932919078_play.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "pool333.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932919553_pool333.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "pool4444.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932920345_pool4444.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "skatepark-1.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932921124_skatepark-1.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "surf3.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/surf/1763932921580_surf3.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "surf4.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/surf/1763932922433_surf4.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "yoga_dome1.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/flow/1763932922968_yoga_dome1.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "yoga_dome2.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/flow/1763932923689_yoga_dome2.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "yoga_dome3.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/flow/1763932924430_yoga_dome3.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "yoga_dome4.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/flow/1763932925142_yoga_dome4.jpg",
+      "bucket": "page-images"
+    },
+    {
+      "file": "surfweeks.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/surf-camp-images/1763932925921_surfweeks.jpg",
+      "bucket": "surf-camp-images"
+    },
+    {
+      "file": "surfweeks.svg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/surf-camp-images/1763932926318_surfweeks.svg",
+      "bucket": "surf-camp-images"
+    },
+    {
+      "file": "surf-weeks-front-page.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/surf-camp-images/1763932926806_surf-weeks-front-page.jpg",
+      "bucket": "surf-camp-images"
+    },
+    {
+      "file": "surf-weeks.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/surf-camp-images/1763932927395_surf-weeks.jpg",
+      "bucket": "surf-camp-images"
+    },
+    {
+      "file": "dorm.webp",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/room-images/f3f00cbb-c30e-4d84-9352-cfb6a76684d0/1763932928037_dorm.webp",
+      "bucket": "room-images"
+    },
+    {
+      "file": "room1.jpg",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/room-images/general/1763932928576_room1.jpg",
+      "bucket": "room-images"
+    },
+    {
+      "file": "room2.webp",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/room-images/ac98fd46-5bd2-413c-98f3-17e71024e734/1763932928947_room2.webp",
+      "bucket": "room-images"
+    },
+    {
+      "file": "room3.webp",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/room-images/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9/1763932929346_room3.webp",
+      "bucket": "room-images"
+    },
+    {
+      "file": "sk81.mp4",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932929730_sk81.mp4",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "Timeline-1.mp4",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932934179_Timeline-1.mp4",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "location3.mp4",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932939317_location3.mp4",
+      "bucket": "cms-media"
+    },
+    {
+      "file": "sk81.mp4",
+      "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932944708_sk81.mp4",
+      "bucket": "cms-media"
+    }
+  ],
+  "failed": [],
+  "skipped": [],
+  "databaseUpdates": [],
+  "endTime": "2025-11-23T21:22:29.045Z"
+}

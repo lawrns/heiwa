@@ -1,53 +1,51 @@
 # Page snapshot
 
 ```yaml
-- generic [ref=e1]:
-  - generic [active]:
-    - generic [ref=e4]:
-      - generic [ref=e5]:
-        - generic [ref=e6]:
-          - navigation [ref=e7]:
-            - button "previous" [disabled] [ref=e8]:
-              - img "previous" [ref=e9]
-            - generic [ref=e11]:
-              - generic [ref=e12]: 1/
-              - text: "1"
-            - button "next" [disabled] [ref=e13]:
-              - img "next" [ref=e14]
-          - img
-        - generic [ref=e16]:
-          - link "Next.js 15.5.6 (outdated) Webpack" [ref=e17] [cursor=pointer]:
-            - /url: https://nextjs.org/docs/messages/version-staleness
-            - img [ref=e18]
-            - generic "An outdated version detected (latest is 16.0.3), upgrade is highly recommended!" [ref=e20]: Next.js 15.5.6 (outdated)
-            - generic [ref=e21]: Webpack
-          - img
-      - dialog "Runtime TypeError" [ref=e23]:
-        - generic [ref=e27]:
-          - generic [ref=e28]:
-            - generic [ref=e30]: Runtime TypeError
-            - generic [ref=e31]:
-              - button "Copy Error Info" [ref=e32] [cursor=pointer]:
-                - img [ref=e33]
-              - button "No related documentation found" [disabled] [ref=e35]:
-                - img [ref=e36]
-              - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e38] [cursor=pointer]:
-                - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
-                - img [ref=e39]
-          - paragraph [ref=e48]: Error in input stream
-        - generic [ref=e50]:
-          - generic [ref=e51]: "1"
-          - generic [ref=e52]: "2"
-    - generic [ref=e57] [cursor=pointer]:
-      - button "Open Next.js Dev Tools" [ref=e58]:
-        - img [ref=e59]
-      - generic [ref=e63]:
-        - button "Open issues overlay" [ref=e64]:
-          - generic [ref=e65]:
-            - generic [ref=e66]: "0"
-            - generic [ref=e67]: "1"
-          - generic [ref=e68]: Issue
-        - button "Collapse issues badge" [ref=e69]:
-          - img [ref=e70]
-  - 'heading "Application error: a client-side exception has occurred while loading localhost (see the browser console for more information)." [level=2] [ref=e74]'
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - heading "404" [level=1] [ref=e4]
+    - heading "This page could not be found." [level=2] [ref=e6]
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - generic:
+        - generic:
+          - img "Racecar Background"
+      - generic [ref=e11]: 10% OFF
+      - heading "¡Obtén un cupón de descuento!" [level=2] [ref=e12]
+    - generic [ref=e13]:
+      - button "Cerrar" [ref=e14] [cursor=pointer]:
+        - img [ref=e15]
+      - paragraph [ref=e18]: Ingresa tus datos y recibe tu código por correo
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21]: Nombre
+          - textbox "Nombre" [ref=e22]:
+            - /placeholder: Tu nombre
+        - generic [ref=e23]:
+          - generic [ref=e24]: Email
+          - textbox "Email" [ref=e25]:
+            - /placeholder: tu@email.com
+        - generic [ref=e26]:
+          - generic [ref=e27]: WhatsApp
+          - textbox "WhatsApp" [ref=e28]:
+            - /placeholder: 55 1234 5678
+        - button "🎁 Reclamar mi cupón" [ref=e29] [cursor=pointer]:
+          - generic [ref=e30]:
+            - generic [ref=e31]: 🎁
+            - text: Reclamar mi cupón
+      - button "No gracias, seguiré viendo" [ref=e32] [cursor=pointer]
+  - generic [ref=e37] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e38]:
+      - img [ref=e39]
+    - generic [ref=e43]:
+      - button "Open issues overlay" [ref=e44]:
+        - generic [ref=e45]:
+          - generic [ref=e46]: "1"
+          - generic [ref=e47]: "2"
+        - generic [ref=e48]:
+          - text: Issue
+          - generic [ref=e49]: s
+      - button "Collapse issues badge" [ref=e50]:
+        - img [ref=e51]
+  - alert [ref=e53]
 ```

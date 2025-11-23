@@ -1,0 +1,74 @@
+# Page snapshot
+
+```yaml
+- generic:
+  - generic [active]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - navigation [ref=e6]:
+          - button "previous" [disabled] [ref=e7]:
+            - img "previous" [ref=e8]
+          - generic [ref=e10]:
+            - generic [ref=e11]: 1/
+            - text: "1"
+          - button "next" [disabled] [ref=e12]:
+            - img "next" [ref=e13]
+        - link "Next.js 15.5.4 (outdated) Webpack" [ref=e16] [cursor=pointer]:
+          - /url: https://nextjs.org/docs/messages/version-staleness
+          - img [ref=e17]
+          - generic "An outdated version detected (latest is 16.0.3), upgrade is highly recommended!" [ref=e19]: Next.js 15.5.4 (outdated)
+          - generic [ref=e20]: Webpack
+      - dialog "Build Error" [ref=e22]:
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - generic [ref=e27]:
+              - generic [ref=e29]: Build Error
+              - generic [ref=e30]:
+                - button "Copy Error Info" [ref=e31] [cursor=pointer]:
+                  - img [ref=e32]
+                - button "No related documentation found" [disabled] [ref=e34]:
+                  - img [ref=e35]
+                - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e37] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+                  - img [ref=e38]
+            - paragraph [ref=e47]: x Expected '</', got ')'
+          - generic [ref=e49]:
+            - generic [ref=e51]:
+              - img [ref=e53]
+              - generic [ref=e56]: ./app/page.tsx
+              - button "Open in editor" [ref=e57] [cursor=pointer]:
+                - img [ref=e59]
+            - generic [ref=e62]:
+              - generic [ref=e63]: "Error:"
+              - text: x
+              - generic [ref=e64]: Expected '</', got ')' ,-[
+              - text: /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/page.tsx
+              - generic [ref=e65]: :230:1]
+              - text: "227"
+              - generic [ref=e66]: "| </div>"
+              - text: "228"
+              - generic [ref=e67]: "| </div>"
+              - text: "229"
+              - generic [ref=e68]: "| </Link>"
+              - text: "230"
+              - generic [ref=e69]: "| ))} :"
+              - generic [ref=e70]: ^
+              - text: "231"
+              - generic [ref=e71]: "| </div>"
+              - text: "232"
+              - generic [ref=e72]: "| </div>"
+              - text: "233"
+              - generic [ref=e73]: "| </section> `---- Caused by: Syntax Error"
+        - generic [ref=e74]:
+          - generic [ref=e75]: "1"
+          - generic [ref=e76]: "2"
+    - generic [ref=e81] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e82]:
+        - img [ref=e83]
+      - button "Open issues overlay" [ref=e87]:
+        - generic [ref=e88]:
+          - generic [ref=e89]: "0"
+          - generic [ref=e90]: "1"
+        - generic [ref=e91]: Issue
+  - alert [ref=e92]
+```
