@@ -93,11 +93,11 @@ describe('/api/bookings', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
           return {
-            insert: jest.fn().mockReturnValue({
-              select: jest.fn().mockReturnValue({
-                single: jest.fn().mockResolvedValue({ data: {}, error: null })
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'room-1', name: 'Test Room' }, error: null })
               })
             })
           }
@@ -230,11 +230,11 @@ describe('/api/bookings', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
           return {
-            insert: jest.fn().mockReturnValue({
-              select: jest.fn().mockReturnValue({
-                single: jest.fn().mockResolvedValue({ data: {}, error: null })
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'room-1', name: 'Test Room' }, error: null })
               })
             })
           }
@@ -516,11 +516,11 @@ describe('/api/bookings', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
           return {
-            insert: jest.fn().mockReturnValue({
-              select: jest.fn().mockReturnValue({
-                single: jest.fn().mockResolvedValue({ data: {}, error: null })
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'room-1', name: 'Test Room' }, error: null })
               })
             })
           }
@@ -583,11 +583,11 @@ describe('/api/bookings', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
           return {
-            insert: jest.fn().mockReturnValue({
-              select: jest.fn().mockReturnValue({
-                single: jest.fn().mockResolvedValue({ data: {}, error: null })
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'room-1', name: 'Test Room' }, error: null })
               })
             })
           }
@@ -640,11 +640,11 @@ describe('/api/bookings', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
           return {
-            insert: jest.fn().mockReturnValue({
-              select: jest.fn().mockReturnValue({
-                single: jest.fn().mockResolvedValue({ data: {}, error: null })
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'room-1', name: 'Test Room' }, error: null })
               })
             })
           }
@@ -712,11 +712,11 @@ describe('/api/bookings', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
           return {
-            insert: jest.fn().mockReturnValue({
-              select: jest.fn().mockReturnValue({
-                single: jest.fn().mockResolvedValue({ data: {}, error: null })
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'room-1', name: 'Test Room' }, error: null })
               })
             })
           }
@@ -806,11 +806,11 @@ describe('/api/bookings', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
           return {
-            insert: jest.fn().mockReturnValue({
-              select: jest.fn().mockReturnValue({
-                single: jest.fn().mockResolvedValue({ data: {}, error: null })
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'room-1', name: 'Test Room' }, error: null })
               })
             })
           }

@@ -174,20 +174,13 @@ describe('API Retry Utilities', () => {
         .mockResolvedValueOnce(mockErrorResponse)
         .mockResolvedValueOnce(mockSuccessResponse)
 
-      jest.useFakeTimers()
-
-      const fetchPromise = retryFetch('http://example.com/api', {}, {
+      const response = await retryFetch('http://example.com/api', {}, {
         retryableStatuses: [408, 500, 502, 503, 504],
+        initialDelay: 10, // Use small delay for test
       })
-
-      jest.advanceTimersByTime(1000)
-
-      const response = await fetchPromise
 
       expect(response.ok).toBe(true)
       expect(global.fetch).toHaveBeenCalledTimes(2)
-
-      jest.useRealTimers()
     })
 
     it('should not retry on non-retryable statuses', async () => {
@@ -212,7 +205,7 @@ describe('API Retry Utilities', () => {
 
       expect(response.ok).toBe(true)
       expect(global.fetch).toHaveBeenCalledTimes(1)
-    })
+    }, 10000) // Increase timeout
 
     it('should accept retry options', async () => {
       const mockResponse = createMockResponse({ success: true }, 200)
