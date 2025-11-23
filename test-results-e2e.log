@@ -643,3 +643,143 @@ Running 345 tests using 2 workers
 (Use `node --trace-warnings ...` to show where the warning was created)
 (node:73874) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  127 [firefox] › e2e/booking-confirmation.spec.ts:264:7 › Booking Confirmation Flow › should handle sharing booking confirmation (30.0s)
+(node:75727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  128 [firefox] › e2e/booking-payment.spec.ts:9:7 › Booking Payment Flow › should handle credit card payment flow (30.0s)
+(node:75803) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75803) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  129 [firefox] › e2e/booking-payment.spec.ts:69:7 › Booking Payment Flow › should handle bank wire payment flow (32.1s)
+(node:77371) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:77371) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  130 [firefox] › e2e/booking-payment.spec.ts:131:7 › Booking Payment Flow › should handle payment errors gracefully (31.4s)
+(node:77403) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:77403) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  131 [firefox] › e2e/booking-payment.spec.ts:175:7 › Booking Payment Flow › should validate payment form fields (30.1s)
+(node:79223) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  132 [firefox] › e2e/booking-payment.spec.ts:214:7 › Booking Payment Flow › should show payment security badges (30.1s)
+(node:79223) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79225) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79225) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  133 [firefox] › e2e/booking-widget-flow.spec.ts:12:7 › Booking Widget Flow › should complete full booking flow with add-ons (30.0s)
+(node:91335) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91335) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  134 [firefox] › e2e/booking-widget-flow.spec.ts:80:7 › Booking Widget Flow › should handle form validation errors (30.0s)
+(node:91393) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91393) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  135 [firefox] › e2e/booking-widget-flow.spec.ts:97:7 › Booking Widget Flow › should handle unavailable dates gracefully (30.8s)
+(node:93261) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93261) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  136 [firefox] › e2e/booking-widget-flow.spec.ts:112:7 › Booking Widget Flow › should be mobile responsive (30.7s)
+(node:93262) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93262) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  137 [firefox] › e2e/booking-widget-flow.spec.ts:128:7 › Booking Widget Flow › should handle booking widget close and reopen (30.1s)
+(node:4790) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  138 [firefox] › e2e/booking-widget-flow.spec.ts:145:7 › Booking Widget Flow › should handle real-time availability updates (30.1s)
+(node:4791) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4790) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4791) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  139 [webkit] › e2e/admin-bookings-crud.spec.ts:10:7 › Admin Bookings CRUD › should create new booking (30.1s)
+  ✘  140 [webkit] › e2e/admin-bookings-crud.spec.ts:57:7 › Admin Bookings CRUD › should view booking details (30.1s)
+(node:6526) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6525) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6526) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:6525) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  142 [webkit] › e2e/admin-bookings-crud.spec.ts:125:7 › Admin Bookings CRUD › should delete booking with confirmation (30.0s)
+  ✘  141 [webkit] › e2e/admin-bookings-crud.spec.ts:91:7 › Admin Bookings CRUD › should edit existing booking (30.0s)
+(node:7878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7879) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7879) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  144 [webkit] › e2e/admin-bookings-crud.spec.ts:182:7 › Admin Bookings CRUD › should handle booking status updates (30.1s)
+  ✘  143 [webkit] › e2e/admin-bookings-crud.spec.ts:152:7 › Admin Bookings CRUD › should validate booking form fields (30.1s)
+(node:9712) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9713) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9712) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9713) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  146 [webkit] › e2e/admin-bookings-crud.spec.ts:246:7 › Admin Bookings CRUD › should handle booking search and filter (30.0s)
+  ✘  145 [webkit] › e2e/admin-bookings-crud.spec.ts:213:7 › Admin Bookings CRUD › should handle bulk operations (30.0s)
+(node:10993) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10994) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10993) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10994) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  148 [webkit] › e2e/admin-bookings-realtime.spec.ts:44:7 › Admin Bookings Real-time Updates › should show real-time status changes (30.0s)
+  ✘  147 [webkit] › e2e/admin-bookings-realtime.spec.ts:9:7 › Admin Bookings Real-time Updates › should show real-time booking updates (30.0s)
+(node:12691) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12692) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12692) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12691) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  149 [webkit] › e2e/admin-bookings-realtime.spec.ts:110:7 › Admin Bookings Real-time Updates › should show real-time booking modifications (30.0s)
+  ✘  150 [webkit] › e2e/admin-bookings-realtime.spec.ts:76:7 › Admin Bookings Real-time Updates › should show real-time booking deletions (30.0s)
+(node:14311) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14310) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14311) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14310) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  151 [webkit] › e2e/admin-bookings-realtime.spec.ts:201:7 › Admin Bookings Real-time Updates › should show real-time connection status (30.0s)
+  ✘  152 [webkit] › e2e/admin-bookings-realtime.spec.ts:147:7 › Admin Bookings Real-time Updates › should handle concurrent booking updates (30.0s)
+(node:16026) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16025) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16025) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16026) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  153 [webkit] › e2e/admin-bookings-realtime.spec.ts:273:7 › Admin Bookings Real-time Updates › should show real-time statistics updates (30.1s)
+  ✘  154 [webkit] › e2e/admin-bookings-realtime.spec.ts:240:7 › Admin Bookings Real-time Updates › should handle real-time search updates (30.1s)
+(node:17588) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17587) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17587) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17588) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

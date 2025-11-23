@@ -36,5 +36,5 @@
       - button "No gracias, seguiré viendo" [ref=e32] [cursor=pointer]
   - button "Open Next.js Dev Tools" [ref=e38] [cursor=pointer]:
     - img [ref=e39]
-  - alert [ref=e43]
+  - alert [ref=e44]
 ```
