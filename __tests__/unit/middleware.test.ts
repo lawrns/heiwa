@@ -10,12 +10,17 @@ import { middleware } from '@/middleware'
 const mockNext = jest.fn(() => ({ type: 'next' }))
 const mockRedirect = jest.fn((url: URL) => ({ type: 'redirect', url }))
 
-jest.mock('next/server', () => ({
-  NextResponse: {
-    next: mockNext,
-    redirect: mockRedirect,
-  },
-}))
+jest.mock('next/server', () => {
+  const actual = jest.requireActual('next/server')
+  return {
+    ...actual,
+    NextResponse: {
+      ...actual.NextResponse,
+      next: mockNext,
+      redirect: mockRedirect,
+    },
+  }
+})
 
 describe('Admin Middleware', () => {
   const originalEnv = process.env

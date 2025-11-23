@@ -49,7 +49,7 @@ export function getTestPostgresClient(): Client {
 
   const connectionString = process.env.TEST_DATABASE_URL || 
     process.env.DATABASE_URL || 
-    'postgresql://postgres:Hennie@@12Hennie@@12@db.zejrhceuuujzgyukdwnb.supabase.co:5432/postgres'
+    'postgresql://postgres:0ezhmmKY8L1Nq5gJ@db.pguipwhrxdzzrndbluxb.supabase.co:5432/postgres'
 
   testPostgresClient = new Client({
     connectionString,

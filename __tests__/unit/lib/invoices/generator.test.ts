@@ -44,10 +44,10 @@ describe('Invoice Generator', () => {
       expect(invoiceNumber).toContain('2025')
     })
 
-    it('should generate sequential invoice numbers', async () => {
-      // Mock first invoice
-      const mockFrom = supabaseAdmin.from as jest.Mock
-      mockFrom.mockReturnValueOnce({
+        it('should generate sequential invoice numbers', async () => {
+          // Mock first invoice
+          const mockFrom = supabaseAdmin.from as jest.Mock
+          mockFrom.mockReturnValueOnce({
         select: jest.fn(() => ({
           like: jest.fn(() => ({
             order: jest.fn(() => ({
