@@ -5,11 +5,11 @@ import { createClient } from '@supabase/supabase-js'
 
 // Use the same Supabase instance as the wavecampdashboard
 // This ensures booking data consistency between the website and admin dashboard
-// CRITICAL: Must use zejrhceuuujzgyukdwnb project (where the actual data is stored)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zejrhceuuujzgyukdwnb.supabase.co'
+// CRITICAL: Must use pguipwhrxdzzrndbluxb project (where the actual data is stored)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pguipwhrxdzzrndbluxb.supabase.co'
 // Fallback to actual key if env var not available (for Netlify builds that haven't picked up env vars yet)
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMDQ4MDksImV4cCI6MjA3MjY4MDgwOX0.yIqpTz-OTqcaL5h7GIzoBmRezoJD-MC2yPTpxvo-aNA'
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzEwNDgwOSwiZXhwIjoyMDcyNjgwODA5fQ.RbzOLzCaOAsgaMixdACMLdPvLZjU9MPfXn8Y90gsxcc'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBndWlwd2hyeGR6enJuZGJsdXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI4NjU4ODUsImV4cCI6MjA3ODQ0MTg4NX0.9Kq4rka92XmoJj_BWu4eEYvbhaasljZX6yTp8FMof7o'
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBndWlwd2hyeGR6enJuZGJsdXhiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2Mjg2NTg4NSwiZXhwIjoyMDc4NDQxODg1fQ.Fe7nN1GEVbgAh0M55HML0ppDgMyyMsCeSk6ugd37TWA'
 
 // Validate Supabase URL format
 if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
@@ -22,7 +22,7 @@ if (typeof window === 'undefined') {
   // Server-side validation
   if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
     console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
-    console.error('   Please get the API key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
+    console.error('   Please get the API key from: https://supabase.com/dashboard/project/pguipwhrxdzzrndbluxb/settings/api')
     console.error('   Then update your .env.local file or production environment variables')
   }
 
@@ -42,7 +42,7 @@ if (typeof window === 'undefined') {
   // Client-side validation (only check anon key)
   if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
     console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
-    console.error('   Please get the API key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
+    console.error('   Please get the API key from: https://supabase.com/dashboard/project/pguipwhrxdzzrndbluxb/settings/api')
     console.error('   Then update your .env.local file or production environment variables')
   }
 }
