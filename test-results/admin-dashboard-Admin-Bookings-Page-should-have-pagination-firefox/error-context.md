@@ -1,17 +1,9 @@
 # Page snapshot
 
 ```yaml
-- generic [active]:
-  - generic [ref=e5] [cursor=pointer]:
-    - button "Open Next.js Dev Tools" [ref=e6]:
-      - img [ref=e7]
-    - generic [ref=e11]:
-      - button "Open issues overlay" [ref=e12]:
-        - generic [ref=e13]:
-          - generic [ref=e14]: "0"
-          - generic [ref=e15]: "1"
-        - generic [ref=e16]: Issue
-      - button "Collapse issues badge" [ref=e17]:
-        - img [ref=e18]
-  - alert [ref=e20]
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - heading "404" [level=1] [ref=e4]
+    - heading "This page could not be found." [level=2] [ref=e6]
+  - alert [ref=e7]
 ```
