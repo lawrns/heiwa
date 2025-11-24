@@ -51,11 +51,14 @@ if (typeof window === 'undefined') {
 // Use globalThis to ensure singleton across module reloads in Next.js
 // Separate singletons for server and client to avoid Next.js bundling issues
 const getGlobalForSupabase = () => {
-  if (typeof window === 'undefined') {
-    // Server-side: use globalThis
-    const key = '__HEIWA_SUPABASE_SERVER__'
-    if (!(globalThis as any)[key]) {
-      (globalThis as any)[key] = {
+  // Use only server-side globals to avoid client-side issues
+  const isServer = typeof window === 'undefined'
+  
+  if (!isServer) {
+    // Client-side: use a simple in-memory store
+    // Note: Don't use window object to avoid GoTrueClient multiple instances warning
+    if (!(global as any).__HEIWA_SUPABASE_CLIENT__) {
+      (global as any).__HEIWA_SUPABASE_CLIENT__ = {
         supabaseInstance: undefined,
         supabaseAdminInstance: undefined,
         instanceCount: 0,
@@ -63,21 +66,21 @@ const getGlobalForSupabase = () => {
         creationStack: [] as string[]
       }
     }
-    return (globalThis as any)[key]
-  } else {
-    // Client-side: use window object with a unique key to avoid conflicts
-    const key = '__HEIWA_SUPABASE_CLIENT__'
-    if (!(window as any)[key]) {
-      (window as any)[key] = {
-        supabaseInstance: undefined,
-        supabaseAdminInstance: undefined,
-        instanceCount: 0,
-        adminInstanceCount: 0,
-        creationStack: [] as string[]
-      }
-    }
-    return (window as any)[key]
+    return (global as any).__HEIWA_SUPABASE_CLIENT__
   }
+  
+  // Server-side: use globalThis
+  const key = '__HEIWA_SUPABASE_SERVER__'
+  if (!(globalThis as any)[key]) {
+    (globalThis as any)[key] = {
+      supabaseInstance: undefined,
+      supabaseAdminInstance: undefined,
+      instanceCount: 0,
+      adminInstanceCount: 0,
+      creationStack: [] as string[]
+    }
+  }
+  return (globalThis as any)[key]
 }
 
 const globalForSupabase = getGlobalForSupabase()

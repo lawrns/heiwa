@@ -64,13 +64,19 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     };
   }, []);
 
-  // Format dates for display
+  // Format dates for display - use Intl API safely
   const formatDateRange = (checkIn: Date | null, checkOut: Date | null) => {
     if (!checkIn || !checkOut) return null;
-    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-    const start = checkIn.toLocaleDateString('en-US', options);
-    const end = checkOut.toLocaleDateString('en-US', options);
-    return `${start} - ${end}`;
+    try {
+      const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+      const start = new Intl.DateTimeFormat('en-US', options).format(checkIn);
+      const end = new Intl.DateTimeFormat('en-US', options).format(checkOut);
+      return `${start} - ${end}`;
+    } catch (error) {
+      // Fallback if Intl API fails
+      console.warn('Date formatting error, using fallback:', error);
+      return `${checkIn.toDateString()} - ${checkOut.toDateString()}`;
+    }
   };
   
   const dateRange = formatDateRange(state.dates.checkIn, state.dates.checkOut);

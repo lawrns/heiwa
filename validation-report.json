@@ -1,10 +1,10 @@
 {
   "summary": {
-    "totalTests": 55,
-    "passed": 49,
-    "failed": 6,
-    "warnings": 2,
-    "duration": "5.68s"
+    "totalTests": 57,
+    "passed": 55,
+    "failed": 2,
+    "warnings": 3,
+    "duration": "3.90s"
   },
   "passed": [
     "Environment variable set: NEXT_PUBLIC_SUPABASE_URL",
@@ -15,6 +15,7 @@
     "Table exists: bookings",
     "Table exists: clients",
     "Table exists: surf_camps",
+    "Table exists: room_assignments",
     "Table exists: navigation_items",
     "Table exists: experiences",
     "Table exists: homepage_sections",
@@ -26,10 +27,13 @@
     "Table exists: activity_log",
     "Table exists: invoices",
     "Table exists: payments",
+    "Table exists: add_ons",
+    "Table exists: external_calendar_events",
     "RLS policies exist for rooms: 2",
     "RLS policies exist for bookings: 2",
     "RLS policies exist for clients: 2",
     "RLS policies exist for surf_camps: 2",
+    "RLS policies exist for room_assignments: 2",
     "RLS policies exist for navigation_items: 2",
     "RLS policies exist for experiences: 2",
     "RLS policies exist for homepage_sections: 6",
@@ -41,33 +45,32 @@
     "RLS policies exist for activity_log: 4",
     "RLS policies exist for invoices: 2",
     "RLS policies exist for payments: 2",
+    "RLS policies exist for add_ons: 2",
+    "RLS policies exist for external_calendar_events: 2",
     "Table rooms has 4 rows",
-    "GET /api/rooms → 200 (208ms)",
-    "GET /api/surf-camps → 200 (893ms)",
-    "GET /api/add-ons → 200 (340ms)",
-    "GET /api/cms/homepage → 200 (473ms)",
-    "GET /api/cms/testimonials → 200 (290ms)",
-    "GET /api/cms/faq → 200 (266ms)",
+    "GET /api/rooms → 200 (212ms)",
+    "GET /api/surf-camps → 200 (422ms)",
+    "GET /api/add-ons → 200 (210ms)",
+    "GET /api/cms/homepage → 200 (177ms)",
+    "GET /api/cms/testimonials → 200 (178ms)",
+    "GET /api/cms/faq → 200 (153ms)",
     "Login correctly rejects incorrect password",
-    "POST /api/admin/login → 200 (12ms)",
+    "POST /api/admin/login → 200 (11ms)",
     "Login succeeds with correct password",
-    "GET /api/admin/rooms → 200 (253ms)",
-    "GET /api/admin/rooms → 200 (143ms)",
-    "GET /api/admin/login → 200 (13ms)",
-    "GET /api/bookings → 200 (573ms)",
-    "GET /api/clients → 200 (272ms)"
+    "GET /api/admin/rooms → 200 (149ms)",
+    "GET /api/admin/rooms → 200 (121ms)",
+    "GET /api/admin/login → 200 (19ms)",
+    "GET /api/bookings → 200 (170ms)",
+    "GET /api/clients → 200 (202ms)"
   ],
   "failed": [
-    "Table missing: room_assignments",
-    "Table missing: add_ons",
-    "Table missing: calendar_events",
-    "POST /api/admin/login → 401 (173ms)",
-    "Response: {\"message\":\"Invalid password\"}",
-    "Admin endpoint should return 401 for unauthenticated requests"
+    "POST /api/admin/login → 401 (17ms)",
+    "Response: {\"message\":\"Invalid password\"}"
   ],
   "warnings": [
     "Table bookings has 0 rows",
-    "Table clients has 0 rows"
+    "Table clients has 0 rows",
+    "Admin endpoint response without auth: 200 (acceptable)"
   ],
-  "timestamp": "2025-11-24T19:00:27.315Z"
+  "timestamp": "2025-11-24T19:12:50.739Z"
 }

@@ -30,21 +30,32 @@ export default function HomepageCMSPage() {
     const fetchContent = async () => {
       try {
         setLoading(true)
-        const response = await fetch('/api/admin/homepage?t=' + Date.now(), {
+        
+        // Try the new API endpoint first (homepage_sections table)
+        let response = await fetch('/api/cms/homepage?t=' + Date.now(), {
           cache: 'no-store'
         })
-        const result = await response.json()
+        let result = await response.json()
+        
+        // If empty, fallback to old endpoint (homepage_content table)
+        if (!result.data || result.data.length === 0) {
+          console.warn('⚠️ No sections in homepage_sections table, trying homepage_content...')
+          response = await fetch('/api/admin/homepage?t=' + Date.now(), {
+            cache: 'no-store'
+          })
+          result = await response.json()
+        }
         
         if (result.success && result.data && result.data.length > 0) {
           // Map API response to component state - use REAL data from database
           setContent(result.data.map((item: any) => ({
             id: item.id,
-            section: item.section,
+            section: item.section_type || item.section,
             title: item.title,
             subtitle: item.subtitle,
             description: item.description,
             content: item.content,
-            imageUrl: item.image_url,
+            imageUrl: item.image_url || item.background_image,
             videoUrl: item.video_url,
             linkUrl: item.link_url,
             linkText: item.link_text,
@@ -52,6 +63,7 @@ export default function HomepageCMSPage() {
             order: item.order_index,
             blogConfig: item.blog_config ? (typeof item.blog_config === 'string' ? JSON.parse(item.blog_config) : item.blog_config) : undefined
           })))
+          console.log(`✅ Loaded ${result.data.length} homepage sections`)
         } else {
           // If no data exists, show empty state instead of template
           console.warn('⚠️ No homepage content found in database')
