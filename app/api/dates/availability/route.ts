@@ -18,9 +18,34 @@ export async function GET(request: NextRequest) {
       }, { status: 400 })
     }
 
+    // Validate date format (YYYY-MM-DD)
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+    if (!dateRegex.test(startDate) || !dateRegex.test(endDate)) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid date format. Use YYYY-MM-DD format (e.g., 2025-12-01)'
+      }, { status: 400 })
+    }
+
     // Generate date range
     const start = new Date(startDate)
     const end = new Date(endDate)
+
+    // Validate dates are valid Date objects
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid date values. Please provide valid dates in YYYY-MM-DD format'
+      }, { status: 400 })
+    }
+
+    // Validate end date is after start date
+    if (start >= end) {
+      return NextResponse.json({
+        success: false,
+        error: 'End date must be after start date'
+      }, { status: 400 })
+    }
     const dateRange: string[] = []
     
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {

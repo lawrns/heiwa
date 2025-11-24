@@ -18,6 +18,33 @@ export async function GET(request: NextRequest) {
       }, { status: 400 })
     }
 
+    // Validate date format (YYYY-MM-DD)
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+    if (!dateRegex.test(startDate) || !dateRegex.test(endDate)) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid date format. Use YYYY-MM-DD format (e.g., 2025-12-01)'
+      }, { status: 400 })
+    }
+
+    // Validate dates are valid Date objects
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid date values. Please provide valid dates in YYYY-MM-DD format'
+      }, { status: 400 })
+    }
+
+    // Validate check-out is after check-in
+    if (start >= end) {
+      return NextResponse.json({
+        success: false,
+        error: 'Check-out date must be after check-in date'
+      }, { status: 400 })
+    }
+
     // Get all rooms
     const { data: allRooms, error: roomsError } = await supabase
       .from('rooms')
