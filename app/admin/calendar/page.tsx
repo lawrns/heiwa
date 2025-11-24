@@ -175,22 +175,24 @@ export default function CalendarPage() {
       )}
 
       {/* Calendar View */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-blue-50 hover:border-blue-200 border border-transparent rounded-lg transition-all duration-200"
+            aria-label="Previous month"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5 text-gray-700" />
           </button>
-          <h2 className="text-xl font-semibold">
+          <h2 className="text-xl font-semibold text-gray-900">
             {formatDate(currentMonth, 'MMMM yyyy')}
           </h2>
           <button
             onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-blue-50 hover:border-blue-200 border border-transparent rounded-lg transition-all duration-200"
+            aria-label="Next month"
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-5 w-5 text-gray-700" />
           </button>
         </div>
 
@@ -271,13 +273,19 @@ export default function CalendarPage() {
         )}
 
         {events.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 mb-4">No events scheduled for this month</p>
+          <div className="text-center py-16 px-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-50 to-indigo-50 mb-4">
+              <Plus className="h-8 w-8 text-blue-500" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No events scheduled for this month</h3>
+            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+              Get started by creating your first event. You can schedule activities, workshops, or special dates.
+            </p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md font-medium"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-5 w-5" />
               Create Your First Event
             </button>
           </div>

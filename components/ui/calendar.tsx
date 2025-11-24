@@ -30,15 +30,15 @@ function Calendar({
         nav_button: cn(
           // Outline-like button styles (inlined to avoid buttonVariants dependency)
           "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none shadow-sm hover:shadow-md",
-          "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500",
-          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          "border border-gray-300 bg-white text-gray-700 hover:bg-blue-50 hover:border-blue-300 focus:ring-blue-500",
+          "h-9 w-9 bg-transparent p-0 opacity-70 hover:opacity-100"
         ),
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell:
-          "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+          "text-muted-foreground rounded-md w-full font-normal text-[0.75rem] py-2 px-1 text-center",
         row: "flex w-full mt-2",
         cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
         day: cn(

@@ -197,8 +197,8 @@ export default function CMSPagesPage() {
                 icon={<FileText className="w-5 h-5" />}
                 status={page.status}
                 metadata={[
-                  { label: 'Sections', value: stats.count.toString() },
-                  { label: 'Last Modified', value: stats.lastModified }
+                  { label: 'Sections', value: `${stats.count} section${stats.count !== 1 ? 's' : ''}` },
+                  { label: 'Last Modified', value: stats.lastModified === 'Never' ? 'Never modified' : stats.lastModified }
                 ]}
                 actions={[
                   {

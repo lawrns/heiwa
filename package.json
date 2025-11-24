@@ -24,7 +24,10 @@
     "test:e2e:production:debug": "playwright test --config=playwright.production.config.ts --debug",
     "test:all": "npm run test:unit && npm run test:api && npm run test:integration && npm run test:e2e",
     "migrate": "ts-node scripts/run-migration.ts",
-    "health-check": "node scripts/production-health-check.js"
+    "health-check": "node scripts/production-health-check.js",
+    "test:production": "node scripts/production-verification-test.js",
+    "test:production:bash": "bash scripts/production-verification-test.sh",
+    "postdeploy": "npm run test:production"
   },
   "keywords": [],
   "author": "",
