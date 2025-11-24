@@ -179,10 +179,26 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
         const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
 
-        // Sum prices for all selected rooms
+        // Sum prices for all selected rooms using seasonal rates
         selectedOptions.forEach((roomId) => {
           const room: any = (options as any[]).find((o) => o.id === roomId);
-          if (room) {
+          if (room && room.pricing) {
+            // Determine if dates fall in peak season (May-September)
+            const peakSeasonMonths = [5, 6, 7, 8, 9]
+            const checkInMonth = checkInUTC.getMonth() + 1
+            const checkOutMonth = checkOutUTC.getMonth() + 1
+            const isPeakSeason = peakSeasonMonths.some(month => 
+              month >= checkInMonth && month <= checkOutMonth
+            ) || peakSeasonMonths.includes(checkInMonth) || peakSeasonMonths.includes(checkOutMonth)
+            
+            // Use seasonal rate based on dates
+            const pricePerNight = isPeakSeason
+              ? (room.pricing.standard || room.pricing.offSeason || room.price_per_night || 0)
+              : (room.pricing.offSeason || room.pricing.standard || room.price_per_night || 0)
+            
+            basePrice += pricePerNight * nights
+          } else if (room) {
+            // Fallback to pricePerNight if pricing object not available
             const unit = typeof room.pricePerNight === 'number' ? room.pricePerNight : (room.price ?? 0);
             basePrice += unit * nights;
           }
@@ -214,6 +230,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       }
     }
   }, [selectedOptions, state.dates.checkIn, state.dates.checkOut, state.guests, state.experienceType, state.selectedOption, options, state.pricing, actions]);
+
+  // Set capacity error if insufficient capacity
+  useEffect(() => {
+    if (state.experienceType === 'room' && selectedOptions.length > 0 && hasInsufficientCapacity) {
+      actions.setError('capacity', 'Selected rooms cannot accommodate all guests. Please select additional rooms or reduce guest count.');
+    } else if (state.errors.capacity) {
+      actions.clearError('capacity');
+    }
+  }, [hasInsufficientCapacity, selectedOptions.length, state.experienceType, state.errors.capacity, actions]);
 
   const adjustGuests = (delta: number) => {
     const newCount = Math.max(1, Math.min(12, state.guests + delta));
@@ -257,7 +282,25 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
 
         if (nights > 0) {
-          const pricePerNight = option.pricePerNight || option.price || 0;
+          // Calculate price using seasonal rates if pricing object available
+          let pricePerNight = 0
+          if (option.pricing) {
+            // Determine if dates fall in peak season (May-September)
+            const peakSeasonMonths = [5, 6, 7, 8, 9]
+            const checkInMonth = checkInUTC.getMonth() + 1
+            const checkOutMonth = checkOutUTC.getMonth() + 1
+            const isPeakSeason = peakSeasonMonths.some(month => 
+              month >= checkInMonth && month <= checkOutMonth
+            ) || peakSeasonMonths.includes(checkInMonth) || peakSeasonMonths.includes(checkOutMonth)
+            
+            // Use seasonal rate based on dates
+            pricePerNight = isPeakSeason
+              ? (option.pricing.standard || option.pricing.offSeason || option.price_per_night || 0)
+              : (option.pricing.offSeason || option.pricing.standard || option.price_per_night || 0)
+          } else {
+            // Fallback to pricePerNight if pricing object not available
+            pricePerNight = option.pricePerNight || option.price || 0
+          }
           const total = pricePerNight * nights;
           return total;
         }
@@ -271,14 +314,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const getTotalCapacity = () => {
     return selectedOptions.reduce((total, roomId) => {
       const room = (options as any[]).find(o => o.id === roomId);
-      return total + (room?.maxOccupancy || 0);
+      return total + (room?.maxOccupancy || room?.capacity || 0);
     }, 0);
   };
 
   const totalCapacity = getTotalCapacity();
   const hasInsufficientCapacity = state.experienceType === 'room' && selectedOptions.length > 0 && totalCapacity < state.guests;
+  // Fix capacity message format: "X guests / Y capacity" (guests required / capacity available)
   const capacityMessage = state.experienceType === 'room' && selectedOptions.length > 0
-    ? `${totalCapacity} / ${state.guests} guests`
+    ? `${state.guests} guest${state.guests !== 1 ? 's' : ''} / ${totalCapacity} capacity`
     : null;
 
   if (loading) {
@@ -702,13 +746,20 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               {/* Capacity Validation Message */}
               {selectedOptions.length > 0 && capacityMessage && (
                 <div className={`p-3 rounded-lg border-l-4 flex items-center justify-between ${hasInsufficientCapacity ? 'bg-red-50 border-l-red-500' : 'bg-green-50 border-l-green-500'}`}>
-                  <div className="flex items-center gap-2">
-                    <div className={`${hasInsufficientCapacity ? 'text-red-600' : 'text-green-600'}`}>
-                      {hasInsufficientCapacity ? '⚠️' : '✓'}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <div className={`${hasInsufficientCapacity ? 'text-red-600' : 'text-green-600'}`}>
+                        {hasInsufficientCapacity ? '⚠️' : '✓'}
+                      </div>
+                      <span className={`text-sm font-medium ${hasInsufficientCapacity ? 'text-red-900' : 'text-green-900'}`}>
+                        Capacity: {capacityMessage}
+                      </span>
                     </div>
-                    <span className={`text-sm font-medium ${hasInsufficientCapacity ? 'text-red-900' : 'text-green-900'}`}>
-                      Capacity: {capacityMessage}
-                    </span>
+                    {hasInsufficientCapacity && (
+                      <p className="text-xs text-red-700 mt-1 ml-6">
+                        Selected rooms cannot accommodate all guests. Please select additional rooms or reduce guest count.
+                      </p>
+                    )}
                   </div>
                 </div>
               )}

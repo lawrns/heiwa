@@ -1,0 +1,102 @@
+{
+  "timestamp": "2025-11-24T03:13:04.124Z",
+  "totalRooms": 4,
+  "roomsWithImages": 4,
+  "roomsWithoutImages": 0,
+  "totalImages": 4,
+  "validImages": 0,
+  "invalidImages": 0,
+  "brokenImages": 4,
+  "imageMapping": {
+    "f3f00cbb-c30e-4d84-9352-cfb6a76684d0": {
+      "roomId": "f3f00cbb-c30e-4d84-9352-cfb6a76684d0",
+      "roomName": "Dorm room",
+      "imageCount": 1,
+      "images": [
+        {
+          "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/f3f00cbb-c30e-4d84-9352-cfb6a76684d0/1759963486225_dorm.webp",
+          "isValid": false,
+          "exists": false,
+          "error": "File not found in storage"
+        }
+      ],
+      "validCount": 0,
+      "invalidCount": 0,
+      "brokenCount": 1
+    },
+    "190611e3-72a9-4e63-bbdc-c65a02c5b442": {
+      "roomId": "190611e3-72a9-4e63-bbdc-c65a02c5b442",
+      "roomName": "new room",
+      "imageCount": 1,
+      "images": [
+        {
+          "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/1762636254337/1762636262513_8B8BA276-6D91-419B-B8F4-7696042ED92F-01%20(1).jpeg",
+          "isValid": false,
+          "exists": false,
+          "error": "File not found in storage"
+        }
+      ],
+      "validCount": 0,
+      "invalidCount": 0,
+      "brokenCount": 1
+    },
+    "ac98fd46-5bd2-413c-98f3-17e71024e734": {
+      "roomId": "ac98fd46-5bd2-413c-98f3-17e71024e734",
+      "roomName": "Room Nr 2",
+      "imageCount": 1,
+      "images": [
+        {
+          "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/ac98fd46-5bd2-413c-98f3-17e71024e734/1759963487843_room2.webp",
+          "isValid": false,
+          "exists": false,
+          "error": "File not found in storage"
+        }
+      ],
+      "validCount": 0,
+      "invalidCount": 0,
+      "brokenCount": 1
+    },
+    "6a6e6bb0-d3e5-4fab-87d8-7e39174637e9": {
+      "roomId": "6a6e6bb0-d3e5-4fab-87d8-7e39174637e9",
+      "roomName": "Room Nr 3",
+      "imageCount": 1,
+      "images": [
+        {
+          "url": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9/1759963488935_room3.webp",
+          "isValid": false,
+          "exists": false,
+          "error": "File not found in storage"
+        }
+      ],
+      "validCount": 0,
+      "invalidCount": 0,
+      "brokenCount": 1
+    }
+  },
+  "issues": [
+    {
+      "roomId": "f3f00cbb-c30e-4d84-9352-cfb6a76684d0",
+      "roomName": "Dorm room",
+      "brokenImages": 1,
+      "invalidImages": 0
+    },
+    {
+      "roomId": "190611e3-72a9-4e63-bbdc-c65a02c5b442",
+      "roomName": "new room",
+      "brokenImages": 1,
+      "invalidImages": 0
+    },
+    {
+      "roomId": "ac98fd46-5bd2-413c-98f3-17e71024e734",
+      "roomName": "Room Nr 2",
+      "brokenImages": 1,
+      "invalidImages": 0
+    },
+    {
+      "roomId": "6a6e6bb0-d3e5-4fab-87d8-7e39174637e9",
+      "roomName": "Room Nr 3",
+      "brokenImages": 1,
+      "invalidImages": 0
+    }
+  ]
+}

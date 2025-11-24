@@ -302,9 +302,11 @@ export function useBookingFlow() {
           // Check both selectedSurfWeek and selectedOption for compatibility
           return (state.selectedSurfWeek !== null) || (state.selectedOption !== null);
         }
-        // For rooms: must have dates, guest count, and at least one room selected
+        // For rooms: must have dates, guest count, at least one room selected, and sufficient capacity
         // Note: Multi-room selection is supported - selectedOption stores the first selected room
-        return state.dates.checkIn && state.dates.checkOut && state.guests > 0 && state.selectedOption !== null;
+        // Capacity validation is handled in OptionSelection component via error state
+        const hasCapacityError = state.errors.capacity !== undefined;
+        return state.dates.checkIn && state.dates.checkOut && state.guests > 0 && state.selectedOption !== null && !hasCapacityError;
 
       case 'surf-week-room-selection':
         return state.selectedSurfWeekRoom !== null;

@@ -25,6 +25,25 @@ export interface PriceBreakdown {
 }
 
 /**
+ * Check if dates fall in peak season (May-September)
+ */
+function isPeakSeasonPeriod(startDate: string, endDate: string): boolean {
+  const peakSeasonMonths = [5, 6, 7, 8, 9] // May to September
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+  const current = new Date(start)
+  
+  while (current < end) {
+    if (peakSeasonMonths.includes(current.getMonth() + 1)) {
+      return true
+    }
+    current.setDate(current.getDate() + 1)
+  }
+  
+  return false
+}
+
+/**
  * Calculate room price based on dates, quantity, and pricing model
  */
 export function calculateRoomPrice(
@@ -33,14 +52,24 @@ export function calculateRoomPrice(
   endDate?: string,
   quantity: number = 1
 ): { unitPrice: number; totalPrice: number; nights?: number } {
-  const basePrice = room.pricing.standard || room.pricing.offSeason || 0;
-  
   // Calculate nights if dates are provided
   let nights = 1;
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
     nights = Math.max(1, differenceInDays(end, start));
+  }
+
+  // Determine seasonal rate based on dates
+  let basePrice = 0;
+  if (startDate && endDate) {
+    const isPeak = isPeakSeasonPeriod(startDate, endDate);
+    basePrice = isPeak 
+      ? (room.pricing.standard || room.pricing.offSeason || 0)
+      : (room.pricing.offSeason || room.pricing.standard || 0);
+  } else {
+    // No dates provided - use standard rate as default
+    basePrice = room.pricing.standard || room.pricing.offSeason || 0;
   }
 
   // Handle different pricing models based on bookingType and camp pricing
