@@ -60,15 +60,15 @@ export default function NewSurfCampPage() {
 
     try {
       // In a real implementation, this would be a POST request to /api/admin/surf-camps
-      console.log('Creating surf camp:', formData)
+      console.log('Creating surf week:', formData)
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
       
-      // Redirect to surf camps list
+      // Redirect to surf weeks list
       router.push('/admin/surf-camps')
     } catch (err) {
-      setError('Failed to create surf camp. Please try again.')
+      setError('Failed to create surf week. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -115,17 +115,17 @@ export default function NewSurfCampPage() {
             className="inline-flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Surf Camps
+            Back to Surf Weeks
           </Link>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900">Add New Surf Camp</h1>
-        <p className="text-gray-600 mt-2">Create a new surf camp program</p>
+        <h1 className="text-3xl font-bold text-gray-900">Add New Surf Week</h1>
+        <p className="text-gray-600 mt-2">Create a new surf week program</p>
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-4xl">
         <div className="bg-white shadow rounded-lg">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">Surf Camp Information</h3>
+            <h3 className="text-lg font-medium text-gray-900">Surf Week Information</h3>
           </div>
           
           <div className="p-6 space-y-6">
@@ -175,7 +175,7 @@ export default function NewSurfCampPage() {
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Describe the surf camp, what participants will learn, and the overall experience..."
+                placeholder="Describe the surf week, what participants will learn, and the overall experience..."
               />
             </div>
 
@@ -360,7 +360,7 @@ export default function NewSurfCampPage() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Save className="h-4 w-4" />
-            {loading ? 'Creating...' : 'Create Surf Camp'}
+            {loading ? 'Creating...' : 'Create Surf Week'}
           </button>
         </div>
       </form>

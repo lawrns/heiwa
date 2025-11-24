@@ -102,7 +102,7 @@ interface AdminLayoutProps {
 const navigationItems = [
   { name: 'Dashboard', href: '/admin', icon: Home },
   { name: 'Clients', href: '/admin/clients', icon: Users },
-  { name: 'Surf Camps', href: '/admin/surf-camps', icon: Building2 },
+  { name: 'Surf Weeks', href: '/admin/surf-camps', icon: Building2 },
   { name: 'Rooms', href: '/admin/rooms', icon: Box },
   { name: 'Bookings', href: '/admin/bookings', icon: ClipboardList },
   { name: 'Assignments', href: '/admin/assignments', icon: Key },

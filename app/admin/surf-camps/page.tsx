@@ -52,37 +52,37 @@ export default function SurfCampsPage() {
         const camps = data.data?.surf_camps || data.data || []
         setSurfCamps(Array.isArray(camps) ? camps : [])
       } else {
-        setError(data.error || 'Failed to fetch surf camps')
+        setError(data.error || 'Failed to fetch surf weeks')
       }
     } catch (err: any) {
-      console.error('Error fetching surf camps:', err)
-      setError(err.message || 'Error loading surf camps')
+      console.error('Error fetching surf weeks:', err)
+      setError(err.message || 'Error loading surf weeks')
     } finally {
       setLoading(false)
     }
   }
 
   const handleDelete = async (campId: string) => {
-    if (!confirm('Are you sure you want to delete this surf camp?')) return
+    if (!confirm('Are you sure you want to delete this surf week?')) return
     
     try {
       // In a real implementation, this would be a DELETE request
-      console.log('Deleting surf camp:', campId)
+      console.log('Deleting surf week:', campId)
       setSurfCamps(surfCamps.filter(camp => camp.id !== campId))
     } catch (err) {
-      console.error('Error deleting surf camp:', err)
+      console.error('Error deleting surf week:', err)
     }
   }
 
   const toggleActive = async (campId: string) => {
     try {
       // In a real implementation, this would be a PATCH request
-      console.log('Toggling surf camp status:', campId)
+      console.log('Toggling surf week status:', campId)
       setSurfCamps(surfCamps.map(camp => 
         camp.id === campId ? { ...camp, is_active: !camp.is_active } : camp
       ))
     } catch (err) {
-      console.error('Error updating surf camp:', err)
+      console.error('Error updating surf week:', err)
     }
   }
 
@@ -105,8 +105,8 @@ export default function SurfCampsPage() {
     return (
       <div className="p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Surf Camps Management</h1>
-          <p className="text-gray-600 mt-2">Manage your surf camp programs</p>
+          <h1 className="text-3xl font-bold text-gray-900">Surf Weeks Management</h1>
+          <p className="text-gray-600 mt-2">Manage your surf week programs</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -117,7 +117,7 @@ export default function SurfCampsPage() {
     )
   }
 
-  // Filter surf camps
+  // Filter surf weeks
   const filteredCamps = surfCamps.filter(camp => {
     const matchesSearch = camp.name.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesLevel = levelFilter === 'all' || camp.level === levelFilter
@@ -146,15 +146,15 @@ export default function SurfCampsPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Surf Camps Management</h1>
-          <p className="text-gray-600 mt-2">Manage your surf camp programs and schedules</p>
+          <h1 className="text-3xl font-bold text-gray-900">Surf Weeks Management</h1>
+          <p className="text-gray-600 mt-2">Manage your surf week programs and schedules</p>
         </div>
         <Link
           href="/admin/surf-camps/new"
           className="inline-flex items-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium"
         >
           <Plus className="h-4 w-4" />
-          Add Surf Camp
+          Add Surf Week
         </Link>
       </div>
 
@@ -166,7 +166,7 @@ export default function SurfCampsPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search surf camps by name..."
+                placeholder="Search surf weeks by name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
@@ -190,7 +190,7 @@ export default function SurfCampsPage() {
         </div>
       </div>
 
-      {/* Surf Camps Grid */}
+      {/* Surf Weeks Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCamps.map((camp) => {
           const availability = getAvailabilityStatus(camp)
@@ -300,9 +300,9 @@ export default function SurfCampsPage() {
 
       {filteredCamps.length === 0 && (
         <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No surf camps found</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No surf weeks found</h3>
           <p className="text-gray-600 mb-4">
-            {searchTerm || levelFilter !== 'all' ? 'Try adjusting your search or filters.' : 'Get started by creating your first surf camp program.'}
+            {searchTerm || levelFilter !== 'all' ? 'Try adjusting your search or filters.' : 'Get started by creating your first surf week program.'}
           </p>
           {!searchTerm && levelFilter === 'all' && (
             <Link
@@ -310,7 +310,7 @@ export default function SurfCampsPage() {
               className="inline-flex items-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium"
             >
               <Plus className="h-4 w-4" />
-              Add Surf Camp
+              Add Surf Week
             </Link>
           )}
         </div>

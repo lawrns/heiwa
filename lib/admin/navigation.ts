@@ -32,10 +32,10 @@ export const adminNavigationItems: NavigationItem[] = [
     description: 'Manage client information'
   },
   {
-    name: 'Surf Camps',
+    name: 'Surf Weeks',
     href: '/admin/surf-camps',
     icon: Building2,
-    description: 'Manage surf camp sessions'
+    description: 'Manage surf week sessions'
   },
   {
     name: 'Rooms',

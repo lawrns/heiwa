@@ -40,10 +40,10 @@ export default function SurfCampDetailPage({ params }: { params: { id: string } 
         if (data.success) {
           setSurfCamp(data.data.surf_camp)
         } else {
-          setError(data.error || 'Failed to fetch surf camp')
+          setError(data.error || 'Failed to fetch surf week')
         }
       } catch (err) {
-        setError('Error loading surf camp')
+        setError('Error loading surf week')
         console.error(err)
       } finally {
         setLoading(false)
@@ -85,7 +85,7 @@ export default function SurfCampDetailPage({ params }: { params: { id: string } 
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <p className="text-red-800">{error || 'Surf camp not found'}</p>
           <Link href="/admin/surf-camps" className="text-blue-600 hover:text-blue-800 mt-2 inline-block">
-            ← Back to Surf Camps
+            ← Back to Surf Weeks
           </Link>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function SurfCampDetailPage({ params }: { params: { id: string } 
           className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft className="mr-2 h-5 w-5" />
-          Back to Surf Camps
+          Back to Surf Weeks
         </Link>
         <div className="flex gap-2">
           <Link

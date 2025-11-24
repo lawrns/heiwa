@@ -124,9 +124,9 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Enroll Client in Surf Camp</DialogTitle>
+          <DialogTitle>Enroll Client in Surf Week</DialogTitle>
           <DialogDescription>
-            Add a client to this surf camp. They will appear in room assignments.
+            Add a client to this surf week. They will appear in room assignments.
           </DialogDescription>
         </DialogHeader>
 

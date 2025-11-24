@@ -53,17 +53,27 @@ if (typeof window === 'undefined') {
 const getGlobalForSupabase = () => {
   if (typeof window === 'undefined') {
     // Server-side: use globalThis
-    return globalThis as unknown as {
-      supabaseInstance: ReturnType<typeof createClient> | undefined
-      supabaseAdminInstance: ReturnType<typeof createClient> | undefined
+    const key = '__HEIWA_SUPABASE_SERVER__'
+    if (!(globalThis as any)[key]) {
+      (globalThis as any)[key] = {
+        supabaseInstance: undefined,
+        supabaseAdminInstance: undefined,
+        instanceCount: 0,
+        adminInstanceCount: 0,
+        creationStack: [] as string[]
+      }
     }
+    return (globalThis as any)[key]
   } else {
     // Client-side: use window object with a unique key to avoid conflicts
-    const key = '__HEIWA_SUPABASE__'
+    const key = '__HEIWA_SUPABASE_CLIENT__'
     if (!(window as any)[key]) {
       (window as any)[key] = {
         supabaseInstance: undefined,
-        supabaseAdminInstance: undefined
+        supabaseAdminInstance: undefined,
+        instanceCount: 0,
+        adminInstanceCount: 0,
+        creationStack: [] as string[]
       }
     }
     return (window as any)[key]
@@ -72,11 +82,53 @@ const getGlobalForSupabase = () => {
 
 const globalForSupabase = getGlobalForSupabase()
 
+// Runtime detection for multiple GoTrueClient instances
+function detectMultipleInstances(type: 'public' | 'admin') {
+  if (typeof window === 'undefined') return // Only check client-side
+  
+  const count = type === 'public' 
+    ? globalForSupabase.instanceCount 
+    : globalForSupabase.adminInstanceCount
+  
+  if (count > 1) {
+    const stack = new Error().stack || ''
+    const creationStack = globalForSupabase.creationStack || []
+    
+    console.error(`❌ Multiple GoTrueClient instances detected for ${type} client!`)
+    console.error(`   Instance count: ${count}`)
+    console.error(`   This can cause undefined behavior.`)
+    console.error(`   Stack trace:`, stack)
+    
+    if (creationStack.length > 0) {
+      console.error(`   Previous creation locations:`, creationStack)
+    }
+    
+    // Store stack trace for debugging
+    if (!creationStack.includes(stack)) {
+      creationStack.push(stack)
+      if (creationStack.length > 5) {
+        creationStack.shift() // Keep only last 5
+      }
+    }
+  }
+}
+
 // Create Supabase client for public operations (booking system integration)
 export const supabase = (() => {
   // Check if instance already exists
   if (globalForSupabase.supabaseInstance) {
     return globalForSupabase.supabaseInstance
+  }
+  
+  // Track instance creation
+  globalForSupabase.instanceCount++
+  
+  if (typeof window !== 'undefined') {
+    const stack = new Error().stack || ''
+    if (!globalForSupabase.creationStack) {
+      globalForSupabase.creationStack = []
+    }
+    globalForSupabase.creationStack.push(stack.split('\n')[2]?.trim() || 'unknown')
   }
   
   // Create new instance with singleton protection
@@ -96,14 +148,9 @@ export const supabase = (() => {
     }
   })
   
-  // Warn if multiple instances detected (client-side only)
+  // Detect multiple instances (client-side only)
   if (typeof window !== 'undefined') {
-    const instanceCount = (window as any).__HEIWA_SUPABASE_INSTANCE_COUNT__ || 0
-    ;(window as any).__HEIWA_SUPABASE_INSTANCE_COUNT__ = instanceCount + 1
-    
-    if (instanceCount > 0) {
-      console.warn('⚠️ Multiple Supabase client instances detected. This may cause GoTrueClient warnings.')
-    }
+    detectMultipleInstances('public')
   }
   
   if (typeof window === 'undefined') {
@@ -124,6 +171,17 @@ export const supabaseAdmin = (() => {
   // Check if instance already exists
   if (globalForSupabase.supabaseAdminInstance) {
     return globalForSupabase.supabaseAdminInstance
+  }
+  
+  // Track instance creation
+  globalForSupabase.adminInstanceCount++
+  
+  if (typeof window !== 'undefined') {
+    const stack = new Error().stack || ''
+    if (!globalForSupabase.creationStack) {
+      globalForSupabase.creationStack = []
+    }
+    globalForSupabase.creationStack.push(stack.split('\n')[2]?.trim() || 'unknown')
   }
   
   // Use service role key if available, otherwise fall back to anon key for client-side
@@ -149,14 +207,9 @@ export const supabaseAdmin = (() => {
     }
   })
   
-  // Warn if multiple instances detected (client-side only)
+  // Detect multiple instances (client-side only)
   if (typeof window !== 'undefined') {
-    const instanceCount = (window as any).__HEIWA_SUPABASE_ADMIN_INSTANCE_COUNT__ || 0
-    ;(window as any).__HEIWA_SUPABASE_ADMIN_INSTANCE_COUNT__ = instanceCount + 1
-    
-    if (instanceCount > 0) {
-      console.warn('⚠️ Multiple Supabase admin client instances detected. This may cause GoTrueClient warnings.')
-    }
+    detectMultipleInstances('admin')
   }
   
   return globalForSupabase.supabaseAdminInstance
