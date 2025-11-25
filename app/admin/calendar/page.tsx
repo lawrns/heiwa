@@ -5,7 +5,7 @@ import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { EventDetailsModal } from '@/components/admin/calendar/EventDetailsModal'
 import { CreateEventModal } from '@/components/admin/calendar/CreateEventModal'
-import { toast } from 'react-toastify'
+// toast import removed - not currently used
 // Helper functions for date manipulation
 const formatDate = (date: Date, formatStr: string) => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -25,12 +25,14 @@ const endOfMonth = (date: Date) => {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const isSameDay = (date1: Date, date2: Date) => {
   return date1.getFullYear() === date2.getFullYear() &&
          date1.getMonth() === date2.getMonth() &&
          date1.getDate() === date2.getDate()
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const isSameMonth = (date1: Date, date2: Date) => {
   return date1.getFullYear() === date2.getFullYear() &&
          date1.getMonth() === date2.getMonth()

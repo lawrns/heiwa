@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, Search, Filter, Download, Plus, Eye, Edit, Trash2, Mail, Phone } from 'lucide-react'
+import { Users, Search, Download, Plus, Eye, Edit, Trash2, Mail, Phone } from 'lucide-react'
 import { ViewClientModal } from '@/components/admin/clients/ViewClientModal'
 import { CreateClientModal } from '@/components/admin/clients/CreateClientModal'
 import { EditClientModal } from '@/components/admin/clients/EditClientModal'
@@ -25,7 +25,7 @@ interface Client {
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState('all')

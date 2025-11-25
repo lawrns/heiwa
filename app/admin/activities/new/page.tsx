@@ -98,7 +98,7 @@ export default function NewActivityPage() {
       } else {
         setError(result.error || 'Failed to create activity')
       }
-    } catch (err) {
+    } catch {
       setError('Failed to create activity')
     } finally {
       setLoading(false)

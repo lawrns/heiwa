@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff } from 'lucide-react'
@@ -30,6 +30,7 @@ interface Booking {
   dietary_preferences?: string
   client_notes?: string
   notes?: string
+  client_ids?: string[]
 }
 
 export default function BookingsPage() {
