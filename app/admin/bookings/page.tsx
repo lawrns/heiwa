@@ -162,7 +162,7 @@ export default function BookingsPage() {
       } else {
         setError('Failed to fetch bookings')
       }
-    } catch (err) {
+    } catch {
       setError('Error loading bookings')
     } finally {
       setLoading(false)

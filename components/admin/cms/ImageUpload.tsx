@@ -46,7 +46,7 @@ export default function ImageUpload({
       // In production, you would upload to Supabase Storage or CDN
       const url = URL.createObjectURL(file)
       onChange(url)
-    } catch (err) {
+    } catch {
       setError('Failed to upload image')
     } finally {
       setUploading(false)

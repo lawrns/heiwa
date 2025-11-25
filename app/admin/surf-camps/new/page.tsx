@@ -67,7 +67,7 @@ export default function NewSurfCampPage() {
       
       // Redirect to surf weeks list
       router.push('/admin/surf-camps')
-    } catch (err) {
+    } catch {
       setError('Failed to create surf week. Please try again.')
     } finally {
       setLoading(false)

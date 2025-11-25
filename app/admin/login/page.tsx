@@ -26,7 +26,7 @@ export default function AdminLoginPage() {
           router.push('/admin')
           return
         }
-      } catch (err) {
+      } catch {
         // Not authenticated, show login form
       } finally {
         setCheckingAuth(false)
@@ -64,7 +64,7 @@ export default function AdminLoginPage() {
         setError(data.message || 'Invalid password. Please try again.')
         setLoading(false)
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.')
       setLoading(false)
     }
