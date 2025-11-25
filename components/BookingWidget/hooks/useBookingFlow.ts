@@ -138,7 +138,13 @@ export function useBookingFlow() {
       return steps;
     }
 
-    const baseSteps = ['experience', 'options'];
+    const baseSteps = ['experience'];
+    
+    // Only add 'options' step if experienceType is set
+    // This prevents OptionSelection from rendering before state is ready
+    if (state.experienceType) {
+      baseSteps.push('options');
+    }
 
     if (state.experienceType === 'surf-week') {
       baseSteps.push('surf-week-room-selection');

@@ -19,17 +19,19 @@ interface OptionSelectionProps {
 
 export function OptionSelection({ state, actions }: OptionSelectionProps) {
   // Only fetch data for the selected experience type to improve performance
+  // Use safe defaults to prevent initialization errors
+  const experienceType = state.experienceType || null;
   const { rooms, loading: roomsLoading, error: roomsError, refetch: refetchRooms } = useRooms({
-    checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
-    checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
-    guests: state.experienceType === 'room' ? state.guests : 1,
+    checkIn: experienceType === 'room' ? (state.dates.checkIn || null) : null,
+    checkOut: experienceType === 'room' ? (state.dates.checkOut || null) : null,
+    guests: experienceType === 'room' ? (state.guests || 1) : 1,
   });
   const { surfCamps, loading: campsLoading, error: campsError, refetch: refetchSurfCamps } = useSurfCamps();
   const {
     fetchDateAvailability,
     isDateSoldOut,
     loading: dateAvailabilityLoading
-  } = useDateAvailability({ participants: state.guests });
+  } = useDateAvailability({ participants: state.guests || 1 });
   // For room bookings: support multi-select; for surf weeks: single-select
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     state.experienceType === 'room' && typeof state.selectedOption === 'string' && state.selectedOption
