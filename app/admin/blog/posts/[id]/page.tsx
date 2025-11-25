@@ -54,7 +54,7 @@ export default function EditPostPage() {
     fetchPost()
     fetchCategories()
     fetchAuthors()
-  }, [postId])
+  }, [fetchPost, postId])
 
   const fetchCategories = async () => {
     try {
@@ -80,7 +80,7 @@ export default function EditPostPage() {
     }
   }
 
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
     try {
       setLoading(true)
       const response = await fetch(`/api/admin/blog/posts/${postId}`)
@@ -120,7 +120,7 @@ export default function EditPostPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [postId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

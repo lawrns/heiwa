@@ -93,9 +93,9 @@ export default function EditActivityPage({ params }: { params: { id: string } })
 
   useEffect(() => {
     fetchActivity()
-  }, [params.id])
+  }, [fetchActivity])
 
-  const fetchActivity = async () => {
+  const fetchActivity = useCallback(async () => {
     try {
       const response = await fetch(`/api/activities/${params.id}`)
       const result = await response.json()
@@ -123,9 +123,9 @@ export default function EditActivityPage({ params }: { params: { id: string } })
     } finally {
       setFetchLoading(false)
     }
-  }
+  }, [params.id])
 
-  const handleInputChange = (field: keyof FormData, value: any) => {
+  const handleInputChange = (field: keyof FormData, value: FormData[keyof FormData]) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -235,7 +235,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                style={{ '--tw-ring-color': '#ec681c' } as any}
+                style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="e.g., Surfing Lessons"
               />
             </div>
@@ -250,7 +250,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
                 value={formData.display_order}
                 onChange={(e) => handleInputChange('display_order', parseInt(e.target.value) || 0)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                style={{ '--tw-ring-color': '#ec681c' } as any}
+                style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="0"
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -269,7 +269,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-              style={{ '--tw-ring-color': '#ec681c' } as any}
+              style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
               placeholder="Describe what this activity involves..."
             />
           </div>
@@ -285,7 +285,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
                 value={formData.category}
                 onChange={(e) => handleInputChange('category', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                style={{ '--tw-ring-color': '#ec681c' } as any}
+                style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
               >
                 {categoryOptions.map(option => (
                   <option key={option.value} value={option.value}>
@@ -303,7 +303,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
                 value={formData.icon}
                 onChange={(e) => handleInputChange('icon', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                style={{ '--tw-ring-color': '#ec681c' } as any}
+                style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
               >
                 {iconOptions.map(option => (
                   <option key={option.value} value={option.value}>
@@ -360,7 +360,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
                 value={formData.image_url}
                 onChange={(e) => handleInputChange('image_url', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                style={{ '--tw-ring-color': '#ec681c' } as any}
+                style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="https://heiwahouse.com/image.jpg"
               />
             </div>
@@ -374,7 +374,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
                 value={formData.hero_video_url}
                 onChange={(e) => handleInputChange('hero_video_url', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                style={{ '--tw-ring-color': '#ec681c' } as any}
+                style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="https://heiwahouse.com/video.mp4"
               />
             </div>
@@ -392,7 +392,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
                 onChange={(e) => setFeatureInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-                style={{ '--tw-ring-color': '#ec681c' } as any}
+                style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="Add a feature..."
               />
               <button

@@ -74,9 +74,9 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     fetchAnalytics()
-  }, [startDate, endDate, brand])
+  }, [fetchAnalytics])
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -111,7 +111,7 @@ export default function AnalyticsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [startDate, endDate, brand])
 
   if (loading) {
     return (

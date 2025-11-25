@@ -80,7 +80,7 @@ export default function AdminAssignmentsPage() {
     } finally {
       setLoading(false)
     }
-  }, [selectedWeek])
+  }, [selectedWeek, supabase])
 
   useEffect(() => {
     fetchSurfCampWeeks()
