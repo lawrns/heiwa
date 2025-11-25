@@ -49,95 +49,36 @@ if (typeof window === 'undefined') {
   }
 }
 
-// Singleton pattern to prevent multiple client instances
-// Use globalThis to ensure singleton across module reloads in Next.js
-// Separate singletons for server and client to avoid Next.js bundling issues
-const getGlobalForSupabase = () => {
-  // Use only server-side globals to avoid client-side issues
-  const isServer = typeof window === 'undefined'
-  
-  if (!isServer) {
-    // Client-side: use a simple in-memory store
-    // Note: Don't use window object to avoid GoTrueClient multiple instances warning
-    if (!(global as any).__HEIWA_SUPABASE_CLIENT__) {
-      (global as any).__HEIWA_SUPABASE_CLIENT__ = {
-        supabaseInstance: undefined,
-        supabaseAdminInstance: undefined,
-        instanceCount: 0,
-        adminInstanceCount: 0,
-        creationStack: [] as string[]
-      }
-    }
-    return (global as any).__HEIWA_SUPABASE_CLIENT__
-  }
-  
-  // Server-side: use globalThis
-  const key = '__HEIWA_SUPABASE_SERVER__'
-  if (!(globalThis as any)[key]) {
-    (globalThis as any)[key] = {
-      supabaseInstance: undefined,
-      supabaseAdminInstance: undefined,
-      instanceCount: 0,
-      adminInstanceCount: 0,
-      creationStack: [] as string[]
-    }
-  }
-  return (globalThis as any)[key]
+// Global singleton storage - use a single global object
+declare global {
+  var __HEIWA_SUPABASE_SINGLETON__: {
+    supabaseInstance?: any
+    supabaseAdminInstance?: any
+    initialized: boolean
+  } | undefined
 }
 
-const globalForSupabase = getGlobalForSupabase()
-
-// Runtime detection for multiple GoTrueClient instances
-function detectMultipleInstances(type: 'public' | 'admin') {
-  if (typeof window === 'undefined') return // Only check client-side
-  
-  const count = type === 'public' 
-    ? globalForSupabase.instanceCount 
-    : globalForSupabase.adminInstanceCount
-  
-  if (count > 1) {
-    const stack = new Error().stack || ''
-    const creationStack = globalForSupabase.creationStack || []
-    
-    console.error(`❌ Multiple GoTrueClient instances detected for ${type} client!`)
-    console.error(`   Instance count: ${count}`)
-    console.error(`   This can cause undefined behavior.`)
-    console.error(`   Stack trace:`, stack)
-    
-    if (creationStack.length > 0) {
-      console.error(`   Previous creation locations:`, creationStack)
-    }
-    
-    // Store stack trace for debugging
-    if (!creationStack.includes(stack)) {
-      creationStack.push(stack)
-      if (creationStack.length > 5) {
-        creationStack.shift() // Keep only last 5
-      }
-    }
+// Initialize global singleton if it doesn't exist
+if (typeof globalThis !== 'undefined' && !globalThis.__HEIWA_SUPABASE_SINGLETON__) {
+  globalThis.__HEIWA_SUPABASE_SINGLETON__ = {
+    supabaseInstance: undefined,
+    supabaseAdminInstance: undefined,
+    initialized: false
   }
 }
+
+const globalSingleton = globalThis.__HEIWA_SUPABASE_SINGLETON__
+
 
 // Create Supabase client for public operations (booking system integration)
 export const supabase = (() => {
-  // Check if instance already exists
-  if (globalForSupabase.supabaseInstance) {
-    return globalForSupabase.supabaseInstance
+  // Return existing instance if already created
+  if (globalSingleton.supabaseInstance) {
+    return globalSingleton.supabaseInstance
   }
   
-  // Track instance creation
-  globalForSupabase.instanceCount++
-  
-  if (typeof window !== 'undefined') {
-    const stack = new Error().stack || ''
-    if (!globalForSupabase.creationStack) {
-      globalForSupabase.creationStack = []
-    }
-    globalForSupabase.creationStack.push(stack.split('\n')[2]?.trim() || 'unknown')
-  }
-  
-  // Create new instance with singleton protection
-  globalForSupabase.supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
+  // Create new instance only once
+  globalSingleton.supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       // Use a dedicated storage key to avoid GoTrue warnings when multiple clients exist
       storageKey: 'heiwa-public-auth',
@@ -153,10 +94,7 @@ export const supabase = (() => {
     }
   })
   
-  // Detect multiple instances (client-side only)
-  if (typeof window !== 'undefined') {
-    detectMultipleInstances('public')
-  }
+  globalSingleton.initialized = true
   
   if (typeof window === 'undefined') {
     console.log('🏄‍♂️ Heiwa House Website - Supabase connection initialized:', {
@@ -167,26 +105,15 @@ export const supabase = (() => {
     })
   }
   
-  return globalForSupabase.supabaseInstance
+  return globalSingleton.supabaseInstance
 })()
 
 // Create Supabase client with service role for admin operations (CMS)
 // Note: Service role key should only be used server-side, but we provide fallback for client-side compatibility
 export const supabaseAdmin = (() => {
-  // Check if instance already exists
-  if (globalForSupabase.supabaseAdminInstance) {
-    return globalForSupabase.supabaseAdminInstance
-  }
-  
-  // Track instance creation
-  globalForSupabase.adminInstanceCount++
-  
-  if (typeof window !== 'undefined') {
-    const stack = new Error().stack || ''
-    if (!globalForSupabase.creationStack) {
-      globalForSupabase.creationStack = []
-    }
-    globalForSupabase.creationStack.push(stack.split('\n')[2]?.trim() || 'unknown')
+  // Return existing instance if already created
+  if (globalSingleton.supabaseAdminInstance) {
+    return globalSingleton.supabaseAdminInstance
   }
   
   // Use service role key if available, otherwise fall back to anon key for client-side
@@ -195,8 +122,8 @@ export const supabaseAdmin = (() => {
     throw new Error('Supabase admin key is required. Set SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY')
   }
   
-  // Create new instance with singleton protection
-  globalForSupabase.supabaseAdminInstance = createClient(supabaseUrl, adminKey, {
+  // Create new instance only once
+  globalSingleton.supabaseAdminInstance = createClient(supabaseUrl, adminKey, {
     auth: {
       // Separate storage key so admin client doesn't conflict with public client
       storageKey: 'heiwa-admin-auth',
@@ -212,12 +139,7 @@ export const supabaseAdmin = (() => {
     }
   })
   
-  // Detect multiple instances (client-side only)
-  if (typeof window !== 'undefined') {
-    detectMultipleInstances('admin')
-  }
-  
-  return globalForSupabase.supabaseAdminInstance
+  return globalSingleton.supabaseAdminInstance
 })()
 
 // Export individual services for easier access
