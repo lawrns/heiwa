@@ -19,6 +19,13 @@ interface CMSSection {
     description?: string
     video_url?: string
     image_url?: string
+    text?: string
+    html?: string
+    items?: Array<{
+      title?: string
+      description?: string
+      icon?: string
+    }>
     [key: string]: unknown
   }
   order_index: number

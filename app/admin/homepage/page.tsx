@@ -17,6 +17,11 @@ interface HomepageContent {
   linkText?: string
   isActive: boolean
   order: number
+  blogConfig?: {
+    title?: string
+    description?: string
+    readMoreText?: string
+  }
 }
 
 interface HomepageContentApiResponse {
@@ -28,11 +33,18 @@ interface HomepageContentApiResponse {
   description?: string
   content?: string
   image_url?: string
+  background_image?: string
   video_url?: string
   link_url?: string
   link_text?: string
   is_active?: boolean
   order?: number
+  order_index?: number
+  blog_config?: {
+    title?: string
+    description?: string
+    readMoreText?: string
+  }
 }
 
 export default function HomepageCMSPage() {
@@ -75,8 +87,8 @@ export default function HomepageCMSPage() {
             videoUrl: item.video_url,
             linkUrl: item.link_url,
             linkText: item.link_text,
-            isActive: item.is_active,
-            order: item.order_index,
+            isActive: item.is_active ?? true,
+            order: item.order || item.order_index || 0,
             blogConfig: item.blog_config ? (typeof item.blog_config === 'string' ? JSON.parse(item.blog_config) : item.blog_config) : undefined
           })))
           console.log(`✅ Loaded ${result.data.length} homepage sections`)

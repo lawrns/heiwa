@@ -7,6 +7,8 @@ import { YouTubeVideo } from '@/components/ui/youtube-video'
 interface SurfWeeksSectionProps {
   surfWeeksSection?: {
     videoId?: string
+    title?: string
+    subtitle?: string
   }
   surfWeeks: SurfWeek[]
 }
