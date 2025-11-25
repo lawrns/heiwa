@@ -182,7 +182,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-EU', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 0,
