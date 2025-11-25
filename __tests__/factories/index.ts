@@ -344,14 +344,4 @@ export class ApiResponseFactory {
   }
 }
 
-// Export all factories for easy importing
-export {
-  RoomFactory,
-  BookingFactory,
-  AddOnFactory,
-  SurfCampFactory,
-  ReviewFactory,
-  UserFactory,
-  FormDataFactory,
-  ApiResponseFactory
-}
+// All factories are already exported via their class declarations
