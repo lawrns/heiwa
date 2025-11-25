@@ -89,7 +89,7 @@ export default function EditPostPage() {
       if (data.success) {
         setPost(data.data)
         // Initialize form with first translation
-        const enTrans = data.data.translations?.find((t: any) => t.locale === 'en') || data.data.translations?.[0]
+        const enTrans = data.data.translations?.find((t: BlogPost['translations'][0]) => t.locale === 'en') || data.data.translations?.[0]
         setFormData({
           status: data.data.status,
           featured: data.data.featured,

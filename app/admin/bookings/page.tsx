@@ -240,9 +240,10 @@ export default function BookingsPage() {
 
       toast.success('Booking deleted successfully')
       setBookings(bookings.filter(booking => booking.id !== bookingId))
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting booking:', error)
-      toast.error(error.message || 'Failed to delete booking')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete booking'
+      toast.error(errorMessage)
     }
   }
 
