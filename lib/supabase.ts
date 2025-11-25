@@ -58,16 +58,27 @@ declare global {
   } | undefined
 }
 
-// Initialize global singleton if it doesn't exist
-if (typeof globalThis !== 'undefined' && !globalThis.__HEIWA_SUPABASE_SINGLETON__) {
-  globalThis.__HEIWA_SUPABASE_SINGLETON__ = {
-    supabaseInstance: undefined,
-    supabaseAdminInstance: undefined,
+// Initialize global singleton - always ensure it exists
+const getGlobalSingleton = () => {
+  if (typeof globalThis !== 'undefined') {
+    if (!globalThis.__HEIWA_SUPABASE_SINGLETON__) {
+      globalThis.__HEIWA_SUPABASE_SINGLETON__ = {
+        supabaseInstance: undefined,
+        supabaseAdminInstance: undefined,
+        initialized: false
+      }
+    }
+    return globalThis.__HEIWA_SUPABASE_SINGLETON__
+  }
+  // Fallback for edge cases
+  return {
+    supabaseInstance: undefined as ReturnType<typeof createClient> | undefined,
+    supabaseAdminInstance: undefined as ReturnType<typeof createClient> | undefined,
     initialized: false
   }
 }
 
-const globalSingleton = globalThis.__HEIWA_SUPABASE_SINGLETON__
+const globalSingleton = getGlobalSingleton()
 
 
 // Create Supabase client for public operations (booking system integration)
