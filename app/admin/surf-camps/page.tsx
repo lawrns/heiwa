@@ -54,9 +54,10 @@ export default function SurfCampsPage() {
       } else {
         setError(data.error || 'Failed to fetch surf weeks')
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching surf weeks:', err)
-      setError(err.message || 'Error loading surf weeks')
+      const errorMessage = err instanceof Error ? err.message : 'Error loading surf weeks'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

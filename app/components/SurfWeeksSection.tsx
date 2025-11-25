@@ -5,8 +5,17 @@ import { useState } from 'react'
 import { YouTubeVideo } from '@/components/ui/youtube-video'
 
 interface SurfWeeksSectionProps {
-  surfWeeksSection?: any
-  surfWeeks: any[]
+  surfWeeksSection?: {
+    videoId?: string
+  }
+  surfWeeks: SurfWeek[]
+}
+
+interface SurfWeek {
+  id?: string
+  dates: string
+  price: string
+  availableSpots: string | number
 }
 
 export function SurfWeeksSection({ surfWeeksSection, surfWeeks }: SurfWeeksSectionProps) {
@@ -99,7 +108,7 @@ export function SurfWeeksSection({ surfWeeksSection, surfWeeks }: SurfWeeksSecti
                   <div className={`divide-y divide-gray-200 ${showAllSurfWeeks ? '' : 'max-h-[600px] overflow-hidden'}`}>
                     {surfWeeks.length > 0 ? (
                       <>
-                        {(showAllSurfWeeks ? surfWeeks : surfWeeks.slice(0, 4)).map((surfWeek: any, idx: number) => (
+                        {(showAllSurfWeeks ? surfWeeks : surfWeeks.slice(0, 4)).map((surfWeek: SurfWeek, idx: number) => (
                           <div key={surfWeek.id || idx} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
                             {/* Mobile Layout */}
                             <div className="md:hidden space-y-3">

@@ -12,7 +12,13 @@ interface CMSSection {
   id: string
   section_type: string
   section_name?: string
-  content: any
+  content: {
+    title?: string
+    description?: string
+    video_url?: string
+    image_url?: string
+    [key: string]: unknown
+  }
   order_index: number
 }
 
