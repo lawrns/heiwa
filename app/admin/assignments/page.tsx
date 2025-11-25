@@ -24,6 +24,15 @@ interface WeekData {
   rooms: number
   startDate: string
   endDate: string
+  assignments: Assignment[]
+}
+
+interface CampApiResponse {
+  id: string
+  name: string
+  start_date: string
+  end_date: string
+  max_participants?: number
 }
 
 export default function AdminAssignmentsPage() {
@@ -50,7 +59,7 @@ export default function AdminAssignmentsPage() {
       }
 
       if (data) {
-        const formattedWeeks: WeekData[] = data.map((camp: any) => ({
+        const formattedWeeks: WeekData[] = data.map((camp: CampApiResponse) => ({
           id: camp.id,
           name: `${camp.name} (${new Date(camp.start_date).toLocaleDateString()} - ${new Date(camp.end_date).toLocaleDateString()})`,
           category: camp.name.toLowerCase().includes('frenchman') ? 'Freedom Routes' : 'Heiwa House',

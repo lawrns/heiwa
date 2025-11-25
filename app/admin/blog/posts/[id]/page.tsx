@@ -7,6 +7,37 @@ import Link from 'next/link'
 import { TipTapEditor } from '@/components/admin/blog/TipTapEditor'
 import { CoverImageUpload } from '@/components/admin/blog/CoverImageUpload'
 
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
+interface Author {
+  id: string
+  name: string
+  email: string
+}
+
+interface BlogPost {
+  id: string
+  status: 'draft' | 'scheduled' | 'published'
+  featured: boolean
+  category_id: string
+  author_id: string
+  translations: Array<{
+    locale: 'en' | 'fr'
+    slug_localized: string
+    title: string
+    content: string
+    excerpt: string
+    meta_title?: string
+    meta_description?: string
+  }>
+  cover_image_url?: string
+  published_at?: string
+}
+
 export default function EditPostPage() {
   const router = useRouter()
   const params = useParams()
@@ -14,10 +45,10 @@ export default function EditPostPage() {
   
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [, setPost] = useState<any>(null)
-  const [formData, setFormData] = useState<any>(null)
-  const [categories, setCategories] = useState<any[]>([])
-  const [authors, setAuthors] = useState<any[]>([])
+  const [, setPost] = useState<BlogPost | null>(null)
+  const [formData, setFormData] = useState<BlogPost | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [authors, setAuthors] = useState<Author[]>([])
 
   useEffect(() => {
     fetchPost()

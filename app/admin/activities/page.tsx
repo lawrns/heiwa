@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Edit, Trash2, Eye, EyeOff, GripVertical, Play, Heart, Waves, Bike, Dumbbell, Thermometer, Wind, Droplets, Users, MapPin, Search, Download } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, EyeOff, GripVertical, Play, Heart, Waves, Bike, Dumbbell, Thermometer, Wind, Droplets, Users, MapPin, Search, Download, LucideIcon } from 'lucide-react'
 
 interface Activity {
   id: string
@@ -19,7 +19,7 @@ interface Activity {
   features?: string[]
 }
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, LucideIcon> = {
   play: Play,
   flow: Heart,
   surf: Waves,

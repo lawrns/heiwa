@@ -58,7 +58,7 @@ export default function NewActivityPage() {
     features: []
   })
 
-  const handleInputChange = (field: keyof FormData, value: any) => {
+  const handleInputChange = (field: keyof FormData, value: FormData[keyof FormData]) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 

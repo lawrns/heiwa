@@ -123,7 +123,7 @@ export default function EditAddOnPage({ params }: { params: { id: string } }) {
     }
   }
 
-  const handleInputChange = (field: keyof AddOn, value: any) => {
+  const handleInputChange = (field: keyof AddOn, value: AddOn[keyof AddOn]) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 

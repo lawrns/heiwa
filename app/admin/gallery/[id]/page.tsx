@@ -312,7 +312,7 @@ export default function EditMediaPage({ params }: { params: { id: string } }) {
                     name="category"
                     id="category"
                     value={formData.category}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as any }))}
+                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value as GalleryItem['category'] }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent appearance-none"
                     required
                   >

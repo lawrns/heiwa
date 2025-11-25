@@ -7,11 +7,23 @@ import Link from 'next/link'
 import { TipTapEditor } from '@/components/admin/blog/TipTapEditor'
 import { CoverImageUpload } from '@/components/admin/blog/CoverImageUpload'
 
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
+interface Author {
+  id: string
+  name: string
+  email: string
+}
+
 export default function NewPostPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [categories, setCategories] = useState<any[]>([])
-  const [authors, setAuthors] = useState<any[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [authors, setAuthors] = useState<Author[]>([])
   const [formData, setFormData] = useState({
     status: 'draft' as 'draft' | 'scheduled' | 'published',
     featured: false,

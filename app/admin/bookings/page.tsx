@@ -204,9 +204,10 @@ export default function BookingsPage() {
       
       setShowEditModal(false)
       setSelectedBooking(null)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating booking:', error)
-      toast.error(error.message || 'Failed to update booking')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update booking'
+      toast.error(errorMessage)
       throw error
     }
   }

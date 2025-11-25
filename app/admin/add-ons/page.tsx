@@ -15,6 +15,17 @@ interface AddOn {
   requiresBooking?: boolean
 }
 
+interface AddOnApiResponse {
+  id: string
+  name: string
+  description?: string
+  price: string
+  category: string
+  is_active: boolean
+  max_quantity?: number
+  requires_booking?: boolean
+}
+
 export default function AdminAddOnsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
@@ -35,7 +46,7 @@ export default function AdminAddOnsPage() {
 
         if (data.success) {
           // Transform database format to component format
-          const transformedAddOns = (data.addOns || []).map((addOn: any) => ({
+          const transformedAddOns = (data.addOns || []).map((addOn: AddOnApiResponse) => ({
             id: addOn.id,
             name: addOn.name,
             description: addOn.description || '',
