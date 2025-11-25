@@ -64,10 +64,10 @@ export default function FlowPage() {
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
-        title={heroSection?.content?.title || "Heiwa Flow"}
-        description={heroSection?.content?.description || "Find your inner flow through yoga, wellness, and mindful practices. Balance your body, mind, and spirit in our peaceful Portuguese sanctuary."}
-        videoUrl={heroSection?.content?.video_url || "/optimized/videos/video_001_timeline-1.mp4"}
-        imageUrl={heroSection?.content?.image_url || "/images/yoga_dome3.jpg"}
+        title={typeof heroSection?.content === 'object' && heroSection.content?.title || "Heiwa Flow"}
+        description={typeof heroSection?.content === 'object' && heroSection.content?.description || "Find your inner flow through yoga, wellness, and mindful practices. Balance your body, mind, and spirit in our peaceful Portuguese sanctuary."}
+        videoUrl={typeof heroSection?.content === 'object' && heroSection.content?.video_url || "/optimized/videos/video_001_timeline-1.mp4"}
+        imageUrl={typeof heroSection?.content === 'object' && heroSection.content?.image_url || "/images/yoga_dome3.jpg"}
       />
 
       {/* Introduction Section */}
