@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -91,10 +91,6 @@ export default function EditActivityPage({ params }: { params: { id: string } })
     features: []
   })
 
-  useEffect(() => {
-    fetchActivity()
-  }, [fetchActivity])
-
   const fetchActivity = useCallback(async () => {
     try {
       const response = await fetch(`/api/activities/${params.id}`)
@@ -124,6 +120,10 @@ export default function EditActivityPage({ params }: { params: { id: string } })
       setFetchLoading(false)
     }
   }, [params.id])
+
+  useEffect(() => {
+    fetchActivity()
+  }, [fetchActivity])
 
   const handleInputChange = (field: keyof FormData, value: FormData[keyof FormData]) => {
     setFormData(prev => ({ ...prev, [field]: value }))

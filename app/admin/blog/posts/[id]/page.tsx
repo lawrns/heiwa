@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { Save, X } from 'lucide-react'
 import Link from 'next/link'
@@ -19,21 +19,31 @@ interface Author {
   email: string
 }
 
+interface BlogTranslation {
+  locale: 'en' | 'fr'
+  slug_localized: string
+  title: string
+  content?: string
+  excerpt: string
+  body_rich?: Record<string, unknown>
+  cover_image_url?: string
+  cover_alt_text?: string
+  seo_title?: string
+  seo_description?: string
+  canonical_url?: string
+  noindex?: boolean
+  meta_title?: string
+  meta_description?: string
+}
+
 interface BlogPost {
   id: string
   status: 'draft' | 'scheduled' | 'published'
   featured: boolean
   category_id: string
   author_id: string
-  translations: Array<{
-    locale: 'en' | 'fr'
-    slug_localized: string
-    title: string
-    content: string
-    excerpt: string
-    meta_title?: string
-    meta_description?: string
-  }>
+  translations: BlogTranslation[]
+  translation?: BlogTranslation // Current working translation
   cover_image_url?: string
   published_at?: string
 }

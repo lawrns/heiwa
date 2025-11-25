@@ -54,7 +54,7 @@ export default function AdminAddOnsPage() {
             category: addOn.category,
             isActive: addOn.is_active !== false,
             maxQuantity: addOn.max_quantity || undefined,
-            requiresBooking: addOn.max_quantity !== null && addOn.max_quantity > 0,
+            requiresBooking: addOn.max_quantity != null && addOn.max_quantity > 0,
           }))
           setAddOns(transformedAddOns)
         } else {
