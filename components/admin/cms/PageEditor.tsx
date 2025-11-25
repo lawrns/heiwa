@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { Plus, Settings, Eye, Save, ArrowLeft, MoreVertical, Copy, Trash2, Edit, Clock, Users, MessageSquare } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminAlert from '@/components/admin/ui/AdminAlert'
