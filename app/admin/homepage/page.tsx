@@ -19,6 +19,22 @@ interface HomepageContent {
   order: number
 }
 
+interface HomepageContentApiResponse {
+  id: string
+  section_type?: string
+  section?: string
+  title: string
+  subtitle?: string
+  description?: string
+  content?: string
+  image_url?: string
+  video_url?: string
+  link_url?: string
+  link_text?: string
+  is_active?: boolean
+  order?: number
+}
+
 export default function HomepageCMSPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -48,7 +64,7 @@ export default function HomepageCMSPage() {
         
         if (result.success && result.data && result.data.length > 0) {
           // Map API response to component state - use REAL data from database
-          setContent(result.data.map((item: any) => ({
+          setContent(result.data.map((item: HomepageContentApiResponse) => ({
             id: item.id,
             section: item.section_type || item.section,
             title: item.title,
