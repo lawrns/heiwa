@@ -194,14 +194,31 @@ export function BookingWidget({
       );
     }
 
-    const stepComponents = {
-      'experience': <ExperienceSelection state={state} actions={actions} />,
-      'options': <OptionSelection state={state} actions={actions} />,
-      'room-assignment': <RoomAssignment state={state} actions={actions} />,
-      'surf-week-room-selection': <SurfWeekRoomSelection state={state} actions={actions} />,
-      'add-ons': <AddOnsSelection state={state} actions={actions} />,
-      'guest-details': <GuestDetails state={state} actions={actions} />,
-      'review-pay': <ReviewAndPay state={state} actions={actions} onComplete={handleBookingComplete} />,
+    // Render step components conditionally to avoid initializing all components at once
+    // This prevents initialization errors when components have dependencies that aren't ready
+    const renderStepComponent = () => {
+      switch (currentStepType) {
+        case 'experience':
+          return <ExperienceSelection state={state} actions={actions} />;
+        case 'options':
+          return <OptionSelection state={state} actions={actions} />;
+        case 'room-assignment':
+          return <RoomAssignment state={state} actions={actions} />;
+        case 'surf-week-room-selection':
+          return <SurfWeekRoomSelection state={state} actions={actions} />;
+        case 'add-ons':
+          return <AddOnsSelection state={state} actions={actions} />;
+        case 'guest-details':
+          return <GuestDetails state={state} actions={actions} />;
+        case 'review-pay':
+          return <ReviewAndPay state={state} actions={actions} onComplete={handleBookingComplete} />;
+        default:
+          return (
+            <div className="text-center text-red-600">
+              <p>Invalid step: {currentStepType}</p>
+            </div>
+          );
+      }
     };
 
     return (
@@ -209,11 +226,7 @@ export function BookingWidget({
         key={`${state.currentStep}-${currentStepType}`}
         className="animate-in fade-in-0 slide-in-from-right-4 duration-500 ease-out"
       >
-        {stepComponents[currentStepType as keyof typeof stepComponents] || (
-          <div className="text-center text-red-600">
-            <p>Invalid step: {currentStepType}</p>
-          </div>
-        )}
+        {renderStepComponent()}
       </div>
     );
   };
