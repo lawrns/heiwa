@@ -31,7 +31,13 @@ bash scripts/production-verification-test.sh [PRODUCTION_URL]
 
 ## Default Production URL
 
-If no URL is provided, the script defaults to: `https://heiwahauz.netlify.app`
+**Default**: `https://heiwahauz.netlify.app`
+
+If no URL is provided, all test scripts default to the Netlify deployment URL. To test a different URL, pass it as an argument:
+
+```bash
+npm run test:production https://your-custom-domain.com
+```
 
 ## Test Coverage
 

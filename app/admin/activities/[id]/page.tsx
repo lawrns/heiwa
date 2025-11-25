@@ -19,7 +19,8 @@ import {
   type LucideIcon
 } from 'lucide-react'
 
-interface Activity {
+// Activity interface - used for API response typing
+type Activity = {
   id: string
   title: string
   description?: string
@@ -33,6 +34,8 @@ interface Activity {
   hero_image_url?: string
   features?: string[]
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _ActivityType: Activity | null = null
 
 interface FormData {
   title: string
@@ -115,7 +118,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
       } else {
         setError(result.error || 'Failed to fetch activity')
       }
-    } catch (err) {
+    } catch {
       setError('Failed to fetch activity')
     } finally {
       setFetchLoading(false)
@@ -162,7 +165,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
       } else {
         setError(result.error || 'Failed to update activity')
       }
-    } catch (err) {
+    } catch {
       setError('Failed to update activity')
     } finally {
       setLoading(false)
@@ -304,7 +307,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
               >
                 {iconOptions.map(option => (
                   <option key={option.value} value={option.value}>
-                    {option.icon} {option.label}
+                    {option.label}
                   </option>
                 ))}
               </select>

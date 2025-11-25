@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Edit, Trash2, Eye, EyeOff, GripVertical, Play, Heart, Waves, Bike, Dumbbell, Thermometer, Wind, Droplets, Users, MapPin, Search, Filter, Download } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, EyeOff, GripVertical, Play, Heart, Waves, Bike, Dumbbell, Thermometer, Wind, Droplets, Users, MapPin, Search, Download } from 'lucide-react'
 
 interface Activity {
   id: string
@@ -59,7 +59,7 @@ export default function ActivitiesPage() {
       } else {
         setError(result.error)
       }
-    } catch (err) {
+    } catch {
       setError('Failed to fetch activities')
     } finally {
       setLoading(false)

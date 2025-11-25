@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { PlusCircle, Edit, Trash2, Package, Euro, Users, Search, Filter, Download } from 'lucide-react'
+import { PlusCircle, Edit, Trash2, Package, Euro, Users, Search, Download } from 'lucide-react'
 
 interface AddOn {
   id: string

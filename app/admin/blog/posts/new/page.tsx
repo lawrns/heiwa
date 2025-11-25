@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Save, Eye, X } from 'lucide-react'
+import { Save, X } from 'lucide-react'
 import Link from 'next/link'
 import { TipTapEditor } from '@/components/admin/blog/TipTapEditor'
 import { CoverImageUpload } from '@/components/admin/blog/CoverImageUpload'

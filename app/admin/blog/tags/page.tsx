@@ -11,7 +11,7 @@ interface Tag {
 
 export default function TagsPage() {
   const [tags, setTags] = useState<Tag[]>([])
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Tag | null>(null)
   const [formData, setFormData] = useState({ name: '', slug: '' })
@@ -55,7 +55,7 @@ export default function TagsPage() {
       } else {
         alert(data.error || 'Failed to save tag')
       }
-    } catch (err) {
+    } catch {
       alert('Error saving tag')
     }
   }
@@ -73,7 +73,7 @@ export default function TagsPage() {
       } else {
         alert(data.error || 'Failed to delete tag')
       }
-    } catch (err) {
+    } catch {
       alert('Error deleting tag')
     }
   }

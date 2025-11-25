@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { Save, Eye, X } from 'lucide-react'
+import { Save, X } from 'lucide-react'
 import Link from 'next/link'
 import { TipTapEditor } from '@/components/admin/blog/TipTapEditor'
 import { CoverImageUpload } from '@/components/admin/blog/CoverImageUpload'
@@ -14,7 +14,7 @@ export default function EditPostPage() {
   
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [post, setPost] = useState<any>(null)
+  const [, setPost] = useState<any>(null)
   const [formData, setFormData] = useState<any>(null)
   const [categories, setCategories] = useState<any[]>([])
   const [authors, setAuthors] = useState<any[]>([])

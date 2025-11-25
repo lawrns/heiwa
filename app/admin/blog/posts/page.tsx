@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Search, Filter, Eye, Edit, Trash2, Globe, FileText } from 'lucide-react'
+import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 
 interface BlogPost {
@@ -39,7 +39,7 @@ interface BlogPost {
 }
 
 export default function BlogPostsPage() {
-  const router = useRouter()
+  useRouter() // Keep for potential future navigation
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
