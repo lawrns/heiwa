@@ -235,12 +235,18 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
   // Set capacity error if insufficient capacity
   useEffect(() => {
-    if (state.experienceType === 'room' && selectedOptions.length > 0 && hasInsufficientCapacity) {
+    const tc = selectedOptions.reduce((sum, roomId) => {
+      const room: any = (options as any[]).find((o) => o.id === roomId);
+      return sum + (room?.capacity || room?.maxOccupancy || 0);
+    }, 0);
+    const isInsufficient = selectedOptions.length > 0 && tc < state.guests;
+
+    if (state.experienceType === 'room' && selectedOptions.length > 0 && isInsufficient) {
       actions.setError('capacity', 'Selected rooms cannot accommodate all guests. Please select additional rooms or reduce guest count.');
     } else if (state.errors.capacity) {
       actions.clearError('capacity');
     }
-  }, [hasInsufficientCapacity, selectedOptions.length, state.experienceType, state.errors.capacity, actions]);
+  }, [selectedOptions, state.guests, state.experienceType, state.errors.capacity, actions, options]);
 
   const adjustGuests = (delta: number) => {
     const newCount = Math.max(1, Math.min(12, state.guests + delta));
