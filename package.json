@@ -91,6 +91,9 @@
     "typescript": "^5.9.2",
     "zod": "^3.25.76"
   },
+  "overrides": {
+    "zod": "^3.25.76"
+  },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
     "@testing-library/dom": "^10.4.1",

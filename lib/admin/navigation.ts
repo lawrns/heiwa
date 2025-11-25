@@ -8,6 +8,7 @@ import {
   BarChart3,
   FileText,
   BookOpen,
+  Package,
   LucideIcon
 } from 'lucide-react'
 
@@ -42,6 +43,12 @@ export const adminNavigationItems: NavigationItem[] = [
     href: '/admin/rooms',
     icon: Box,
     description: 'Manage room inventory'
+  },
+  {
+    name: 'Add-ons',
+    href: '/admin/add-ons',
+    icon: Package,
+    description: 'Manage extras and services'
   },
   {
     name: 'Bookings',

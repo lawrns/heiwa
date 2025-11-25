@@ -1,6 +1,6 @@
 // Supabase client configuration for Heiwa House booking system integration
 // Connected to the existing wavecampdashboard Supabase instance
-// SINGLETON PATTERN: Uses global variable to prevent multiple GoTrueClient instances
+// SINGLETON PATTERN: Uses Symbol-keyed global to prevent multiple GoTrueClient instances
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
@@ -9,79 +9,65 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pguipwhrxdz
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
-// Declare global types for TypeScript
-declare global {
-  // eslint-disable-next-line no-var
-  var _heiwaSupabase: SupabaseClient | undefined
-  // eslint-disable-next-line no-var
-  var _heiwaSupabaseAdmin: SupabaseClient | undefined
+// Use Symbol keys to ensure uniqueness across module evaluations
+const SUPABASE_PUBLIC_KEY = Symbol.for('heiwa.supabase.public')
+const SUPABASE_ADMIN_KEY = Symbol.for('heiwa.supabase.admin')
+
+// Type-safe global storage
+type GlobalWithSupabase = typeof globalThis & {
+  [SUPABASE_PUBLIC_KEY]?: SupabaseClient
+  [SUPABASE_ADMIN_KEY]?: SupabaseClient
 }
 
-// Singleton factory for public client
+const globalStore = (typeof globalThis !== 'undefined' ? globalThis : global) as GlobalWithSupabase
+
+// Lazy singleton getter for public client - only creates on first access
 function getSupabaseClient(): SupabaseClient {
-  // In browser, check window
-  if (typeof window !== 'undefined') {
-    if (!(window as any)._heiwaSupabase) {
-      (window as any)._heiwaSupabase = createClient(supabaseUrl, supabaseAnonKey, {
-        auth: {
-          storageKey: 'heiwa-supabase-auth',
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: false
-        }
-      })
-    }
-    return (window as any)._heiwaSupabase
-  }
-  
-  // Server-side: use global
-  if (!global._heiwaSupabase) {
-    global._heiwaSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+  if (!globalStore[SUPABASE_PUBLIC_KEY]) {
+    globalStore[SUPABASE_PUBLIC_KEY] = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
-        storageKey: 'heiwa-supabase-auth',
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false
+        // Use unique storage key to prevent conflicts
+        storageKey: 'sb-heiwa-public-auth-token',
+        persistSession: typeof window !== 'undefined',
+        autoRefreshToken: typeof window !== 'undefined',
+        detectSessionInUrl: false,
+        // Prevent multiple auth state change listeners
+        flowType: 'pkce'
+      },
+      global: {
+        headers: {
+          'x-client-info': 'heiwa-house-public'
+        }
       }
     })
   }
-  return global._heiwaSupabase
+  return globalStore[SUPABASE_PUBLIC_KEY]
 }
 
-// Singleton factory for admin client
+// Lazy singleton getter for admin client - only creates on first access
 function getSupabaseAdminClient(): SupabaseClient {
-  const adminKey = supabaseServiceKey || supabaseAnonKey
-  
-  // In browser, check window
-  if (typeof window !== 'undefined') {
-    if (!(window as any)._heiwaSupabaseAdmin) {
-      (window as any)._heiwaSupabaseAdmin = createClient(supabaseUrl, adminKey, {
-        auth: {
-          storageKey: 'heiwa-supabase-admin-auth',
-          persistSession: false,
-          autoRefreshToken: false,
-          detectSessionInUrl: false
-        }
-      })
-    }
-    return (window as any)._heiwaSupabaseAdmin
-  }
-  
-  // Server-side: use global
-  if (!global._heiwaSupabaseAdmin) {
-    global._heiwaSupabaseAdmin = createClient(supabaseUrl, adminKey, {
+  if (!globalStore[SUPABASE_ADMIN_KEY]) {
+    const adminKey = supabaseServiceKey || supabaseAnonKey
+    
+    globalStore[SUPABASE_ADMIN_KEY] = createClient(supabaseUrl, adminKey, {
       auth: {
-        storageKey: 'heiwa-supabase-admin-auth',
+        // Use completely different storage key
+        storageKey: 'sb-heiwa-admin-auth-token',
         persistSession: false,
         autoRefreshToken: false,
         detectSessionInUrl: false
+      },
+      global: {
+        headers: {
+          'x-client-info': 'heiwa-house-admin'
+        }
       }
     })
   }
-  return global._heiwaSupabaseAdmin
+  return globalStore[SUPABASE_ADMIN_KEY]
 }
 
-// Export singleton instances
+// Export as getters to ensure lazy initialization
 export const supabase = getSupabaseClient()
 export const supabaseAdmin = getSupabaseAdminClient()
 
