@@ -1,157 +1,89 @@
 // Supabase client configuration for Heiwa House booking system integration
 // Connected to the existing wavecampdashboard Supabase instance
+// SINGLETON PATTERN: Uses global variable to prevent multiple GoTrueClient instances
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 // Use the same Supabase instance as the wavecampdashboard
-// This ensures booking data consistency between the website and admin dashboard
-// CRITICAL: Must use pguipwhrxdzzrndbluxb project (where the actual data is stored)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pguipwhrxdzzrndbluxb.supabase.co'
-// SECURITY: API keys MUST be set via environment variables
-// The anon key is safe to expose client-side (it's designed for that)
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-// SECURITY: Service role key should NEVER be hardcoded - it bypasses RLS
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
-// Validate Supabase URL format
-if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
-  console.error('❌ ERROR: Invalid Supabase URL format:', supabaseUrl)
-  console.error('   Expected format: https://[project-ref].supabase.co')
-}
-
-// Validate that API keys are set (only check server-side for service role key)
-if (typeof window === 'undefined') {
-  // Server-side validation
-  if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
-    console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
-    console.error('   Please get the API key from: https://supabase.com/dashboard/project/pguipwhrxdzzrndbluxb/settings/api')
-    console.error('   Then update your .env.local file or production environment variables')
-  }
-
-  if (!supabaseServiceKey || supabaseServiceKey === 'YOUR_SERVICE_ROLE_KEY_HERE') {
-    console.error('❌ ERROR: SUPABASE_SERVICE_ROLE_KEY is not set!')
-    console.error('   Please get the service role key from: https://supabase.com/dashboard/project/pguipwhrxdzzrndbluxb/settings/api')
-    console.error('   Then update your .env.local file or production environment variables')
-  }
-  
-  // Run diagnostics in development or when explicitly enabled
-  if (process.env.NODE_ENV === 'development' || process.env.ENABLE_SUPABASE_DIAGNOSTICS === 'true') {
-    import('./supabase-diagnostics').then(({ logSupabaseDiagnostics }) => {
-      logSupabaseDiagnostics().catch(console.error)
-    })
-  }
-} else {
-  // Client-side validation (only check anon key)
-  if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
-    console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
-    console.error('   Please get the API key from: https://supabase.com/dashboard/project/pguipwhrxdzzrndbluxb/settings/api')
-    console.error('   Then update your .env.local file or production environment variables')
-  }
-}
-
-// Global singleton storage - use a single global object
+// Declare global types for TypeScript
 declare global {
-  var __HEIWA_SUPABASE_SINGLETON__: {
-    supabaseInstance?: any
-    supabaseAdminInstance?: any
-    initialized: boolean
-  } | undefined
+  // eslint-disable-next-line no-var
+  var _heiwaSupabase: SupabaseClient | undefined
+  // eslint-disable-next-line no-var
+  var _heiwaSupabaseAdmin: SupabaseClient | undefined
 }
 
-// Initialize global singleton - always ensure it exists
-const getGlobalSingleton = () => {
-  if (typeof globalThis !== 'undefined') {
-    if (!globalThis.__HEIWA_SUPABASE_SINGLETON__) {
-      globalThis.__HEIWA_SUPABASE_SINGLETON__ = {
-        supabaseInstance: undefined,
-        supabaseAdminInstance: undefined,
-        initialized: false
-      }
+// Singleton factory for public client
+function getSupabaseClient(): SupabaseClient {
+  // In browser, check window
+  if (typeof window !== 'undefined') {
+    if (!(window as any)._heiwaSupabase) {
+      (window as any)._heiwaSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          storageKey: 'heiwa-supabase-auth',
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: false
+        }
+      })
     }
-    return globalThis.__HEIWA_SUPABASE_SINGLETON__
-  }
-  // Fallback for edge cases
-  return {
-    supabaseInstance: undefined as ReturnType<typeof createClient> | undefined,
-    supabaseAdminInstance: undefined as ReturnType<typeof createClient> | undefined,
-    initialized: false
-  }
-}
-
-const globalSingleton = getGlobalSingleton()
-
-
-// Create Supabase client for public operations (booking system integration)
-export const supabase = (() => {
-  // Return existing instance if already created
-  if (globalSingleton.supabaseInstance) {
-    return globalSingleton.supabaseInstance
+    return (window as any)._heiwaSupabase
   }
   
-  // Create new instance only once
-  globalSingleton.supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      // Use a dedicated storage key to avoid GoTrue warnings when multiple clients exist
-      storageKey: 'heiwa-public-auth',
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false
-    },
-    // Disable realtime subscriptions to reduce overhead
-    realtime: {
-      params: {
-        eventsPerSecond: 2
+  // Server-side: use global
+  if (!global._heiwaSupabase) {
+    global._heiwaSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        storageKey: 'heiwa-supabase-auth',
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
       }
-    }
-  })
-  
-  globalSingleton.initialized = true
-  
-  if (typeof window === 'undefined') {
-    console.log('🏄‍♂️ Heiwa House Website - Supabase connection initialized:', {
-      url: supabaseUrl,
-      hasKey: !!supabaseAnonKey,
-      hasServiceKey: !!supabaseServiceKey,
-      project: 'heiwa-booking-integration'
     })
   }
-  
-  return globalSingleton.supabaseInstance
-})()
+  return global._heiwaSupabase
+}
 
-// Create Supabase client with service role for admin operations (CMS)
-// Note: Service role key should only be used server-side, but we provide fallback for client-side compatibility
-export const supabaseAdmin = (() => {
-  // Return existing instance if already created
-  if (globalSingleton.supabaseAdminInstance) {
-    return globalSingleton.supabaseAdminInstance
-  }
-  
-  // Use service role key if available, otherwise fall back to anon key for client-side
+// Singleton factory for admin client
+function getSupabaseAdminClient(): SupabaseClient {
   const adminKey = supabaseServiceKey || supabaseAnonKey
-  if (!adminKey) {
-    throw new Error('Supabase admin key is required. Set SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY')
+  
+  // In browser, check window
+  if (typeof window !== 'undefined') {
+    if (!(window as any)._heiwaSupabaseAdmin) {
+      (window as any)._heiwaSupabaseAdmin = createClient(supabaseUrl, adminKey, {
+        auth: {
+          storageKey: 'heiwa-supabase-admin-auth',
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false
+        }
+      })
+    }
+    return (window as any)._heiwaSupabaseAdmin
   }
   
-  // Create new instance only once
-  globalSingleton.supabaseAdminInstance = createClient(supabaseUrl, adminKey, {
-    auth: {
-      // Separate storage key so admin client doesn't conflict with public client
-      storageKey: 'heiwa-admin-auth',
-      autoRefreshToken: false,
-      persistSession: false,
-      detectSessionInUrl: false
-    },
-    // Disable realtime subscriptions to reduce overhead
-    realtime: {
-      params: {
-        eventsPerSecond: 2
+  // Server-side: use global
+  if (!global._heiwaSupabaseAdmin) {
+    global._heiwaSupabaseAdmin = createClient(supabaseUrl, adminKey, {
+      auth: {
+        storageKey: 'heiwa-supabase-admin-auth',
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
       }
-    }
-  })
-  
-  return globalSingleton.supabaseAdminInstance
-})()
+    })
+  }
+  return global._heiwaSupabaseAdmin
+}
+
+// Export singleton instances
+export const supabase = getSupabaseClient()
+export const supabaseAdmin = getSupabaseAdminClient()
 
 // Export individual services for easier access
 export const db = supabase
