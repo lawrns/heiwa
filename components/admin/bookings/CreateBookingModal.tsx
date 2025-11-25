@@ -30,7 +30,20 @@ export function CreateBookingModal({
   onSubmit,
   isLoading = false,
 }: CreateBookingModalProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    guest_name: string
+    guest_email: string
+    guest_phone: string
+    type: 'room' | 'surf-week'
+    item_name: string
+    check_in: string
+    check_out: string
+    guests: string
+    total_price: string
+    payment_status: 'pending' | 'paid' | 'failed'
+    status: 'pending' | 'confirmed' | 'cancelled'
+    special_requests: string
+  }>({
     guest_name: '',
     guest_email: '',
     guest_phone: '',

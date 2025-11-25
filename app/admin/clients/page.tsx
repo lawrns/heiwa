@@ -159,7 +159,7 @@ export default function ClientsPage() {
       }
     } catch (error: unknown) {
       console.error('Error updating clients:', error)
-      toast.error(error.message || 'Failed to update clients')
+      toast.error(error instanceof Error ? error.message : 'Failed to update clients')
     }
   }
 
