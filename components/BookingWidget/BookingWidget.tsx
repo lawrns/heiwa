@@ -1,19 +1,24 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { X, Calendar, CheckCircle, ArrowLeft, Info } from 'lucide-react';
 import { useBookingFlow } from './hooks/useBookingFlow';
 import { useBooking } from '@/lib/booking-context';
 import type { BookingSuccessData } from '@/lib/types';
 import { ProgressIndicator } from './ui/ProgressIndicator';
 import { ExperienceSelection } from './steps/ExperienceSelection';
-import { OptionSelection } from './steps/OptionSelection';
 import { RoomAssignment } from './steps/RoomAssignment';
 import { SurfWeekRoomSelection } from './steps/SurfWeekRoomSelection';
 import { AddOnsSelection } from './steps/AddOnsSelection';
 import { GuestDetails } from './steps/GuestDetails';
 import { ReviewAndPay } from './steps/ReviewAndPay';
 import './styles/surf-enhancements.css';
+
+// Lazy load OptionSelection to prevent premature initialization
+// This prevents the component and its dependencies from loading until actually needed
+const OptionSelectionLazy = lazy(() => 
+  import('./steps/OptionSelection').then(module => ({ default: module.OptionSelection }))
+);
 
 interface BookingWidgetProps {
   className?: string;
@@ -201,7 +206,16 @@ export function BookingWidget({
         case 'experience':
           return <ExperienceSelection state={state} actions={actions} />;
         case 'options':
-          return <OptionSelection state={state} actions={actions} />;
+          return (
+            <Suspense fallback={
+              <div className="flex flex-col items-center justify-center min-h-[400px] p-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+                <p className="text-muted text-center">Loading...</p>
+              </div>
+            }>
+              <OptionSelectionLazy state={state} actions={actions} />
+            </Suspense>
+          );
         case 'room-assignment':
           return <RoomAssignment state={state} actions={actions} />;
         case 'surf-week-room-selection':
