@@ -12,13 +12,15 @@ interface CMSSection {
   id: string
   section_type: string
   section_name?: string
-  content: {
+  content: string | {
     title?: string
     description?: string
     video_url?: string
     image_url?: string
     text?: string
     html?: string
+    button_text?: string
+    button_url?: string
     items?: Array<{
       title?: string
       description?: string

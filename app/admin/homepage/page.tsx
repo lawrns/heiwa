@@ -21,6 +21,10 @@ interface HomepageContent {
     title?: string
     description?: string
     readMoreText?: string
+    limit?: number
+    showCategory?: boolean
+    showDate?: boolean
+    showReadingTime?: boolean
   }
 }
 
@@ -44,6 +48,10 @@ interface HomepageContentApiResponse {
     title?: string
     description?: string
     readMoreText?: string
+    limit?: number
+    showCategory?: boolean
+    showDate?: boolean
+    showReadingTime?: boolean
   }
 }
 
