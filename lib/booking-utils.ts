@@ -31,33 +31,34 @@ export function isValidImageUrl(url: string): boolean {
 }
 
 /**
- * Process room images with fallback logic
+ * Process room images from CMS/database
+ * Always uses CMS images as the source of truth.
+ * Fallback to featured_image or defaults only if CMS images array is empty.
+ * This ensures the widget always displays what the admin configured in the CMS.
  */
 export function processRoomImages(
   roomImages: string[] | undefined,
   featuredImage: string | undefined,
   roomType: 'private' | 'shared' | 'dorm'
 ): string[] {
-  let images: string[] = [];
-  
-  // Prefer images array if available
+  // PRIMARY: Use images array from CMS (source of truth)
   if (roomImages && Array.isArray(roomImages) && roomImages.length > 0) {
-    images = roomImages.filter(isValidImageUrl);
+    const validImages = roomImages.filter(isValidImageUrl);
+    if (validImages.length > 0) {
+      return validImages;
+    }
   }
-  
-  // Fallback to featured image if no images array
-  if (images.length === 0 && featuredImage && isValidImageUrl(featuredImage)) {
-    images = [featuredImage];
+
+  // SECONDARY: Fallback to featured image if images array is empty
+  if (featuredImage && isValidImageUrl(featuredImage)) {
+    return [featuredImage];
   }
-  
-  // Final fallback to default images based on room type
-  if (images.length === 0) {
-    images = roomType === 'dorm' 
-      ? [...ROOM_FALLBACK_IMAGES.dorm]
-      : [...ROOM_FALLBACK_IMAGES.private];
-  }
-  
-  return images;
+
+  // TERTIARY: Use default placeholder images only if CMS has no images
+  // This is a last resort for rooms without any configured images
+  return roomType === 'dorm'
+    ? [...ROOM_FALLBACK_IMAGES.dorm]
+    : [...ROOM_FALLBACK_IMAGES.private];
 }
 
 /**
