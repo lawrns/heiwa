@@ -8,7 +8,7 @@
  * Converts old project URLs to new project URLs if needed
  */
 export function normalizeImageUrl(url: string | null | undefined): string {
-  if (!url) return '/images/rooms/room1.jpg'
+  if (!url || typeof url !== 'string' || url.trim() === '') return '/images/rooms/room1.jpg'
   
   // If it's already a relative path, return as-is
   if (url.startsWith('/')) return url
