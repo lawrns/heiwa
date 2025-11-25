@@ -106,9 +106,9 @@ export default function ClientsPage() {
 
       toast.success('Client archived successfully')
       fetchClients()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error archiving client:', error)
-      toast.error(error.message || 'Failed to archive client')
+      toast.error(error instanceof Error ? error.message : 'Failed to archive client')
     }
   }
 
@@ -157,7 +157,7 @@ export default function ClientsPage() {
       } else {
         throw new Error(data.error || 'Failed to update clients')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating clients:', error)
       toast.error(error.message || 'Failed to update clients')
     }
@@ -187,7 +187,7 @@ export default function ClientsPage() {
       } else {
         throw new Error(data.error || 'Failed to archive clients')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error archiving clients:', error)
       toast.error(error.message || 'Failed to archive clients')
     }

@@ -3,10 +3,24 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 
+interface CreateBookingData {
+  guest_name: string
+  guest_email: string
+  guest_phone: string
+  type: 'room' | 'surf-week'
+  item_name: string
+  check_in: string
+  check_out: string
+  guests: string
+  total_price: string
+  payment_status: 'pending' | 'paid' | 'failed'
+  status: 'pending' | 'confirmed' | 'cancelled'
+}
+
 interface CreateBookingModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (booking: any) => Promise<void>
+  onSubmit: (booking: CreateBookingData) => Promise<void>
   isLoading?: boolean
 }
 
