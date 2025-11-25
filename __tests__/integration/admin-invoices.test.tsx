@@ -4,7 +4,6 @@
 
 import { render, screen, waitFor } from '@testing-library/react'
 import InvoicesPage from '@/app/admin/invoices/page'
-import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 import { handlers } from '../mocks/handlers'
 
