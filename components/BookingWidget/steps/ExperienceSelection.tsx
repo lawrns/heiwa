@@ -38,54 +38,36 @@ const experiences = [
 ];
 
 export function ExperienceSelection({ state, actions }: ExperienceSelectionProps) {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastSelectedTypeRef = useRef<'room' | 'surf-week' | null>(null);
+  const pendingTypeRef = useRef<'room' | 'surf-week' | null>(null);
 
   const handleSelection = (type: 'room' | 'surf-week') => {
-    // Cancel any pending auto-advance
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-
     // Debug: selection handler
     try { console.log('[HeiwaWidget] Experience selected:', type); } catch {}
     
+    // Set the pending type and update experience type
+    pendingTypeRef.current = type;
     actions.setExperienceType(type);
-    lastSelectedTypeRef.current = type;
-    
-    // Auto-advance after brief delay for visual feedback
-    // Use a longer delay to ensure state has updated and stepFlow has been recomputed
-    timeoutRef.current = setTimeout(() => {
-      // Use ref to check selection since state might not be updated yet
-      if (lastSelectedTypeRef.current === type) {
-        try {
-          // Call nextStep directly from actions to ensure we have the latest reference
-          actions.nextStep();
-        } catch (error) {
-          console.error('[HeiwaWidget] Error auto-advancing:', error);
-        }
-      }
-      timeoutRef.current = null;
-    }, 500); // Increased delay to ensure state updates
   };
 
-  // Cleanup on unmount
+  // Watch for state.experienceType to match pendingType, then advance
   useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
-  // Cancel auto-advance if user changes selection before timeout completes
-  useEffect(() => {
-    if (timeoutRef.current && state.experienceType !== lastSelectedTypeRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+    if (pendingTypeRef.current && state.experienceType === pendingTypeRef.current) {
+      // State has been updated, safe to advance
+      const type = pendingTypeRef.current;
+      pendingTypeRef.current = null;
+      
+      // Use a small delay to ensure React has finished rendering
+      const timeoutId = setTimeout(() => {
+        try {
+          actions.nextStep();
+        } catch (error) {
+          console.error('[HeiwaWidget] Error advancing to next step:', error);
+        }
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
     }
-  }, [state.experienceType]);
+  }, [state.experienceType, actions]);
 
   return (
     <div className="space-y-6">
