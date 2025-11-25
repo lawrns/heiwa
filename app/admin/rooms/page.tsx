@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Edit, Trash2, Eye, Search, Filter, Download } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, Search, Download } from 'lucide-react'
 import { RoomCardSkeleton } from '@/components/ui/skeleton-loaders'
 
 interface Room {

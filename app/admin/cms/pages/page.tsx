@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { FileText, Edit, Clock, ChevronRight, Plus, Eye, Trash2 } from 'lucide-react'
+// Link import removed - using router navigation
+import { FileText, Edit, Plus, Eye } from 'lucide-react'
 import { CMSLayout } from '@/components/admin/cms/CMSLayout'
 import { CMSCard } from '@/components/admin/cms/CMSCard'
-import { CMSHeader } from '@/components/admin/cms/CMSHeader'
+// CMSHeader import removed - not currently used
 
 interface PageData {
   slug: string

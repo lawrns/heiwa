@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Eye, Plus, Settings } from 'lucide-react'
+import { ArrowLeft, Eye } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
-import AdminAlert from '@/components/admin/ui/AdminAlert'
+// AdminAlert import removed - not currently used
 import CMSNavigation from '@/components/admin/cms/CMSNavigation'
 import CMSBreadcrumb from '@/components/admin/cms/CMSBreadcrumb'
 import PageEditor from '@/components/admin/cms/PageEditor'
-import { UpdatePageContentInput } from '@/lib/cms-types'
+// UpdatePageContentInput import removed - not currently used
 
 export default function CMSPageEditor() {
   const params = useParams()

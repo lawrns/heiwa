@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Edit, Trash2, Eye, Calendar, Users, Search, Filter, Download, UserPlus } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, Calendar, Users, Search, Download, UserPlus } from 'lucide-react'
 import { RoomCardSkeleton } from '@/components/ui/skeleton-loaders'
 import { EnrollmentModal } from '@/components/admin/enrollments/EnrollmentModal'
 
