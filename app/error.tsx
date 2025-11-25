@@ -15,11 +15,15 @@ interface ErrorProps {
  */
 export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => {
-    // Log error with context
-    const { logError } = require('@/lib/error-handler')
-    logError(error, {
-      component: 'ErrorBoundary',
-      digest: error.digest,
+    // Log error with context using dynamic import
+    import('@/lib/error-handler').then(({ logError }) => {
+      logError(error, {
+        component: 'ErrorBoundary',
+        digest: error.digest,
+      })
+    }).catch(() => {
+      // Fallback if error-handler fails to load
+      console.error('Error boundary caught:', error)
     })
   }, [error])
 

@@ -32,20 +32,19 @@ export async function diagnoseSupabaseConnection(): Promise<SupabaseDiagnostics>
     try {
       const urlObj = new URL(url)
       const hostname = urlObj.hostname
-      
-      // Use Node.js dns module if available
-      if (typeof require !== 'undefined') {
-        const dns = require('dns').promises
-        try {
-          await dns.resolve4(hostname)
-          canResolveDNS = true
-        } catch (dnsError: any) {
-          canResolveDNS = false
-          error = `DNS resolution failed: ${dnsError.message}`
-        }
+
+      // Use dynamic import for Node.js dns module
+      try {
+        const dns = await import('dns')
+        const dnsPromises = dns.promises
+        await dnsPromises.resolve4(hostname)
+        canResolveDNS = true
+      } catch (dnsError: unknown) {
+        canResolveDNS = false
+        error = `DNS resolution failed: ${dnsError instanceof Error ? dnsError.message : String(dnsError)}`
       }
-    } catch (err: any) {
-      error = `URL validation failed: ${err.message}`
+    } catch (err: unknown) {
+      error = `URL validation failed: ${err instanceof Error ? err.message : String(err)}`
     }
   }
   

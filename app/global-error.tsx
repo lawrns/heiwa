@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { AlertTriangle, Home, RefreshCw } from 'lucide-react'
+import { AlertTriangle, RefreshCw } from 'lucide-react'
 
 interface GlobalErrorProps {
   error: Error & { digest?: string }
@@ -14,11 +14,15 @@ interface GlobalErrorProps {
  */
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
-    // Log error with context
-    const { logError } = require('@/lib/error-handler')
-    logError(error, {
-      component: 'GlobalErrorBoundary',
-      digest: error.digest,
+    // Log error with context using dynamic import
+    import('@/lib/error-handler').then(({ logError }) => {
+      logError(error, {
+        component: 'GlobalErrorBoundary',
+        digest: error.digest,
+      })
+    }).catch(() => {
+      // Fallback if error-handler fails to load
+      console.error('Global error boundary caught:', error)
     })
   }, [error])
 

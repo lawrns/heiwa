@@ -1,31 +1,19 @@
 'use client'
 
 import React, { createContext, useContext, useMemo, useRef } from 'react'
+import { supabase, supabaseAdmin } from './supabase'
 
 interface SupabaseContextType {
-  supabase: any
-  supabaseAdmin: any
+  supabase: typeof supabase
+  supabaseAdmin: typeof supabaseAdmin
 }
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined)
 
-// Lazy load the instances to ensure they're only created once
-// Import only when needed to prevent multiple initializations during hot reload
-let supabaseInstance: any = null
-let supabaseAdminInstance: any = null
-
 function getSupabaseInstances(): SupabaseContextType {
-  // Lazy import to prevent multiple instances during module initialization
-  if (!supabaseInstance || !supabaseAdminInstance) {
-    // Dynamic import ensures singleton pattern from lib/supabase.ts is respected
-    const supabaseModule = require('./supabase')
-    supabaseInstance = supabaseModule.supabase
-    supabaseAdminInstance = supabaseModule.supabaseAdmin
-  }
-  
   return {
-    supabase: supabaseInstance,
-    supabaseAdmin: supabaseAdminInstance
+    supabase,
+    supabaseAdmin
   }
 }
 

@@ -7,7 +7,7 @@ import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 
-export interface AdminTableColumn<T = {}> {
+export interface AdminTableColumn<T = Record<string, unknown>> {
   key: keyof T
   title: string
   sortable?: boolean
@@ -16,7 +16,7 @@ export interface AdminTableColumn<T = {}> {
   render?: (value: unknown, row: T, index: number) => React.ReactNode
 }
 
-export interface AdminTableProps<T = {}> {
+export interface AdminTableProps<T = Record<string, unknown>> {
   data: T[]
   columns: AdminTableColumn<T>[]
   loading?: boolean
@@ -34,7 +34,7 @@ export interface AdminTableProps<T = {}> {
   sortDirection?: 'asc' | 'desc'
 }
 
-function AdminTable<T = {}>({
+function AdminTable<T = Record<string, unknown>>({
   data,
   columns,
   loading = false,
