@@ -6,13 +6,58 @@ import { BankWireInstructions } from '../components/BankWireInstructions';
 import { ScrollIndicator } from '../components/ScrollIndicator';
 import { apiFetch } from '../lib/api';
 
+interface BookingData {
+  booking?: {
+    id: string;
+  };
+  payment?: {
+    payment_link?: string;
+  };
+}
+
+interface RoomBookingPayload {
+  room_id: string;
+  start_date: string;
+  end_date: string;
+  participants: unknown[];
+  add_ons: Array<{
+    id: string;
+    quantity: number;
+    price: number;
+  }>;
+  pricing: PricingBreakdown;
+  guests: number;
+  source_url?: string;
+  widget_version: string;
+}
+
+interface SurfWeekBookingPayload {
+  surf_week_id: string;
+  participants: unknown[];
+  add_ons: Array<{
+    id: string;
+    quantity: number;
+    price: number;
+  }>;
+  pricing: PricingBreakdown;
+  guests: number;
+  source_url?: string;
+  widget_version: string;
+  room_assignment?: {
+    room_id: string;
+    quantity: number;
+  };
+}
+
+type BookingPayload = RoomBookingPayload | SurfWeekBookingPayload;
+
 interface ReviewAndPayProps {
   state: BookingState;
   actions: {
     updatePricing: (pricing: PricingBreakdown) => void;
     setPaymentMethod: (method: 'card_stripe' | 'bank_wire') => void;
   };
-  onComplete: (bookingData?: any) => void;
+  onComplete: (bookingData?: BookingData) => void;
 }
 
 export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) {
@@ -153,7 +198,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       }
 
       let endpoint = '';
-      let payload: any = {};
+      let payload: BookingPayload = {} as BookingPayload;
 
       // Determine endpoint and payload based on experience type
       if (state.experienceType === 'room') {
@@ -325,8 +370,9 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         // Still call onComplete for booking context
         onComplete(data.data);
       }
-    } catch (error: any) {
-      setPaymentError(error?.message || 'Payment failed. Please try again.');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Payment failed. Please try again.';
+      setPaymentError(errorMessage);
     } finally {
       setIsProcessing(false);
     }

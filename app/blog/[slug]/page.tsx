@@ -13,6 +13,25 @@ interface BlogPostPageProps {
   params: Promise<{ slug: string }>
 }
 
+interface Tag {
+  id: string
+  name: string
+  slug?: string
+}
+
+interface FAQ {
+  question: string
+  answer: string
+}
+
+interface RelatedPost {
+  id: string
+  slug: string
+  title: string
+  excerpt?: string
+  cover_image_url?: string
+}
+
 async function getPost(slug: string) {
   try {
     const post = await getPostBySlug(slug, 'en')
@@ -214,12 +233,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               articleSection: post.category.name
             }),
             ...(post.tags && post.tags.length > 0 && {
-              keywords: post.tags.map((t: any) => t.name).join(', ')
+              keywords: post.tags.map((t: Tag) => t.name).join(', ')
             }),
             ...(post.faq_json && Array.isArray(post.faq_json) && post.faq_json.length > 0 && {
               mainEntity: {
                 '@type': 'FAQPage',
-                mainEntity: post.faq_json.map((faq: any) => ({
+                mainEntity: post.faq_json.map((faq: FAQ) => ({
                   '@type': 'Question',
                   name: faq.question,
                   acceptedAnswer: {
@@ -266,7 +285,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {post.tags && post.tags.length > 0 && (
             <div className="mt-8 pt-8 border-t border-gray-200">
               <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag: any) => (
+                {post.tags.map((tag: Tag) => (
                   <span
                     key={tag.id}
                     className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
@@ -308,7 +327,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Related Articles</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {relatedPosts.map((relatedPost: any) => {
+            {relatedPosts.map((relatedPost: RelatedPost) => {
               const translation = relatedPost.translations?.[0] || relatedPost.translation
               return (
                 <Link

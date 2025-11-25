@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { Plus, Minus, ShoppingBag, Utensils, Car, Wrench, Users } from 'lucide-react';
-import { BookingState, AddOnSelection } from '../types';
+import { BookingState, AddOnSelection, PricingBreakdown } from '../types';
 import { useAddOns } from '../hooks/useAddOns';
 
 interface AddOnsSelectionProps {
   state: BookingState;
   actions: {
     setAddOns: (addOns: AddOnSelection[]) => void;
-    updatePricing: (pricing: any) => void;
+    updatePricing: (pricing: PricingBreakdown) => void;
   };
 }
 

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bed, Users, Star, ArrowRight, Calendar } from 'lucide-react';
-import { BookingState, Room } from '../types';
+import { BookingState, Room, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
@@ -9,7 +9,7 @@ interface SurfWeekRoomSelectionProps {
   state: BookingState;
   actions: {
     setSurfWeekRoom: (roomId: string) => void;
-    updatePricing: (pricing: any) => void;
+    updatePricing: (pricing: PricingBreakdown) => void;
     nextStep: () => void;
   };
 }
@@ -42,7 +42,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryRoomName, setGalleryRoomName] = useState('');
-  const [galleryRoom, setGalleryRoom] = useState<any>(null);
+  const [galleryRoom, setGalleryRoom] = useState<Room | null>(null);
 
   // Fetch real room data (no date filtering needed for surf weeks)
   const { rooms, loading, error } = useRooms({
@@ -92,7 +92,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     });
 
   // Open image gallery
-  const openGallery = (room: any) => {
+  const openGallery = (room: Room) => {
     const originalRoom = rooms.find(r => r.id === room.id);
     setGalleryImages(originalRoom?.images || []);
     setGalleryRoomName(room.name);
