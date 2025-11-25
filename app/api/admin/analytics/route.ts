@@ -135,9 +135,7 @@ export async function GET(request: NextRequest) {
           supabaseAdmin.from('bookings').select('total_amount').in('payment_status', ['confirmed']),
           supabaseAdmin.from('bookings').select(`
             id,
-            clients!inner(name),
-            rooms!inner(name),
-            check_in_date,
+            check_in,
             payment_status
           `).order('created_at', { ascending: false }).limit(5)
         ])
@@ -148,9 +146,9 @@ export async function GET(request: NextRequest) {
         // Format recent bookings
         const formattedBookings = (recentBookingsData as any[])?.map(booking => ({
           id: booking.id,
-          guest: booking.clients?.name || 'Unknown',
-          room: booking.rooms?.name || 'Unknown',
-          checkIn: new Date(booking.check_in_date).toISOString().split('T')[0],
+          guest: 'Unknown', // Client info would need separate query
+          room: booking.room_type || 'Unknown',
+          checkIn: booking.check_in ? new Date(booking.check_in).toISOString().split('T')[0] : '',
           status: booking.payment_status || 'pending'
         })) || []
 

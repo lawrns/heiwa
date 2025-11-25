@@ -18,9 +18,34 @@ export async function GET(request: NextRequest) {
       }, { status: 400 })
     }
 
+    // Validate date format (YYYY-MM-DD)
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+    if (!dateRegex.test(startDate) || !dateRegex.test(endDate)) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid date format. Use YYYY-MM-DD format (e.g., 2025-12-01)'
+      }, { status: 400 })
+    }
+
     // Generate date range
     const start = new Date(startDate)
     const end = new Date(endDate)
+
+    // Validate dates are valid Date objects
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid date values. Please provide valid dates in YYYY-MM-DD format'
+      }, { status: 400 })
+    }
+
+    // Validate end date is after start date
+    if (start >= end) {
+      return NextResponse.json({
+        success: false,
+        error: 'End date must be after start date'
+      }, { status: 400 })
+    }
     const dateRange: string[] = []
     
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
@@ -32,22 +57,22 @@ export async function GET(request: NextRequest) {
       dateRange.map(async (date) => {
         // Check room bookings for this date
         const { data: roomBookings, error: roomError } = await supabase
-          .from('room_assignments')
-          .select('room_id')
-          .lte('check_in_date', date)
-          .gte('check_out_date', date)
-          .eq('status', 'confirmed')
+          .from('bookings')
+          .select('room_type')
+          .lte('check_in', date)
+          .gte('check_out', date)
+          .in('status', ['pending', 'confirmed'])
 
         if (roomError) {
           console.error('Error checking room bookings:', roomError)
         }
 
-        // Check surf camp bookings for this date
+        // Check surf camp bookings for this date (via enrollments)
         const { data: surfBookings, error: surfError } = await supabase
-          .from('surf_week_assignments')
+          .from('surf_camp_enrollments')
           .select('surf_camp_id')
-          .eq('status', 'confirmed')
-          // Note: You might need to add date fields to surf_week_assignments table
+          .in('status', ['pending', 'confirmed'])
+          // Note: Surf camp dates are stored in surf_camps table
 
         if (surfError) {
           console.error('Error checking surf bookings:', surfError)

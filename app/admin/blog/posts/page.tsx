@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Search, Filter, Eye, Edit, Trash2, Globe, FileText } from 'lucide-react'
+import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 
 interface BlogPost {
@@ -39,7 +39,7 @@ interface BlogPost {
 }
 
 export default function BlogPostsPage() {
-  const router = useRouter()
+  useRouter() // Keep for potential future navigation
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -71,7 +71,7 @@ export default function BlogPostsPage() {
       } else {
         setError(data.error || 'Failed to fetch posts')
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError('Error loading posts')
       console.error(err)
     } finally {
@@ -163,7 +163,7 @@ export default function BlogPostsPage() {
           <select
             value={statusFilter}
             onChange={(e) => {
-              setStatusFilter(e.target.value as any)
+              setStatusFilter(e.target.value as 'all' | 'draft' | 'scheduled' | 'published')
               setCurrentPage(1)
             }}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"

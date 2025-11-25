@@ -2,14 +2,16 @@
 // Handles all email notifications for bookings, invoices, payments, and enrollments
 
 import { Resend } from 'resend'
+import { formatCurrency, formatDate } from './utils'
+import { env, isProduction } from './env'
 
 // Lazy initialization of Resend client to avoid build-time errors
 let resend: Resend | null = null
 
 function getResendClient(): Resend {
   if (!resend) {
-    const apiKey = process.env.RESEND_API_KEY
-    if (!apiKey && process.env.NODE_ENV !== 'development') {
+    const apiKey = env.RESEND_API_KEY
+    if (!apiKey && isProduction()) {
       throw new Error('RESEND_API_KEY is not configured')
     }
     resend = new Resend(apiKey || 'dummy-key-for-build')
@@ -17,10 +19,10 @@ function getResendClient(): Resend {
   return resend
 }
 
-// Email configuration
-const FROM_EMAIL = process.env.FROM_EMAIL || 'Heiwa House <noreply@heiwahouse.com>'
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'info@heiwahouse.com'
-const REPLY_TO_EMAIL = process.env.REPLY_TO_EMAIL || 'info@heiwahouse.com'
+// Email configuration - using validated environment variables
+const FROM_EMAIL = env.FROM_EMAIL
+const ADMIN_EMAIL = env.ADMIN_EMAIL
+const REPLY_TO_EMAIL = env.REPLY_TO_EMAIL
 
 export interface EmailOptions {
   to: string | string[]
@@ -299,27 +301,7 @@ class EmailService {
       .trim()
   }
 
-  /**
-   * Format currency
-   */
-  private formatCurrency(amount: number, currency: string = 'EUR'): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency,
-    }).format(amount)
-  }
-
-  /**
-   * Format date
-   */
-  private formatDate(dateString: string): string {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-  }
+  // Formatting utilities are now imported from lib/utils.ts
 
   /**
    * Booking confirmation email template
@@ -375,15 +357,15 @@ class EmailService {
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; color: #374151; font-size: 15px;"><strong>Check-in:</strong></td>
-                    <td style="padding: 8px 0; color: #111827; font-size: 15px; text-align: right;">${this.formatDate(data.checkIn)}</td>
+                    <td style="padding: 8px 0; color: #111827; font-size: 15px; text-align: right;">${formatDate(data.checkIn)}</td>
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; color: #374151; font-size: 15px;"><strong>Check-out:</strong></td>
-                    <td style="padding: 8px 0; color: #111827; font-size: 15px; text-align: right;">${this.formatDate(data.checkOut)}</td>
+                    <td style="padding: 8px 0; color: #111827; font-size: 15px; text-align: right;">${formatDate(data.checkOut)}</td>
                   </tr>
                   <tr style="border-top: 2px solid #e5e7eb;">
                     <td style="padding: 12px 0 8px 0; color: #111827; font-size: 18px; font-weight: 600;"><strong>Total Amount:</strong></td>
-                    <td style="padding: 12px 0 8px 0; color: #ec681c; font-size: 20px; font-weight: 700; text-align: right;">${this.formatCurrency(data.totalAmount, data.currency)}</td>
+                    <td style="padding: 12px 0 8px 0; color: #ec681c; font-size: 20px; font-weight: 700; text-align: right;">${formatCurrency(data.totalAmount, data.currency)}</td>
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; color: #374151; font-size: 15px;"><strong>Status:</strong></td>
@@ -443,9 +425,9 @@ class EmailService {
   <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
     <p><strong>Booking ID:</strong> ${data.bookingId}</p>
     <p><strong>Guest:</strong> ${data.guestName} (${data.guestEmail})</p>
-    <p><strong>Check-in:</strong> ${this.formatDate(data.checkIn)}</p>
-    <p><strong>Check-out:</strong> ${this.formatDate(data.checkOut)}</p>
-    <p><strong>Amount:</strong> ${this.formatCurrency(data.totalAmount, data.currency)}</p>
+    <p><strong>Check-in:</strong> ${formatDate(data.checkIn)}</p>
+    <p><strong>Check-out:</strong> ${formatDate(data.checkOut)}</p>
+    <p><strong>Amount:</strong> ${formatCurrency(data.totalAmount, data.currency)}</p>
     <p><strong>Status:</strong> ${data.status}</p>
     
     <div style="margin-top: 20px; padding: 15px; background: white; border-radius: 8px;">
@@ -464,7 +446,7 @@ class EmailService {
     const itemsHtml = data.items?.map(item => `
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.description}</td>
-        <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: right;">${this.formatCurrency(item.amount, data.currency)}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: right;">${formatCurrency(item.amount, data.currency)}</td>
       </tr>
     `).join('') || ''
 
@@ -496,12 +478,12 @@ class EmailService {
         ${itemsHtml}
         <tr>
           <td style="padding: 10px; font-weight: bold; border-top: 2px solid #667eea;">Total</td>
-          <td style="padding: 10px; text-align: right; font-weight: bold; border-top: 2px solid #667eea;">${this.formatCurrency(data.amount, data.currency)}</td>
+          <td style="padding: 10px; text-align: right; font-weight: bold; border-top: 2px solid #667eea;">${formatCurrency(data.amount, data.currency)}</td>
         </tr>
       </table>
       
       <div style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 5px;">
-        <p style="margin: 5px 0;"><strong>Due Date:</strong> ${this.formatDate(data.dueDate)}</p>
+        <p style="margin: 5px 0;"><strong>Due Date:</strong> ${formatDate(data.dueDate)}</p>
         <p style="margin: 5px 0;"><strong>Status:</strong> ${data.status}</p>
         ${data.bookingId ? `<p style="margin: 5px 0;"><strong>Booking ID:</strong> ${data.bookingId}</p>` : ''}
       </div>
@@ -567,7 +549,7 @@ class EmailService {
                   </tr>
                   <tr style="border-top: 2px solid #d1fae5;">
                     <td style="padding: 12px 0 8px 0; color: #111827; font-size: 18px; font-weight: 600;"><strong>Amount Paid:</strong></td>
-                    <td style="padding: 12px 0 8px 0; color: #059669; font-size: 20px; font-weight: 700; text-align: right;">${this.formatCurrency(data.amount, data.currency)}</td>
+                    <td style="padding: 12px 0 8px 0; color: #059669; font-size: 20px; font-weight: 700; text-align: right;">${formatCurrency(data.amount, data.currency)}</td>
                   </tr>
                   <tr>
                     <td style="padding: 8px 0; color: #374151; font-size: 15px;"><strong>Status:</strong></td>
@@ -635,8 +617,8 @@ class EmailService {
     <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
       <p style="margin: 5px 0;"><strong>Enrollment ID:</strong> ${data.enrollmentId}</p>
       <p style="margin: 5px 0;"><strong>Surf Camp:</strong> ${data.surfCampName}</p>
-      <p style="margin: 5px 0;"><strong>Start Date:</strong> ${this.formatDate(data.startDate)}</p>
-      <p style="margin: 5px 0;"><strong>End Date:</strong> ${this.formatDate(data.endDate)}</p>
+      <p style="margin: 5px 0;"><strong>Start Date:</strong> ${formatDate(data.startDate)}</p>
+      <p style="margin: 5px 0;"><strong>End Date:</strong> ${formatDate(data.endDate)}</p>
       ${data.skillLevel ? `<p style="margin: 5px 0;"><strong>Skill Level:</strong> ${data.skillLevel}</p>` : ''}
       <p style="margin: 5px 0;"><strong>Status:</strong> ${data.status}</p>
     </div>
@@ -672,8 +654,8 @@ class EmailService {
     
     <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
       <p style="margin: 5px 0;"><strong>Refund ID:</strong> ${data.refundId}</p>
-      <p style="margin: 5px 0;"><strong>Refund Amount:</strong> ${this.formatCurrency(data.refundAmount, data.currency)}</p>
-      <p style="margin: 5px 0;"><strong>Original Payment:</strong> ${this.formatCurrency(data.originalPaymentAmount, data.currency)}</p>
+      <p style="margin: 5px 0;"><strong>Refund Amount:</strong> ${formatCurrency(data.refundAmount, data.currency)}</p>
+      <p style="margin: 5px 0;"><strong>Original Payment:</strong> ${formatCurrency(data.originalPaymentAmount, data.currency)}</p>
       ${data.reason ? `<p style="margin: 5px 0;"><strong>Reason:</strong> ${data.reason}</p>` : ''}
       ${data.bookingId ? `<p style="margin: 5px 0;"><strong>Booking ID:</strong> ${data.bookingId}</p>` : ''}
     </div>
@@ -757,7 +739,7 @@ class EmailService {
               <h2 style="color: #111827; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Hi ${data.guestName}! 👋</h2>
               
               <p style="color: #4b5563; margin: 0 0 25px 0; font-size: 16px;">
-                We're so excited to welcome you to <strong>${bookingName}</strong>! Your check-in is on <strong>${this.formatDate(data.checkIn)}</strong>.
+                We're so excited to welcome you to <strong>${bookingName}</strong>! Your check-in is on <strong>${formatDate(data.checkIn)}</strong>.
               </p>
 
               ${data.location ? `<p style="color: #4b5563; margin: 0 0 25px 0; font-size: 16px;"><strong>📍 Location:</strong> ${data.location}</p>` : ''}
@@ -832,7 +814,7 @@ class EmailService {
       <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 25px; border-radius: 8px; margin: 25px 0; border: 2px solid #f59e0b;">
         <h3 style="color: #92400e; margin: 0 0 10px 0; font-size: 20px; font-weight: 600;">🎁 Special Return Offer</h3>
         <p style="color: #78350f; margin: 0 0 15px 0; font-size: 16px;">We'd love to have you back! Get <strong>${data.returnOffer.discount}% off</strong> your next booking.</p>
-        <p style="color: #92400e; margin: 0; font-size: 14px;"><strong>Valid until:</strong> ${this.formatDate(data.returnOffer.validUntil)}</p>
+        <p style="color: #92400e; margin: 0; font-size: 14px;"><strong>Valid until:</strong> ${formatDate(data.returnOffer.validUntil)}</p>
         <a href="https://heiwahouse.com/book" style="display: inline-block; background: #f59e0b; color: white; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-top: 15px; font-size: 14px;">Book Your Return Trip</a>
       </div>
     ` : ''
@@ -864,7 +846,7 @@ class EmailService {
               <h2 style="color: #111827; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Hi ${data.guestName}! 👋</h2>
               
               <p style="color: #4b5563; margin: 0 0 25px 0; font-size: 16px;">
-                We hope you had an incredible experience during ${bookingName} from ${this.formatDate(data.checkIn)} to ${this.formatDate(data.checkOut)}.
+                We hope you had an incredible experience during ${bookingName} from ${formatDate(data.checkIn)} to ${formatDate(data.checkOut)}.
               </p>
 
               <p style="color: #4b5563; margin: 0 0 30px 0; font-size: 16px;">

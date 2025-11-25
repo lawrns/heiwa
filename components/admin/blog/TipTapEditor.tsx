@@ -7,9 +7,17 @@ import Image from '@tiptap/extension-image'
 import Placeholder from '@tiptap/extension-placeholder'
 import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Image as ImageIcon, Undo, Redo } from 'lucide-react'
 
+interface TipTapContent {
+  type: string
+  content?: any[]
+  attrs?: Record<string, unknown>
+  text?: string
+  marks?: any[]
+}
+
 interface TipTapEditorProps {
-  content: any
-  onChange: (content: any) => void
+  content: TipTapContent | string | null
+  onChange: (content: TipTapContent) => void
   placeholder?: string
 }
 

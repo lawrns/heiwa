@@ -34,14 +34,14 @@ describe('/api/dates/availability', () => {
         { capacity: 2 }
       ]
 
-      // Mock room assignments query
+      // Mock bookings query (using bookings table instead of room_assignments)
       mockSupabase.from.mockImplementation((table: string) => {
-        if (table === 'room_assignments') {
+        if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               lte: jest.fn().mockReturnValue({
                 gte: jest.fn().mockReturnValue({
-                  eq: jest.fn().mockResolvedValue({ 
+                  in: jest.fn().mockResolvedValue({ 
                     data: mockRoomBookings, 
                     error: null 
                   })
@@ -50,7 +50,7 @@ describe('/api/dates/availability', () => {
             })
           }
         }
-        if (table === 'surf_week_assignments') {
+        if (table === 'surf_camp_enrollments') {
           return {
             select: jest.fn().mockReturnValue({
               eq: jest.fn().mockResolvedValue({ 
@@ -74,7 +74,8 @@ describe('/api/dates/availability', () => {
           select: jest.fn(),
           lte: jest.fn(),
           gte: jest.fn(),
-          eq: jest.fn()
+          eq: jest.fn(),
+          in: jest.fn()
         }
       })
 

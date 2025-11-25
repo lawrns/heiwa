@@ -10,13 +10,12 @@ import type { NavigationItem } from '@/lib/types'
 export function Footer() {
   const pathname = usePathname()
   const [navigationItems, setNavigationItems] = useState<NavigationItem[]>([])
-
-  // Hide footer for admin routes
-  if (pathname.startsWith('/admin')) {
-    return null
-  }
+  const isAdminRoute = pathname.startsWith('/admin')
 
   useEffect(() => {
+    // Skip fetching navigation items for admin routes
+    if (isAdminRoute) return
+
     getNavigationItems().then(items => {
       // Filter out THE SPOT from navigation items
       const filteredItems = items.filter(item => item.path !== '/the-spot')
@@ -29,7 +28,12 @@ export function Footer() {
         { path: '/surf-weeks', name: 'Surf Weeks' }
       ])
     })
-  }, [])
+  }, [isAdminRoute])
+
+  // Hide footer for admin routes
+  if (isAdminRoute) {
+    return null
+  }
 
   return (
     <footer className="bg-gray-900 text-white">

@@ -1,0 +1,136 @@
+{
+  "timestamp": "2025-11-24T03:12:43.091Z",
+  "totalRooms": 4,
+  "activeRooms": 4,
+  "inactiveRooms": 0,
+  "discrepancies": [],
+  "issues": [
+    {
+      "roomId": "f3f00cbb-c30e-4d84-9352-cfb6a76684d0",
+      "roomName": "Dorm room",
+      "warnings": [
+        "Room name contains test/placeholder patterns",
+        "Room not found in API response (may be inactive)"
+      ]
+    },
+    {
+      "roomId": "190611e3-72a9-4e63-bbdc-c65a02c5b442",
+      "roomName": "new room",
+      "warnings": [
+        "Room name contains test/placeholder patterns",
+        "Room not found in API response (may be inactive)"
+      ]
+    },
+    {
+      "roomId": "ac98fd46-5bd2-413c-98f3-17e71024e734",
+      "roomName": "Room Nr 2",
+      "warnings": [
+        "Room name contains test/placeholder patterns",
+        "Room not found in API response (may be inactive)"
+      ]
+    },
+    {
+      "roomId": "6a6e6bb0-d3e5-4fab-87d8-7e39174637e9",
+      "roomName": "Room Nr 3",
+      "warnings": [
+        "Room name contains test/placeholder patterns",
+        "Room not found in API response (may be inactive)"
+      ]
+    }
+  ],
+  "roomDetails": [
+    {
+      "id": "f3f00cbb-c30e-4d84-9352-cfb6a76684d0",
+      "name": "Dorm room",
+      "capacity": 6,
+      "bookingType": "perBed",
+      "pricing": {
+        "camp": {
+          "perBed": 30
+        },
+        "standard": 30,
+        "offSeason": 30
+      },
+      "isActive": true,
+      "imageCount": 1,
+      "hasImages": true,
+      "issues": [],
+      "warnings": [
+        "Room name contains test/placeholder patterns",
+        "Room not found in API response (may be inactive)"
+      ]
+    },
+    {
+      "id": "190611e3-72a9-4e63-bbdc-c65a02c5b442",
+      "name": "new room",
+      "capacity": 1,
+      "bookingType": "whole",
+      "pricing": {
+        "camp": {},
+        "standard": 2000,
+        "offSeason": 0
+      },
+      "isActive": true,
+      "imageCount": 1,
+      "hasImages": true,
+      "issues": [],
+      "warnings": [
+        "Room name contains test/placeholder patterns",
+        "Room not found in API response (may be inactive)"
+      ]
+    },
+    {
+      "id": "ac98fd46-5bd2-413c-98f3-17e71024e734",
+      "name": "Room Nr 2",
+      "capacity": 1,
+      "bookingType": "whole",
+      "pricing": {
+        "camp": {
+          "1": 80
+        },
+        "standard": 80,
+        "offSeason": 80
+      },
+      "isActive": true,
+      "imageCount": 1,
+      "hasImages": true,
+      "issues": [],
+      "warnings": [
+        "Room name contains test/placeholder patterns",
+        "Room not found in API response (may be inactive)"
+      ]
+    },
+    {
+      "id": "6a6e6bb0-d3e5-4fab-87d8-7e39174637e9",
+      "name": "Room Nr 3",
+      "capacity": 2,
+      "bookingType": "whole",
+      "pricing": {
+        "camp": {
+          "1": 80,
+          "2": 80
+        },
+        "standard": 80,
+        "offSeason": 80
+      },
+      "isActive": true,
+      "imageCount": 1,
+      "hasImages": true,
+      "issues": [],
+      "warnings": [
+        "Room name contains test/placeholder patterns",
+        "Room not found in API response (may be inactive)"
+      ]
+    }
+  ],
+  "summary": {
+    "totalRooms": 4,
+    "activeRooms": 4,
+    "inactiveRooms": 0,
+    "roomsWithCriticalIssues": 0,
+    "roomsWithWarnings": 4,
+    "roomsWithoutImages": 0,
+    "roomsWithInvalidPricing": 0,
+    "roomsNeedingAttention": 4
+  }
+}

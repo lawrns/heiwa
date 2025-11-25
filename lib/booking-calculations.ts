@@ -1,4 +1,5 @@
 import { Room, SurfCamp, AddOn } from '@/lib/schemas';
+import { differenceInDays } from 'date-fns';
 
 export interface BookingItem {
   id: string;
@@ -24,6 +25,25 @@ export interface PriceBreakdown {
 }
 
 /**
+ * Check if dates fall in peak season (May-September)
+ */
+function isPeakSeasonPeriod(startDate: string, endDate: string): boolean {
+  const peakSeasonMonths = [5, 6, 7, 8, 9] // May to September
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+  const current = new Date(start)
+  
+  while (current < end) {
+    if (peakSeasonMonths.includes(current.getMonth() + 1)) {
+      return true
+    }
+    current.setDate(current.getDate() + 1)
+  }
+  
+  return false
+}
+
+/**
  * Calculate room price based on dates, quantity, and pricing model
  */
 export function calculateRoomPrice(
@@ -32,14 +52,24 @@ export function calculateRoomPrice(
   endDate?: string,
   quantity: number = 1
 ): { unitPrice: number; totalPrice: number; nights?: number } {
-  const basePrice = room.pricing.standard || room.pricing.offSeason || 0;
-  
   // Calculate nights if dates are provided
   let nights = 1;
   if (startDate && endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    nights = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
+    nights = Math.max(1, differenceInDays(end, start));
+  }
+
+  // Determine seasonal rate based on dates
+  let basePrice = 0;
+  if (startDate && endDate) {
+    const isPeak = isPeakSeasonPeriod(startDate, endDate);
+    basePrice = isPeak 
+      ? (room.pricing.standard || room.pricing.offSeason || 0)
+      : (room.pricing.offSeason || room.pricing.standard || 0);
+  } else {
+    // No dates provided - use standard rate as default
+    basePrice = room.pricing.standard || room.pricing.offSeason || 0;
   }
 
   // Handle different pricing models based on bookingType and camp pricing
@@ -197,17 +227,7 @@ function isDateInRange(
   }
 }
 
-/**
- * Format currency for display
- */
-export function formatCurrency(amount: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
+// formatCurrency is now imported from lib/utils.ts
 
 /**
  * Calculate booking duration in nights
@@ -215,7 +235,7 @@ export function formatCurrency(amount: number, currency: string = 'USD'): string
 export function calculateNights(startDate: string, endDate: string): number {
   const start = new Date(startDate);
   const end = new Date(endDate);
-  return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
+  return Math.max(1, differenceInDays(end, start));
 }
 
 /**

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, Search, Filter, Download, Plus, Eye, Edit, Trash2, Mail, Phone } from 'lucide-react'
+import { Users, Search, Download, Plus, Eye, Edit, Trash2, Mail, Phone } from 'lucide-react'
 import { ViewClientModal } from '@/components/admin/clients/ViewClientModal'
 import { CreateClientModal } from '@/components/admin/clients/CreateClientModal'
 import { EditClientModal } from '@/components/admin/clients/EditClientModal'
@@ -25,7 +25,7 @@ interface Client {
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState('all')
@@ -106,9 +106,9 @@ export default function ClientsPage() {
 
       toast.success('Client archived successfully')
       fetchClients()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error archiving client:', error)
-      toast.error(error.message || 'Failed to archive client')
+      toast.error(error instanceof Error ? error.message : 'Failed to archive client')
     }
   }
 
@@ -157,9 +157,9 @@ export default function ClientsPage() {
       } else {
         throw new Error(data.error || 'Failed to update clients')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating clients:', error)
-      toast.error(error.message || 'Failed to update clients')
+      toast.error(error instanceof Error ? error.message : 'Failed to update clients')
     }
   }
 
@@ -187,9 +187,9 @@ export default function ClientsPage() {
       } else {
         throw new Error(data.error || 'Failed to archive clients')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error archiving clients:', error)
-      toast.error(error.message || 'Failed to archive clients')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to archive clients')
     }
   }
 

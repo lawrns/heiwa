@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Users, Bed, ArrowRight, Check } from 'lucide-react';
-import { BookingState, RoomAssignment as RoomAssignmentType } from '../types';
+import { BookingState, RoomAssignment as RoomAssignmentType, Room, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { RoomImageGallery, RoomThumbnail } from '../components/RoomImageGallery';
 
@@ -10,7 +10,7 @@ interface RoomAssignmentProps {
     setRoomAssignments: (assignments: RoomAssignmentType[]) => void;
     addRoomAssignment: (assignment: RoomAssignmentType) => void;
     removeRoomAssignment: (assignmentId: string) => void;
-    updatePricing?: (pricing: any) => void;
+    updatePricing?: (pricing: PricingBreakdown) => void;
     nextStep: () => void;
   };
 }
@@ -28,7 +28,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryRoomName, setGalleryRoomName] = useState('');
-  const [galleryRoom, setGalleryRoom] = useState<any>(null);
+  const [galleryRoom, setGalleryRoom] = useState<Room | null>(null);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -192,7 +192,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
   };
 
   // Open image gallery
-  const openGallery = (room: any) => {
+  const openGallery = (room: Room) => {
     setGalleryImages(room.images || []);
     setGalleryRoomName(room.name);
     setGalleryRoom(room);

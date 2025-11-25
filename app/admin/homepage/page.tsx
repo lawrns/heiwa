@@ -17,6 +17,42 @@ interface HomepageContent {
   linkText?: string
   isActive: boolean
   order: number
+  blogConfig?: {
+    title?: string
+    description?: string
+    readMoreText?: string
+    limit?: number
+    showCategory?: boolean
+    showDate?: boolean
+    showReadingTime?: boolean
+  }
+}
+
+interface HomepageContentApiResponse {
+  id: string
+  section_type?: string
+  section?: string
+  title: string
+  subtitle?: string
+  description?: string
+  content?: string
+  image_url?: string
+  background_image?: string
+  video_url?: string
+  link_url?: string
+  link_text?: string
+  is_active?: boolean
+  order?: number
+  order_index?: number
+  blog_config?: {
+    title?: string
+    description?: string
+    readMoreText?: string
+    limit?: number
+    showCategory?: boolean
+    showDate?: boolean
+    showReadingTime?: boolean
+  }
 }
 
 export default function HomepageCMSPage() {
@@ -30,28 +66,40 @@ export default function HomepageCMSPage() {
     const fetchContent = async () => {
       try {
         setLoading(true)
-        const response = await fetch('/api/admin/homepage?t=' + Date.now(), {
+        
+        // Try the new API endpoint first (homepage_sections table)
+        let response = await fetch('/api/cms/homepage?t=' + Date.now(), {
           cache: 'no-store'
         })
-        const result = await response.json()
+        let result = await response.json()
+        
+        // If empty, fallback to old endpoint (homepage_content table)
+        if (!result.data || result.data.length === 0) {
+          console.warn('⚠️ No sections in homepage_sections table, trying homepage_content...')
+          response = await fetch('/api/admin/homepage?t=' + Date.now(), {
+            cache: 'no-store'
+          })
+          result = await response.json()
+        }
         
         if (result.success && result.data && result.data.length > 0) {
           // Map API response to component state - use REAL data from database
-          setContent(result.data.map((item: any) => ({
+          setContent(result.data.map((item: HomepageContentApiResponse) => ({
             id: item.id,
-            section: item.section,
+            section: item.section_type || item.section,
             title: item.title,
             subtitle: item.subtitle,
             description: item.description,
             content: item.content,
-            imageUrl: item.image_url,
+            imageUrl: item.image_url || item.background_image,
             videoUrl: item.video_url,
             linkUrl: item.link_url,
             linkText: item.link_text,
-            isActive: item.is_active,
-            order: item.order_index,
+            isActive: item.is_active ?? true,
+            order: item.order || item.order_index || 0,
             blogConfig: item.blog_config ? (typeof item.blog_config === 'string' ? JSON.parse(item.blog_config) : item.blog_config) : undefined
           })))
+          console.log(`✅ Loaded ${result.data.length} homepage sections`)
         } else {
           // If no data exists, show empty state instead of template
           console.warn('⚠️ No homepage content found in database')

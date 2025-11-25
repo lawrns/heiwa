@@ -12,7 +12,22 @@ interface CMSSection {
   id: string
   section_type: string
   section_name?: string
-  content: any
+  content: string | {
+    title?: string
+    description?: string
+    video_url?: string
+    image_url?: string
+    text?: string
+    html?: string
+    button_text?: string
+    button_url?: string
+    items?: Array<{
+      title?: string
+      description?: string
+      icon?: string
+    }>
+    [key: string]: unknown
+  }
   order_index: number
 }
 
@@ -76,10 +91,10 @@ export default function PlayPage() {
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
-        title={heroSection?.content?.title || "Heiwa Play"}
-        description={heroSection?.content?.description || "Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."}
-        videoUrl={heroSection?.content?.video_url || "/images/videos/play-activities.mp4"}
-        imageUrl={heroSection?.content?.image_url || "/images/games.jpg"}
+        title={typeof heroSection?.content === 'object' && heroSection.content?.title || "Heiwa Play"}
+        description={typeof heroSection?.content === 'object' && heroSection.content?.description || "Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."}
+        videoUrl={typeof heroSection?.content === 'object' && heroSection.content?.video_url || "/images/videos/play-activities.mp4"}
+        imageUrl={typeof heroSection?.content === 'object' && heroSection.content?.image_url || "/images/games.jpg"}
       />
 
       {/* Introduction Section */}

@@ -60,7 +60,7 @@ describe('Invoice Generator', () => {
             })),
           })),
         })),
-      }))
+      })
 
       const invoiceNumber = await generateInvoiceNumber()
 
@@ -82,7 +82,7 @@ describe('Invoice Generator', () => {
             })),
           })),
         })),
-      }))
+      })
 
       const invoiceNumber = await generateInvoiceNumber()
 
@@ -104,13 +104,14 @@ describe('Invoice Generator', () => {
             })),
           })),
         })),
-      }))
+      })
 
       await expect(generateInvoiceNumber()).rejects.toThrow('Failed to generate invoice number')
     })
 
     it('should handle year transitions correctly', async () => {
-      // Mock year 2024 invoice
+      // Mock year 2024 invoice - the function queries for current year pattern
+      // so if no 2025 invoices exist, it returns null/error and starts at 0001
       const mockFrom = supabaseAdmin.from as jest.Mock
       mockFrom.mockReturnValueOnce({
         select: jest.fn(() => ({
@@ -118,19 +119,19 @@ describe('Invoice Generator', () => {
             order: jest.fn(() => ({
               limit: jest.fn(() => ({
                 single: jest.fn(() => Promise.resolve({
-                  data: { invoice_number: 'HW-INV-2024-9999' },
-                  error: null,
+                  data: null,
+                  error: { code: 'PGRST116' }, // No 2025 invoices yet
                 })),
               })),
             })),
           })),
         })),
-      }))
+      })
 
       const invoiceNumber = await generateInvoiceNumber()
 
-      // Should start new year sequence
-      expect(invoiceNumber).toMatch(/^HW-INV-2025-\d{4}$/)
+      // Should start new year sequence at 0001
+      expect(invoiceNumber).toBe('HW-INV-2025-0001')
     })
   })
 
@@ -167,7 +168,8 @@ describe('Invoice Generator', () => {
             })),
           })),
         })),
-      })).mockReturnValueOnce({
+      });
+      mockFrom.mockReturnValueOnce({
         insert: jest.fn((data) => {
           insertedData = data
           return {
@@ -206,7 +208,8 @@ describe('Invoice Generator', () => {
             })),
           })),
         })),
-      })).mockReturnValueOnce({
+      });
+      mockFrom.mockReturnValueOnce({
         insert: jest.fn((data) => {
           insertedData = data
           return {
@@ -243,7 +246,8 @@ describe('Invoice Generator', () => {
             })),
           })),
         })),
-      })).mockReturnValueOnce({
+      });
+      mockFrom.mockReturnValueOnce({
         insert: jest.fn(() => ({
           select: jest.fn(() => ({
             single: jest.fn(() => Promise.resolve({

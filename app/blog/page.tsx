@@ -26,11 +26,46 @@ interface BlogPost {
     name: string
   }
   tags?: Array<{
+    name: string | undefined
+    slug: string | undefined
+  }>
+  featured?: boolean
+  views?: number
+  reading_minutes?: number
+  published_at?: string
+}
+
+interface PostTranslation {
+  locale: string
+  slug_localized?: string
+  title?: string
+  excerpt?: string
+  cover_image_url?: string
+  cover_alt_text?: string
+}
+
+interface PostTag {
+  tag?: {
+    name?: string
+    slug?: string
+  }
+  name?: string
+  slug?: string
+}
+
+interface PostResponse {
+  id: string
+  translations?: PostTranslation[]
+  category?: {
     name: string
     slug: string
-  }>
-  featured: boolean
-  views: number
+  }
+  author?: {
+    name: string
+  }
+  tags?: PostTag[]
+  featured?: boolean
+  views?: number
   reading_minutes?: number
   published_at?: string
 }
@@ -44,8 +79,8 @@ async function fetchPosts(): Promise<BlogPost[]> {
     })
 
     // Format posts to match expected structure
-    return result.data.map((post: any) => {
-      const translation = post.translations?.find((t: any) => t.locale === 'en') || post.translations?.[0]
+    return result.data.map((post: PostResponse) => {
+      const translation = post.translations?.find((t: PostTranslation) => t.locale === 'en') || post.translations?.[0]
       
       return {
         id: post.id,
@@ -61,10 +96,10 @@ async function fetchPosts(): Promise<BlogPost[]> {
         author: post.author ? {
           name: post.author.name
         } : undefined,
-        tags: post.tags?.map((t: any) => ({
+        tags: post.tags?.map((t: PostTag) => ({
           name: t.tag?.name || t.name,
           slug: t.tag?.slug || t.slug
-        })).filter((t: any) => t.name),
+        })).filter((t: { name?: string }) => t.name),
         featured: post.featured,
         views: post.views,
         reading_minutes: post.reading_minutes,

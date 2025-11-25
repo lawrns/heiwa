@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+// Button import removed - not currently used
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { Calendar, Users, MapPin } from 'lucide-react'
+import { Users, MapPin } from 'lucide-react'
 import { useSupabase } from '@/lib/supabase-context'
 import { toast } from 'react-toastify'
 import AssignmentBoard from '@/components/admin/assignments/AssignmentBoard'
@@ -24,12 +24,21 @@ interface WeekData {
   rooms: number
   startDate: string
   endDate: string
+  assignments: Assignment[]
+}
+
+interface CampApiResponse {
+  id: string
+  name: string
+  start_date: string
+  end_date: string
+  max_participants?: number
 }
 
 export default function AdminAssignmentsPage() {
   const { supabase } = useSupabase()
   const [selectedWeek, setSelectedWeek] = useState<string>('')
-  const [assignments, setAssignments] = useState<Assignment[]>([])
+  const [, setAssignments] = useState<Assignment[]>([])
   const [weeks, setWeeks] = useState<WeekData[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -50,7 +59,7 @@ export default function AdminAssignmentsPage() {
       }
 
       if (data) {
-        const formattedWeeks: WeekData[] = data.map((camp: any) => ({
+        const formattedWeeks: WeekData[] = data.map((camp: CampApiResponse) => ({
           id: camp.id,
           name: `${camp.name} (${new Date(camp.start_date).toLocaleDateString()} - ${new Date(camp.end_date).toLocaleDateString()})`,
           category: camp.name.toLowerCase().includes('frenchman') ? 'Freedom Routes' : 'Heiwa House',
@@ -71,7 +80,7 @@ export default function AdminAssignmentsPage() {
     } finally {
       setLoading(false)
     }
-  }, [selectedWeek])
+  }, [selectedWeek, supabase])
 
   useEffect(() => {
     fetchSurfCampWeeks()

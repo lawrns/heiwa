@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { PlusCircle, Edit, Trash2, Upload, Image as ImageIcon, Video, Eye, Download, Search, Filter } from 'lucide-react'
+import { Edit, Trash2, Upload, Image as ImageIcon, Video, Eye, Download, Search } from 'lucide-react'
 
 interface GalleryItem {
   id: string

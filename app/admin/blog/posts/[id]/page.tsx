@@ -1,11 +1,53 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { Save, Eye, X } from 'lucide-react'
+import { Save, X } from 'lucide-react'
 import Link from 'next/link'
 import { TipTapEditor } from '@/components/admin/blog/TipTapEditor'
 import { CoverImageUpload } from '@/components/admin/blog/CoverImageUpload'
+
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
+interface Author {
+  id: string
+  name: string
+  email: string
+}
+
+interface BlogTranslation {
+  id?: string
+  locale: 'en' | 'fr'
+  slug_localized: string
+  title: string
+  content?: string
+  excerpt: string
+  body_rich?: Record<string, unknown>
+  cover_image_url?: string
+  cover_alt_text?: string
+  seo_title?: string
+  seo_description?: string
+  canonical_url?: string
+  noindex?: boolean
+  meta_title?: string
+  meta_description?: string
+}
+
+interface BlogPost {
+  id: string
+  status: 'draft' | 'scheduled' | 'published'
+  featured: boolean
+  category_id: string
+  author_id: string
+  translations: BlogTranslation[]
+  translation?: BlogTranslation // Current working translation
+  cover_image_url?: string
+  published_at?: string
+}
 
 export default function EditPostPage() {
   const router = useRouter()
@@ -14,16 +56,10 @@ export default function EditPostPage() {
   
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [post, setPost] = useState<any>(null)
-  const [formData, setFormData] = useState<any>(null)
-  const [categories, setCategories] = useState<any[]>([])
-  const [authors, setAuthors] = useState<any[]>([])
-
-  useEffect(() => {
-    fetchPost()
-    fetchCategories()
-    fetchAuthors()
-  }, [postId])
+  const [, setPost] = useState<BlogPost | null>(null)
+  const [formData, setFormData] = useState<BlogPost | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [authors, setAuthors] = useState<Author[]>([])
 
   const fetchCategories = async () => {
     try {
@@ -49,7 +85,7 @@ export default function EditPostPage() {
     }
   }
 
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
     try {
       setLoading(true)
       const response = await fetch(`/api/admin/blog/posts/${postId}`)
@@ -58,14 +94,16 @@ export default function EditPostPage() {
       if (data.success) {
         setPost(data.data)
         // Initialize form with first translation
-        const enTrans = data.data.translations?.find((t: any) => t.locale === 'en') || data.data.translations?.[0]
-        setFormData({
+        const enTrans = data.data.translations?.find((t: BlogTranslation) => t.locale === 'en') || data.data.translations?.[0]
+        const postData: BlogPost = {
+          id: data.data.id,
           status: data.data.status,
           featured: data.data.featured,
           category_id: data.data.category_id || '',
           author_id: data.data.author_id || '',
+          translations: data.data.translations || [],
           translation: enTrans || {
-            locale: 'en',
+            locale: 'en' as const,
             slug_localized: '',
             title: '',
             excerpt: '',
@@ -77,7 +115,8 @@ export default function EditPostPage() {
             canonical_url: '',
             noindex: false
           }
-        })
+        }
+        setFormData(postData)
       } else {
         alert(data.error || 'Failed to fetch post')
         router.push('/admin/blog/posts')
@@ -89,26 +128,37 @@ export default function EditPostPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [postId, router])
+
+  useEffect(() => {
+    fetchPost()
+    fetchCategories()
+    fetchAuthors()
+  }, [fetchPost, postId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!formData || !formData.translation) {
+      alert('Form data is not loaded')
+      return
+    }
     setSaving(true)
 
     try {
+      const translation = formData.translation
       const translations = [{
-        id: formData.translation.id,
-        locale: formData.translation.locale,
-        slug_localized: formData.translation.slug_localized,
-        title: formData.translation.title,
-        excerpt: formData.translation.excerpt,
-        body_rich: formData.translation.body_rich,
-        cover_image_url: formData.translation.cover_image_url,
-        cover_alt_text: formData.translation.cover_alt_text,
-        seo_title: formData.translation.seo_title,
-        seo_description: formData.translation.seo_description,
-        canonical_url: formData.translation.canonical_url,
-        noindex: formData.translation.noindex
+        id: translation.id,
+        locale: translation.locale,
+        slug_localized: translation.slug_localized,
+        title: translation.title,
+        excerpt: translation.excerpt,
+        body_rich: translation.body_rich,
+        cover_image_url: translation.cover_image_url,
+        cover_alt_text: translation.cover_alt_text,
+        seo_title: translation.seo_title,
+        seo_description: translation.seo_description,
+        canonical_url: translation.canonical_url,
+        noindex: translation.noindex
       }]
 
       const response = await fetch(`/api/admin/blog/posts/${postId}`, {

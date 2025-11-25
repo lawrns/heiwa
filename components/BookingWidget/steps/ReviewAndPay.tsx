@@ -6,13 +6,59 @@ import { BankWireInstructions } from '../components/BankWireInstructions';
 import { ScrollIndicator } from '../components/ScrollIndicator';
 import { apiFetch } from '../lib/api';
 
+interface BookingData {
+  booking?: {
+    id: string;
+  };
+  payment?: {
+    payment_link?: string;
+  };
+}
+
+interface RoomBookingPayload {
+  room_id: string;
+  start_date: string;
+  end_date: string;
+  participants: unknown[];
+  add_ons: Array<{
+    id: string;
+    quantity: number;
+    price: number;
+  }>;
+  pricing: PricingBreakdown;
+  guests: number;
+  source_url?: string;
+  widget_version: string;
+}
+
+interface SurfWeekBookingPayload {
+  surf_week_id: string;
+  camp_id: string;
+  participants: unknown[];
+  add_ons: Array<{
+    id: string;
+    quantity: number;
+    price: number;
+  }>;
+  pricing: PricingBreakdown;
+  guests: number;
+  source_url?: string;
+  widget_version: string;
+  room_assignment?: {
+    room_id: string;
+    quantity: number;
+  };
+}
+
+type BookingPayload = RoomBookingPayload | SurfWeekBookingPayload;
+
 interface ReviewAndPayProps {
   state: BookingState;
   actions: {
     updatePricing: (pricing: PricingBreakdown) => void;
     setPaymentMethod: (method: 'card_stripe' | 'bank_wire') => void;
   };
-  onComplete: (bookingData?: any) => void;
+  onComplete: (bookingData?: BookingData) => void;
 }
 
 export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) {
@@ -80,7 +126,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-EU', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 0,
@@ -101,16 +147,73 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
     setPaymentError(null);
 
     try {
+      // Import validation functions
+      const { validateBookingSubmission, getValidationErrorMessage } = await import('@/lib/booking-utils');
+      
+      // Comprehensive pre-submission validation
+      const validation = validateBookingSubmission({
+        experienceType: state.experienceType,
+        dates: state.dates,
+        selectedOption: state.selectedOption,
+        selectedSurfWeek: state.selectedSurfWeek,
+        guests: state.guests,
+        guestDetails: state.guestDetails,
+        paymentMethod: state.paymentMethod,
+      });
+
+      if (!validation.isValid) {
+        const errorMessage = getValidationErrorMessage(validation);
+        console.error('❌ Booking validation failed:', {
+          errors: validation.errors,
+          missingFields: validation.missingFields,
+          state: {
+            experienceType: state.experienceType,
+            hasCheckIn: !!state.dates.checkIn,
+            hasCheckOut: !!state.dates.checkOut,
+            selectedOption: state.selectedOption,
+            selectedSurfWeek: state.selectedSurfWeek,
+            guests: state.guests,
+            guestDetailsCount: state.guestDetails.length,
+            paymentMethod: state.paymentMethod,
+          }
+        });
+        setPaymentError(errorMessage);
+        setIsProcessing(false);
+        return;
+      }
+
+      // Map guest details to participants
       const participants = state.guestDetails.map(g => ({
         name: `${g.firstName} ${g.lastName}`.trim(),
         email: g.email,
         phone: g.phone,
       }));
 
-      let endpoint = '';
-      let payload: any = {};
+      // Validate participants array
+      if (!participants || participants.length === 0) {
+        const errorMessage = 'At least one guest is required';
+        console.error('❌ No participants found');
+        setPaymentError(errorMessage);
+        setIsProcessing(false);
+        return;
+      }
 
-      if (state.experienceType === 'room' && state.dates.checkIn && state.dates.checkOut && state.selectedOption) {
+      let endpoint = '';
+      let payload: BookingPayload = {} as BookingPayload;
+
+      // Determine endpoint and payload based on experience type
+      if (state.experienceType === 'room') {
+        // Room booking validation - check all required fields
+        if (!state.dates.checkIn || !state.dates.checkOut || !state.selectedOption) {
+          const missing = [];
+          if (!state.dates.checkIn) missing.push('check-in date');
+          if (!state.dates.checkOut) missing.push('check-out date');
+          if (!state.selectedOption) missing.push('room selection');
+          setPaymentError(`Missing required information: ${missing.join(', ')}`);
+          setIsProcessing(false);
+          return;
+        }
+
         endpoint = '/widget/room-bookings';
         payload = {
           room_id: state.selectedOption,
@@ -123,32 +226,74 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           source_url: typeof window !== 'undefined' ? window.location.href : undefined,
           widget_version: 'v1'
         };
-      } else if (state.experienceType === 'surf-week' && state.selectedOption) {
+      } else if (state.experienceType === 'surf-week') {
+        // Surf week booking - check both selectedSurfWeek and selectedOption for compatibility
+        const surfWeekId = state.selectedSurfWeek || state.selectedOption;
+        if (!surfWeekId) {
+          setPaymentError('Please select a surf week');
+          setIsProcessing(false);
+          return;
+        }
+
         endpoint = '/bookings';
         payload = {
-          camp_id: state.selectedOption,
+          camp_id: surfWeekId,
           participants,
           pricing: pricing,
           source_url: typeof window !== 'undefined' ? window.location.href : undefined,
           widget_version: 'wp-widget-test'
         };
       } else {
-        throw new Error('Missing required booking information');
+        setPaymentError('Please select an experience type (Room or Surf Week)');
+        setIsProcessing(false);
+        return;
       }
 
-      console.log('🔑 Booking submission:', {
-        endpoint,
-        payload: { ...payload, participants: payload.participants?.length || 0 }
-      });
+      // Log booking submission with full state for debugging
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔑 Booking submission:', {
+          endpoint,
+          payload: { ...payload, participants: payload.participants?.length || 0 },
+          state: {
+            experienceType: state.experienceType,
+            selectedOption: state.selectedOption,
+            selectedSurfWeek: state.selectedSurfWeek,
+            checkIn: state.dates.checkIn?.toISOString(),
+            checkOut: state.dates.checkOut?.toISOString(),
+            guests: state.guests,
+            guestDetailsCount: state.guestDetails.length,
+            paymentMethod: state.paymentMethod,
+          }
+        });
+      }
 
-      const res = await apiFetch(endpoint, {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+      // Retry logic for API calls with exponential backoff
+      const { retryRequest } = await import('@/lib/error-handler');
+      
+      const res = await retryRequest(
+        async () => {
+          const response = await apiFetch(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData?.error || `HTTP ${response.status}: ${response.statusText}`);
+          }
+          
+          return response;
+        },
+        {
+          maxRetries: 3,
+          delay: 1000,
+          backoff: true,
+        }
+      );
 
       const data = await res.json();
-      if (!res.ok || !data?.success) {
-        const errorMessage = data?.error || `Request failed (${res.status})`;
+      if (!data?.success) {
+        const errorMessage = data?.error || `Request failed`;
         console.error('❌ Booking API error:', {
           status: res.status,
           error: data?.error,
@@ -226,8 +371,9 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         // Still call onComplete for booking context
         onComplete(data.data);
       }
-    } catch (error: any) {
-      setPaymentError(error?.message || 'Payment failed. Please try again.');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Payment failed. Please try again.';
+      setPaymentError(errorMessage);
     } finally {
       setIsProcessing(false);
     }

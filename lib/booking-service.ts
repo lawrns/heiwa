@@ -1,7 +1,6 @@
 // Booking submission service for hybrid data access architecture
-// Provides high-level booking submission functionality using admin API
+// Provides high-level booking submission functionality using local API
 
-import { adminApi } from './admin-api';
 import type { BookingRequest, BookingResponse, ApiLoadingState } from './types';
 
 export interface BookingSubmission extends BookingRequest {
@@ -39,23 +38,42 @@ class BookingService {
         };
       }
 
-      // Submit to admin API
-      const response = await adminApi.createBooking({
-        clientName: booking.clientName,
-        email: booking.email,
-        phone: booking.phone,
-        checkIn: booking.checkIn,
-        checkOut: booking.checkOut,
-        roomId: booking.roomId,
-        guests: booking.guests,
-        message: booking.message,
+      // Submit directly to the local /api/bookings endpoint
+      // Using the correct field names expected by the API
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clientName: booking.clientName,
+          email: booking.email,
+          phone: booking.phone || '',
+          room_id: booking.roomId,
+          start_date: booking.checkIn,
+          end_date: booking.checkOut,
+          guests: booking.guests,
+          message: booking.message || '',
+          booking_type: 'room',
+        }),
       });
 
+      const data = await response.json();
+
+      if (!data.success) {
+        return {
+          success: false,
+          message: data.error || 'Booking submission failed',
+          loading: false,
+          submittedAt: new Date(),
+        };
+      }
+
       return {
-        success: response.success,
-        bookingId: response.bookingId,
-        status: response.status as 'pending' | 'confirmed' | 'cancelled' | undefined,
-        message: response.message,
+        success: true,
+        bookingId: data.data?.booking?.id,
+        status: data.data?.booking?.status || 'pending',
+        message: 'Booking submitted successfully',
         loading: false,
         submittedAt: new Date(),
       };

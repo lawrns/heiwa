@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff } from 'lucide-react'
@@ -30,6 +30,7 @@ interface Booking {
   dietary_preferences?: string
   client_notes?: string
   notes?: string
+  client_ids?: string[]
 }
 
 export default function BookingsPage() {
@@ -161,7 +162,7 @@ export default function BookingsPage() {
       } else {
         setError('Failed to fetch bookings')
       }
-    } catch (err) {
+    } catch {
       setError('Error loading bookings')
     } finally {
       setLoading(false)
@@ -203,9 +204,10 @@ export default function BookingsPage() {
       
       setShowEditModal(false)
       setSelectedBooking(null)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating booking:', error)
-      toast.error(error.message || 'Failed to update booking')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update booking'
+      toast.error(errorMessage)
       throw error
     }
   }
@@ -238,9 +240,10 @@ export default function BookingsPage() {
 
       toast.success('Booking deleted successfully')
       setBookings(bookings.filter(booking => booking.id !== bookingId))
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting booking:', error)
-      toast.error(error.message || 'Failed to delete booking')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete booking'
+      toast.error(errorMessage)
     }
   }
 

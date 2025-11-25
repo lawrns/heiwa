@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Surf Camps Management | Heiwa House Admin',
-  description: 'Create and manage surf camp sessions and schedules',
+  title: 'Surf Weeks Management | Heiwa House Admin',
+  description: 'Create and manage surf week sessions and schedules',
 }
 
 export default function SurfCampsLayout({

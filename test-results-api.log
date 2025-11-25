@@ -1,0 +1,3555 @@
+
+> heiwa-page@1.0.0 test:api
+> jest --config jest.api.config.js
+
+FAIL __tests__/api/bookings.test.ts
+  ● Console
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          }
+        ],
+        guests: 1,
+        pricing: { total: 60, breakdown: { room: 60, add_ons: 0 } }
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'surf_week',
+        camp_id: 'camp-1',
+        participants: [
+          {
+            firstName: 'Jane',
+            lastName: 'Smith',
+            email: 'jane@example.com',
+            phone: '+351 912 193 786',
+            surfExperience: 'beginner'
+          }
+        ],
+        guests: 1,
+        pricing: { total: 500, breakdown: { camp: 500, add_ons: 0 } }
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Surf Week Booking Widget received: {
+        camp_id: 'camp-1',
+        participants: 1,
+        pricing: { total: 500, breakdown: { camp: 500, add_ons: 0 } },
+        source_url: undefined,
+        widget_version: undefined,
+        supabaseUrl: 'https://test.supabase.co'
+      }
+
+      at log (app/api/bookings/route.ts:196:15)
+
+    console.log
+      📝 Creating surf week booking with data: {
+        clientName: 'Jane Smith',
+        email: 'jane@example.com',
+        campId: 'camp-1',
+        participants: 1
+      }
+
+      at log (app/api/bookings/route.ts:225:15)
+
+    console.error
+      Error processing booking: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/bookings/route.ts:234:10)
+          at processTicksAndRejections (node:internal/process/task_queues:105:5)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/bookings.test.ts:175:24)
+
+      712 |
+      713 |   } catch (error) {
+    > 714 |     console.error('Error processing booking:', error)
+          |             ^
+      715 |     return NextResponse.json({
+      716 |       success: false,
+      717 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/bookings/route.ts:714:13)
+      at Object.<anonymous> (__tests__/api/bookings.test.ts:175:24)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          },
+          {
+            firstName: 'Jane',
+            lastName: 'Smith',
+            email: 'jane@example.com',
+            phone: '+351 912 193 786'
+          }
+        ],
+        guests: 2,
+        pricing: { total: 60, breakdown: { room: 60, add_ons: 0 } }
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          }
+        ],
+        guests: 1,
+        pricing: { total: 60, breakdown: { room: 60, add_ons: 0 } }
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [],
+        guests: 1,
+        pricing: { total: 60, breakdown: { room: 60, add_ons: 0 } }
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          }
+        ]
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'surf_week',
+        participants: [
+          {
+            firstName: 'Jane',
+            lastName: 'Smith',
+            email: 'jane@example.com',
+            phone: '+351 912 193 786',
+            surfExperience: 'beginner'
+          }
+        ]
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          }
+        ],
+        guests: 1,
+        pricing: { total: 60, breakdown: { room: 60, add_ons: 0 } }
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          }
+        ],
+        guests: 1,
+        pricing: { total: 60, breakdown: { room: 60, add_ons: 0 } }
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          }
+        ],
+        guests: 1,
+        pricing: { total: 60, breakdown: { room: 60, add_ons: 0 } }
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.error
+      Error processing booking: SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON
+          at JSON.parse (<anonymous>)
+          at POST (app/api/bookings/route.ts:180:18)
+          at Object.<anonymous> (__tests__/api/bookings.test.ts:471:24)
+
+      712 |
+      713 |   } catch (error) {
+    > 714 |     console.error('Error processing booking:', error)
+          |             ^
+      715 |     return NextResponse.json({
+      716 |       success: false,
+      717 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/bookings/route.ts:714:13)
+      at Object.<anonymous> (__tests__/api/bookings.test.ts:471:24)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785',
+            dateOfBirth: '1990-01-01',
+            emergencyContactName: 'Jane Doe',
+            emergencyContactPhone: '+351 912 193 786',
+            dietaryRestrictions: 'Vegetarian',
+            medicalConditions: 'None',
+            surfExperience: 'beginner'
+          }
+        ],
+        guests: 1,
+        pricing: { total: 60, breakdown: { room: 60, add_ons: 0 } }
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          }
+        ],
+        guests: 1,
+        pricing: { total: 135, breakdown: { room: 60, add_ons: 75 } },
+        add_ons: [
+          { id: 'addon-1', name: 'Surf Lesson', price: 50 },
+          { id: 'addon-2', name: 'Bike Rental', price: 25 }
+        ]
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          }
+        ],
+        guests: 1,
+        pricing: { total: 60, breakdown: { room: 60, add_ons: 0 } },
+        source_url: 'https://heiwa-house.com/rooms'
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            phone: '+351 912 193 785'
+          }
+        ],
+        guests: 1
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+    console.log
+      🏄‍♂️ Booking received: {
+        booking_type: 'room',
+        room_id: 'room-1',
+        start_date: '2026-02-01',
+        end_date: '2026-02-03',
+        participants: [
+          {
+            firstName: 'Participant0',
+            lastName: 'Doe0',
+            email: 'participant0@example.com',
+            phone: '+351 912 193 780'
+          },
+          {
+            firstName: 'Participant1',
+            lastName: 'Doe1',
+            email: 'participant1@example.com',
+            phone: '+351 912 193 781'
+          },
+          {
+            firstName: 'Participant2',
+            lastName: 'Doe2',
+            email: 'participant2@example.com',
+            phone: '+351 912 193 782'
+          },
+          {
+            firstName: 'Participant3',
+            lastName: 'Doe3',
+            email: 'participant3@example.com',
+            phone: '+351 912 193 783'
+          },
+          {
+            firstName: 'Participant4',
+            lastName: 'Doe4',
+            email: 'participant4@example.com',
+            phone: '+351 912 193 784'
+          },
+          {
+            firstName: 'Participant5',
+            lastName: 'Doe5',
+            email: 'participant5@example.com',
+            phone: '+351 912 193 785'
+          },
+          {
+            firstName: 'Participant6',
+            lastName: 'Doe6',
+            email: 'participant6@example.com',
+            phone: '+351 912 193 786'
+          },
+          {
+            firstName: 'Participant7',
+            lastName: 'Doe7',
+            email: 'participant7@example.com',
+            phone: '+351 912 193 787'
+          },
+          {
+            firstName: 'Participant8',
+            lastName: 'Doe8',
+            email: 'participant8@example.com',
+            phone: '+351 912 193 788'
+          },
+          {
+            firstName: 'Participant9',
+            lastName: 'Doe9',
+            email: 'participant9@example.com',
+            phone: '+351 912 193 789'
+          }
+        ],
+        guests: 10
+      }
+
+      at log (app/api/bookings/route.ts:181:13)
+
+  ● /api/bookings › POST /api/bookings › should create a room booking successfully
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      119 |       const data = await response.json()
+      120 |
+    > 121 |       expect(response.status).toBe(200)
+          |                               ^
+      122 |       expect(data.success).toBe(true)
+      123 |       expect(data.data.booking_id).toBe('booking-123')
+      124 |       expect(data.data.booking_type).toBe('room')
+
+      at Object.toBe (__tests__/api/bookings.test.ts:121:31)
+
+  ● /api/bookings › POST /api/bookings › should create a surf week booking successfully
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      176 |       const data = await response.json()
+      177 |
+    > 178 |       expect(response.status).toBe(200)
+          |                               ^
+      179 |       expect(data.success).toBe(true)
+      180 |       expect(data.data.booking_id).toBe('booking-456')
+      181 |       expect(data.data.booking_type).toBe('surf_week')
+
+      at Object.toBe (__tests__/api/bookings.test.ts:178:31)
+
+  ● /api/bookings › POST /api/bookings › should handle multiple participants
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      256 |       const data = await response.json()
+      257 |
+    > 258 |       expect(response.status).toBe(200)
+          |                               ^
+      259 |       expect(data.success).toBe(true)
+      260 |       expect(data.data.participants_created).toBe(2)
+      261 |     })
+
+      at Object.toBe (__tests__/api/bookings.test.ts:258:31)
+
+  ● /api/bookings › POST /api/bookings › should validate missing booking_type
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Missing required fields: booking_type and participants"
+    Received: "Missing required fields: room_id, start_date, end_date, clientName, email"
+
+      276 |       expect(response.status).toBe(400)
+      277 |       expect(data.success).toBe(false)
+    > 278 |       expect(data.error).toBe('Missing required fields: booking_type and participants')
+          |                          ^
+      279 |     })
+      280 |
+      281 |     it('should validate missing participants', async () => {
+
+      at Object.toBe (__tests__/api/bookings.test.ts:278:26)
+
+  ● /api/bookings › POST /api/bookings › should validate missing participants
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Missing required fields: booking_type and participants"
+    Received: "Missing required fields: room_id, start_date, end_date, clientName, email"
+
+      293 |       expect(response.status).toBe(400)
+      294 |       expect(data.success).toBe(false)
+    > 295 |       expect(data.error).toBe('Missing required fields: booking_type and participants')
+          |                          ^
+      296 |     })
+      297 |
+      298 |     it('should validate missing room booking fields', async () => {
+
+      at Object.toBe (__tests__/api/bookings.test.ts:295:26)
+
+  ● /api/bookings › POST /api/bookings › should validate missing room booking fields
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Missing required fields for room booking: room_id, start_date, end_date"
+    Received: "Missing required fields: room_id, start_date, end_date, clientName, email"
+
+      314 |       expect(response.status).toBe(400)
+      315 |       expect(data.success).toBe(false)
+    > 316 |       expect(data.error).toBe('Missing required fields for room booking: room_id, start_date, end_date')
+          |                          ^
+      317 |     })
+      318 |
+      319 |     it('should validate missing surf week booking fields', async () => {
+
+      at Object.toBe (__tests__/api/bookings.test.ts:316:26)
+
+  ● /api/bookings › POST /api/bookings › should validate missing surf week booking fields
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Missing required field for surf week booking: camp_id"
+    Received: "Missing required fields: room_id, start_date, end_date, clientName, email"
+
+      335 |       expect(response.status).toBe(400)
+      336 |       expect(data.success).toBe(false)
+    > 337 |       expect(data.error).toBe('Missing required field for surf week booking: camp_id')
+          |                          ^
+      338 |     })
+      339 |
+      340 |     it('should handle booking creation failure', async () => {
+
+      at Object.toBe (__tests__/api/bookings.test.ts:337:26)
+
+  ● /api/bookings › POST /api/bookings › should handle booking creation failure
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 500
+    Received: 400
+
+      365 |       const data = await response.json()
+      366 |
+    > 367 |       expect(response.status).toBe(500)
+          |                               ^
+      368 |       expect(data.success).toBe(false)
+      369 |       expect(data.error).toBe('Failed to create booking')
+      370 |     })
+
+      at Object.toBe (__tests__/api/bookings.test.ts:367:31)
+
+  ● /api/bookings › POST /api/bookings › should handle client creation failure
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 500
+    Received: 400
+
+      408 |       const data = await response.json()
+      409 |
+    > 410 |       expect(response.status).toBe(500)
+          |                               ^
+      411 |       expect(data.success).toBe(false)
+      412 |       expect(data.error).toBe('Failed to create participant 1')
+      413 |     })
+
+      at Object.toBe (__tests__/api/bookings.test.ts:410:31)
+
+  ● /api/bookings › POST /api/bookings › should handle room assignment creation failure
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 500
+    Received: 400
+
+      457 |       const data = await response.json()
+      458 |
+    > 459 |       expect(response.status).toBe(500)
+          |                               ^
+      460 |       expect(data.success).toBe(false)
+      461 |       expect(data.error).toBe('Assignment Error')
+      462 |     })
+
+      at Object.toBe (__tests__/api/bookings.test.ts:459:31)
+
+  ● /api/bookings › POST /api/bookings › should handle participant with all optional fields
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      542 |       const data = await response.json()
+      543 |
+    > 544 |       expect(response.status).toBe(200)
+          |                               ^
+      545 |       expect(data.success).toBe(true)
+      546 |     })
+      547 |
+
+      at Object.toBe (__tests__/api/bookings.test.ts:544:31)
+
+  ● /api/bookings › POST /api/bookings › should handle booking with add-ons
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      609 |       const data = await response.json()
+      610 |
+    > 611 |       expect(response.status).toBe(200)
+          |                               ^
+      612 |       expect(data.success).toBe(true)
+      613 |     })
+      614 |
+
+      at Object.toBe (__tests__/api/bookings.test.ts:611:31)
+
+  ● /api/bookings › POST /api/bookings › should handle booking with source URL
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      666 |       const data = await response.json()
+      667 |
+    > 668 |       expect(response.status).toBe(200)
+          |                               ^
+      669 |       expect(data.success).toBe(true)
+      670 |     })
+      671 |   })
+
+      at Object.toBe (__tests__/api/bookings.test.ts:668:31)
+
+  ● /api/bookings › Integration Tests › should maintain consistent response structure
+
+    expect(received).toHaveProperty(path, value)
+
+    Expected path: "success"
+
+    Expected value: true
+    Received value: false
+
+      753 |
+      754 |       // Verify response structure
+    > 755 |       expect(data).toHaveProperty('success', true)
+          |                    ^
+      756 |       expect(data).toHaveProperty('data')
+      757 |       expect(data.data).toHaveProperty('booking_id')
+      758 |       expect(data.data).toHaveProperty('booking_type')
+
+      at Object.toHaveProperty (__tests__/api/bookings.test.ts:755:20)
+
+  ● /api/bookings › Integration Tests › should handle large number of participants efficiently
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      833 |       const endTime = Date.now()
+      834 |
+    > 835 |       expect(response.status).toBe(200)
+          |                               ^
+      836 |       expect(endTime - startTime).toBeLessThan(2000) // Should complete within 2 seconds
+      837 |       
+      838 |       const data = await response.json()
+
+      at Object.toBe (__tests__/api/bookings.test.ts:835:31)
+
+FAIL __tests__/api/bulk-operations.test.ts
+  ● Console
+
+    console.error
+      Error updating bookings: Error: Database error
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/bulk-operations.test.ts:171:24)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:305:39
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:312:13)
+          at Object.mockConstructor [as select] (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:102:19)
+          at select (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/bookings/bulk/route.ts:36:12)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/bulk-operations.test.ts:189:24)
+
+      37 |
+      38 |         if (error) {
+    > 39 |           console.error('Error updating bookings:', error)
+         |                   ^
+      40 |           return NextResponse.json(
+      41 |             { success: false, error: 'Failed to update bookings' },
+      42 |             { status: 500 }
+
+      at error (app/api/bookings/bulk/route.ts:39:19)
+      at Object.<anonymous> (__tests__/api/bulk-operations.test.ts:189:24)
+
+  ● Bulk Operations API › POST /api/bookings/bulk › should update booking status in bulk
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "id", ["booking-1", "booking-2", "booking-3"]
+
+    Number of calls: 0
+
+      64 |       expect(data.data.updated).toBe(3)
+      65 |       expect(mockUpdate.update).toHaveBeenCalledWith({ status: 'confirmed' })
+    > 66 |       expect(mockUpdate.update().in).toHaveBeenCalledWith('id', bookingIds)
+         |                                      ^
+      67 |     })
+      68 |
+      69 |     it('should update payment status in bulk', async () => {
+
+      at Object.toHaveBeenCalledWith (__tests__/api/bulk-operations.test.ts:66:38)
+
+  ● Bulk Operations API › POST /api/bookings/bulk › should delete bookings in bulk
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "id", ["booking-1", "booking-2", "booking-3", "booking-4"]
+
+    Number of calls: 0
+
+      126 |       expect(data.success).toBe(true)
+      127 |       expect(data.data.deleted).toBe(4)
+    > 128 |       expect(mockDelete.delete().in).toHaveBeenCalledWith('id', bookingIds)
+          |                                      ^
+      129 |     })
+      130 |
+      131 |     it('should validate required fields', async () => {
+
+      at Object.toHaveBeenCalledWith (__tests__/api/bulk-operations.test.ts:128:38)
+
+FAIL __tests__/api/rooms.test.ts
+  ● Console
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:62:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:62:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:102:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:102:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:126:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:126:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:148:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:148:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:167:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:167:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:185:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:185:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:198:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:198:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:214:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:214:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:229:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:229:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:247:16)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:247:16)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:271:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:271:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:309:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:309:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:347:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:347:33)
+
+    console.log
+      🏠 Fetching all rooms for booking widget
+
+      at log (app/api/rooms/route.ts:7:13)
+
+    console.error
+      Error fetching rooms: TypeError: Cannot read properties of undefined (reading 'from')
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/route.ts:11:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms.test.ts:385:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      85 |
+      86 |   } catch (error) {
+    > 87 |     console.error('Error fetching rooms:', error)
+         |             ^
+      88 |     return NextResponse.json({
+      89 |       success: false,
+      90 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/route.ts:87:13)
+      at Object.<anonymous> (__tests__/api/rooms.test.ts:385:33)
+
+  ● /api/rooms › GET /api/rooms › should return active rooms with correct transformation
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      63 |       const data = await response.json()
+      64 |
+    > 65 |       expect(response.status).toBe(200)
+         |                               ^
+      66 |       expect(data.success).toBe(true)
+      67 |       expect(data.data.rooms).toHaveLength(3)
+      68 |
+
+      at Object.toBe (__tests__/api/rooms.test.ts:65:31)
+
+  ● /api/rooms › GET /api/rooms › should filter out inactive rooms
+
+    TypeError: Cannot read properties of undefined (reading 'rooms')
+
+      103 |       const data = await response.json()
+      104 |
+    > 105 |       expect(data.data.rooms).toHaveLength(2)
+          |                        ^
+      106 |       expect(data.data.rooms.map((r: any) => r.id)).toEqual(['room-dorm', 'room-suite'])
+      107 |     })
+      108 |
+
+      at Object.rooms (__tests__/api/rooms.test.ts:105:24)
+
+  ● /api/rooms › GET /api/rooms › should handle rooms with default values
+
+    TypeError: Cannot read properties of undefined (reading 'rooms')
+
+      127 |       const data = await response.json()
+      128 |
+    > 129 |       const room = data.data.rooms[0]
+          |                              ^
+      130 |       expect(room.description).toBe('Comfortable accommodation with capacity for 2 guests')
+      131 |       expect(room.price_per_night).toBe(80) // Default price
+      132 |       expect(room.booking_type).toBe('whole') // Default booking type
+
+      at Object.rooms (__tests__/api/rooms.test.ts:129:30)
+
+  ● /api/rooms › GET /api/rooms › should handle empty rooms list
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      149 |       const data = await response.json()
+      150 |
+    > 151 |       expect(response.status).toBe(200)
+          |                               ^
+      152 |       expect(data.success).toBe(true)
+      153 |       expect(data.data.rooms).toHaveLength(0)
+      154 |     })
+
+      at Object.toBe (__tests__/api/rooms.test.ts:151:31)
+
+  ● /api/rooms › GET /api/rooms › should handle database errors
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Failed to fetch rooms"
+    Received: "Cannot read properties of undefined (reading 'from')"
+
+      170 |       expect(response.status).toBe(500)
+      171 |       expect(data.success).toBe(false)
+    > 172 |       expect(data.error).toBe('Failed to fetch rooms')
+          |                          ^
+      173 |     })
+      174 |
+      175 |     it('should handle null data from database', async () => {
+
+      at Object.toBe (__tests__/api/rooms.test.ts:172:26)
+
+  ● /api/rooms › GET /api/rooms › should handle null data from database
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      186 |       const data = await response.json()
+      187 |
+    > 188 |       expect(response.status).toBe(200)
+          |                               ^
+      189 |       expect(data.success).toBe(true)
+      190 |       expect(data.data.rooms).toHaveLength(0)
+      191 |     })
+
+      at Object.toBe (__tests__/api/rooms.test.ts:188:31)
+
+  ● /api/rooms › GET /api/rooms › should handle unexpected errors
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Unexpected error"
+    Received: "Cannot read properties of undefined (reading 'from')"
+
+      201 |       expect(response.status).toBe(500)
+      202 |       expect(data.success).toBe(false)
+    > 203 |       expect(data.error).toBe('Unexpected error')
+          |                          ^
+      204 |     })
+      205 |
+      206 |     it('should handle Error objects in catch block', async () => {
+
+      at Object.toBe (__tests__/api/rooms.test.ts:203:26)
+
+  ● /api/rooms › GET /api/rooms › should handle Error objects in catch block
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Custom error message"
+    Received: "Cannot read properties of undefined (reading 'from')"
+
+      217 |       expect(response.status).toBe(500)
+      218 |       expect(data.success).toBe(false)
+    > 219 |       expect(data.error).toBe('Custom error message')
+          |                          ^
+      220 |     })
+      221 |
+      222 |     it('should handle non-Error objects in catch block', async () => {
+
+      at Object.toBe (__tests__/api/rooms.test.ts:219:26)
+
+  ● /api/rooms › GET /api/rooms › should handle non-Error objects in catch block
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Internal server error"
+    Received: "Cannot read properties of undefined (reading 'from')"
+
+      232 |       expect(response.status).toBe(500)
+      233 |       expect(data.success).toBe(false)
+    > 234 |       expect(data.error).toBe('Internal server error')
+          |                          ^
+      235 |     })
+      236 |
+      237 |     it('should call supabase with correct parameters', async () => {
+
+      at Object.toBe (__tests__/api/rooms.test.ts:234:26)
+
+  ● /api/rooms › GET /api/rooms › should call supabase with correct parameters
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "rooms"
+
+    Number of calls: 0
+
+      247 |       await GET()
+      248 |
+    > 249 |       expect(mockSupabase.from).toHaveBeenCalledWith('rooms')
+          |                                 ^
+      250 |       expect(mockSupabase.from('').select).toHaveBeenCalledWith('*')
+      251 |       expect(mockSupabase.from('').select('').order).toHaveBeenCalledWith('name')
+      252 |     })
+
+      at Object.toHaveBeenCalledWith (__tests__/api/rooms.test.ts:249:33)
+
+  ● /api/rooms › GET /api/rooms › should handle rooms with mixed field names
+
+    TypeError: Cannot read properties of undefined (reading 'rooms')
+
+      273 |
+      274 |       // Should only include active rooms (both isActive and is_active true)
+    > 275 |       expect(data.data.rooms).toHaveLength(2)
+          |                        ^
+      276 |       expect(data.data.rooms.map((r: any) => r.id)).toEqual(['room-1', 'room-2'])
+      277 |     })
+      278 |
+
+      at Object.rooms (__tests__/api/rooms.test.ts:275:24)
+
+  ● /api/rooms › GET /api/rooms › should handle complex pricing structures
+
+    TypeError: Cannot read properties of undefined (reading 'rooms')
+
+      310 |       const data = await response.json()
+      311 |
+    > 312 |       expect(data.data.rooms[0].price_per_night).toBe(100) // Uses standard
+          |                        ^
+      313 |       expect(data.data.rooms[1].price_per_night).toBe(90)  // Uses offSeason
+      314 |       expect(data.data.rooms[2].price_per_night).toBe(80)  // Uses default
+      315 |     })
+
+      at Object.rooms (__tests__/api/rooms.test.ts:312:24)
+
+  ● /api/rooms › OPTIONS /api/rooms › should return correct CORS headers
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Content-Type, Authorization"
+    Received: "Content-Type, Authorization, X-Heiwa-API-Key"
+
+      323 |       expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*')
+      324 |       expect(response.headers.get('Access-Control-Allow-Methods')).toBe('GET, OPTIONS')
+    > 325 |       expect(response.headers.get('Access-Control-Allow-Headers')).toBe('Content-Type, Authorization')
+          |                                                                    ^
+      326 |     })
+      327 |
+      328 |     it('should return empty body', async () => {
+
+      at Object.toBe (__tests__/api/rooms.test.ts:325:68)
+
+  ● /api/rooms › Integration Tests › should maintain consistent response structure
+
+    expect(received).toHaveProperty(path, value)
+
+    Expected path: "success"
+
+    Expected value: true
+    Received value: false
+
+      349 |
+      350 |       // Verify response structure
+    > 351 |       expect(data).toHaveProperty('success', true)
+          |                    ^
+      352 |       expect(data).toHaveProperty('data')
+      353 |       expect(data.data).toHaveProperty('rooms')
+      354 |       expect(Array.isArray(data.data.rooms)).toBe(true)
+
+      at Object.toHaveProperty (__tests__/api/rooms.test.ts:351:20)
+
+  ● /api/rooms › Integration Tests › should handle large number of rooms efficiently
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      386 |       const endTime = Date.now()
+      387 |
+    > 388 |       expect(response.status).toBe(200)
+          |                               ^
+      389 |       expect(endTime - startTime).toBeLessThan(1000) // Should complete within 1 second
+      390 |       
+      391 |       const data = await response.json()
+
+      at Object.toBe (__tests__/api/rooms.test.ts:388:31)
+
+FAIL __tests__/api/payments.test.ts
+  ● Console
+
+    console.error
+      Error fetching payments: { message: 'Database error' }
+
+      55 |
+      56 |     if (error) {
+    > 57 |       console.error('Error fetching payments:', error)
+         |               ^
+      58 |       return NextResponse.json(
+      59 |         { success: false, error: 'Failed to fetch payments', details: error.message },
+      60 |         { status: 500 }
+
+      at error (app/api/payments/route.ts:57:15)
+      at Object.<anonymous> (__tests__/api/payments.test.ts:121:24)
+
+    console.error
+      Error creating payment: TypeError: _supabase.supabaseAdmin.from(...).select is not a function
+          at select (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/payments/route.ts:134:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/payments.test.ts:158:24)
+
+      177 |     }, { status: 201 })
+      178 |   } catch (error: any) {
+    > 179 |     console.error('Error creating payment:', error)
+          |             ^
+      180 |     return NextResponse.json(
+      181 |       { success: false, error: error.message || 'Failed to create payment' },
+      182 |       { status: 500 }
+
+      at error (app/api/payments/route.ts:179:13)
+      at Object.<anonymous> (__tests__/api/payments.test.ts:158:24)
+
+    console.error
+      Unexpected error: TypeError: _supabase.supabaseAdmin.from(...).select is not a function
+          at select (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/payments/[id]/refund/route.ts:90:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/payments.test.ts:301:24)
+
+      121 |     })
+      122 |   } catch (error: any) {
+    > 123 |     console.error('Unexpected error:', error)
+          |             ^
+      124 |     return NextResponse.json(
+      125 |       { success: false, error: error.message || 'Internal server error' },
+      126 |       { status: 500 }
+
+      at error (app/api/payments/[id]/refund/route.ts:123:13)
+      at Object.<anonymous> (__tests__/api/payments.test.ts:301:24)
+
+    console.error
+      Unexpected error: TypeError: _supabase.supabaseAdmin.from(...).select is not a function
+          at select (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/payments/[id]/refund/route.ts:90:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/payments.test.ts:349:24)
+
+      121 |     })
+      122 |   } catch (error: any) {
+    > 123 |     console.error('Unexpected error:', error)
+          |             ^
+      124 |     return NextResponse.json(
+      125 |       { success: false, error: error.message || 'Internal server error' },
+      126 |       { status: 500 }
+
+      at error (app/api/payments/[id]/refund/route.ts:123:13)
+      at Object.<anonymous> (__tests__/api/payments.test.ts:349:24)
+
+  ● Payments API › GET /api/payments › should filter payments by status
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "payment_status", "completed"
+
+    Number of calls: 0
+
+      104 |       await GET(request)
+      105 |
+    > 106 |       expect(mockQuery.select().eq).toHaveBeenCalledWith('payment_status', 'completed')
+          |                                     ^
+      107 |     })
+      108 |
+      109 |     it('should handle errors', async () => {
+
+      at Object.toHaveBeenCalledWith (__tests__/api/payments.test.ts:106:37)
+
+  ● Payments API › POST /api/payments › should create a new payment
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 201
+    Received: 500
+
+      159 |       const data = await response.json()
+      160 |
+    > 161 |       expect(response.status).toBe(201)
+          |                               ^
+      162 |       expect(data.success).toBe(true)
+      163 |       expect(data.data.payment).toEqual(mockPayment)
+      164 |     })
+
+      at Object.toBe (__tests__/api/payments.test.ts:161:31)
+
+  ● Payments API › POST /api/payments/[id]/refund › should process a full refund
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      302 |       const data = await response.json()
+      303 |
+    > 304 |       expect(response.status).toBe(200)
+          |                               ^
+      305 |       expect(data.success).toBe(true)
+      306 |       expect(data.data.payment.payment_status).toBe('refunded')
+      307 |     })
+
+      at Object.toBe (__tests__/api/payments.test.ts:304:31)
+
+  ● Payments API › POST /api/payments/[id]/refund › should process a partial refund
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      350 |       const data = await response.json()
+      351 |
+    > 352 |       expect(response.status).toBe(200)
+          |                               ^
+      353 |       expect(data.success).toBe(true)
+      354 |       expect(data.data.payment.payment_status).toBe('partially_refunded')
+      355 |     })
+
+      at Object.toBe (__tests__/api/payments.test.ts:352:31)
+
+FAIL __tests__/api/add-ons.test.ts
+  ● Console
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:70:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:70:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:105:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:105:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:134:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:134:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:162:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:162:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:175:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:175:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:189:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:189:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:202:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:202:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:243:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:243:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:289:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:289:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:338:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:338:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:376:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:376:33)
+
+    console.error
+      Error fetching add-ons: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/add-ons/route.ts:7:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/add-ons.test.ts:409:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      45 |
+      46 |   } catch (error) {
+    > 47 |     console.error('Error fetching add-ons:', error)
+         |             ^
+      48 |     return NextResponse.json({
+      49 |       success: true,
+      50 |       addOns: [] // Return empty array for graceful degradation
+
+      at error (app/api/add-ons/route.ts:47:13)
+      at Object.<anonymous> (__tests__/api/add-ons.test.ts:409:33)
+
+  ● /api/add-ons › GET /api/add-ons › should return active add-ons ordered by category and name
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 3
+    Received length: 0
+    Received array:  []
+
+      73 |       expect(response.status).toBe(200)
+      74 |       expect(data.success).toBe(true)
+    > 75 |       expect(data.addOns).toHaveLength(3)
+         |                           ^
+      76 |       expect(data.addOns).toEqual(mockAddOns)
+      77 |
+      78 |       // Verify Supabase was called correctly
+
+      at Object.toHaveLength (__tests__/api/add-ons.test.ts:75:27)
+
+  ● /api/add-ons › GET /api/add-ons › should handle add-ons with different categories
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 4
+    Received length: 0
+    Received array:  []
+
+      246 |       expect(response.status).toBe(200)
+      247 |       expect(data.success).toBe(true)
+    > 248 |       expect(data.addOns).toHaveLength(4)
+          |                           ^
+      249 |
+      250 |       // Verify ordering by category then name
+      251 |       expect(mockEqChain.order).toHaveBeenCalledWith('category', { ascending: true })
+
+      at Object.toHaveLength (__tests__/api/add-ons.test.ts:248:27)
+
+  ● /api/add-ons › GET /api/add-ons › should handle add-ons with complete data structure
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 1
+    Received length: 0
+    Received array:  []
+
+      292 |       expect(response.status).toBe(200)
+      293 |       expect(data.success).toBe(true)
+    > 294 |       expect(data.addOns).toHaveLength(1)
+          |                           ^
+      295 |       expect(data.addOns[0]).toEqual(completeAddOn)
+      296 |     })
+      297 |   })
+
+      at Object.toHaveLength (__tests__/api/add-ons.test.ts:294:27)
+
+  ● /api/add-ons › Integration Tests › should handle large number of add-ons efficiently
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 50
+    Received length: 0
+    Received array:  []
+
+      381 |       
+      382 |       const data = await response.json()
+    > 383 |       expect(data.addOns).toHaveLength(50)
+          |                           ^
+      384 |     })
+      385 |
+      386 |     it('should handle database timeout gracefully', async () => {
+
+      at Object.toHaveLength (__tests__/api/add-ons.test.ts:383:27)
+
+FAIL __tests__/api/rooms-availability.test.ts
+  ● Console
+
+    console.log
+      🏠 Room availability check: { startDate: '2026-02-01', endDate: '2026-02-03', guests: 2 }
+
+      at log (app/api/rooms/availability/route.ts:12:13)
+
+    console.log
+      ✅ Room availability check completed: { total_rooms: 2, available_rooms: 2, requested_guests: 2 }
+
+      at log (app/api/rooms/availability/route.ts:84:13)
+
+    console.log
+      🏠 Room availability check: { startDate: null, endDate: '2026-02-03', guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:12:13)
+
+    console.log
+      🏠 Room availability check: { startDate: '2026-02-01', endDate: null, guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:12:13)
+
+    console.log
+      🏠 Room availability check: { startDate: '2026-02-01', endDate: '2026-02-03', guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:12:13)
+
+    console.log
+      ✅ Room availability check completed: { total_rooms: 1, available_rooms: 1, requested_guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:84:13)
+
+    console.log
+      🏠 Room availability check: { startDate: '2026-02-01', endDate: '2026-02-03', guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:12:13)
+
+    console.error
+      Error fetching rooms: Error: Database connection failed
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms-availability.test.ts:146:23)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      26 |
+      27 |     if (roomsError) {
+    > 28 |       console.error('Error fetching rooms:', roomsError)
+         |               ^
+      29 |       return NextResponse.json({
+      30 |         success: false,
+      31 |         error: 'Failed to fetch rooms'
+
+      at error (app/api/rooms/availability/route.ts:28:15)
+      at Object.<anonymous> (__tests__/api/rooms-availability.test.ts:158:24)
+
+    console.log
+      🏠 Room availability check: { startDate: '2026-02-01', endDate: '2026-02-03', guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:12:13)
+
+    console.warn
+      Error checking bookings, assuming no bookings exist: TypeError: Cannot read properties of undefined (reading 'gte')
+          at GET (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/availability/route.ts:47:17)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms-availability.test.ts:201:24)
+
+      58 |       }
+      59 |     } catch (error) {
+    > 60 |       console.warn('Error checking bookings, assuming no bookings exist:', error)
+         |               ^
+      61 |       existingBookings = []
+      62 |     }
+      63 |
+
+      at warn (app/api/rooms/availability/route.ts:60:15)
+      at Object.<anonymous> (__tests__/api/rooms-availability.test.ts:201:24)
+
+    console.log
+      ✅ Room availability check completed: { total_rooms: 0, available_rooms: 0, requested_guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:84:13)
+
+    console.log
+      🏠 Room availability check: { startDate: '2026-02-01', endDate: '2026-02-03', guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:12:13)
+
+    console.error
+      Error checking room availability: Error: Unexpected error
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms-availability.test.ts:211:15)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:305:39
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:312:13)
+          at Object.mockConstructor [as from] (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:102:19)
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/rooms/availability/route.ts:23:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/rooms-availability.test.ts:215:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      132 |
+      133 |   } catch (error) {
+    > 134 |     console.error('Error checking room availability:', error)
+          |             ^
+      135 |     return NextResponse.json({
+      136 |       success: false,
+      137 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/rooms/availability/route.ts:134:13)
+      at Object.<anonymous> (__tests__/api/rooms-availability.test.ts:215:33)
+
+    console.log
+      🏠 Room availability check: { startDate: '2026-02-01', endDate: '2026-02-03', guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:12:13)
+
+    console.log
+      ✅ Room availability check completed: { total_rooms: 1, available_rooms: 1, requested_guests: 1 }
+
+      at log (app/api/rooms/availability/route.ts:84:13)
+
+  ● /api/rooms/availability › GET /api/rooms/availability › should return room availability for valid date range
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 1
+    Received length: 2
+    Received array:  [{"amenities": ["wifi", "kitchen", "ocean-view"], "booking_type": "whole", "capacity": 6, "description": "Shared dormitory room with ocean views", "featured_image": "/images/dorm-room.jpg", "id": "room-1", "images": ["/images/dorm-room.jpg"], "is_active": true, "name": "Dorm room", "price_per_night": 80}, {"amenities": ["wifi", "kitchen", "ocean-view"], "booking_type": "whole", "capacity": 1, "description": "Shared dormitory room with ocean views", "featured_image": "/images/dorm-room.jpg", "id": "room-2", "images": ["/images/dorm-room.jpg"], "is_active": true, "name": "Private Room", "price_per_night": 80}]
+
+      75 |       expect(response.status).toBe(200)
+      76 |       expect(data.success).toBe(true)
+    > 77 |       expect(data.data.available_rooms).toHaveLength(1) // Only room that can accommodate 2 guests
+         |                                         ^
+      78 |     })
+      79 |
+      80 |     it('should handle missing start_date parameter', async () => {
+
+      at Object.toHaveLength (__tests__/api/rooms-availability.test.ts:77:41)
+
+FAIL __tests__/api/analytics.test.ts
+  ● Console
+
+    console.error
+      Unexpected error: TypeError: _supabase.supabaseAdmin.from(...).select(...).eq is not a function
+          at eq (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/analytics/revenue/route.ts:18:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/analytics.test.ts:70:40)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      76 |     })
+      77 |   } catch (error) {
+    > 78 |     console.error('Unexpected error:', error)
+         |             ^
+      79 |     return NextResponse.json(
+      80 |       { success: false, error: 'Internal server error' },
+      81 |       { status: 500 }
+
+      at error (app/api/analytics/revenue/route.ts:78:13)
+      at Object.<anonymous> (__tests__/api/analytics.test.ts:70:40)
+
+    console.error
+      Unexpected error: TypeError: _supabase.supabaseAdmin.from(...).select(...).eq is not a function
+          at eq (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/analytics/occupancy/route.ts:17:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/analytics.test.ts:94:42)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      84 |     })
+      85 |   } catch (error) {
+    > 86 |     console.error('Unexpected error:', error)
+         |             ^
+      87 |     return NextResponse.json(
+      88 |       { success: false, error: 'Internal server error' },
+      89 |       { status: 500 }
+
+      at error (app/api/analytics/occupancy/route.ts:86:13)
+      at Object.<anonymous> (__tests__/api/analytics.test.ts:94:42)
+
+    console.error
+      Unexpected error: TypeError: query.order is not a function
+          at order (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/analytics/clients/route.ts:30:50)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/analytics.test.ts:129:40)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      77 |     })
+      78 |   } catch (error) {
+    > 79 |     console.error('Unexpected error:', error)
+         |             ^
+      80 |     return NextResponse.json(
+      81 |       { success: false, error: 'Internal server error' },
+      82 |       { status: 500 }
+
+      at error (app/api/analytics/clients/route.ts:79:13)
+      at Object.<anonymous> (__tests__/api/analytics.test.ts:129:40)
+
+    console.error
+      Unexpected error: TypeError: query.order is not a function
+          at order (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/analytics/bookings/route.ts:27:51)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/analytics.test.ts:166:41)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+       95 |     })
+       96 |   } catch (error) {
+    >  97 |     console.error('Unexpected error:', error)
+          |             ^
+       98 |     return NextResponse.json(
+       99 |       { success: false, error: 'Internal server error' },
+      100 |       { status: 500 }
+
+      at error (app/api/analytics/bookings/route.ts:97:13)
+      at Object.<anonymous> (__tests__/api/analytics.test.ts:166:41)
+
+  ● Analytics API › GET /api/analytics/revenue › should fetch revenue data
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      71 |       const data = await response.json()
+      72 |
+    > 73 |       expect(response.status).toBe(200)
+         |                               ^
+      74 |       expect(data.success).toBe(true)
+      75 |       expect(data.data).toHaveProperty('revenue')
+      76 |     })
+
+      at Object.toBe (__tests__/api/analytics.test.ts:73:31)
+
+  ● Analytics API › GET /api/analytics/occupancy › should fetch occupancy data
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+       95 |       const data = await response.json()
+       96 |
+    >  97 |       expect(response.status).toBe(200)
+          |                               ^
+       98 |       expect(data.success).toBe(true)
+       99 |       expect(data.data).toHaveProperty('occupancy')
+      100 |     })
+
+      at Object.toBe (__tests__/api/analytics.test.ts:97:31)
+
+  ● Analytics API › GET /api/analytics/clients › should fetch client growth data
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      130 |       const data = await response.json()
+      131 |
+    > 132 |       expect(response.status).toBe(200)
+          |                               ^
+      133 |       expect(data.success).toBe(true)
+      134 |       expect(data.data).toHaveProperty('growth')
+      135 |     })
+
+      at Object.toBe (__tests__/api/analytics.test.ts:132:31)
+
+  ● Analytics API › GET /api/analytics/bookings › should fetch booking trends
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      167 |       const data = await response.json()
+      168 |
+    > 169 |       expect(response.status).toBe(200)
+          |                               ^
+      170 |       expect(data.success).toBe(true)
+      171 |       expect(data.data).toHaveProperty('trends')
+      172 |     })
+
+      at Object.toBe (__tests__/api/analytics.test.ts:169:31)
+
+FAIL __tests__/api/surf-camps.test.ts
+  ● Console
+
+    console.error
+      Error fetching surf camps: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/surf-camps/route.ts:24:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/surf-camps.test.ts:55:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      164 |
+      165 |   } catch (error) {
+    > 166 |     console.error('Error fetching surf camps:', error)
+          |             ^
+      167 |     
+      168 |     // Check if it's a network/DNS error
+      169 |     const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/surf-camps/route.ts:166:13)
+      at Object.<anonymous> (__tests__/api/surf-camps.test.ts:55:33)
+
+    console.error
+      Error fetching surf camps: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/surf-camps/route.ts:24:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/surf-camps.test.ts:82:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      164 |
+      165 |   } catch (error) {
+    > 166 |     console.error('Error fetching surf camps:', error)
+          |             ^
+      167 |     
+      168 |     // Check if it's a network/DNS error
+      169 |     const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/surf-camps/route.ts:166:13)
+      at Object.<anonymous> (__tests__/api/surf-camps.test.ts:82:33)
+
+    console.error
+      Error fetching surf camps: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/surf-camps/route.ts:24:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/surf-camps.test.ts:103:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      164 |
+      165 |   } catch (error) {
+    > 166 |     console.error('Error fetching surf camps:', error)
+          |             ^
+      167 |     
+      168 |     // Check if it's a network/DNS error
+      169 |     const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/surf-camps/route.ts:166:13)
+      at Object.<anonymous> (__tests__/api/surf-camps.test.ts:103:33)
+
+    console.error
+      Error fetching surf camps: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/surf-camps/route.ts:24:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/surf-camps.test.ts:123:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      164 |
+      165 |   } catch (error) {
+    > 166 |     console.error('Error fetching surf camps:', error)
+          |             ^
+      167 |     
+      168 |     // Check if it's a network/DNS error
+      169 |     const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/surf-camps/route.ts:166:13)
+      at Object.<anonymous> (__tests__/api/surf-camps.test.ts:123:33)
+
+    console.error
+      Error fetching surf camps: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/surf-camps/route.ts:24:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/surf-camps.test.ts:136:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      164 |
+      165 |   } catch (error) {
+    > 166 |     console.error('Error fetching surf camps:', error)
+          |             ^
+      167 |     
+      168 |     // Check if it's a network/DNS error
+      169 |     const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/surf-camps/route.ts:166:13)
+      at Object.<anonymous> (__tests__/api/surf-camps.test.ts:136:33)
+
+    console.error
+      Error fetching surf camps: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/surf-camps/route.ts:24:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/surf-camps.test.ts:150:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      164 |
+      165 |   } catch (error) {
+    > 166 |     console.error('Error fetching surf camps:', error)
+          |             ^
+      167 |     
+      168 |     // Check if it's a network/DNS error
+      169 |     const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/surf-camps/route.ts:166:13)
+      at Object.<anonymous> (__tests__/api/surf-camps.test.ts:150:33)
+
+    console.error
+      Error fetching surf camps: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/surf-camps/route.ts:24:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/surf-camps.test.ts:163:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      164 |
+      165 |   } catch (error) {
+    > 166 |     console.error('Error fetching surf camps:', error)
+          |             ^
+      167 |     
+      168 |     // Check if it's a network/DNS error
+      169 |     const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/surf-camps/route.ts:166:13)
+      at Object.<anonymous> (__tests__/api/surf-camps.test.ts:163:33)
+
+    console.error
+      Error fetching surf camps: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/surf-camps/route.ts:24:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/surf-camps.test.ts:203:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      164 |
+      165 |   } catch (error) {
+    > 166 |     console.error('Error fetching surf camps:', error)
+          |             ^
+      167 |     
+      168 |     // Check if it's a network/DNS error
+      169 |     const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/surf-camps/route.ts:166:13)
+      at Object.<anonymous> (__tests__/api/surf-camps.test.ts:203:33)
+
+    console.error
+      Error fetching surf camps: TypeError: Cannot read properties of undefined (reading 'url')
+          at url (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/surf-camps/route.ts:24:46)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/surf-camps.test.ts:234:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      164 |
+      165 |   } catch (error) {
+    > 166 |     console.error('Error fetching surf camps:', error)
+          |             ^
+      167 |     
+      168 |     // Check if it's a network/DNS error
+      169 |     const errorMessage = error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/surf-camps/route.ts:166:13)
+      at Object.<anonymous> (__tests__/api/surf-camps.test.ts:234:33)
+
+  ● /api/surf-camps › GET /api/surf-camps › should return active surf camps ordered by name
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      56 |       const data = await response.json()
+      57 |
+    > 58 |       expect(response.status).toBe(200)
+         |                               ^
+      59 |       expect(data.success).toBe(true)
+      60 |       expect(data.data.surf_camps).toHaveLength(2)
+      61 |       expect(data.data.surf_camps).toEqual(mockSurfCamps)
+
+      at Object.toBe (__tests__/api/surf-camps.test.ts:58:31)
+
+  ● /api/surf-camps › GET /api/surf-camps › should handle empty surf camps list
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      83 |       const data = await response.json()
+      84 |
+    > 85 |       expect(response.status).toBe(200)
+         |                               ^
+      86 |       expect(data.success).toBe(true)
+      87 |       expect(data.data.surf_camps).toEqual([])
+      88 |     })
+
+      at Object.toBe (__tests__/api/surf-camps.test.ts:85:31)
+
+  ● /api/surf-camps › GET /api/surf-camps › should handle database errors
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Failed to fetch surf camps"
+    Received: "Cannot read properties of undefined (reading 'url')"
+
+      106 |       expect(response.status).toBe(500)
+      107 |       expect(data.success).toBe(false)
+    > 108 |       expect(data.error).toBe('Failed to fetch surf camps')
+          |                          ^
+      109 |     })
+      110 |
+      111 |     it('should handle null data from database', async () => {
+
+      at Object.toBe (__tests__/api/surf-camps.test.ts:108:26)
+
+  ● /api/surf-camps › GET /api/surf-camps › should handle null data from database
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      124 |       const data = await response.json()
+      125 |
+    > 126 |       expect(response.status).toBe(200)
+          |                               ^
+      127 |       expect(data.success).toBe(true)
+      128 |       expect(data.data.surf_camps).toEqual([])
+      129 |     })
+
+      at Object.toBe (__tests__/api/surf-camps.test.ts:126:31)
+
+  ● /api/surf-camps › GET /api/surf-camps › should handle unexpected errors
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Unexpected error"
+    Received: "Cannot read properties of undefined (reading 'url')"
+
+      139 |       expect(response.status).toBe(500)
+      140 |       expect(data.success).toBe(false)
+    > 141 |       expect(data.error).toBe('Unexpected error')
+          |                          ^
+      142 |     })
+      143 |
+      144 |     it('should handle Error objects in catch block', async () => {
+
+      at Object.toBe (__tests__/api/surf-camps.test.ts:141:26)
+
+  ● /api/surf-camps › GET /api/surf-camps › should handle Error objects in catch block
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Custom error message"
+    Received: "Cannot read properties of undefined (reading 'url')"
+
+      153 |       expect(response.status).toBe(500)
+      154 |       expect(data.success).toBe(false)
+    > 155 |       expect(data.error).toBe('Custom error message')
+          |                          ^
+      156 |     })
+      157 |
+      158 |     it('should handle non-Error objects in catch block', async () => {
+
+      at Object.toBe (__tests__/api/surf-camps.test.ts:155:26)
+
+  ● /api/surf-camps › GET /api/surf-camps › should handle non-Error objects in catch block
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Internal server error"
+    Received: "Cannot read properties of undefined (reading 'url')"
+
+      166 |       expect(response.status).toBe(500)
+      167 |       expect(data.success).toBe(false)
+    > 168 |       expect(data.error).toBe('Internal server error')
+          |                          ^
+      169 |     })
+      170 |   })
+      171 |
+
+      at Object.toBe (__tests__/api/surf-camps.test.ts:168:26)
+
+  ● /api/surf-camps › Integration Tests › should maintain consistent response structure
+
+    expect(received).toHaveProperty(path, value)
+
+    Expected path: "success"
+
+    Expected value: true
+    Received value: false
+
+      205 |
+      206 |       // Verify response structure
+    > 207 |       expect(data).toHaveProperty('success', true)
+          |                    ^
+      208 |       expect(data).toHaveProperty('data')
+      209 |       expect(data.data).toHaveProperty('surf_camps')
+      210 |       expect(Array.isArray(data.data.surf_camps)).toBe(true)
+
+      at Object.toHaveProperty (__tests__/api/surf-camps.test.ts:207:20)
+
+  ● /api/surf-camps › Integration Tests › should handle large number of surf camps efficiently
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      235 |       const endTime = Date.now()
+      236 |
+    > 237 |       expect(response.status).toBe(200)
+          |                               ^
+      238 |       expect(endTime - startTime).toBeLessThan(500) // Should complete within 500ms
+      239 |       
+      240 |       const data = await response.json()
+
+      at Object.toBe (__tests__/api/surf-camps.test.ts:237:31)
+
+FAIL __tests__/api/surf-camps-id.test.ts
+  ● Console
+
+    console.error
+      Error fetching surf camp: { message: 'Not found' }
+
+      17 |
+      18 |     if (surfCampError || !surfCamp) {
+    > 19 |       console.error('Error fetching surf camp:', surfCampError)
+         |               ^
+      20 |       return NextResponse.json(
+      21 |         { success: false, error: 'Surf camp not found' },
+      22 |         { status: 404 }
+
+      at error (app/api/surf-camps/[id]/route.ts:19:15)
+      at Object.<anonymous> (__tests__/api/surf-camps-id.test.ts:95:24)
+
+    console.error
+      Error fetching surf camp: { message: 'Database error' }
+
+      17 |
+      18 |     if (surfCampError || !surfCamp) {
+    > 19 |       console.error('Error fetching surf camp:', surfCampError)
+         |               ^
+      20 |       return NextResponse.json(
+      21 |         { success: false, error: 'Surf camp not found' },
+      22 |         { status: 404 }
+
+      at error (app/api/surf-camps/[id]/route.ts:19:15)
+      at Object.<anonymous> (__tests__/api/surf-camps-id.test.ts:117:24)
+
+    console.error
+      Error updating surf camp: { message: 'Update failed' }
+
+      120 |
+      121 |     if (error) {
+    > 122 |       console.error('Error updating surf camp:', error)
+          |               ^
+      123 |       return NextResponse.json(
+      124 |         { success: false, error: 'Failed to update surf camp' },
+      125 |         { status: 500 }
+
+      at error (app/api/surf-camps/[id]/route.ts:122:15)
+      at Object.<anonymous> (__tests__/api/surf-camps-id.test.ts:211:24)
+
+    console.error
+      Error updating surf camp: SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON
+          at JSON.parse (<anonymous>)
+          at PUT (app/api/surf-camps/[id]/route.ts:78:18)
+          at Object.<anonymous> (__tests__/api/surf-camps-id.test.ts:226:7)
+
+      132 |     })
+      133 |   } catch (error) {
+    > 134 |     console.error('Error updating surf camp:', error)
+          |             ^
+      135 |     return NextResponse.json(
+      136 |       {
+      137 |         success: false,
+
+      at error (app/api/surf-camps/[id]/route.ts:134:13)
+      at Object.<anonymous> (__tests__/api/surf-camps-id.test.ts:226:7)
+
+  ● /api/surf-camps/[id] › PUT /api/surf-camps/[id] › should handle invalid JSON in request body
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {Symbol(state): {"aborted": false, "body": {"length": null, "source": null, "stream": {Symbol(kType): "ReadableStream", Symbol(kState): {"controller": {Symbol(kType): "ReadableByteStreamController", Symbol(kState): {"autoAllocateChunkSize": undefined, "byobRequest": null, "cancelAlgorithm": [Function nonOpCancel], "closeRequested": false, "highWaterMark": 0, "pendingPullIntos": [], "pullAgain": false, "pullAlgorithm": [Function anonymous], "pulling": false, "queue": [], "queueTotalSize": 0, "started": true, "stream": [Circular]}}, "disturbed": false, "reader": undefined, "state": "readable", "storedError": undefined, "transfer": {"port1": undefined, "port2": undefined, "promise": undefined, "writable": undefined}}, Symbol(nodejs.webstream.isClosedPromise): {"promise": Promise {}, "reject": [Function anonymous], "resolve": [Function anonymous]}, Symbol(nodejs.webstream.controllerErrorFunction): [Function anonymous]}}, "cacheState": "", "headersList": {"cookies": null, Symbol(headers map): Map {"content-type" => {"name": "content-type", "value": "application/json"}}, Symbol(headers map sorted): null}, "rangeRequested": false, "requestIncludesCredentials": false, "status": 500, "statusText": "", "timingAllowPassed": false, "timingInfo": null, "type": "default", "urlList": []}, Symbol(headers): {}, Symbol(internal response): {"cookies": {"_headers": {}, "_parsed": Map {}}, "url": undefined}}
+
+      224 |       })
+      225 |
+    > 226 |       await expect(PUT(request, { params })).rejects.toThrow()
+          |             ^
+      227 |     })
+      228 |
+      229 |     it('should set updated_at timestamp', async () => {
+
+      at expect (node_modules/expect/build/index.js:2116:15)
+      at Object.expect (__tests__/api/surf-camps-id.test.ts:226:13)
+
+FAIL __tests__/api/invoices.test.ts
+  ● Console
+
+    console.error
+      Error creating invoice: TypeError: _supabase.supabaseAdmin.from(...).select is not a function
+          at select (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/invoices/route.ts:96:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/invoices.test.ts:138:24)
+
+      162 |     }, { status: 201 })
+      163 |   } catch (error: any) {
+    > 164 |     console.error('Error creating invoice:', error)
+          |             ^
+      165 |     return NextResponse.json(
+      166 |       { success: false, error: error.message || 'Failed to create invoice' },
+      167 |       { status: 500 }
+
+      at error (app/api/invoices/route.ts:164:13)
+      at Object.<anonymous> (__tests__/api/invoices.test.ts:138:24)
+
+  ● Invoices API › GET /api/invoices › should filter invoices by status
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "status", "sent"
+
+    Number of calls: 0
+
+      102 |       await GET(request)
+      103 |
+    > 104 |       expect(mockQuery.select().eq).toHaveBeenCalledWith('status', 'sent')
+          |                                     ^
+      105 |     })
+      106 |   })
+      107 |
+
+      at Object.toHaveBeenCalledWith (__tests__/api/invoices.test.ts:104:37)
+
+  ● Invoices API › POST /api/invoices › should create a new invoice
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 201
+    Received: 500
+
+      139 |       const data = await response.json()
+      140 |
+    > 141 |       expect(response.status).toBe(201)
+          |                               ^
+      142 |       expect(data.success).toBe(true)
+      143 |       expect(data.data.invoice).toEqual(mockInvoice)
+      144 |     })
+
+      at Object.toBe (__tests__/api/invoices.test.ts:141:31)
+
+FAIL __tests__/api/google-reviews.test.ts
+  ● Console
+
+    console.warn
+      Google Places API key not configured
+
+       8 |     
+       9 |     if (!apiKey) {
+    > 10 |       console.warn('Google Places API key not configured')
+         |               ^
+      11 |       return NextResponse.json({
+      12 |         success: true,
+      13 |         data: {
+
+      at warn (app/api/google-reviews/route.ts:10:15)
+      at Object.<anonymous> (__tests__/api/google-reviews.test.ts:56:33)
+
+    console.error
+      Google Places API error: INVALID_REQUEST Invalid place ID
+
+      146 |
+      147 |     if (data.status !== 'OK') {
+    > 148 |       console.error('Google Places API error:', data.status, data.error_message)
+          |               ^
+      149 |       // Return fallback on API error
+      150 |       // Return fallback with sample reviews on API error
+      151 |       return NextResponse.json({
+
+      at error (app/api/google-reviews/route.ts:148:15)
+      at Object.<anonymous> (__tests__/api/google-reviews.test.ts:77:24)
+
+    console.error
+      Error fetching Google reviews: Error: Network error
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/google-reviews.test.ts:86:58)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      217 |
+      218 |   } catch (error) {
+    > 219 |     console.error('Error fetching Google reviews:', error)
+          |             ^
+      220 |     // Return fallback on error
+      221 |     // Return fallback with sample reviews on error
+      222 |     return NextResponse.json({
+
+      at error (app/api/google-reviews/route.ts:219:13)
+      at Object.<anonymous> (__tests__/api/google-reviews.test.ts:89:24)
+
+    console.error
+      Error fetching Google reviews: Error: Unexpected error
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/google-reviews.test.ts:99:15
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:305:39
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:312:13
+          at mockConstructor (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:102:19)
+          at fetch (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/google-reviews/route.ts:140:28)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/google-reviews.test.ts:103:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      217 |
+      218 |   } catch (error) {
+    > 219 |     console.error('Error fetching Google reviews:', error)
+          |             ^
+      220 |     // Return fallback on error
+      221 |     // Return fallback with sample reviews on error
+      222 |     return NextResponse.json({
+
+      at error (app/api/google-reviews/route.ts:219:13)
+      at Object.<anonymous> (__tests__/api/google-reviews.test.ts:103:33)
+
+    console.warn
+      Google Places API key not configured
+
+       8 |     
+       9 |     if (!apiKey) {
+    > 10 |       console.warn('Google Places API key not configured')
+         |               ^
+      11 |       return NextResponse.json({
+      12 |         success: true,
+      13 |         data: {
+
+      at warn (app/api/google-reviews/route.ts:10:15)
+      at Object.<anonymous> (__tests__/api/google-reviews.test.ts:184:33)
+
+    console.error
+      Error fetching Google reviews: Error: ETIMEDOUT
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/google-reviews.test.ts:194:58)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+      217 |
+      218 |   } catch (error) {
+    > 219 |     console.error('Error fetching Google reviews:', error)
+          |             ^
+      220 |     // Return fallback on error
+      221 |     // Return fallback with sample reviews on error
+      222 |     return NextResponse.json({
+
+      at error (app/api/google-reviews/route.ts:219:13)
+      at Object.<anonymous> (__tests__/api/google-reviews.test.ts:197:24)
+
+  ● /api/google-reviews › GET /api/google-reviews › should return reviews when API key is configured
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJ1234567890&fields=rating,user_ratings_total,reviews&key=test-api-key"
+    Received: "https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJQ_TFLpYxHw0RiPPMypIv51E&fields=rating,user_ratings_total,reviews&key=test-api-key", {"headers": {"User-Agent": "Mozilla/5.0 (compatible; HeiwaHouse/1.0)"}}
+
+    Number of calls: 1
+
+      45 |       expect(data.data).toEqual(mockGoogleResponse)
+      46 |
+    > 47 |       expect(global.fetch).toHaveBeenCalledWith(
+         |                            ^
+      48 |         'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJ1234567890&fields=rating,user_ratings_total,reviews&key=test-api-key'
+      49 |       )
+      50 |     })
+
+      at Object.toHaveBeenCalledWith (__tests__/api/google-reviews.test.ts:47:28)
+
+  ● /api/google-reviews › GET /api/google-reviews › should handle missing API key
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      58 |
+      59 |       expect(response.status).toBe(200)
+    > 60 |       expect(data.success).toBe(false)
+         |                            ^
+      61 |       expect(data.error).toBe('Google Places API not configured')
+      62 |
+      63 |       expect(global.fetch).not.toHaveBeenCalled()
+
+      at Object.toBe (__tests__/api/google-reviews.test.ts:60:28)
+
+  ● /api/google-reviews › GET /api/google-reviews › should handle Google API error response
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      79 |
+      80 |       expect(response.status).toBe(200)
+    > 81 |       expect(data.success).toBe(false)
+         |                            ^
+      82 |       expect(data.error).toBe('Failed to fetch reviews from Google')
+      83 |     })
+      84 |
+
+      at Object.toBe (__tests__/api/google-reviews.test.ts:81:28)
+
+  ● /api/google-reviews › GET /api/google-reviews › should handle network errors
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      91 |
+      92 |       expect(response.status).toBe(200)
+    > 93 |       expect(data.success).toBe(false)
+         |                            ^
+      94 |       expect(data.error).toBe('Internal server error')
+      95 |     })
+      96 |
+
+      at Object.toBe (__tests__/api/google-reviews.test.ts:93:28)
+
+  ● /api/google-reviews › GET /api/google-reviews › should handle unexpected errors
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      105 |
+      106 |       expect(response.status).toBe(200)
+    > 107 |       expect(data.success).toBe(false)
+          |                            ^
+      108 |       expect(data.error).toBe('Internal server error')
+      109 |     })
+      110 |
+
+      at Object.toBe (__tests__/api/google-reviews.test.ts:107:28)
+
+  ● /api/google-reviews › Integration Tests › should maintain consistent response structure on error
+
+    expect(received).toHaveProperty(path, value)
+
+    Expected path: "success"
+
+    Expected value: false
+    Received value: true
+
+      186 |
+      187 |       // Verify error response structure
+    > 188 |       expect(data).toHaveProperty('success', false)
+          |                    ^
+      189 |       expect(data).toHaveProperty('error')
+      190 |       expect(data).not.toHaveProperty('data')
+      191 |     })
+
+      at Object.toHaveProperty (__tests__/api/google-reviews.test.ts:188:20)
+
+  ● /api/google-reviews › Integration Tests › should handle timeout gracefully
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      199 |
+      200 |       expect(response.status).toBe(200)
+    > 201 |       expect(data.success).toBe(false)
+          |                            ^
+      202 |       expect(data.error).toBe('Internal server error')
+      203 |     })
+      204 |   })
+
+      at Object.toBe (__tests__/api/google-reviews.test.ts:201:28)
+
+FAIL __tests__/api/assignments.test.ts
+  ● Assignments API › GET /api/assignments/participants › should fetch participants for a surf camp
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      65 |       const data = await response.json()
+      66 |
+    > 67 |       expect(response.status).toBe(200)
+         |                               ^
+      68 |       expect(data.success).toBe(true)
+      69 |       expect(data.data.participants).toEqual(mockParticipants)
+      70 |     })
+
+      at Object.toBe (__tests__/api/assignments.test.ts:67:31)
+
+  ● Assignments API › GET /api/assignments/rooms › should fetch available rooms
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: undefined
+
+       97 |
+       98 |       expect(response.status).toBe(200)
+    >  99 |       expect(data.success).toBe(true)
+          |                            ^
+      100 |       expect(data.data.rooms).toEqual(mockRooms)
+      101 |     })
+      102 |   })
+
+      at Object.toBe (__tests__/api/assignments.test.ts:99:28)
+
+  ● Assignments API › GET /api/assignments › should fetch room assignments
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      127 |       const data = await response.json()
+      128 |
+    > 129 |       expect(response.status).toBe(200)
+          |                               ^
+      130 |       expect(data.success).toBe(true)
+      131 |       expect(data.data.assignments).toEqual(mockAssignments)
+      132 |     })
+
+      at Object.toBe (__tests__/api/assignments.test.ts:129:31)
+
+  ● Assignments API › POST /api/assignments › should save room assignments
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 400
+
+      161 |       const data = await response.json()
+      162 |
+    > 163 |       expect(response.status).toBe(200)
+          |                               ^
+      164 |       expect(data.success).toBe(true)
+      165 |     })
+      166 |   })
+
+      at Object.toBe (__tests__/api/assignments.test.ts:163:31)
+
+FAIL __tests__/api/enrollments.test.ts
+  ● Console
+
+    console.error
+      Error in enrollments POST API: TypeError: _supabase.supabaseAdmin.from(...).select is not a function
+          at select (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/enrollments/route.ts:86:8)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/enrollments.test.ts:112:24)
+
+      182 |     }, { status: 201 })
+      183 |   } catch (error) {
+    > 184 |     console.error('Error in enrollments POST API:', error)
+          |             ^
+      185 |     return NextResponse.json(
+      186 |       { error: 'Internal server error' },
+      187 |       { status: 500 }
+
+      at error (app/api/enrollments/route.ts:184:13)
+      at Object.<anonymous> (__tests__/api/enrollments.test.ts:112:24)
+
+  ● Enrollments API › GET /api/enrollments › should fetch enrollments for a surf camp
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: undefined
+
+      75 |
+      76 |       expect(response.status).toBe(200)
+    > 77 |       expect(data.success).toBe(true)
+         |                            ^
+      78 |       expect(data.data.enrollments).toEqual(mockEnrollments)
+      79 |     })
+      80 |   })
+
+      at Object.toBe (__tests__/api/enrollments.test.ts:77:28)
+
+  ● Enrollments API › POST /api/enrollments › should create a new enrollment
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 201
+    Received: 500
+
+      113 |       const data = await response.json()
+      114 |
+    > 115 |       expect(response.status).toBe(201)
+          |                               ^
+      116 |       expect(data.success).toBe(true)
+      117 |       expect(data.data.enrollment).toEqual(mockEnrollment)
+      118 |     })
+
+      at Object.toBe (__tests__/api/enrollments.test.ts:115:31)
+
+  ● Enrollments API › POST /api/enrollments › should validate required fields
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: undefined
+
+      127 |
+      128 |       expect(response.status).toBe(400)
+    > 129 |       expect(data.success).toBe(false)
+          |                            ^
+      130 |     })
+      131 |   })
+      132 |
+
+      at Object.toBe (__tests__/api/enrollments.test.ts:129:28)
+
+FAIL __tests__/api/calendar-events.test.ts
+  ● Calendar Events API › GET /api/calendar-events › should fetch calendar events
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 401
+
+      81 |       const data = await response.json()
+      82 |
+    > 83 |       expect(response.status).toBe(200)
+         |                               ^
+      84 |       expect(data.success).toBe(true)
+      85 |       expect(data.data.events).toEqual(mockEvents)
+      86 |     })
+
+      at Object.toBe (__tests__/api/calendar-events.test.ts:83:31)
+
+  ● Calendar Events API › POST /api/calendar-events › should create a new calendar event
+
+    TypeError: (0 , _route.POST) is not a function
+
+      116 |         body: JSON.stringify(eventData),
+      117 |       })
+    > 118 |       const response = await POST(request)
+          |                                  ^
+      119 |       const data = await response.json()
+      120 |
+      121 |       expect(response.status).toBe(201)
+
+      at Object.<anonymous> (__tests__/api/calendar-events.test.ts:118:34)
+
+PASS __tests__/api/upload.test.ts
+  ● Console
+
+    console.error
+      Error uploading file: { message: 'Upload failed' }
+
+      53 |
+      54 |     if (uploadError) {
+    > 55 |       console.error('Error uploading file:', uploadError)
+         |               ^
+      56 |       return NextResponse.json(
+      57 |         { success: false, error: 'Failed to upload file', details: uploadError.message },
+      58 |         { status: 500 }
+
+      at error (app/api/upload/route.ts:55:15)
+      at Object.<anonymous> (__tests__/api/upload.test.ts:113:24)
+
+PASS __tests__/api/dates-availability.test.ts
+  ● Console
+
+    console.log
+      📅 Date availability check: { startDate: '2026-02-01', endDate: '2026-02-02', participants: 2 }
+
+      at log (app/api/dates/availability/route.ts:12:13)
+
+    console.log
+      ✅ Date availability check completed: {
+        total_dates_checked: 2,
+        available_dates: 2,
+        sold_out_dates: 0,
+        total_capacity: 12,
+        participants_requested: 2
+      }
+
+      at log (app/api/dates/availability/route.ts:84:13)
+
+    console.log
+      📅 Date availability check: { startDate: null, endDate: '2026-02-02', participants: 1 }
+
+      at log (app/api/dates/availability/route.ts:12:13)
+
+    console.log
+      📅 Date availability check: { startDate: '2026-02-01', endDate: null, participants: 1 }
+
+      at log (app/api/dates/availability/route.ts:12:13)
+
+    console.log
+      📅 Date availability check: { startDate: '2026-02-01', endDate: '2026-02-01', participants: 1 }
+
+      at log (app/api/dates/availability/route.ts:12:13)
+
+    console.log
+      ✅ Date availability check completed: {
+        total_dates_checked: 1,
+        available_dates: 1,
+        sold_out_dates: 0,
+        total_capacity: 6,
+        participants_requested: 1
+      }
+
+      at log (app/api/dates/availability/route.ts:84:13)
+
+    console.log
+      📅 Date availability check: { startDate: '2026-02-01', endDate: '2026-02-02', participants: 1 }
+
+      at log (app/api/dates/availability/route.ts:12:13)
+
+    console.error
+      Error checking date availability: Error: Database connection failed
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/dates-availability.test.ts:173:15)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:305:39
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:312:13)
+          at Object.mockConstructor [as from] (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-mock/build/index.js:102:19)
+          at from (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/dates/availability/route.ts:35:12)
+          at Array.map (<anonymous>)
+          at map (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/app/api/dates/availability/route.ts:32:17)
+          at Object.<anonymous> (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/__tests__/api/dates-availability.test.ts:177:33)
+          at Promise.finally.completed (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at _runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at _runTestsForDescribeBlock (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:275:16)
+          at runTest (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/node_modules/jest-runner/build/index.js:343:7)
+
+       98 |
+       99 |   } catch (error) {
+    > 100 |     console.error('Error checking date availability:', error)
+          |             ^
+      101 |     return NextResponse.json({
+      102 |       success: false,
+      103 |       error: error instanceof Error ? error.message : 'Internal server error'
+
+      at error (app/api/dates/availability/route.ts:100:13)
+      at Object.<anonymous> (__tests__/api/dates-availability.test.ts:177:24)
+
+    console.log
+      📅 Date availability check: { startDate: '2026-02-01', endDate: '2026-02-01', participants: 1 }
+
+      at log (app/api/dates/availability/route.ts:12:13)
+
+    console.log
+      ✅ Date availability check completed: {
+        total_dates_checked: 1,
+        available_dates: 1,
+        sold_out_dates: 0,
+        total_capacity: 10,
+        participants_requested: 1
+      }
+
+      at log (app/api/dates/availability/route.ts:84:13)
+
+    console.log
+      📅 Date availability check: { startDate: '2026-02-01', endDate: '2026-02-01', participants: 4 }
+
+      at log (app/api/dates/availability/route.ts:12:13)
+
+    console.log
+      ✅ Date availability check completed: {
+        total_dates_checked: 1,
+        available_dates: 1,
+        sold_out_dates: 0,
+        total_capacity: 6,
+        participants_requested: 4
+      }
+
+      at log (app/api/dates/availability/route.ts:84:13)
+
+    console.log
+      📅 Date availability check: { startDate: '2026-02-01', endDate: '2026-02-01', participants: 1 }
+
+      at log (app/api/dates/availability/route.ts:12:13)
+
+    console.log
+      ✅ Date availability check completed: {
+        total_dates_checked: 1,
+        available_dates: 1,
+        sold_out_dates: 0,
+        total_capacity: 6,
+        participants_requested: 1
+      }
+
+      at log (app/api/dates/availability/route.ts:84:13)
+
+    console.log
+      📅 Date availability check: { startDate: '2026-02-01', endDate: '2026-02-01', participants: 1 }
+
+      at log (app/api/dates/availability/route.ts:12:13)
+
+    console.log
+      ✅ Date availability check completed: {
+        total_dates_checked: 1,
+        available_dates: 1,
+        sold_out_dates: 0,
+        total_capacity: 6,
+        participants_requested: 1
+      }
+
+      at log (app/api/dates/availability/route.ts:84:13)
+
+
+Test Suites: 14 failed, 2 passed, 16 total
+Tests:       73 failed, 81 passed, 154 total
+Snapshots:   0 total
+Time:        0.686 s, estimated 1 s
+Ran all test suites.

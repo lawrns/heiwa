@@ -1,91 +1,75 @@
 // Supabase client configuration for Heiwa House booking system integration
 // Connected to the existing wavecampdashboard Supabase instance
+// SINGLETON PATTERN: Uses Symbol-keyed global to prevent multiple GoTrueClient instances
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 // Use the same Supabase instance as the wavecampdashboard
-// This ensures booking data consistency between the website and admin dashboard
-// CRITICAL: Must use zejrhceuuujzgyukdwnb project (where the actual data is stored)
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zejrhceuuujzgyukdwnb.supabase.co'
-// Fallback to actual key if env var not available (for Netlify builds that haven't picked up env vars yet)
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMDQ4MDksImV4cCI6MjA3MjY4MDgwOX0.yIqpTz-OTqcaL5h7GIzoBmRezoJD-MC2yPTpxvo-aNA'
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzEwNDgwOSwiZXhwIjoyMDcyNjgwODA5fQ.RbzOLzCaOAsgaMixdACMLdPvLZjU9MPfXn8Y90gsxcc'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://pguipwhrxdzzrndbluxb.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
-// Validate that API keys are set (only check server-side for service role key)
-if (typeof window === 'undefined') {
-  // Server-side validation
-  if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
-    console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
-    console.error('   Please get the API key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
-    console.error('   Then update your .env.local file')
-  }
+// Use Symbol keys to ensure uniqueness across module evaluations
+const SUPABASE_PUBLIC_KEY = Symbol.for('heiwa.supabase.public')
+const SUPABASE_ADMIN_KEY = Symbol.for('heiwa.supabase.admin')
 
-  if (!supabaseServiceKey || supabaseServiceKey === 'YOUR_SERVICE_ROLE_KEY_HERE') {
-    console.error('❌ ERROR: SUPABASE_SERVICE_ROLE_KEY is not set!')
-    console.error('   Please get the service role key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
-    console.error('   Then update your .env.local file')
-  }
-} else {
-  // Client-side validation (only check anon key)
-  if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_ANON_KEY_HERE') {
-    console.error('❌ ERROR: NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!')
-    console.error('   Please get the API key from: https://supabase.com/dashboard/project/zejrhceuuujzgyukdwnb/settings/api')
-    console.error('   Then update your .env.local file')
-  }
+// Type-safe global storage
+type GlobalWithSupabase = typeof globalThis & {
+  [SUPABASE_PUBLIC_KEY]?: SupabaseClient
+  [SUPABASE_ADMIN_KEY]?: SupabaseClient
 }
 
-// Singleton pattern to prevent multiple client instances
-// Use globalThis to ensure singleton across module reloads in Next.js
-const globalForSupabase = globalThis as unknown as {
-  supabaseInstance: ReturnType<typeof createClient> | undefined
-  supabaseAdminInstance: ReturnType<typeof createClient> | undefined
-}
+const globalStore = (typeof globalThis !== 'undefined' ? globalThis : global) as GlobalWithSupabase
 
-// Create Supabase client for public operations (booking system integration)
-export const supabase = (() => {
-  if (!globalForSupabase.supabaseInstance) {
-    globalForSupabase.supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
+// Lazy singleton getter for public client - only creates on first access
+function getSupabaseClient(): SupabaseClient {
+  if (!globalStore[SUPABASE_PUBLIC_KEY]) {
+    globalStore[SUPABASE_PUBLIC_KEY] = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
-        // Use a dedicated storage key to avoid GoTrue warnings when multiple clients exist
-        storageKey: 'heiwa-public-auth',
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false
+        // Use unique storage key to prevent conflicts
+        storageKey: 'sb-heiwa-public-auth-token',
+        persistSession: typeof window !== 'undefined',
+        autoRefreshToken: typeof window !== 'undefined',
+        detectSessionInUrl: false,
+        // Prevent multiple auth state change listeners
+        flowType: 'pkce'
+      },
+      global: {
+        headers: {
+          'x-client-info': 'heiwa-house-public'
+        }
       }
     })
-    if (typeof window === 'undefined') {
-      console.log('🏄‍♂️ Heiwa House Website - Supabase connection initialized:', {
-        url: supabaseUrl,
-        hasKey: !!supabaseAnonKey,
-        hasServiceKey: !!supabaseServiceKey,
-        project: 'heiwa-booking-integration'
-      })
-    }
   }
-  return globalForSupabase.supabaseInstance
-})()
+  return globalStore[SUPABASE_PUBLIC_KEY]
+}
 
-// Create Supabase client with service role for admin operations (CMS)
-// Note: Service role key should only be used server-side, but we provide fallback for client-side compatibility
-export const supabaseAdmin = (() => {
-  if (!globalForSupabase.supabaseAdminInstance) {
-    // Use service role key if available, otherwise fall back to anon key for client-side
+// Lazy singleton getter for admin client - only creates on first access
+function getSupabaseAdminClient(): SupabaseClient {
+  if (!globalStore[SUPABASE_ADMIN_KEY]) {
     const adminKey = supabaseServiceKey || supabaseAnonKey
-    if (!adminKey) {
-      throw new Error('Supabase admin key is required. Set SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY')
-    }
-    globalForSupabase.supabaseAdminInstance = createClient(supabaseUrl, adminKey, {
+    
+    globalStore[SUPABASE_ADMIN_KEY] = createClient(supabaseUrl, adminKey, {
       auth: {
-        // Separate storage key so admin client doesn't conflict with public client
-        storageKey: 'heiwa-admin-auth',
-        autoRefreshToken: false,
+        // Use completely different storage key
+        storageKey: 'sb-heiwa-admin-auth-token',
         persistSession: false,
+        autoRefreshToken: false,
         detectSessionInUrl: false
+      },
+      global: {
+        headers: {
+          'x-client-info': 'heiwa-house-admin'
+        }
       }
     })
   }
-  return globalForSupabase.supabaseAdminInstance
-})()
+  return globalStore[SUPABASE_ADMIN_KEY]
+}
+
+// Export as getters to ensure lazy initialization
+export const supabase = getSupabaseClient()
+export const supabaseAdmin = getSupabaseAdminClient()
 
 // Export individual services for easier access
 export const db = supabase

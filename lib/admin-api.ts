@@ -49,8 +49,14 @@ class AdminApiClient {
   private retryDelay: number = 1000; // 1 second
 
   constructor() {
-    this.baseUrl = process.env.ADMIN_API_BASE || 'https://admin.heiwa.house/api/wordpress';
-    this.apiKey = process.env.HEIWA_API_KEY || 'heiwa_wp_test_key_2024_secure_deployment';
+    // Use local API endpoints instead of external admin system
+    // The /api routes handle all booking operations directly with Supabase
+    this.baseUrl = typeof window !== 'undefined' 
+      ? `${window.location.origin}/api`
+      : process.env.NEXT_PUBLIC_SITE_URL 
+        ? `${process.env.NEXT_PUBLIC_SITE_URL}/api`
+        : '/api';
+    this.apiKey = process.env.HEIWA_API_KEY || 'heiwa_local_api_key';
   }
 
   private async makeRequest<T>(

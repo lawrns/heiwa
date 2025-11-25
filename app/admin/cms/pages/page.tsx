@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { FileText, Edit, Clock, ChevronRight, Plus, Eye, Trash2 } from 'lucide-react'
+// Link import removed - using router navigation
+import { FileText, Edit, Plus, Eye } from 'lucide-react'
 import { CMSLayout } from '@/components/admin/cms/CMSLayout'
 import { CMSCard } from '@/components/admin/cms/CMSCard'
-import { CMSHeader } from '@/components/admin/cms/CMSHeader'
+// CMSHeader import removed - not currently used
 
 interface PageData {
   slug: string
@@ -197,8 +197,8 @@ export default function CMSPagesPage() {
                 icon={<FileText className="w-5 h-5" />}
                 status={page.status}
                 metadata={[
-                  { label: 'Sections', value: stats.count.toString() },
-                  { label: 'Last Modified', value: stats.lastModified }
+                  { label: 'Sections', value: `${stats.count} section${stats.count !== 1 ? 's' : ''}` },
+                  { label: 'Last Modified', value: stats.lastModified === 'Never' ? 'Never modified' : stats.lastModified }
                 ]}
                 actions={[
                   {

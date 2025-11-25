@@ -197,6 +197,19 @@ export interface BookingResponse {
   message?: string;
 }
 
+export interface BookingSuccessData {
+  booking?: {
+    id?: string;
+    booking_number?: string;
+    [key: string]: unknown;
+  };
+  payment?: {
+    payment_link?: string;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
 export interface AvailabilityCheck {
   roomId: string;
   checkIn: string;

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 // GET CMS settings
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const { data: settings, error } = await supabaseAdmin
       .from('cms_settings')

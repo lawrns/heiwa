@@ -15,7 +15,7 @@ interface Author {
 
 export default function AuthorsPage() {
   const [authors, setAuthors] = useState<Author[]>([])
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Author | null>(null)
   const [formData, setFormData] = useState({
@@ -64,7 +64,7 @@ export default function AuthorsPage() {
       } else {
         alert(data.error || 'Failed to save author')
       }
-    } catch (err) {
+    } catch {
       alert('Error saving author')
     }
   }
@@ -82,7 +82,7 @@ export default function AuthorsPage() {
       } else {
         alert(data.error || 'Failed to delete author')
       }
-    } catch (err) {
+    } catch {
       alert('Error deleting author')
     }
   }

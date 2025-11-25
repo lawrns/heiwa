@@ -1,0 +1,67 @@
+name: Production Admin Tests
+
+on:
+  push:
+    branches: [ main, innovation ]
+  pull_request:
+    branches: [ main, innovation ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      
+      - name: Run production admin tests
+        run: npm run test:e2e:production
+        env:
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD || 'heiwa_admin_2024' }}
+          BASE_URL: https://heiwahauz.netlify.app
+        continue-on-error: false
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-admin-test-results
+          path: |
+            test-results-production/
+            playwright-report/
+          retention-days: 30
+      
+      - name: Upload test videos
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-admin-test-videos
+          path: test-results-production/**/*.webm
+          retention-days: 7
+      
+      - name: Upload test screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-admin-test-screenshots
+          path: test-results-production/**/*.png
+          retention-days: 7
+
+

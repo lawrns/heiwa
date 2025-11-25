@@ -5,9 +5,21 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Package, Euro, Users, Calendar } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
 
+interface AddOnFormData {
+  name: string
+  description: string
+  price: number
+  category: 'equipment' | 'service' | 'experience' | 'transport'
+  isActive: boolean
+  maxQuantity: string
+  requiresBooking: boolean
+  imageUrl: string
+  detailedDescription: string
+}
+
 export default function NewAddOnPage() {
   const router = useRouter()
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AddOnFormData>({
     name: '',
     description: '',
     price: 0,
@@ -55,7 +67,7 @@ export default function NewAddOnPage() {
     }
   }
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: keyof AddOnFormData, value: AddOnFormData[keyof AddOnFormData]) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 

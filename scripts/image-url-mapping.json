@@ -1,0 +1,534 @@
+{
+  "/images/003844190021-scaled.jpg": {
+    "localPath": "/images/003844190021-scaled.jpg",
+    "relativePath": "003844190021-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932879741_003844190021-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC01794.jpg": {
+    "localPath": "/images/DSC01794.jpg",
+    "relativePath": "DSC01794.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932881233_DSC01794.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC01829-Enhanced-NR-2.jpg": {
+    "localPath": "/images/DSC01829-Enhanced-NR-2.jpg",
+    "relativePath": "DSC01829-Enhanced-NR-2.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932881710_DSC01829-Enhanced-NR-2.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC02099-scaled.jpg": {
+    "localPath": "/images/DSC02099-scaled.jpg",
+    "relativePath": "DSC02099-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932882440_DSC02099-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC02102-scaled.jpg": {
+    "localPath": "/images/DSC02102-scaled.jpg",
+    "relativePath": "DSC02102-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932883074_DSC02102-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC02767-scaled.jpg": {
+    "localPath": "/images/DSC02767-scaled.jpg",
+    "relativePath": "DSC02767-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932884024_DSC02767-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC03081-scaled.jpg": {
+    "localPath": "/images/DSC03081-scaled.jpg",
+    "relativePath": "DSC03081-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932884730_DSC03081-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC03479.jpg": {
+    "localPath": "/images/DSC03479.jpg",
+    "relativePath": "DSC03479.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932885896_DSC03479.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC03491.jpg": {
+    "localPath": "/images/DSC03491.jpg",
+    "relativePath": "DSC03491.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932886599_DSC03491.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC03521-scaled.jpg": {
+    "localPath": "/images/DSC03521-scaled.jpg",
+    "relativePath": "DSC03521-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932887235_DSC03521-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC03530-scaled.jpg": {
+    "localPath": "/images/DSC03530-scaled.jpg",
+    "relativePath": "DSC03530-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932888309_DSC03530-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC03534.jpg": {
+    "localPath": "/images/DSC03534.jpg",
+    "relativePath": "DSC03534.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932889120_DSC03534.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC04163.jpg": {
+    "localPath": "/images/DSC04163.jpg",
+    "relativePath": "DSC04163.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932889693_DSC04163.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC04325.jpg": {
+    "localPath": "/images/DSC04325.jpg",
+    "relativePath": "DSC04325.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932890247_DSC04325.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC08054-scaled.jpg": {
+    "localPath": "/images/DSC08054-scaled.jpg",
+    "relativePath": "DSC08054-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932890719_DSC08054-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC08600-scaled.jpg": {
+    "localPath": "/images/DSC08600-scaled.jpg",
+    "relativePath": "DSC08600-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932891376_DSC08600-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSC08736-scaled.jpg": {
+    "localPath": "/images/DSC08736-scaled.jpg",
+    "relativePath": "DSC08736-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932892007_DSC08736-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF7352.jpg": {
+    "localPath": "/images/DSF7352.jpg",
+    "relativePath": "DSF7352.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932892910_DSF7352.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF7498.jpg": {
+    "localPath": "/images/DSF7498.jpg",
+    "relativePath": "DSF7498.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932893477_DSF7498.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF8018-2-scaled.jpg": {
+    "localPath": "/images/DSF8018-2-scaled.jpg",
+    "relativePath": "DSF8018-2-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932894324_DSF8018-2-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF8298-scaled.jpg": {
+    "localPath": "/images/DSF8298-scaled.jpg",
+    "relativePath": "DSF8298-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932895673_DSF8298-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF8322-scaled.jpg": {
+    "localPath": "/images/DSF8322-scaled.jpg",
+    "relativePath": "DSF8322-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932897002_DSF8322-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF8554-scaled.jpg": {
+    "localPath": "/images/DSF8554-scaled.jpg",
+    "relativePath": "DSF8554-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932897559_DSF8554-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF8567.jpg": {
+    "localPath": "/images/DSF8567.jpg",
+    "relativePath": "DSF8567.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932898172_DSF8567.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF8619-1.jpg": {
+    "localPath": "/images/DSF8619-1.jpg",
+    "relativePath": "DSF8619-1.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932898677_DSF8619-1.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF8619-scaled.jpg": {
+    "localPath": "/images/DSF8619-scaled.jpg",
+    "relativePath": "DSF8619-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932899252_DSF8619-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF8707-scaled.jpg": {
+    "localPath": "/images/DSF8707-scaled.jpg",
+    "relativePath": "DSF8707-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932899837_DSF8707-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/DSF8812-scaled.jpg": {
+    "localPath": "/images/DSF8812-scaled.jpg",
+    "relativePath": "DSF8812-scaled.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932900769_DSF8812-scaled.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/Freedomroutes-rooms-1.jpg": {
+    "localPath": "/images/Freedomroutes-rooms-1.jpg",
+    "relativePath": "Freedomroutes-rooms-1.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932901813_Freedomroutes-rooms-1.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/Freedomroutes-rooms-50.jpg": {
+    "localPath": "/images/Freedomroutes-rooms-50.jpg",
+    "relativePath": "Freedomroutes-rooms-50.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932902324_Freedomroutes-rooms-50.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/Freedroutes-telts-38.jpg": {
+    "localPath": "/images/Freedroutes-telts-38.jpg",
+    "relativePath": "Freedroutes-telts-38.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932903102_Freedroutes-telts-38.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/Freedroutes-telts-49.jpg": {
+    "localPath": "/images/Freedroutes-telts-49.jpg",
+    "relativePath": "Freedroutes-telts-49.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932903703_Freedroutes-telts-49.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/IMG_61411.jpg": {
+    "localPath": "/images/IMG_61411.jpg",
+    "relativePath": "IMG_61411.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932904333_IMG_61411.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/Image_20250109_0002.jpg": {
+    "localPath": "/images/Image_20250109_0002.jpg",
+    "relativePath": "Image_20250109_0002.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932905101_Image_20250109_0002.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/PXL_20240604_194826610-1.jpg": {
+    "localPath": "/images/PXL_20240604_194826610-1.jpg",
+    "relativePath": "PXL_20240604_194826610-1.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932905558_PXL_20240604_194826610-1.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/cropped-favicon.png": {
+    "localPath": "/images/cropped-favicon.png",
+    "relativePath": "cropped-favicon.png",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932906195_cropped-favicon.png",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg": {
+    "localPath": "/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg",
+    "relativePath": "dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932906686_dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/games.jpg": {
+    "localPath": "/images/games.jpg",
+    "relativePath": "games.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932907448_games.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/heiwalocation.jpg": {
+    "localPath": "/images/heiwalocation.jpg",
+    "relativePath": "heiwalocation.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932907980_heiwalocation.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/heiwalocation.webp": {
+    "localPath": "/images/heiwalocation.webp",
+    "relativePath": "heiwalocation.webp",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932908618_heiwalocation.webp",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/heiwalogo-white.webp": {
+    "localPath": "/images/heiwalogo-white.webp",
+    "relativePath": "heiwalogo-white.webp",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909067_heiwalogo-white.webp",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/heiwalogo.webp": {
+    "localPath": "/images/heiwalogo.webp",
+    "relativePath": "heiwalogo.webp",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909543_heiwalogo.webp",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/image00002.jpeg": {
+    "localPath": "/images/image00002.jpeg",
+    "relativePath": "image00002.jpeg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909938_image00002.jpeg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/ramp3.jpg": {
+    "localPath": "/images/ramp3.jpg",
+    "relativePath": "ramp3.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932910592_ramp3.jpg",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/thehouse.png": {
+    "localPath": "/images/thehouse.png",
+    "relativePath": "thehouse.png",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932911638_thehouse.png",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/thehouse.webp": {
+    "localPath": "/images/thehouse.webp",
+    "relativePath": "thehouse.webp",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932913996_thehouse.webp",
+    "bucket": "cms-media",
+    "category": "general"
+  },
+  "/images/hero/heiwa-hero.jpg": {
+    "localPath": "/images/hero/heiwa-hero.jpg",
+    "relativePath": "hero/heiwa-hero.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932914644_heiwa-hero.jpg",
+    "bucket": "page-images",
+    "category": "homepage"
+  },
+  "/images/hero/heiwa-hero.svg": {
+    "localPath": "/images/hero/heiwa-hero.svg",
+    "relativePath": "hero/heiwa-hero.svg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932915088_heiwa-hero.svg",
+    "bucket": "page-images",
+    "category": "homepage"
+  },
+  "/images/hh1.jpg": {
+    "localPath": "/images/hh1.jpg",
+    "relativePath": "hh1.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932915493_hh1.jpg",
+    "bucket": "page-images",
+    "category": "homepage"
+  },
+  "/images/hh1.webp": {
+    "localPath": "/images/hh1.webp",
+    "relativePath": "hh1.webp",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932916037_hh1.webp",
+    "bucket": "page-images",
+    "category": "homepage"
+  },
+  "/images/hh2.jpg": {
+    "localPath": "/images/hh2.jpg",
+    "relativePath": "hh2.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932916471_hh2.jpg",
+    "bucket": "page-images",
+    "category": "homepage"
+  },
+  "/images/hh2.webp": {
+    "localPath": "/images/hh2.webp",
+    "relativePath": "hh2.webp",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932917133_hh2.webp",
+    "bucket": "page-images",
+    "category": "homepage"
+  },
+  "/images/park333.jpg": {
+    "localPath": "/images/park333.jpg",
+    "relativePath": "park333.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932917808_park333.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/park4444.jpg": {
+    "localPath": "/images/park4444.jpg",
+    "relativePath": "park4444.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932918467_park4444.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/play.jpg": {
+    "localPath": "/images/play.jpg",
+    "relativePath": "play.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/play/1763932919078_play.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/pool333.jpg": {
+    "localPath": "/images/pool333.jpg",
+    "relativePath": "pool333.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932919553_pool333.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/pool4444.jpg": {
+    "localPath": "/images/pool4444.jpg",
+    "relativePath": "pool4444.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932920345_pool4444.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/skatepark-1.jpg": {
+    "localPath": "/images/skatepark-1.jpg",
+    "relativePath": "skatepark-1.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932921124_skatepark-1.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/surf3.jpg": {
+    "localPath": "/images/surf3.jpg",
+    "relativePath": "surf3.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/surf/1763932921580_surf3.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/surf4.jpg": {
+    "localPath": "/images/surf4.jpg",
+    "relativePath": "surf4.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/surf/1763932922433_surf4.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/yoga_dome1.jpg": {
+    "localPath": "/images/yoga_dome1.jpg",
+    "relativePath": "yoga_dome1.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/flow/1763932922968_yoga_dome1.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/yoga_dome2.jpg": {
+    "localPath": "/images/yoga_dome2.jpg",
+    "relativePath": "yoga_dome2.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/flow/1763932923689_yoga_dome2.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/yoga_dome3.jpg": {
+    "localPath": "/images/yoga_dome3.jpg",
+    "relativePath": "yoga_dome3.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/flow/1763932924430_yoga_dome3.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/yoga_dome4.jpg": {
+    "localPath": "/images/yoga_dome4.jpg",
+    "relativePath": "yoga_dome4.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/flow/1763932925142_yoga_dome4.jpg",
+    "bucket": "page-images",
+    "category": "pageContent"
+  },
+  "/images/posters/surfweeks.jpg": {
+    "localPath": "/images/posters/surfweeks.jpg",
+    "relativePath": "posters/surfweeks.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/surf-camp-images/1763932925921_surfweeks.jpg",
+    "bucket": "surf-camp-images",
+    "category": "surfCamps"
+  },
+  "/images/posters/surfweeks.svg": {
+    "localPath": "/images/posters/surfweeks.svg",
+    "relativePath": "posters/surfweeks.svg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/surf-camp-images/1763932926318_surfweeks.svg",
+    "bucket": "surf-camp-images",
+    "category": "surfCamps"
+  },
+  "/images/surf-weeks-front-page.jpg": {
+    "localPath": "/images/surf-weeks-front-page.jpg",
+    "relativePath": "surf-weeks-front-page.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/surf-camp-images/1763932926806_surf-weeks-front-page.jpg",
+    "bucket": "surf-camp-images",
+    "category": "surfCamps"
+  },
+  "/images/surf-weeks.jpg": {
+    "localPath": "/images/surf-weeks.jpg",
+    "relativePath": "surf-weeks.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/surf-camp-images/1763932927395_surf-weeks.jpg",
+    "bucket": "surf-camp-images",
+    "category": "surfCamps"
+  },
+  "/images/rooms/dorm.webp": {
+    "localPath": "/images/rooms/dorm.webp",
+    "relativePath": "rooms/dorm.webp",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/room-images/f3f00cbb-c30e-4d84-9352-cfb6a76684d0/1763932928037_dorm.webp",
+    "bucket": "room-images",
+    "category": "rooms"
+  },
+  "/images/rooms/room1.jpg": {
+    "localPath": "/images/rooms/room1.jpg",
+    "relativePath": "rooms/room1.jpg",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/room-images/general/1763932928576_room1.jpg",
+    "bucket": "room-images",
+    "category": "rooms"
+  },
+  "/images/rooms/room2.webp": {
+    "localPath": "/images/rooms/room2.webp",
+    "relativePath": "rooms/room2.webp",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/room-images/ac98fd46-5bd2-413c-98f3-17e71024e734/1763932928947_room2.webp",
+    "bucket": "room-images",
+    "category": "rooms"
+  },
+  "/images/rooms/room3.webp": {
+    "localPath": "/images/rooms/room3.webp",
+    "relativePath": "rooms/room3.webp",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/room-images/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9/1763932929346_room3.webp",
+    "bucket": "room-images",
+    "category": "rooms"
+  },
+  "/images/sk81.mp4": {
+    "localPath": "/images/sk81.mp4",
+    "relativePath": "sk81.mp4",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932929730_sk81.mp4",
+    "bucket": "cms-media",
+    "category": "videos"
+  },
+  "/images/videos/Timeline-1.mp4": {
+    "localPath": "/images/videos/Timeline-1.mp4",
+    "relativePath": "videos/Timeline-1.mp4",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932934179_Timeline-1.mp4",
+    "bucket": "cms-media",
+    "category": "videos"
+  },
+  "/images/videos/location3.mp4": {
+    "localPath": "/images/videos/location3.mp4",
+    "relativePath": "videos/location3.mp4",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932939317_location3.mp4",
+    "bucket": "cms-media",
+    "category": "videos"
+  },
+  "/images/videos/sk81.mp4": {
+    "localPath": "/images/videos/sk81.mp4",
+    "relativePath": "videos/sk81.mp4",
+    "supabaseUrl": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932944708_sk81.mp4",
+    "bucket": "cms-media",
+    "category": "videos"
+  }
+}

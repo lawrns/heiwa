@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { PlusCircle, Edit, Trash2, Package, Euro, Users, Search, Filter, Download } from 'lucide-react'
+import { PlusCircle, Edit, Trash2, Package, Euro, Users, Search, Download } from 'lucide-react'
 
 interface AddOn {
   id: string
@@ -13,6 +13,17 @@ interface AddOn {
   isActive: boolean
   maxQuantity?: number
   requiresBooking?: boolean
+}
+
+interface AddOnApiResponse {
+  id: string
+  name: string
+  description?: string
+  price: string
+  category: string
+  is_active: boolean
+  max_quantity?: number
+  requires_booking?: boolean
 }
 
 export default function AdminAddOnsPage() {
@@ -35,7 +46,7 @@ export default function AdminAddOnsPage() {
 
         if (data.success) {
           // Transform database format to component format
-          const transformedAddOns = (data.addOns || []).map((addOn: any) => ({
+          const transformedAddOns = (data.addOns || []).map((addOn: AddOnApiResponse) => ({
             id: addOn.id,
             name: addOn.name,
             description: addOn.description || '',
@@ -43,7 +54,7 @@ export default function AdminAddOnsPage() {
             category: addOn.category,
             isActive: addOn.is_active !== false,
             maxQuantity: addOn.max_quantity || undefined,
-            requiresBooking: addOn.max_quantity !== null && addOn.max_quantity > 0,
+            requiresBooking: addOn.max_quantity != null && addOn.max_quantity > 0,
           }))
           setAddOns(transformedAddOns)
         } else {
@@ -135,10 +146,11 @@ export default function AdminAddOnsPage() {
         </div>
         <Link
           href="/admin/add-ons/new"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-heiwaOrange-600 hover:bg-heiwaOrange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-heiwaOrange-500"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+          aria-label="Add new add-on"
         >
-          <PlusCircle className="mr-2 h-5 w-5" />
-          Add New Add-on
+          <PlusCircle className="h-5 w-5" aria-hidden="true" />
+          <span>Add New Add-on</span>
         </Link>
       </div>
 
@@ -204,7 +216,7 @@ export default function AdminAddOnsPage() {
           <div>
             <p className="text-gray-500 text-sm">Avg. Price</p>
             <p className="text-2xl font-bold text-gray-900">
-              €{Math.round(addOns.reduce((sum, addon) => sum + addon.price, 0) / addOns.length)}
+              €{addOns.length > 0 ? Math.round(addOns.reduce((sum, addon) => sum + addon.price, 0) / addOns.length) : 0}
             </p>
           </div>
         </div>

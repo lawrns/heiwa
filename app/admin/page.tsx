@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Bed, Calendar, Users, TrendingUp, BarChart3, ClipboardList, Building2, Box } from 'lucide-react'
+import { Bed, Calendar, Users, TrendingUp, BarChart3, ClipboardList, Building2, Box, LucideIcon, CheckCircle, Clock } from 'lucide-react'
 import StatCard from '@/components/admin/StatCard'
 import ActionCard from '@/components/admin/ActionCard'
 
 interface Stat {
   name: string
   value: string
-  icon: any
+  icon: LucideIcon
   change: string
   changeType: 'positive' | 'negative'
 }
@@ -19,6 +19,8 @@ interface Booking {
   room: string
   checkIn: string
   status: string
+  total_price?: number
+  created_at?: string
 }
 
 interface DashboardData {
@@ -51,21 +53,21 @@ export default function AdminDashboard() {
         
         // Calculate statistics - use totalCount from API, not just returned bookings length
         const totalBookings = totalCount
-        const confirmedCount = bookings.filter((b: any) => b.status === 'confirmed').length
-        const pendingCount = bookings.filter((b: any) => b.status === 'pending').length
-        const cancelledCount = bookings.filter((b: any) => b.status === 'cancelled').length
-        const totalRevenue = bookings.reduce((sum: number, b: any) => sum + (b.total_price || 0), 0)
+        const confirmedCount = bookings.filter((b: Booking) => b.status === 'confirmed').length
+        const pendingCount = bookings.filter((b: Booking) => b.status === 'pending').length
+        const cancelledCount = bookings.filter((b: Booking) => b.status === 'cancelled').length
+        const totalRevenue = bookings.reduce((sum: number, b: Booking) => sum + (b.total_price || 0), 0)
         
         // Calculate month-over-month growth
-        const thisMonthBookings = bookings.filter((b: any) => {
-          const bookingDate = new Date(b.created_at)
+        const thisMonthBookings = bookings.filter((b: Booking) => {
+          const bookingDate = new Date(b.created_at || '')
           const today = new Date()
           return bookingDate.getMonth() === today.getMonth() && 
                  bookingDate.getFullYear() === today.getFullYear()
         }).length
         
-        const lastMonthBookings = bookings.filter((b: any) => {
-          const bookingDate = new Date(b.created_at)
+        const lastMonthBookings = bookings.filter((b: Booking) => {
+          const bookingDate = new Date(b.created_at || '')
           const today = new Date()
           const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1)
           return bookingDate.getMonth() === lastMonth.getMonth() && 
@@ -105,28 +107,28 @@ export default function AdminDashboard() {
           {
             name: 'Total Bookings',
             value: totalBookings.toString(),
-            icon: 'Calendar',
+            icon: Calendar,
             change: `${bookingGrowth > 0 ? '+' : ''}${bookingGrowth}%`,
             changeType: bookingGrowth >= 0 ? 'positive' : 'negative'
           },
           {
             name: 'Confirmed',
             value: confirmedCount.toString(),
-            icon: 'CheckCircle',
+            icon: CheckCircle,
             change: `${((confirmedCount / totalBookings) * 100).toFixed(0)}%`,
             changeType: 'positive'
           },
           {
             name: 'Pending',
             value: pendingCount.toString(),
-            icon: 'Clock',
+            icon: Clock,
             change: `${((pendingCount / totalBookings) * 100).toFixed(0)}%`,
             changeType: 'positive'
           },
           {
             name: 'Revenue',
             value: `€${(totalRevenue / 1000).toFixed(1)}k`,
-            icon: 'TrendingUp',
+            icon: TrendingUp,
             change: `${revenueGrowth > 0 ? '+' : ''}${revenueGrowth}%`,
             changeType: revenueGrowth >= 0 ? 'positive' : 'negative'
           }
@@ -225,7 +227,7 @@ export default function AdminDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, idx) => {
-          const Icon = iconMap[stat.icon] || Calendar
+          const Icon = stat.icon
           const colors = ['orange', 'green', 'blue', 'purple'] as const
           const color = colors[idx % colors.length]
           return (

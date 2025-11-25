@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Google Places API configuration
     const placeId = process.env.GOOGLE_PLACE_ID || 'ChIJQ_TFLpYxHw0RiPPMypIv51E'

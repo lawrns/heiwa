@@ -117,7 +117,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 onClick={closeMenu}
               >
                 <Image
-                  src="/images/heiwalogo.webp"
+                  src="https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909543_heiwalogo.webp"
                   alt="Heiwa House"
                   width={96}
                   height={32}
@@ -237,7 +237,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 onClick={closeMenu}
               >
                 <Image
-                  src="/images/heiwalogo.webp"
+                  src="https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909543_heiwalogo.webp"
                   alt="Heiwa House"
                   width={96}
                   height={32}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useMemo } from 'react'
+import React, { createContext, useContext, useMemo, useRef } from 'react'
 import { supabase, supabaseAdmin } from './supabase'
 
 interface SupabaseContextType {
@@ -10,12 +10,24 @@ interface SupabaseContextType {
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined)
 
-// Memoize the context value to prevent recreating instances
-const contextValue = { supabase, supabaseAdmin }
+function getSupabaseInstances(): SupabaseContextType {
+  return {
+    supabase,
+    supabaseAdmin
+  }
+}
 
 export function SupabaseProvider({ children }: { children: React.ReactNode }) {
-  // Use useMemo to ensure we're using the same instances
-  const value = useMemo(() => contextValue, [])
+  // Use ref to ensure we only get instances once per provider instance
+  const instancesRef = useRef<SupabaseContextType | null>(null)
+  
+  // Get instances lazily - only create once
+  if (!instancesRef.current) {
+    instancesRef.current = getSupabaseInstances()
+  }
+  
+  // Use useMemo to ensure we're using the same instances across re-renders
+  const value = useMemo(() => instancesRef.current!, [])
   
   return (
     <SupabaseContext.Provider value={value}>
@@ -26,6 +38,12 @@ export function SupabaseProvider({ children }: { children: React.ReactNode }) {
 
 export function useSupabase() {
   const context = useContext(SupabaseContext)
-  // Always return the singleton instances, not context (which might cause re-creation)
-  return { supabase, supabaseAdmin }
+  if (!context) {
+    throw new Error('useSupabase must be used within SupabaseProvider')
+  }
+  
+  // Always return the singleton instances from the module, not from context
+  // This ensures we're always using the same instances even if context changes
+  const instances = getSupabaseInstances()
+  return instances
 }

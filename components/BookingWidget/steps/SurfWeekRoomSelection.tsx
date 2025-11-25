@@ -1,21 +1,33 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bed, Users, Star, ArrowRight, Calendar } from 'lucide-react';
-import { BookingState, Room } from '../types';
+import { BookingState, Room, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
+
+interface TransformedRoom {
+  id: string;
+  name: string;
+  type: 'private' | 'shared' | 'dorm';
+  description: string;
+  features: string[];
+  maxOccupancy: number;
+  pricePerNight: number;
+  isIncluded: boolean;
+  image: string;
+}
 
 interface SurfWeekRoomSelectionProps {
   state: BookingState;
   actions: {
     setSurfWeekRoom: (roomId: string) => void;
-    updatePricing: (pricing: any) => void;
+    updatePricing: (pricing: PricingBreakdown) => void;
     nextStep: () => void;
   };
 }
 
 // Transform real room data for surf week accommodation options
-const transformRoomForSurfWeek = (room: Room) => {
+const transformRoomForSurfWeek = (room: Room): TransformedRoom => {
   // Dorm room is included, private rooms are upgrades
   const isIncluded = room.type === 'dorm';
   const upgradePrice = isIncluded ? 0 : room.pricePerNight;
@@ -42,7 +54,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryRoomName, setGalleryRoomName] = useState('');
-  const [galleryRoom, setGalleryRoom] = useState<any>(null);
+  const [galleryRoom, setGalleryRoom] = useState<Room | null>(null);
 
   // Fetch real room data (no date filtering needed for surf weeks)
   const { rooms, loading, error } = useRooms({
@@ -64,13 +76,19 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     };
   }, []);
 
-  // Format dates for display
+  // Format dates for display - use Intl API safely
   const formatDateRange = (checkIn: Date | null, checkOut: Date | null) => {
     if (!checkIn || !checkOut) return null;
-    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-    const start = checkIn.toLocaleDateString('en-US', options);
-    const end = checkOut.toLocaleDateString('en-US', options);
-    return `${start} - ${end}`;
+    try {
+      const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+      const start = new Intl.DateTimeFormat('en-US', options).format(checkIn);
+      const end = new Intl.DateTimeFormat('en-US', options).format(checkOut);
+      return `${start} - ${end}`;
+    } catch (error) {
+      // Fallback if Intl API fails
+      console.warn('Date formatting error, using fallback:', error);
+      return `${checkIn.toDateString()} - ${checkOut.toDateString()}`;
+    }
   };
   
   const dateRange = formatDateRange(state.dates.checkIn, state.dates.checkOut);
@@ -86,11 +104,11 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     });
 
   // Open image gallery
-  const openGallery = (room: any) => {
+  const openGallery = (room: TransformedRoom) => {
     const originalRoom = rooms.find(r => r.id === room.id);
     setGalleryImages(originalRoom?.images || []);
     setGalleryRoomName(room.name);
-    setGalleryRoom(originalRoom);
+    setGalleryRoom(originalRoom || null);
     setGalleryOpen(true);
   };
 
@@ -164,7 +182,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-EU', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 0,

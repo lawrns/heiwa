@@ -79,10 +79,10 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
           is_active: camp.is_active !== undefined ? camp.is_active : true,
         })
       } else {
-        setError('Failed to fetch surf camp')
+        setError('Failed to fetch surf week')
       }
     } catch (err) {
-      setError('Error loading surf camp')
+      setError('Error loading surf week')
       console.error(err)
     } finally {
       setLoading(false)
@@ -109,10 +109,10 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
         router.push('/admin/surf-camps')
         router.refresh()
       } else {
-        setError(data.error || 'Failed to update surf camp. Please try again.')
+        setError(data.error || 'Failed to update surf week. Please try again.')
       }
     } catch (err) {
-      setError('Failed to update surf camp. Please try again.')
+      setError('Failed to update surf week. Please try again.')
       console.error(err)
     } finally {
       setSaving(false)
@@ -170,17 +170,17 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
             className="inline-flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Surf Camps
+            Back to Surf Weeks
           </Link>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900">Edit Surf Camp</h1>
-        <p className="text-gray-600 mt-2">Update surf camp program details</p>
+        <h1 className="text-3xl font-bold text-gray-900">Edit Surf Week</h1>
+        <p className="text-gray-600 mt-2">Update surf week program details</p>
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-4xl">
         <div className="bg-white shadow rounded-lg">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">Surf Camp Information</h3>
+            <h3 className="text-lg font-medium text-gray-900">Surf Week Information</h3>
           </div>
           
           <div className="p-6 space-y-6">
@@ -230,7 +230,7 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Describe the surf camp, what participants will learn, and the overall experience..."
+                placeholder="Describe the surf week, what participants will learn, and the overall experience..."
               />
             </div>
 
@@ -428,6 +428,9 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
     </div>
   )
 }
+
+
+
 
 
 

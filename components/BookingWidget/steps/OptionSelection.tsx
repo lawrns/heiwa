@@ -179,10 +179,26 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
         const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
 
-        // Sum prices for all selected rooms
+        // Sum prices for all selected rooms using seasonal rates
         selectedOptions.forEach((roomId) => {
           const room: any = (options as any[]).find((o) => o.id === roomId);
-          if (room) {
+          if (room && room.pricing) {
+            // Determine if dates fall in peak season (May-September)
+            const peakSeasonMonths = [5, 6, 7, 8, 9]
+            const checkInMonth = checkInUTC.getMonth() + 1
+            const checkOutMonth = checkOutUTC.getMonth() + 1
+            const isPeakSeason = peakSeasonMonths.some(month => 
+              month >= checkInMonth && month <= checkOutMonth
+            ) || peakSeasonMonths.includes(checkInMonth) || peakSeasonMonths.includes(checkOutMonth)
+            
+            // Use seasonal rate based on dates
+            const pricePerNight = isPeakSeason
+              ? (room.pricing.standard || room.pricing.offSeason || room.price_per_night || 0)
+              : (room.pricing.offSeason || room.pricing.standard || room.price_per_night || 0)
+            
+            basePrice += pricePerNight * nights
+          } else if (room) {
+            // Fallback to pricePerNight if pricing object not available
             const unit = typeof room.pricePerNight === 'number' ? room.pricePerNight : (room.price ?? 0);
             basePrice += unit * nights;
           }
@@ -215,6 +231,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     }
   }, [selectedOptions, state.dates.checkIn, state.dates.checkOut, state.guests, state.experienceType, state.selectedOption, options, state.pricing, actions]);
 
+  // Set capacity error if insufficient capacity
+  useEffect(() => {
+    if (state.experienceType === 'room' && selectedOptions.length > 0 && hasInsufficientCapacity) {
+      actions.setError('capacity', 'Selected rooms cannot accommodate all guests. Please select additional rooms or reduce guest count.');
+    } else if (state.errors.capacity) {
+      actions.clearError('capacity');
+    }
+  }, [hasInsufficientCapacity, selectedOptions.length, state.experienceType, state.errors.capacity, actions]);
+
   const adjustGuests = (delta: number) => {
     const newCount = Math.max(1, Math.min(12, state.guests + delta));
     actions.setGuests(newCount);
@@ -237,7 +262,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-EU', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 0,
@@ -257,7 +282,25 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
 
         if (nights > 0) {
-          const pricePerNight = option.pricePerNight || option.price || 0;
+          // Calculate price using seasonal rates if pricing object available
+          let pricePerNight = 0
+          if (option.pricing) {
+            // Determine if dates fall in peak season (May-September)
+            const peakSeasonMonths = [5, 6, 7, 8, 9]
+            const checkInMonth = checkInUTC.getMonth() + 1
+            const checkOutMonth = checkOutUTC.getMonth() + 1
+            const isPeakSeason = peakSeasonMonths.some(month => 
+              month >= checkInMonth && month <= checkOutMonth
+            ) || peakSeasonMonths.includes(checkInMonth) || peakSeasonMonths.includes(checkOutMonth)
+            
+            // Use seasonal rate based on dates
+            pricePerNight = isPeakSeason
+              ? (option.pricing.standard || option.pricing.offSeason || option.price_per_night || 0)
+              : (option.pricing.offSeason || option.pricing.standard || option.price_per_night || 0)
+          } else {
+            // Fallback to pricePerNight if pricing object not available
+            pricePerNight = option.pricePerNight || option.price || 0
+          }
           const total = pricePerNight * nights;
           return total;
         }
@@ -271,14 +314,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const getTotalCapacity = () => {
     return selectedOptions.reduce((total, roomId) => {
       const room = (options as any[]).find(o => o.id === roomId);
-      return total + (room?.maxOccupancy || 0);
+      return total + (room?.maxOccupancy || room?.capacity || 0);
     }, 0);
   };
 
   const totalCapacity = getTotalCapacity();
   const hasInsufficientCapacity = state.experienceType === 'room' && selectedOptions.length > 0 && totalCapacity < state.guests;
+  // Fix capacity message format: "X guests / Y capacity" (guests required / capacity available)
   const capacityMessage = state.experienceType === 'room' && selectedOptions.length > 0
-    ? `${totalCapacity} / ${state.guests} guests`
+    ? `${state.guests} guest${state.guests !== 1 ? 's' : ''} / ${totalCapacity} capacity`
     : null;
 
   if (loading) {
@@ -548,7 +592,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       {state.experienceType === 'surf-week' ? (
         <div className="space-y-4">
           {options.map((w: any, index: number) => {
-            const isSelected = selectedOption === w.id;
+            const isSelected = state.selectedSurfWeek === w.id;
             const from = typeof w.priceFrom === 'number' ? w.priceFrom : w.price;
             const start = new Date(w.startDate);
             const end = new Date(w.endDate);
@@ -701,18 +745,22 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
               {/* Capacity Validation Message */}
               {selectedOptions.length > 0 && capacityMessage && (
-                <div className={`p-4 rounded-lg border-2 ${hasInsufficientCapacity ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${hasInsufficientCapacity ? 'bg-red-500' : 'bg-green-500'}`} />
-                    <span className={`text-sm font-medium ${hasInsufficientCapacity ? 'text-red-800' : 'text-green-800'}`}>
-                      Capacity: {capacityMessage}
-                    </span>
+                <div className={`p-3 rounded-lg border-l-4 flex items-center justify-between ${hasInsufficientCapacity ? 'bg-red-50 border-l-red-500' : 'bg-green-50 border-l-green-500'}`}>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <div className={`${hasInsufficientCapacity ? 'text-red-600' : 'text-green-600'}`}>
+                        {hasInsufficientCapacity ? '⚠️' : '✓'}
+                      </div>
+                      <span className={`text-sm font-medium ${hasInsufficientCapacity ? 'text-red-900' : 'text-green-900'}`}>
+                        Capacity: {capacityMessage}
+                      </span>
+                    </div>
+                    {hasInsufficientCapacity && (
+                      <p className="text-xs text-red-700 mt-1 ml-6">
+                        Selected rooms cannot accommodate all guests. Please select additional rooms or reduce guest count.
+                      </p>
+                    )}
                   </div>
-                  {hasInsufficientCapacity && (
-                    <p className="text-xs text-red-700 mt-2">
-                      ⚠️ Selected rooms have insufficient capacity. Please select additional rooms.
-                    </p>
-                  )}
                 </div>
               )}
 
@@ -735,26 +783,26 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         onClick={() => handleOptionSelect(option.id)}
                         disabled={false}
                         className={`
-                          w-full p-6 rounded-xl border-2 text-left
-                          transition-all duration-300 ease-out
-                          focus:outline-none focus:ring-4 focus:ring-orange-500/30
-                          animate-in fade-in-0 slide-in-from-bottom-4 relative
+                          w-full p-6 rounded-lg border text-left
+                          transition-all duration-200
+                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-500
+                          relative
                           ${isSelected
-                            ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 animate-in zoom-in-95 duration-300'
-                            : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50 hover:scale-[1.02] hover:shadow-xl hover:-translate-y-1'
+                            ? 'border-orange-500 bg-white shadow-md'
+                            : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
                           }
                         `}
-                        style={{ animationDelay: `${index * 100}ms` }}
+                        style={{ animationDelay: `${index * 50}ms` }}
                       >
                         {/* Checkbox indicator for multi-select */}
-                        <div className="absolute top-4 right-4 w-6 h-6 rounded border-2 border-gray-300 bg-white flex items-center justify-center transition-all"
+                        <div className="absolute top-4 right-4 w-5 h-5 rounded border border-gray-400 bg-white flex items-center justify-center transition-all"
                           style={{
-                            borderColor: isSelected ? '#ec681c' : '#d1d5db',
+                            borderColor: isSelected ? '#ec681c' : '#9ca3af',
                             backgroundColor: isSelected ? '#ec681c' : 'white'
                           }}
                         >
                           {isSelected && (
-                            <Check size={16} className="text-white" />
+                            <Check size={14} className="text-white" />
                           )}
                         </div>
                         <div className="flex gap-6">

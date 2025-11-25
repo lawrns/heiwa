@@ -31,7 +31,7 @@ export function BankWireInstructions({ totalAmount, currency, bookingReference }
   };
 
   const formatAmount = (amount: number) => {
-    return new Intl.NumberFormat('en-EU', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency,
       minimumFractionDigits: 2,

@@ -1,0 +1,310 @@
+{
+  "meta": {
+    "title": "Heiwa House Production Testing Protocol",
+    "version": "2.0.0",
+    "created": "2025-11-25",
+    "purpose": "Complete production verification after deployment to heiwahauz.netlify.app",
+    "target_url": "https://heiwahauz.netlify.app",
+    "admin_url": "https://heiwahauz.netlify.app/admin"
+  },
+  "deployment_checklist": {
+    "pre_testing": [
+      "Commit all changes to innovation branch",
+      "Push to GitHub with descriptive commit message",
+      "Wait for Netlify deployment to complete (check deploy log)",
+      "Verify build succeeded without errors",
+      "Clear browser cache and open new incognito window"
+    ],
+    "rollback_plan": {
+      "immediate_actions": [
+        "If Phase 1 smoke tests fail: Check Netlify deploy logs immediately",
+        "If homepage returns 500: Verify environment variables in Netlify dashboard",
+        "If APIs fail: Check Supabase connection strings and RLS policies",
+        "Quick rollback: Netlify > Deploys > Rollback to previous successful deploy"
+      ],
+      "investigation_steps": [
+        "Check Netlify build logs for compilation errors",
+        "Verify NEXT_PUBLIC_SUPABASE_URL and keys are set correctly",
+        "Check if database migrations ran successfully",
+        "Review recent commits for breaking changes"
+      ],
+      "critical_failures": [
+        "Homepage not loading (500/404)",
+        "Booking system completely broken",
+        "Admin panel inaccessible",
+        "Database connection failures",
+        "Authentication system down"
+      ]
+    }
+  },
+  "testing_phases": [
+    {
+      "phase": 1,
+      "name": "5-MINUTE SMOKE TEST",
+      "priority": "CRITICAL",
+      "purpose": "Verify core functionality is working",
+      "commands": [
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app | grep -q '200'",
+        "curl -s https://heiwahauz.netlify.app | grep -q 'Welcome to Heiwa House'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/admin | grep -q '200\\|307'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/booking | grep -q '200'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/rooms | grep -q '200'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/api/bookings | grep -q '200'",
+        "curl -s https://heiwahauz.netlify.app/api/bookings | grep -q 'success'"
+      ],
+      "expected_results": [
+        "Homepage loads with 200 status",
+        "Hero title visible on homepage",
+        "Admin panel accessible (200 or 307 redirect)",
+        "Booking page loads successfully",
+        "Rooms page loads successfully",
+        "Bookings API responds with 200",
+        "API returns success response format"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "CRITICAL USER FLOWS",
+      "priority": "CRITICAL",
+      "purpose": "Test booking and reservation flows",
+      "commands": [
+        "curl -s https://heiwahauz.netlify.app/api/rooms | grep -q '\\[.*\\]'",
+        "curl -s https://heiwahauz.netlify.app/api/availability?check_in=2024-06-01&check_out=2024-06-03 | grep -q 'success'",
+        "curl -s -X POST https://heiwahauz.netlify.app/api/bookings -H 'Content-Type: application/json' -d '{\"guest_name\":\"Test User\",\"guest_email\":\"test@example.com\",\"type\":\"room\",\"item_id\":\"test-room\"}' | grep -q 'success\\|error'",
+        "curl -s https://heiwahauz.netlify.app/api/clients | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/surf-camps | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/activities | grep -q 'success'"
+      ],
+      "expected_results": [
+        "Rooms API returns valid JSON array",
+        "Availability check works",
+        "Booking creation attempt processes (success or validation error)",
+        "Clients API responds correctly",
+        "Surf camps API functional",
+        "Activities API functional"
+      ]
+    },
+    {
+      "phase": 2.5,
+      "name": "REAL BOOKING FLOW TEST",
+      "priority": "CRITICAL",
+      "purpose": "Test end-to-end booking creation and admin visibility",
+      "commands": [
+        "# Create test booking and capture ID",
+        "BOOKING_ID=$(curl -s -X POST https://heiwahauz.netlify.app/api/bookings -H 'Content-Type: application/json' -d '{\"guest_name\":\"Production Test\",\"guest_email\":\"test@heiwa-house.com\",\"type\":\"room\",\"item_id\":\"test-room\",\"check_in\":\"2024-12-01\",\"check_out\":\"2024-12-03\"}' | jq -r '.data.id // empty')",
+        "# Verify booking appears in admin API",
+        "curl -s 'https://heiwahauz.netlify.app/api/bookings' | grep -q '$BOOKING_ID' && echo '✅ Booking visible in system' || echo '❌ Booking not found'",
+        "# Clean up - delete test booking",
+        "curl -s -X DELETE 'https://heiwahauz.netlify.app/api/bookings/$BOOKING_ID' | grep -q 'success'"
+      ],
+      "expected_results": [
+        "Test booking created successfully",
+        "Booking appears in admin/bookings list",
+        "Test booking cleaned up properly"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "ADMIN PANEL VERIFICATION",
+      "priority": "HIGH",
+      "purpose": "Verify admin functionality",
+      "commands": [
+        "curl -s https://heiwahauz.netlify.app/admin/login | grep -q 'login\\|Login'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/login -X POST -H 'Content-Type: application/json' -d '{\"email\":\"test\",\"password\":\"test\"}' | grep -q 'success\\|error\\|Unauthorized'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/homepage | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/analytics | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/bookings | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/rooms | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/clients | grep -q 'success'"
+      ],
+      "expected_results": [
+        "Admin login page accessible",
+        "Login API processes credentials",
+        "Homepage CMS API functional",
+        "Analytics dashboard API working",
+        "Bookings management API functional",
+        "Rooms management API functional",
+        "Clients management API functional"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "CMS & CONTENT SYSTEMS",
+      "priority": "HIGH",
+      "purpose": "Verify content management features",
+      "commands": [
+        "curl -s https://heiwahauz.netlify.app/api/admin/blog/posts | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/blog/authors | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/blog/categories | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/testimonials | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/faq | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/cms/homepage | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/blog | grep -q 'Blog\\|blog'",
+        "curl -s https://heiwahauz.netlify.app/api/blog/posts | grep -q 'success'"
+      ],
+      "expected_results": [
+        "Blog posts API functional",
+        "Blog authors API functional",
+        "Blog categories API functional",
+        "Testimonials API functional",
+        "FAQ API functional",
+        "Public homepage CMS API functional",
+        "Blog page loads successfully",
+        "Public blog posts API functional"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "FULL SITE VERIFICATION",
+      "priority": "MEDIUM",
+      "purpose": "Test all pages and remaining APIs",
+      "commands": [
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/privacy | grep -q '200'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/play | grep -q '200'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/flow | grep -q '200'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/rooms/test-room | grep -q '200\\|404'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/blog/test-post | grep -q '200\\|404'",
+        "curl -s https://heiwahauz.netlify.app/api/add-ons | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/calendar-events | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/assignments | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/analytics/revenue | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/analytics/occupancy | grep -q 'success'"
+      ],
+      "expected_results": [
+        "Privacy page loads",
+        "Play page loads",
+        "Flow page loads",
+        "Room detail page handles slugs",
+        "Blog post page handles slugs",
+        "Add-ons API functional",
+        "Calendar events API functional",
+        "Assignments API functional",
+        "Revenue analytics API functional",
+        "Occupancy analytics API functional"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "SECURITY & SEO VERIFICATION",
+      "priority": "HIGH",
+      "purpose": "Verify security measures and SEO basics",
+      "commands": [
+        "curl -s -I https://heiwahauz.netlify.app/api/admin/bookings | grep -q '401\\|403'",
+        "curl -s -I https://heiwahauz.netlify.app/api/bookings | grep -i 'access-control-allow-origin'",
+        "curl -s https://heiwahauz.netlify.app | grep -q '<title>'",
+        "curl -s https://heiwahauz.netlify.app | grep -q 'name=\"description\"'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/sitemap.xml | grep -q '200'",
+        "curl -s -o /dev/null -w '%{http_code}' https://heiwahauz.netlify.app/robots.txt | grep -q '200'",
+        "curl -s https://heiwahauz.netlify.app | grep -q 'meta name=\"viewport\"'"
+      ],
+      "expected_results": [
+        "Admin APIs reject unauthenticated requests",
+        "CORS headers present on API routes",
+        "Page title tag exists",
+        "Meta description exists",
+        "Sitemap.xml accessible",
+        "Robots.txt accessible",
+        "Viewport meta tag for mobile"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "DATA INTEGRITY TESTS",
+      "priority": "HIGH",
+      "purpose": "Verify booking system data integrity",
+      "commands": [
+        "curl -s https://heiwahauz.netlify.app/api/rooms | jq '.[0].id' | head -1 | xargs -I {} curl -s https://heiwahauz.netlify.app/api/availability?check_in=2024-12-01&check_out=2024-12-03&room_id={} | grep -q 'success'",
+        "curl -s https://heiwahauz.netlify.app/api/admin/analytics | grep -q 'total_bookings\\|revenue'",
+        "curl -s https://heiwahauz.netlify.app/api/bookings | grep -q '\\[.*\\]'",
+        "curl -s https://heiwahauz.netlify.app/api/clients | grep -q '\\[.*\\]'"
+      ],
+      "expected_results": [
+        "Availability check works with specific room",
+        "Analytics returns booking metrics",
+        "Bookings list returns data structure",
+        "Clients list returns data structure"
+      ]
+    }
+  ],
+  "performance_checks": {
+    "critical_pages": [
+      "curl -w '@curl-format.txt' -o /dev/null -s https://heiwahauz.netlify.app",
+      "curl -w '@curl-format.txt' -o /dev/null -s https://heiwahauz.netlify.app/booking",
+      "curl -w '@curl-format.txt' -o /dev/null -s https://heiwahauz.netlify.app/rooms"
+    ],
+    "thresholds": {
+      "time_total": "< 3 seconds",
+      "time_connect": "< 1 second",
+      "size_download": "< 2MB for homepage"
+    },
+    "core_web_vitals": {
+      "command": "curl -s 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://heiwahauz.netlify.app&strategy=mobile' | jq '.lighthouseResult.categories.performance.score * 100'",
+      "threshold": "> 90 performance score",
+      "metrics_to_check": [
+        "Largest Contentful Paint (LCP) < 2.5s",
+        "First Input Delay (FID) < 100ms", 
+        "Cumulative Layout Shift (CLS) < 0.1"
+      ]
+    }
+  },
+  "error_detection": {
+    "console_errors": [
+      "Open browser devtools on homepage",
+      "Check Console tab for errors",
+      "Look for: 404s, 500s, JavaScript errors",
+      "Specific patterns to check:",
+      "- 'Multiple GoTrueClient instances detected'",
+      "- 'Cannot access \\'en\\' before initialization'",
+      "- 'Failed to fetch'",
+      "- 'Network error'",
+      "- Any TypeError or ReferenceError"
+    ],
+    "network_failures": [
+      "Check Network tab for failed requests",
+      "Verify all API calls return proper status codes",
+      "Check for missing assets (404s on images/scripts)"
+    ]
+  },
+  "database_connectivity": {
+    "supabase_checks": [
+      "curl -s https://heiwahauz.netlify.app/api/bookings | grep -q 'success'",
+      "curl -s https://heiwahauz.netlify.app/api/rooms | grep -q '\\[.*\\]'",
+      "curl -s https://heiwahauz.netlify.app/api/clients | grep -q 'success'",
+      "curl -s https://heiwahauz.netlify.app/api/admin/analytics | grep -q 'success'"
+    ],
+    "expected_behavior": [
+      "All database-backed APIs respond successfully",
+      "No 'connection refused' or 'timeout' errors",
+      "Data returned in expected JSON format"
+    ]
+  },
+  "mobile_responsive": {
+    "checklist": [
+      "Open Chrome DevTools",
+      "Toggle device toolbar",
+      "Test iPhone 12 viewport (390x844)",
+      "Test iPad viewport (768x1024)",
+      "Verify navigation works on mobile",
+      "Check booking flow on mobile",
+      "Ensure admin panel is usable on tablet"
+    ]
+  },
+  "post_deployment_actions": {
+    "if_all_tests_pass": [
+      "Merge innovation to main if ready",
+      "Update deployment documentation",
+      "Notify stakeholders of successful deployment",
+      "Monitor for 30 minutes for any issues"
+    ],
+    "if_tests_fail": [
+      "Document all failures in detail",
+      "Check Netlify deploy logs for errors",
+      "Rollback if critical functionality broken",
+      "Fix issues locally and redeploy",
+      "Re-run failed tests"
+    ]
+  },
+  "automation_script": {
+    "bash_script": "#!/bin/bash\n# Heiwa House Production Test Script\nSITE='https://heiwahauz.netlify.app'\n\necho '🏄‍♂️ Testing Heiwa House Production Deployment...'\n\n# Phase 1: Smoke Tests\necho '\\n📋 Phase 1: Smoke Tests'\ncurl -s -o /dev/null -w '%{http_code}' $SITE | grep -q '200' && echo '✅ Homepage loads' || echo '❌ Homepage failed'\ncurl -s $SITE | grep -q 'Welcome to Heiwa House' && echo '✅ Hero content visible' || echo '❌ Hero content missing'\ncurl -s -o /dev/null -w '%{http_code}' $SITE/admin | grep -q '200\\|307' && echo '✅ Admin accessible' || echo '❌ Admin failed'\n\n# Phase 2: APIs\necho '\\n🔌 Phase 2: API Tests'\ncurl -s $SITE/api/bookings | grep -q 'success' && echo '✅ Bookings API' || echo '❌ Bookings API failed'\ncurl -s $SITE/api/rooms | grep -q '\\[.*\\]' && echo '✅ Rooms API' || echo '❌ Rooms API failed'\ncurl -s $SITE/api/clients | grep -q 'success' && echo '✅ Clients API' || echo '❌ Clients API failed'\n\n# Phase 3: Admin APIs\necho '\\n⚙️ Phase 3: Admin APIs'\ncurl -s $SITE/api/admin/homepage | grep -q 'success' && echo '✅ Homepage CMS API' || echo '❌ Homepage CMS API failed'\ncurl -s $SITE/api/admin/analytics | grep -q 'success' && echo '✅ Analytics API' || echo '❌ Analytics API failed'\n\necho '\\n🎉 Production testing complete!'"
+  }
+}

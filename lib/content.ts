@@ -220,31 +220,31 @@ export const homePageContent: HomePageContent = {
   hero: {
     title: 'Nestled on Portugal\'s coast, Heiwa House is your sanctuary for rest and adventure.',
     subtitle: 'A WAVE AWAY',
-    video: '/images/videos/Timeline-1.mp4',
-    backgroundImage: '/images/hero/heiwa-hero.jpg',
+    video: 'https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932934179_Timeline-1.mp4',
+    backgroundImage: 'https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/homepage/1763932914644_heiwa-hero.jpg',
     cta: [{ label: 'EXPLORE', href: '/rooms' }]
   },
   featureCards: [
     {
       title: 'Play',
-      image: '/images/skatepark-1.jpg',
+      image: 'https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/the-spot/1763932921124_skatepark-1.jpg',
       href: '/play'
     },
     {
       title: 'Surf',
-      image: '/images/surf4.jpg',
+      image: 'https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/surf/1763932922433_surf4.jpg',
       href: '/surf-weeks'
     },
     {
       title: 'Flow',
-      image: '/images/yoga_dome1.jpg',
+      image: 'https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/page-images/flow/1763932922968_yoga_dome1.jpg',
       href: '/flow'
     }
   ],
   videoEmbed: {
     provider: 'youtube',
     src: 'https://youtu.be/9nhQiKGsgHg',
-    poster: '/images/surf-weeks-front-page.jpg'
+    poster: 'https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/surf-camp-images/1763932926806_surf-weeks-front-page.jpg'
   }
 }
 

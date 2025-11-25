@@ -2,16 +2,28 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Save, Eye, X } from 'lucide-react'
+import { Save, X } from 'lucide-react'
 import Link from 'next/link'
 import { TipTapEditor } from '@/components/admin/blog/TipTapEditor'
 import { CoverImageUpload } from '@/components/admin/blog/CoverImageUpload'
 
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
+interface Author {
+  id: string
+  name: string
+  email: string
+}
+
 export default function NewPostPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [categories, setCategories] = useState<any[]>([])
-  const [authors, setAuthors] = useState<any[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [authors, setAuthors] = useState<Author[]>([])
   const [formData, setFormData] = useState({
     status: 'draft' as 'draft' | 'scheduled' | 'published',
     featured: false,
@@ -435,7 +447,7 @@ export default function NewPostPage() {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                status: e.target.value as any
+                status: e.target.value as 'draft' | 'scheduled' | 'published'
               })
             }
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"

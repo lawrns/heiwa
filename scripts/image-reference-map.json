@@ -1,0 +1,171 @@
+{
+  "scanDate": "2025-11-23T21:20:35.215Z",
+  "totalReferences": 10,
+  "byType": {
+    "local": 6,
+    "old_supabase": 4,
+    "new_supabase": 0,
+    "external": 0,
+    "unknown": 0
+  },
+  "byTable": {
+    "rooms": 4,
+    "surf_camps": 0,
+    "homepage_sections": 0,
+    "homepage_content": 0,
+    "page_content": 6,
+    "testimonials": 0,
+    "media_library": 0,
+    "blog_post_translations": 0,
+    "blog_authors": 0,
+    "gallery": 0
+  },
+  "references": [
+    {
+      "table": "rooms",
+      "recordId": "6a6e6bb0-d3e5-4fab-87d8-7e39174637e9",
+      "field": "images",
+      "originalUrl": "https://zejrhceuuujzgyukdwnb.supabase.co/storage/v1/object/public/rooms/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9/1759963488935_room3.webp",
+      "category": {
+        "type": "old_supabase",
+        "url": "https://zejrhceuuujzgyukdwnb.supabase.co/storage/v1/object/public/rooms/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9/1759963488935_room3.webp"
+      },
+      "recordData": {
+        "id": "6a6e6bb0-d3e5-4fab-87d8-7e39174637e9",
+        "name": "Room Nr 3"
+      }
+    },
+    {
+      "table": "rooms",
+      "recordId": "190611e3-72a9-4e63-bbdc-c65a02c5b442",
+      "field": "images",
+      "originalUrl": "https://zejrhceuuujzgyukdwnb.supabase.co/storage/v1/object/public/rooms/1762636254337/1762636262513_8B8BA276-6D91-419B-B8F4-7696042ED92F-01%20(1).jpeg",
+      "category": {
+        "type": "old_supabase",
+        "url": "https://zejrhceuuujzgyukdwnb.supabase.co/storage/v1/object/public/rooms/1762636254337/1762636262513_8B8BA276-6D91-419B-B8F4-7696042ED92F-01%20(1).jpeg"
+      },
+      "recordData": {
+        "id": "190611e3-72a9-4e63-bbdc-c65a02c5b442",
+        "name": "new room"
+      }
+    },
+    {
+      "table": "rooms",
+      "recordId": "f3f00cbb-c30e-4d84-9352-cfb6a76684d0",
+      "field": "images",
+      "originalUrl": "https://zejrhceuuujzgyukdwnb.supabase.co/storage/v1/object/public/rooms/f3f00cbb-c30e-4d84-9352-cfb6a76684d0/1759963486225_dorm.webp",
+      "category": {
+        "type": "old_supabase",
+        "url": "https://zejrhceuuujzgyukdwnb.supabase.co/storage/v1/object/public/rooms/f3f00cbb-c30e-4d84-9352-cfb6a76684d0/1759963486225_dorm.webp"
+      },
+      "recordData": {
+        "id": "f3f00cbb-c30e-4d84-9352-cfb6a76684d0",
+        "name": "Dorm room"
+      }
+    },
+    {
+      "table": "rooms",
+      "recordId": "ac98fd46-5bd2-413c-98f3-17e71024e734",
+      "field": "images",
+      "originalUrl": "https://zejrhceuuujzgyukdwnb.supabase.co/storage/v1/object/public/rooms/ac98fd46-5bd2-413c-98f3-17e71024e734/1759963487843_room2.webp",
+      "category": {
+        "type": "old_supabase",
+        "url": "https://zejrhceuuujzgyukdwnb.supabase.co/storage/v1/object/public/rooms/ac98fd46-5bd2-413c-98f3-17e71024e734/1759963487843_room2.webp"
+      },
+      "recordData": {
+        "id": "ac98fd46-5bd2-413c-98f3-17e71024e734",
+        "name": "Room Nr 2"
+      }
+    },
+    {
+      "table": "page_content",
+      "recordId": "cc0c6196-c750-4c12-b430-42d5df05a814",
+      "field": "json_content",
+      "originalUrl": "/images/yoga_dome3.jpg",
+      "category": {
+        "type": "local",
+        "path": "/images/yoga_dome3.jpg"
+      },
+      "recordData": {
+        "id": "cc0c6196-c750-4c12-b430-42d5df05a814",
+        "page_slug": "flow",
+        "section": "hero"
+      }
+    },
+    {
+      "table": "page_content",
+      "recordId": "cc0c6196-c750-4c12-b430-42d5df05a814",
+      "field": "json_content",
+      "originalUrl": "/images/videos/flow-wellness.mp4",
+      "category": {
+        "type": "local",
+        "path": "/images/videos/flow-wellness.mp4"
+      },
+      "recordData": {
+        "id": "cc0c6196-c750-4c12-b430-42d5df05a814",
+        "page_slug": "flow",
+        "section": "hero"
+      }
+    },
+    {
+      "table": "page_content",
+      "recordId": "40ecd27b-836d-470f-a177-a826b32d55f6",
+      "field": "json_content",
+      "originalUrl": "/images/activities/pool.jpg",
+      "category": {
+        "type": "local",
+        "path": "/images/activities/pool.jpg"
+      },
+      "recordData": {
+        "id": "40ecd27b-836d-470f-a177-a826b32d55f6",
+        "page_slug": "play",
+        "section": "hero"
+      }
+    },
+    {
+      "table": "page_content",
+      "recordId": "40ecd27b-836d-470f-a177-a826b32d55f6",
+      "field": "json_content",
+      "originalUrl": "/images/videos/play-activities.mp4",
+      "category": {
+        "type": "local",
+        "path": "/images/videos/play-activities.mp4"
+      },
+      "recordData": {
+        "id": "40ecd27b-836d-470f-a177-a826b32d55f6",
+        "page_slug": "play",
+        "section": "hero"
+      }
+    },
+    {
+      "table": "page_content",
+      "recordId": "7ddfff43-6ab4-40ae-858f-64d3704f0035",
+      "field": "json_content",
+      "originalUrl": "/images/surf/surf-hero.jpg",
+      "category": {
+        "type": "local",
+        "path": "/images/surf/surf-hero.jpg"
+      },
+      "recordData": {
+        "id": "7ddfff43-6ab4-40ae-858f-64d3704f0035",
+        "page_slug": "surf",
+        "section": "hero"
+      }
+    },
+    {
+      "table": "page_content",
+      "recordId": "7ddfff43-6ab4-40ae-858f-64d3704f0035",
+      "field": "json_content",
+      "originalUrl": "/images/videos/surf-experience.mp4",
+      "category": {
+        "type": "local",
+        "path": "/images/videos/surf-experience.mp4"
+      },
+      "recordData": {
+        "id": "7ddfff43-6ab4-40ae-858f-64d3704f0035",
+        "page_slug": "surf",
+        "section": "hero"
+      }
+    }
+  ]
+}

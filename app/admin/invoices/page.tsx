@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { FileText, Plus, Eye, Edit, Trash2, Filter, Download, Search } from 'lucide-react'
+import { FileText, Plus, Eye, Edit, Trash2, Download, Search } from 'lucide-react'
 import { InvoiceModal } from '@/components/admin/invoices/InvoiceModal'
 import { InvoiceViewModal } from '@/components/admin/invoices/InvoiceViewModal'
 import { BulkActions } from '@/components/admin/BulkActions'

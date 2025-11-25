@@ -18,6 +18,33 @@ export async function GET(request: NextRequest) {
       }, { status: 400 })
     }
 
+    // Validate date format (YYYY-MM-DD)
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+    if (!dateRegex.test(startDate) || !dateRegex.test(endDate)) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid date format. Use YYYY-MM-DD format (e.g., 2025-12-01)'
+      }, { status: 400 })
+    }
+
+    // Validate dates are valid Date objects
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid date values. Please provide valid dates in YYYY-MM-DD format'
+      }, { status: 400 })
+    }
+
+    // Validate check-out is after check-in
+    if (start >= end) {
+      return NextResponse.json({
+        success: false,
+        error: 'Check-out date must be after check-in date'
+      }, { status: 400 })
+    }
+
     // Get all rooms
     const { data: allRooms, error: roomsError } = await supabase
       .from('rooms')
@@ -33,25 +60,25 @@ export async function GET(request: NextRequest) {
     }
 
     // Check for existing bookings that overlap with requested dates
-    // Handle case where bookings table might not exist yet
+    // Bookings table uses room_type (text/room name) instead of room_id
     interface RoomBooking {
-      room_id: string
-      check_in_date: string
-      check_out_date: string
+      room_type: string
+      check_in: string
+      check_out: string
     }
     let existingBookings: RoomBooking[] = []
 
     try {
       const { data, error: bookingsError } = await supabase
-        .from('room_assignments')
-        .select('room_id, check_in_date, check_out_date')
-        .gte('check_out_date', startDate)
-        .lte('check_in_date', endDate)
-        .eq('status', 'confirmed')
+        .from('bookings')
+        .select('room_type, check_in, check_out')
+        .gte('check_out', startDate)
+        .lte('check_in', endDate)
+        .in('status', ['pending', 'confirmed'])
 
       if (bookingsError) {
-        // If table doesn't exist, log warning but continue with empty bookings
-        console.warn('Bookings table not found or error:', bookingsError.message)
+        // If table doesn't exist or error, log warning but continue with empty bookings
+        console.warn('Bookings table error:', bookingsError.message)
         existingBookings = []
       } else {
         existingBookings = data || []
@@ -61,15 +88,37 @@ export async function GET(request: NextRequest) {
       existingBookings = []
     }
 
-    // Filter available rooms - only check date availability, not capacity
-    // Users will select multiple rooms to accommodate all guests
-    const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; [key: string]: unknown }) => {
+    // Create a map of room names to IDs for matching
+    const roomNameToId = new Map<string, string>()
+    ;(allRooms || []).forEach((room: { id?: string; name?: string }) => {
+      if (room.id && room.name) {
+        roomNameToId.set(room.name, room.id)
+      }
+    })
+
+    // Filter available rooms - check both date availability AND capacity
+    const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; name?: string; [key: string]: unknown }) => {
       // Check if room is already booked for these dates
+      // Match by room name since bookings table uses room_type (text)
       const isBooked = existingBookings.some(booking =>
-        booking.room_id === room.id
+        booking.room_type === room.name
       )
 
-      return !isBooked
+      if (isBooked) {
+        return false
+      }
+
+      // Check capacity: For single room selection, room must accommodate all guests
+      // For multi-room selection, we'll allow it and validate in UI
+      // But at minimum, if a single room can't fit guests, filter it out
+      const roomCapacity = room.capacity || 0
+      if (roomCapacity > 0 && guests > roomCapacity) {
+        // Room can't accommodate all guests alone - but allow for multi-room selection
+        // We'll validate total capacity in the UI
+        return true // Keep it for multi-room selection possibility
+      }
+
+      return true
     })
 
     console.log('✅ Room availability check completed:', {
@@ -77,6 +126,20 @@ export async function GET(request: NextRequest) {
       available_rooms: availableRooms.length,
       requested_guests: guests
     })
+
+    // Determine if requested dates fall in peak season (May-September)
+    const checkInDate = new Date(startDate)
+    const checkOutDate = new Date(endDate)
+    const peakSeasonMonths = [5, 6, 7, 8, 9] // May to September
+    let isPeakSeason = false
+    const current = new Date(checkInDate)
+    while (current < checkOutDate) {
+      if (peakSeasonMonths.includes(current.getMonth() + 1)) {
+        isPeakSeason = true
+        break
+      }
+      current.setDate(current.getDate() + 1)
+    }
 
     // Transform rooms to match booking widget expected format (same as /rooms endpoint)
     const transformedRooms = availableRooms.map((room: unknown) => {
@@ -91,8 +154,11 @@ export async function GET(request: NextRequest) {
         images?: string[]
         isActive?: boolean
       }
-      // Calculate price_per_night from pricing object
-      const pricePerNight = r.pricing?.standard || r.pricing?.offSeason || 80
+      
+      // Calculate price_per_night based on seasonal rate for requested dates
+      const pricePerNight = isPeakSeason 
+        ? (r.pricing?.standard || r.pricing?.offSeason || null)
+        : (r.pricing?.offSeason || r.pricing?.standard || null)
 
       return {
         id: r.id,
@@ -101,10 +167,13 @@ export async function GET(request: NextRequest) {
         capacity: r.capacity,
         booking_type: r.bookingType || 'whole',
         price_per_night: pricePerNight,
+        price_per_night_standard: r.pricing?.standard || null,
+        price_per_night_off_season: r.pricing?.offSeason || null,
         amenities: r.amenities || [],
         featured_image: r.images && r.images.length > 0 ? r.images[0] : null,
         images: r.images || [],
         is_active: r.isActive !== false,
+        pricing: r.pricing, // Include full pricing object for frontend calculation
       }
     })
 

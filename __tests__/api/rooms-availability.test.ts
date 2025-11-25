@@ -33,7 +33,7 @@ describe('/api/rooms/availability', () => {
         RoomFactory.dorm({ id: 'room-1', capacity: 6 }),
         RoomFactory.private({ id: 'room-2', capacity: 1 })
       ]
-      const mockBookings: Array<{ room_id: string; check_in_date: string; check_out_date: string }> = []
+      const mockBookings: Array<{ room_type: string; check_in: string; check_out: string }> = []
 
       mockSupabase.from.mockImplementation((table: string) => {
         if (table === 'rooms') {
@@ -46,12 +46,12 @@ describe('/api/rooms/availability', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               gte: jest.fn().mockReturnValue({
                 lte: jest.fn().mockReturnValue({
-                  eq: jest.fn().mockResolvedValue({ 
+                  in: jest.fn().mockResolvedValue({ 
                     data: mockBookings, 
                     error: null 
                   })
@@ -99,7 +99,7 @@ describe('/api/rooms/availability', () => {
 
     it('should default guests to 1 when not provided', async () => {
       const mockRooms = [RoomFactory.dorm({ id: 'room-1', capacity: 6 })]
-      const mockBookings: Array<{ room_id: string; check_in_date: string; check_out_date: string }> = []
+      const mockBookings: Array<{ room_type: string; check_in: string; check_out: string }> = []
 
       mockSupabase.from.mockImplementation((table: string) => {
         if (table === 'rooms') {
@@ -112,12 +112,12 @@ describe('/api/rooms/availability', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               gte: jest.fn().mockReturnValue({
                 lte: jest.fn().mockReturnValue({
-                  eq: jest.fn().mockResolvedValue({ 
+                  in: jest.fn().mockResolvedValue({ 
                     data: mockBookings, 
                     error: null 
                   })
@@ -242,7 +242,7 @@ describe('/api/rooms/availability', () => {
   describe('Integration Tests', () => {
     it('should maintain consistent response structure', async () => {
       const mockRooms = [RoomFactory.dorm({ id: 'room-1', capacity: 6 })]
-      const mockBookings: Array<{ room_id: string; check_in_date: string; check_out_date: string }> = []
+      const mockBookings: Array<{ room_type: string; check_in: string; check_out: string }> = []
 
       mockSupabase.from.mockImplementation((table: string) => {
         if (table === 'rooms') {
@@ -255,12 +255,12 @@ describe('/api/rooms/availability', () => {
             })
           }
         }
-        if (table === 'room_assignments') {
+        if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               gte: jest.fn().mockReturnValue({
                 lte: jest.fn().mockReturnValue({
-                  eq: jest.fn().mockResolvedValue({ 
+                  in: jest.fn().mockResolvedValue({ 
                     data: mockBookings, 
                     error: null 
                   })

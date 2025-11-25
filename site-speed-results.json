@@ -1,0 +1,185 @@
+{
+  "pages": [
+    {
+      "name": "Homepage",
+      "url": "/",
+      "status": 200,
+      "responseTime": 445,
+      "htmlSize": 76,
+      "imageCount": 15,
+      "scriptCount": 9,
+      "linkCount": 23,
+      "hasLazyLoading": true,
+      "hasNextImage": true,
+      "hasPreload": true,
+      "hasPrefetch": false,
+      "performance": "excellent"
+    },
+    {
+      "name": "Rooms",
+      "url": "/rooms",
+      "status": 200,
+      "responseTime": 246,
+      "htmlSize": 34,
+      "imageCount": 5,
+      "scriptCount": 9,
+      "linkCount": 13,
+      "hasLazyLoading": true,
+      "hasNextImage": true,
+      "hasPreload": true,
+      "hasPrefetch": false,
+      "performance": "excellent"
+    },
+    {
+      "name": "Surf Weeks",
+      "url": "/surf-weeks",
+      "status": 200,
+      "responseTime": 128,
+      "htmlSize": 134,
+      "imageCount": 23,
+      "scriptCount": 9,
+      "linkCount": 12,
+      "hasLazyLoading": true,
+      "hasNextImage": true,
+      "hasPreload": true,
+      "hasPrefetch": false,
+      "performance": "excellent"
+    },
+    {
+      "name": "Flow",
+      "url": "/flow",
+      "status": 200,
+      "responseTime": 107,
+      "htmlSize": 49,
+      "imageCount": 6,
+      "scriptCount": 9,
+      "linkCount": 14,
+      "hasLazyLoading": true,
+      "hasNextImage": true,
+      "hasPreload": true,
+      "hasPrefetch": false,
+      "performance": "excellent"
+    },
+    {
+      "name": "Play",
+      "url": "/play",
+      "status": 200,
+      "responseTime": 119,
+      "htmlSize": 48,
+      "imageCount": 4,
+      "scriptCount": 9,
+      "linkCount": 13,
+      "hasLazyLoading": true,
+      "hasNextImage": true,
+      "hasPreload": true,
+      "hasPrefetch": false,
+      "performance": "excellent"
+    },
+    {
+      "name": "Surf",
+      "url": "/surf",
+      "status": 200,
+      "responseTime": 124,
+      "htmlSize": 69,
+      "imageCount": 8,
+      "scriptCount": 9,
+      "linkCount": 12,
+      "hasLazyLoading": true,
+      "hasNextImage": true,
+      "hasPreload": true,
+      "hasPrefetch": false,
+      "performance": "excellent"
+    },
+    {
+      "name": "The Spot",
+      "url": "/the-spot",
+      "status": 200,
+      "responseTime": 214,
+      "htmlSize": 68,
+      "imageCount": 7,
+      "scriptCount": 9,
+      "linkCount": 16,
+      "hasLazyLoading": true,
+      "hasNextImage": true,
+      "hasPreload": true,
+      "hasPrefetch": false,
+      "performance": "excellent"
+    },
+    {
+      "name": "Blog",
+      "url": "/blog",
+      "status": 200,
+      "responseTime": 110,
+      "htmlSize": 40,
+      "imageCount": 7,
+      "scriptCount": 9,
+      "linkCount": 10,
+      "hasLazyLoading": true,
+      "hasNextImage": true,
+      "hasPreload": true,
+      "hasPrefetch": false,
+      "performance": "excellent"
+    }
+  ],
+  "apis": [
+    {
+      "name": "Bookings API",
+      "url": "/api/bookings",
+      "status": 200,
+      "responseTime": 242,
+      "jsonSize": 0,
+      "performance": "excellent"
+    },
+    {
+      "name": "Rooms API",
+      "url": "/api/rooms",
+      "status": 200,
+      "responseTime": 178,
+      "jsonSize": 3,
+      "performance": "excellent"
+    },
+    {
+      "name": "Surf Camps API",
+      "url": "/api/surf-camps",
+      "status": 200,
+      "responseTime": 273,
+      "jsonSize": 1,
+      "performance": "excellent"
+    },
+    {
+      "name": "Homepage API",
+      "url": "/api/admin/homepage",
+      "status": 200,
+      "responseTime": 194,
+      "jsonSize": 4,
+      "performance": "excellent"
+    },
+    {
+      "name": "Testimonials API",
+      "url": "/api/admin/testimonials",
+      "status": 200,
+      "responseTime": 183,
+      "jsonSize": 4,
+      "performance": "excellent"
+    },
+    {
+      "name": "FAQ API",
+      "url": "/api/admin/faq",
+      "status": 200,
+      "responseTime": 168,
+      "jsonSize": 14,
+      "performance": "excellent"
+    }
+  ],
+  "summary": {
+    "totalPages": 8,
+    "excellent": 8,
+    "good": 0,
+    "fair": 0,
+    "poor": 0,
+    "errors": 0,
+    "avgResponseTime": 187,
+    "totalAPIs": 6,
+    "avgAPITime": 206
+  }
+}

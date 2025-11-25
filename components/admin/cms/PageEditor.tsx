@@ -34,7 +34,7 @@ const pageTitles: Record<string, string> = {
 const pageDescriptions: Record<string, string> = {
   flow: 'Yoga, massage, ice bath, sauna, and wellness services',
   play: 'Activities, experiences, and recreational services',
-  surf: 'Surf lessons, equipment, and surf camp information',
+  surf: 'Surf lessons, equipment, and surf week information',
   'the-spot': 'Beach club, restaurant, and local attractions',
   about: 'Company story, team, and mission',
   contact: 'Contact information, location, and inquiry forms'

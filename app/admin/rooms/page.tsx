@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Plus, Edit, Trash2, Eye, Search, Filter, Download } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, Search, Download } from 'lucide-react'
 import { RoomCardSkeleton } from '@/components/ui/skeleton-loaders'
 
 interface Room {
@@ -28,7 +28,7 @@ export default function RoomsPage() {
 
   const fetchRooms = async () => {
     try {
-      const response = await fetch('/api/rooms')
+      const response = await fetch('/api/admin/rooms')
       const data = await response.json()
       
       if (data.success) {
@@ -37,6 +37,7 @@ export default function RoomsPage() {
         setError('Failed to fetch rooms')
       }
     } catch (err) {
+      console.error('Error fetching rooms:', err)
       setError('Error loading rooms')
     } finally {
       setLoading(false)
@@ -161,11 +162,22 @@ export default function RoomsPage() {
         {filteredRooms.map((room) => (
           <div key={room.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="relative">
-              <img
-                src={room.featured_image}
-                alt={room.name}
-                className="w-full h-48 object-cover"
-              />
+              {room.featured_image ? (
+                <img
+                  src={room.featured_image}
+                  alt={room.name}
+                  className="w-full h-48 object-cover"
+                  onError={(e) => {
+                    // Fallback to placeholder if image fails to load
+                    const target = e.target as HTMLImageElement
+                    target.src = '/images/rooms/room1.jpg'
+                  }}
+                />
+              ) : (
+                <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-400 text-sm">No image</span>
+                </div>
+              )}
               <div className="absolute top-4 right-4">
                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                   room.is_active 

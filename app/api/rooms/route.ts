@@ -36,8 +36,10 @@ export async function GET() {
 
     // Transform rooms to match UI expected format with proper field mapping
     const transformedRooms = activeRooms.map((room: any) => {
-      // Calculate price_per_night from pricing object
-      const pricePerNight = room.pricing?.standard || room.pricing?.offSeason || 80
+      // Pricing: Include both standard and offSeason rates
+      // Don't calculate price_per_night here - let frontend calculate based on dates
+      // Default to standard rate if available, otherwise offSeason
+      const defaultPricePerNight = room.pricing?.standard || room.pricing?.offSeason || null
 
       return {
         id: room.id,
@@ -53,7 +55,10 @@ export async function GET() {
         // Keep original fields for backward compatibility
         booking_type: room.booking_type,
         is_active: room.is_active,
-        price_per_night: pricePerNight,
+        // Include both rates for frontend to calculate based on dates
+        price_per_night: defaultPricePerNight, // Fallback for compatibility
+        price_per_night_standard: room.pricing?.standard || null,
+        price_per_night_off_season: room.pricing?.offSeason || null,
         featured_image: room.images && room.images.length > 0 ? room.images[0] : null,
       }
     })

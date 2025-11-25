@@ -29,10 +29,10 @@ export async function GET(request: NextRequest) {
     // Check for overlapping bookings
     const { data: existingBookings, error } = await supabase
       .from('bookings')
-      .select('id, status, check_in_date, check_out_date, guests')
-      .eq('room_id', roomId)
+      .select('id, status, check_in, check_out, guests')
+      .eq('room_type', roomId)
       .in('status', ['pending', 'confirmed'])
-      .or(`check_in_date.lt.${checkOut},check_out_date.gt.${checkIn}`)
+      .or(`check_in.lt.${checkOut},check_out.gt.${checkIn}`)
 
     if (error) {
       console.error('Error checking availability:', error)

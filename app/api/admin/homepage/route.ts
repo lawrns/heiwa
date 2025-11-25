@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { executeWithTimeout } from '@/lib/supabase-timeout'
 
 export interface HomepageSection {
   id: string
@@ -79,24 +80,60 @@ export async function GET() {
   try {
     console.log('🏠 Homepage API - Starting GET request')
     
-    // Test Supabase connection
-    console.log('🔗 Testing Supabase connection...')
-    const { data: testData, error: testError } = await supabaseAdmin
-      .from('homepage_content' as any)
-      .select('count')
-      .limit(1)
+    // Fetch homepage content with timeout protection
+    console.log('🔗 Fetching homepage content...')
     
-    if (testError) {
-      console.error('❌ Supabase connection test failed:', testError)
-      throw new Error(`Supabase connection failed: ${testError.message}`)
-    }
-    
-    console.log('✅ Supabase connection successful, fetching data...')
-    
-    const { data, error } = await supabaseAdmin
+    const homepageQuery = supabaseAdmin
       .from('homepage_content' as any)
       .select('*')
       .order('order_index', { ascending: true })
+    
+    const { data, error } = await executeWithTimeout(
+      homepageQuery,
+      1000 // 1 second timeout for fast failure
+    )
+    
+    if (error) {
+      console.error('❌ Supabase connection failed:', error)
+      
+      // Check if it's a timeout/network error - return empty array gracefully
+      const errorMessage = error?.message || String(error)
+      const isNetworkError = errorMessage.includes('timeout') ||
+                            errorMessage.includes('NETWORK_ERROR') ||
+                            errorMessage.includes('TIMEOUT') ||
+                            errorMessage.includes('Supabase may be unreachable')
+      
+      if (isNetworkError) {
+        console.warn('⚠️ Supabase unreachable - returning empty homepage content')
+        return NextResponse.json({
+          success: true,
+          data: []
+        }, {
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        })
+      }
+      
+      throw new Error(`Supabase connection failed: ${error.message}`)
+    }
+    
+    // Handle null data (connection failure)
+    if (!data) {
+      console.warn('⚠️ No homepage data returned - returning empty array')
+      return NextResponse.json({
+        success: true,
+        data: []
+      }, {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      })
+    }
 
     if (error) {
       console.error('❌ Database query error:', error)
@@ -137,17 +174,29 @@ export async function GET() {
       }
     })
   } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+    const isNetworkError = errorMessage.includes('ERR_NAME_NOT_RESOLVED') || 
+                          errorMessage.includes('getaddrinfo') ||
+                          errorMessage.includes('ENOTFOUND') ||
+                          errorMessage.includes('fetch failed') ||
+                          errorMessage.includes('Supabase connection failed')
+    
     console.error('❌ Homepage API Error:', {
       error: err,
-      message: err instanceof Error ? err.message : 'Unknown error',
+      message: errorMessage,
       stack: err instanceof Error ? err.stack : undefined,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      isNetworkError
     })
+    
     return NextResponse.json({
       success: false,
-      error: 'Failed to fetch homepage content',
+      error: isNetworkError 
+        ? 'Unable to connect to database. Please verify your Supabase project is active and environment variables are configured correctly.'
+        : 'Failed to fetch homepage content',
       debug: process.env.NODE_ENV === 'development' ? {
-        message: err instanceof Error ? err.message : 'Unknown error',
+        message: errorMessage,
+        type: isNetworkError ? 'network_error' : 'unknown_error',
         timestamp: new Date().toISOString()
       } : undefined
     }, { status: 500 })

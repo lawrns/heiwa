@@ -22,6 +22,8 @@ const customJestConfig = {
     '!**/node_modules/**',
     '!**/.next/**',
   ],
+  // Use manual mocks
+  automock: false,
 }
 
 module.exports = createJestConfig(customJestConfig)

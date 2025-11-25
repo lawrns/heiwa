@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { BarChart3, TrendingUp, Users, Calendar, DollarSign, Home, Filter } from 'lucide-react'
 
 interface RevenueData {
@@ -72,11 +72,7 @@ export default function AnalyticsPage() {
   })
   const [brand, setBrand] = useState<string>('all')
 
-  useEffect(() => {
-    fetchAnalytics()
-  }, [startDate, endDate, brand])
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -111,7 +107,11 @@ export default function AnalyticsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [startDate, endDate, brand])
+
+  useEffect(() => {
+    fetchAnalytics()
+  }, [fetchAnalytics])
 
   if (loading) {
     return (

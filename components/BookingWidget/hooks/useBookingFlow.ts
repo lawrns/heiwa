@@ -2,6 +2,7 @@ import { useReducer, useCallback, useMemo } from 'react';
 import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelection, BankWireDetails, RoomAssignment } from '../types';
 import { availabilityService } from '@/lib/availability';
 import { bookingService } from '@/lib/booking-service';
+import { validateBookingSubmission } from '@/lib/booking-utils';
 
 const initialState: BookingState = {
   currentStep: 1,
@@ -298,11 +299,14 @@ export function useBookingFlow() {
 
       case 'options':
         if (state.experienceType === 'surf-week') {
-          return state.selectedSurfWeek !== null;
+          // Check both selectedSurfWeek and selectedOption for compatibility
+          return (state.selectedSurfWeek !== null) || (state.selectedOption !== null);
         }
-        // For rooms: must have dates, guest count, and at least one room selected
+        // For rooms: must have dates, guest count, at least one room selected, and sufficient capacity
         // Note: Multi-room selection is supported - selectedOption stores the first selected room
-        return state.dates.checkIn && state.dates.checkOut && state.guests > 0 && state.selectedOption !== null;
+        // Capacity validation is handled in OptionSelection component via error state
+        const hasCapacityError = state.errors.capacity !== undefined;
+        return state.dates.checkIn && state.dates.checkOut && state.guests > 0 && state.selectedOption !== null && !hasCapacityError;
 
       case 'surf-week-room-selection':
         return state.selectedSurfWeekRoom !== null;
@@ -320,7 +324,17 @@ export function useBookingFlow() {
                state.guestDetails.every(g => g.firstName && g.lastName && g.email);
 
       case 'review-pay':
-        return state.paymentMethod !== null;
+        // Use comprehensive validation for review step
+        const validation = validateBookingSubmission({
+          experienceType: state.experienceType,
+          dates: state.dates,
+          selectedOption: state.selectedOption,
+          selectedSurfWeek: state.selectedSurfWeek,
+          guests: state.guests,
+          guestDetails: state.guestDetails,
+          paymentMethod: state.paymentMethod,
+        });
+        return validation.isValid;
 
       default:
         return false;
@@ -356,8 +370,38 @@ export function useBookingFlow() {
   }, [state.dates.checkIn, state.dates.checkOut, setError, setLoading]);
 
   const submitBooking = useCallback(async () => {
-    if (!state.guestDetails.length || !state.dates.checkIn || !state.dates.checkOut) {
-      setError('submission', 'Missing required booking information');
+    // Use comprehensive validation
+    const validation = validateBookingSubmission({
+      experienceType: state.experienceType,
+      dates: state.dates,
+      selectedOption: state.selectedOption,
+      selectedSurfWeek: state.selectedSurfWeek,
+      guests: state.guests,
+      guestDetails: state.guestDetails,
+      paymentMethod: state.paymentMethod,
+    });
+
+    if (!validation.isValid) {
+      const errorMessage = validation.errors[0] || 'Missing required booking information';
+      setError('submission', errorMessage);
+      
+      // Log validation failure for debugging
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Booking validation failed:', {
+          errors: validation.errors,
+          missingFields: validation.missingFields,
+          state: {
+            experienceType: state.experienceType,
+            hasCheckIn: !!state.dates.checkIn,
+            hasCheckOut: !!state.dates.checkOut,
+            selectedOption: state.selectedOption,
+            selectedSurfWeek: state.selectedSurfWeek,
+            guests: state.guests,
+            guestDetailsCount: state.guestDetails.length,
+            paymentMethod: state.paymentMethod,
+          }
+        });
+      }
       return null;
     }
 

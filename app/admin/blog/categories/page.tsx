@@ -13,7 +13,7 @@ interface Category {
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
+  const [, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Category | null>(null)
   const [formData, setFormData] = useState({
@@ -62,7 +62,7 @@ export default function CategoriesPage() {
       } else {
         alert(data.error || 'Failed to save category')
       }
-    } catch (err) {
+    } catch {
       alert('Error saving category')
     }
   }
@@ -80,7 +80,7 @@ export default function CategoriesPage() {
       } else {
         alert(data.error || 'Failed to delete category')
       }
-    } catch (err) {
+    } catch {
       alert('Error deleting category')
     }
   }

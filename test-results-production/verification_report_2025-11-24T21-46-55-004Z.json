@@ -1,0 +1,276 @@
+{
+  "timestamp": "2025-11-24T21:47:01.214Z",
+  "production_url": "https://heiwahauz.netlify.app",
+  "summary": {
+    "total_tests": 23,
+    "passed": 19,
+    "failed": 6,
+    "warnings": 1,
+    "success_rate": "83%"
+  },
+  "tests": [
+    {
+      "test": "Rooms API",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Surf Camps API",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Add-ons API",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Activities API",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Rooms Availability API",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Dates Availability API",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Bookings API (GET)",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Payments API",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Invoices API",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Calendar Events API",
+      "status": "FAIL",
+      "statusCode": 401,
+      "expected": 200,
+      "response": {
+        "success": false,
+        "error": "Unauthorized"
+      }
+    },
+    {
+      "test": "Admin Login Endpoint",
+      "status": "FAIL",
+      "statusCode": 401,
+      "expected": 200,
+      "response": {
+        "message": "Invalid password"
+      }
+    },
+    {
+      "test": "Admin Dashboard Protection",
+      "status": "FAIL",
+      "statusCode": 307,
+      "expected": 200,
+      "response": ""
+    },
+    {
+      "test": "Admin Bookings Protection",
+      "status": "FAIL",
+      "statusCode": 307,
+      "expected": 200,
+      "response": ""
+    },
+    {
+      "test": "Admin Calendar Protection",
+      "status": "FAIL",
+      "statusCode": 307,
+      "expected": 200,
+      "response": ""
+    },
+    {
+      "test": "Room Availability Check",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Payments List",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Payment Intent Creation Endpoint",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Database Read Consistency",
+      "status": "PASS",
+      "rooms_found": 4
+    },
+    {
+      "test": "Database Read Consistency (Surf Camps)",
+      "status": "PASS",
+      "camps_found": 0
+    },
+    {
+      "test": "Invalid Endpoint (404)",
+      "status": "PASS",
+      "statusCode": 404
+    },
+    {
+      "test": "Invalid Booking Payload",
+      "status": "PASS",
+      "statusCode": 400
+    },
+    {
+      "test": "Invalid Date Format",
+      "status": "FAIL",
+      "statusCode": 200,
+      "expected": 400,
+      "response": {
+        "success": true,
+        "data": {
+          "available_rooms": [
+            {
+              "id": "6a6e6bb0-d3e5-4fab-87d8-7e39174637e9",
+              "name": "Room Nr 3",
+              "description": "Step into the charm of this beautifully designed twin room, blending modern comfort with traditional Portuguese aesthetics. The room features handcrafted wooden furniture and traditional tiles.",
+              "capacity": 2,
+              "booking_type": "whole",
+              "price_per_night": 80,
+              "price_per_night_standard": 80,
+              "price_per_night_off_season": 80,
+              "amenities": [
+                "private-bathroom",
+                "twin-beds",
+                "wooden-furniture",
+                "traditional-tiles"
+              ],
+              "featured_image": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9/1759963488935_room3.webp",
+              "images": [
+                "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9/1759963488935_room3.webp"
+              ],
+              "is_active": true,
+              "pricing": {
+                "camp": {
+                  "1": 80,
+                  "2": 80
+                },
+                "standard": 80,
+                "offSeason": 80
+              }
+            },
+            {
+              "id": "190611e3-72a9-4e63-bbdc-c65a02c5b442",
+              "name": "new room",
+              "description": "sdfsdf",
+              "capacity": 1,
+              "booking_type": "whole",
+              "price_per_night": 2000,
+              "price_per_night_standard": 2000,
+              "price_per_night_off_season": null,
+              "amenities": [
+                "private-bathroom"
+              ],
+              "featured_image": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/1762636254337/1762636262513_8B8BA276-6D91-419B-B8F4-7696042ED92F-01%20(1).jpeg",
+              "images": [
+                "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/1762636254337/1762636262513_8B8BA276-6D91-419B-B8F4-7696042ED92F-01%20(1).jpeg"
+              ],
+              "is_active": true,
+              "pricing": {
+                "camp": {},
+                "standard": 2000,
+                "offSeason": 0
+              }
+            },
+            {
+              "id": "f3f00cbb-c30e-4d84-9352-cfb6a76684d0",
+              "name": "Dorm room",
+              "description": "Welcome to our spacious and airy shared dormitory, thoughtfully designed for comfort and community. This room features sturdy, handcrafted wooden bunk beds and a welcoming atmosphere.",
+              "capacity": 6,
+              "booking_type": "whole",
+              "price_per_night": 30,
+              "price_per_night_standard": 30,
+              "price_per_night_off_season": 30,
+              "amenities": [
+                "shared-bathroom",
+                "bunk-beds",
+                "wooden-furniture",
+                "spacious",
+                "community"
+              ],
+              "featured_image": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/f3f00cbb-c30e-4d84-9352-cfb6a76684d0/1759963486225_dorm.webp",
+              "images": [
+                "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/f3f00cbb-c30e-4d84-9352-cfb6a76684d0/1759963486225_dorm.webp"
+              ],
+              "is_active": true,
+              "pricing": {
+                "camp": {
+                  "perBed": 30
+                },
+                "standard": 30,
+                "offSeason": 30
+              }
+            },
+            {
+              "id": "ac98fd46-5bd2-413c-98f3-17e71024e734",
+              "name": "Room Nr 2",
+              "description": "This inviting room combines the warmth of handcrafted wooden furniture with the beauty of traditional Portuguese tiles. A cozy queen-sized bed ensures a comfortable stay.",
+              "capacity": 1,
+              "booking_type": "whole",
+              "price_per_night": 80,
+              "price_per_night_standard": 80,
+              "price_per_night_off_season": 80,
+              "amenities": [
+                "private-bathroom",
+                "queen-bed",
+                "wooden-furniture",
+                "traditional-tiles"
+              ],
+              "featured_image": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/ac98fd46-5bd2-413c-98f3-17e71024e734/1759963487843_room2.webp",
+              "images": [
+                "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/ac98fd46-5bd2-413c-98f3-17e71024e734/1759963487843_room2.webp"
+              ],
+              "is_active": true,
+              "pricing": {
+                "camp": {
+                  "1": 80
+                },
+                "standard": 80,
+                "offSeason": 80
+              }
+            }
+          ],
+          "total_rooms": 4,
+          "requested_dates": {
+            "start_date": "invalid",
+            "end_date": "invalid",
+            "guests": 1
+          }
+        }
+      }
+    },
+    {
+      "test": "Homepage",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Rooms Page",
+      "status": "PASS",
+      "statusCode": 200
+    },
+    {
+      "test": "Surf Weeks Page",
+      "status": "PASS",
+      "statusCode": 200
+    }
+  ]
+}

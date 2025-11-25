@@ -61,7 +61,7 @@ export function CMSCard({
   }
 
   const content = (
-    <div className={`bg-white border border-gray-200 rounded-lg p-4 sm:p-6 hover:shadow-lg transition-all duration-200 ${className}`}>
+    <div className={`bg-white border border-gray-200 rounded-lg p-5 sm:p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 ${className}`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-3 sm:mb-4 gap-2">
         <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
@@ -76,21 +76,20 @@ export function CMSCard({
           </div>
         </div>
         {status && (
-          <span className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(status)} flex-shrink-0`}>
-            <span className="hidden sm:inline">{status.charAt(0).toUpperCase() + status.slice(1)}</span>
-            <span className="sm:hidden">{status.charAt(0).toUpperCase()}</span>
+          <span className={`inline-flex items-center px-3 sm:px-3.5 py-1 rounded-full text-xs sm:text-sm font-semibold ${getStatusColor(status)} flex-shrink-0 shadow-sm`}>
+            {status.charAt(0).toUpperCase() + status.slice(1)}
           </span>
         )}
       </div>
 
       {/* Metadata */}
       {metadata.length > 0 && (
-        <div className="mb-3 sm:mb-4 pb-3 sm:pb-4 border-t border-gray-100 pt-3 sm:pt-4">
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        <div className="mb-4 sm:mb-5 pb-4 sm:pb-5 border-t border-gray-100 pt-4 sm:pt-5">
+          <div className="space-y-3">
             {metadata.map((item, idx) => (
               <div key={idx} className="min-w-0">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide truncate">{item.label}</p>
-                <p className="text-sm text-gray-900 mt-1 truncate">{item.value}</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{item.label}</p>
+                <p className="text-sm sm:text-base font-medium text-gray-900">{item.value}</p>
               </div>
             ))}
           </div>
