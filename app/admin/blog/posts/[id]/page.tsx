@@ -20,6 +20,7 @@ interface Author {
 }
 
 interface BlogTranslation {
+  id?: string
   locale: 'en' | 'fr'
   slug_localized: string
   title: string
@@ -60,12 +61,6 @@ export default function EditPostPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [authors, setAuthors] = useState<Author[]>([])
 
-  useEffect(() => {
-    fetchPost()
-    fetchCategories()
-    fetchAuthors()
-  }, [fetchPost, postId])
-
   const fetchCategories = async () => {
     try {
       const response = await fetch('/api/admin/blog/categories')
@@ -99,14 +94,16 @@ export default function EditPostPage() {
       if (data.success) {
         setPost(data.data)
         // Initialize form with first translation
-        const enTrans = data.data.translations?.find((t: BlogPost['translations'][0]) => t.locale === 'en') || data.data.translations?.[0]
-        setFormData({
+        const enTrans = data.data.translations?.find((t: BlogTranslation) => t.locale === 'en') || data.data.translations?.[0]
+        const postData: BlogPost = {
+          id: data.data.id,
           status: data.data.status,
           featured: data.data.featured,
           category_id: data.data.category_id || '',
           author_id: data.data.author_id || '',
+          translations: data.data.translations || [],
           translation: enTrans || {
-            locale: 'en',
+            locale: 'en' as const,
             slug_localized: '',
             title: '',
             excerpt: '',
@@ -118,7 +115,8 @@ export default function EditPostPage() {
             canonical_url: '',
             noindex: false
           }
-        })
+        }
+        setFormData(postData)
       } else {
         alert(data.error || 'Failed to fetch post')
         router.push('/admin/blog/posts')
@@ -130,26 +128,37 @@ export default function EditPostPage() {
     } finally {
       setLoading(false)
     }
-  }, [postId])
+  }, [postId, router])
+
+  useEffect(() => {
+    fetchPost()
+    fetchCategories()
+    fetchAuthors()
+  }, [fetchPost, postId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!formData || !formData.translation) {
+      alert('Form data is not loaded')
+      return
+    }
     setSaving(true)
 
     try {
+      const translation = formData.translation
       const translations = [{
-        id: formData.translation.id,
-        locale: formData.translation.locale,
-        slug_localized: formData.translation.slug_localized,
-        title: formData.translation.title,
-        excerpt: formData.translation.excerpt,
-        body_rich: formData.translation.body_rich,
-        cover_image_url: formData.translation.cover_image_url,
-        cover_alt_text: formData.translation.cover_alt_text,
-        seo_title: formData.translation.seo_title,
-        seo_description: formData.translation.seo_description,
-        canonical_url: formData.translation.canonical_url,
-        noindex: formData.translation.noindex
+        id: translation.id,
+        locale: translation.locale,
+        slug_localized: translation.slug_localized,
+        title: translation.title,
+        excerpt: translation.excerpt,
+        body_rich: translation.body_rich,
+        cover_image_url: translation.cover_image_url,
+        cover_alt_text: translation.cover_alt_text,
+        seo_title: translation.seo_title,
+        seo_description: translation.seo_description,
+        canonical_url: translation.canonical_url,
+        noindex: translation.noindex
       }]
 
       const response = await fetch(`/api/admin/blog/posts/${postId}`, {
