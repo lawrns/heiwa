@@ -4,7 +4,7 @@
 
 import { render, screen, waitFor } from '@testing-library/react'
 import PaymentsPage from '@/app/admin/payments/page'
-import { rest } from 'msw'
+import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { handlers } from '../mocks/handlers'
 
@@ -35,23 +35,20 @@ describe('Admin Payments Page Integration', () => {
 
   it('should handle payment creation', async () => {
     server.use(
-      rest.post('/api/payments', (req, res, ctx) => {
-        return res(
-          ctx.status(201),
-          ctx.json({
-            success: true,
-            data: {
-              payment: {
-                id: 'payment-new',
-                booking_id: 'booking-1',
-                amount: 150,
-                currency: 'EUR',
-                payment_method: 'cash',
-                payment_status: 'completed',
-              },
+      http.post('/api/payments', () => {
+        return HttpResponse.json({
+          success: true,
+          data: {
+            payment: {
+              id: 'payment-new',
+              booking_id: 'booking-1',
+              amount: 150,
+              currency: 'EUR',
+              payment_method: 'cash',
+              payment_status: 'completed',
             },
-          })
-        )
+          },
+        }, { status: 201 })
       })
     )
 

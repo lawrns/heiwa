@@ -66,7 +66,7 @@ describe('Booking Flow Integration', () => {
   it('renders room options when experience type is room', async () => {
     render(
       <BookingProvider>
-        <OptionSelection />
+        <OptionSelection state={mockBookingContext.state} actions={mockBookingContext} />
       </BookingProvider>
     )
 
@@ -79,7 +79,7 @@ describe('Booking Flow Integration', () => {
   it('displays correct pricing for room options', async () => {
     render(
       <BookingProvider>
-        <OptionSelection />
+        <OptionSelection state={mockBookingContext.state} actions={mockBookingContext} />
       </BookingProvider>
     )
 
@@ -91,10 +91,10 @@ describe('Booking Flow Integration', () => {
 
   it('calculates total price correctly for room selection', async () => {
     const user = userEvent.setup()
-    
+
     render(
       <BookingProvider>
-        <OptionSelection />
+        <OptionSelection state={mockBookingContext.state} actions={mockBookingContext} />
       </BookingProvider>
     )
 
@@ -126,7 +126,7 @@ describe('Booking Flow Integration', () => {
 
     render(
       <BookingProvider>
-        <OptionSelection />
+        <OptionSelection state={surfWeekContext.state} actions={surfWeekContext} />
       </BookingProvider>
     )
 
@@ -137,10 +137,10 @@ describe('Booking Flow Integration', () => {
 
   it('handles date selection correctly', async () => {
     const user = userEvent.setup()
-    
+
     render(
       <BookingProvider>
-        <OptionSelection />
+        <OptionSelection state={mockBookingContext.state} actions={mockBookingContext} />
       </BookingProvider>
     )
 
@@ -163,10 +163,10 @@ describe('Booking Flow Integration', () => {
 
   it('handles guest count selection', async () => {
     const user = userEvent.setup()
-    
+
     render(
       <BookingProvider>
-        <OptionSelection />
+        <OptionSelection state={mockBookingContext.state} actions={mockBookingContext} />
       </BookingProvider>
     )
 
@@ -184,7 +184,7 @@ describe('Booking Flow Integration', () => {
   it('shows loading state initially', () => {
     render(
       <BookingProvider>
-        <OptionSelection />
+        <OptionSelection state={mockBookingContext.state} actions={mockBookingContext} />
       </BookingProvider>
     )
 
@@ -199,7 +199,7 @@ describe('Booking Flow Integration', () => {
 
     render(
       <BookingProvider>
-        <OptionSelection />
+        <OptionSelection state={mockBookingContext.state} actions={mockBookingContext} />
       </BookingProvider>
     )
 

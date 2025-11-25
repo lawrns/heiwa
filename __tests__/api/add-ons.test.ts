@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server'
 import { GET, OPTIONS } from '@/app/api/add-ons/route'
 import { supabase } from '@/lib/supabase'
 import { AddOnFactory } from '../factories'
@@ -16,6 +17,13 @@ jest.mock('@/lib/supabase', () => ({
 }))
 
 const mockSupabase = supabase as any
+
+// Mock NextRequest
+const createMockRequest = (url: string = 'http://localhost:3000/api/add-ons') => ({
+  url,
+  method: 'GET',
+  headers: new Headers(),
+}) as unknown as typeof NextRequest
 
 describe('/api/add-ons', () => {
   beforeEach(() => {
@@ -67,7 +75,7 @@ describe('/api/add-ons', () => {
         select: jest.fn().mockReturnValue(mockSelectChain)
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -102,7 +110,7 @@ describe('/api/add-ons', () => {
         select: jest.fn().mockReturnValue(mockSelectChain)
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -131,7 +139,7 @@ describe('/api/add-ons', () => {
         select: jest.fn().mockReturnValue(mockSelectChain)
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -159,7 +167,7 @@ describe('/api/add-ons', () => {
         select: jest.fn().mockReturnValue(mockSelectChain)
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -172,7 +180,7 @@ describe('/api/add-ons', () => {
         throw new Error('Unexpected error')
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -186,7 +194,7 @@ describe('/api/add-ons', () => {
         throw customError
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -199,7 +207,7 @@ describe('/api/add-ons', () => {
         throw 'String error'
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -240,7 +248,7 @@ describe('/api/add-ons', () => {
         select: jest.fn().mockReturnValue(mockSelectChain)
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -286,7 +294,7 @@ describe('/api/add-ons', () => {
         select: jest.fn().mockReturnValue(mockSelectChain)
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -335,7 +343,7 @@ describe('/api/add-ons', () => {
         select: jest.fn().mockReturnValue(mockSelectChain)
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       // Verify response structure
@@ -373,7 +381,7 @@ describe('/api/add-ons', () => {
       })
 
       const startTime = Date.now()
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const endTime = Date.now()
 
       expect(response.status).toBe(200)
@@ -406,7 +414,7 @@ describe('/api/add-ons', () => {
         select: jest.fn().mockReturnValue(mockSelectChain)
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)

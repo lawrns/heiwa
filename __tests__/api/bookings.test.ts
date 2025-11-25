@@ -273,7 +273,7 @@ describe('/api/bookings', () => {
     })
 
     it('should validate missing booking_type', async () => {
-      const invalidBooking = { ...mockRoomBooking }
+      const invalidBooking = { ...mockRoomBooking } as Partial<typeof mockRoomBooking>
       delete invalidBooking.booking_type
 
       const request = new NextRequest('http://localhost:3000/api/bookings', {

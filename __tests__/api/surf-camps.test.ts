@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server'
 import { GET, OPTIONS } from '@/app/api/surf-camps/route'
 import { supabase } from '@/lib/supabase'
 import { SurfCampFactory } from '../factories'
@@ -16,6 +17,13 @@ jest.mock('@/lib/supabase', () => ({
 }))
 
 const mockSupabase = supabase as any
+
+// Mock NextRequest
+const createMockRequest = (url: string = 'http://localhost:3000/api/surf-camps') => ({
+  url,
+  method: 'GET',
+  headers: new Headers(),
+}) as unknown as typeof NextRequest
 
 describe('/api/surf-camps', () => {
   beforeEach(() => {
@@ -52,7 +60,7 @@ describe('/api/surf-camps', () => {
         })
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -79,7 +87,7 @@ describe('/api/surf-camps', () => {
         })
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -100,7 +108,7 @@ describe('/api/surf-camps', () => {
         })
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(500)
@@ -120,7 +128,7 @@ describe('/api/surf-camps', () => {
         })
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(200)
@@ -133,7 +141,7 @@ describe('/api/surf-camps', () => {
         throw new Error('Unexpected error')
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(500)
@@ -147,7 +155,7 @@ describe('/api/surf-camps', () => {
         throw customError
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(500)
@@ -160,7 +168,7 @@ describe('/api/surf-camps', () => {
         throw 'String error'
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       expect(response.status).toBe(500)
@@ -200,7 +208,7 @@ describe('/api/surf-camps', () => {
         })
       })
 
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const data = await response.json()
 
       // Verify response structure
@@ -231,7 +239,7 @@ describe('/api/surf-camps', () => {
       })
 
       const startTime = Date.now()
-      const response = await GET()
+      const response = await GET(createMockRequest())
       const endTime = Date.now()
 
       expect(response.status).toBe(200)
