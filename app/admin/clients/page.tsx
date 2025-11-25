@@ -189,7 +189,7 @@ export default function ClientsPage() {
       }
     } catch (error: unknown) {
       console.error('Error archiving clients:', error)
-      toast.error(error.message || 'Failed to archive clients')
+      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to archive clients')
     }
   }
 

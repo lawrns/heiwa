@@ -11,8 +11,8 @@ interface CreateBookingData {
   item_name: string
   check_in: string
   check_out: string
-  guests: string
-  total_price: string
+  guests: number
+  total_price: number
   payment_status: 'pending' | 'paid' | 'failed'
   status: 'pending' | 'confirmed' | 'cancelled'
 }

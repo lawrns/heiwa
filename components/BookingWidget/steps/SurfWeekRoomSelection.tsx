@@ -5,6 +5,18 @@ import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
 
+interface TransformedRoom {
+  id: string;
+  name: string;
+  type: 'private' | 'shared' | 'dorm';
+  description: string;
+  features: string[];
+  maxOccupancy: number;
+  pricePerNight: number;
+  isIncluded: boolean;
+  image: string;
+}
+
 interface SurfWeekRoomSelectionProps {
   state: BookingState;
   actions: {
@@ -15,7 +27,7 @@ interface SurfWeekRoomSelectionProps {
 }
 
 // Transform real room data for surf week accommodation options
-const transformRoomForSurfWeek = (room: Room) => {
+const transformRoomForSurfWeek = (room: Room): TransformedRoom => {
   // Dorm room is included, private rooms are upgrades
   const isIncluded = room.type === 'dorm';
   const upgradePrice = isIncluded ? 0 : room.pricePerNight;
@@ -92,11 +104,11 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     });
 
   // Open image gallery
-  const openGallery = (room: Room) => {
+  const openGallery = (room: TransformedRoom) => {
     const originalRoom = rooms.find(r => r.id === room.id);
     setGalleryImages(originalRoom?.images || []);
     setGalleryRoomName(room.name);
-    setGalleryRoom(originalRoom);
+    setGalleryRoom(originalRoom || null);
     setGalleryOpen(true);
   };
 

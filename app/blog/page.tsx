@@ -26,8 +26,8 @@ interface BlogPost {
     name: string
   }
   tags?: Array<{
-    name: string
-    slug: string
+    name: string | undefined
+    slug: string | undefined
   }>
   featured?: boolean
   views?: number

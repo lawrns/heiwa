@@ -33,6 +33,7 @@ interface RoomBookingPayload {
 
 interface SurfWeekBookingPayload {
   surf_week_id: string;
+  camp_id: string;
   participants: unknown[];
   add_ons: Array<{
     id: string;
