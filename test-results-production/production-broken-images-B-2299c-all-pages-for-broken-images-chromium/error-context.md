@@ -1,0 +1,198 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - complementary [ref=e5]:
+        - generic [ref=e6]:
+          - link "H" [ref=e8] [cursor=pointer]:
+            - /url: /admin
+            - generic [ref=e10]: H
+          - button "Collapse sidebar" [ref=e11]:
+            - img [ref=e12]
+        - navigation "Navigation menu" [ref=e13]:
+          - generic [ref=e14]:
+            - link "Dashboard" [ref=e15] [cursor=pointer]:
+              - /url: /admin
+              - img [ref=e16]
+              - generic [ref=e19]: Dashboard
+            - link "Clients" [ref=e20] [cursor=pointer]:
+              - /url: /admin/clients
+              - img [ref=e21]
+              - generic [ref=e26]: Clients
+            - link "Surf Weeks" [ref=e27] [cursor=pointer]:
+              - /url: /admin/surf-camps
+              - img [ref=e28]
+              - generic [ref=e32]: Surf Weeks
+            - link "Rooms" [ref=e33] [cursor=pointer]:
+              - /url: /admin/rooms
+              - img [ref=e34]
+              - generic [ref=e37]: Rooms
+            - link "Bookings" [ref=e38] [cursor=pointer]:
+              - /url: /admin/bookings
+              - img [ref=e39]
+              - generic [ref=e42]: Bookings
+            - link "Assignments" [ref=e43] [cursor=pointer]:
+              - /url: /admin/assignments
+              - img [ref=e44]
+              - generic [ref=e48]: Assignments
+            - link "Invoices" [ref=e49] [cursor=pointer]:
+              - /url: /admin/invoices
+              - img [ref=e50]
+              - generic [ref=e53]: Invoices
+            - link "Payments" [ref=e54] [cursor=pointer]:
+              - /url: /admin/payments
+              - img [ref=e55]
+              - generic [ref=e57]: Payments
+            - link "Calendar" [ref=e58] [cursor=pointer]:
+              - /url: /admin/calendar
+              - img [ref=e59]
+              - generic [ref=e61]: Calendar
+            - link "Analytics" [ref=e62] [cursor=pointer]:
+              - /url: /admin/analytics
+              - img [ref=e63]
+              - generic [ref=e65]: Analytics
+            - link "CMS" [ref=e66] [cursor=pointer]:
+              - /url: /admin/cms
+              - img [ref=e67]
+              - generic [ref=e70]: CMS
+            - link "Blog" [ref=e71] [cursor=pointer]:
+              - /url: /admin/blog
+              - img [ref=e72]
+              - generic [ref=e74]: Blog
+      - main [ref=e75]:
+        - generic [ref=e77]:
+          - generic [ref=e79]: A
+          - generic [ref=e80]: admin@heiwa.house
+          - button "Sign out" [ref=e81]:
+            - img [ref=e82]
+            - generic [ref=e85]: Logout
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - heading "Admin Dashboard" [level=1] [ref=e89]
+            - paragraph [ref=e90]: Manage your bookings, rooms, and surf camps from one central location
+          - generic [ref=e91]:
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - paragraph [ref=e95]: Total Bookings
+                - paragraph [ref=e96]: "38"
+                - generic [ref=e98]: ↑ 0%
+              - img [ref=e100]
+            - generic [ref=e103]:
+              - generic [ref=e104]:
+                - paragraph [ref=e105]: Confirmed
+                - paragraph [ref=e106]: "0"
+                - generic [ref=e108]: ↑ 0%
+              - img [ref=e110]
+            - generic [ref=e114]:
+              - generic [ref=e115]:
+                - paragraph [ref=e116]: Pending
+                - paragraph [ref=e117]: "38"
+                - generic [ref=e119]: ↑ 100%
+              - img [ref=e121]
+            - generic [ref=e125]:
+              - generic [ref=e126]:
+                - paragraph [ref=e127]: Revenue
+                - paragraph [ref=e128]: €50660.5k
+                - generic [ref=e130]: ↑ 0%
+              - img [ref=e132]
+          - generic [ref=e135]:
+            - generic [ref=e136]:
+              - img [ref=e139]
+              - heading "Bookings Management" [level=3] [ref=e142]
+              - paragraph [ref=e143]: View and manage all bookings for rooms and surf camps.
+              - generic [ref=e146]: "Active Bookings: 38"
+              - link "Manage Bookings" [ref=e147] [cursor=pointer]:
+                - /url: /admin/bookings
+                - button "Manage Bookings" [ref=e148]
+            - generic [ref=e149]:
+              - img [ref=e152]
+              - heading "Rooms Management" [level=3] [ref=e154]
+              - paragraph [ref=e155]: Manage room inventory, pricing, and availability.
+              - generic [ref=e158]: "Available Rooms: 4"
+              - link "Manage Rooms" [ref=e159] [cursor=pointer]:
+                - /url: /admin/rooms
+                - button "Manage Rooms" [ref=e160]
+            - generic [ref=e161]:
+              - img [ref=e164]
+              - heading "Surf Camps" [level=3] [ref=e168]
+              - paragraph [ref=e169]: Create and manage surf camp sessions and schedules.
+              - generic [ref=e172]: "Active Camps: 7"
+              - link "Manage Surf Camps" [ref=e173] [cursor=pointer]:
+                - /url: /admin/surf-camps
+                - button "Manage Surf Camps" [ref=e174]
+            - generic [ref=e175]:
+              - img [ref=e178]
+              - heading "Clients" [level=3] [ref=e183]
+              - paragraph [ref=e184]: View and manage client information and history.
+              - generic [ref=e187]: "Total Clients: 0"
+              - link "Manage Clients" [ref=e188] [cursor=pointer]:
+                - /url: /admin/clients
+                - button "Manage Clients" [ref=e189]
+            - generic [ref=e190]:
+              - img [ref=e193]
+              - heading "Calendar" [level=3] [ref=e195]
+              - paragraph [ref=e196]: View booking calendar and manage schedules.
+              - generic [ref=e199]: "Events This Week: 15"
+              - link "View Calendar" [ref=e200] [cursor=pointer]:
+                - /url: /admin/calendar
+                - button "View Calendar" [ref=e201]
+            - generic [ref=e202]:
+              - img [ref=e205]
+              - heading "Analytics" [level=3] [ref=e207]
+              - paragraph [ref=e208]: View booking statistics and revenue reports.
+              - generic [ref=e211]: "Occupancy Rate: 80%"
+              - link "View Analytics" [ref=e212] [cursor=pointer]:
+                - /url: /admin/analytics
+                - button "View Analytics" [ref=e213]
+          - generic [ref=e214]:
+            - heading "Recent Bookings" [level=3] [ref=e216]
+            - table [ref=e218]:
+              - rowgroup [ref=e219]:
+                - row "Booking ID Guest Room Check-in Status" [ref=e220]:
+                  - columnheader "Booking ID" [ref=e221]
+                  - columnheader "Guest" [ref=e222]
+                  - columnheader "Room" [ref=e223]
+                  - columnheader "Check-in" [ref=e224]
+                  - columnheader "Status" [ref=e225]
+              - rowgroup [ref=e226]:
+                - row "a006fc6f... Browser Tester Unknown 6/12/2026 pending" [ref=e227]:
+                  - cell "a006fc6f..." [ref=e228]
+                  - cell "Browser Tester" [ref=e229]
+                  - cell "Unknown" [ref=e230]
+                  - cell "6/12/2026" [ref=e231]
+                  - cell "pending" [ref=e232]:
+                    - generic [ref=e233]: pending
+                - row "854ad132... Browser Test - Room Dorm room 12/19/2025 pending" [ref=e234]:
+                  - cell "854ad132..." [ref=e235]
+                  - cell "Browser Test - Room" [ref=e236]
+                  - cell "Dorm room" [ref=e237]
+                  - cell "12/19/2025" [ref=e238]
+                  - cell "pending" [ref=e239]:
+                    - generic [ref=e240]: pending
+                - row "d2a09c73... Browser Tester Unknown 6/12/2026 pending" [ref=e241]:
+                  - cell "d2a09c73..." [ref=e242]
+                  - cell "Browser Tester" [ref=e243]
+                  - cell "Unknown" [ref=e244]
+                  - cell "6/12/2026" [ref=e245]
+                  - cell "pending" [ref=e246]:
+                    - generic [ref=e247]: pending
+                - row "0b7bce69... Browser Test - Room Dorm room 12/19/2025 pending" [ref=e248]:
+                  - cell "0b7bce69..." [ref=e249]
+                  - cell "Browser Test - Room" [ref=e250]
+                  - cell "Dorm room" [ref=e251]
+                  - cell "12/19/2025" [ref=e252]
+                  - cell "pending" [ref=e253]:
+                    - generic [ref=e254]: pending
+                - row "a7804a37... Browser Tester Unknown 6/12/2026 pending" [ref=e255]:
+                  - cell "a7804a37..." [ref=e256]
+                  - cell "Browser Tester" [ref=e257]
+                  - cell "Unknown" [ref=e258]
+                  - cell "6/12/2026" [ref=e259]
+                  - cell "pending" [ref=e260]:
+                    - generic [ref=e261]: pending
+  - button "Contact us on WhatsApp" [ref=e262]:
+    - img [ref=e263]
+  - alert [ref=e265]
+```
