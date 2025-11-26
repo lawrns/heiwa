@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase'
 import { executeWithTimeout } from '@/lib/supabase-timeout'
 
@@ -261,6 +262,10 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error
 
+    // Revalidate homepage to reflect changes immediately
+    revalidatePath('/')
+    revalidatePath('/admin/homepage')
+
     return NextResponse.json({
       success: true,
       data: data?.[0]
@@ -351,6 +356,10 @@ export async function PUT(request: NextRequest) {
 
     if (error) throw error
 
+    // Revalidate homepage to reflect changes immediately
+    revalidatePath('/')
+    revalidatePath('/admin/homepage')
+
     return NextResponse.json({
       success: true,
       data: data?.[0]
@@ -389,6 +398,10 @@ export async function DELETE(request: NextRequest) {
       .eq('id', id)
 
     if (error) throw error
+
+    // Revalidate homepage to reflect changes immediately
+    revalidatePath('/')
+    revalidatePath('/admin/homepage')
 
     return NextResponse.json({
       success: true,

@@ -2,6 +2,7 @@
 // CRUD operations for blog posts management
 
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getPosts, createPost } from '@/lib/blog/db'
 
 // GET /api/admin/blog/posts - List all posts with filters
@@ -89,6 +90,14 @@ export async function POST(request: NextRequest) {
       scheduled_at,
       translations,
       tag_ids
+    })
+
+    // Revalidate blog pages to reflect new post immediately
+    revalidatePath('/blog')
+    revalidatePath('/admin/blog/posts')
+    // Revalidate all locale-specific slugs for this post
+    translations.forEach((trans: { slug_localized: string }) => {
+      revalidatePath(`/blog/${trans.slug_localized}`)
     })
 
     return NextResponse.json({

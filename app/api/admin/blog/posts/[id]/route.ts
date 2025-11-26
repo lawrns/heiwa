@@ -2,6 +2,7 @@
 // Get, update, delete individual posts
 
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getPostById, updatePost, deletePost } from '@/lib/blog/db'
 
 // GET /api/admin/blog/posts/[id] - Get single post
@@ -62,6 +63,18 @@ export async function PUT(
       tag_ids
     })
 
+    // Revalidate blog pages to reflect changes immediately
+    revalidatePath('/blog')
+    revalidatePath('/admin/blog/posts')
+    // Revalidate specific post slugs if translations provided
+    if (translations && Array.isArray(translations)) {
+      translations.forEach((trans: { slug_localized?: string }) => {
+        if (trans.slug_localized) {
+          revalidatePath(`/blog/${trans.slug_localized}`)
+        }
+      })
+    }
+
     return NextResponse.json({
       success: true,
       data: post
@@ -82,6 +95,10 @@ export async function DELETE(
 ) {
   try {
     await deletePost(params.id)
+
+    // Revalidate blog pages to reflect deletion immediately
+    revalidatePath('/blog')
+    revalidatePath('/admin/blog/posts')
 
     return NextResponse.json({
       success: true,

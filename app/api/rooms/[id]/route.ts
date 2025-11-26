@@ -2,6 +2,7 @@
 // GET, PUT, DELETE operations for individual rooms
 
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase'
 
 // GET /api/rooms/[id] - Get a specific room
@@ -92,6 +93,12 @@ export async function PUT(
       )
     }
 
+    // Revalidate rooms pages to reflect changes immediately
+    revalidatePath('/rooms')
+    revalidatePath(`/rooms/${params.id}`)
+    revalidatePath('/admin/rooms')
+    revalidatePath('/')  // Homepage may show rooms
+
     return NextResponse.json({
       success: true,
       data: { room: data }
@@ -123,6 +130,12 @@ export async function DELETE(
         { status: 500 }
       )
     }
+
+    // Revalidate rooms pages to reflect deletion immediately
+    revalidatePath('/rooms')
+    revalidatePath(`/rooms/${params.id}`)
+    revalidatePath('/admin/rooms')
+    revalidatePath('/')  // Homepage may show rooms
 
     return NextResponse.json({
       success: true,
