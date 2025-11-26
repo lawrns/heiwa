@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET(
@@ -125,6 +126,12 @@ export async function PUT(
         { status: 500 }
       )
     }
+
+    // Revalidate surf camp pages to reflect changes immediately
+    revalidatePath('/surf-weeks')
+    revalidatePath(`/surf-weeks/${id}`)
+    revalidatePath('/admin/surf-camps')
+    revalidatePath('/')  // Homepage may show surf camps
 
     return NextResponse.json({
       success: true,

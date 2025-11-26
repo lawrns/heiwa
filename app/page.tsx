@@ -12,6 +12,9 @@ import { DynamicActivities } from '@/components/ui/dynamic-activities'
 import { SurfWeeksSection } from './components/SurfWeeksSection'
 import { supabaseAdmin } from '@/lib/supabase'
 
+// Revalidate every 60 seconds to pick up CMS changes quickly
+export const revalidate = 60
+
 // Server Component - fetches data at build/request time
 export default async function HomePage() {
   // Fetch homepage content from CMS (server-side)

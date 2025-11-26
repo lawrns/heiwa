@@ -8,6 +8,9 @@ import { SurfWeeksTable } from '@/components/surf-weeks/SurfWeeksTable'
 import { BookNowButton } from '@/components/surf-weeks/BookNowButton'
 import { GoogleReviews } from '@/components/ui/google-reviews'
 
+// Revalidate every 60 seconds to pick up CMS changes quickly
+export const revalidate = 60
+
 export const metadata: Metadata = {
   title: 'Surf Weeks in Santa Cruz, Portugal - Learn Surfing With Heiwa',
   description: 'We strive to deliver an unforgettable surf week experience both in and out of the water. Join us for surf, yoga, amazing food, skateboarding, and more.',
