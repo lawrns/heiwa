@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { revalidatePath } from 'next/cache'
 
 // Admin API endpoint for getting all rooms (including inactive)
 export async function GET() {
@@ -68,6 +69,88 @@ export async function GET() {
 
   } catch (error) {
     console.error('Error fetching rooms:', error)
+    return NextResponse.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Internal server error'
+    }, { 
+      status: 500
+    })
+  }
+}
+
+// POST /api/admin/rooms - Create a new room
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { 
+      name, 
+      description,
+      capacity, 
+      price_per_night,
+      amenities, 
+      featured_image,
+      images, 
+      is_active 
+    } = body
+
+    // Validate required fields
+    if (!name || !capacity) {
+      return NextResponse.json(
+        { success: false, error: 'Name and capacity are required' },
+        { status: 400 }
+      )
+    }
+
+    // Build pricing object from price_per_night
+    const pricing = {
+      standard: price_per_night || 0,
+      offSeason: price_per_night ? Math.round(price_per_night * 0.8) : 0 // Default off-season to 80% of standard
+    }
+
+    // Prepare images array - include featured_image as first image if provided
+    const roomImages = featured_image 
+      ? [featured_image, ...(images || [])]
+      : (images || [])
+
+    const insertData = {
+      name,
+      description: description || '',
+      capacity,
+      pricing,
+      amenities: amenities || [],
+      images: roomImages,
+      is_active: is_active !== false,
+      booking_type: 'whole',
+      bed_types: [],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('rooms')
+      .insert(insertData)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error creating room:', error)
+      return NextResponse.json(
+        { success: false, error: 'Failed to create room' },
+        { status: 500 }
+      )
+    }
+
+    // Revalidate rooms pages
+    revalidatePath('/rooms')
+    revalidatePath('/admin/rooms')
+    revalidatePath('/')
+
+    return NextResponse.json({
+      success: true,
+      data: { room: data }
+    })
+  } catch (error) {
+    console.error('Error creating room:', error)
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : 'Internal server error'

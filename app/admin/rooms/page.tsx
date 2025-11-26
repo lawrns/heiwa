@@ -45,27 +45,62 @@ export default function RoomsPage() {
   }
 
   const handleDelete = async (roomId: string) => {
-    if (!confirm('Are you sure you want to delete this room?')) return
+    if (!confirm('Are you sure you want to delete this room? This action cannot be undone.')) return
     
     try {
-      // In a real implementation, this would be a DELETE request
-      console.log('Deleting room:', roomId)
-      // For now, just remove from local state
-      setRooms(rooms.filter(room => room.id !== roomId))
+      const response = await fetch(`/api/rooms/${roomId}`, {
+        method: 'DELETE',
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        // Remove from local state
+        setRooms(rooms.filter(room => room.id !== roomId))
+      } else {
+        alert('Failed to delete room: ' + (data.error || 'Unknown error'))
+      }
     } catch (err) {
       console.error('Error deleting room:', err)
+      alert('Error deleting room. Please try again.')
     }
   }
 
   const toggleActive = async (roomId: string) => {
+    const room = rooms.find(r => r.id === roomId)
+    if (!room) return
+    
+    // Show confirmation for deactivation
+    if (room.is_active && !confirm('Are you sure you want to deactivate this room? It will no longer be available for booking.')) {
+      return
+    }
+    
     try {
-      // In a real implementation, this would be a PATCH request
-      console.log('Toggling room status:', roomId)
-      setRooms(rooms.map(room => 
-        room.id === roomId ? { ...room, is_active: !room.is_active } : room
-      ))
+      const response = await fetch(`/api/rooms/${roomId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...room,
+          is_active: !room.is_active,
+          pricing: room.price_per_night ? { standard: room.price_per_night } : { standard: 0 },
+          booking_type: 'whole',
+        }),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setRooms(rooms.map(r => 
+          r.id === roomId ? { ...r, is_active: !r.is_active } : r
+        ))
+      } else {
+        alert('Failed to update room: ' + (data.error || 'Unknown error'))
+      }
     } catch (err) {
       console.error('Error updating room:', err)
+      alert('Error updating room. Please try again.')
     }
   }
 

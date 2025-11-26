@@ -111,90 +111,6 @@
           "specs": [
             {
               "title": "Complete Room Booking Flow",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 35519,
-                      "error": {
-                        "message": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://heiwahauz.netlify.app/\", waiting until \"networkidle\"\u001b[22m\n",
-                        "stack": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://heiwahauz.netlify.app/\", waiting until \"networkidle\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-booking.spec.ts:15:16",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-booking.spec.ts",
-                          "column": 16,
-                          "line": 15
-                        },
-                        "snippet": "  13 |     // Step 1: Load homepage\n  14 |     console.log('\\n[1/7] Loading homepage...');\n> 15 |     await page.goto('https://heiwahauz.netlify.app', { \n     |                ^\n  16 |       waitUntil: 'networkidle',\n  17 |       timeout: 30000 \n  18 |     });"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-booking.spec.ts",
-                            "column": 16,
-                            "line": 15
-                          },
-                          "message": "TimeoutError: page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://heiwahauz.netlify.app/\", waiting until \"networkidle\"\u001b[22m\n\n\n  13 |     // Step 1: Load homepage\n  14 |     console.log('\\n[1/7] Loading homepage...');\n> 15 |     await page.goto('https://heiwahauz.netlify.app', { \n     |                ^\n  16 |       waitUntil: 'networkidle',\n  17 |       timeout: 30000 \n  18 |     });\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-booking.spec.ts:15:16"
-                        }
-                      ],
-                      "stdout": [
-                        {
-                          "text": "\n🌐 === PRODUCTION BROWSER TEST ===\n\n"
-                        },
-                        {
-                          "text": "📍 URL: https://heiwahauz.netlify.app\n"
-                        },
-                        {
-                          "text": "\n[1/7] Loading homepage...\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-11-25T19:44:57.147Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-booking-Product-4c4b0--Complete-Room-Booking-Flow-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-booking-Product-4c4b0--Complete-Room-Booking-Flow-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-booking-Product-4c4b0--Complete-Room-Booking-Flow-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-booking.spec.ts",
-                        "column": 16,
-                        "line": 15
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "1d49db9ebbddd32a7845-fbf8bde6df27495fc36e",
-              "file": "production-booking.spec.ts",
-              "line": 9,
-              "column": 7
-            },
-            {
-              "title": "Complete Room Booking Flow",
               "ok": true,
               "tags": [],
               "tests": [
@@ -206,10 +122,10 @@
                   "projectName": "firefox",
                   "results": [
                     {
-                      "workerIndex": 1,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 11058,
+                      "duration": 6411,
                       "errors": [],
                       "stdout": [
                         {
@@ -285,10 +201,10 @@
                           "text": "   Success: true\n"
                         },
                         {
-                          "text": "   Booking Number: HW-574076\n"
+                          "text": "   Booking Number: HW-35A81B\n"
                         },
                         {
-                          "text": "   Booking ID: 0a93886c-a0b5-49ba-9669-d64a6b574076\n"
+                          "text": "   Booking ID: 854ad132-cb85-4f66-8399-8858de35a81b\n"
                         },
                         {
                           "text": "   Booking Status: pending\n"
@@ -309,10 +225,10 @@
                           "text": "   Success: true\n"
                         },
                         {
-                          "text": "   Booking Number: HW-ED65B4\n"
+                          "text": "   Booking Number: HW-6C72A6\n"
                         },
                         {
-                          "text": "   Booking ID: 94dd85c2-c67c-43e6-824b-06bd1ded65b4\n"
+                          "text": "   Booking ID: a006fc6f-b78b-440c-bb83-b9bba76c72a6\n"
                         },
                         {
                           "text": "   Booking Status: pending\n"
@@ -350,7 +266,7 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-11-25T19:45:33.261Z",
+                      "startTime": "2025-11-26T15:11:00.515Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -362,176 +278,6 @@
               "file": "production-booking.spec.ts",
               "line": 9,
               "column": 7
-            },
-            {
-              "title": "Complete Room Booking Flow",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "webkit",
-                  "projectName": "webkit",
-                  "results": [
-                    {
-                      "workerIndex": 2,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8006,
-                      "errors": [],
-                      "stdout": [
-                        {
-                          "text": "\n🌐 === PRODUCTION BROWSER TEST ===\n\n"
-                        },
-                        {
-                          "text": "📍 URL: https://heiwahauz.netlify.app\n"
-                        },
-                        {
-                          "text": "\n[1/7] Loading homepage...\n"
-                        },
-                        {
-                          "text": "✅ Homepage loaded: \"Heiwa House - A Wave Away | Surf & Adventure Retreat\"\n"
-                        },
-                        {
-                          "text": "\n[2/7] Checking page interactivity...\n"
-                        },
-                        {
-                          "text": "✅ Page is interactive\n"
-                        },
-                        {
-                          "text": "\n[3/7] Navigating to rooms page...\n"
-                        },
-                        {
-                          "text": "✅ Rooms page loaded\n"
-                        },
-                        {
-                          "text": "\n[4/7] Testing Rooms API from browser...\n"
-                        },
-                        {
-                          "text": "✅ Rooms API Response:\n"
-                        },
-                        {
-                          "text": "   Status: 200\n"
-                        },
-                        {
-                          "text": "   Success: true\n"
-                        },
-                        {
-                          "text": "   Rooms Available: 4\n"
-                        },
-                        {
-                          "text": "   First Room: Dorm room\n"
-                        },
-                        {
-                          "text": "\n[5/7] Testing Surf Camps API from browser...\n"
-                        },
-                        {
-                          "text": "✅ Surf Camps API Response:\n"
-                        },
-                        {
-                          "text": "   Status: 200\n"
-                        },
-                        {
-                          "text": "   Success: true\n"
-                        },
-                        {
-                          "text": "   Camps Available: 4\n"
-                        },
-                        {
-                          "text": "   First Camp: June Surf Week 2026\n"
-                        },
-                        {
-                          "text": "\n[6/7] Testing Room Booking API from browser...\n"
-                        },
-                        {
-                          "text": "✅ Room Booking API Response:\n"
-                        },
-                        {
-                          "text": "   Status: pending\n"
-                        },
-                        {
-                          "text": "   Success: true\n"
-                        },
-                        {
-                          "text": "   Booking Number: HW-159E26\n"
-                        },
-                        {
-                          "text": "   Booking ID: 418c1262-71d0-4bcb-865c-5545a8159e26\n"
-                        },
-                        {
-                          "text": "   Booking Status: pending\n"
-                        },
-                        {
-                          "text": "   ✅ ROOM BOOKING WORKS!\n"
-                        },
-                        {
-                          "text": "\n[7/7] Testing Surf Camp Booking API from browser...\n"
-                        },
-                        {
-                          "text": "✅ Surf Camp Booking API Response:\n"
-                        },
-                        {
-                          "text": "   Status: pending\n"
-                        },
-                        {
-                          "text": "   Success: true\n"
-                        },
-                        {
-                          "text": "   Booking Number: HW-C5A9FB\n"
-                        },
-                        {
-                          "text": "   Booking ID: 92ac13b2-858c-4923-8c50-f60826c5a9fb\n"
-                        },
-                        {
-                          "text": "   Booking Status: pending\n"
-                        },
-                        {
-                          "text": "   ✅ SURF CAMP BOOKING WORKS!\n"
-                        },
-                        {
-                          "text": "\n🎉 === ALL PRODUCTION TESTS PASSED ===\n\n"
-                        },
-                        {
-                          "text": "📊 Summary:\n"
-                        },
-                        {
-                          "text": "   ✅ Homepage loads\n"
-                        },
-                        {
-                          "text": "   ✅ Rooms page loads\n"
-                        },
-                        {
-                          "text": "   ✅ Rooms API works (4 rooms)\n"
-                        },
-                        {
-                          "text": "   ✅ Surf Camps API works (4 camps)\n"
-                        },
-                        {
-                          "text": "   ✅ Room booking creation works\n"
-                        },
-                        {
-                          "text": "   ✅ Surf camp booking creation works\n"
-                        },
-                        {
-                          "text": "\n🚀 Production site is fully functional!\n\n"
-                        }
-                      ],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-11-25T19:45:46.491Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "1d49db9ebbddd32a7845-95dbc1ff961ce054ff8e",
-              "file": "production-booking.spec.ts",
-              "line": 9,
-              "column": 7
             }
           ]
         }
@@ -540,11 +286,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-11-25T19:44:48.454Z",
-    "duration": 66347.009,
-    "expected": 2,
+    "startTime": "2025-11-26T15:10:56.025Z",
+    "duration": 11648.419999999998,
+    "expected": 1,
     "skipped": 0,
-    "unexpected": 1,
+    "unexpected": 0,
     "flaky": 0
   }
 }

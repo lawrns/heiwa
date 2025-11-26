@@ -8,13 +8,14 @@ import { supabaseAdmin } from '@/lib/supabase'
 // GET /api/rooms/[id] - Get a specific room
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { data, error } = await supabaseAdmin
       .from('rooms')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (error) {
@@ -41,9 +42,10 @@ export async function GET(
 // PUT /api/rooms/[id] - Update a specific room
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const { 
       name, 
@@ -81,7 +83,7 @@ export async function PUT(
     const { data, error } = await supabaseAdmin
       .from('rooms')
       .update(updateData as any)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
 
@@ -95,7 +97,7 @@ export async function PUT(
 
     // Revalidate rooms pages to reflect changes immediately
     revalidatePath('/rooms')
-    revalidatePath(`/rooms/${params.id}`)
+    revalidatePath(`/rooms/${id}`)
     revalidatePath('/admin/rooms')
     revalidatePath('/')  // Homepage may show rooms
 
@@ -115,13 +117,14 @@ export async function PUT(
 // DELETE /api/rooms/[id] - Delete a specific room
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { error } = await supabaseAdmin
       .from('rooms')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
 
     if (error) {
       console.error('Error deleting room:', error)
@@ -133,7 +136,7 @@ export async function DELETE(
 
     // Revalidate rooms pages to reflect deletion immediately
     revalidatePath('/rooms')
-    revalidatePath(`/rooms/${params.id}`)
+    revalidatePath(`/rooms/${id}`)
     revalidatePath('/admin/rooms')
     revalidatePath('/')  // Homepage may show rooms
 

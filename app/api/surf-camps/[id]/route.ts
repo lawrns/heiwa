@@ -149,12 +149,54 @@ export async function PUT(
   }
 }
 
+// DELETE /api/surf-camps/[id] - Delete a specific surf camp
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+
+    const { error } = await supabaseAdmin
+      .from('surf_camps')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('Error deleting surf camp:', error)
+      return NextResponse.json(
+        { success: false, error: 'Failed to delete surf camp' },
+        { status: 500 }
+      )
+    }
+
+    // Revalidate surf camp pages
+    revalidatePath('/surf-weeks')
+    revalidatePath('/admin/surf-camps')
+    revalidatePath('/')
+
+    return NextResponse.json({
+      success: true,
+      message: 'Surf camp deleted successfully'
+    })
+  } catch (error) {
+    console.error('Error deleting surf camp:', error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
+      },
+      { status: 500 }
+    )
+  }
+}
+
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   })

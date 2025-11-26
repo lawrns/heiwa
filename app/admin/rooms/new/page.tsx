@@ -53,15 +53,25 @@ export default function NewRoomPage() {
     setError(null)
 
     try {
-      // In a real implementation, this would be a POST request to /api/admin/rooms
-      console.log('Creating room:', formData)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Redirect to rooms list
-      router.push('/admin/rooms')
+      const response = await fetch('/api/admin/rooms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Redirect to rooms list
+        router.push('/admin/rooms')
+        router.refresh()
+      } else {
+        setError(data.error || 'Failed to create room. Please try again.')
+      }
     } catch (err) {
+      console.error('Error creating room:', err)
       setError('Failed to create room. Please try again.')
     } finally {
       setLoading(false)

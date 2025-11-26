@@ -12,7 +12,8 @@ interface SurfCamp {
   start_date: string
   end_date: string
   max_participants: number
-  confirmed_booked: number
+  enrolled_count: number  // Changed from confirmed_booked to match API
+  available_spots: number
   price: number
   level: string
   description: string
@@ -64,26 +65,59 @@ export default function SurfCampsPage() {
   }
 
   const handleDelete = async (campId: string) => {
-    if (!confirm('Are you sure you want to delete this surf week?')) return
+    if (!confirm('Are you sure you want to delete this surf week? This action cannot be undone.')) return
     
     try {
-      // In a real implementation, this would be a DELETE request
-      console.log('Deleting surf week:', campId)
-      setSurfCamps(surfCamps.filter(camp => camp.id !== campId))
+      const response = await fetch(`/api/surf-camps/${campId}`, {
+        method: 'DELETE',
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setSurfCamps(surfCamps.filter(camp => camp.id !== campId))
+      } else {
+        alert('Failed to delete surf week: ' + (data.error || 'Unknown error'))
+      }
     } catch (err) {
       console.error('Error deleting surf week:', err)
+      alert('Error deleting surf week. Please try again.')
     }
   }
 
   const toggleActive = async (campId: string) => {
+    const camp = surfCamps.find(c => c.id === campId)
+    if (!camp) return
+    
+    // Show confirmation for deactivation
+    if (camp.is_active && !confirm('Are you sure you want to deactivate this surf week? It will no longer be available for booking.')) {
+      return
+    }
+    
     try {
-      // In a real implementation, this would be a PATCH request
-      console.log('Toggling surf week status:', campId)
-      setSurfCamps(surfCamps.map(camp => 
-        camp.id === campId ? { ...camp, is_active: !camp.is_active } : camp
-      ))
+      const response = await fetch(`/api/surf-camps/${campId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...camp,
+          is_active: !camp.is_active,
+        }),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setSurfCamps(surfCamps.map(c => 
+          c.id === campId ? { ...c, is_active: !c.is_active } : c
+        ))
+      } else {
+        alert('Failed to update surf week: ' + (data.error || 'Unknown error'))
+      }
     } catch (err) {
       console.error('Error updating surf week:', err)
+      alert('Error updating surf week. Please try again.')
     }
   }
 
@@ -96,7 +130,8 @@ export default function SurfCampsPage() {
   }
 
   const getAvailabilityStatus = (camp: SurfCamp) => {
-    const spotsLeft = camp.max_participants - camp.confirmed_booked
+    // Use available_spots from API if present, otherwise calculate from enrolled_count
+    const spotsLeft = camp.available_spots ?? (camp.max_participants - (camp.enrolled_count || 0))
     if (spotsLeft <= 0) return { text: 'Fully Booked', color: 'bg-red-100 text-red-800' }
     if (spotsLeft <= 3) return { text: `${spotsLeft} Spots Left`, color: 'bg-orange-100 text-orange-800' }
     return { text: `${spotsLeft} Available`, color: 'bg-green-100 text-green-800' }
@@ -234,7 +269,7 @@ export default function SurfCampsPage() {
                   
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Users className="h-4 w-4" />
-                    <span>{camp.confirmed_booked}/{camp.max_participants} participants</span>
+                    <span>{camp.enrolled_count || 0}/{camp.max_participants} enrolled</span>
                   </div>
                   
                   <div className="text-sm text-gray-600">
