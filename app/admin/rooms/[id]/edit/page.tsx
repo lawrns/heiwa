@@ -433,7 +433,7 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
                     className="w-full h-24 object-cover rounded-lg bg-gray-100"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
-                      target.src = '/placeholder-room.jpg'
+                      target.src = '/placeholder-room.svg'
                       target.onerror = null
                     }}
                   />
