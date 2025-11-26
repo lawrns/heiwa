@@ -11,6 +11,7 @@ interface RoomFormData {
   description: string
   capacity: number
   price_per_night: number
+  off_season_price: number
   amenities: string[]
   featured_image: string
   images: string[]
@@ -24,6 +25,7 @@ export default function NewRoomPage() {
     description: '',
     capacity: 1,
     price_per_night: 0,
+    off_season_price: 0,
     amenities: [],
     featured_image: '',
     images: [],
@@ -58,7 +60,13 @@ export default function NewRoomPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          pricing: {
+            standard: formData.price_per_night,
+            offSeason: formData.off_season_price || formData.price_per_night,
+          },
+        }),
       })
 
       const data = await response.json()
@@ -164,21 +172,40 @@ export default function NewRoomPage() {
               />
             </div>
 
-            <div>
-              <label htmlFor="price_per_night" className="block text-sm font-medium text-gray-700 mb-2">
-                Price per Night (€) *
-              </label>
-              <input
-                type="number"
-                id="price_per_night"
-                required
-                min="0"
-                step="0.01"
-                value={formData.price_per_night}
-                onChange={(e) => setFormData(prev => ({ ...prev, price_per_night: parseFloat(e.target.value) }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="80.00"
-              />
+            {/* Pricing Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="price_per_night" className="block text-sm font-medium text-gray-700 mb-2">
+                  Peak Season Rate (€) * <span className="text-gray-500 font-normal">May - September</span>
+                </label>
+                <input
+                  type="number"
+                  id="price_per_night"
+                  required
+                  min="0"
+                  step="0.01"
+                  value={formData.price_per_night}
+                  onChange={(e) => setFormData(prev => ({ ...prev, price_per_night: parseFloat(e.target.value) }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="80.00"
+                />
+              </div>
+              <div>
+                <label htmlFor="off_season_price" className="block text-sm font-medium text-gray-700 mb-2">
+                  Off-Season Rate (€) <span className="text-gray-500 font-normal">October - April</span>
+                </label>
+                <input
+                  type="number"
+                  id="off_season_price"
+                  min="0"
+                  step="0.01"
+                  value={formData.off_season_price}
+                  onChange={(e) => setFormData(prev => ({ ...prev, off_season_price: parseFloat(e.target.value) || 0 }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Leave empty to use peak rate"
+                />
+                <p className="mt-1 text-xs text-gray-500">Leave empty to use peak season rate</p>
+              </div>
             </div>
 
             {/* Amenities */}

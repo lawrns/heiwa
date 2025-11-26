@@ -430,7 +430,12 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
                   <img
                     src={image}
                     alt={`Room image ${index + 1}`}
-                    className="w-full h-24 object-cover rounded-lg"
+                    className="w-full h-24 object-cover rounded-lg bg-gray-100"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = '/placeholder-room.jpg'
+                      target.onerror = null
+                    }}
                   />
                   <button
                     onClick={() => removeImage(index)}
@@ -440,6 +445,11 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
                   </button>
                 </div>
               ))}
+              {room.images.length === 0 && (
+                <div className="col-span-full text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                  No images added yet. Add image URLs above.
+                </div>
+              )}
             </div>
           </div>
         </div>

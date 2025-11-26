@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff } from 'lucide-react'
+import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, Wifi, WifiOff, Plus } from 'lucide-react'
 import { BookingCalendar } from '@/components/ui/booking-calendar'
 import { useBookingsRealtime } from '@/lib/hooks/useBookingsRealtime'
 import { EditBookingModal } from '@/components/admin/bookings/EditBookingModal'
@@ -550,6 +550,14 @@ export default function BookingsPage() {
             <span className="hidden sm:inline">Export CSV</span>
             <span className="sm:hidden">Export</span>
           </button>
+          <Link
+            href="/admin/bookings/new"
+            className="inline-flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors text-sm sm:text-base flex-1 sm:flex-none font-medium"
+          >
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Create Booking</span>
+            <span className="sm:hidden">New</span>
+          </Link>
         </div>
       </div>
 
