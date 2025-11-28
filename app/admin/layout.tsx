@@ -243,12 +243,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     )
   }
 
-  // If authenticated but still checking, show layout with sidebar
-  // This ensures sidebar appears immediately after login
-  if (isAuthenticated && checkingAuth) {
-    // Show layout while auth check completes
-  }
-
   return (
     <ErrorBoundary>
       <div className="heiwa-admin min-h-screen bg-gray-50 flex">
