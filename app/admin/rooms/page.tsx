@@ -173,7 +173,10 @@ export default function RoomsPage() {
         </div>
         <Link
           href="/admin/rooms/new"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-semibold shadow-md hover:shadow-lg whitespace-nowrap"
+          className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg transition-colors font-semibold shadow-md hover:shadow-lg whitespace-nowrap"
+          style={{ backgroundColor: '#ea580c' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2410c'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
         >
           <Plus className="h-5 w-5" />
           Add Room
@@ -267,7 +270,10 @@ export default function RoomsPage() {
                 </Link>
                 <Link
                   href={`/admin/rooms/${room.id}/edit`}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-heiwaOrange-600 rounded-lg hover:bg-heiwaOrange-700 transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold text-white rounded-lg transition-colors shadow-sm hover:shadow-md"
+                  style={{ backgroundColor: '#ea580c' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2410c'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
                 >
                   <Edit className="h-4 w-4" />
                   Edit
