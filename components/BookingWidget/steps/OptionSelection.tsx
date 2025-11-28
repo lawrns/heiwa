@@ -907,14 +907,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
                         {/* Checkbox indicator for multi-select */}
-                        <div className="absolute top-4 right-4 w-5 h-5 rounded border border-gray-400 bg-white flex items-center justify-center transition-all"
-                          style={{
-                            borderColor: isSelected ? '#ec681c' : '#9ca3af',
-                            backgroundColor: isSelected ? '#ec681c' : 'white'
-                          }}
+                        <div
+                          className={`absolute top-4 right-4 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
+                            isSelected
+                              ? 'bg-accent border-accent shadow-sm'
+                              : 'bg-white border-gray-300 hover:border-gray-400'
+                          }`}
                         >
                           {isSelected && (
-                            <Check size={14} className="text-white" />
+                            <Check size={16} className="text-white stroke-[3]" />
                           )}
                         </div>
                         <div className="flex gap-6">
