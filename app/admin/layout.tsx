@@ -230,9 +230,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return <ErrorBoundary>{children}</ErrorBoundary>
   }
 
-  // If not showing layout (not authenticated), show loading and redirect
-  // But allow rendering if authenticated even if showLayout is temporarily false
-  if (!showLayout && !isAuthenticated) {
+  // If not authenticated and not showing layout, show loading and redirect
+  // But if authenticated, always show layout even if showLayout is temporarily false
+  if (!isAuthenticated && !showLayout) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -241,6 +241,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
       </div>
     )
+  }
+
+  // If authenticated but still checking, show layout with sidebar
+  // This ensures sidebar appears immediately after login
+  if (isAuthenticated && checkingAuth) {
+    // Show layout while auth check completes
   }
 
   return (

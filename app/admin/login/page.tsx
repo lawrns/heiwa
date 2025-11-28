@@ -58,8 +58,8 @@ export default function AdminLoginPage() {
         // Store email before redirect
         localStorage.setItem('userEmail', 'admin@heiwa.house')
 
-        // Redirect to admin dashboard
-        router.push('/admin')
+        // Force a full page reload to ensure sidebar renders correctly
+        window.location.href = '/admin'
       } else {
         setError(data.message || 'Invalid password. Please try again.')
         setLoading(false)
