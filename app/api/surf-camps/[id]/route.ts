@@ -98,6 +98,12 @@ export async function PUT(
       )
     }
 
+    // Normalize level field - database expects lowercase 'all' not 'All Levels'
+    const normalizedLevel = level ? level.toLowerCase().replace(/\s+/g, '-') : 'all'
+    const finalLevel = ['beginner', 'intermediate', 'advanced', 'all'].includes(normalizedLevel) 
+      ? normalizedLevel 
+      : 'all'
+
     const updateData = {
       name,
       description: description || '',
@@ -105,7 +111,7 @@ export async function PUT(
       end_date,
       max_participants,
       price,
-      level: level || 'All Levels',
+      level: finalLevel,
       includes: includes || [],
       images: images || [],
       is_active: is_active !== undefined ? is_active : true,

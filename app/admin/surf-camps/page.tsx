@@ -95,15 +95,26 @@ export default function SurfCampsPage() {
     }
     
     try {
+      // Only send database fields, not computed fields like enrolled_count or available_spots
+      const updateData = {
+        name: camp.name,
+        description: camp.description || '',
+        start_date: camp.start_date,
+        end_date: camp.end_date,
+        max_participants: camp.max_participants,
+        price: camp.price,
+        level: camp.level || 'all',
+        includes: camp.includes || [],
+        images: camp.images || [],
+        is_active: !camp.is_active,
+      }
+      
       const response = await fetch(`/api/surf-camps/${campId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...camp,
-          is_active: !camp.is_active,
-        }),
+        body: JSON.stringify(updateData),
       })
       
       const data = await response.json()

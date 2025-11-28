@@ -76,17 +76,36 @@ export default function RoomsPage() {
     }
     
     try {
+      // Fetch full room data from API to get all database fields
+      const getResponse = await fetch(`/api/rooms/${roomId}`)
+      const getData = await getResponse.json()
+      
+      if (!getData.success || !getData.data?.room) {
+        alert('Failed to fetch room data for update')
+        return
+      }
+      
+      const dbRoom = getData.data.room
+      
+      // Send only database fields, properly formatted
+      const updateData = {
+        name: dbRoom.name || room.name,
+        capacity: dbRoom.capacity || room.capacity,
+        booking_type: dbRoom.booking_type || 'whole',
+        pricing: dbRoom.pricing || (room.price_per_night ? { standard: room.price_per_night } : { standard: 0 }),
+        amenities: dbRoom.amenities || room.amenities || [],
+        description: dbRoom.description || '',
+        images: dbRoom.images || (room.featured_image ? [room.featured_image] : []),
+        is_active: !room.is_active,
+        bed_types: dbRoom.bed_types || [],
+      }
+      
       const response = await fetch(`/api/rooms/${roomId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...room,
-          is_active: !room.is_active,
-          pricing: room.price_per_night ? { standard: room.price_per_night } : { standard: 0 },
-          booking_type: 'whole',
-        }),
+        body: JSON.stringify(updateData),
       })
       
       const data = await response.json()
