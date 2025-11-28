@@ -179,15 +179,23 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
   };
 
   // Enhanced room assignment: Display actual guest names instead of "Guest 1, Guest 2"
+  // Priority: participantNames (Step 2) > guestDetails (Step 4) > generic fallback
   const getGuestName = (guestId: string) => {
     const guestNumber = parseInt(guestId.split('-')[1]) - 1; // Convert to 0-based index
-    const guest = state.guestDetails[guestNumber];
 
-    if (guest && guest.firstName && guest.lastName) {
-      return `${guest.firstName} ${guest.lastName}`;
+    // First check participantNames (Step 2 data)
+    const participant = state.participantNames[guestNumber];
+    if (participant?.firstName) {
+      return participant.firstName;
     }
 
-    // Fallback to generic name if guest details not available
+    // Fallback to guestDetails (Step 4 data) if available
+    const guest = state.guestDetails[guestNumber];
+    if (guest?.firstName) {
+      return guest.firstName;
+    }
+
+    // Final fallback to generic name
     return `Guest ${guestNumber + 1}`;
   };
 

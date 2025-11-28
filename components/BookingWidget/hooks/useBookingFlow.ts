@@ -1,5 +1,5 @@
 import { useReducer, useCallback, useMemo } from 'react';
-import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelection, BankWireDetails, RoomAssignment } from '../types';
+import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelection, BankWireDetails, RoomAssignment, ParticipantName } from '../types';
 import { availabilityService } from '@/lib/availability';
 import { bookingService } from '@/lib/booking-service';
 import { validateBookingSubmission } from '@/lib/booking-utils';
@@ -12,6 +12,7 @@ const initialState: BookingState = {
     checkOut: null,
   },
   guests: 1,
+  participantNames: [],
   selectedOption: null,
   selectedSurfWeek: null,
   selectedSurfWeekRoom: null,
@@ -53,12 +54,15 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
       };
     
     case 'SET_GUESTS':
-      return { 
-        ...state, 
+      return {
+        ...state,
         guests: action.payload,
         selectedOption: null, // Reset selection when guest count changes
       };
-    
+
+    case 'SET_PARTICIPANT_NAMES':
+      return { ...state, participantNames: action.payload };
+
     case 'SET_SELECTED_OPTION':
       return { ...state, selectedOption: action.payload };
 
@@ -226,6 +230,10 @@ export function useBookingFlow() {
 
   const setGuests = useCallback((count: number) => {
     dispatch({ type: 'SET_GUESTS', payload: count });
+  }, []);
+
+  const setParticipantNames = useCallback((names: ParticipantName[]) => {
+    dispatch({ type: 'SET_PARTICIPANT_NAMES', payload: names });
   }, []);
 
   const selectOption = useCallback((optionId: string) => {
@@ -446,6 +454,7 @@ export function useBookingFlow() {
     setExperienceType,
     setDates,
     setGuests,
+    setParticipantNames,
     selectOption,
     setSurfWeek,
     setSurfWeekRoom,
@@ -472,6 +481,7 @@ export function useBookingFlow() {
     setExperienceType,
     setDates,
     setGuests,
+    setParticipantNames,
     selectOption,
     setSurfWeek,
     setSurfWeekRoom,
