@@ -257,9 +257,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           )}
 
-          {/* Sidebar - Always visible on desktop (md:translate-x-0), controlled by sidebarOpen on mobile */}
+          {/* Sidebar - Always visible on desktop, fixed position to stay in place when scrolling */}
           <aside className={`
-            fixed md:sticky inset-y-0 md:top-0 left-0 z-40 md:z-auto
+            fixed inset-y-0 left-0 z-40
             bg-gray-800 shadow-lg md:shadow-none
             transform transition-transform duration-300 ease-in-out
             ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
@@ -268,8 +268,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             w-64 md:block
             flex flex-col
             border-r border-gray-700 md:border-r-0
-            mt-0 md:mt-0
-            h-screen md:overflow-hidden
+            h-screen overflow-hidden
           `}>
             {/* Sidebar header */}
             <div className={`${sidebarCollapsed ? 'flex flex-col items-center py-4 space-y-3' : 'flex items-center justify-center h-24 px-4 relative'} bg-gray-800 border-b border-gray-700`}>
@@ -336,8 +335,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </nav>
           </aside>
 
-          {/* Main content area */}
-          <main className="flex-1 flex flex-col min-w-0 bg-gray-50">
+          {/* Main content area - offset for fixed sidebar on desktop */}
+          <main className={`flex-1 flex flex-col min-w-0 bg-gray-50 ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'} transition-all duration-300`}>
             {/* User/Logout header */}
             <header className="bg-white border-b border-gray-200 shadow-sm px-6 h-16 flex items-center justify-end">
               <div className="flex items-center gap-4">
