@@ -110,9 +110,8 @@ export default function InvoicesPage() {
   }
 
   const handleCreateFromBooking = (bookingId: string) => {
-    setSelectedInvoice({} as Invoice)
+    setSelectedInvoice({ bookingId } as Invoice)
     setShowCreateModal(true)
-    // Set booking ID in modal
   }
 
   // Bulk operations handlers

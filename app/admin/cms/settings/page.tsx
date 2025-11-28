@@ -73,12 +73,23 @@ export default function CMSSettingsPage() {
   const handleClearCache = async () => {
     setLoading(true)
     try {
-      // In a real app, this would call an API to invalidate CDN/Server cache
-      // For now, we just simulate it
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setMessage({ type: 'success', text: 'Cache cleared successfully' })
+      // Call API to invalidate cache
+      const response = await fetch('/api/admin/cache', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'clear' }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: 'Cache cleared successfully' })
+      } else {
+        throw new Error(data.error || 'Failed to clear cache')
+      }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to clear cache' })
+      const errorMessage = error instanceof Error ? error.message : 'Failed to clear cache'
+      setMessage({ type: 'error', text: errorMessage })
     } finally {
       setLoading(false)
     }
