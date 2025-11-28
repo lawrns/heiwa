@@ -50,6 +50,14 @@ const pages: PageData[] = [
     status: 'published'
   },
   {
+    slug: 'surf-weeks',
+    title: 'Surf Weeks',
+    description: 'Manage surf weeks listing, process, and content sections',
+    sectionCount: 0,
+    lastModified: 'Never',
+    status: 'published'
+  },
+  {
     slug: 'about',
     title: 'About Us',
     description: 'Company story, team, and mission',
