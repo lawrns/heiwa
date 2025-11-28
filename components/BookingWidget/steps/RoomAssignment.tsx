@@ -128,17 +128,36 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
       return; // Room is full
     }
 
+    // ENFORCE EXCLUSIVITY: Remove guest from any other room assignments first
+    let updatedAssignments = state.roomAssignments.map(assignment => {
+      // Remove guest from other rooms
+      if (assignment.roomId !== roomId && assignment.guestIds.includes(guestId)) {
+        const filteredGuestIds = assignment.guestIds.filter(id => id !== guestId);
+        // If no guests left in this assignment, mark it for removal
+        if (filteredGuestIds.length === 0) {
+          return null; // Mark for removal
+        }
+        return {
+          ...assignment,
+          guestIds: filteredGuestIds
+        };
+      }
+      return assignment;
+    }).filter((assignment): assignment is RoomAssignmentType => assignment !== null);
+
+    // Now add guest to the target room
     if (currentAssignment) {
-      // Add guest to existing assignment
-      const updatedAssignment = {
-        ...currentAssignment,
-        guestIds: [...currentAssignment.guestIds, guestId]
-      };
-      
-      const updatedAssignments = state.roomAssignments.map(a => 
-        a.id === currentAssignment.id ? updatedAssignment : a
-      );
-      actions.setRoomAssignments(updatedAssignments);
+      // Add guest to existing assignment (only if not already there)
+      if (!currentAssignment.guestIds.includes(guestId)) {
+        const updatedAssignment = {
+          ...currentAssignment,
+          guestIds: [...currentAssignment.guestIds, guestId]
+        };
+        
+        updatedAssignments = updatedAssignments.map(a => 
+          a.id === currentAssignment.id ? updatedAssignment : a
+        );
+      }
     } else {
       // Create new assignment
       const newAssignment: RoomAssignmentType = {
@@ -146,8 +165,10 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
         roomId,
         guestIds: [guestId]
       };
-      actions.addRoomAssignment(newAssignment);
+      updatedAssignments.push(newAssignment);
     }
+
+    actions.setRoomAssignments(updatedAssignments);
   };
 
   const handleRemoveGuestFromRoom = (assignmentId: string, guestId: string) => {
@@ -347,18 +368,30 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
               {/* Assignment Actions */}
               {!isFull && unassignedGuests.length > 0 && (
                 <div className="border-t pt-4">
-                  <h5 className="text-sm font-medium text-gray-700 mb-2">Assign Guest:</h5>
+                  <h5 className="text-sm font-medium text-gray-700 mb-2">Assign Guest to this Room:</h5>
                   <div className="flex flex-wrap gap-2">
-                    {unassignedGuests.map(guestId => (
-                      <button
-                        key={guestId}
-                        onClick={() => handleAssignGuestToRoom(room.id, guestId)}
-                        className="flex items-center gap-2 px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg text-sm font-medium transition-colors"
-                      >
-                        <ArrowRight size={14} />
-                        {getGuestName(guestId)}
-                      </button>
-                    ))}
+                    {unassignedGuests.map(guestId => {
+                      // Check if guest is already assigned to another room
+                      const isAssignedElsewhere = state.roomAssignments.some(
+                        a => a.roomId !== room.id && a.guestIds.includes(guestId)
+                      );
+                      
+                      // Don't show guests assigned to other rooms (exclusivity)
+                      if (isAssignedElsewhere) {
+                        return null;
+                      }
+                      
+                      return (
+                        <button
+                          key={guestId}
+                          onClick={() => handleAssignGuestToRoom(room.id, guestId)}
+                          className="flex items-center gap-2 px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg text-sm font-medium transition-colors border-2 border-transparent hover:border-orange-300"
+                        >
+                          <ArrowRight size={14} />
+                          {getGuestName(guestId)}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}

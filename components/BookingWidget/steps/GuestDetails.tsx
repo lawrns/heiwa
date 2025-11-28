@@ -6,6 +6,7 @@ interface GuestDetailsProps {
   state: BookingState;
   actions: {
     updateGuestDetails: (guest: GuestInfo) => void;
+    setParticipantNames?: (names: { id: string; firstName: string }[]) => void;
   };
 }
 
@@ -114,6 +115,20 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     const newForms = [...guestForms];
     newForms[index] = { ...newForms[index], [field]: value };
     setGuestForms(newForms);
+
+    // BI-DIRECTIONAL SYNC: Update participantNames when firstName changes
+    if (field === 'firstName' && actions.setParticipantNames) {
+      const updatedParticipantNames = [...state.participantNames];
+      // Ensure array is long enough
+      while (updatedParticipantNames.length <= index) {
+        updatedParticipantNames.push({ id: `guest-${updatedParticipantNames.length + 1}`, firstName: '' });
+      }
+      updatedParticipantNames[index] = {
+        id: `guest-${index + 1}`,
+        firstName: value.trim()
+      };
+      actions.setParticipantNames(updatedParticipantNames);
+    }
 
     // Clear error for this guest when any field is changed
     const errorKey = `guest-${index}`;
