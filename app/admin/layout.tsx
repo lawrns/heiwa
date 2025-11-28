@@ -268,7 +268,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             fixed inset-y-0 left-0 z-40
             bg-gray-800 shadow-lg md:shadow-none
             transform transition-transform duration-300 ease-in-out
-            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            ${sidebarOpen || (isAuthenticated && typeof window !== 'undefined' && window.innerWidth >= 768) ? 'translate-x-0' : '-translate-x-full'}
             md:translate-x-0 md:!translate-x-0
             ${sidebarCollapsed ? 'md:w-16' : 'md:w-64'}
             w-64 md:block
