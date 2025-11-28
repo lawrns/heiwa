@@ -214,13 +214,27 @@ export default function BookingsPage() {
 
   const handleStatusChange = async (bookingId: string, newStatus: Booking['status']) => {
     try {
-      // In a real implementation, this would be a PATCH request
-      console.log('Updating booking status:', bookingId, newStatus)
-      setBookings(bookings.map(booking => 
-        booking.id === bookingId ? { ...booking, status: newStatus } : booking
-      ))
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setBookings(bookings.map(booking => 
+          booking.id === bookingId ? { ...booking, status: newStatus } : booking
+        ))
+        toast.success('Booking status updated successfully')
+      } else {
+        toast.error(data.error || 'Failed to update booking status')
+      }
     } catch (err) {
       console.error('Error updating booking:', err)
+      toast.error('Failed to update booking status')
     }
   }
 

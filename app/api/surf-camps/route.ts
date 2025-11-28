@@ -194,13 +194,81 @@ export async function GET(request: Request) {
   }
 }
 
+// POST /api/surf-camps - Create a new surf camp
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const {
+      name,
+      description,
+      start_date,
+      end_date,
+      max_participants,
+      price,
+      level,
+      includes,
+      images,
+      is_active
+    } = body
+
+    // Validate required fields
+    if (!name || !start_date || !end_date || max_participants === undefined || price === undefined) {
+      return NextResponse.json(
+        { success: false, error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
+
+    // Insert new surf camp
+    const { data: newCamp, error } = await supabase
+      .from('surf_camps')
+      .insert({
+        name,
+        description: description || '',
+        start_date,
+        end_date,
+        max_participants,
+        price,
+        level: level || 'all',
+        includes: includes || [],
+        images: images || [],
+        is_active: is_active !== undefined ? is_active : true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error creating surf camp:', error)
+      return NextResponse.json(
+        { success: false, error: 'Failed to create surf camp' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        surf_camp: newCamp
+      }
+    })
+  } catch (error) {
+    console.error('Error creating surf camp:', error)
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
 // Handle OPTIONS for CORS
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   })
