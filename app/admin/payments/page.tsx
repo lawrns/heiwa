@@ -204,9 +204,10 @@ export default function PaymentsPage() {
       } else {
         throw new Error(data.error || 'Failed to update payments')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating payments:', error)
-      toast.error(error.message || 'Failed to update payments')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update payments'
+      toast.error(errorMessage)
     }
   }
 
@@ -234,9 +235,10 @@ export default function PaymentsPage() {
       } else {
         throw new Error(data.error || 'Failed to delete payments')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting payments:', error)
-      toast.error(error.message || 'Failed to delete payments')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete payments'
+      toast.error(errorMessage)
     }
   }
 

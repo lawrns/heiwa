@@ -16,6 +16,30 @@ export const metadata: Metadata = {
   description: 'We strive to deliver an unforgettable surf week experience both in and out of the water. Join us for surf, yoga, amazing food, skateboarding, and more.',
 }
 
+// Fetch CMS content for surf-weeks page
+async function getSurfWeeksCMSContent() {
+  try {
+    const { supabaseAdmin } = await import('@/lib/supabase')
+    
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('*')
+      .eq('page_slug', 'surf-weeks')
+      .eq('is_active', true)
+      .order('order_index', { ascending: true })
+    
+    if (error || !data) {
+      console.warn('CMS content not available for surf-weeks, using defaults')
+      return null
+    }
+    
+    return data
+  } catch (error) {
+    console.warn('Error fetching CMS content:', error)
+    return null
+  }
+}
+
 // Fetch surf weeks from database
 async function getSurfWeeks() {
   try {
@@ -103,6 +127,7 @@ function getPriceDisplay(price: number) {
 
 export default async function SurfWeeksPage() {
   const surfWeeks = await getSurfWeeks()
+  const cmsContent = await getSurfWeeksCMSContent()
   
   // Gallery images
   const galleryImages = [

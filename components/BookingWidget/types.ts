@@ -1,3 +1,8 @@
+export interface ParticipantName {
+  id: string; // "guest-1", "guest-2", etc.
+  firstName: string;
+}
+
 export interface BookingState {
   currentStep: number;
   experienceType: 'room' | 'surf-week' | null;
@@ -6,6 +11,7 @@ export interface BookingState {
     checkOut: Date | null;
   };
   guests: number;
+  participantNames: ParticipantName[]; // Step 2 - early name collection
   selectedOption: string | null;
   selectedSurfWeek: string | null;
   selectedSurfWeekRoom: string | null; // For surf week room selection
@@ -109,6 +115,7 @@ export type BookingAction =
   | { type: 'SET_EXPERIENCE_TYPE'; payload: 'room' | 'surf-week' }
   | { type: 'SET_DATES'; payload: { checkIn: Date; checkOut: Date } }
   | { type: 'SET_GUESTS'; payload: number }
+  | { type: 'SET_PARTICIPANT_NAMES'; payload: ParticipantName[] }
   | { type: 'SET_SELECTED_OPTION'; payload: string }
   | { type: 'SET_SURF_WEEK'; payload: string }
   | { type: 'SET_SURF_WEEK_ROOM'; payload: string }

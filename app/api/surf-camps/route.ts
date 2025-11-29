@@ -194,13 +194,96 @@ export async function GET(request: Request) {
   }
 }
 
+// POST /api/surf-camps - Create a new surf camp
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const {
+      name,
+      description,
+      start_date,
+      end_date,
+      max_participants,
+      price,
+      level,
+      includes,
+      images,
+      is_active
+    } = body
+
+    // Validate required fields
+    if (!name || !start_date || !end_date || max_participants === undefined || price === undefined) {
+      return NextResponse.json(
+        { success: false, error: 'Missing required fields: name, start_date, end_date, max_participants, price' },
+        { status: 400 }
+      )
+    }
+
+    // Normalize level field - database expects lowercase
+    const normalizedLevel = level ? level.toLowerCase().replace(/\s+/g, '-') : 'all'
+    const finalLevel = ['beginner', 'intermediate', 'advanced', 'all'].includes(normalizedLevel) 
+      ? normalizedLevel 
+      : 'all'
+
+    // Insert new surf camp
+    const { data: newCamp, error } = await supabase
+      .from('surf_camps')
+      .insert({
+        name,
+        description: description || '',
+        start_date,
+        end_date,
+        max_participants,
+        price,
+        level: finalLevel,
+        includes: includes || [],
+        images: images || [],
+        is_active: is_active !== undefined ? is_active : true
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error creating surf camp:', error)
+      return NextResponse.json(
+        { success: false, error: error.message || 'Failed to create surf camp', details: error },
+        { status: 500 }
+      )
+    }
+
+    if (!newCamp) {
+      return NextResponse.json(
+        { success: false, error: 'No data returned from database' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        surf_camp: newCamp
+      }
+    })
+  } catch (error) {
+    console.error('Error creating surf camp:', error)
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Internal server error',
+        details: error instanceof Error ? error.stack : String(error)
+      },
+      { status: 500 }
+    )
+  }
+}
+
 // Handle OPTIONS for CORS
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   })

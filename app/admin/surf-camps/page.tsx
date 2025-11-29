@@ -12,7 +12,8 @@ interface SurfCamp {
   start_date: string
   end_date: string
   max_participants: number
-  confirmed_booked: number
+  enrolled_count: number  // Changed from confirmed_booked to match API
+  available_spots: number
   price: number
   level: string
   description: string
@@ -64,26 +65,70 @@ export default function SurfCampsPage() {
   }
 
   const handleDelete = async (campId: string) => {
-    if (!confirm('Are you sure you want to delete this surf week?')) return
+    if (!confirm('Are you sure you want to delete this surf week? This action cannot be undone.')) return
     
     try {
-      // In a real implementation, this would be a DELETE request
-      console.log('Deleting surf week:', campId)
-      setSurfCamps(surfCamps.filter(camp => camp.id !== campId))
+      const response = await fetch(`/api/surf-camps/${campId}`, {
+        method: 'DELETE',
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setSurfCamps(surfCamps.filter(camp => camp.id !== campId))
+      } else {
+        alert('Failed to delete surf week: ' + (data.error || 'Unknown error'))
+      }
     } catch (err) {
       console.error('Error deleting surf week:', err)
+      alert('Error deleting surf week. Please try again.')
     }
   }
 
   const toggleActive = async (campId: string) => {
+    const camp = surfCamps.find(c => c.id === campId)
+    if (!camp) return
+    
+    // Show confirmation for deactivation
+    if (camp.is_active && !confirm('Are you sure you want to deactivate this surf week? It will no longer be available for booking.')) {
+      return
+    }
+    
     try {
-      // In a real implementation, this would be a PATCH request
-      console.log('Toggling surf week status:', campId)
-      setSurfCamps(surfCamps.map(camp => 
-        camp.id === campId ? { ...camp, is_active: !camp.is_active } : camp
-      ))
+      // Only send database fields, not computed fields like enrolled_count or available_spots
+      const updateData = {
+        name: camp.name,
+        description: camp.description || '',
+        start_date: camp.start_date,
+        end_date: camp.end_date,
+        max_participants: camp.max_participants,
+        price: camp.price,
+        level: camp.level || 'all',
+        includes: camp.includes || [],
+        images: camp.images || [],
+        is_active: !camp.is_active,
+      }
+      
+      const response = await fetch(`/api/surf-camps/${campId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setSurfCamps(surfCamps.map(c => 
+          c.id === campId ? { ...c, is_active: !c.is_active } : c
+        ))
+      } else {
+        alert('Failed to update surf week: ' + (data.error || 'Unknown error'))
+      }
     } catch (err) {
       console.error('Error updating surf week:', err)
+      alert('Error updating surf week. Please try again.')
     }
   }
 
@@ -96,7 +141,8 @@ export default function SurfCampsPage() {
   }
 
   const getAvailabilityStatus = (camp: SurfCamp) => {
-    const spotsLeft = camp.max_participants - camp.confirmed_booked
+    // Use available_spots from API if present, otherwise calculate from enrolled_count
+    const spotsLeft = camp.available_spots ?? (camp.max_participants - (camp.enrolled_count || 0))
     if (spotsLeft <= 0) return { text: 'Fully Booked', color: 'bg-red-100 text-red-800' }
     if (spotsLeft <= 3) return { text: `${spotsLeft} Spots Left`, color: 'bg-orange-100 text-orange-800' }
     return { text: `${spotsLeft} Available`, color: 'bg-green-100 text-green-800' }
@@ -145,16 +191,19 @@ export default function SurfCampsPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Surf Weeks Management</h1>
           <p className="text-gray-600 mt-2">Manage your surf week programs and schedules</p>
         </div>
         <Link
           href="/admin/surf-camps/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium"
+          className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg transition-colors font-semibold shadow-md hover:shadow-lg whitespace-nowrap"
+          style={{ backgroundColor: '#ea580c' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2410c'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-5 w-5" />
           Add Surf Week
         </Link>
       </div>
@@ -234,7 +283,7 @@ export default function SurfCampsPage() {
                   
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Users className="h-4 w-4" />
-                    <span>{camp.confirmed_booked}/{camp.max_participants} participants</span>
+                    <span>{camp.enrolled_count || 0}/{camp.max_participants} enrolled</span>
                   </div>
                   
                   <div className="text-sm text-gray-600">
@@ -253,7 +302,7 @@ export default function SurfCampsPage() {
                 <div className="flex gap-2 flex-wrap">
                   <Link
                     href={`/admin/surf-camps/${camp.id}`}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="flex-1 min-w-[80px] inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                   >
                     <Eye className="h-4 w-4" />
                     View
@@ -263,14 +312,17 @@ export default function SurfCampsPage() {
                       setSelectedCampId(camp.id)
                       setEnrollmentModalOpen(true)
                     }}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex-1 min-w-[80px] inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     <UserPlus className="h-4 w-4" />
                     Enroll
                   </button>
                   <Link
                     href={`/admin/surf-camps/${camp.id}/edit`}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-heiwaOrange-600 rounded-lg hover:bg-heiwaOrange-700 transition-colors"
+                    className="flex-1 min-w-[80px] inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold text-white rounded-lg transition-colors shadow-sm hover:shadow-md"
+                    style={{ backgroundColor: '#ea580c' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2410c'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
                   >
                     <Edit className="h-4 w-4" />
                     Edit
@@ -278,6 +330,7 @@ export default function SurfCampsPage() {
                   <button
                     onClick={() => handleDelete(camp.id)}
                     className="inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
+                    title="Delete surf week"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

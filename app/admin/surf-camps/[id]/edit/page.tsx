@@ -89,10 +89,44 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
     }
   }
 
+  const validateForm = () => {
+    if (!formData.name?.trim()) {
+      setError('Surf week name is required')
+      return false
+    }
+    if (!formData.start_date) {
+      setError('Start date is required')
+      return false
+    }
+    if (!formData.end_date) {
+      setError('End date is required')
+      return false
+    }
+    if (new Date(formData.end_date) <= new Date(formData.start_date)) {
+      setError('End date must be after start date')
+      return false
+    }
+    if (formData.max_participants <= 0) {
+      setError('Maximum participants must be greater than 0')
+      return false
+    }
+    if (formData.price < 0) {
+      setError('Price cannot be negative')
+      return false
+    }
+    return true
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
     setError(null)
+
+    // Client-side validation
+    if (!validateForm()) {
+      setSaving(false)
+      return
+    }
 
     try {
       const response = await fetch(`/api/surf-camps/${params.id}`, {
@@ -109,11 +143,15 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
         router.push('/admin/surf-camps')
         router.refresh()
       } else {
-        setError(data.error || 'Failed to update surf week. Please try again.')
+        // Provide more detailed error message
+        const errorMessage = data.error || data.message || 'Failed to update surf week'
+        setError(`${errorMessage}. Please check your input and try again.`)
+        console.error('Surf week update error:', data)
       }
     } catch (err) {
-      setError('Failed to update surf week. Please try again.')
-      console.error(err)
+      const errorMessage = err instanceof Error ? err.message : 'Network error'
+      setError(`Failed to update surf week: ${errorMessage}. Please check your connection and try again.`)
+      console.error('Surf week update exception:', err)
     } finally {
       setSaving(false)
     }

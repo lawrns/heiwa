@@ -45,27 +45,81 @@ export default function RoomsPage() {
   }
 
   const handleDelete = async (roomId: string) => {
-    if (!confirm('Are you sure you want to delete this room?')) return
+    if (!confirm('Are you sure you want to delete this room? This action cannot be undone.')) return
     
     try {
-      // In a real implementation, this would be a DELETE request
-      console.log('Deleting room:', roomId)
-      // For now, just remove from local state
-      setRooms(rooms.filter(room => room.id !== roomId))
+      const response = await fetch(`/api/rooms/${roomId}`, {
+        method: 'DELETE',
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        // Remove from local state
+        setRooms(rooms.filter(room => room.id !== roomId))
+      } else {
+        alert('Failed to delete room: ' + (data.error || 'Unknown error'))
+      }
     } catch (err) {
       console.error('Error deleting room:', err)
+      alert('Error deleting room. Please try again.')
     }
   }
 
   const toggleActive = async (roomId: string) => {
+    const room = rooms.find(r => r.id === roomId)
+    if (!room) return
+    
+    // Show confirmation for deactivation
+    if (room.is_active && !confirm('Are you sure you want to deactivate this room? It will no longer be available for booking.')) {
+      return
+    }
+    
     try {
-      // In a real implementation, this would be a PATCH request
-      console.log('Toggling room status:', roomId)
-      setRooms(rooms.map(room => 
-        room.id === roomId ? { ...room, is_active: !room.is_active } : room
-      ))
+      // Fetch full room data from API to get all database fields
+      const getResponse = await fetch(`/api/rooms/${roomId}`)
+      const getData = await getResponse.json()
+      
+      if (!getData.success || !getData.data?.room) {
+        alert('Failed to fetch room data for update')
+        return
+      }
+      
+      const dbRoom = getData.data.room
+      
+      // Send only database fields, properly formatted
+      const updateData = {
+        name: dbRoom.name || room.name,
+        capacity: dbRoom.capacity || room.capacity,
+        booking_type: dbRoom.booking_type || 'whole',
+        pricing: dbRoom.pricing || (room.price_per_night ? { standard: room.price_per_night } : { standard: 0 }),
+        amenities: dbRoom.amenities || room.amenities || [],
+        description: dbRoom.description || '',
+        images: dbRoom.images || (room.featured_image ? [room.featured_image] : []),
+        is_active: !room.is_active,
+        bed_types: dbRoom.bed_types || [],
+      }
+      
+      const response = await fetch(`/api/rooms/${roomId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setRooms(rooms.map(r => 
+          r.id === roomId ? { ...r, is_active: !r.is_active } : r
+        ))
+      } else {
+        alert('Failed to update room: ' + (data.error || 'Unknown error'))
+      }
     } catch (err) {
       console.error('Error updating room:', err)
+      alert('Error updating room. Please try again.')
     }
   }
 
@@ -112,16 +166,19 @@ export default function RoomsPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Rooms Management</h1>
           <p className="text-gray-600 mt-2">Manage your accommodation options</p>
         </div>
         <Link
           href="/admin/rooms/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium"
+          className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg transition-colors font-semibold shadow-md hover:shadow-lg whitespace-nowrap"
+          style={{ backgroundColor: '#ea580c' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2410c'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-5 w-5" />
           Add Room
         </Link>
       </div>
@@ -213,7 +270,10 @@ export default function RoomsPage() {
                 </Link>
                 <Link
                   href={`/admin/rooms/${room.id}/edit`}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-heiwaOrange-600 rounded-lg hover:bg-heiwaOrange-700 transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold text-white rounded-lg transition-colors shadow-sm hover:shadow-md"
+                  style={{ backgroundColor: '#ea580c' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2410c'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
                 >
                   <Edit className="h-4 w-4" />
                   Edit

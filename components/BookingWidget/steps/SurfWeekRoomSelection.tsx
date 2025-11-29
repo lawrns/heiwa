@@ -268,11 +268,6 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                     <h4 className="text-lg font-semibold text-gray-900">
                       {room.name}
                     </h4>
-                    {room.isIncluded && (
-                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                        Included
-                      </span>
-                    )}
                   </div>
                   <p className="text-gray-600 text-sm mb-3">
                     {room.description}

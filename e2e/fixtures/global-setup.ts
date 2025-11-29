@@ -7,47 +7,70 @@ async function globalSetup(config: FullConfig) {
   const adminPassword = process.env.ADMIN_PASSWORD || 'heiwa_admin_2024'
   
   // Create auth directory if it doesn't exist
-  // Use process.cwd() for compatibility
   const authDir = path.join(process.cwd(), 'e2e', '.auth')
   if (!fs.existsSync(authDir)) {
     fs.mkdirSync(authDir, { recursive: true })
   }
 
-  const browser = await chromium.launch()
-  const page = await browser.newPage()
+  const browser = await chromium.launch({ headless: true })
+  const context = await browser.newContext()
+  const page = await context.newPage()
   
   try {
     console.log(`🔐 Attempting admin authentication at ${baseURL}/admin/login`)
     
-    // Navigate to login page with longer timeout
+    // Navigate to login page
     await page.goto(`${baseURL}/admin/login`, { waitUntil: 'domcontentloaded', timeout: 60000 })
     
-    // Wait for password input to be visible (more reliable than networkidle)
-    await page.waitForSelector('input[type="password"]', { timeout: 30000 })
-    console.log('✅ Login page loaded')
+    // Wait for either password input or already redirected to admin
+    try {
+      await Promise.race([
+        page.waitForSelector('input[type="password"]', { timeout: 15000 }),
+        page.waitForURL('**/admin', { timeout: 15000 })
+      ])
+    } catch {
+      // Continue anyway
+    }
     
-    // Fill in password
-    await page.fill('input[type="password"]', adminPassword)
+    // Check if already authenticated (redirected to admin)
+    if (page.url().includes('/admin') && !page.url().includes('/login')) {
+      console.log('✅ Already authenticated')
+    } else {
+      // Fill in password
+      const passwordInput = page.locator('input[type="password"]')
+      if (await passwordInput.isVisible({ timeout: 5000 }).catch(() => false)) {
+        await passwordInput.fill(adminPassword)
+        console.log('✅ Password entered')
+        
+        // Submit login form
+        await page.locator('button[type="submit"]').click()
+        console.log('✅ Login form submitted')
+        
+        // Wait for redirect to dashboard
+        await page.waitForURL('**/admin', { timeout: 20000 }).catch(() => {})
+        
+        // Extra wait for client-side hydration
+        await page.waitForTimeout(3000)
+        
+        // Force refresh to ensure cookies are properly set
+        await page.reload({ waitUntil: 'domcontentloaded' })
+        await page.waitForTimeout(2000)
+      }
+    }
     
-    // Submit login form
-    await page.click('button[type="submit"]')
-    console.log('✅ Login form submitted')
-    
-    // Wait for redirect to dashboard
-    await page.waitForURL('**/admin', { timeout: 15000 })
-    console.log('✅ Redirected to admin dashboard')
-    
-    // Wait a bit for page to fully load
-    await page.waitForTimeout(2000)
-    
-    // Save authentication state
-    await page.context().storageState({ path: path.join(authDir, 'admin.json') })
-    
-    console.log('✅ Admin authentication successful - auth state saved')
-  } catch (error: any) {
-    console.error('❌ Failed to authenticate admin:', error.message)
-    // Don't throw - let tests handle auth individually if global setup fails
-    // Some tests have their own auth logic
+    // Verify we're on admin page
+    if (page.url().includes('/admin') && !page.url().includes('/login')) {
+      console.log('✅ Redirected to admin dashboard:', page.url())
+      
+      // Save authentication state
+      await context.storageState({ path: path.join(authDir, 'admin.json') })
+      console.log('✅ Admin authentication successful - auth state saved')
+    } else {
+      throw new Error(`Still on login page: ${page.url()}`)
+    }
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error('❌ Failed to authenticate admin:', errorMessage)
     console.warn('⚠️ Continuing without global auth - tests will authenticate individually')
     
     // Create empty auth file so tests know to authenticate themselves

@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, X, ZoomIn, Users } from 'lucide-react';
 
+// Local fallback images from the property
+const FALLBACK_IMAGES = [
+  '/images/DSC02099-scaled.jpg',
+  '/images/DSC03521-scaled.jpg',
+  '/images/DSC03530-scaled.jpg',
+  '/images/DSC08054-scaled.jpg',
+];
+
 interface RoomImageGalleryProps {
   images: string[];
   roomName: string;
@@ -69,7 +77,8 @@ export function RoomImageGallery({
               className="max-w-full max-h-full object-contain rounded-lg"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.src = 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=600&fit=crop&crop=center';
+                // Use local fallback image based on current index
+                target.src = FALLBACK_IMAGES[currentImageIndex % FALLBACK_IMAGES.length];
               }}
             />
 
@@ -111,7 +120,7 @@ export function RoomImageGallery({
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=80&h=60&fit=crop&crop=center';
+                      target.src = FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
                     }}
                   />
                 </button>
@@ -194,7 +203,7 @@ export function RoomThumbnail({ image, roomName, onClick, className = '' }: Room
         className="w-full h-full object-cover"
         onError={(e) => {
           const target = e.target as HTMLImageElement;
-          target.src = 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=80&h=60&fit=crop&crop=center';
+          target.src = FALLBACK_IMAGES[0];
         }}
       />
       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
@@ -213,7 +222,7 @@ interface RoomHeroImageProps {
 
 export function RoomHeroImage({ image, roomName, onClick, className = '' }: RoomHeroImageProps) {
   return (
-    <div 
+    <div
       className={`relative group overflow-hidden rounded-lg cursor-pointer ${className}`}
       onClick={onClick}
     >
@@ -223,7 +232,7 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         onError={(e) => {
           const target = e.target as HTMLImageElement;
-          target.src = 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=600&fit=crop&crop=center';
+          target.src = FALLBACK_IMAGES[0];
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />

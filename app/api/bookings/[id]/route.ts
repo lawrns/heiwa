@@ -200,6 +200,73 @@ export async function PUT(
   }
 }
 
+// PATCH /api/bookings/[id] - Partial update of a booking (e.g., status change)
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+    const body = await request.json()
+
+    // Get the existing booking first
+    const { data: existingBooking, error: fetchError } = await supabaseAdmin
+      .from('bookings')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (fetchError || !existingBooking) {
+      return NextResponse.json(
+        { success: false, error: 'Booking not found' },
+        { status: 404 }
+      )
+    }
+
+    // Build partial update object - only update provided fields
+    const updateData: any = {
+      updated_at: new Date().toISOString()
+    }
+
+    if (body.status !== undefined) {
+      updateData.status = body.status
+    }
+    if (body.payment_status !== undefined) {
+      updateData.payment_status = body.payment_status
+    }
+    if (body.notes !== undefined) {
+      updateData.notes = body.notes
+    }
+
+    // Update booking
+    const { data, error } = await supabaseAdmin
+      .from('bookings')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error updating booking:', error)
+      return NextResponse.json(
+        { success: false, error: 'Failed to update booking' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: { booking: data }
+    })
+  } catch (error) {
+    console.error('Unexpected error:', error)
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
 // DELETE /api/bookings/[id] - Delete a booking
 export async function DELETE(
   request: NextRequest,

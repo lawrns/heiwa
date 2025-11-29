@@ -39,7 +39,6 @@ interface BlogPost {
 }
 
 export default function BlogPostsPage() {
-  useRouter() // Keep for potential future navigation
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -89,12 +88,14 @@ export default function BlogPostsPage() {
       const data = await response.json()
 
       if (data.success) {
+        setError(null)
         fetchPosts()
       } else {
-        alert(data.error || 'Failed to delete post')
+        setError(data.error || 'Failed to delete post')
       }
-    } catch (err) {
-      alert('Error deleting post')
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error deleting post'
+      setError(errorMessage)
       console.error(err)
     }
   }

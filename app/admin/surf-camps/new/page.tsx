@@ -59,15 +59,43 @@ export default function NewSurfCampPage() {
     setError(null)
 
     try {
-      // In a real implementation, this would be a POST request to /api/admin/surf-camps
-      console.log('Creating surf week:', formData)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Redirect to surf weeks list
-      router.push('/admin/surf-camps')
-    } catch {
+      // Normalize level field - database expects lowercase
+      const normalizedLevel = formData.level ? formData.level.toLowerCase().replace(/\s+/g, '-') : 'all'
+      const finalLevel = ['beginner', 'intermediate', 'advanced', 'all'].includes(normalizedLevel) 
+        ? normalizedLevel 
+        : 'all'
+
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        start_date: formData.start_date,
+        end_date: formData.end_date,
+        max_participants: formData.max_participants,
+        price: formData.price,
+        level: finalLevel,
+        includes: formData.includes,
+        images: formData.images,
+        is_active: formData.is_active,
+      }
+
+      const response = await fetch('/api/surf-camps', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        router.push('/admin/surf-camps')
+        router.refresh()
+      } else {
+        setError(data.error || 'Failed to create surf week. Please try again.')
+      }
+    } catch (err) {
+      console.error('Error creating surf week:', err)
       setError('Failed to create surf week. Please try again.')
     } finally {
       setLoading(false)

@@ -436,11 +436,16 @@ export default function SectionEditModal({
 
   if (!section) return null
 
+  // Safely handle section_type that might be undefined or null
+  const sectionTypeDisplay = section.section_type 
+    ? section.section_type.charAt(0).toUpperCase() + section.section_type.slice(1)
+    : 'Section'
+
   return (
     <AdminModal
       isOpen={isOpen}
       onClose={onClose}
-      title={`Edit ${section.section_type.charAt(0).toUpperCase() + section.section_type.slice(1)} Section`}
+      title={`Edit ${sectionTypeDisplay}`}
       size="xl"
     >
       <form onSubmit={handleSubmit} className="space-y-6">

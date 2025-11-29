@@ -6,6 +6,7 @@ interface GuestDetailsProps {
   state: BookingState;
   actions: {
     updateGuestDetails: (guest: GuestInfo) => void;
+    setParticipantNames?: (names: { id: string; firstName: string }[]) => void;
   };
 }
 
@@ -28,12 +29,14 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
   const [showSuccessMessage, setShowSuccessMessage] = useState<number | null>(null);
 
   // Initialize guest forms based on guest count - only when guest count changes
+  // Pre-fill firstName from participantNames (Step 2) if available
   useEffect(() => {
     if (state.guests !== initializedGuestCount) {
       const newForms: GuestFormData[] = [];
       for (let i = 0; i < state.guests; i++) {
         const existingGuest = state.guestDetails[i];
         const existingForm = guestForms[i];
+        const participantName = state.participantNames[i];
 
         // Preserve existing form data if it exists and has unsaved changes
         if (existingForm && (
@@ -44,9 +47,10 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
           // Keep existing form data
           newForms.push(existingForm);
         } else {
-          // Initialize from saved guest data or empty
+          // Initialize from saved guest data, participant names (Step 2), or empty
+          // Priority: existingGuest > participantName > empty
           newForms.push({
-            firstName: existingGuest?.firstName || '',
+            firstName: existingGuest?.firstName || participantName?.firstName || '',
             lastName: existingGuest?.lastName || '',
             email: existingGuest?.email || '',
             phone: existingGuest?.phone || '',
@@ -58,7 +62,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
       setGuestForms(newForms);
       setInitializedGuestCount(state.guests);
     }
-  }, [state.guests, state.guestDetails, guestForms, initializedGuestCount]);
+  }, [state.guests, state.guestDetails, state.participantNames, guestForms, initializedGuestCount]);
 
   // Check if all guests are valid and completed
   const checkAllGuestsCompleted = () => {
@@ -111,6 +115,20 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     const newForms = [...guestForms];
     newForms[index] = { ...newForms[index], [field]: value };
     setGuestForms(newForms);
+
+    // BI-DIRECTIONAL SYNC: Update participantNames when firstName changes
+    if (field === 'firstName' && actions.setParticipantNames) {
+      const updatedParticipantNames = [...state.participantNames];
+      // Ensure array is long enough
+      while (updatedParticipantNames.length <= index) {
+        updatedParticipantNames.push({ id: `guest-${updatedParticipantNames.length + 1}`, firstName: '' });
+      }
+      updatedParticipantNames[index] = {
+        id: `guest-${index + 1}`,
+        firstName: value.trim()
+      };
+      actions.setParticipantNames(updatedParticipantNames);
+    }
 
     // Clear error for this guest when any field is changed
     const errorKey = `guest-${index}`;

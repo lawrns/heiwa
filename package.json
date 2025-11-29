@@ -27,6 +27,7 @@
     "health-check": "node scripts/production-health-check.js",
     "test:production": "node scripts/production-verification-test.js",
     "test:production:bash": "bash scripts/production-verification-test.sh",
+    "test:db": "node scripts/test-database-connection.js",
     "postdeploy": "npm run test:production"
   },
   "keywords": [],

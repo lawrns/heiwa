@@ -66,18 +66,42 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
     const isDorm = room.name.toLowerCase().includes('dorm') || room.bookingType === 'perBed'
     const isTwin = room.name.toLowerCase().includes('twin') || room.capacity === 2
 
+    // Room image fallbacks based on room name
+    const mainRoomFallbacks: Record<string, string[]> = {
+      'dorm': ['/images/rooms/dorm.webp'],
+      'room nr 2': ['/images/rooms/room2.webp'],
+      'room nr 3': ['/images/rooms/room3.webp'],
+      'default': ['/images/rooms/room1.jpg']
+    }
+    
+    const getMainRoomFallback = (roomName: string): string[] => {
+      const nameLower = roomName.toLowerCase()
+      if (nameLower.includes('dorm')) return mainRoomFallbacks['dorm']
+      if (nameLower.includes('room nr 2')) return mainRoomFallbacks['room nr 2']
+      if (nameLower.includes('room nr 3')) return mainRoomFallbacks['room nr 3']
+      return mainRoomFallbacks['default']
+    }
+    
     // Use actual images from database, normalize URLs, fallback to single image if not available
     let roomImages: string[] = []
     try {
       roomImages = normalizeImageUrls(room.images || [])
+      
+      // Check if images are from broken Supabase rooms bucket
+      roomImages = roomImages.filter(img => !img.includes('supabase.co/storage/v1/object/public/rooms/'))
+      
+      // If all images were from broken bucket, use fallbacks
+      if (roomImages.length === 0) {
+        roomImages = getMainRoomFallback(room.name)
+      }
     } catch (error) {
       console.error('Error normalizing room images:', error)
-      roomImages = ['/images/rooms/room1.jpg']
+      roomImages = getMainRoomFallback(room.name)
     }
     
     // If no valid images after normalization, try single image field
     if (roomImages.length === 0 || (roomImages.length === 1 && roomImages[0] === '/images/rooms/room1.jpg')) {
-      if (room.image && room.image.trim() !== '') {
+      if (room.image && room.image.trim() !== '' && !room.image.includes('supabase.co/storage/v1/object/public/rooms/')) {
         try {
           const singleImage = normalizeImageUrls([room.image])
           if (singleImage.length > 0 && singleImage[0] !== '/images/rooms/room1.jpg') {
@@ -86,6 +110,9 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
         } catch (error) {
           console.error('Error normalizing single image:', error)
         }
+      } else {
+        // Use name-based fallback
+        roomImages = getMainRoomFallback(room.name)
       }
     }
 
@@ -117,7 +144,41 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
         ]
   }
 
-  // Similar rooms - use the same data source
+  // Similar rooms - use the same data source with reliable fallback images
+  const roomFallbackImages: Record<string, string> = {
+    'dorm': '/images/rooms/dorm.webp',
+    'room nr 2': '/images/rooms/room2.webp',
+    'room nr 3': '/images/rooms/room3.webp',
+    'default': '/images/rooms/room1.jpg'
+  }
+  
+  const getReliableRoomImage = (room: Room): string => {
+    // First try to get image from database
+    const dbImage = getFirstImageUrl(room.images, room.image || '')
+    
+    // If it's a Supabase URL from the rooms bucket (which is broken), use fallback
+    if (dbImage.includes('supabase.co/storage/v1/object/public/rooms/')) {
+      // Use name-based fallback
+      const nameLower = room.name.toLowerCase()
+      if (nameLower.includes('dorm')) return roomFallbackImages['dorm']
+      if (nameLower.includes('room nr 2') || nameLower === 'room nr 2') return roomFallbackImages['room nr 2']
+      if (nameLower.includes('room nr 3') || nameLower === 'room nr 3') return roomFallbackImages['room nr 3']
+      return roomFallbackImages['default']
+    }
+    
+    // If it's a valid non-Supabase URL or local path, use it
+    if (dbImage && dbImage !== '/images/rooms/room1.jpg') {
+      return dbImage
+    }
+    
+    // Final fallback based on room name
+    const nameLower = room.name.toLowerCase()
+    if (nameLower.includes('dorm')) return roomFallbackImages['dorm']
+    if (nameLower.includes('room nr 2')) return roomFallbackImages['room nr 2']
+    if (nameLower.includes('room nr 3')) return roomFallbackImages['room nr 3']
+    return roomFallbackImages['default']
+  }
+  
   const similarRooms = rooms
     .filter(r => r.id !== id)
     .slice(0, 2)
@@ -129,7 +190,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
         ...similarRoom,
         price: similarRoom.pricing?.standard || similarRoom.pricing?.offSeason || (similarIsDorm ? 30 : 80),
         beds: similarIsDorm ? 6 : similarIsTwin ? 2 : similarRoom.capacity || 1,
-        image: getFirstImageUrl(similarRoom.images, similarRoom.image || '/images/rooms/room1.jpg')
+        image: getReliableRoomImage(similarRoom)
       }
     })
 

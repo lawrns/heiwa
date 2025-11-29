@@ -72,6 +72,23 @@ export const getRooms = async (): Promise<Room[]> => {
       return getFallbackRooms()
     }
 
+    // Local room image fallbacks (Supabase rooms bucket is broken)
+    const localRoomFallbacks: Record<string, string> = {
+      'dorm room': '/images/rooms/dorm.webp',
+      'room nr 2': '/images/rooms/room2.webp',
+      'room nr 3': '/images/rooms/room3.webp',
+      'new room': '/images/rooms/room1.jpg',
+      'default': '/images/rooms/room1.jpg'
+    }
+    
+    const getLocalFallback = (roomName: string): string => {
+      const nameLower = roomName.toLowerCase()
+      if (nameLower.includes('dorm')) return localRoomFallbacks['dorm room']
+      if (nameLower.includes('room nr 2')) return localRoomFallbacks['room nr 2']
+      if (nameLower.includes('room nr 3')) return localRoomFallbacks['room nr 3']
+      return localRoomFallbacks['default']
+    }
+    
     const mappedRooms = data.map((room: {
       id: string;
       name: string;
@@ -85,14 +102,15 @@ export const getRooms = async (): Promise<Room[]> => {
       isActive?: boolean;
       is_active?: boolean;
     }) => {
-      // Priority: Use database images first, normalize URLs, then fallback to WordPress URLs
+      // Priority: Use database images first, normalize URLs, then fallback
       let images = normalizeImageUrls(room.images);
       
-      // If no valid images after normalization, use fallback
+      // Filter out broken Supabase rooms bucket URLs
+      images = images.filter(img => !img.includes('supabase.co/storage/v1/object/public/rooms/'))
+      
+      // If no valid images after filtering, use local fallback
       if (images.length === 0 || (images.length === 1 && images[0] === '/images/rooms/room1.jpg')) {
-        // Fallback: Try to find similar room in fallback data
-        const fallbackRoom = getFallbackRooms().find(r => r.name === room.name);
-        images = fallbackRoom ? [fallbackRoom.image] : (getFallbackRooms().length > 0 ? [getFallbackRooms()[0].image] : ['/images/rooms/room1.jpg']);
+        images = [getLocalFallback(room.name)]
       }
 
       return {

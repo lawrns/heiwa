@@ -11,9 +11,8 @@ interface Room {
   capacity: number
   booking_type: 'whole' | 'perBed'
   pricing: {
-    nightly: number
-    weekly?: number
-    monthly?: number
+    standard: number
+    offSeason?: number
   }
   amenities: string[]
   description: string
@@ -283,56 +282,40 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nightly Rate (€)
+                Peak Season Rate (€) - May to September
               </label>
               <input
                 type="number"
-                value={room.pricing.nightly}
+                value={room.pricing?.standard || ''}
                 onChange={(e) => setRoom({
                   ...room,
-                  pricing: { ...room.pricing, nightly: parseFloat(e.target.value) || 0 }
+                  pricing: { ...room.pricing, standard: parseFloat(e.target.value) || 0 }
                 })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
-                placeholder="0.00"
+                placeholder="80.00"
                 min="0"
                 step="0.01"
               />
+              <p className="text-xs text-gray-500 mt-1">Price per night during peak season (May-September)</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Weekly Rate (€) - Optional
+                Off-Season Rate (€) - October to April
               </label>
               <input
                 type="number"
-                value={room.pricing.weekly || ''}
+                value={room.pricing?.offSeason || ''}
                 onChange={(e) => setRoom({
                   ...room,
-                  pricing: { ...room.pricing, weekly: parseFloat(e.target.value) || undefined }
+                  pricing: { ...room.pricing, offSeason: parseFloat(e.target.value) || undefined }
                 })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
-                placeholder="0.00"
+                placeholder="60.00"
                 min="0"
                 step="0.01"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Monthly Rate (€) - Optional
-              </label>
-              <input
-                type="number"
-                value={room.pricing.monthly || ''}
-                onChange={(e) => setRoom({
-                  ...room,
-                  pricing: { ...room.pricing, monthly: parseFloat(e.target.value) || undefined }
-                })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-              />
+              <p className="text-xs text-gray-500 mt-1">Price per night during off-season (October-April). Leave empty to use peak rate.</p>
             </div>
           </div>
         </div>
@@ -447,7 +430,12 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
                   <img
                     src={image}
                     alt={`Room image ${index + 1}`}
-                    className="w-full h-24 object-cover rounded-lg"
+                    className="w-full h-24 object-cover rounded-lg bg-gray-100"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = '/placeholder-room.svg'
+                      target.onerror = null
+                    }}
                   />
                   <button
                     onClick={() => removeImage(index)}
@@ -457,6 +445,11 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
                   </button>
                 </div>
               ))}
+              {room.images.length === 0 && (
+                <div className="col-span-full text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
+                  No images added yet. Add image URLs above.
+                </div>
+              )}
             </div>
           </div>
         </div>

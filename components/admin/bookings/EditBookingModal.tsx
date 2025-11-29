@@ -18,6 +18,7 @@ interface Booking {
   payment_status: 'pending' | 'paid' | 'refunded'
   created_at: string
   special_requests?: string
+  dietary_preferences?: string
 }
 
 interface EditBookingModalProps {
@@ -326,19 +327,34 @@ export function EditBookingModal({
             </div>
           </div>
 
-          {/* Special Requests */}
-          <div className="border-t pt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Special Requests
-            </label>
-            <textarea
-              name="special_requests"
-              value={formData.special_requests || ''}
-              onChange={handleChange}
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Any special requests or notes..."
-            />
+          {/* Special Requests & Dietary Preferences */}
+          <div className="border-t pt-4 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Special Requests
+              </label>
+              <textarea
+                name="special_requests"
+                value={formData.special_requests || ''}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Any special requests or notes..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Dietary Preferences
+              </label>
+              <textarea
+                name="dietary_preferences"
+                value={formData.dietary_preferences || ''}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Any dietary restrictions or preferences..."
+              />
+            </div>
           </div>
 
           {/* Actions */}

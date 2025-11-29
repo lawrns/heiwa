@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { MapPin, Users, Star, Check, Clock, Wifi, Car, Utensils, Calendar, Minus, Plus } from 'lucide-react';
-import { BookingState, PricingBreakdown } from '../types';
+import { BookingState, PricingBreakdown, ParticipantName } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 import { useDateAvailability } from '../hooks/useDateAvailability';
@@ -13,7 +13,11 @@ interface OptionSelectionProps {
     setSurfWeek: (surfWeekId: string) => void;
     setDates: (checkIn: Date, checkOut: Date) => void;
     setGuests: (count: number) => void;
+    setParticipantNames: (names: ParticipantName[]) => void;
     updatePricing: (pricing: PricingBreakdown) => void;
+    nextStep: () => void;
+    setError: (field: string, message: string) => void;
+    clearError: (field: string) => void;
   };
 }
 
@@ -53,6 +57,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     state.dates.checkOut?.toISOString().split('T')[0] || ''
   );
 
+  // Local state for participant names - sync with global state
+  const [participantNames, setLocalParticipantNames] = useState<string[]>(
+    state.participantNames.map(p => p.firstName) || Array(state.guests).fill('')
+  );
+
   // Sync local date state with global state when it changes
   useEffect(() => {
     if (state.dates.checkIn) {
@@ -68,6 +77,33 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       }
     }
   }, [state.dates.checkIn, state.dates.checkOut]);
+
+  // Sync participant names array with guest count
+  useEffect(() => {
+    setLocalParticipantNames(prev => {
+      if (prev.length === state.guests) return prev;
+      if (prev.length < state.guests) {
+        // Add empty slots for new guests
+        return [...prev, ...Array(state.guests - prev.length).fill('')];
+      }
+      // Remove extra slots if guest count decreased
+      return prev.slice(0, state.guests);
+    });
+  }, [state.guests]);
+
+  // Update global state when local participant names change
+  const handleParticipantNameChange = (index: number, value: string) => {
+    const newNames = [...participantNames];
+    newNames[index] = value;
+    setLocalParticipantNames(newNames);
+
+    // Sync to global state
+    const participantNameObjects: ParticipantName[] = newNames.map((name, i) => ({
+      id: `guest-${i + 1}`,
+      firstName: name,
+    }));
+    actions.setParticipantNames(participantNameObjects);
+  };
 
   // Fetch date availability only when both dates are selected
   useEffect(() => {
@@ -108,7 +144,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       setSelectedOptions(newSelection);
 
       // Store the first selected room in selectedOption for backwards compatibility
-      actions.selectOption(newSelection[0] || null);
+      actions.selectOption(newSelection[0] || '');
     } else {
       // For surf weeks: single-select
       setSelectedOptions([optionId]);
@@ -531,6 +567,40 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 </button>
               </div>
             </div>
+
+            {/* Participant Name Inputs */}
+            {state.guests > 0 && (
+              <div className="space-y-3 pt-2">
+                <div className="text-sm font-medium text-gray-700">
+                  Enter guest names (required for room assignment)
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {participantNames.map((name, index) => (
+                    <div key={index} className="relative">
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => handleParticipantNameChange(index, e.target.value)}
+                        placeholder={`Guest ${index + 1} first name`}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
+                        aria-label={`Guest ${index + 1} first name`}
+                      />
+                      {name && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <Check size={16} className="text-green-500" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {participantNames.some(n => !n) && (
+                  <p className="text-sm text-amber-600 flex items-center gap-1">
+                    <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+                    Please enter all guest names to continue
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -573,6 +643,40 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               </button>
             </div>
           </div>
+
+          {/* Participant Name Inputs */}
+          {state.guests > 0 && (
+            <div className="space-y-3 pt-2">
+              <div className="text-sm font-medium text-gray-700">
+                Enter participant names (required for room assignment)
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {participantNames.map((name, index) => (
+                  <div key={index} className="relative">
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => handleParticipantNameChange(index, e.target.value)}
+                      placeholder={`Participant ${index + 1} first name`}
+                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
+                      aria-label={`Participant ${index + 1} first name`}
+                    />
+                    {name && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        <Check size={16} className="text-green-500" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {participantNames.some(n => !n) && (
+                <p className="text-sm text-amber-600 flex items-center gap-1">
+                  <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+                  Please enter all participant names to continue
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Date Summary */}
           {state.dates.checkIn && state.dates.checkOut && (
@@ -803,14 +907,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
                         {/* Checkbox indicator for multi-select */}
-                        <div className="absolute top-4 right-4 w-5 h-5 rounded border border-gray-400 bg-white flex items-center justify-center transition-all"
-                          style={{
-                            borderColor: isSelected ? '#ec681c' : '#9ca3af',
-                            backgroundColor: isSelected ? '#ec681c' : 'white'
-                          }}
+                        <div
+                          className={`absolute top-4 right-4 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
+                            isSelected
+                              ? 'bg-accent border-accent shadow-sm'
+                              : 'bg-white border-gray-300 hover:border-gray-400'
+                          }`}
                         >
                           {isSelected && (
-                            <Check size={14} className="text-white" />
+                            <Check size={16} className="text-white stroke-[3]" />
                           )}
                         </div>
                         <div className="flex gap-6">

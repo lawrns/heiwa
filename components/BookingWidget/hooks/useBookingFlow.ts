@@ -1,5 +1,5 @@
 import { useReducer, useCallback, useMemo } from 'react';
-import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelection, BankWireDetails, RoomAssignment } from '../types';
+import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelection, BankWireDetails, RoomAssignment, ParticipantName } from '../types';
 import { availabilityService } from '@/lib/availability';
 import { bookingService } from '@/lib/booking-service';
 import { validateBookingSubmission } from '@/lib/booking-utils';
@@ -12,6 +12,7 @@ const initialState: BookingState = {
     checkOut: null,
   },
   guests: 1,
+  participantNames: [],
   selectedOption: null,
   selectedSurfWeek: null,
   selectedSurfWeekRoom: null,
@@ -53,12 +54,15 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
       };
     
     case 'SET_GUESTS':
-      return { 
-        ...state, 
+      return {
+        ...state,
         guests: action.payload,
         selectedOption: null, // Reset selection when guest count changes
       };
-    
+
+    case 'SET_PARTICIPANT_NAMES':
+      return { ...state, participantNames: action.payload };
+
     case 'SET_SELECTED_OPTION':
       return { ...state, selectedOption: action.payload };
 
@@ -228,6 +232,10 @@ export function useBookingFlow() {
     dispatch({ type: 'SET_GUESTS', payload: count });
   }, []);
 
+  const setParticipantNames = useCallback((names: ParticipantName[]) => {
+    dispatch({ type: 'SET_PARTICIPANT_NAMES', payload: names });
+  }, []);
+
   const selectOption = useCallback((optionId: string) => {
     dispatch({ type: 'SET_SELECTED_OPTION', payload: optionId });
   }, []);
@@ -304,15 +312,25 @@ export function useBookingFlow() {
         return state.experienceType !== null;
 
       case 'options':
+        // Validate participant names are filled for all guests
+        const allParticipantNamesFilled = state.participantNames.length === state.guests &&
+          state.participantNames.every(p => p.firstName && p.firstName.trim().length > 0);
+        
         if (state.experienceType === 'surf-week') {
           // Check both selectedSurfWeek and selectedOption for compatibility
-          return (state.selectedSurfWeek !== null) || (state.selectedOption !== null);
+          // Also require all participant names to be filled
+          return ((state.selectedSurfWeek !== null) || (state.selectedOption !== null)) && allParticipantNamesFilled;
         }
-        // For rooms: must have dates, guest count, at least one room selected, and sufficient capacity
+        // For rooms: must have dates, guest count, at least one room selected, sufficient capacity, and all participant names
         // Note: Multi-room selection is supported - selectedOption stores the first selected room
         // Capacity validation is handled in OptionSelection component via error state
         const hasCapacityError = state.errors.capacity !== undefined;
-        return state.dates.checkIn && state.dates.checkOut && state.guests > 0 && state.selectedOption !== null && !hasCapacityError;
+        return state.dates.checkIn && 
+               state.dates.checkOut && 
+               state.guests > 0 && 
+               state.selectedOption !== null && 
+               !hasCapacityError &&
+               allParticipantNamesFilled;
 
       case 'surf-week-room-selection':
         return state.selectedSurfWeekRoom !== null;
@@ -446,6 +464,7 @@ export function useBookingFlow() {
     setExperienceType,
     setDates,
     setGuests,
+    setParticipantNames,
     selectOption,
     setSurfWeek,
     setSurfWeekRoom,
@@ -472,6 +491,7 @@ export function useBookingFlow() {
     setExperienceType,
     setDates,
     setGuests,
+    setParticipantNames,
     selectOption,
     setSurfWeek,
     setSurfWeekRoom,
