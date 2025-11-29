@@ -118,6 +118,9 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
   }, [checkInTime, checkOutTime, guests]);
 
   useEffect(() => {
+    // Log version to verify deployment
+    console.log('🚀 useRooms hook v1.1 - Bucket fix applied');
+    
     // Only fetch if we're in the browser (client-side)
     // Don't use early return - always call the effect, but conditionally execute
     if (typeof window !== 'undefined') {

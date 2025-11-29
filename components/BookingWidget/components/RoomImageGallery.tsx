@@ -221,18 +221,28 @@ interface RoomHeroImageProps {
 }
 
 export function RoomHeroImage({ image, roomName, onClick, className = '' }: RoomHeroImageProps) {
+  const [imgSrc, setImgSrc] = useState(image);
+  const [hasError, setHasError] = useState(false);
+
+  // Update local state when prop changes, but only if not in error state or if prop actually changed
+  if (image !== imgSrc && !hasError) {
+    setImgSrc(image);
+  }
+
   return (
     <div
       className={`relative group overflow-hidden rounded-lg cursor-pointer ${className}`}
       onClick={onClick}
     >
       <img
-        src={image}
+        src={hasError ? FALLBACK_IMAGES[0] : imgSrc}
         alt={`${roomName} hero image`}
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        onError={(e) => {
-          const target = e.target as HTMLImageElement;
-          target.src = FALLBACK_IMAGES[0];
+        onError={() => {
+          if (!hasError) {
+            setHasError(true);
+            setImgSrc(FALLBACK_IMAGES[0]);
+          }
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
