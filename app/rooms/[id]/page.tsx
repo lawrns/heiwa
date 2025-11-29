@@ -160,39 +160,23 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
           ])
   }
 
-  // Similar rooms - use the same data source with reliable fallback images
-  const roomFallbackImages: Record<string, string> = {
-    'dorm': '/images/rooms/dorm.webp',
-    'room nr 2': '/images/rooms/room2.webp',
-    'room nr 3': '/images/rooms/room3.webp',
-    'default': '/images/rooms/room1.jpg'
-  }
-  
+  // Similar rooms - use CMS images from database (source of truth)
   const getReliableRoomImage = (room: Room): string => {
-    // First try to get image from database
+    // PRIORITY: Use CMS images from database
     const dbImage = getFirstImageUrl(room.images, room.image || '')
     
-    // If it's a Supabase URL from the rooms bucket (which is broken), use fallback
-    if (dbImage.includes('supabase.co/storage/v1/object/public/rooms/')) {
-      // Use name-based fallback
-      const nameLower = room.name.toLowerCase()
-      if (nameLower.includes('dorm')) return roomFallbackImages['dorm']
-      if (nameLower.includes('room nr 2') || nameLower === 'room nr 2') return roomFallbackImages['room nr 2']
-      if (nameLower.includes('room nr 3') || nameLower === 'room nr 3') return roomFallbackImages['room nr 3']
-      return roomFallbackImages['default']
+    // Fix bucket name mismatch if needed
+    if (dbImage && dbImage.includes('/storage/v1/object/public/rooms/') && !dbImage.includes('/room-images/')) {
+      return dbImage.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/')
     }
     
-    // If it's a valid non-Supabase URL or local path, use it
+    // Use CMS image if available
     if (dbImage && dbImage !== '/images/rooms/room1.jpg') {
       return dbImage
     }
     
-    // Final fallback based on room name
-    const nameLower = room.name.toLowerCase()
-    if (nameLower.includes('dorm')) return roomFallbackImages['dorm']
-    if (nameLower.includes('room nr 2')) return roomFallbackImages['room nr 2']
-    if (nameLower.includes('room nr 3')) return roomFallbackImages['room nr 3']
-    return roomFallbackImages['default']
+    // Minimal fallback only if CMS has no images
+    return '/images/rooms/room1.jpg'
   }
   
   const similarRooms = rooms

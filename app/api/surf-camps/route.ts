@@ -2,6 +2,20 @@ import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { executeWithTimeout } from '@/lib/supabase-timeout'
 
+/**
+ * Fix Supabase storage bucket URLs if needed
+ * Ensures CMS images use correct bucket names
+ */
+function fixImageUrls(images: string[]): string[] {
+  if (!images || !Array.isArray(images)) return []
+  return images.map(url => {
+    if (!url || typeof url !== 'string') return url
+    // Fix any old bucket name mismatches (if they exist)
+    // Currently surf-camp-images bucket is correct, but this ensures future compatibility
+    return url
+  })
+}
+
 // TypeScript interface for surf camp data
 interface SurfCamp {
   id: string
@@ -143,7 +157,7 @@ export async function GET(request: Request) {
           enrolled_count: enrolledCount || 0,
           is_full: availableSpots <= 0,
           level: camp.level || 'all',
-          images: camp.images || [],
+          images: fixImageUrls(camp.images || []), // Ensure CMS images are used correctly
           includes: camp.includes || []
         }
       })

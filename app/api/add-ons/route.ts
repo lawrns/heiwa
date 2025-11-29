@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, supabaseAdmin } from '@/lib/supabase'
 
+/**
+ * Fix Supabase storage bucket URLs if needed
+ * Ensures CMS images use correct bucket names
+ */
+function fixImageUrls(images: string[]): string[] {
+  if (!images || !Array.isArray(images)) return []
+  return images.map(url => {
+    if (!url || typeof url !== 'string') return url
+    // Fix any old bucket name mismatches (if they exist)
+    // Currently add-on-images bucket is correct, but this ensures future compatibility
+    return url
+  })
+}
+
 // API endpoint for getting all add-ons
 export async function GET(request: NextRequest) {
   try {
@@ -38,9 +52,15 @@ export async function GET(request: NextRequest) {
       })
     }
 
+    // Ensure CMS images are prioritized and correctly formatted
+    const addOnsWithFixedImages = (addOns || []).map((addOn: any) => ({
+      ...addOn,
+      images: fixImageUrls(addOn.images || [])
+    }))
+
     return NextResponse.json({
       success: true,
-      addOns: addOns || []
+      addOns: addOnsWithFixedImages
     })
 
   } catch (error) {

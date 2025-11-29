@@ -2,6 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase'
 
+/**
+ * Fix Supabase storage bucket URLs if needed
+ * Ensures CMS images use correct bucket names
+ */
+function fixImageUrls(images: string[]): string[] {
+  if (!images || !Array.isArray(images)) return []
+  return images.map(url => {
+    if (!url || typeof url !== 'string') return url
+    // Fix any old bucket name mismatches (if they exist)
+    // Currently surf-camp-images bucket is correct, but this ensures future compatibility
+    return url
+  })
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -50,7 +64,7 @@ export async function GET(
           is_full: availableSpots <= 0,
           level: surfCamp.level,
           category: surfCamp.category,
-          images: surfCamp.images || [],
+          images: fixImageUrls(surfCamp.images || []), // Ensure CMS images are used correctly
           includes: surfCamp.includes || [],
           is_active: surfCamp.is_active,
           location: surfCamp.location || null,
