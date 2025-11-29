@@ -47,7 +47,19 @@ function getSupabaseClient(): SupabaseClient {
 // Lazy singleton getter for admin client - only creates on first access
 function getSupabaseAdminClient(): SupabaseClient {
   if (!globalStore[SUPABASE_ADMIN_KEY]) {
+    // Warn if service role key is missing (critical for production)
+    if (!supabaseServiceKey && process.env.NODE_ENV === 'production') {
+      console.error('⚠️ WARNING: SUPABASE_SERVICE_ROLE_KEY is not set in production!')
+      console.error('⚠️ Admin operations may fail. Set SUPABASE_SERVICE_ROLE_KEY in Netlify environment variables.')
+    }
+    
     const adminKey = supabaseServiceKey || supabaseAnonKey
+    
+    if (!adminKey) {
+      throw new Error(
+        'Supabase admin client requires either SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY to be set'
+      )
+    }
     
     globalStore[SUPABASE_ADMIN_KEY] = createClient(supabaseUrl, adminKey, {
       auth: {

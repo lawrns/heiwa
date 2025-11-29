@@ -17,10 +17,16 @@ export async function GET() {
     const activeRooms = rooms || []
 
     if (roomsError) {
-      console.error('Error fetching rooms:', roomsError)
+      console.error('❌ Error fetching rooms:', roomsError)
+      console.error('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET')
+      console.error('🔍 Service Role Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET')
+      
       return NextResponse.json({
         success: false,
-        error: 'Failed to fetch rooms'
+        error: 'Failed to fetch rooms',
+        message: process.env.NODE_ENV === 'development' 
+          ? `Database error: ${roomsError.message}` 
+          : 'Unable to load rooms. Please check server configuration.'
       }, { 
         status: 500,
         headers: {
@@ -89,10 +95,17 @@ export async function GET() {
     })
 
   } catch (error) {
-    console.error('Error fetching rooms:', error)
+    console.error('❌ Unexpected error fetching rooms:', error)
+    console.error('🔍 Error type:', error instanceof Error ? error.constructor.name : typeof error)
+    console.error('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET')
+    console.error('🔍 Service Role Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET')
+    
     return NextResponse.json({
       success: false,
-      error: error instanceof Error ? error.message : 'Internal server error'
+      error: error instanceof Error ? error.message : 'Internal server error',
+      message: process.env.NODE_ENV === 'development'
+        ? `Unexpected error: ${error instanceof Error ? error.stack : String(error)}`
+        : 'An unexpected error occurred. Please try again later.'
     }, { 
       status: 500,
       headers: {
