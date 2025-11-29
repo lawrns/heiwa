@@ -42,20 +42,32 @@ export function processRoomImages(
   roomType: 'private' | 'shared' | 'dorm'
 ): string[] {
   // PRIMARY: Use images array from CMS (source of truth)
+  // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid!
   if (roomImages && Array.isArray(roomImages) && roomImages.length > 0) {
-    const validImages = roomImages.filter(isValidImageUrl);
+    // Filter out only truly invalid patterns, but keep all Supabase URLs
+    const validImages = roomImages.filter(url => {
+      if (!url || typeof url !== 'string' || url.trim() === '') return false;
+      // Only filter out known invalid patterns, not Supabase URLs
+      if (INVALID_IMAGE_PATTERNS.some(pattern => url.includes(pattern))) return false;
+      // Accept all valid URL formats (including Supabase storage URLs)
+      return VALID_IMAGE_PREFIXES.some(prefix => url.startsWith(prefix));
+    });
+    
     if (validImages.length > 0) {
+      console.log(`✅ Using ${validImages.length} image(s) from database for room`);
       return validImages;
     }
   }
 
   // SECONDARY: Fallback to featured image if images array is empty
   if (featuredImage && isValidImageUrl(featuredImage)) {
+    console.log(`⚠️ Using featured_image fallback for room`);
     return [featuredImage];
   }
 
   // TERTIARY: Use default placeholder images only if CMS has no images
   // This is a last resort for rooms without any configured images
+  console.log(`⚠️ Using default fallback images for room type: ${roomType}`);
   return roomType === 'dorm'
     ? [...ROOM_FALLBACK_IMAGES.dorm]
     : [...ROOM_FALLBACK_IMAGES.private];

@@ -103,14 +103,26 @@ export const getRooms = async (): Promise<Room[]> => {
       is_active?: boolean;
     }) => {
       // Priority: Use database images first, normalize URLs, then fallback
+      // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid and uploaded by admin!
       let images = normalizeImageUrls(room.images);
       
-      // Filter out broken Supabase rooms bucket URLs
-      images = images.filter(img => !img.includes('supabase.co/storage/v1/object/public/rooms/'))
+      // Only filter out truly broken/invalid URLs, not all Supabase URLs
+      // The rooms bucket is valid - images uploaded via admin should be used
+      images = images.filter(img => {
+        // Keep all valid Supabase storage URLs
+        if (img && img.includes('supabase.co/storage/v1/object/public/')) {
+          return true; // Keep Supabase storage URLs
+        }
+        // Filter out only invalid patterns
+        return img && img !== '/images/rooms/room1.jpg' && img.trim() !== '';
+      });
       
       // If no valid images after filtering, use local fallback
-      if (images.length === 0 || (images.length === 1 && images[0] === '/images/rooms/room1.jpg')) {
+      if (images.length === 0) {
+        console.warn(`⚠️ No valid images for room "${room.name}", using fallback`);
         images = [getLocalFallback(room.name)]
+      } else {
+        console.log(`✅ Using ${images.length} image(s) from database for room "${room.name}"`);
       }
 
       return {

@@ -83,16 +83,32 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
     }
     
     // Use actual images from database, normalize URLs, fallback to single image if not available
+    // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid and uploaded by admin!
     let roomImages: string[] = []
     try {
       roomImages = normalizeImageUrls(room.images || [])
       
-      // Check if images are from broken Supabase rooms bucket
-      roomImages = roomImages.filter(img => !img.includes('supabase.co/storage/v1/object/public/rooms/'))
+      // Keep all valid Supabase storage URLs - they are the source of truth from admin
+      // Only filter out truly invalid/broken URLs
+      roomImages = roomImages.filter(img => {
+        // Keep all Supabase storage URLs (they're valid)
+        if (img && img.includes('supabase.co/storage/v1/object/public/')) {
+          return true;
+        }
+        // Keep local paths
+        if (img && img.startsWith('/')) {
+          return true;
+        }
+        // Filter out only invalid patterns
+        return img && img.trim() !== '' && img !== '/images/rooms/room1.jpg';
+      });
       
-      // If all images were from broken bucket, use fallbacks
+      // If no valid images after filtering, use fallbacks
       if (roomImages.length === 0) {
+        console.warn(`⚠️ No valid images for room "${room.name}", using fallback`);
         roomImages = getMainRoomFallback(room.name)
+      } else {
+        console.log(`✅ Using ${roomImages.length} image(s) from database for room "${room.name}"`);
       }
     } catch (error) {
       console.error('Error normalizing room images:', error)
@@ -100,15 +116,27 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
     }
     
     // If no valid images after normalization, try single image field
+    // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid!
     if (roomImages.length === 0 || (roomImages.length === 1 && roomImages[0] === '/images/rooms/room1.jpg')) {
-      if (room.image && room.image.trim() !== '' && !room.image.includes('supabase.co/storage/v1/object/public/rooms/')) {
+      if (room.image && room.image.trim() !== '') {
         try {
           const singleImage = normalizeImageUrls([room.image])
-          if (singleImage.length > 0 && singleImage[0] !== '/images/rooms/room1.jpg') {
-            roomImages = singleImage
+          // Keep Supabase storage URLs - they're valid
+          const validSingleImage = singleImage.filter(img => {
+            if (img && img.includes('supabase.co/storage/v1/object/public/')) {
+              return true; // Keep Supabase URLs
+            }
+            return img && img !== '/images/rooms/room1.jpg' && img.trim() !== '';
+          });
+          if (validSingleImage.length > 0) {
+            roomImages = validSingleImage
+          } else {
+            // Use name-based fallback only if no valid images
+            roomImages = getMainRoomFallback(room.name)
           }
         } catch (error) {
           console.error('Error normalizing single image:', error)
+          roomImages = getMainRoomFallback(room.name)
         }
       } else {
         // Use name-based fallback
