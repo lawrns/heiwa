@@ -200,6 +200,13 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    // Log room images for debugging
+    console.log('🖼️ Room images in availability API:', transformedRooms.map((r: any) => ({
+      name: r.name,
+      images: r.images,
+      featured_image: r.featured_image
+    })))
+
     return NextResponse.json({
       success: true,
       data: {
@@ -210,6 +217,13 @@ export async function GET(request: NextRequest) {
           end_date: endDate,
           guests: guests
         }
+      }
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'X-Content-Version': Date.now().toString() // Cache busting
       }
     })
 

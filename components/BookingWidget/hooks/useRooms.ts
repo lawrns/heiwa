@@ -119,11 +119,13 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
 
   useEffect(() => {
     // Log version to verify deployment
-    console.log('🚀 useRooms hook v1.1 - Bucket fix applied');
+    console.log('🚀 useRooms hook v1.2 - Cache-busting enabled');
     
     // Only fetch if we're in the browser (client-side)
     // Don't use early return - always call the effect, but conditionally execute
     if (typeof window !== 'undefined') {
+      // Clear any cached data before fetching
+      setRooms([]);
       fetchRooms().catch((err) => {
         console.error('Failed to fetch rooms in useEffect:', err);
         // Error is already handled in fetchRooms

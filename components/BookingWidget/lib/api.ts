@@ -51,7 +51,21 @@ export async function apiFetch(inputPath: string, init: RequestInit = {}): Promi
   const timeout = setTimeout(() => controller?.abort(), 15000);
 
   try {
-    const res = await fetch(url, { ...init, headers, signal });
+    // Add cache-busting to prevent stale responses
+    const cacheBustingUrl = url.includes('?') 
+      ? `${url}&_t=${Date.now()}` 
+      : `${url}?_t=${Date.now()}`;
+    
+    const res = await fetch(cacheBustingUrl, { 
+      ...init, 
+      headers: {
+        ...headers,
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }, 
+      cache: 'no-store', // Force fresh fetch
+      signal 
+    });
     
     // If fetch fails, throw a more descriptive error
     if (!res.ok && res.status === 0) {

@@ -73,7 +73,12 @@ export function processRoomImages(
       });
     
     if (validImages.length > 0) {
-      console.log(`✅ Using ${validImages.length} image(s) from database for room`);
+      console.log(`✅ Using ${validImages.length} image(s) from database for room:`, validImages);
+      // Check for yoga dome images that shouldn't be here
+      const yogaDomeImages = validImages.filter(img => img.includes('yoga_dome') || img.includes('yoga-dome'));
+      if (yogaDomeImages.length > 0) {
+        console.warn(`⚠️ WARNING: Found yoga dome images in room images!`, yogaDomeImages);
+      }
       return validImages;
     }
   }
