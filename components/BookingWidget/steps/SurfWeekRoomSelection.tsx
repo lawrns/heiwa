@@ -199,39 +199,39 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-2">
-        <h3 className="text-2xl font-bold text-gray-900">
+      {/* Header - Optimized for conversion */}
+      <div className="text-center space-y-2 pb-2">
+        <h3 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
           Choose Your Accommodation
         </h3>
-        <p className="text-gray-600">
+        <p className="text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
           Select your preferred room type for your surf week experience
         </p>
       </div>
 
-      {/* Selected Surf Week Summary - Show what they're booking for */}
+      {/* Selected Surf Week Summary - Optimized for conversion */}
       {(selectedSurfWeekData || state.selectedSurfWeek) && (
-        <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-4 border-2 border-orange-200 shadow-sm">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
+        <div className="bg-gradient-to-r from-orange-50 via-orange-100 to-orange-50 rounded-xl p-5 md:p-6 border-2 border-orange-300 shadow-md">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                <span className="text-xs font-semibold text-orange-700 uppercase tracking-wide">Selected Surf Week</span>
+                <div className="w-2.5 h-2.5 bg-orange-500 rounded-full animate-pulse"></div>
+                <span className="text-xs font-bold text-orange-700 uppercase tracking-wide">Selected Surf Week</span>
               </div>
-              <h4 className="text-lg font-bold text-gray-900 mb-1">
+              <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight">
                 {selectedSurfWeekData?.name || 'Surf Week'}
               </h4>
               {dateRange && (
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <Calendar className="w-4 h-4 text-orange-600" />
+                <div className="flex items-center gap-2 text-sm md:text-base text-gray-700 font-medium">
+                  <Calendar className="w-4 h-4 text-orange-600 flex-shrink-0" />
                   <span>{dateRange}</span>
                 </div>
               )}
             </div>
             {selectedSurfWeekData?.price && (
-              <div className="text-right">
-                <div className="text-xs text-gray-600 mb-1">Starting from</div>
-                <div className="text-xl font-bold text-orange-600">
+              <div className="text-left sm:text-right flex-shrink-0">
+                <div className="text-xs text-gray-600 mb-1 font-medium">Starting from</div>
+                <div className="text-2xl md:text-3xl font-bold text-orange-600 leading-tight">
                   {formatPrice(selectedSurfWeekData.price)}
                 </div>
               </div>
@@ -240,8 +240,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
         </div>
       )}
 
-      {/* Room Options */}
-      <div className="space-y-4">
+      {/* Room Options - Optimized spacing and layout */}
+      <div className="space-y-4 md:space-y-5">
         {surfWeekRooms.map((room) => {
           const isSelected = selectedRoom === room.id;
           const weeklyUpgrade = room.pricePerNight * 7; // 7 days
@@ -251,12 +251,21 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
               key={room.id}
               onClick={() => handleRoomSelection(room.id)}
               className={`
-                relative p-6 rounded-xl border-2 cursor-pointer transition-all duration-300
+                relative p-5 md:p-6 rounded-xl border-2 cursor-pointer transition-all duration-300
                 ${isSelected
-                  ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20'
-                  : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50'
+                  ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 scale-[1.01]'
+                  : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50 hover:shadow-md'
                 }
               `}
+              role="button"
+              tabIndex={0}
+              aria-label={`Select ${room.name} room${room.isIncluded ? ' (included)' : ''}`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleRoomSelection(room.id);
+                }
+              }}
             >
               {/* Room Header with Thumbnail */}
               <div className="flex items-start gap-4 mb-4">
@@ -308,37 +317,39 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                 </div>
               </div>
 
-              {/* Room Features */}
-              <div className="mb-4">
-                <div className="flex flex-wrap gap-2">
-                  {room.features.map((feature, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
-                    >
-                      {feature}
-                    </span>
-                  ))}
+              {/* Room Features - Optimized spacing */}
+              {room.features && room.features.length > 0 && (
+                <div className="mb-4">
+                  <div className="flex flex-wrap gap-2">
+                    {room.features.map((feature, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-full border border-gray-200"
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Room Details and View Photos */}
-              <div className="flex items-center justify-between text-sm text-gray-600">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <Users size={14} />
-                    <span>Up to {room.maxOccupancy} {room.maxOccupancy === 1 ? 'guest' : 'guests'}</span>
+              {/* Room Details and View Photos - Optimized for conversion */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-gray-100">
+                <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+                  <div className="flex items-center gap-1.5">
+                    <Users size={16} className="text-gray-400" />
+                    <span className="font-medium">Up to {room.maxOccupancy} {room.maxOccupancy === 1 ? 'guest' : 'guests'}</span>
                   </div>
                   {room.type === 'private' && (
-                    <div className="flex items-center gap-1">
-                      <Star size={14} className="text-yellow-500" />
-                      <span>Premium</span>
+                    <div className="flex items-center gap-1.5">
+                      <Star size={16} className="text-yellow-500 fill-current" />
+                      <span className="font-medium text-gray-700">Premium</span>
                     </div>
                   )}
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {/* View Photos Button */}
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  {/* View Photos Button - Optimized */}
                   {(() => {
                     const roomImages = rooms.find(r => r.id === room.id)?.images;
                     if (roomImages && roomImages.length > 0) {
@@ -348,20 +359,22 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                             e.stopPropagation();
                             openGallery(room);
                           }}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-all duration-200 hover:shadow-sm flex-shrink-0"
+                          aria-label={`View ${roomImages.length} photo${roomImages.length > 1 ? 's' : ''} of ${room.name}`}
                         >
-                          📸 View {roomImages.length} Photo{roomImages.length > 1 ? 's' : ''}
+                          <span>📸</span>
+                          <span>View {roomImages.length} Photo{roomImages.length > 1 ? 's' : ''}</span>
                         </button>
                       );
                     }
                     return null;
                   })()}
 
-                  {/* Selection Indicator */}
+                  {/* Selection Indicator - Optimized */}
                   {isSelected && (
-                    <div className="flex items-center gap-2 text-orange-600 font-medium">
+                    <div className="flex items-center gap-2 text-orange-600 font-semibold ml-auto sm:ml-0">
+                      <CheckCircle size={18} className="fill-current" />
                       <span>Selected</span>
-                      <ArrowRight size={16} />
                     </div>
                   )}
                 </div>
