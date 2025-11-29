@@ -66,90 +66,67 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
     const isDorm = room.name.toLowerCase().includes('dorm') || room.bookingType === 'perBed'
     const isTwin = room.name.toLowerCase().includes('twin') || room.capacity === 2
 
-    // Room image fallbacks based on room name
-    const mainRoomFallbacks: Record<string, string[]> = {
-      'dorm': ['/images/rooms/dorm.webp'],
-      'room nr 2': ['/images/rooms/room2.webp'],
-      'room nr 3': ['/images/rooms/room3.webp'],
-      'default': ['/images/rooms/room1.jpg']
-    }
-    
-    const getMainRoomFallback = (roomName: string): string[] => {
-      const nameLower = roomName.toLowerCase()
-      if (nameLower.includes('dorm')) return mainRoomFallbacks['dorm']
-      if (nameLower.includes('room nr 2')) return mainRoomFallbacks['room nr 2']
-      if (nameLower.includes('room nr 3')) return mainRoomFallbacks['room nr 3']
-      return mainRoomFallbacks['default']
-    }
-    
-    // Use actual images from database, normalize URLs, fallback to single image if not available
-    // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid and uploaded by admin!
+    // PRIORITY: Use CMS images from database (source of truth)
+    // CMS images are uploaded via admin and stored in Supabase Storage
     let roomImages: string[] = []
+    
     try {
-      roomImages = normalizeImageUrls(room.images || [])
-      
-      // Fix bucket name mismatch: /rooms/ -> /room-images/
-      roomImages = roomImages.map(img => {
-        if (img && img.includes('/storage/v1/object/public/rooms/') && !img.includes('/room-images/')) {
-          return img.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+      // Use images array from CMS
+      if (room.images && Array.isArray(room.images) && room.images.length > 0) {
+        roomImages = normalizeImageUrls(room.images)
+        
+        // Fix bucket name mismatch: /rooms/ -> /room-images/
+        roomImages = roomImages.map(img => {
+          if (img && img.includes('/storage/v1/object/public/rooms/') && !img.includes('/room-images/')) {
+            return img.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+          }
+          return img;
+        });
+        
+        // Keep ALL Supabase storage URLs - they are valid CMS images
+        roomImages = roomImages.filter(img => {
+          if (!img || typeof img !== 'string' || img.trim() === '') return false;
+          // Keep all Supabase storage URLs (CMS images)
+          if (img.includes('supabase.co/storage/v1/object/public/')) {
+            return true;
+          }
+          // Keep local paths
+          if (img.startsWith('/')) {
+            return true;
+          }
+          return false;
+        });
+        
+        if (roomImages.length > 0) {
+          console.log(`✅ Using ${roomImages.length} CMS image(s) for room "${room.name}"`);
         }
-        return img;
-      });
+      }
       
-      // Keep all valid Supabase storage URLs - they are the source of truth from admin
-      // Only filter out truly invalid/broken URLs
-      roomImages = roomImages.filter(img => {
-        // Keep all Supabase storage URLs (they're valid)
-        if (img && img.includes('supabase.co/storage/v1/object/public/')) {
-          return true;
-        }
-        // Keep local paths
-        if (img && img.startsWith('/')) {
-          return true;
-        }
-        // Filter out only invalid patterns
-        return img && img.trim() !== '' && img !== '/images/rooms/room1.jpg';
-      });
+      // Fallback: Try single image field if images array is empty
+      if (roomImages.length === 0 && room.image && room.image.trim() !== '') {
+        const singleImage = normalizeImageUrls([room.image])
+        const fixedSingleImage = singleImage.map(img => {
+          if (img && img.includes('/storage/v1/object/public/rooms/') && !img.includes('/room-images/')) {
+            return img.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+          }
+          return img;
+        });
+        roomImages = fixedSingleImage.filter(img => {
+          if (!img || typeof img !== 'string' || img.trim() === '') return false;
+          if (img.includes('supabase.co/storage/v1/object/public/')) return true;
+          if (img.startsWith('/')) return true;
+          return false;
+        });
+      }
       
-      // If no valid images after filtering, use fallbacks
+      // Last resort: Minimal fallback only if CMS has NO images
       if (roomImages.length === 0) {
-        console.warn(`⚠️ No valid images for room "${room.name}", using fallback`);
-        roomImages = getMainRoomFallback(room.name)
-      } else {
-        console.log(`✅ Using ${roomImages.length} image(s) from database for room "${room.name}"`);
+        console.warn(`⚠️ Room "${room.name}" has no CMS images - using minimal fallback`);
+        roomImages = ['/images/rooms/room1.jpg'];
       }
     } catch (error) {
-      console.error('Error normalizing room images:', error)
-      roomImages = getMainRoomFallback(room.name)
-    }
-    
-    // If no valid images after normalization, try single image field
-    // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid!
-    if (roomImages.length === 0 || (roomImages.length === 1 && roomImages[0] === '/images/rooms/room1.jpg')) {
-      if (room.image && room.image.trim() !== '') {
-        try {
-          const singleImage = normalizeImageUrls([room.image])
-          // Keep Supabase storage URLs - they're valid
-          const validSingleImage = singleImage.filter(img => {
-            if (img && img.includes('supabase.co/storage/v1/object/public/')) {
-              return true; // Keep Supabase URLs
-            }
-            return img && img !== '/images/rooms/room1.jpg' && img.trim() !== '';
-          });
-          if (validSingleImage.length > 0) {
-            roomImages = validSingleImage
-          } else {
-            // Use name-based fallback only if no valid images
-            roomImages = getMainRoomFallback(room.name)
-          }
-        } catch (error) {
-          console.error('Error normalizing single image:', error)
-          roomImages = getMainRoomFallback(room.name)
-        }
-      } else {
-        // Use name-based fallback
-        roomImages = getMainRoomFallback(room.name)
-      }
+      console.error('Error processing CMS images:', error)
+      roomImages = ['/images/rooms/room1.jpg'];
     }
 
   const enhancedRoom = {

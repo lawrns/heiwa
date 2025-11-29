@@ -1,0 +1,48 @@
+{
+  "issue": "Room images showing yoga dome fallback instead of CMS images",
+  "root_cause": {
+    "problem": "API endpoints returning URLs with wrong bucket name",
+    "details": {
+      "database_bucket": "/rooms/",
+      "actual_bucket": "/room-images/",
+      "api_fix_location": "Client-side only (lib/booking-utils.ts)",
+      "missing_fix": "Server-side API endpoints not applying bucket fix"
+    }
+  },
+  "fixes_applied": {
+    "1": {
+      "file": "app/api/rooms/route.ts",
+      "change": "Added fixSupabaseBucketUrl function and applied to images array and featured_image",
+      "impact": "Server-side bucket URL correction for /api/rooms endpoint"
+    },
+    "2": {
+      "file": "app/api/rooms/availability/route.ts",
+      "change": "Added fixSupabaseBucketUrl function and applied to images array and featured_image",
+      "impact": "Server-side bucket URL correction for /api/rooms/availability endpoint"
+    },
+    "3": {
+      "file": "components/BookingWidget/components/RoomImageGallery.tsx",
+      "change": "Fixed hydration issue by using useEffect instead of conditional state update",
+      "impact": "Prevents client/server mismatch causing flickering"
+    }
+  },
+  "verification": {
+    "api_test": "curl https://heiwahauz.netlify.app/api/rooms | jq '.data.rooms[0].images[0]'",
+    "expected_result": "URL should contain '/room-images/' not '/rooms/'",
+    "bucket_test": "Both /rooms/ and /room-images/ buckets return 400 - need to verify actual bucket contents",
+    "deployment_status": "Changes committed and pushed to main branch"
+  },
+  "remaining_issues": {
+    "bucket_verification": "Need to verify images actually exist in /room-images/ bucket",
+    "database_update": "Consider updating database URLs directly to point to correct bucket",
+    "fallback_images": "FALLBACK_IMAGES array contains yoga dome images - verify these are correct fallbacks"
+  },
+  "next_steps": [
+    "1. Wait for deployment to complete",
+    "2. Test API endpoint returns corrected URLs",
+    "3. Verify images load correctly in booking widget",
+    "4. If still failing, check Supabase storage bucket contents",
+    "5. If bucket is empty, re-upload images to correct bucket"
+  ]
+}
+

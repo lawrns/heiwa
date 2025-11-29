@@ -1,0 +1,49 @@
+{
+  "database_connection": {
+    "status": "SUCCESS",
+    "host": "db.pguipwhrxdzzrndbluxb.supabase.co",
+    "database": "postgres",
+    "table": "rooms"
+  },
+  "findings": {
+    "total_active_rooms": 5,
+    "rooms_with_images": 5,
+    "bucket_distribution": {
+      "old_bucket_rooms": 4,
+      "new_bucket_rooms": 1,
+      "old_bucket_names": ["Dorm room", "new room", "Room Nr 2", "Room Nr 3"],
+      "new_bucket_names": ["Testing"]
+    },
+    "schema": {
+      "images_column_type": "text[]",
+      "has_featured_image_column": false,
+      "featured_image_source": "Derived from images[1]"
+    }
+  },
+  "database_urls_before_fix": {
+    "Dorm room": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/f3f00cbb-c30e-4d84-9352-cfb6a76684d0/1759963486225_dorm.webp",
+    "new room": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/1762636254337/1762636262513_8B8BA276-6D91-419B-B8F4-7696042ED92F-01%20(1).jpeg",
+    "Room Nr 2": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/ac98fd46-5bd2-413c-98f3-17e71024e734/1759963487843_room2.webp",
+    "Room Nr 3": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/rooms/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9/1759963488935_room3.webp",
+    "Testing": "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/room-images/featured/1764431024546_mxibddptgdk.webp"
+  },
+  "fix_applied": {
+    "action": "UPDATE rooms SET images = ARRAY[REPLACE(images[1], '/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/')]",
+    "condition": "WHERE is_active = true AND images[1] LIKE '%/rooms/%' AND images[1] NOT LIKE '%/room-images/%'",
+    "expected_result": "All 4 rooms with OLD_BUCKET URLs updated to NEW_BUCKET URLs"
+  },
+  "verification": {
+    "api_endpoint_fix": "Server-side bucket fix applied in /api/rooms and /api/rooms/availability",
+    "database_fix": "Database URLs updated to point to correct /room-images/ bucket",
+    "client_side_fix": "Client-side bucket fix exists as fallback in lib/booking-utils.ts",
+    "hydration_fix": "RoomHeroImage component fixed to prevent hydration issues"
+  },
+  "next_steps": [
+    "1. Verify updated URLs in database",
+    "2. Test API endpoint returns corrected URLs",
+    "3. Verify images load correctly in booking widget",
+    "4. Check if images actually exist in /room-images/ bucket",
+    "5. If images don't exist, need to migrate/re-upload images to correct bucket"
+  ]
+}
+

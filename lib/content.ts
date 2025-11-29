@@ -72,23 +72,6 @@ export const getRooms = async (): Promise<Room[]> => {
       return getFallbackRooms()
     }
 
-    // Local room image fallbacks (Supabase rooms bucket is broken)
-    const localRoomFallbacks: Record<string, string> = {
-      'dorm room': '/images/rooms/dorm.webp',
-      'room nr 2': '/images/rooms/room2.webp',
-      'room nr 3': '/images/rooms/room3.webp',
-      'new room': '/images/rooms/room1.jpg',
-      'default': '/images/rooms/room1.jpg'
-    }
-    
-    const getLocalFallback = (roomName: string): string => {
-      const nameLower = roomName.toLowerCase()
-      if (nameLower.includes('dorm')) return localRoomFallbacks['dorm room']
-      if (nameLower.includes('room nr 2')) return localRoomFallbacks['room nr 2']
-      if (nameLower.includes('room nr 3')) return localRoomFallbacks['room nr 3']
-      return localRoomFallbacks['default']
-    }
-    
     const mappedRooms = data.map((room: {
       id: string;
       name: string;
@@ -102,35 +85,48 @@ export const getRooms = async (): Promise<Room[]> => {
       isActive?: boolean;
       is_active?: boolean;
     }) => {
-      // Priority: Use database images first, normalize URLs, then fallback
-      // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid and uploaded by admin!
-      let images = normalizeImageUrls(room.images);
+      // PRIORITY 1: Use CMS images from database (source of truth)
+      // CMS images are uploaded via admin and stored in Supabase Storage
+      let images: string[] = [];
       
-      // Fix bucket name mismatch: /rooms/ -> /room-images/
-      images = images.map(img => {
-        if (img && img.includes('/storage/v1/object/public/rooms/') && !img.includes('/room-images/')) {
-          return img.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+      if (room.images && Array.isArray(room.images) && room.images.length > 0) {
+        // Normalize and fix bucket URLs
+        images = normalizeImageUrls(room.images);
+        
+        // Fix bucket name mismatch: /rooms/ -> /room-images/
+        images = images.map(img => {
+          if (img && img.includes('/storage/v1/object/public/rooms/') && !img.includes('/room-images/')) {
+            return img.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+          }
+          return img;
+        });
+        
+        // Keep ALL Supabase storage URLs - they are valid CMS images
+        images = images.filter(img => {
+          if (!img || typeof img !== 'string' || img.trim() === '') return false;
+          // Keep all Supabase storage URLs (CMS images)
+          if (img.includes('supabase.co/storage/v1/object/public/')) {
+            return true;
+          }
+          // Keep local paths that start with /
+          if (img.startsWith('/')) {
+            return true;
+          }
+          // Filter out only truly invalid patterns
+          return false;
+        });
+        
+        if (images.length > 0) {
+          console.log(`✅ Using ${images.length} CMS image(s) for room "${room.name}"`);
         }
-        return img;
-      });
+      }
       
-      // Only filter out truly broken/invalid URLs, not all Supabase URLs
-      // The room-images bucket is valid - images uploaded via admin should be used
-      images = images.filter(img => {
-        // Keep all valid Supabase storage URLs
-        if (img && img.includes('supabase.co/storage/v1/object/public/')) {
-          return true; // Keep Supabase storage URLs
-        }
-        // Filter out only invalid patterns
-        return img && img !== '/images/rooms/room1.jpg' && img.trim() !== '';
-      });
-      
-      // If no valid images after filtering, use local fallback
+      // PRIORITY 2: Only use fallback if CMS has NO images
+      // This ensures CMS is always the source of truth
       if (images.length === 0) {
-        console.warn(`⚠️ No valid images for room "${room.name}", using fallback`);
-        images = [getLocalFallback(room.name)]
-      } else {
-        console.log(`✅ Using ${images.length} image(s) from database for room "${room.name}"`);
+        console.warn(`⚠️ Room "${room.name}" has no CMS images - using fallback`);
+        // Use minimal fallback only when CMS has no images
+        images = ['/images/rooms/room1.jpg'];
       }
 
       return {
