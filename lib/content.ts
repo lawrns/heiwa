@@ -106,8 +106,16 @@ export const getRooms = async (): Promise<Room[]> => {
       // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid and uploaded by admin!
       let images = normalizeImageUrls(room.images);
       
+      // Fix bucket name mismatch: /rooms/ -> /room-images/
+      images = images.map(img => {
+        if (img && img.includes('/storage/v1/object/public/rooms/') && !img.includes('/room-images/')) {
+          return img.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+        }
+        return img;
+      });
+      
       // Only filter out truly broken/invalid URLs, not all Supabase URLs
-      // The rooms bucket is valid - images uploaded via admin should be used
+      // The room-images bucket is valid - images uploaded via admin should be used
       images = images.filter(img => {
         // Keep all valid Supabase storage URLs
         if (img && img.includes('supabase.co/storage/v1/object/public/')) {

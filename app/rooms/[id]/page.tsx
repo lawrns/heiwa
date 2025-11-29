@@ -88,6 +88,14 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
     try {
       roomImages = normalizeImageUrls(room.images || [])
       
+      // Fix bucket name mismatch: /rooms/ -> /room-images/
+      roomImages = roomImages.map(img => {
+        if (img && img.includes('/storage/v1/object/public/rooms/') && !img.includes('/room-images/')) {
+          return img.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+        }
+        return img;
+      });
+      
       // Keep all valid Supabase storage URLs - they are the source of truth from admin
       // Only filter out truly invalid/broken URLs
       roomImages = roomImages.filter(img => {

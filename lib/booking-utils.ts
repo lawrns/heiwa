@@ -31,6 +31,23 @@ export function isValidImageUrl(url: string): boolean {
 }
 
 /**
+ * Fix Supabase storage bucket name mismatch
+ * Maps old /rooms/ bucket URLs to correct /room-images/ bucket
+ */
+function fixSupabaseBucketUrl(url: string): string {
+  if (!url || typeof url !== 'string') return url;
+  
+  // Fix bucket name mismatch: /rooms/ -> /room-images/
+  // The database has old URLs pointing to /rooms/ bucket which doesn't exist
+  // The actual bucket is /room-images/
+  if (url.includes('/storage/v1/object/public/rooms/') && !url.includes('/room-images/')) {
+    return url.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+  }
+  
+  return url;
+}
+
+/**
  * Process room images from CMS/database
  * Always uses CMS images as the source of truth.
  * Fallback to featured_image or defaults only if CMS images array is empty.
@@ -44,14 +61,16 @@ export function processRoomImages(
   // PRIMARY: Use images array from CMS (source of truth)
   // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid!
   if (roomImages && Array.isArray(roomImages) && roomImages.length > 0) {
-    // Filter out only truly invalid patterns, but keep all Supabase URLs
-    const validImages = roomImages.filter(url => {
-      if (!url || typeof url !== 'string' || url.trim() === '') return false;
-      // Only filter out known invalid patterns, not Supabase URLs
-      if (INVALID_IMAGE_PATTERNS.some(pattern => url.includes(pattern))) return false;
-      // Accept all valid URL formats (including Supabase storage URLs)
-      return VALID_IMAGE_PREFIXES.some(prefix => url.startsWith(prefix));
-    });
+    // Fix bucket name mismatch and filter out only truly invalid patterns
+    const validImages = roomImages
+      .map(url => fixSupabaseBucketUrl(url)) // Fix bucket name mismatch
+      .filter(url => {
+        if (!url || typeof url !== 'string' || url.trim() === '') return false;
+        // Only filter out known invalid patterns, not Supabase URLs
+        if (INVALID_IMAGE_PATTERNS.some(pattern => url.includes(pattern))) return false;
+        // Accept all valid URL formats (including Supabase storage URLs)
+        return VALID_IMAGE_PREFIXES.some(prefix => url.startsWith(prefix));
+      });
     
     if (validImages.length > 0) {
       console.log(`✅ Using ${validImages.length} image(s) from database for room`);
@@ -62,7 +81,7 @@ export function processRoomImages(
   // SECONDARY: Fallback to featured image if images array is empty
   if (featuredImage && isValidImageUrl(featuredImage)) {
     console.log(`⚠️ Using featured_image fallback for room`);
-    return [featuredImage];
+    return [fixSupabaseBucketUrl(featuredImage)]; // Fix bucket name mismatch
   }
 
   // TERTIARY: Use default placeholder images only if CMS has no images
