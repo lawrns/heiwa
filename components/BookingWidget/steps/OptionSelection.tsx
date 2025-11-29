@@ -892,6 +892,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     return (
                       <button
                         key={option.id}
+                        data-testid={`room-card-${option.id}`}
                         onClick={() => handleOptionSelect(option.id)}
                         disabled={false}
                         className={`
@@ -906,32 +907,46 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         `}
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
-                        {/* Checkbox indicator for multi-select */}
-                        <div
-                          className={`absolute top-4 right-4 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
-                            isSelected
-                              ? 'bg-accent border-accent shadow-sm'
-                              : 'bg-white border-gray-300 hover:border-gray-400'
-                          }`}
-                        >
-                          {isSelected && (
-                            <Check size={16} className="text-white stroke-[3]" />
-                          )}
-                        </div>
                         <div className="flex gap-6">
                           {/* Enhanced Hero Image */}
-                          <div className="flex-shrink-0">
+                          <div className="flex-shrink-0 relative">
                             {option.images && option.images.length > 0 ? (
-                              <RoomHeroImage
-                                image={option.images[0]}
-                                roomName={option.name}
-                                onClick={() => openGallery(option)}
-                                className="w-32 h-24"
-                              />
+                              <>
+                                <RoomHeroImage
+                                  image={option.images[0]}
+                                  roomName={option.name}
+                                  onClick={() => openGallery(option)}
+                                  className="w-32 h-24"
+                                />
+                                {/* Checkbox indicator - positioned on image */}
+                                <div
+                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 shadow-md ${
+                                    isSelected
+                                      ? 'bg-accent border-accent'
+                                      : 'bg-white/90 backdrop-blur-sm border-gray-300'
+                                  }`}
+                                >
+                                  {isSelected && (
+                                    <Check size={14} className="text-white stroke-[3]" />
+                                  )}
+                                </div>
+                              </>
                             ) : (
-                              <div className="w-32 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                              <div className="w-32 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center relative">
                                 <div className="text-white text-2xl font-bold">
                                   {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
+                                </div>
+                                {/* Checkbox indicator - positioned on placeholder */}
+                                <div
+                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 shadow-md ${
+                                    isSelected
+                                      ? 'bg-accent border-accent'
+                                      : 'bg-white/90 backdrop-blur-sm border-gray-300'
+                                  }`}
+                                >
+                                  {isSelected && (
+                                    <Check size={14} className="text-white stroke-[3]" />
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -941,7 +956,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                           <div className="flex-1 space-y-3">
                             {/* Title and Price */}
                             <div className="flex justify-between items-start">
-                              <div>
+                              <div className="flex-1 pr-4">
                                 <h4 className="text-lg font-semibold text-gray-900 mb-1">
                                   {option.name}
                                 </h4>
@@ -949,7 +964,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                   {option.description}
                                 </p>
                               </div>
-                              <div className="text-right">
+                              <div className="text-right flex-shrink-0">
                                 <div className="text-2xl font-bold text-orange-600">
                                   {typeof totalPrice === 'number' && !Number.isNaN(totalPrice)
                                     ? formatPrice(totalPrice)
@@ -985,7 +1000,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
                             {/* Amenities/Includes */}
                             {amenities && amenities.length > 0 && (
-                              <div className="flex flex-wrap gap-2">
+                              <div className="flex flex-wrap gap-2" data-testid={`room-amenities-${option.id}`}>
                                 {amenities.slice(0, 4).map((amenity: string, index: number) => (
                                   <span
                                     key={index}

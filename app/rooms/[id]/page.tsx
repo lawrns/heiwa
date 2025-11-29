@@ -125,23 +125,26 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
     size: isDorm ? 45 : 25,
     maxGuests: room.capacity || (isDorm ? 6 : 2),
     description: room.description || `Step into this beautifully designed ${isDorm ? 'shared dormitory' : 'room'}, blending modern comforts with rustic charm. ${isDorm ? 'Features sturdy, handcrafted wooden bunk beds perfect for solo travelers and groups.' : 'The cozy space features comfortable furniture complemented by traditional Portuguese tiles.'} Perfect for your surf adventure in Santa Cruz.`,
-    features: isDorm 
-      ? [
-          'Handcrafted wooden bunk beds',
-          'Shared bathroom facilities',
-          'Locker for each guest',
-          'Large windows with natural light',
-          'Reading lights',
-          'Power outlets at each bed'
-        ]
-      : [
-          'Comfortable bed(s)',
-          'Private bathroom with shower',
-          'Traditional Portuguese tiles',
-          'Natural light',
-          'Comfortable seating area',
-          'Storage space'
-        ]
+    // Use amenities from database, fallback to defaults if empty
+    features: room.amenities && room.amenities.length > 0 
+      ? room.amenities
+      : (isDorm 
+        ? [
+            'Handcrafted wooden bunk beds',
+            'Shared bathroom facilities',
+            'Locker for each guest',
+            'Large windows with natural light',
+            'Reading lights',
+            'Power outlets at each bed'
+          ]
+        : [
+            'Comfortable bed(s)',
+            'Private bathroom with shower',
+            'Traditional Portuguese tiles',
+            'Natural light',
+            'Comfortable seating area',
+            'Storage space'
+          ])
   }
 
   // Similar rooms - use the same data source with reliable fallback images
