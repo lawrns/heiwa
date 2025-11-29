@@ -227,10 +227,21 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
   // Use useEffect to sync prop changes properly (fixes hydration issues)
   useEffect(() => {
     if (image && image !== imgSrc && !hasError) {
-      setImgSrc(image);
+      // Add cache-busting to image URL to prevent browser cache issues
+      const cacheBustedImage = image.includes('?') 
+        ? `${image}&_v=${Date.now()}` 
+        : `${image}?_v=${Date.now()}`;
+      setImgSrc(cacheBustedImage);
       setHasError(false); // Reset error state when new image is provided
     }
   }, [image, imgSrc, hasError]);
+
+  // Log image source for debugging
+  useEffect(() => {
+    if (imgSrc && imgSrc.includes('yoga')) {
+      console.warn(`⚠️ WARNING: Yoga dome image detected for room "${roomName}":`, imgSrc);
+    }
+  }, [imgSrc, roomName]);
 
   return (
     <div
@@ -241,7 +252,9 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
         src={hasError ? FALLBACK_IMAGES[0] : imgSrc}
         alt={`${roomName} hero image`}
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        onError={() => {
+        onError={(e) => {
+          const target = e.target as HTMLImageElement;
+          console.warn(`❌ Image failed to load for "${roomName}":`, imgSrc);
           if (!hasError) {
             setHasError(true);
             setImgSrc(FALLBACK_IMAGES[0]);
