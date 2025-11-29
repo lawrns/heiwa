@@ -105,7 +105,11 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
     } catch (err) {
       console.error('Error fetching rooms:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch rooms';
-      setError(errorMessage);
+      // Provide user-friendly error message
+      const friendlyMessage = errorMessage.includes('500') || errorMessage.includes('HTTP error')
+        ? 'Unable to load rooms. Please try again.'
+        : errorMessage;
+      setError(friendlyMessage);
       // Set empty array instead of mock data
       setRooms([]);
     } finally {

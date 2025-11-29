@@ -127,8 +127,13 @@ export async function PUT(
 
     if (error) {
       console.error('Error updating surf camp:', error)
+      const errorMessage = error.message || 'Failed to update surf camp'
       return NextResponse.json(
-        { success: false, error: 'Failed to update surf camp' },
+        { 
+          success: false, 
+          error: errorMessage,
+          details: process.env.NODE_ENV === 'development' ? error : undefined
+        },
         { status: 500 }
       )
     }

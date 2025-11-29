@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bed, Users, Star, ArrowRight, Calendar } from 'lucide-react';
+import { Bed, Users, Star, ArrowRight, Calendar, CheckCircle } from 'lucide-react';
 import { BookingState, Room, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
@@ -124,13 +124,21 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     );
   }
 
-  // Show error state
+  // Show error state with retry button
   if (error) {
     return (
       <div className="space-y-6">
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-4">
           <h3 className="text-2xl font-bold text-gray-900">Choose Your Accommodation</h3>
-          <p className="text-red-600">Error loading rooms: {error}</p>
+          <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+            <p className="text-red-800 font-medium mb-2">Error loading rooms: {error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -263,30 +271,37 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Bed size={20} className="text-accent" />
-                    <h4 className="text-lg font-semibold text-gray-900">
-                      {room.name}
-                    </h4>
+                  <div className="flex items-start gap-3 mb-2">
+                    <Bed size={20} className="text-accent flex-shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-lg font-semibold text-gray-900 leading-tight mb-1">
+                        {room.name}
+                      </h4>
+                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
+                        {room.description}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-gray-600 text-sm mb-3">
-                    {room.description}
-                  </p>
                 </div>
 
-                {/* Pricing */}
-                <div className="text-right ml-4">
+                {/* Pricing - Optimized alignment */}
+                <div className="text-right ml-4 flex-shrink-0">
                   {room.isIncluded ? (
-                    <div className="text-lg font-bold text-green-600">
-                      Included
+                    <div className="flex flex-col items-end">
+                      <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full mb-1">
+                        Included
+                      </span>
+                      <div className="text-sm font-medium text-green-700">
+                        No extra cost
+                      </div>
                     </div>
                   ) : (
-                    <div>
-                      <div className="text-lg font-bold text-orange-600">
+                    <div className="flex flex-col items-end">
+                      <div className="text-xl font-bold text-orange-600 leading-tight mb-1">
                         +{formatPrice(weeklyUpgrade)}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        ({formatPrice(room.pricePerNight)}/night)
+                      <div className="text-xs text-gray-500">
+                        {formatPrice(room.pricePerNight)}/night
                       </div>
                     </div>
                   )}
@@ -365,25 +380,33 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
         })}
       </div>
 
-      {/* Selection Summary */}
+      {/* Selection Summary - Optimized for conversion */}
       {selectedRoom && (
-        <div className="bg-orange-50 rounded-xl p-4 border border-orange-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <h5 className="font-semibold text-orange-900">Room Selection</h5>
-              <p className="text-sm text-orange-700">
+        <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-5 border-2 border-orange-300 shadow-md">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex-1">
+              <h5 className="font-bold text-orange-900 text-lg mb-1">Selected Room</h5>
+              <p className="text-base font-medium text-orange-800">
                 {surfWeekRooms.find(r => r.id === selectedRoom)?.name}
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-right sm:text-left sm:ml-4">
               {(() => {
                 const room = surfWeekRooms.find(r => r.id === selectedRoom)
                 if (!room) return null
                 return room.isIncluded ? (
-                  <div className="text-green-600 font-medium">Included in package</div>
+                  <div className="flex flex-col items-end sm:items-start">
+                    <span className="px-3 py-1 bg-green-200 text-green-800 text-xs font-bold rounded-full mb-1">
+                      Included
+                    </span>
+                    <div className="text-green-700 font-semibold text-sm">No extra cost</div>
+                  </div>
                 ) : (
-                  <div className="text-orange-600 font-medium">
-                    +{formatPrice(room.pricePerNight * 7)} upgrade
+                  <div className="flex flex-col items-end sm:items-start">
+                    <div className="text-orange-600 font-bold text-lg">
+                      +{formatPrice(room.pricePerNight * 7)}
+                    </div>
+                    <div className="text-xs text-gray-600">weekly upgrade</div>
                   </div>
                 )
               })()}

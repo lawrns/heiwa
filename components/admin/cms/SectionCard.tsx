@@ -46,7 +46,8 @@ export default function SectionCard({
 }: SectionCardProps) {
   const [showMenu, setShowMenu] = useState(false)
 
-  const getSectionIcon = (sectionType: string): LucideIcon => {
+  const getSectionIcon = (sectionType: string | null | undefined): LucideIcon => {
+    if (!sectionType) return File
     const icons: Record<string, LucideIcon> = {
       hero: Target,
       intro: FileText,
@@ -62,6 +63,9 @@ export default function SectionCard({
   }
 
   const getSectionPreview = (section: PageSection) => {
+    if (!section.section_type) {
+      return section.section_name || 'Unknown Section'
+    }
     switch (section.section_type) {
       case 'hero':
         return section.content?.title || 'Hero Section'
@@ -70,11 +74,12 @@ export default function SectionCard({
       case 'intro':
         return 'Introduction'
       default:
-        return section.section_name || section.section_type
+        return section.section_name || section.section_type || 'Unknown Section'
     }
   }
 
-  const getSectionTypeLabel = (sectionType: string) => {
+  const getSectionTypeLabel = (sectionType: string | null | undefined) => {
+    if (!sectionType) return 'Unknown'
     const labels: Record<string, string> = {
       hero: 'Hero',
       intro: 'Introduction',
@@ -89,7 +94,7 @@ export default function SectionCard({
     return labels[sectionType] || sectionType
   }
 
-  const IconComponent = getSectionIcon(section.section_type)
+  const IconComponent = getSectionIcon(section.section_type || 'custom')
 
   return (
     <div className="p-6 border-b border-gray-200 hover:bg-gray-50 transition-colors group shadow-sm bg-white rounded-lg mb-4">

@@ -26,6 +26,7 @@ const pageTitles: Record<string, string> = {
   flow: 'Heiwa Flow',
   play: 'Heiwa Play',
   surf: 'Heiwa Surf',
+  'surf-weeks': 'Surf Weeks',
   'the-spot': 'The Spot',
   about: 'About Us',
   contact: 'Contact'
@@ -35,6 +36,7 @@ const pageDescriptions: Record<string, string> = {
   flow: 'Yoga, massage, ice bath, sauna, and wellness services',
   play: 'Activities, experiences, and recreational services',
   surf: 'Surf lessons, equipment, and surf week information',
+  'surf-weeks': 'Manage surf weeks listing, process, and content sections',
   'the-spot': 'Beach club, restaurant, and local attractions',
   about: 'Company story, team, and mission',
   contact: 'Contact information, location, and inquiry forms'
