@@ -89,9 +89,9 @@ export default function CMSPageEditor() {
                 </button>
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                    {slug.charAt(0).toUpperCase() + slug.slice(1)} Page Editor
+                    {slug && slug.length > 0 ? slug.charAt(0).toUpperCase() + slug.slice(1) : 'Page'} Page Editor
                   </h1>
-                  <p className="text-gray-600">/{slug} • Edit page content and sections</p>
+                  <p className="text-gray-600">/{slug || 'page'} • Edit page content and sections</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">

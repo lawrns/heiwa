@@ -21,12 +21,19 @@ export async function GET() {
       console.error('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET')
       console.error('🔍 Service Role Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET')
       
+      // Return more specific error message
+      const errorMessage = roomsError.message || 'Database connection error'
+      const isConnectionError = errorMessage.includes('connect') || errorMessage.includes('timeout') || errorMessage.includes('network')
+      
       return NextResponse.json({
         success: false,
         error: 'Failed to fetch rooms',
-        message: process.env.NODE_ENV === 'development' 
-          ? `Database error: ${roomsError.message}` 
-          : 'Unable to load rooms. Please check server configuration.'
+        message: isConnectionError 
+          ? 'Unable to connect to database. Please try again later.'
+          : process.env.NODE_ENV === 'development' 
+            ? `Database error: ${errorMessage}` 
+            : 'Unable to load rooms. Please check server configuration.',
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
       }, { 
         status: 500,
         headers: {

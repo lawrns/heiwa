@@ -7,7 +7,7 @@
 
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
   # Optimize build performance
   NPM_FLAGS = "--prefer-offline --no-audit --legacy-peer-deps"
 

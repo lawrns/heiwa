@@ -48,6 +48,11 @@ const navigation: NavItem[] = [
         icon: ChevronRight
       },
       {
+        title: 'Surf Weeks',
+        href: '/admin/cms/pages/surf-weeks',
+        icon: ChevronRight
+      },
+      {
         title: 'The Spot',
         href: '/admin/cms/pages/the-spot',
         icon: ChevronRight

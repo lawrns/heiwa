@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           { success: false, error: `Unknown action: ${action}` },
           { status: 400 }
-        )        )
+        )
     }
 
     return NextResponse.json({
