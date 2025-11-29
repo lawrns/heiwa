@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+/**
+ * Fix Supabase storage bucket name mismatch
+ * Maps old /rooms/ bucket URLs to correct /room-images/ bucket
+ */
+function fixSupabaseBucketUrl(url: string): string {
+  if (!url || typeof url !== 'string') return url;
+  
+  // Fix bucket name mismatch: /rooms/ -> /room-images/
+  // The database has old URLs pointing to /rooms/ bucket which doesn't exist
+  // The actual bucket is /room-images/
+  if (url.includes('/storage/v1/object/public/rooms/') && !url.includes('/room-images/')) {
+    return url.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+  }
+  
+  return url;
+}
+
 // API endpoint for getting all rooms (compatible with booking widget)
 export async function GET() {
   try {
@@ -54,6 +71,12 @@ export async function GET() {
       // Default to standard rate if available, otherwise offSeason
       const defaultPricePerNight = room.pricing?.standard || room.pricing?.offSeason || null
 
+      // Fix bucket URLs: /rooms/ -> /room-images/
+      const fixedImages = (room.images || []).map((img: string) => fixSupabaseBucketUrl(img));
+      const fixedFeaturedImage = room.images && room.images.length > 0 
+        ? fixSupabaseBucketUrl(room.images[0]) 
+        : null;
+
       return {
         id: room.id,
         name: room.name,
@@ -62,7 +85,7 @@ export async function GET() {
         bookingType: room.booking_type || 'whole', // Map from database booking_type
         pricing: room.pricing,
         amenities: room.amenities || [],
-        images: room.images || [],
+        images: fixedImages, // Apply bucket fix
         isActive: room.is_active !== false, // Map from database is_active
         bedTypes: room.bed_types || [], // Map from database bed_types
         // Keep original fields for backward compatibility
@@ -72,7 +95,7 @@ export async function GET() {
         price_per_night: defaultPricePerNight, // Fallback for compatibility
         price_per_night_standard: room.pricing?.standard || null,
         price_per_night_off_season: room.pricing?.offSeason || null,
-        featured_image: room.images && room.images.length > 0 ? room.images[0] : null,
+        featured_image: fixedFeaturedImage, // Apply bucket fix
       }
     })
 

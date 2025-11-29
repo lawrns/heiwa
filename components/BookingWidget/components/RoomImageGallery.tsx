@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X, ZoomIn, Users } from 'lucide-react';
 
 // Local fallback images from the property
@@ -224,10 +224,13 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
   const [imgSrc, setImgSrc] = useState(image);
   const [hasError, setHasError] = useState(false);
 
-  // Update local state when prop changes, but only if not in error state or if prop actually changed
-  if (image !== imgSrc && !hasError) {
-    setImgSrc(image);
-  }
+  // Use useEffect to sync prop changes properly (fixes hydration issues)
+  useEffect(() => {
+    if (image && image !== imgSrc && !hasError) {
+      setImgSrc(image);
+      setHasError(false); // Reset error state when new image is provided
+    }
+  }, [image, imgSrc, hasError]);
 
   return (
     <div

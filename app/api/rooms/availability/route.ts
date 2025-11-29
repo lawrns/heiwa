@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+/**
+ * Fix Supabase storage bucket name mismatch
+ * Maps old /rooms/ bucket URLs to correct /room-images/ bucket
+ */
+function fixSupabaseBucketUrl(url: string): string {
+  if (!url || typeof url !== 'string') return url;
+  
+  // Fix bucket name mismatch: /rooms/ -> /room-images/
+  // The database has old URLs pointing to /rooms/ bucket which doesn't exist
+  // The actual bucket is /room-images/
+  if (url.includes('/storage/v1/object/public/rooms/') && !url.includes('/room-images/')) {
+    return url.replace('/storage/v1/object/public/rooms/', '/storage/v1/object/public/room-images/');
+  }
+  
+  return url;
+}
+
 // API endpoint for checking room availability
 export async function GET(request: NextRequest) {
   try {
@@ -160,6 +177,12 @@ export async function GET(request: NextRequest) {
         ? (r.pricing?.standard || r.pricing?.offSeason || null)
         : (r.pricing?.offSeason || r.pricing?.standard || null)
 
+      // Fix bucket URLs: /rooms/ -> /room-images/
+      const fixedImages = (r.images || []).map((img: string) => fixSupabaseBucketUrl(img));
+      const fixedFeaturedImage = r.images && r.images.length > 0 
+        ? fixSupabaseBucketUrl(r.images[0]) 
+        : null;
+
       return {
         id: r.id,
         name: r.name,
@@ -170,8 +193,8 @@ export async function GET(request: NextRequest) {
         price_per_night_standard: r.pricing?.standard || null,
         price_per_night_off_season: r.pricing?.offSeason || null,
         amenities: r.amenities || [],
-        featured_image: r.images && r.images.length > 0 ? r.images[0] : null,
-        images: r.images || [],
+        featured_image: fixedFeaturedImage, // Apply bucket fix
+        images: fixedImages, // Apply bucket fix
         is_active: r.isActive !== false,
         pricing: r.pricing, // Include full pricing object for frontend calculation
       }

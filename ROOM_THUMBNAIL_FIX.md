@@ -147,3 +147,4 @@ To prevent this issue in the future:
 
 The booking widget and `/rooms` page will now show the exact images that are uploaded and active in the admin panel.
 
+
