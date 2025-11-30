@@ -5,7 +5,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'react-toastify'
 
@@ -15,7 +14,7 @@ interface Client {
   email: string
   phone: string
   company?: string
-  status: 'active' | 'inactive' | 'pending'
+  vip: boolean
   notes?: string
 }
 
@@ -33,7 +32,7 @@ export function EditClientModal({ open, onClose, client, onUpdated }: EditClient
     email: '',
     phone: '',
     company: '',
-    status: 'active' as 'active' | 'inactive' | 'pending',
+    vip: false,
     notes: '',
   })
 
@@ -44,7 +43,7 @@ export function EditClientModal({ open, onClose, client, onUpdated }: EditClient
         email: client.email || '',
         phone: client.phone || '',
         company: client.company || '',
-        status: client.status || 'active',
+        vip: client.vip || false,
         notes: client.notes || '',
       })
     }
@@ -156,21 +155,15 @@ export function EditClientModal({ open, onClose, client, onUpdated }: EditClient
                 />
               </div>
 
-              <div>
-                <Label htmlFor="status">Status</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value: any) => setFormData(prev => ({ ...prev, status: value }))}
-                >
-                  <SelectTrigger className="mt-1.5">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center gap-2 mt-6">
+                <input
+                  type="checkbox"
+                  id="vip"
+                  checked={formData.vip}
+                  onChange={(e) => setFormData(prev => ({ ...prev, vip: e.target.checked }))}
+                  className="h-4 w-4 rounded border-gray-300 text-heiwaOrange-600 focus:ring-heiwaOrange-500"
+                />
+                <Label htmlFor="vip" className="cursor-pointer">VIP Client</Label>
               </div>
             </div>
 

@@ -5,7 +5,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'react-toastify'
 
@@ -22,7 +21,7 @@ export function CreateClientModal({ open, onClose, onCreated }: CreateClientModa
     email: '',
     phone: '',
     company: '',
-    status: 'active' as 'active' | 'inactive' | 'pending',
+    vip: false,
     notes: '',
   })
 
@@ -53,19 +52,19 @@ export function CreateClientModal({ open, onClose, onCreated }: CreateClientModa
       toast.success('Client created successfully')
       onCreated()
       onClose()
-      
+
       // Reset form
       setFormData({
         name: '',
         email: '',
         phone: '',
         company: '',
-        status: 'active',
+        vip: false,
         notes: '',
       })
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating client:', error)
-      toast.error(error.message || 'Failed to create client')
+      toast.error(error instanceof Error ? error.message : 'Failed to create client')
     } finally {
       setLoading(false)
     }
@@ -85,7 +84,7 @@ export function CreateClientModal({ open, onClose, onCreated }: CreateClientModa
           {/* Client Information */}
           <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Client Information</h3>
-            
+
             <div>
               <Label htmlFor="name">Name *</Label>
               <Input
@@ -138,21 +137,15 @@ export function CreateClientModal({ open, onClose, onCreated }: CreateClientModa
                 />
               </div>
 
-              <div>
-                <Label htmlFor="status">Status</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value: any) => setFormData(prev => ({ ...prev, status: value }))}
-                >
-                  <SelectTrigger className="mt-1.5">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center gap-2 mt-6">
+                <input
+                  type="checkbox"
+                  id="vip"
+                  checked={formData.vip}
+                  onChange={(e) => setFormData(prev => ({ ...prev, vip: e.target.checked }))}
+                  className="h-4 w-4 rounded border-gray-300 text-heiwaOrange-600 focus:ring-heiwaOrange-500"
+                />
+                <Label htmlFor="vip" className="cursor-pointer">VIP Client</Label>
               </div>
             </div>
 
@@ -182,4 +175,3 @@ export function CreateClientModal({ open, onClose, onCreated }: CreateClientModa
     </Dialog>
   )
 }
-

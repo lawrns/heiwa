@@ -33,7 +33,7 @@ export async function GET(
     const totalBookings = bookings?.length || 0
     const totalSpent =
       bookings
-        ?.filter((b: any) => b.payment_status === 'confirmed')
+        ?.filter((b: any) => b.payment_status === 'paid')
         .reduce((sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
 
     return NextResponse.json({
@@ -71,7 +71,7 @@ export async function PUT(
         phone: body.phone,
         brand: body.company || body.brand,
         notes: body.notes,
-        status: body.status,
+        vip: body.vip || false,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -99,7 +99,7 @@ export async function PUT(
   }
 }
 
-// DELETE - Archive client (soft delete)
+// DELETE - Soft delete client
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -110,22 +110,21 @@ export async function DELETE(
     const { error } = await supabaseAdmin
       .from('clients')
       .update({
-        archived_at: new Date().toISOString(),
-        status: 'archived',
+        deleted_at: new Date().toISOString(),
       })
       .eq('id', id)
 
     if (error) {
-      console.error('Error archiving client:', error)
+      console.error('Error deleting client:', error)
       return NextResponse.json(
-        { success: false, error: 'Failed to archive client' },
+        { success: false, error: 'Failed to delete client' },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Client archived successfully',
+      message: 'Client deleted successfully',
     })
   } catch (error) {
     console.error('Error in client DELETE API:', error)

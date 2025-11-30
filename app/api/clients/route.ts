@@ -5,23 +5,17 @@ import { supabaseAdmin } from '@/lib/supabase'
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const status = searchParams.get('status')
     const search = searchParams.get('search')
-    const includeArchived = searchParams.get('include_archived') === 'true'
+    const includeDeleted = searchParams.get('include_deleted') === 'true'
 
     let query = supabaseAdmin
       .from('clients')
       .select('*')
       .order('created_at', { ascending: false })
 
-    // Filter by status
-    if (status && status !== 'all') {
-      query = query.eq('status', status)
-    }
-
-    // Filter out archived unless explicitly requested
-    if (!includeArchived) {
-      query = query.is('archived_at', null)
+    // Filter out deleted clients unless explicitly requested
+    if (!includeDeleted) {
+      query = query.is('deleted_at', null)
     }
 
     const { data: clients, error } = await query
@@ -55,15 +49,15 @@ export async function GET(request: NextRequest) {
           .select('*', { count: 'exact', head: true })
           .contains('client_ids', [client.id])
 
-        // Get total spent from confirmed bookings only
-        const { data: confirmedBookings } = await supabaseAdmin
+        // Get total spent from paid bookings only
+        const { data: paidBookings } = await supabaseAdmin
           .from('bookings')
           .select('total_amount')
           .contains('client_ids', [client.id])
-          .eq('payment_status', 'confirmed')
+          .eq('payment_status', 'paid')
 
         const totalSpent =
-          confirmedBookings
+          paidBookings
             ?.reduce((sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
 
         return {
@@ -72,12 +66,12 @@ export async function GET(request: NextRequest) {
           email: client.email,
           phone: client.phone,
           company: client.brand || null,
-          status: client.status || 'active',
           totalBookings,
           totalSpent,
           joinDate: client.registration_date || client.created_at,
           lastBooking: client.last_booking_date || null,
           notes: client.notes || '',
+          vip: client.vip || false,
           created_at: client.created_at,
           updated_at: client.updated_at,
         }
@@ -101,7 +95,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, email, phone, company, notes, status } = body
+    const { name, email, phone, company, notes, vip } = body
 
     if (!name || !email) {
       return NextResponse.json(
@@ -119,7 +113,7 @@ export async function POST(request: NextRequest) {
           phone: phone || '',
           brand: company || 'Heiwa House',
           notes: notes || '',
-          status: status || 'active',
+          vip: vip || false,
         },
       ])
       .select()

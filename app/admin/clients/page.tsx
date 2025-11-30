@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, Search, Download, Plus, Eye, Edit, Trash2, Mail, Phone } from 'lucide-react'
+import { Users, Download, Plus, Eye, Edit, Trash2, Mail, Phone, Star } from 'lucide-react'
 import { ViewClientModal } from '@/components/admin/clients/ViewClientModal'
 import { CreateClientModal } from '@/components/admin/clients/CreateClientModal'
 import { EditClientModal } from '@/components/admin/clients/EditClientModal'
@@ -15,11 +15,12 @@ interface Client {
   email: string
   phone: string
   company?: string
-  status: 'active' | 'inactive' | 'pending'
+  vip: boolean
   totalBookings: number
   totalSpent: number
   joinDate: string
   lastBooking?: string
+  notes?: string
 }
 
 export default function ClientsPage() {
@@ -28,7 +29,6 @@ export default function ClientsPage() {
   const [, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [statusFilter, setStatusFilter] = useState('all')
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showViewModal, setShowViewModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -38,16 +38,15 @@ export default function ClientsPage() {
 
   useEffect(() => {
     fetchClients()
-  }, [statusFilter])
+  }, [])
 
-  // Filter and search (search is now handled server-side, but we keep client-side filtering for status)
+  // Filter by search term
   const filteredClients = clients.filter(client => {
-    const matchesSearch = 
+    const matchesSearch =
       client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      client.phone.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    // Status filter is handled server-side, but keep for client-side search results
+      client.phone?.toLowerCase().includes(searchTerm.toLowerCase())
+
     return matchesSearch
   })
 
@@ -56,25 +55,12 @@ export default function ClientsPage() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedClients = filteredClients.slice(startIndex, startIndex + itemsPerPage)
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800'
-      case 'inactive':
-        return 'bg-gray-100 text-gray-800'
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800'
-      default:
-        return 'bg-blue-100 text-blue-800'
-    }
-  }
-
   const fetchClients = async () => {
     try {
       setLoading(true)
       setError(null)
-      
-      const response = await fetch(`/api/clients?status=${statusFilter}&include_archived=false`)
+
+      const response = await fetch('/api/clients')
       const data = await response.json()
 
       if (data.success) {
@@ -91,8 +77,8 @@ export default function ClientsPage() {
   }
 
   const handleDelete = async (clientId: string) => {
-    if (!confirm('Are you sure you want to archive this client?')) return
-    
+    if (!confirm('Are you sure you want to delete this client?')) return
+
     try {
       const response = await fetch(`/api/clients/${clientId}`, {
         method: 'DELETE'
@@ -101,14 +87,14 @@ export default function ClientsPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to archive client')
+        throw new Error(data.error || 'Failed to delete client')
       }
 
-      toast.success('Client archived successfully')
+      toast.success('Client deleted successfully')
       fetchClients()
     } catch (error: unknown) {
-      console.error('Error archiving client:', error)
-      toast.error(error instanceof Error ? error.message : 'Failed to archive client')
+      console.error('Error deleting client:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to delete client')
     }
   }
 
@@ -132,19 +118,19 @@ export default function ClientsPage() {
     setSelectedClients(new Set())
   }
 
-  const handleBulkStatusUpdate = async (status: string) => {
+  const handleBulkVipToggle = async (vip: boolean) => {
     if (selectedClients.size === 0) return
 
-    if (!confirm(`Update ${selectedClients.size} client(s) to ${status}?`)) return
+    if (!confirm(`${vip ? 'Mark' : 'Unmark'} ${selectedClients.size} client(s) as VIP?`)) return
 
     try {
       const response = await fetch('/api/clients/bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'update_status',
+          action: 'set_vip',
           clientIds: Array.from(selectedClients),
-          status,
+          vip,
         }),
       })
 
@@ -166,7 +152,7 @@ export default function ClientsPage() {
   const handleBulkDelete = async () => {
     if (selectedClients.size === 0) return
 
-    if (!confirm(`Archive ${selectedClients.size} client(s)? This action cannot be undone.`)) return
+    if (!confirm(`Delete ${selectedClients.size} client(s)? This action cannot be undone.`)) return
 
     try {
       const response = await fetch('/api/clients/bulk', {
@@ -181,15 +167,15 @@ export default function ClientsPage() {
       const data = await response.json()
 
       if (data.success) {
-        toast.success(data.message || `Archived ${selectedClients.size} client(s)`)
+        toast.success(data.message || `Deleted ${selectedClients.size} client(s)`)
         setSelectedClients(new Set())
         fetchClients()
       } else {
-        throw new Error(data.error || 'Failed to archive clients')
+        throw new Error(data.error || 'Failed to delete clients')
       }
     } catch (error: unknown) {
-      console.error('Error archiving clients:', error)
-      toast.error(error instanceof Error ? error.message : String(error) || 'Failed to archive clients')
+      console.error('Error deleting clients:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to delete clients')
     }
   }
 
@@ -236,8 +222,8 @@ export default function ClientsPage() {
           <p className="text-3xl font-bold text-gray-900 mt-2">{clients.length}</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
-          <p className="text-gray-500 text-sm">Active</p>
-          <p className="text-3xl font-bold text-green-600 mt-2">{clients.filter(c => c.status === 'active').length}</p>
+          <p className="text-gray-500 text-sm">VIP Clients</p>
+          <p className="text-3xl font-bold text-amber-600 mt-2">{clients.filter(c => c.vip).length}</p>
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
           <p className="text-gray-500 text-sm">Total Revenue</p>
@@ -245,11 +231,11 @@ export default function ClientsPage() {
         </div>
         <div className="bg-white rounded-lg shadow-md p-6">
           <p className="text-gray-500 text-sm">Avg. Bookings</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{(clients.reduce((sum, c) => sum + c.totalBookings, 0) / clients.length).toFixed(1)}</p>
+          <p className="text-3xl font-bold text-gray-900 mt-2">{clients.length > 0 ? (clients.reduce((sum, c) => sum + c.totalBookings, 0) / clients.length).toFixed(1) : '0'}</p>
         </div>
       </div>
 
-      {/* Search and Filter */}
+      {/* Search */}
       <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
@@ -264,19 +250,6 @@ export default function ClientsPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
             />
           </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value)
-              setCurrentPage(1)
-            }}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="pending">Pending</option>
-          </select>
           <button className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
             <Download className="h-4 w-4" />
             Export
@@ -293,19 +266,15 @@ export default function ClientsPage() {
           onDeselectAll={handleDeselectAll}
           actions={[
             {
-              label: 'Set Active',
-              onClick: () => handleBulkStatusUpdate('active'),
+              label: 'Mark VIP',
+              onClick: () => handleBulkVipToggle(true),
             },
             {
-              label: 'Set Inactive',
-              onClick: () => handleBulkStatusUpdate('inactive'),
+              label: 'Remove VIP',
+              onClick: () => handleBulkVipToggle(false),
             },
             {
-              label: 'Set Pending',
-              onClick: () => handleBulkStatusUpdate('pending'),
-            },
-            {
-              label: 'Archive',
+              label: 'Delete',
               onClick: handleBulkDelete,
               variant: 'destructive',
             },
@@ -333,7 +302,6 @@ export default function ClientsPage() {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bookings</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
@@ -350,9 +318,14 @@ export default function ClientsPage() {
                     />
                   </td>
                   <td className="px-6 py-3 whitespace-nowrap">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{client.name}</p>
-                      {client.company && <p className="text-sm text-gray-500">{client.company}</p>}
+                    <div className="flex items-center gap-2">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{client.name}</p>
+                        {client.company && <p className="text-sm text-gray-500">{client.company}</p>}
+                      </div>
+                      {client.vip && (
+                        <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                      )}
                     </div>
                   </td>
                   <td className="px-6 py-3 whitespace-nowrap">
@@ -363,14 +336,9 @@ export default function ClientsPage() {
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Phone className="h-4 w-4" />
-                        {client.phone}
+                        {client.phone || '-'}
                       </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-3 whitespace-nowrap">
-                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(client.status)}`}>
-                      {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
-                    </span>
                   </td>
                   <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900">{client.totalBookings}</td>
                   <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900">€{client.totalSpent.toLocaleString()}</td>
@@ -397,10 +365,10 @@ export default function ClientsPage() {
                       >
                         <Edit className="h-4 w-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleDelete(client.id)}
                         className="text-red-600 hover:text-red-900 transition-colors"
-                        title="Archive client"
+                        title="Delete client"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

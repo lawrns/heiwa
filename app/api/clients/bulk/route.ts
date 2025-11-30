@@ -17,18 +17,11 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0
 
     switch (action) {
-      case 'update_status':
-        const { status } = body
-        if (!status) {
-          return NextResponse.json(
-            { success: false, error: 'Status is required for update_status action' },
-            { status: 400 }
-          )
-        }
-
+      case 'set_vip':
+        const { vip } = body
         const { data, error } = await supabaseAdmin
           .from('clients')
-          .update({ status, updated_at: new Date().toISOString() })
+          .update({ vip: vip ?? true, updated_at: new Date().toISOString() })
           .in('id', clientIds)
           .select('id')
 
@@ -45,20 +38,18 @@ export async function POST(request: NextRequest) {
         break
 
       case 'delete':
-        // Soft delete by archiving
+        // Soft delete
         const { error: deleteError } = await supabaseAdmin
           .from('clients')
           .update({
-            archived_at: new Date().toISOString(),
-            status: 'archived',
-            updated_at: new Date().toISOString(),
+            deleted_at: new Date().toISOString(),
           })
           .in('id', clientIds)
 
         if (deleteError) {
-          console.error('Error archiving clients:', deleteError)
+          console.error('Error deleting clients:', deleteError)
           return NextResponse.json(
-            { success: false, error: 'Failed to archive clients' },
+            { success: false, error: 'Failed to delete clients' },
             { status: 500 }
           )
         }
@@ -79,10 +70,10 @@ export async function POST(request: NextRequest) {
       data: result,
       message: `Successfully processed ${updatedCount} client(s)`
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Unexpected error:', error)
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     )
   }
