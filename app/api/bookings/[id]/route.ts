@@ -130,26 +130,66 @@ export async function PUT(
     }
 
     // Transform admin UI format back to database format
-    const firstItem = existingBooking.items?.[0] || {}
-    const updatedItems = [{
-      ...firstItem,
-      type: body.type || firstItem.type,
-      itemId: body.item_name || firstItem.itemId,
-      quantity: body.guests || firstItem.quantity,
-      dates: {
-        checkIn: body.check_in || firstItem.dates?.checkIn,
-        checkOut: body.check_out || firstItem.dates?.checkOut
-      }
-    }]
-
-    // Build update object
+    // The bookings table uses: room_type, check_in, check_out, guests, total_amount, status, payment_status, notes
     const updateData: any = {
-      status: body.status || existingBooking.status,
-      payment_status: body.payment_status || existingBooking.payment_status,
-      total_amount: body.total_price !== undefined ? body.total_price : existingBooking.total_amount,
-      notes: body.special_requests !== undefined ? body.special_requests : existingBooking.notes,
-      items: updatedItems,
       updated_at: new Date().toISOString()
+    }
+
+    // Update status if provided
+    if (body.status !== undefined) {
+      updateData.status = body.status
+    }
+
+    // Update payment_status if provided
+    if (body.payment_status !== undefined) {
+      updateData.payment_status = body.payment_status
+    }
+
+    // Update total_amount if provided
+    if (body.total_price !== undefined) {
+      updateData.total_amount = body.total_price
+    }
+
+    // Update notes if provided (preserve JSON structure if it exists)
+    if (body.special_requests !== undefined) {
+      // If existing notes are JSON, try to preserve structure
+      try {
+        const existingNotes = existingBooking.notes ? JSON.parse(existingBooking.notes) : null
+        if (existingNotes && typeof existingNotes === 'object' && existingNotes.participants) {
+          // Preserve JSON structure, only update if it's a simple string
+          // Don't overwrite JSON notes with plain text
+          console.log('Preserving JSON notes structure')
+        } else {
+          // Plain text notes, update normally
+          updateData.notes = body.special_requests
+        }
+      } catch {
+        // Not JSON, update as plain text
+        updateData.notes = body.special_requests
+      }
+    }
+
+    // Update room_type if provided (for room bookings)
+    if (body.type === 'room' && body.item_name !== undefined) {
+      updateData.room_type = body.item_name
+    } else if (body.type === 'surf_camp') {
+      // Surf camp bookings have room_type = null
+      updateData.room_type = null
+    }
+
+    // Update check_in if provided
+    if (body.check_in !== undefined) {
+      updateData.check_in = body.check_in
+    }
+
+    // Update check_out if provided
+    if (body.check_out !== undefined) {
+      updateData.check_out = body.check_out
+    }
+
+    // Update guests if provided
+    if (body.guests !== undefined) {
+      updateData.guests = body.guests
     }
 
     // Update booking
@@ -162,29 +202,66 @@ export async function PUT(
 
     if (error) {
       console.error('Error updating booking:', error)
+      console.error('Update data attempted:', updateData)
       return NextResponse.json(
-        { success: false, error: 'Failed to update booking' },
+        { success: false, error: 'Failed to update booking', details: error.message },
         { status: 500 }
       )
     }
 
+    // Fetch client details for response transformation
+    let guestName = 'Unknown'
+    let guestEmail = ''
+    let guestPhone = ''
+    
+    if (data.client_ids && data.client_ids.length > 0) {
+      const firstClientId = data.client_ids[0]
+      const { data: client } = await supabaseAdmin
+        .from('clients')
+        .select('id, name, email, phone')
+        .eq('id', firstClientId)
+        .single()
+      
+      if (client) {
+        guestName = client.name || 'Unknown'
+        guestEmail = client.email || ''
+        guestPhone = client.phone || ''
+      }
+    }
+
+    // Parse notes for special requests
+    let specialRequests = data.notes || ''
+    try {
+      const notesData = data.notes ? JSON.parse(data.notes) : null
+      if (notesData && typeof notesData === 'object' && notesData.participants) {
+        // JSON format with participants - aggregate special requests
+        specialRequests = notesData.participants
+          .map((p: any) => p.specialRequests)
+          .filter(Boolean)
+          .join('\n\n')
+      }
+    } catch {
+      // Not JSON, use as-is
+      specialRequests = data.notes || ''
+    }
+
     // Transform response back to admin UI format
-    const updatedFirstItem = data.items?.[0]
     const transformedBooking = {
       id: data.id,
-      guest_name: data.guest_name || 'Unknown',
-      guest_email: data.guest_email || '',
-      guest_phone: data.guest_phone || '',
-      type: updatedFirstItem?.type || 'room',
-      item_name: updatedFirstItem?.itemId || 'Unknown',
-      check_in: updatedFirstItem?.dates?.checkIn || '',
-      check_out: updatedFirstItem?.dates?.checkOut || '',
-      guests: updatedFirstItem?.quantity || 1,
+      guest_name: guestName,
+      guest_email: guestEmail,
+      guest_phone: guestPhone,
+      type: data.room_type ? 'room' : 'surf_camp',
+      item_name: data.room_type || 'Unknown',
+      check_in: data.check_in || '',
+      check_out: data.check_out || '',
+      guests: data.guests || 1,
       total_price: data.total_amount || 0,
       status: data.status || 'pending',
       payment_status: data.payment_status || 'pending',
       created_at: data.created_at,
-      special_requests: data.notes || ''
+      special_requests: specialRequests,
+      notes: data.notes || ''
     }
 
     return NextResponse.json({
