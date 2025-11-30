@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { NextRequest, NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
 import { executeWithTimeout } from '@/lib/supabase-timeout'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 /**
  * Fix Supabase storage bucket URLs if needed
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
     
     // Build query with timeout protection
-    let query = supabase
+    let query = supabaseAdmin
       .from('surf_camps')
       .select('*')
       .order('start_date', { ascending: true })
@@ -62,9 +63,10 @@ export async function GET(request: Request) {
     }
     
     // Execute with timeout to prevent long waits
+    const queryPromise = query as any
     const { data: surfCamps, error: surfCampsError } = await executeWithTimeout(
-      query,
-      1000 // 1 second timeout for fast failure
+      queryPromise,
+      3000 // 3 second timeout for fast failure
     )
 
     if (surfCampsError) {
@@ -127,22 +129,31 @@ export async function GET(request: Request) {
     // Get enrollment counts for each surf camp (with timeout protection)
     const surfCampsWithAvailability = await Promise.all(
       (surfCamps || []).map(async (camp: SurfCamp) => {
-        const enrollmentQuery = supabase
+        const enrollmentQuery = supabaseAdmin
           .from('surf_camp_enrollments')
           .select('*', { count: 'exact', head: true })
           .eq('surf_camp_id', camp.id)
           .eq('status', 'confirmed')
         
-        const { count: enrolledCount } = await executeWithTimeout(
-          enrollmentQuery,
+        const enrollmentResult = await executeWithTimeout(
+          enrollmentQuery as any,
           500 // 500ms timeout for enrollment count
         )
+        const { error } = enrollmentResult
+        const enrolledCount = (enrollmentResult as any).count || 0
         
         // Handle both old schema (max_participants) and new schema (total_spots)
         const totalSpots = (camp as any).total_spots || camp.max_participants || 18
         const dbAvailableSpots = (camp as any).available_spots
         const calculatedAvailableSpots = totalSpots - (enrolledCount || 0)
         const availableSpots = dbAvailableSpots !== undefined ? dbAvailableSpots : calculatedAvailableSpots
+        
+        if (error) {
+          console.warn(`Error fetching enrollment count for camp ${camp.id}:`, error)
+        }
+        
+        // Cast enrolledCount to number since it might be undefined
+        const enrolledCountNum = typeof enrolledCount === 'number' ? enrolledCount : 0
         
         return {
           id: camp.id,
@@ -157,7 +168,7 @@ export async function GET(request: Request) {
           enrolled_count: enrolledCount || 0,
           is_full: availableSpots <= 0,
           level: camp.level || 'all',
-          images: fixImageUrls(camp.images || []), // Ensure CMS images are used correctly
+          images: fixImageUrls(camp.images || []),
           includes: camp.includes || []
         }
       })
@@ -209,8 +220,12 @@ export async function GET(request: Request) {
 }
 
 // POST /api/surf-camps - Create a new surf camp
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    // Require admin authentication
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const {
       name,
@@ -233,20 +248,42 @@ export async function POST(request: Request) {
       )
     }
 
+    // Validate dates - end_date must be after start_date
+    const startDate = new Date(start_date)
+    const endDate = new Date(end_date)
+    
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid date format. Dates must be valid ISO date strings (YYYY-MM-DD)' },
+        { status: 400 }
+      )
+    }
+
+    if (endDate <= startDate) {
+      return NextResponse.json(
+        { success: false, error: 'end_date must be after start_date' },
+        { status: 400 }
+      )
+    }
+
+    // Normalize dates to YYYY-MM-DD format
+    const normalizedStartDate = startDate.toISOString().split('T')[0]
+    const normalizedEndDate = endDate.toISOString().split('T')[0]
+
     // Normalize level field - database expects lowercase
     const normalizedLevel = level ? level.toLowerCase().replace(/\s+/g, '-') : 'all'
     const finalLevel = ['beginner', 'intermediate', 'advanced', 'all'].includes(normalizedLevel) 
       ? normalizedLevel 
       : 'all'
 
-    // Insert new surf camp
-    const { data: newCamp, error } = await supabase
+    // Insert new surf camp using admin client
+    const { data: newCamp, error } = await supabaseAdmin
       .from('surf_camps')
       .insert({
         name,
         description: description || '',
-        start_date,
-        end_date,
+        start_date: normalizedStartDate,
+        end_date: normalizedEndDate,
         max_participants,
         price,
         level: finalLevel,

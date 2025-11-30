@@ -79,6 +79,63 @@ export async function GET(request: NextRequest) {
       }
     }
     
+    // Fetch room assignments for surf camp bookings
+    const bookingIds = (data || []).map((b: any) => b.id).filter(Boolean)
+    let roomAssignmentsMap = new Map()
+
+    if (bookingIds.length > 0) {
+      try {
+        const { data: roomAssignments, error: roomAssignmentsError } = await supabaseAdmin
+          .from('room_assignments')
+          .select(`
+            id,
+            booking_id,
+            room_id,
+            enrollment_id,
+            client_id,
+            rooms:room_id (
+              id,
+              name,
+              type,
+              max_occupancy
+            ),
+            surf_camp_enrollments:enrollment_id (
+              id,
+              client_id,
+              clients:client_id (
+                id,
+                name,
+                email
+              )
+            )
+          `)
+          .in('booking_id', bookingIds)
+
+        if (!roomAssignmentsError && roomAssignments) {
+          // Group by booking_id
+          roomAssignments.forEach((ra: any) => {
+            if (!roomAssignmentsMap.has(ra.booking_id)) {
+              roomAssignmentsMap.set(ra.booking_id, [])
+            }
+            roomAssignmentsMap.get(ra.booking_id).push({
+              roomId: ra.room_id,
+              roomName: ra.rooms?.name || 'Unknown Room',
+              roomType: ra.rooms?.type || 'unknown',
+              maxOccupancy: ra.rooms?.max_occupancy || 0,
+              clientId: ra.client_id,
+              clientName: ra.surf_camp_enrollments?.clients?.name || 'Unknown',
+              enrollmentId: ra.enrollment_id
+            })
+          })
+        } else if (roomAssignmentsError) {
+          console.error('Error fetching room assignments:', roomAssignmentsError)
+        }
+      } catch (error) {
+        console.error('Error processing room assignments:', error)
+        // Continue without room assignments if there's an error
+      }
+    }
+
     // Transform database fields to admin UI format
     const transformedData = (data || []).map((booking: any) => {
       // Get guest name from client_ids - use first client
@@ -231,7 +288,8 @@ export async function GET(request: NextRequest) {
         client_notes: clientNotes,
         notes: booking.notes || '', // Keep raw notes
         client_ids: booking.client_ids || [],
-        participants: participants.length > 0 ? participants : undefined // Include participants if parsed
+        participants: participants.length > 0 ? participants : undefined, // Include participants if parsed
+        room_assignments: roomAssignmentsMap.get(booking.id) || [] // Include room assignments if available
       }
     })
 

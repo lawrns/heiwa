@@ -38,6 +38,7 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
     relationship: ''
   })
   const [notes, setNotes] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   // Fetch clients for selection
   useEffect(() => {
@@ -69,14 +70,17 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    e.stopPropagation()
 
     if (!selectedClientId) {
-      toast.error('Please select a client')
+      setError('Please select a client')
       return
     }
 
     setLoading(true)
     try {
+      console.log('Submitting enrollment:', { surfCampId, selectedClientId, skillLevel })
+      
       const response = await fetch('/api/enrollments', {
         method: 'POST',
         headers: {
@@ -94,6 +98,7 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
       })
 
       const data = await response.json()
+      console.log('Enrollment response:', { status: response.status, data })
 
       if (!response.ok) {
         const errorMessage = data.error || data.message || `Failed to enroll client (${response.status})`
@@ -103,10 +108,12 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
           message: data.message,
           data
         })
+        setError(errorMessage)
         throw new Error(errorMessage)
       }
 
       if (!data.success) {
+        setError(data.error || 'Enrollment failed')
         throw new Error(data.error || 'Enrollment failed')
       }
 
@@ -115,8 +122,7 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
       handleClose()
     } catch (error: any) {
       console.error('Error enrolling client:', error)
-      const errorMessage = error.message || 'Failed to enroll client. Please check the console for details.'
-      toast.error(errorMessage)
+      setError(error.message || 'Failed to enroll client. Please check the console for details.')
     } finally {
       setLoading(false)
     }
@@ -129,6 +135,7 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
     setEmergencyContact({ name: '', phone: '', relationship: '' })
     setNotes('')
     setSearchTerm('')
+    setError(null)
     onClose()
   }
 
@@ -166,6 +173,7 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
                   ))}
                 </SelectContent>
               </Select>
+              {error && <div className="text-red-500">{error}</div>}
             </div>
           </div>
 
@@ -254,5 +262,4 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
     </Dialog>
   )
 }
-
 

@@ -112,6 +112,28 @@ export async function PUT(
       )
     }
 
+    // Validate dates - end_date must be after start_date
+    const startDate = new Date(start_date)
+    const endDate = new Date(end_date)
+    
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid date format. Dates must be valid ISO date strings (YYYY-MM-DD)' },
+        { status: 400 }
+      )
+    }
+
+    if (endDate <= startDate) {
+      return NextResponse.json(
+        { success: false, error: 'end_date must be after start_date' },
+        { status: 400 }
+      )
+    }
+
+    // Normalize dates to YYYY-MM-DD format
+    const normalizedStartDate = startDate.toISOString().split('T')[0]
+    const normalizedEndDate = endDate.toISOString().split('T')[0]
+
     // Normalize level field - database expects lowercase 'all' not 'All Levels'
     const normalizedLevel = level ? level.toLowerCase().replace(/\s+/g, '-') : 'all'
     const finalLevel = ['beginner', 'intermediate', 'advanced', 'all'].includes(normalizedLevel) 
@@ -121,8 +143,8 @@ export async function PUT(
     const updateData = {
       name,
       description: description || '',
-      start_date,
-      end_date,
+      start_date: normalizedStartDate,
+      end_date: normalizedEndDate,
       max_participants,
       price,
       level: finalLevel,

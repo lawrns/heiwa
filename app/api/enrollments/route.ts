@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // GET enrollments for a surf camp
 export async function GET(request: NextRequest) {
@@ -61,6 +62,10 @@ export async function GET(request: NextRequest) {
 // POST - Create new enrollment
 export async function POST(request: NextRequest) {
   try {
+    // Require admin authentication
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const {
       surf_camp_id,
@@ -109,12 +114,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Count current enrollments
+    // Count current enrollments (both pending and confirmed)
     const { count } = await supabaseAdmin
       .from('surf_camp_enrollments')
       .select('*', { count: 'exact', head: true })
       .eq('surf_camp_id', surf_camp_id)
-      .eq('status', 'confirmed')
+      .in('status', ['pending', 'confirmed'])
 
     if (count !== null && count >= surfCamp.max_participants) {
       return NextResponse.json(
@@ -192,6 +197,10 @@ export async function POST(request: NextRequest) {
 // PUT - Update enrollment
 export async function PUT(request: NextRequest) {
   try {
+    // Require admin authentication
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const { id, ...updates } = body
 
@@ -233,6 +242,10 @@ export async function PUT(request: NextRequest) {
 // DELETE - Cancel enrollment
 export async function DELETE(request: NextRequest) {
   try {
+    // Require admin authentication
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
 

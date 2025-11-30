@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // GET assignments for a week
 export async function GET(request: NextRequest) {
@@ -71,6 +72,10 @@ export async function GET(request: NextRequest) {
 // POST/Save assignments for a week
 export async function POST(request: NextRequest) {
   try {
+    // Require admin authentication
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const { weekId, assignments } = body
 

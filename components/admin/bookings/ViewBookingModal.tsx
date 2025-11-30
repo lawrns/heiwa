@@ -31,6 +31,15 @@ interface Booking {
   client_notes?: string
   notes?: string
   participants?: Participant[]
+  room_assignments?: Array<{
+    roomId: string
+    roomName: string
+    roomType: string
+    maxOccupancy: number
+    clientId: string
+    clientName: string
+    enrollmentId: string
+  }>
 }
 
 interface ViewBookingModalProps {
@@ -284,6 +293,26 @@ export function ViewBookingModal({
               </div>
             )}
           </div>
+
+          {/* Room Assignments - Only for surf camp bookings */}
+          {booking.type === 'surf_camp' && booking.room_assignments && booking.room_assignments.length > 0 && (
+            <div className="border-t pt-4">
+              <h4 className="font-medium text-gray-900 mb-3">Room Assignments</h4>
+              <div className="space-y-3">
+                {booking.room_assignments.map((assignment, index) => (
+                  <div key={index} className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">{assignment.clientName}</p>
+                        <p className="text-xs text-gray-600">Room: {assignment.roomName}</p>
+                        <p className="text-xs text-gray-500 capitalize">{assignment.roomType} • Max {assignment.maxOccupancy} guests</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Booking Details */}
           <div className="border-t pt-4">
