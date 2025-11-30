@@ -163,8 +163,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     actions.setSurfWeekRoom(roomId);
     lastSelectedRoomRef.current = roomId;
 
-    // Calculate pricing based on room selection
-    const room = surfWeekRooms.find(r => r.id === roomId);
+    // Calculate pricing based on room selection (reuse room variable from above)
     if (room && state.selectedSurfWeek) {
       // Get surf week duration (assuming 7 days for now)
       const surfWeekDuration = 7;
