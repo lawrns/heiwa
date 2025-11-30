@@ -75,16 +75,41 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
         // Handle both availability endpoint (available_rooms) and general rooms endpoint (rooms)
         const roomsData = data.data.available_rooms || data.data.rooms;
 
+        console.log('📥 Raw API response received:', {
+          endpoint: apiUrl,
+          roomsCount: roomsData?.length || 0,
+          rooms: roomsData?.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            images: r.images,
+            featured_image: r.featured_image
+          }))
+        });
+
         // Transform API response to our Room interface using utility function
         const transformedRooms: Room[] = roomsData.map((room: any) => {
+          console.log(`🔄 Transforming room "${room.name}":`, {
+            rawImages: room.images,
+            rawFeaturedImage: room.featured_image,
+            imagesArrayLength: room.images?.length || 0,
+            hasFeaturedImage: !!room.featured_image
+          });
+
           const transformedRoom = transformApiRoomToRoom(room);
           
-          console.log(`🖼️ Room ${room.name} images:`, {
-            hasImagesArray: !!room.images,
-            imagesCount: room.images?.length || 0,
-            hasFeaturedImage: !!room.featured_image,
-            finalImagesCount: transformedRoom.images.length
+          console.log(`✅ Room "${room.name}" transformation complete:`, {
+            finalImages: transformedRoom.images,
+            finalImagesCount: transformedRoom.images.length,
+            firstImage: transformedRoom.images[0] || 'NONE'
           });
+
+          // Check for yoga dome images
+          const yogaDomeImages = transformedRoom.images.filter(img => 
+            img && (img.includes('yoga_dome') || img.includes('yoga-dome'))
+          );
+          if (yogaDomeImages.length > 0) {
+            console.error(`🚨 ERROR: Room "${room.name}" has yoga dome images!`, yogaDomeImages);
+          }
 
           return transformedRoom;
         });

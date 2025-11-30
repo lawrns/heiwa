@@ -224,6 +224,14 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
   const [imgSrc, setImgSrc] = useState(image);
   const [hasError, setHasError] = useState(false);
 
+  // Log initial image prop
+  useEffect(() => {
+    console.log(`🖼️ RoomHeroImage for "${roomName}" received image prop:`, image);
+    if (image && (image.includes('yoga_dome') || image.includes('yoga-dome'))) {
+      console.error(`🚨 ERROR: RoomHeroImage received yoga dome image for room "${roomName}":`, image);
+    }
+  }, [image, roomName]);
+
   // Use useEffect to sync prop changes properly (fixes hydration issues)
   useEffect(() => {
     if (image && image !== imgSrc && !hasError) {
@@ -231,6 +239,7 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
       const cacheBustedImage = image.includes('?') 
         ? `${image}&_v=${Date.now()}` 
         : `${image}?_v=${Date.now()}`;
+      console.log(`🔄 RoomHeroImage updating image for "${roomName}":`, cacheBustedImage);
       setImgSrc(cacheBustedImage);
       setHasError(false); // Reset error state when new image is provided
     }
@@ -238,8 +247,8 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
 
   // Log image source for debugging
   useEffect(() => {
-    if (imgSrc && imgSrc.includes('yoga')) {
-      console.warn(`⚠️ WARNING: Yoga dome image detected for room "${roomName}":`, imgSrc);
+    if (imgSrc && (imgSrc.includes('yoga_dome') || imgSrc.includes('yoga-dome'))) {
+      console.error(`🚨 ERROR: Yoga dome image detected in imgSrc for room "${roomName}":`, imgSrc);
     }
   }, [imgSrc, roomName]);
 
@@ -252,12 +261,20 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
         src={hasError ? FALLBACK_IMAGES[0] : imgSrc}
         alt={`${roomName} hero image`}
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        onLoad={() => {
+          console.log(`✅ Image loaded successfully for "${roomName}":`, imgSrc);
+        }}
         onError={(e) => {
           const target = e.target as HTMLImageElement;
-          console.warn(`❌ Image failed to load for "${roomName}":`, imgSrc);
+          console.error(`❌ Image failed to load for "${roomName}":`, {
+            attemptedUrl: imgSrc,
+            error: e,
+            willUseFallback: FALLBACK_IMAGES[0]
+          });
           if (!hasError) {
             setHasError(true);
             setImgSrc(FALLBACK_IMAGES[0]);
+            console.log(`🔄 Using fallback image for "${roomName}":`, FALLBACK_IMAGES[0]);
           }
         }}
       />

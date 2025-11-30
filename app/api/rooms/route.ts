@@ -72,10 +72,25 @@ export async function GET() {
       const defaultPricePerNight = room.pricing?.standard || room.pricing?.offSeason || null
 
       // Fix bucket URLs: /rooms/ -> /room-images/
-      const fixedImages = (room.images || []).map((img: string) => fixSupabaseBucketUrl(img));
-      const fixedFeaturedImage = room.images && room.images.length > 0 
-        ? fixSupabaseBucketUrl(room.images[0]) 
+      const fixedImages = (room.images || [])
+        .map((img: string) => fixSupabaseBucketUrl(img))
+        .filter((img: string) => {
+          // Reject yoga dome images - they don't belong to rooms
+          if (img && (img.includes('yoga_dome') || img.includes('yoga-dome'))) {
+            console.error(`🚨 ERROR: Room "${room.name}" has yoga dome image in database! Rejecting:`, img);
+            return false;
+          }
+          return true;
+        });
+      
+      const fixedFeaturedImage = fixedImages.length > 0 
+        ? fixedImages[0]
         : null;
+      
+      // Log warnings for rooms with missing/invalid images
+      if (fixedImages.length === 0) {
+        console.warn(`⚠️ Room "${room.name}" has no valid images after filtering`);
+      }
 
       return {
         id: room.id,

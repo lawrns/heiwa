@@ -58,43 +58,86 @@ export function processRoomImages(
   featuredImage: string | undefined,
   roomType: 'private' | 'shared' | 'dorm'
 ): string[] {
+  console.log('🔍 processRoomImages called with:', {
+    roomImages,
+    featuredImage,
+    roomType,
+    roomImagesLength: roomImages?.length || 0,
+    hasFeaturedImage: !!featuredImage
+  });
+
   // PRIMARY: Use images array from CMS (source of truth)
   // IMPORTANT: Do NOT filter out Supabase storage URLs - they are valid!
   if (roomImages && Array.isArray(roomImages) && roomImages.length > 0) {
+    console.log('📋 Processing CMS images array:', roomImages);
+    
     // Fix bucket name mismatch and filter out only truly invalid patterns
-    const validImages = roomImages
-      .map(url => fixSupabaseBucketUrl(url)) // Fix bucket name mismatch
-      .filter(url => {
-        if (!url || typeof url !== 'string' || url.trim() === '') return false;
-        // Only filter out known invalid patterns, not Supabase URLs
-        if (INVALID_IMAGE_PATTERNS.some(pattern => url.includes(pattern))) return false;
-        // Accept all valid URL formats (including Supabase storage URLs)
-        return VALID_IMAGE_PREFIXES.some(prefix => url.startsWith(prefix));
-      });
+    const fixedImages = roomImages.map(url => {
+      const fixed = fixSupabaseBucketUrl(url);
+      if (url !== fixed) {
+        console.log(`🔧 Fixed bucket URL: ${url} -> ${fixed}`);
+      }
+      return fixed;
+    });
+
+    const validImages = fixedImages.filter(url => {
+      if (!url || typeof url !== 'string' || url.trim() === '') {
+        console.log(`❌ Filtered out empty/invalid URL:`, url);
+        return false;
+      }
+      // Only filter out known invalid patterns, not Supabase URLs
+      if (INVALID_IMAGE_PATTERNS.some(pattern => url.includes(pattern))) {
+        console.log(`❌ Filtered out invalid pattern URL:`, url);
+        return false;
+      }
+      // Accept all valid URL formats (including Supabase storage URLs)
+      const isValid = VALID_IMAGE_PREFIXES.some(prefix => url.startsWith(prefix));
+      if (!isValid) {
+        console.log(`❌ Filtered out URL with invalid prefix:`, url);
+      }
+      return isValid;
+    });
     
     if (validImages.length > 0) {
-      console.log(`✅ Using ${validImages.length} image(s) from database for room:`, validImages);
+      console.log(`✅ Using ${validImages.length} image(s) from CMS:`, validImages);
       // Check for yoga dome images that shouldn't be here
       const yogaDomeImages = validImages.filter(img => img.includes('yoga_dome') || img.includes('yoga-dome'));
       if (yogaDomeImages.length > 0) {
-        console.warn(`⚠️ WARNING: Found yoga dome images in room images!`, yogaDomeImages);
+        console.error(`🚨 ERROR: Found yoga dome images in room images!`, yogaDomeImages);
+        // Filter them out!
+        const filteredImages = validImages.filter(img => !img.includes('yoga_dome') && !img.includes('yoga-dome'));
+        console.log(`🔧 Filtered out yoga dome images, remaining:`, filteredImages);
+        return filteredImages.length > 0 ? filteredImages : []; // Return empty to trigger fallback
       }
       return validImages;
+    } else {
+      console.warn(`⚠️ No valid images after filtering from CMS array`);
     }
+  } else {
+    console.log(`⚠️ No CMS images array provided`);
   }
 
   // SECONDARY: Fallback to featured image if images array is empty
   if (featuredImage && isValidImageUrl(featuredImage)) {
-    console.log(`⚠️ Using featured_image fallback for room`);
-    return [fixSupabaseBucketUrl(featuredImage)]; // Fix bucket name mismatch
+    const fixedFeatured = fixSupabaseBucketUrl(featuredImage);
+    console.log(`⚠️ Using featured_image fallback:`, fixedFeatured);
+    // Check for yoga dome
+    if (fixedFeatured.includes('yoga_dome') || fixedFeatured.includes('yoga-dome')) {
+      console.error(`🚨 ERROR: Featured image is yoga dome! Rejecting.`);
+      // Don't return it, fall through to default fallback
+    } else {
+      return [fixedFeatured];
+    }
   }
 
   // TERTIARY: Use default placeholder images only if CMS has no images
   // This is a last resort for rooms without any configured images
   console.log(`⚠️ Using default fallback images for room type: ${roomType}`);
-  return roomType === 'dorm'
+  const fallbackImages = roomType === 'dorm'
     ? [...ROOM_FALLBACK_IMAGES.dorm]
     : [...ROOM_FALLBACK_IMAGES.private];
+  console.log(`📦 Fallback images:`, fallbackImages);
+  return fallbackImages;
 }
 
 /**
