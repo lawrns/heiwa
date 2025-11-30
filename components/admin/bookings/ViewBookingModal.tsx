@@ -351,8 +351,11 @@ export function ViewBookingModal({
             </div>
           )}
 
-          {/* Raw Notes (if different from special requests) */}
-          {booking.notes && booking.notes !== booking.special_requests && (
+          {/* Raw Notes - Hide when participants are displayed or notes are JSON */}
+          {booking.notes && 
+           booking.notes !== booking.special_requests && 
+           participants.length === 0 &&
+           !booking.notes.trim().startsWith('{') && (
             <div className="border-t pt-4">
               <h4 className="font-medium text-gray-900 mb-3">Additional Notes</h4>
               <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 whitespace-pre-wrap">
