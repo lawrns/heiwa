@@ -127,8 +127,9 @@ export async function GET(request: NextRequest) {
               specialRequests = notesData.specialRequests || notesData.requests || notesData.message || ''
             }
           }
-        } catch {
+        } catch (parseError) {
           // Not JSON, parse as formatted text
+          console.log(`📝 Parsing text notes for booking ${booking.id}`)
           const notes = booking.notes
           
           // Parse participants from text format using line-by-line approach
@@ -177,6 +178,8 @@ export async function GET(request: NextRequest) {
             
             if (parsedParticipants.length > 0) {
               participants = parsedParticipants
+              console.log(`✅ Parsed ${participants.length} participants from text notes for booking ${booking.id}:`, 
+                participants.map(p => ({ name: p.name, email: p.email })))
               // Aggregate dietary preferences and special requests
               dietaryPreferences = participants
                 .map(p => p.dietaryRequirements)

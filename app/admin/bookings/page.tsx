@@ -7,10 +7,21 @@ import { Calendar, Filter, Download, Eye, Edit, Trash2, CheckCircle, XCircle, Cl
 import { BookingCalendar } from '@/components/ui/booking-calendar'
 import { useBookingsRealtime } from '@/lib/hooks/useBookingsRealtime'
 import { EditBookingModal } from '@/components/admin/bookings/EditBookingModal'
+import { ViewBookingModal } from '@/components/admin/bookings/ViewBookingModal'
 import { BulkActions } from '@/components/admin/BulkActions'
 import { CheckboxCell } from '@/components/admin/CheckboxCell'
 import { DateRangeFilter } from '@/components/admin/DateRangeFilter'
 import { toast } from 'react-toastify'
+
+interface Participant {
+  name?: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  dietaryRequirements?: string
+  specialRequests?: string
+}
 
 interface Booking {
   id: string
@@ -31,6 +42,7 @@ interface Booking {
   client_notes?: string
   notes?: string
   client_ids?: string[]
+  participants?: Participant[]
 }
 
 export default function BookingsPage() {
@@ -966,99 +978,11 @@ export default function BookingsPage() {
       )}
 
       {/* View Booking Modal */}
-      {showViewModal && selectedBooking && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
-            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-900">Booking Details</h3>
-              <button
-                onClick={() => setShowViewModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="px-6 py-4 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">Booking ID</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.id}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Status</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.status}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Guest Name</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.guest_name}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Email</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.guest_email}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Phone</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.guest_phone}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Type</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.type}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Item</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.item_name}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Guests</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.guests}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Check-in</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.check_in}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Check-out</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.check_out}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Total Price</p>
-                  <p className="text-sm font-medium text-gray-900">€{selectedBooking.total_price}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Payment Status</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.payment_status}</p>
-                </div>
-              </div>
-              {selectedBooking.dietary_preferences && (
-                <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500">Dietary Preferences</p>
-                  <p className="text-sm font-medium text-gray-900">{selectedBooking.dietary_preferences}</p>
-                </div>
-              )}
-              {selectedBooking.special_requests && (
-                <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500">Special Requests</p>
-                  <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap">{selectedBooking.special_requests}</p>
-                </div>
-              )}
-              {selectedBooking.client_notes && (
-                <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500">Client Notes</p>
-                  <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap">{selectedBooking.client_notes}</p>
-                </div>
-              )}
-            </div>
-            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-              <button
-                onClick={() => setShowViewModal(false)}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ViewBookingModal
+        isOpen={showViewModal}
+        booking={selectedBooking}
+        onClose={() => setShowViewModal(false)}
+      />
 
       {/* Edit Booking Modal */}
       {showEditModal && selectedBooking && (
