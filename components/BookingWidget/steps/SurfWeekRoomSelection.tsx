@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bed, Users, Star, ArrowRight, Calendar, CheckCircle } from 'lucide-react';
-import { BookingState, Room, PricingBreakdown } from '../types';
+import { Bed, Users, Star, ArrowRight, Calendar, CheckCircle, Check } from 'lucide-react';
+import { BookingState, Room, PricingBreakdown, RoomAssignment as RoomAssignmentType } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
-import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
+import { RoomImageGallery, RoomThumbnail } from '../components/RoomImageGallery';
 
 interface TransformedRoom {
   id: string;
@@ -20,7 +20,9 @@ interface TransformedRoom {
 interface SurfWeekRoomSelectionProps {
   state: BookingState;
   actions: {
-    setSurfWeekRoom: (roomId: string) => void;
+    setRoomAssignments: (assignments: RoomAssignmentType[]) => void;
+    addRoomAssignment: (assignment: RoomAssignmentType) => void;
+    removeRoomAssignment: (assignmentId: string) => void;
     updatePricing: (pricing: PricingBreakdown) => void;
     nextStep: () => void;
   };
@@ -46,9 +48,8 @@ const transformRoomForSurfWeek = (room: Room): TransformedRoom => {
 };
 
 export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionProps) {
-  const [selectedRoom, setSelectedRoom] = useState<string | null>(state.selectedSurfWeekRoom);
+  const [unassignedGuests, setUnassignedGuests] = useState<string[]>([]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastSelectedRoomRef = useRef<string | null>(null);
 
   // Image gallery state
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -67,14 +68,117 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   const { surfCamps } = useSurfCamps();
   const selectedSurfWeekData = surfCamps.find(camp => camp.id === state.selectedSurfWeek);
   
-  // Cleanup on unmount - MUST be called before any conditional returns
+  // Initialize guest IDs
   useEffect(() => {
+    const guestIds = Array.from({ length: state.guests }, (_, i) => `guest-${i + 1}`);
+    const assignedGuestIds = state.roomAssignments.flatMap(a => a.guestIds);
+    const unassigned = guestIds.filter(id => !assignedGuestIds.includes(id));
+    setUnassignedGuests(unassigned);
+  }, [state.guests, state.roomAssignments]);
+
+  // Calculate pricing based on room assignments for surf weeks
+  useEffect(() => {
+    if (state.roomAssignments.length === 0 || rooms.length === 0) {
+      // If no assignments, reset room upgrade to 0
+      if (actions.updatePricing) {
+        const basePrice = state.pricing.basePrice || 0;
+        const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
+        const subtotal = basePrice + addOnsSubtotal;
+        const taxes = Math.round(subtotal * 0.1);
+        const fees = Math.round(subtotal * 0.05);
+        const total = subtotal + taxes + fees;
+
+        actions.updatePricing({
+          ...state.pricing,
+          roomUpgrade: 0,
+          taxes,
+          fees,
+          total,
+        });
+      }
+      return;
+    }
+
+    // Calculate total room upgrade cost for surf week (weekly pricing)
+    let totalRoomUpgrade = 0;
+    const surfWeekDuration = 7; // 7 days for surf week
+
+    state.roomAssignments.forEach(assignment => {
+      const room = rooms.find(r => r.id === assignment.roomId);
+      if (room) {
+        // Transform room to check if it's included (dorm)
+        const transformedRoom = transformRoomForSurfWeek(room);
+        
+        // Only calculate upgrade cost for non-included rooms
+        if (!transformedRoom.isIncluded) {
+          // Weekly upgrade cost = pricePerNight × 7 days × number of guests in that room
+          const roomUpgradeCost = transformedRoom.pricePerNight * surfWeekDuration * assignment.guestIds.length;
+          totalRoomUpgrade += roomUpgradeCost;
+        }
+      }
+    });
+
+    // Update pricing with room upgrade
+    if (actions.updatePricing) {
+      const basePrice = state.pricing.basePrice || 0;
+      const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
+      const subtotal = basePrice + totalRoomUpgrade + addOnsSubtotal;
+      const taxes = Math.round(subtotal * 0.1); // 10% tax
+      const fees = Math.round(subtotal * 0.05); // 5% service fee
+      const total = subtotal + taxes + fees;
+
+      actions.updatePricing({
+        ...state.pricing,
+        roomUpgrade: totalRoomUpgrade,
+        taxes,
+        fees,
+        total,
+      });
+    }
+  }, [state.roomAssignments, rooms, state.pricing, actions]);
+
+  // Auto-advance when all guests are assigned
+  useEffect(() => {
+    if (state.guests > 1) {
+      const guestIds = Array.from({ length: state.guests }, (_, i) => `guest-${i + 1}`);
+      const assignedGuestIds = state.roomAssignments.flatMap(a => a.guestIds);
+      const allAssigned = guestIds.length > 0 &&
+                         guestIds.every(id => assignedGuestIds.includes(id));
+
+      if (allAssigned) {
+        // Cancel any pending timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        // Auto-advance after brief delay
+        timeoutRef.current = setTimeout(() => {
+          // Double-check all guests are still assigned
+          const currentAssigned = state.roomAssignments.flatMap(a => a.guestIds);
+          const stillAllAssigned = guestIds.every(id => currentAssigned.includes(id));
+          if (stillAllAssigned && state.guests > 1) {
+            actions.nextStep();
+          }
+          timeoutRef.current = null;
+        }, 500);
+      }
+    } else if (state.guests === 1 && state.roomAssignments.length > 0) {
+      // For single guest, auto-advance immediately after assignment
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        actions.nextStep();
+        timeoutRef.current = null;
+      }, 300);
+    }
+
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, []);
+  }, [state.roomAssignments, state.guests, actions]);
 
   // Format dates for display - use Intl API safely
   const formatDateRange = (checkIn: Date | null, checkOut: Date | null) => {
@@ -103,12 +207,117 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
       return a.name.localeCompare(b.name);
     });
 
+  // Handle guest assignment to room
+  const handleAssignGuestToRoom = (roomId: string, guestId: string) => {
+    const room = rooms.find(r => r.id === roomId);
+    if (!room) return;
+
+    // Check if room has capacity
+    const currentAssignment = state.roomAssignments.find(a => a.roomId === roomId);
+    const currentOccupancy = currentAssignment ? currentAssignment.guestIds.length : 0;
+    
+    if (currentOccupancy >= room.maxOccupancy) {
+      return; // Room is full
+    }
+
+    // ENFORCE EXCLUSIVITY: Remove guest from any other room assignments first
+    let updatedAssignments = state.roomAssignments.map(assignment => {
+      // Remove guest from other rooms
+      if (assignment.roomId !== roomId && assignment.guestIds.includes(guestId)) {
+        const filteredGuestIds = assignment.guestIds.filter(id => id !== guestId);
+        // If no guests left in this assignment, mark it for removal
+        if (filteredGuestIds.length === 0) {
+          return null; // Mark for removal
+        }
+        return {
+          ...assignment,
+          guestIds: filteredGuestIds
+        };
+      }
+      return assignment;
+    }).filter((assignment): assignment is RoomAssignmentType => assignment !== null);
+
+    // Now add guest to the target room
+    if (currentAssignment) {
+      // Add guest to existing assignment (only if not already there)
+      if (!currentAssignment.guestIds.includes(guestId)) {
+        const updatedAssignment = {
+          ...currentAssignment,
+          guestIds: [...currentAssignment.guestIds, guestId]
+        };
+        
+        updatedAssignments = updatedAssignments.map(a => 
+          a.id === currentAssignment.id ? updatedAssignment : a
+        );
+      }
+    } else {
+      // Create new assignment
+      const newAssignment: RoomAssignmentType = {
+        id: `assignment-${Date.now()}`,
+        roomId,
+        guestIds: [guestId]
+      };
+      updatedAssignments.push(newAssignment);
+    }
+
+    actions.setRoomAssignments(updatedAssignments);
+  };
+
+  // Handle removing guest from room
+  const handleRemoveGuestFromRoom = (assignmentId: string, guestId: string) => {
+    const assignment = state.roomAssignments.find(a => a.id === assignmentId);
+    if (!assignment) return;
+
+    const updatedGuestIds = assignment.guestIds.filter(id => id !== guestId);
+    
+    if (updatedGuestIds.length === 0) {
+      // Remove assignment if no guests left
+      actions.removeRoomAssignment(assignmentId);
+    } else {
+      // Update assignment with remaining guests
+      const updatedAssignment = {
+        ...assignment,
+        guestIds: updatedGuestIds
+      };
+      
+      const updatedAssignments = state.roomAssignments.map(a => 
+        a.id === assignmentId ? updatedAssignment : a
+      );
+      actions.setRoomAssignments(updatedAssignments);
+    }
+  };
+
+  // Get room occupancy
+  const getRoomOccupancy = (roomId: string) => {
+    const assignment = state.roomAssignments.find(a => a.roomId === roomId);
+    return assignment ? assignment.guestIds.length : 0;
+  };
+
+  // Get guest display name
+  const getGuestName = (guestId: string) => {
+    const guestNumber = parseInt(guestId.split('-')[1]) - 1; // Convert to 0-based index
+
+    // First check participantNames (Step 2 data)
+    const participant = state.participantNames[guestNumber];
+    if (participant?.firstName) {
+      return participant.firstName;
+    }
+
+    // Fallback to guestDetails (Step 4 data) if available
+    const guest = state.guestDetails[guestNumber];
+    if (guest?.firstName) {
+      return guest.firstName;
+    }
+
+    // Final fallback to generic name
+    return `Guest ${guestNumber + 1}`;
+  };
+
   // Open image gallery
-  const openGallery = (room: TransformedRoom) => {
-    const originalRoom = rooms.find(r => r.id === room.id);
-    setGalleryImages(originalRoom?.images || []);
+  const openGallery = (room: Room) => {
+    setGalleryImages(room.images || []);
     setGalleryRoomName(room.name);
-    setGalleryRoom(originalRoom || null);
+    setGalleryRoom(room);
     setGalleryOpen(true);
   };
 
@@ -144,57 +353,6 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     );
   }
 
-  const handleRoomSelection = (roomId: string) => {
-    // Cancel any pending auto-advance
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-
-    // Validate room capacity before allowing selection
-    const room = surfWeekRooms.find(r => r.id === roomId);
-    if (room && state.guests > room.maxOccupancy) {
-      // Show error - room cannot accommodate all guests
-      alert(`This room can only accommodate ${room.maxOccupancy} guest${room.maxOccupancy === 1 ? '' : 's'}, but you have ${state.guests} guest${state.guests === 1 ? '' : 's'}. Please select a room with sufficient capacity or reduce the number of guests.`);
-      return;
-    }
-
-    setSelectedRoom(roomId);
-    actions.setSurfWeekRoom(roomId);
-    lastSelectedRoomRef.current = roomId;
-
-    // Calculate pricing based on room selection (reuse room variable from above)
-    if (room && state.selectedSurfWeek) {
-      // Get surf week duration (assuming 7 days for now)
-      const surfWeekDuration = 7;
-      const roomUpgradeTotal = room.pricePerNight * surfWeekDuration;
-
-      // Recalculate pricing with room upgrade included in base calculation
-      const basePrice = state.pricing.basePrice;
-      const addOnsSubtotal = state.pricing.addOnsSubtotal;
-      const subtotal = basePrice + roomUpgradeTotal + addOnsSubtotal;
-      const taxes = Math.round(subtotal * 0.1); // 10% tax
-      const fees = Math.round(subtotal * 0.05); // 5% service fee
-      const total = subtotal + taxes + fees;
-
-      actions.updatePricing({
-        ...state.pricing,
-        roomUpgrade: roomUpgradeTotal,
-        taxes,
-        fees,
-        total,
-      });
-    }
-
-    // Auto-advance after brief delay
-    timeoutRef.current = setTimeout(() => {
-      // Use ref to check selection since state might not be updated yet
-      if (lastSelectedRoomRef.current === roomId) {
-        actions.nextStep();
-      }
-      timeoutRef.current = null;
-    }, 300);
-  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -209,10 +367,10 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
       {/* Header - Optimized for conversion */}
       <div className="text-center space-y-2 pb-2">
         <h3 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-          Choose Your Accommodation
+          Assign Guests to Rooms
         </h3>
         <p className="text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          Select your preferred room type for your surf week experience
+          Assign each guest to their preferred room for your surf week experience
         </p>
       </div>
 
@@ -247,43 +405,62 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
         </div>
       )}
 
-      {/* Room Options - Optimized spacing and layout */}
+      {/* Unassigned Guests */}
+      {unassignedGuests.length > 0 && (
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+          <h4 className="font-semibold text-orange-800 mb-2 flex items-center gap-2">
+            <Users size={18} />
+            Unassigned Guests ({unassignedGuests.length})
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {unassignedGuests.map(guestId => (
+              <span
+                key={guestId}
+                className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium"
+              >
+                {getGuestName(guestId)}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Room Assignment Cards */}
       <div className="space-y-4 md:space-y-5">
-        {surfWeekRooms.map((room) => {
-          const isSelected = selectedRoom === room.id;
-          const weeklyUpgrade = room.pricePerNight * 7; // 7 days
+        {surfWeekRooms.map((transformedRoom) => {
+          const originalRoom = rooms.find(r => r.id === transformedRoom.id);
+          if (!originalRoom) return null;
+
+          const occupancy = getRoomOccupancy(transformedRoom.id);
+          const assignment = state.roomAssignments.find(a => a.roomId === transformedRoom.id);
+          const isFull = occupancy >= transformedRoom.maxOccupancy;
+          const weeklyUpgrade = transformedRoom.pricePerNight * 7; // 7 days
 
           return (
             <div
-              key={room.id}
-              onClick={() => handleRoomSelection(room.id)}
-              className={`
-                relative p-5 md:p-6 rounded-xl border-2 cursor-pointer transition-all duration-300
-                ${isSelected
-                  ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20 scale-[1.01]'
-                  : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50 hover:shadow-md'
-                }
-              `}
-              role="button"
-              tabIndex={0}
-              aria-label={`Select ${room.name} room${room.isIncluded ? ' (included)' : ''}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleRoomSelection(room.id);
-                }
-              }}
+              key={transformedRoom.id}
+              className={`border-2 rounded-xl p-5 md:p-6 transition-all duration-300 ${
+                assignment && assignment.guestIds.length > 0
+                  ? 'border-orange-500 bg-orange-50'
+                  : 'border-gray-200 bg-white'
+              }`}
             >
               {/* Room Header with Thumbnail */}
               <div className="flex items-start gap-4 mb-4">
                 {/* Room Thumbnail */}
                 <div className="flex-shrink-0">
-                  <RoomHeroImage
-                    image={room.image}
-                    roomName={room.name}
-                    onClick={() => openGallery(room)}
-                    className="w-20 h-20"
-                  />
+                  {originalRoom.images && originalRoom.images.length > 0 ? (
+                    <RoomThumbnail
+                      image={originalRoom.images[0]}
+                      roomName={transformedRoom.name}
+                      onClick={() => openGallery(originalRoom)}
+                      className="w-20 h-15"
+                    />
+                  ) : (
+                    <div className="w-20 h-15 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-lg">🏠</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -291,10 +468,10 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                     <Bed size={20} className="text-accent flex-shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
                       <h4 className="text-lg font-semibold text-gray-900 leading-tight mb-1">
-                        {room.name}
+                        {transformedRoom.name}
                       </h4>
                       <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
-                        {room.description}
+                        {transformedRoom.description}
                       </p>
                     </div>
                   </div>
@@ -302,7 +479,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
                 {/* Pricing - Optimized alignment */}
                 <div className="text-right ml-4 flex-shrink-0">
-                  {room.isIncluded ? (
+                  {transformedRoom.isIncluded ? (
                     <div className="flex flex-col items-end">
                       <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full mb-1">
                         Included
@@ -317,18 +494,18 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                         +{formatPrice(weeklyUpgrade)}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {formatPrice(room.pricePerNight)}/night
+                        {formatPrice(transformedRoom.pricePerNight)}/night
                       </div>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Room Features - Optimized spacing */}
-              {room.features && room.features.length > 0 && (
+              {/* Room Features */}
+              {transformedRoom.features && transformedRoom.features.length > 0 && (
                 <div className="mb-4">
                   <div className="flex flex-wrap gap-2">
-                    {room.features.map((feature, index) => (
+                    {transformedRoom.features.map((feature, index) => (
                       <span
                         key={index}
                         className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-full border border-gray-200"
@@ -340,59 +517,98 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                 </div>
               )}
 
-              {/* Room Details and View Photos - Optimized for conversion */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-gray-100">
-                <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+              {/* Room Capacity and Occupancy */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Bed size={16} />
+                  <span>Up to {transformedRoom.maxOccupancy} {transformedRoom.maxOccupancy === 1 ? 'guest' : 'guests'}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Users size={16} />
+                  <span className={occupancy > 0 ? 'text-orange-600 font-medium' : 'text-gray-600'}>
+                    {occupancy}/{transformedRoom.maxOccupancy} assigned
+                  </span>
+                </div>
+                {transformedRoom.type === 'private' && (
                   <div className="flex items-center gap-1.5">
-                    <Users size={16} className="text-gray-400" />
-                    <span className="font-medium">Up to {room.maxOccupancy} {room.maxOccupancy === 1 ? 'guest' : 'guests'}</span>
+                    <Star size={16} className="text-yellow-500 fill-current" />
+                    <span className="text-sm font-medium text-gray-700">Premium</span>
                   </div>
-                  {room.type === 'private' && (
-                    <div className="flex items-center gap-1.5">
-                      <Star size={16} className="text-yellow-500 fill-current" />
-                      <span className="font-medium text-gray-700">Premium</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  {/* View Photos Button - Optimized */}
-                  {(() => {
-                    const roomImages = rooms.find(r => r.id === room.id)?.images;
-                    if (roomImages && roomImages.length > 0) {
-                      return (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openGallery(room);
-                          }}
-                          className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-all duration-200 hover:shadow-sm flex-shrink-0"
-                          aria-label={`View ${roomImages.length} photo${roomImages.length > 1 ? 's' : ''} of ${room.name}`}
-                        >
-                          <span>📸</span>
-                          <span>View {roomImages.length} Photo{roomImages.length > 1 ? 's' : ''}</span>
-                        </button>
-                      );
-                    }
-                    return null;
-                  })()}
-
-                  {/* Selection Indicator - Optimized */}
-                  {isSelected && (
-                    <div className="flex items-center gap-2 text-orange-600 font-semibold ml-auto sm:ml-0">
-                      <CheckCircle size={18} className="fill-current" />
-                      <span>Selected</span>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
 
-              {/* Selection Border Effect */}
-              {isSelected && (
-                <div className="absolute inset-0 rounded-xl border-2 border-orange-500 pointer-events-none">
-                  <div className="absolute top-2 right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
+              {/* Assigned Guests */}
+              {assignment && assignment.guestIds.length > 0 && (
+                <div className="mb-4">
+                  <h5 className="text-sm font-medium text-gray-700 mb-2">Assigned Guests:</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {assignment.guestIds.map(guestId => (
+                      <div
+                        key={guestId}
+                        className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"
+                      >
+                        <Check size={14} />
+                        <span>{getGuestName(guestId)}</span>
+                        <button
+                          onClick={() => handleRemoveGuestFromRoom(assignment.id, guestId)}
+                          className="ml-1 text-green-600 hover:text-green-800"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
                   </div>
+                </div>
+              )}
+
+              {/* Assignment Actions */}
+              {!isFull && unassignedGuests.length > 0 && (
+                <div className="border-t pt-4">
+                  <h5 className="text-sm font-medium text-gray-700 mb-2">Assign Guest to this Room:</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {unassignedGuests.map(guestId => {
+                      // Check if guest is already assigned to another room
+                      const isAssignedElsewhere = state.roomAssignments.some(
+                        a => a.roomId !== transformedRoom.id && a.guestIds.includes(guestId)
+                      );
+                      
+                      // Don't show guests assigned to other rooms (exclusivity)
+                      if (isAssignedElsewhere) {
+                        return null;
+                      }
+                      
+                      return (
+                        <button
+                          key={guestId}
+                          onClick={() => handleAssignGuestToRoom(transformedRoom.id, guestId)}
+                          className="flex items-center gap-2 px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg text-sm font-medium transition-colors border-2 border-transparent hover:border-orange-300"
+                        >
+                          <ArrowRight size={14} />
+                          {getGuestName(guestId)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {isFull && (
+                <div className="border-t pt-4">
+                  <p className="text-sm text-gray-500 italic">Room is at full capacity</p>
+                </div>
+              )}
+
+              {/* View Photos Button */}
+              {originalRoom.images && originalRoom.images.length > 0 && (
+                <div className="border-t pt-4 mt-4">
+                  <button
+                    onClick={() => openGallery(originalRoom)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-all duration-200 hover:shadow-sm"
+                    aria-label={`View ${originalRoom.images.length} photo${originalRoom.images.length > 1 ? 's' : ''} of ${transformedRoom.name}`}
+                  >
+                    <span>📸</span>
+                    <span>View {originalRoom.images.length} Photo{originalRoom.images.length > 1 ? 's' : ''}</span>
+                  </button>
                 </div>
               )}
             </div>
@@ -400,46 +616,21 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
         })}
       </div>
 
-      {/* Selection Summary - Optimized for conversion */}
-      {selectedRoom && (
-        <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-5 border-2 border-orange-300 shadow-md">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex-1">
-              <h5 className="font-bold text-orange-900 text-lg mb-1">Selected Room</h5>
-              <p className="text-base font-medium text-orange-800">
-                {surfWeekRooms.find(r => r.id === selectedRoom)?.name}
-              </p>
-            </div>
-            <div className="text-right sm:text-left sm:ml-4">
-              {(() => {
-                const room = surfWeekRooms.find(r => r.id === selectedRoom)
-                if (!room) return null
-                return room.isIncluded ? (
-                  <div className="flex flex-col items-end sm:items-start">
-                    <span className="px-3 py-1 bg-green-200 text-green-800 text-xs font-bold rounded-full mb-1">
-                      Included
-                    </span>
-                    <div className="text-green-700 font-semibold text-sm">No extra cost</div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-end sm:items-start">
-                    <div className="text-orange-600 font-bold text-lg">
-                      +{formatPrice(room.pricePerNight * 7)}
-                    </div>
-                    <div className="text-xs text-gray-600">weekly upgrade</div>
-                  </div>
-                )
-              })()}
-            </div>
-          </div>
+      {/* Assignment Summary */}
+      <div className="bg-gray-50 rounded-lg p-4">
+        <h4 className="font-semibold text-gray-800 mb-2">Assignment Summary</h4>
+        <div className="text-sm text-gray-600">
+          <p>Total Guests: {state.guests}</p>
+          <p>Assigned: {state.roomAssignments.flatMap(a => a.guestIds).length}</p>
+          <p>Unassigned: {unassignedGuests.length}</p>
         </div>
-      )}
+      </div>
 
       {/* Help Text */}
       <div className="text-center">
         <p className="text-sm text-gray-500">
           All rooms include daily housekeeping, WiFi, and access to common areas.
-          Private rooms can be upgraded at any time during your stay.
+          Dorm rooms are included in your surf week package. Private rooms are available as upgrades.
         </p>
       </div>
 
