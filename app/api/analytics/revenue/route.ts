@@ -11,11 +11,12 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('end_date')
     const brand = searchParams.get('brand') // Filter by brand if needed
 
-    // Build query for confirmed bookings
+    // Build query for paid/completed bookings
+    // Include multiple payment statuses: paid, completed, confirmed
     let query = supabaseAdmin
       .from('bookings')
       .select('total_amount, created_at, payment_status, client_ids')
-      .eq('payment_status', 'confirmed')
+      .in('payment_status', ['paid', 'completed', 'confirmed'])
 
     // Apply date range filter
     if (startDate) {

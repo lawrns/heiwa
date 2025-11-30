@@ -13,6 +13,16 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(weekId)) {
+      console.error('Invalid weekId format:', weekId)
+      return NextResponse.json(
+        { error: 'Invalid weekId format', details: 'weekId must be a valid UUID' },
+        { status: 400 }
+      )
+    }
+
     // Fetch enrollments for this surf camp
     // Include both 'pending' and 'confirmed' status enrollments
     const { data: enrollments, error: enrollmentsError } = await supabaseAdmin
@@ -28,14 +38,27 @@ export async function GET(request: NextRequest) {
       .in('status', ['pending', 'confirmed'])
 
     if (enrollmentsError) {
-      console.error('Error fetching enrollments:', enrollmentsError)
+      console.error('Error fetching enrollments:', {
+        error: enrollmentsError,
+        code: enrollmentsError.code,
+        message: enrollmentsError.message,
+        details: enrollmentsError.details,
+        hint: enrollmentsError.hint,
+        weekId
+      })
       return NextResponse.json(
-        { error: 'Failed to fetch participants', details: enrollmentsError.message },
+        { 
+          error: 'Failed to fetch participants', 
+          details: enrollmentsError.message,
+          code: enrollmentsError.code,
+          hint: enrollmentsError.hint || 'Check if surf_camp_enrollments table exists and RLS policies allow access'
+        },
         { status: 500 }
       )
     }
 
     if (!enrollments || enrollments.length === 0) {
+      console.log(`No enrollments found for weekId: ${weekId}`)
       return NextResponse.json([])
     }
 
@@ -50,12 +73,18 @@ export async function GET(request: NextRequest) {
         .in('id', clientIds)
 
       if (clientsError) {
-        console.error('Error fetching clients:', clientsError)
+        console.error('Error fetching clients:', {
+          error: clientsError,
+          code: clientsError.code,
+          message: clientsError.message,
+          clientIds: clientIds.slice(0, 5) // Log first 5 IDs
+        })
         // Continue without client details rather than failing
       } else if (clients) {
         clients.forEach((client: any) => {
           clientMap.set(client.id, client)
         })
+        console.log(`Successfully fetched ${clients.length} clients for ${clientIds.length} enrollments`)
       }
     }
 
@@ -76,10 +105,17 @@ export async function GET(request: NextRequest) {
     })
 
     return NextResponse.json(participants)
-  } catch (error) {
-    console.error('Error in participants API:', error)
+  } catch (error: any) {
+    console.error('Unexpected error in participants API:', {
+      error: error?.message,
+      stack: error?.stack,
+      name: error?.name
+    })
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: error?.message || 'Unknown error occurred'
+      },
       { status: 500 }
     )
   }

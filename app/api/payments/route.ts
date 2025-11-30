@@ -129,45 +129,49 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch client details for email
+    // client_ids is an array, so we need to fetch clients separately
     const { data: booking } = await supabaseAdmin
       .from('bookings')
-      .select(`
-        id,
-        client_ids,
-        clients:client_ids (
-          email,
-          first_name,
-          last_name
-        )
-      `)
+      .select('id, client_ids')
       .eq('id', booking_id)
-      .single() as any
+      .single()
 
-    if (booking?.clients) {
-      const client = (booking as any).clients
-      const paymentData = data as any
+    if (booking?.client_ids && Array.isArray(booking.client_ids) && booking.client_ids.length > 0) {
+      // Get the first client ID from the array
+      const firstClientId = booking.client_ids[0]
+      
+      // Fetch client details separately
+      const { data: client } = await supabaseAdmin
+        .from('clients')
+        .select('id, name, email')
+        .eq('id', firstClientId)
+        .single()
 
-      // Send confirmation email
-      try {
-        await fetch('/api/email/payment-confirmation', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: client.email,
-            clientName: `${client.first_name} ${client.last_name}`,
-            amount: paymentData.amount,
-            currency: paymentData.currency,
-            paymentMethod: paymentData.payment_method,
-            transactionId: paymentData.transaction_id,
-            paymentStatus: paymentData.payment_status,
-            bookingId: paymentData.booking_id,
-          }),
-        })
-      } catch (emailError) {
-        console.error('Failed to send payment confirmation email:', emailError)
-        // Don't fail the request if email fails
+      if (client) {
+        const paymentData = data as any
+
+        // Send confirmation email
+        try {
+          await fetch('/api/email/payment-confirmation', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              to: client.email,
+              clientName: client.name || 'Guest',
+              amount: paymentData.amount,
+              currency: paymentData.currency,
+              paymentMethod: paymentData.payment_method,
+              transactionId: paymentData.transaction_id,
+              paymentStatus: paymentData.payment_status,
+              bookingId: paymentData.booking_id,
+            }),
+          })
+        } catch (emailError) {
+          console.error('Failed to send payment confirmation email:', emailError)
+          // Don't fail the request if email fails
+        }
       }
     }
 

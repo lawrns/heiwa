@@ -22,6 +22,45 @@ interface TipTapEditorProps {
 }
 
 export function TipTapEditor({ content, onChange, placeholder = 'Start writing...' }: TipTapEditorProps) {
+  // Validate and normalize content structure
+  // TipTap requires content to have { type: 'doc', content: [] } structure
+  const normalizeContent = (content: TipTapContent | string | null): TipTapContent => {
+    if (!content) {
+      return { type: 'doc', content: [] }
+    }
+    
+    // If it's a string, try to parse it
+    if (typeof content === 'string') {
+      try {
+        const parsed = JSON.parse(content)
+        if (parsed && typeof parsed === 'object' && parsed.type === 'doc') {
+          return parsed
+        }
+      } catch {
+        // If parsing fails, return default structure
+        return { type: 'doc', content: [] }
+      }
+    }
+    
+    // If it's an object, validate structure
+    if (typeof content === 'object') {
+      // Check if it's an empty object or missing required fields
+      if (Object.keys(content).length === 0 || !content.type || content.type !== 'doc') {
+        return { type: 'doc', content: [] }
+      }
+      
+      // Ensure content array exists
+      if (!Array.isArray(content.content)) {
+        return { type: 'doc', content: [] }
+      }
+      
+      return content as TipTapContent
+    }
+    
+    // Fallback to default structure
+    return { type: 'doc', content: [] }
+  }
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -44,10 +83,7 @@ export function TipTapEditor({ content, onChange, placeholder = 'Start writing..
         placeholder,
       }),
     ],
-    content: content || {
-      type: 'doc',
-      content: [],
-    },
+    content: normalizeContent(content),
     onUpdate: ({ editor }) => {
       onChange(editor.getJSON())
     },
