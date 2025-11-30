@@ -339,12 +339,14 @@ export function useBookingFlow() {
                allParticipantNamesFilled;
 
       case 'surf-week-room-selection':
-        return state.selectedSurfWeekRoom !== null;
+        // Check if all guests are assigned to rooms
+        const surfWeekAssignedGuestIds = state.roomAssignments.flatMap(a => a.guestIds);
+        return surfWeekAssignedGuestIds.length === state.guests;
 
       case 'room-assignment':
         // Check if all guests are assigned to rooms
-        const assignedGuestIds = state.roomAssignments.flatMap(a => a.guestIds);
-        return assignedGuestIds.length === state.guests;
+        const roomAssignedGuestIds = state.roomAssignments.flatMap(a => a.guestIds);
+        return roomAssignedGuestIds.length === state.guests;
 
       case 'add-ons':
         return true; // Always optional

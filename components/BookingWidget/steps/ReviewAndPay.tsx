@@ -44,10 +44,10 @@ interface SurfWeekBookingPayload {
   guests: number;
   source_url?: string;
   widget_version: string;
-  room_assignment?: {
+  room_assignments?: Array<{
     room_id: string;
-    quantity: number;
-  };
+    guest_ids: string[];
+  }>;
 }
 
 type BookingPayload = RoomBookingPayload | SurfWeekBookingPayload;
@@ -245,7 +245,11 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           participants,
           pricing: pricing,
           source_url: typeof window !== 'undefined' ? window.location.href : undefined,
-          widget_version: 'wp-widget-test'
+          widget_version: 'wp-widget-test',
+          room_assignments: state.roomAssignments.length > 0 ? state.roomAssignments.map(assignment => ({
+            room_id: assignment.roomId,
+            guest_ids: assignment.guestIds
+          })) : undefined
         };
       } else {
         setPaymentError('Please select an experience type (Room or Surf Week)');
