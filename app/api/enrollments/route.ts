@@ -20,22 +20,22 @@ export async function GET(request: NextRequest) {
       .select(`
         id,
         client_id,
-        booking_id,
         status,
         skill_level,
         dietary_restrictions,
         emergency_contact,
         notes,
         enrolled_at,
+        participant_name,
+        participant_email,
+        participant_phone,
+        payment_status,
+        total_amount,
         clients:client_id (
           id,
           name,
           email,
           phone
-        ),
-        bookings:booking_id (
-          id,
-          total_amount
         )
       `)
       .eq('surf_camp_id', surfCampId)
@@ -70,7 +70,6 @@ export async function POST(request: NextRequest) {
     const {
       surf_camp_id,
       client_id,
-      booking_id,
       skill_level,
       dietary_restrictions,
       emergency_contact,
@@ -128,18 +127,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Get client info for participant fields
+    const { data: clientData } = await supabaseAdmin
+      .from('clients')
+      .select('name, email, phone')
+      .eq('id', client_id)
+      .single()
+
     // Create enrollment
     const { data: enrollment, error: insertError } = await supabaseAdmin
       .from('surf_camp_enrollments')
       .insert({
         surf_camp_id,
         client_id,
-        booking_id,
         status,
         skill_level,
         dietary_restrictions,
         emergency_contact,
-        notes
+        notes,
+        participant_name: clientData?.name || '',
+        participant_email: clientData?.email || '',
+        participant_phone: clientData?.phone || ''
       })
       .select()
       .single()

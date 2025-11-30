@@ -93,20 +93,19 @@ export async function GET(request: NextRequest) {
             room_id,
             enrollment_id,
             client_id,
+            bed_number,
+            check_in_date,
+            check_out_date,
             rooms:room_id (
               id,
               name,
-              type,
-              max_occupancy
+              booking_type,
+              capacity
             ),
-            surf_camp_enrollments:enrollment_id (
+            clients:client_id (
               id,
-              client_id,
-              clients:client_id (
-                id,
-                name,
-                email
-              )
+              name,
+              email
             )
           `)
           .in('booking_id', bookingIds)
@@ -120,10 +119,14 @@ export async function GET(request: NextRequest) {
             roomAssignmentsMap.get(ra.booking_id).push({
               roomId: ra.room_id,
               roomName: ra.rooms?.name || 'Unknown Room',
-              roomType: ra.rooms?.type || 'unknown',
-              maxOccupancy: ra.rooms?.max_occupancy || 0,
+              roomType: ra.rooms?.booking_type === 'perBed' ? 'dorm' : 'private',
+              capacity: ra.rooms?.capacity || 0,
+              bedNumber: ra.bed_number,
+              checkInDate: ra.check_in_date,
+              checkOutDate: ra.check_out_date,
               clientId: ra.client_id,
-              clientName: ra.surf_camp_enrollments?.clients?.name || 'Unknown',
+              clientName: ra.clients?.name || 'Unknown',
+              clientEmail: ra.clients?.email || '',
               enrollmentId: ra.enrollment_id
             })
           })
@@ -654,6 +657,9 @@ export async function POST(request: NextRequest) {
       for (let i = 0; i < participants.length; i++) {
         const participant = participants[i]
         const pClientId = allClientIds[i]
+        const pName = participant.name || `${participant.firstName || ''} ${participant.lastName || ''}`.trim() || 'Guest'
+        const pEmail = participant.email || ''
+        const pPhone = participant.phone || ''
         const pDietaryRestrictions = participant.dietaryRequirements || ''
         const pSpecialRequests = participant.specialRequests || ''
 
@@ -662,7 +668,9 @@ export async function POST(request: NextRequest) {
           .insert({
             surf_camp_id: camp_id,
             client_id: pClientId,
-            booking_id: bookingId,
+            participant_name: pName, // Required field
+            participant_email: pEmail, // Required field
+            participant_phone: pPhone,
             status: 'pending', // Will be confirmed after payment
             skill_level: participant.skillLevel || 'beginner',
             dietary_restrictions: pDietaryRestrictions || null,
@@ -674,6 +682,7 @@ export async function POST(request: NextRequest) {
 
         if (enrollmentError) {
           console.error(`❌ Failed to create enrollment for participant ${i + 1}:`, enrollmentError)
+          console.error('Enrollment data attempted:', { surf_camp_id: camp_id, client_id: pClientId, participant_name: pName, participant_email: pEmail })
           // Log error but don't fail the entire booking - enrollments can be created manually later
         } else {
           console.log(`✅ Created enrollment for participant ${i + 1}:`, enrollment.id)

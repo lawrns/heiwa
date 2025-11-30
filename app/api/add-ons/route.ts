@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase, supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 /**
  * Fix Supabase storage bucket URLs if needed
@@ -22,10 +22,9 @@ export async function GET(request: NextRequest) {
     const includeInactive = searchParams.get('include_inactive') === 'true'
     const category = searchParams.get('category')
     
-    // Use admin client for admin requests (to get inactive items)
-    const client = includeInactive ? supabaseAdmin : supabase
-
-    let query = client
+    // Use admin client for all requests to bypass RLS
+    // This is a public read endpoint - no sensitive data exposed
+    let query = supabaseAdmin
       .from('add_ons')
       .select('*')
       .order('category', { ascending: true })

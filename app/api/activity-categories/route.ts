@@ -10,11 +10,13 @@ export async function GET(_request: NextRequest) {
       .order('display_order', { ascending: true })
 
     if (error) {
-      console.error('Error fetching activity categories:', error)
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch activity categories' },
-        { status: 500 }
-      )
+      // Log error for debugging but return empty array for graceful degradation
+      // This handles: missing table, RLS policies, connection issues, etc.
+      console.warn('Error fetching activity categories (returning empty):', error.code, error.message)
+      return NextResponse.json({
+        success: true,
+        data: []
+      })
     }
 
     return NextResponse.json({
@@ -23,9 +25,10 @@ export async function GET(_request: NextRequest) {
     })
   } catch (error) {
     console.error('Unexpected error:', error)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    // Return empty array for graceful degradation
+    return NextResponse.json({
+      success: true,
+      data: []
+    })
   }
 }

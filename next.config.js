@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Build identifier for cache busting
+  // Build identifier for cache busting - use timestamp for unique builds
   generateBuildId: async () => {
-    return '2025-11-09-16-24-critical-fixes'
+    return `build-${Date.now()}`
   },
   // Disable ESLint and TypeScript errors during build
   eslint: {

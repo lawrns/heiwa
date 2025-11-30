@@ -48,16 +48,24 @@ function getSupabaseClient(): SupabaseClient {
 function getSupabaseAdminClient(): SupabaseClient {
   if (!globalStore[SUPABASE_ADMIN_KEY]) {
     // Warn if service role key is missing (critical for production)
-    if (!supabaseServiceKey && process.env.NODE_ENV === 'production') {
-      console.error('⚠️ WARNING: SUPABASE_SERVICE_ROLE_KEY is not set in production!')
-      console.error('⚠️ Admin operations may fail. Set SUPABASE_SERVICE_ROLE_KEY in Netlify environment variables.')
+    if (!supabaseServiceKey) {
+      const isProduction = process.env.NODE_ENV === 'production' || process.env.NETLIFY === 'true'
+      if (isProduction) {
+        console.error('🚨 CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not set in production!')
+        console.error('🚨 This will cause API requests to fail with "Authentication failed" errors.')
+        console.error('🚨 Set SUPABASE_SERVICE_ROLE_KEY in Netlify environment variables.')
+      } else {
+        console.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY is not set - using anon key (RLS policies will apply)')
+      }
     }
     
+    // Use service role key for bypassing RLS, fall back to anon key
     const adminKey = supabaseServiceKey || supabaseAnonKey
     
     if (!adminKey) {
       throw new Error(
-        'Supabase admin client requires either SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY to be set'
+        'Supabase admin client requires either SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY to be set. ' +
+        'Please configure environment variables in Netlify dashboard.'
       )
     }
     
@@ -71,7 +79,7 @@ function getSupabaseAdminClient(): SupabaseClient {
       },
       global: {
         headers: {
-          'x-client-info': 'heiwa-house-admin'
+          'x-client-info': supabaseServiceKey ? 'heiwa-house-admin-service' : 'heiwa-house-admin-anon'
         }
       }
     })

@@ -32,7 +32,9 @@ export async function GET(request: NextRequest) {
         client_id,
         status,
         skill_level,
-        booking_id
+        participant_name,
+        participant_email,
+        participant_phone
       `)
       .eq('surf_camp_id', weekId)
       .in('status', ['pending', 'confirmed'])
@@ -88,19 +90,57 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Fetch room assignments for these enrollments
+    const enrollmentIds = enrollments.map((e: any) => e.id)
+    let roomAssignmentMap = new Map()
+    
+    if (enrollmentIds.length > 0) {
+      const { data: roomAssignments, error: raError } = await supabaseAdmin
+        .from('room_assignments')
+        .select(`
+          id,
+          enrollment_id,
+          room_id,
+          bed_number,
+          rooms:room_id (
+            id,
+            name,
+            booking_type,
+            capacity
+          )
+        `)
+        .in('enrollment_id', enrollmentIds)
+      
+      if (!raError && roomAssignments) {
+        roomAssignments.forEach((ra: any) => {
+          roomAssignmentMap.set(ra.enrollment_id, {
+            roomId: ra.room_id,
+            roomName: ra.rooms?.name || 'Unassigned',
+            roomType: ra.rooms?.booking_type === 'perBed' ? 'dorm' : 'private',
+            bedNumber: ra.bed_number
+          })
+        })
+      }
+    }
+
     // Transform enrollments to participants format
     const participants = enrollments.map((enrollment: any) => {
       const client = clientMap.get(enrollment.client_id)
+      const roomAssignment = roomAssignmentMap.get(enrollment.id)
       
       return {
         id: enrollment.id, // Use enrollment ID as participant ID
-        name: client?.name || 'Unknown',
-        email: client?.email || '',
-        phone: client?.phone || '',
+        name: client?.name || enrollment.participant_name || 'Unknown',
+        email: client?.email || enrollment.participant_email || '',
+        phone: client?.phone || enrollment.participant_phone || '',
         surfLevel: enrollment.skill_level || 'Beginner',
-        bookingId: enrollment.booking_id || '',
         clientId: enrollment.client_id,
-        status: enrollment.status
+        status: enrollment.status,
+        // Room assignment info
+        roomId: roomAssignment?.roomId || null,
+        roomName: roomAssignment?.roomName || 'Not Assigned',
+        roomType: roomAssignment?.roomType || null,
+        bedNumber: roomAssignment?.bedNumber || null
       }
     })
 

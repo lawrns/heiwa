@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { rateLimiters, getClientIP, createRateLimitHeaders } from '@/lib/rate-limiter'
 
 // Check authentication status
 export async function GET(request: NextRequest) {
@@ -27,6 +28,23 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Apply rate limiting to prevent brute force attacks
+    const clientIP = getClientIP(request)
+    const rateLimitResult = rateLimiters.auth(clientIP)
+    
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { 
+          message: 'Too many login attempts. Please try again later.',
+          retryAfter: Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000)
+        },
+        { 
+          status: 429,
+          headers: createRateLimitHeaders(rateLimitResult)
+        }
+      )
+    }
+
     // Handle both JSON and form data
     let password: string
     const contentType = request.headers.get('content-type') || ''

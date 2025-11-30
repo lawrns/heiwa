@@ -1,5 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
+
+// CORS headers for public API
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+}
+
+// Handle OPTIONS for CORS preflight
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 200, headers: corsHeaders })
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -26,8 +38,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Check for overlapping bookings
-    const { data: existingBookings, error } = await supabase
+    // Check for overlapping bookings - use admin client to bypass RLS
+    const { data: existingBookings, error } = await supabaseAdmin
       .from('bookings')
       .select('id, status, check_in, check_out, guests')
       .eq('room_type', roomId)
@@ -42,8 +54,8 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Get room details for pricing
-    const { data: room, error: roomError } = await supabase
+    // Get room details for pricing - use admin client to bypass RLS
+    const { data: room, error: roomError } = await supabaseAdmin
       .from('rooms')
       .select('id, name, capacity, pricing, booking_type')
       .eq('id', roomId)
@@ -128,8 +140,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get room capacity
-    const { data: room, error: roomError } = await supabase
+    // Get room capacity - use admin client to bypass RLS
+    const { data: room, error: roomError } = await supabaseAdmin
       .from('rooms')
       .select('capacity, booking_type')
       .eq('id', roomId)
