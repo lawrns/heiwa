@@ -96,7 +96,18 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to enroll client')
+        const errorMessage = data.error || data.message || `Failed to enroll client (${response.status})`
+        console.error('Enrollment API error:', {
+          status: response.status,
+          error: data.error,
+          message: data.message,
+          data
+        })
+        throw new Error(errorMessage)
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Enrollment failed')
       }
 
       toast.success('Client enrolled successfully!')
@@ -104,7 +115,8 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
       handleClose()
     } catch (error: any) {
       console.error('Error enrolling client:', error)
-      toast.error(error.message || 'Failed to enroll client')
+      const errorMessage = error.message || 'Failed to enroll client. Please check the console for details.'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }

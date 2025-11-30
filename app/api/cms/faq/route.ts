@@ -106,9 +106,16 @@ export async function POST(request: NextRequest) {
       handleValidationError(validation)
     }
 
+    // Add created_by if provided (optional)
+    const insertData = {
+      ...validation.data!,
+      created_by: body.created_by || null,
+      updated_by: body.created_by || null
+    }
+
     const { data, error } = await supabase
       .from('faq_items')
-      .insert([validation.data!])
+      .insert([insertData])
       .select()
       .single()
 

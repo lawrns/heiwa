@@ -151,6 +151,14 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
       timeoutRef.current = null;
     }
 
+    // Validate room capacity before allowing selection
+    const room = surfWeekRooms.find(r => r.id === roomId);
+    if (room && state.guests > room.maxOccupancy) {
+      // Show error - room cannot accommodate all guests
+      alert(`This room can only accommodate ${room.maxOccupancy} guest${room.maxOccupancy === 1 ? '' : 's'}, but you have ${state.guests} guest${state.guests === 1 ? '' : 's'}. Please select a room with sufficient capacity or reduce the number of guests.`);
+      return;
+    }
+
     setSelectedRoom(roomId);
     actions.setSurfWeekRoom(roomId);
     lastSelectedRoomRef.current = roomId;
