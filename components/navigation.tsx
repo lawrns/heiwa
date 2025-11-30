@@ -81,9 +81,8 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
       aria-label="Main navigation"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {isHomepage ? (
-          // Homepage Layout: Centered logo with left/right positioning
-          <div className="relative flex items-center justify-between h-20">
+        {/* Always use split layout: HOME/ROOM RENTALS/SURF WEEK on left, centered logo, ACTIVITIES/phone/BOOK on right */}
+        <div className="relative flex items-center justify-between h-20">
             {/* Left Side - Navigation Menu */}
             <div className="hidden lg:flex items-center flex-1">
               <nav aria-label="Main navigation">
@@ -226,136 +225,6 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               </button>
             </div>
           </div>
-        ) : (
-          // Other Pages Layout: Original layout with logo on left
-          <div className="flex justify-between items-center h-20">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <Link
-                href="/"
-                onClick={closeMenu}
-              >
-                <Image
-                  src="https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909543_heiwalogo.webp"
-                  alt="Heiwa House"
-                  width={96}
-                  height={32}
-                  className="h-8 w-auto"
-                  style={{ height: 'auto' }}
-                  suppressHydrationWarning
-                />
-              </Link>
-            </div>
-
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
-              <nav aria-label="Main navigation">
-                <ul className="flex items-center space-x-8">
-                  {items.map((item) => (
-                    <li key={item.path}>
-                      <Link
-                        href={item.path}
-                        className={cn(
-                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
-                          currentPath === item.path
-                            ? 'text-orange-400'
-                            : 'text-white'
-                        )}
-                        aria-current={currentPath === item.path ? 'page' : undefined}
-                        {...(item.external && {
-                          target: '_blank',
-                          rel: 'noopener noreferrer',
-                          'aria-label': `${item.name} (opens in new tab)`
-                        })}
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                  
-                  {/* Activities Dropdown */}
-                  <li>
-                    <div 
-                      className="relative"
-                      onMouseEnter={() => setActivitiesOpen(true)}
-                      onMouseLeave={() => setActivitiesOpen(false)}
-                    >
-                      <button
-                        className={cn(
-                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1 flex items-center gap-1',
-                          (currentPath?.includes('/flow') || currentPath?.includes('/play') || currentPath?.includes('/surf'))
-                            ? 'text-orange-400'
-                            : 'text-white'
-                        )}
-                        aria-label="Open activities menu"
-                        aria-expanded={activitiesOpen}
-                        aria-haspopup="true"
-                      >
-                        ACTIVITIES
-                        <ChevronDown className="w-3 h-3" />
-                      </button>
-                      {activitiesOpen && (
-                        <div className="absolute top-full left-0 pt-2 z-50">
-                          <div className="w-40 bg-gray-900 border border-gray-700 rounded-md shadow-lg py-1">
-                            {activitiesItems.map((item) => (
-                              <Link
-                                key={item.path}
-                                href={item.path}
-                                className={cn(
-                                  'block px-4 py-2 text-sm font-medium tracking-wide transition-colors hover:bg-gray-800 hover:text-orange-400 uppercase',
-                                  currentPath === item.path
-                                    ? 'text-orange-400'
-                                    : 'text-white'
-                                )}
-                                aria-label={`Navigate to ${item.name} page`}
-                              >
-                                {item.name}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                </ul>
-              </nav>
-
-              {/* Phone Number */}
-              <div className="flex items-center text-sm text-white">
-                <span className="tracking-wide">Call. +351 912 193 785</span>
-              </div>
-
-              {/* Book Now Button */}
-              <button
-                onClick={openBooking}
-                className="px-6 py-3 text-sm font-medium tracking-wide transition-colors flex items-center gap-2 uppercase text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-                style={{ backgroundColor: '#ec681c' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
-              >
-                <Bed className="w-4 h-4" />
-                BOOK NOW
-              </button>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="lg:hidden">
-              <button
-                onClick={toggleMenu}
-                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-400"
-                aria-expanded={isOpen}
-                aria-controls="mobile-menu"
-                aria-label="Toggle mobile menu"
-              >
-                {isOpen ? (
-                  <X className="block h-6 w-6" />
-                ) : (
-                  <Menu className="block h-6 w-6" />
-                )}
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Mobile Navigation Overlay */}
