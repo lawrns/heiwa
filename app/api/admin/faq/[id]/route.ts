@@ -45,6 +45,7 @@ export async function PUT(
       question,
       answer,
       category,
+      page_slug,
       order_index,
       is_active,
       updated_by
@@ -61,12 +62,24 @@ export async function PUT(
       }
     }
 
+    // Validate page_slug if provided
+    if (page_slug) {
+      const validPageSlugs = ['flow', 'play', 'surf', 'the-spot', 'general', 'surf-weeks', 'about', 'contact', 'privacy', 'terms']
+      if (!validPageSlugs.includes(page_slug)) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid page_slug' },
+          { status: 400 }
+        )
+      }
+    }
+
     const { data, error } = await supabaseAdmin
       .from('faq_items')
       .update({
         question,
         answer,
         category,
+        page_slug,
         order_index,
         is_active,
         updated_by,
