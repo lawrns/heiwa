@@ -449,9 +449,9 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
               <div className="flex items-start gap-4 mb-4">
                 {/* Room Thumbnail */}
                 <div className="flex-shrink-0">
-                  {originalRoom.images && originalRoom.images.length > 0 ? (
+                  {(originalRoom?.images && originalRoom.images.length > 0) || transformedRoom.image ? (
                     <RoomThumbnail
-                      image={originalRoom.images[0]}
+                      image={originalRoom?.images?.[0] || transformedRoom.image || '/images/room-placeholder.jpg'}
                       roomName={transformedRoom.name}
                       onClick={() => openGallery(originalRoom)}
                       className="w-20 h-15"
@@ -557,7 +557,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                         </button>
                       </div>
                     ))}
-                  </div>
+                    </div>
                 </div>
               )}
 
@@ -589,8 +589,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                       );
                     })}
                   </div>
-                </div>
-              )}
+                    </div>
+                  )}
 
               {isFull && (
                 <div className="border-t pt-4">

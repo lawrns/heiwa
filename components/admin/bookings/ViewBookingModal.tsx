@@ -2,6 +2,16 @@
 
 import { X } from 'lucide-react'
 
+interface Participant {
+  name?: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  dietaryRequirements?: string
+  specialRequests?: string
+}
+
 interface Booking {
   id: string
   guest_name: string
@@ -20,6 +30,7 @@ interface Booking {
   dietary_preferences?: string
   client_notes?: string
   notes?: string
+  participants?: Participant[]
 }
 
 interface ViewBookingModalProps {
@@ -85,6 +96,61 @@ export function ViewBookingModal({
     }
   }
 
+  // Parse participants from notes if available
+  const parseParticipants = (): Participant[] => {
+    if (!booking.notes) return []
+    
+    try {
+      const notesData = JSON.parse(booking.notes)
+      if (notesData && notesData.participants && Array.isArray(notesData.participants)) {
+        return notesData.participants
+      }
+    } catch {
+      // Not JSON, try to parse from text format
+      // Format: "Guest 1: Name\nEmail: ...\nDietary Requirements: ...\nSpecial Requests: ..."
+      const participants: Participant[] = []
+      const guestSections = booking.notes.split(/\n\n(?=Guest \d+:)/)
+      
+      guestSections.forEach((section) => {
+        if (section.includes('Guest ')) {
+          const lines = section.split('\n')
+          const participant: Participant = {}
+          
+          lines.forEach((line) => {
+            if (line.startsWith('Guest ')) {
+              const nameMatch = line.match(/Guest \d+:\s*(.+)/)
+              if (nameMatch) {
+                const nameParts = nameMatch[1].trim().split(' ')
+                participant.firstName = nameParts[0]
+                participant.lastName = nameParts.slice(1).join(' ')
+                participant.name = nameMatch[1].trim()
+              }
+            } else if (line.startsWith('Email:')) {
+              participant.email = line.replace(/Email:\s*/i, '').trim()
+            } else if (line.startsWith('Phone:')) {
+              participant.phone = line.replace(/Phone:\s*/i, '').trim()
+            } else if (line.startsWith('Dietary Requirements:')) {
+              participant.dietaryRequirements = line.replace(/Dietary Requirements:\s*/i, '').trim()
+            } else if (line.startsWith('Special Requests:')) {
+              participant.specialRequests = line.replace(/Special Requests:\s*/i, '').trim()
+            }
+          })
+          
+          if (participant.name || participant.email) {
+            participants.push(participant)
+          }
+        }
+      })
+      
+      return participants
+    }
+    
+    return []
+  }
+
+  const participants = parseParticipants()
+  const hasMultipleParticipants = participants.length > 1 || (participants.length === 0 && booking.guests > 1)
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -120,25 +186,66 @@ export function ViewBookingModal({
 
           {/* Guest Information */}
           <div className="border-t pt-4">
-            <h4 className="font-medium text-gray-900 mb-3">Guest Information</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500">Name</p>
-                <p className="text-sm font-medium text-gray-900">{booking.guest_name}</p>
+            <h4 className="font-medium text-gray-900 mb-3">
+              {hasMultipleParticipants ? `Participants (${participants.length || booking.guests})` : 'Guest Information'}
+            </h4>
+            
+            {hasMultipleParticipants && participants.length > 0 ? (
+              <div className="space-y-4">
+                {participants.map((participant, index) => (
+                  <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <h5 className="font-semibold text-gray-900 mb-3">Guest {index + 1}</h5>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-xs text-gray-500">Name</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {participant.name || `${participant.firstName || ''} ${participant.lastName || ''}`.trim() || 'Not provided'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Email</p>
+                        <p className="text-sm font-medium text-gray-900">{participant.email || 'Not provided'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Phone</p>
+                        <p className="text-sm font-medium text-gray-900">{participant.phone || 'Not provided'}</p>
+                      </div>
+                      {participant.dietaryRequirements && (
+                        <div>
+                          <p className="text-xs text-gray-500">Dietary Requirements</p>
+                          <p className="text-sm text-gray-700">{participant.dietaryRequirements}</p>
+                        </div>
+                      )}
+                      {participant.specialRequests && (
+                        <div className="md:col-span-2">
+                          <p className="text-xs text-gray-500">Special Requests</p>
+                          <p className="text-sm text-gray-700 whitespace-pre-wrap">{participant.specialRequests}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p className="text-sm font-medium text-gray-900">{booking.guest_email}</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Name</p>
+                  <p className="text-sm font-medium text-gray-900">{booking.guest_name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="text-sm font-medium text-gray-900">{booking.guest_email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Phone</p>
+                  <p className="text-sm font-medium text-gray-900">{booking.guest_phone}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Number of Guests</p>
+                  <p className="text-sm font-medium text-gray-900">{booking.guests}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-500">Phone</p>
-                <p className="text-sm font-medium text-gray-900">{booking.guest_phone}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Number of Guests</p>
-                <p className="text-sm font-medium text-gray-900">{booking.guests}</p>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Booking Details */}
@@ -177,8 +284,8 @@ export function ViewBookingModal({
             </div>
           </div>
 
-          {/* Dietary Preferences */}
-          {booking.dietary_preferences && (
+          {/* Dietary Preferences - Only show if not already displayed per participant */}
+          {booking.dietary_preferences && !hasMultipleParticipants && (
             <div className="border-t pt-4">
               <h4 className="font-medium text-gray-900 mb-3">Dietary Preferences</h4>
               <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
@@ -187,8 +294,8 @@ export function ViewBookingModal({
             </div>
           )}
 
-          {/* Special Requests */}
-          {booking.special_requests && (
+          {/* Special Requests - Only show if not already displayed per participant */}
+          {booking.special_requests && !hasMultipleParticipants && (
             <div className="border-t pt-4">
               <h4 className="font-medium text-gray-900 mb-3">Special Requests</h4>
               <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 whitespace-pre-wrap">

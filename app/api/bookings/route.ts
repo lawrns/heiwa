@@ -98,38 +98,102 @@ export async function GET(request: NextRequest) {
         }
       }
       
-      // Parse notes to extract dietary preferences and special requests
-      // Notes format: "Created via...\n\nPARTICIPANT DETAILS:\nGuest 1: ...\nDietary Requirements: ...\nSpecial Requests: ..."
+      // Parse notes to extract dietary preferences, special requests, and participants
+      // Notes format: JSON with participants array OR formatted text
       let dietaryPreferences = ''
       let specialRequests = ''
+      let participants: any[] = []
       
       if (booking.notes) {
         try {
           // Try to parse notes as JSON first
           const notesData = JSON.parse(booking.notes)
           if (notesData && typeof notesData === 'object') {
-            dietaryPreferences = notesData.dietaryRequirements || notesData.dietary || notesData.diet || ''
-            specialRequests = notesData.specialRequests || notesData.requests || notesData.message || ''
+            // If notes contains participants array, use it
+            if (notesData.participants && Array.isArray(notesData.participants)) {
+              participants = notesData.participants
+              // Aggregate dietary preferences and special requests from all participants
+              dietaryPreferences = notesData.participants
+                .map((p: any) => p.dietaryRequirements || p.dietaryRequirements)
+                .filter(Boolean)
+                .join('; ')
+              specialRequests = notesData.participants
+                .map((p: any) => p.specialRequests || p.specialRequests)
+                .filter(Boolean)
+                .join('\n\n')
+            } else {
+              // Fallback to old format
+              dietaryPreferences = notesData.dietaryRequirements || notesData.dietary || notesData.diet || ''
+              specialRequests = notesData.specialRequests || notesData.requests || notesData.message || ''
+            }
           }
         } catch {
           // Not JSON, parse as formatted text
           const notes = booking.notes
           
-          // Extract dietary requirements from participant details section
-          const dietaryMatches = notes.match(/Dietary Requirements:\s*(.+?)(?:\n|$)/gi)
-          if (dietaryMatches) {
-            dietaryPreferences = dietaryMatches.map(m => m.replace(/Dietary Requirements:\s*/i, '').trim()).join(', ')
+          // Try to parse participants from text format
+          const guestSections = notes.split(/\n\n(?=Guest \d+:)/)
+          if (guestSections.length > 1 || notes.includes('Guest 1:')) {
+            guestSections.forEach((section) => {
+              if (section.includes('Guest ')) {
+                const lines = section.split('\n')
+                const participant: any = {}
+                
+                lines.forEach((line) => {
+                  if (line.startsWith('Guest ')) {
+                    const nameMatch = line.match(/Guest \d+:\s*(.+)/)
+                    if (nameMatch) {
+                      const nameParts = nameMatch[1].trim().split(' ')
+                      participant.firstName = nameParts[0]
+                      participant.lastName = nameParts.slice(1).join(' ')
+                      participant.name = nameMatch[1].trim()
+                    }
+                  } else if (line.startsWith('Email:')) {
+                    participant.email = line.replace(/Email:\s*/i, '').trim()
+                  } else if (line.startsWith('Phone:')) {
+                    participant.phone = line.replace(/Phone:\s*/i, '').trim()
+                  } else if (line.startsWith('Dietary Requirements:')) {
+                    participant.dietaryRequirements = line.replace(/Dietary Requirements:\s*/i, '').trim()
+                  } else if (line.startsWith('Special Requests:')) {
+                    participant.specialRequests = line.replace(/Special Requests:\s*/i, '').trim()
+                  }
+                })
+                
+                if (participant.name || participant.email) {
+                  participants.push(participant)
+                }
+              }
+            })
+            
+            // Aggregate dietary preferences and special requests
+            if (participants.length > 0) {
+              dietaryPreferences = participants
+                .map(p => p.dietaryRequirements)
+                .filter(Boolean)
+                .join('; ')
+              specialRequests = participants
+                .map(p => p.specialRequests)
+                .filter(Boolean)
+                .join('\n\n')
+            }
           }
           
-          // Extract special requests from participant details section
-          const requestMatches = notes.match(/Special Requests:\s*(.+?)(?:\n|$)/gi)
-          if (requestMatches) {
-            specialRequests = requestMatches.map(m => m.replace(/Special Requests:\s*/i, '').trim()).join('\n')
-          }
-          
-          // If no structured format found, use notes as special requests
-          if (!specialRequests && notes) {
-            specialRequests = notes
+          // If no participants parsed, extract aggregated values
+          if (participants.length === 0) {
+            const dietaryMatches = notes.match(/Dietary Requirements:\s*(.+?)(?:\n|$)/gi)
+            if (dietaryMatches) {
+              dietaryPreferences = dietaryMatches.map(m => m.replace(/Dietary Requirements:\s*/i, '').trim()).join(', ')
+            }
+            
+            const requestMatches = notes.match(/Special Requests:\s*(.+?)(?:\n|$)/gi)
+            if (requestMatches) {
+              specialRequests = requestMatches.map(m => m.replace(/Special Requests:\s*/i, '').trim()).join('\n')
+            }
+            
+            // If no structured format found, use notes as special requests
+            if (!specialRequests && notes) {
+              specialRequests = notes
+            }
           }
         }
       }
@@ -152,7 +216,8 @@ export async function GET(request: NextRequest) {
         dietary_preferences: dietaryPreferences,
         client_notes: clientNotes,
         notes: booking.notes || '', // Keep raw notes
-        client_ids: booking.client_ids || []
+        client_ids: booking.client_ids || [],
+        participants: participants.length > 0 ? participants : undefined // Include participants if parsed
       }
     })
 
@@ -203,7 +268,8 @@ export async function POST(request: NextRequest) {
         participants = [],
         pricing = {},
         source_url,
-        widget_version
+        widget_version,
+        room_assignments = [] // Extract room assignments from body
       } = body
 
       console.log('🏄‍♂️ Surf Week Booking Widget received:', {
@@ -212,6 +278,7 @@ export async function POST(request: NextRequest) {
         pricing,
         source_url,
         widget_version,
+        room_assignments: room_assignments?.length || 0,
         supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || 'default'
       })
 
@@ -239,73 +306,88 @@ export async function POST(request: NextRequest) {
       const email = primaryParticipant.email
       const phone = primaryParticipant.phone || ''
 
-      // Build notes with all participant details including dietary restrictions and special requests
-      const participantDetails = participants.map((p, idx) => {
-        const details = [
-          `Guest ${idx + 1}: ${p.name || `${p.firstName} ${p.lastName}`.trim()}`,
-          `Email: ${p.email}`,
-          p.phone ? `Phone: ${p.phone}` : null,
-          p.dietaryRequirements ? `Dietary Requirements: ${p.dietaryRequirements}` : null,
-          p.specialRequests ? `Special Requests: ${p.specialRequests}` : null
-        ].filter(Boolean).join('\n')
-        return details
-      }).join('\n\n')
-
       console.log('📝 Creating surf week booking with data:', {
         clientName,
         email,
         campId: camp_id,
         participants: participants.length,
-        participantDetails: participantDetails.substring(0, 200) + '...'
+        roomAssignments: room_assignments?.length || 0
       })
 
-      // Check if client exists or create new one
-      let clientResult = await supabaseAdmin
-        .from('clients')
-        .select('id, name, email')
-        .eq('email', email)
-        .single()
+      // Create or find clients for ALL participants
+      const allClientIds: string[] = []
+      const allEnrollments: any[] = []
+      const participantDetails: any[] = []
 
-      let clientId: string
+      for (const participant of participants) {
+        const pName = participant.name || `${participant.firstName} ${participant.lastName}`.trim()
+        const pEmail = participant.email
+        const pPhone = participant.phone || ''
+        const pDietaryRestrictions = participant.dietaryRequirements || ''
+        const pSpecialRequests = participant.specialRequests || ''
 
-      if (clientResult.error && clientResult.error.code === 'PGRST116') {
-        // Client doesn't exist, create new one
-        const newClient = {
-          name: clientName,
-          email: email,
-          phone: phone,
-          brand: 'Heiwa House',
-          status: 'active',
-          notes: `Created via surf week booking widget ${widget_version || 'unknown'}`
-          // created_at, updated_at, and registration_date have DEFAULT NOW() in schema
-        }
-
-        const createResult = await supabaseAdmin
+        // Check if client exists or create new one
+        let clientResult = await supabaseAdmin
           .from('clients')
-          .insert(newClient as any)
-          .select('id')
+          .select('id, name, email')
+          .eq('email', pEmail)
           .single()
 
-        if (createResult.error) {
-          console.error('Failed to create client:', createResult.error)
+        let pClientId: string
+
+        if (clientResult.error && clientResult.error.code === 'PGRST116') {
+          // Client doesn't exist, create new one
+          const newClient = {
+            name: pName,
+            email: pEmail,
+            phone: pPhone,
+            brand: 'Heiwa House',
+            status: 'active',
+            notes: `Created via surf week booking widget ${widget_version || 'unknown'}`
+          }
+
+          const createResult = await supabaseAdmin
+            .from('clients')
+            .insert(newClient as any)
+            .select('id')
+            .single()
+
+          if (createResult.error) {
+            console.error(`Failed to create client for ${pEmail}:`, createResult.error)
+            return NextResponse.json({
+              success: false,
+              error: `Failed to create client record for ${pName}`
+            }, { status: 500 })
+          }
+
+          pClientId = (createResult.data as any).id
+          console.log(`✅ New client created for ${pName}:`, pClientId)
+        } else if (clientResult.error) {
+          console.error(`Failed to check client for ${pEmail}:`, clientResult.error)
           return NextResponse.json({
             success: false,
-            error: 'Failed to create client record'
+            error: `Failed to verify client for ${pName}`
           }, { status: 500 })
+        } else {
+          pClientId = (clientResult.data as any).id
+          console.log(`✅ Existing client found for ${pName}:`, pClientId)
         }
 
-        clientId = (createResult.data as any).id
-        console.log('✅ New client created:', clientId)
-      } else if (clientResult.error) {
-        console.error('Failed to check client:', clientResult.error)
-        return NextResponse.json({
-          success: false,
-          error: 'Failed to verify client'
-        }, { status: 500 })
-      } else {
-        clientId = (clientResult.data as any).id
-        console.log('✅ Existing client found:', clientId)
+        allClientIds.push(pClientId)
+        participantDetails.push({
+          name: pName,
+          firstName: participant.firstName,
+          lastName: participant.lastName,
+          email: pEmail,
+          phone: pPhone,
+          dietaryRequirements: pDietaryRestrictions,
+          specialRequests: pSpecialRequests,
+          clientId: pClientId
+        })
       }
+
+      // Use primary participant's client ID for main booking (backward compatibility)
+      const clientId = allClientIds[0]
 
       // Fetch surf camp details for dates (REQUIRED - check_in and check_out are NOT NULL)
       const { data: surfCamp, error: surfCampError } = await supabaseAdmin
@@ -410,17 +492,16 @@ export async function POST(request: NextRequest) {
         }, { status: 400 })
       }
 
-      // Create surf week booking record
-      // Note: Database schema does NOT have 'items' field - removed to match actual schema
-      const bookingNotes = [
-        `Created via surf week booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
-        '',
-        'PARTICIPANT DETAILS:',
-        participantDetails
-      ].join('\n')
+      // Create surf week booking record with JSON notes format
+      const bookingNotes = JSON.stringify({
+        widget_version: widget_version || 'unknown',
+        source_url: source_url || undefined,
+        participants: participantDetails,
+        room_assignments: room_assignments || undefined
+      })
 
       const bookingData = {
-        client_ids: [clientId],
+        client_ids: allClientIds, // Include all client IDs
         total_amount: pricing.total || 0,
         status: 'pending',
         payment_status: 'pending',
@@ -429,7 +510,7 @@ export async function POST(request: NextRequest) {
         check_out: checkOutDate, // Normalized date string in YYYY-MM-DD format
         room_type: null, // Not applicable for surf camps
         notes: bookingNotes,
-        source: 'dashboard'
+        source: 'widget'
       }
 
       const bookingResult = await supabaseAdmin
@@ -494,8 +575,79 @@ export async function POST(request: NextRequest) {
         guests: participants.length,
         checkIn: checkInDate,
         checkOut: checkOutDate,
-        clientId
+        clientIds: allClientIds
       })
+
+      // Create enrollments for ALL participants
+      for (let i = 0; i < participants.length; i++) {
+        const participant = participants[i]
+        const pClientId = allClientIds[i]
+        const pDietaryRestrictions = participant.dietaryRequirements || ''
+        const pSpecialRequests = participant.specialRequests || ''
+
+        const { data: enrollment, error: enrollmentError } = await supabaseAdmin
+          .from('surf_camp_enrollments')
+          .insert({
+            surf_camp_id: camp_id,
+            client_id: pClientId,
+            booking_id: bookingId,
+            status: 'pending', // Will be confirmed after payment
+            skill_level: participant.skillLevel || 'beginner',
+            dietary_restrictions: pDietaryRestrictions || null,
+            emergency_contact: participant.emergencyContact || null,
+            notes: pSpecialRequests || null
+          })
+          .select()
+          .single()
+
+        if (enrollmentError) {
+          console.error(`❌ Failed to create enrollment for participant ${i + 1}:`, enrollmentError)
+          // Log error but don't fail the entire booking - enrollments can be created manually later
+        } else {
+          console.log(`✅ Created enrollment for participant ${i + 1}:`, enrollment.id)
+          allEnrollments.push(enrollment)
+        }
+      }
+
+      // Create room assignments if provided
+      if (room_assignments && room_assignments.length > 0) {
+        const roomAssignmentsToInsert = []
+        
+        for (const assignment of room_assignments) {
+          for (const guestId of assignment.guest_ids) {
+            // Extract guest index from guestId (format: "guest-1", "guest-2", etc.)
+            const guestIndex = parseInt(guestId.replace('guest-', '')) - 1
+            
+            if (guestIndex >= 0 && guestIndex < allEnrollments.length) {
+              const enrollment = allEnrollments[guestIndex]
+              
+              roomAssignmentsToInsert.push({
+                room_id: assignment.room_id,
+                client_id: enrollment.client_id,
+                booking_id: bookingId,
+                surf_camp_id: camp_id,
+                enrollment_id: enrollment.id,
+                check_in_date: checkInDate,
+                check_out_date: checkOutDate,
+                status: 'confirmed'
+              })
+            }
+          }
+        }
+
+        if (roomAssignmentsToInsert.length > 0) {
+          const { error: insertAssignmentError } = await supabaseAdmin
+            .from('room_assignments')
+            .insert(roomAssignmentsToInsert)
+
+          if (insertAssignmentError) {
+            console.error('❌ Error creating surf week room assignments:', insertAssignmentError)
+            // Log but don't fail the entire booking
+          } else {
+            console.log(`✅ Created ${roomAssignmentsToInsert.length} surf week room assignments`)
+          }
+        }
+      }
 
       // Send booking confirmation email (non-blocking)
       import('@/lib/email-service').then(({ emailService }) => {
