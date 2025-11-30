@@ -96,59 +96,96 @@ export function ViewBookingModal({
     }
   }
 
-  // Parse participants from notes if available
-  const parseParticipants = (): Participant[] => {
+  // Get participants - FIRST check API-provided data, THEN parse from notes
+  const getParticipants = (): Participant[] => {
+    // Priority 1: Use participants array from API response (already parsed by GET endpoint)
+    if (booking.participants && Array.isArray(booking.participants) && booking.participants.length > 0) {
+      console.log('Using API-provided participants:', booking.participants)
+      return booking.participants
+    }
+    
+    // Priority 2: Parse from notes if no participants array provided
     if (!booking.notes) return []
     
     try {
+      // Try to parse notes as JSON
       const notesData = JSON.parse(booking.notes)
       if (notesData && notesData.participants && Array.isArray(notesData.participants)) {
+        console.log('Parsed participants from JSON notes:', notesData.participants)
         return notesData.participants
       }
     } catch {
       // Not JSON, try to parse from text format
-      // Format: "Guest 1: Name\nEmail: ...\nDietary Requirements: ...\nSpecial Requests: ..."
+      console.log('Parsing participants from text notes')
       const participants: Participant[] = []
-      const guestSections = booking.notes.split(/\n\n(?=Guest \d+:)/)
       
-      guestSections.forEach((section) => {
-        if (section.includes('Guest ')) {
-          const lines = section.split('\n')
-          const participant: Participant = {}
-          
-          lines.forEach((line) => {
-            if (line.startsWith('Guest ')) {
-              const nameMatch = line.match(/Guest \d+:\s*(.+)/)
-              if (nameMatch) {
-                const nameParts = nameMatch[1].trim().split(' ')
-                participant.firstName = nameParts[0]
-                participant.lastName = nameParts.slice(1).join(' ')
-                participant.name = nameMatch[1].trim()
-              }
-            } else if (line.startsWith('Email:')) {
-              participant.email = line.replace(/Email:\s*/i, '').trim()
-            } else if (line.startsWith('Phone:')) {
-              participant.phone = line.replace(/Phone:\s*/i, '').trim()
-            } else if (line.startsWith('Dietary Requirements:')) {
-              participant.dietaryRequirements = line.replace(/Dietary Requirements:\s*/i, '').trim()
-            } else if (line.startsWith('Special Requests:')) {
-              participant.specialRequests = line.replace(/Special Requests:\s*/i, '').trim()
-            }
+      // Split by "Guest X:" pattern to find each guest section
+      // Handle both "Guest 1: Name" and "\n\nGuest 1: Name" patterns
+      const guestPattern = /(?:^|\n)Guest (\d+):\s*([^\n]+)/g
+      let match
+      const guestData: Map<number, Participant> = new Map()
+      
+      // First pass: extract guest names
+      const notes = booking.notes
+      while ((match = guestPattern.exec(notes)) !== null) {
+        const guestNum = parseInt(match[1])
+        const guestName = match[2].trim()
+        if (!guestData.has(guestNum)) {
+          guestData.set(guestNum, {
+            name: guestName,
+            firstName: guestName.split(' ')[0],
+            lastName: guestName.split(' ').slice(1).join(' ')
           })
+        }
+      }
+      
+      // Second pass: extract details for each guest
+      // Split notes into sections by double newline or by "Guest X:" markers
+      const lines = notes.split('\n')
+      let currentGuest = 0
+      
+      for (const line of lines) {
+        const guestMatch = line.match(/^Guest (\d+):\s*(.+)/)
+        if (guestMatch) {
+          currentGuest = parseInt(guestMatch[1])
+          const name = guestMatch[2].trim()
+          if (!guestData.has(currentGuest)) {
+            guestData.set(currentGuest, {
+              name: name,
+              firstName: name.split(' ')[0],
+              lastName: name.split(' ').slice(1).join(' ')
+            })
+          }
+        } else if (currentGuest > 0 && guestData.has(currentGuest)) {
+          const participant = guestData.get(currentGuest)!
           
-          if (participant.name || participant.email) {
-            participants.push(participant)
+          if (line.startsWith('Email:')) {
+            participant.email = line.replace(/Email:\s*/i, '').trim()
+          } else if (line.startsWith('Phone:')) {
+            participant.phone = line.replace(/Phone:\s*/i, '').trim()
+          } else if (line.startsWith('Dietary Requirements:')) {
+            participant.dietaryRequirements = line.replace(/Dietary Requirements:\s*/i, '').trim()
+          } else if (line.startsWith('Special Requests:')) {
+            participant.specialRequests = line.replace(/Special Requests:\s*/i, '').trim()
           }
         }
-      })
+      }
       
-      return participants
+      // Convert map to array, sorted by guest number
+      const sortedGuests = Array.from(guestData.entries())
+        .sort((a, b) => a[0] - b[0])
+        .map(([_, p]) => p)
+      
+      if (sortedGuests.length > 0) {
+        console.log('Parsed participants from text:', sortedGuests)
+        return sortedGuests
+      }
     }
     
     return []
   }
 
-  const participants = parseParticipants()
+  const participants = getParticipants()
   const hasMultipleParticipants = participants.length > 1 || (participants.length === 0 && booking.guests > 1)
 
   return (

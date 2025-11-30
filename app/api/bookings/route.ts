@@ -131,42 +131,53 @@ export async function GET(request: NextRequest) {
           // Not JSON, parse as formatted text
           const notes = booking.notes
           
-          // Try to parse participants from text format
-          const guestSections = notes.split(/\n\n(?=Guest \d+:)/)
-          if (guestSections.length > 1 || notes.includes('Guest 1:')) {
-            guestSections.forEach((section) => {
-              if (section.includes('Guest ')) {
-                const lines = section.split('\n')
-                const participant: any = {}
-                
-                lines.forEach((line) => {
-                  if (line.startsWith('Guest ')) {
-                    const nameMatch = line.match(/Guest \d+:\s*(.+)/)
-                    if (nameMatch) {
-                      const nameParts = nameMatch[1].trim().split(' ')
-                      participant.firstName = nameParts[0]
-                      participant.lastName = nameParts.slice(1).join(' ')
-                      participant.name = nameMatch[1].trim()
-                    }
-                  } else if (line.startsWith('Email:')) {
-                    participant.email = line.replace(/Email:\s*/i, '').trim()
-                  } else if (line.startsWith('Phone:')) {
-                    participant.phone = line.replace(/Phone:\s*/i, '').trim()
-                  } else if (line.startsWith('Dietary Requirements:')) {
-                    participant.dietaryRequirements = line.replace(/Dietary Requirements:\s*/i, '').trim()
-                  } else if (line.startsWith('Special Requests:')) {
-                    participant.specialRequests = line.replace(/Special Requests:\s*/i, '').trim()
-                  }
-                })
-                
-                if (participant.name || participant.email) {
-                  participants.push(participant)
+          // Parse participants from text format using line-by-line approach
+          // Format: "Guest 1: Name\nEmail: ...\nDietary Requirements: ...\nSpecial Requests: ...\n\nGuest 2: ..."
+          if (notes.includes('Guest 1:') || notes.includes('Guest 2:')) {
+            const lines = notes.split('\n')
+            let currentParticipant: any = null
+            const parsedParticipants: any[] = []
+            
+            for (const line of lines) {
+              const trimmedLine = line.trim()
+              
+              // Check if this is a new guest line
+              const guestMatch = trimmedLine.match(/^Guest (\d+):\s*(.+)/)
+              if (guestMatch) {
+                // Save previous participant if exists
+                if (currentParticipant && (currentParticipant.name || currentParticipant.email)) {
+                  parsedParticipants.push(currentParticipant)
+                }
+                // Start new participant
+                const name = guestMatch[2].trim()
+                const nameParts = name.split(' ')
+                currentParticipant = {
+                  name: name,
+                  firstName: nameParts[0],
+                  lastName: nameParts.slice(1).join(' ')
+                }
+              } else if (currentParticipant) {
+                // Parse participant details
+                if (trimmedLine.toLowerCase().startsWith('email:')) {
+                  currentParticipant.email = trimmedLine.replace(/^email:\s*/i, '').trim()
+                } else if (trimmedLine.toLowerCase().startsWith('phone:')) {
+                  currentParticipant.phone = trimmedLine.replace(/^phone:\s*/i, '').trim()
+                } else if (trimmedLine.toLowerCase().startsWith('dietary requirements:')) {
+                  currentParticipant.dietaryRequirements = trimmedLine.replace(/^dietary requirements:\s*/i, '').trim()
+                } else if (trimmedLine.toLowerCase().startsWith('special requests:')) {
+                  currentParticipant.specialRequests = trimmedLine.replace(/^special requests:\s*/i, '').trim()
                 }
               }
-            })
+            }
             
-            // Aggregate dietary preferences and special requests
-            if (participants.length > 0) {
+            // Don't forget the last participant
+            if (currentParticipant && (currentParticipant.name || currentParticipant.email)) {
+              parsedParticipants.push(currentParticipant)
+            }
+            
+            if (parsedParticipants.length > 0) {
+              participants = parsedParticipants
+              // Aggregate dietary preferences and special requests
               dietaryPreferences = participants
                 .map(p => p.dietaryRequirements)
                 .filter(Boolean)
