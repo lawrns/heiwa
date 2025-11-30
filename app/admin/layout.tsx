@@ -19,7 +19,8 @@ import {
   Key,
   CreditCard,
   BookOpen,
-  AlertCircle
+  AlertCircle,
+  Package
 } from 'lucide-react'
 
 interface ErrorBoundaryState {
@@ -104,6 +105,7 @@ const navigationItems = [
   { name: 'Clients', href: '/admin/clients', icon: Users },
   { name: 'Surf Weeks', href: '/admin/surf-camps', icon: Building2 },
   { name: 'Rooms', href: '/admin/rooms', icon: Box },
+  { name: 'Add-ons', href: '/admin/add-ons', icon: Package },
   { name: 'Bookings', href: '/admin/bookings', icon: ClipboardList },
   { name: 'Assignments', href: '/admin/assignments', icon: Key },
   { name: 'Invoices', href: '/admin/invoices', icon: FileText },

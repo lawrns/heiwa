@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate page_slug
-    const validPages = ['flow', 'play', 'surf', 'the-spot', 'about', 'contact']
+    const validPages = ['flow', 'play', 'surf', 'the-spot', 'about', 'contact', 'surf-weeks']
     if (!validPages.includes(page_slug)) {
       return NextResponse.json(
         { success: false, error: 'Invalid page_slug' },

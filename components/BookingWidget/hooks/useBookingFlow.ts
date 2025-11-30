@@ -163,8 +163,14 @@ export function useBookingFlow() {
         baseSteps.push('room-assignment');
       }
     } else if (state.experienceType === 'surf-week') {
-      // For surf weeks, keep guest-details after room selection
+      // For surf weeks, add guest-details after room selection
       baseSteps.push('guest-details');
+      
+      // Add room-assignment step for surf weeks if multiple guests
+      // This allows assigning multiple guests to rooms for surf week bookings
+      if (state.guests > 1) {
+        baseSteps.push('room-assignment');
+      }
     }
 
     baseSteps.push('add-ons', 'review-pay');

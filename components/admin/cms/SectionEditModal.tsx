@@ -40,18 +40,44 @@ export default function SectionEditModal({
 
   useEffect(() => {
     if (section) {
+      // Handle both object content (JSONB) and string content
+      const content = typeof section.content === 'string' 
+        ? (() => {
+            try {
+              return JSON.parse(section.content)
+            } catch {
+              return { content: section.content }
+            }
+          })()
+        : (section.content || {})
+      
       setFormData({
         section_name: section.section_name || '',
-        title: section.content?.title || '',
-        subtitle: section.content?.subtitle || '',
-        description: section.content?.description || '',
-        content: section.content?.content || '',
-        image_url: section.content?.image_url || '',
-        video_url: section.content?.video_url || '',
-        button_text: section.content?.button_text || '',
-        button_link: section.content?.button_link || '',
-        background_color: section.content?.background_color || '',
-        text_color: section.content?.text_color || ''
+        title: content.title || '',
+        subtitle: content.subtitle || '',
+        description: content.description || '',
+        content: content.content || '',
+        image_url: content.image_url || '',
+        video_url: content.video_url || '',
+        button_text: content.button_text || '',
+        button_link: content.button_link || '',
+        background_color: content.background_color || '',
+        text_color: content.text_color || ''
+      })
+    } else {
+      // Reset form when section is null
+      setFormData({
+        section_name: '',
+        title: '',
+        subtitle: '',
+        description: '',
+        content: '',
+        image_url: '',
+        video_url: '',
+        button_text: '',
+        button_link: '',
+        background_color: '',
+        text_color: ''
       })
     }
   }, [section])
@@ -63,11 +89,16 @@ export default function SectionEditModal({
     try {
       setSaving(true)
 
+      // Ensure content is an object, even if it was empty
+      const existingContent = typeof section.content === 'object' && section.content !== null
+        ? section.content
+        : {}
+      
       const updatedSection: PageSection = {
         ...section,
         section_name: formData.section_name,
         content: {
-          ...section.content,
+          ...existingContent,
           title: formData.title,
           subtitle: formData.subtitle,
           description: formData.description,

@@ -159,11 +159,12 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
     if (!pageData) return
 
     try {
+      setError(null)
       const newSection = {
         page_slug: pageSlug,
         section_type: sectionType,
-        section_name: sectionName,
-        content: {},
+        section_name: sectionName || `${sectionType} section`,
+        content: {}, // JSONB field - empty object is valid
         order_index: pageData.sections.length,
         is_active: true
       }
@@ -174,17 +175,36 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
         body: JSON.stringify(newSection),
       })
 
-      if (!response.ok) throw new Error('Failed to create section')
+      const responseData = await response.json()
 
-      const { data } = await response.json()
+      if (!response.ok) {
+        const errorMessage = responseData.error || responseData.message || `Failed to create section (${response.status})`
+        console.error('Failed to add section:', {
+          status: response.status,
+          error: responseData.error,
+          message: responseData.message,
+          data: responseData
+        })
+        throw new Error(errorMessage)
+      }
+
+      if (!responseData.success) {
+        throw new Error(responseData.error || 'Section creation failed')
+      }
+
+      const { data } = responseData
       setPageData({
         ...pageData,
         sections: [...pageData.sections, data]
       })
       setHasChanges(true)
       setShowAddSection(false)
-    } catch (err) {
-      setError('Failed to add section')
+      setSuccess('Section added successfully')
+      setTimeout(() => setSuccess(null), 3000)
+    } catch (err: any) {
+      const errorMessage = err.message || 'Failed to add section. Please check the console for details.'
+      console.error('Error adding section:', err)
+      setError(errorMessage)
     }
   }
 

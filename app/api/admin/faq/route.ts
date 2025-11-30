@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
       question,
       answer,
       category,
+      page_slug,
       order_index,
       is_active = true,
       created_by
@@ -81,12 +82,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate page_slug if provided
+    if (page_slug) {
+      const validPageSlugs = ['flow', 'play', 'surf', 'the-spot', 'general', 'surf-weeks', 'about', 'contact', 'privacy', 'terms']
+      if (!validPageSlugs.includes(page_slug)) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid page_slug' },
+          { status: 400 }
+        )
+      }
+    }
+
     const { data, error } = await supabaseAdmin
       .from('faq_items')
       .insert({
         question,
         answer,
         category: category || 'general',
+        page_slug: page_slug || 'general',
         order_index: order_index || 0,
         is_active,
         created_by,

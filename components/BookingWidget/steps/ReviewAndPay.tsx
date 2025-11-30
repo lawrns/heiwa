@@ -182,11 +182,15 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         return;
       }
 
-      // Map guest details to participants
+      // Map guest details to participants - include ALL fields
       const participants = state.guestDetails.map(g => ({
+        firstName: g.firstName,
+        lastName: g.lastName,
         name: `${g.firstName} ${g.lastName}`.trim(),
         email: g.email,
         phone: g.phone,
+        dietaryRequirements: g.dietaryRequirements || '',
+        specialRequests: g.specialRequests || '',
       }));
 
       // Validate participants array

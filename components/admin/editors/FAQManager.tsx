@@ -11,6 +11,7 @@ interface FAQItem {
   question: string
   answer: string
   category: string
+  page_slug: string
   order_index: number
   is_active: boolean
   created_at: string
@@ -25,6 +26,14 @@ const CATEGORIES = [
   { value: 'activities', label: 'Activities', color: 'pink' },
   { value: 'policies', label: 'Policies', color: 'red' },
   { value: 'location', label: 'Location', color: 'yellow' }
+]
+
+const PAGE_SLUGS = [
+  { value: 'general', label: 'General' },
+  { value: 'flow', label: 'Flow' },
+  { value: 'play', label: 'Play' },
+  { value: 'surf', label: 'Surf' },
+  { value: 'the-spot', label: 'The Spot' }
 ]
 
 export function FAQManager() {
@@ -124,11 +133,12 @@ export function FAQManager() {
   }
 
   const exportToCSV = () => {
-    const headers = ['Question', 'Answer', 'Category', 'Order', 'Active', 'Date']
+    const headers = ['Question', 'Answer', 'Category', 'Page', 'Order', 'Active', 'Date']
     const rows = faqItems.map(f => [
       `"${f.question.replace(/"/g, '""')}"`,
       `"${f.answer.replace(/"/g, '""')}"`,
       f.category,
+      f.page_slug,
       f.order_index,
       f.is_active ? 'Yes' : 'No',
       new Date(f.created_at).toLocaleDateString()
@@ -284,6 +294,9 @@ export function FAQManager() {
                       <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-${getCategoryColor(faq.category)}-100 text-${getCategoryColor(faq.category)}-800`}>
                         {getCategoryLabel(faq.category)}
                       </span>
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {faq.page_slug || 'general'}
+                      </span>
                     </div>
                     
                     <p className="text-gray-700 leading-relaxed mb-3">
@@ -361,6 +374,7 @@ function FAQEditorModal({ faq, onClose, onSave }: FAQEditorModalProps) {
     question: '',
     answer: '',
     category: 'general',
+    page_slug: 'general',
     order_index: 0,
     is_active: true
   })
@@ -373,6 +387,7 @@ function FAQEditorModal({ faq, onClose, onSave }: FAQEditorModalProps) {
         question: faq.question,
         answer: faq.answer,
         category: faq.category,
+        page_slug: faq.page_slug || 'general',
         order_index: faq.order_index,
         is_active: faq.is_active
       })
@@ -454,21 +469,40 @@ function FAQEditorModal({ faq, onClose, onSave }: FAQEditorModalProps) {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Category
-          </label>
-          <select
-            value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            {CATEGORIES.map(cat => (
-              <option key={cat.value} value={cat.value}>
-                {cat.label}
-              </option>
-            ))}
-          </select>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              {CATEGORIES.map(cat => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Page
+            </label>
+            <select
+              value={formData.page_slug}
+              onChange={(e) => setFormData({ ...formData, page_slug: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              {PAGE_SLUGS.map(slug => (
+                <option key={slug.value} value={slug.value}>
+                  {slug.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div>

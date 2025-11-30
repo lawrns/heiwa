@@ -98,27 +98,40 @@ export async function GET(request: NextRequest) {
         }
       }
       
-      // Parse notes to extract dietary preferences and other details
-      // Notes may contain JSON or plain text with dietary info
+      // Parse notes to extract dietary preferences and special requests
+      // Notes format: "Created via...\n\nPARTICIPANT DETAILS:\nGuest 1: ...\nDietary Requirements: ...\nSpecial Requests: ..."
       let dietaryPreferences = ''
-      let specialRequests = booking.notes || ''
+      let specialRequests = ''
       
-      try {
-        // Try to parse notes as JSON first
-        const notesData = booking.notes ? JSON.parse(booking.notes) : null
-        if (notesData && typeof notesData === 'object') {
-          dietaryPreferences = notesData.dietaryRequirements || notesData.dietary || notesData.diet || ''
-          specialRequests = notesData.specialRequests || notesData.requests || notesData.message || booking.notes || ''
-        } else if (booking.notes) {
-          // Check if notes contain dietary keywords
-          const notesLower = booking.notes.toLowerCase()
-          if (notesLower.includes('diet') || notesLower.includes('vegetarian') || notesLower.includes('vegan') || notesLower.includes('gluten')) {
-            specialRequests = booking.notes
+      if (booking.notes) {
+        try {
+          // Try to parse notes as JSON first
+          const notesData = JSON.parse(booking.notes)
+          if (notesData && typeof notesData === 'object') {
+            dietaryPreferences = notesData.dietaryRequirements || notesData.dietary || notesData.diet || ''
+            specialRequests = notesData.specialRequests || notesData.requests || notesData.message || ''
+          }
+        } catch {
+          // Not JSON, parse as formatted text
+          const notes = booking.notes
+          
+          // Extract dietary requirements from participant details section
+          const dietaryMatches = notes.match(/Dietary Requirements:\s*(.+?)(?:\n|$)/gi)
+          if (dietaryMatches) {
+            dietaryPreferences = dietaryMatches.map(m => m.replace(/Dietary Requirements:\s*/i, '').trim()).join(', ')
+          }
+          
+          // Extract special requests from participant details section
+          const requestMatches = notes.match(/Special Requests:\s*(.+?)(?:\n|$)/gi)
+          if (requestMatches) {
+            specialRequests = requestMatches.map(m => m.replace(/Special Requests:\s*/i, '').trim()).join('\n')
+          }
+          
+          // If no structured format found, use notes as special requests
+          if (!specialRequests && notes) {
+            specialRequests = notes
           }
         }
-      } catch {
-        // If not JSON, use notes as-is for special requests
-        specialRequests = booking.notes || ''
       }
       
       return {
@@ -210,23 +223,40 @@ export async function POST(request: NextRequest) {
         }, { status: 400 })
       }
 
+      // Validate all participants have required fields
+      for (let i = 0; i < participants.length; i++) {
+        const p = participants[i]
+        if (!p.email) {
+          return NextResponse.json({
+            success: false,
+            error: `Participant ${i + 1} email is required`
+          }, { status: 400 })
+        }
+      }
+
       const primaryParticipant = participants[0]
       const clientName = primaryParticipant.name || `${primaryParticipant.firstName} ${primaryParticipant.lastName}`.trim()
       const email = primaryParticipant.email
       const phone = primaryParticipant.phone || ''
 
-      if (!email) {
-        return NextResponse.json({
-          success: false,
-          error: 'Participant email is required'
-        }, { status: 400 })
-      }
+      // Build notes with all participant details including dietary restrictions and special requests
+      const participantDetails = participants.map((p, idx) => {
+        const details = [
+          `Guest ${idx + 1}: ${p.name || `${p.firstName} ${p.lastName}`.trim()}`,
+          `Email: ${p.email}`,
+          p.phone ? `Phone: ${p.phone}` : null,
+          p.dietaryRequirements ? `Dietary Requirements: ${p.dietaryRequirements}` : null,
+          p.specialRequests ? `Special Requests: ${p.specialRequests}` : null
+        ].filter(Boolean).join('\n')
+        return details
+      }).join('\n\n')
 
       console.log('📝 Creating surf week booking with data:', {
         clientName,
         email,
         campId: camp_id,
-        participants: participants.length
+        participants: participants.length,
+        participantDetails: participantDetails.substring(0, 200) + '...'
       })
 
       // Check if client exists or create new one
@@ -382,6 +412,13 @@ export async function POST(request: NextRequest) {
 
       // Create surf week booking record
       // Note: Database schema does NOT have 'items' field - removed to match actual schema
+      const bookingNotes = [
+        `Created via surf week booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
+        '',
+        'PARTICIPANT DETAILS:',
+        participantDetails
+      ].join('\n')
+
       const bookingData = {
         client_ids: [clientId],
         total_amount: pricing.total || 0,
@@ -391,7 +428,7 @@ export async function POST(request: NextRequest) {
         check_in: checkInDate, // Normalized date string in YYYY-MM-DD format
         check_out: checkOutDate, // Normalized date string in YYYY-MM-DD format
         room_type: null, // Not applicable for surf camps
-        notes: `Created via surf week booking widget ${widget_version || 'unknown'}${source_url ? ` from ${source_url}` : ''}`,
+        notes: bookingNotes,
         source: 'dashboard'
       }
 
