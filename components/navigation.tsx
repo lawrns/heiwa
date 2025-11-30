@@ -61,9 +61,8 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   ]
 
   // Check if we're on the homepage to apply special layout
-  // Only evaluate after mount to prevent hydration mismatch
-  // Default to false on server, then update on client
-  const [isHomepage, setIsHomepage] = useState(false)
+  // Initialize from currentPath immediately to prevent flash of wrong layout
+  const [isHomepage, setIsHomepage] = useState(() => currentPath === '/')
   
   useEffect(() => {
     setIsHomepage(currentPath === '/')
