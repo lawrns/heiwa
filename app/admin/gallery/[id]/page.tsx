@@ -90,16 +90,33 @@ export default function EditMediaPage({ params }: { params: { id: string } }) {
         }),
       })
 
-      const data = await response.json()
-      if (data.success) {
-        router.push('/admin/gallery')
-      } else {
-        console.error('Failed to update:', data.error)
-        alert('Failed to update media item. Please try again.')
+      if (!response.ok) {
+        const errorText = await response.text()
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        try {
+          const errorJson = JSON.parse(errorText)
+          errorMessage = errorJson.error || errorJson.message || errorMessage
+        } catch {
+          errorMessage = errorText || errorMessage
+        }
+        throw new Error(errorMessage)
       }
+
+      const data = await response.json()
+      if (!data.success) {
+        throw new Error(data.error || data.message || 'Failed to update media item')
+      }
+
+      // Verify the save persisted - API returns { success: true, mediaItem: {...} }
+      if (!data.mediaItem || !data.mediaItem.id) {
+        throw new Error('Save response missing media item data - save may not have persisted')
+      }
+
+      router.push('/admin/gallery')
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred'
       console.error('Error updating media item:', err)
-      alert('An error occurred. Please try again.')
+      alert(`Failed to update media item: ${errorMessage}`)
     } finally {
       setLoading(false)
     }

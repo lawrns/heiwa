@@ -143,15 +143,38 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
 
     // Update database
     try {
-      for (const section of updatedSections) {
-        await fetch(`/api/admin/pages/${section.id}`, {
+      const updatePromises = updatedSections.map(async (section) => {
+        const response = await fetch(`/api/admin/pages/${section.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ order_index: section.order_index }),
         })
-      }
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+          try {
+            const errorJson = JSON.parse(errorText)
+            errorMessage = errorJson.error || errorJson.message || errorMessage
+          } catch {
+            errorMessage = errorText || errorMessage
+          }
+          throw new Error(`Failed to update order for section ${section.id}: ${errorMessage}`)
+        }
+
+        const result = await response.json()
+        if (!result.success) {
+          throw new Error(`Failed to update order: ${result.error || 'Unknown error'}`)
+        }
+
+        return result.data
+      })
+
+      await Promise.all(updatePromises)
     } catch (err) {
-      setError('Failed to update section order')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update section order'
+      console.error('Error updating section order:', err)
+      setError(errorMessage)
     }
   }
 
@@ -225,7 +248,27 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
         }),
       })
 
-      if (!response.ok) throw new Error('Failed to update section')
+      if (!response.ok) {
+        const errorText = await response.text()
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        try {
+          const errorJson = JSON.parse(errorText)
+          errorMessage = errorJson.error || errorJson.message || errorMessage
+        } catch {
+          errorMessage = errorText || errorMessage
+        }
+        throw new Error(`Failed to update section: ${errorMessage}`)
+      }
+
+      const result = await response.json()
+      if (!result.success) {
+        throw new Error(`Failed to save section: ${result.error || 'Unknown error'}`)
+      }
+
+      // Verify the save persisted
+      if (!result.data || !result.data.id) {
+        throw new Error('Save response missing data - save may not have persisted')
+      }
 
       if (pageData) {
         setPageData({
@@ -235,9 +278,13 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
           )
         })
         setHasChanges(true)
+        setSuccess('Section saved successfully')
+        setTimeout(() => setSuccess(null), 3000)
       }
     } catch (err) {
-      setError('Failed to save section')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to save section'
+      console.error('Error saving section:', err)
+      setError(errorMessage)
     }
   }
 
@@ -293,8 +340,8 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
       await handleCreateVersion(dataToSave, 'Auto-save')
       
       // Update all sections
-      for (const section of dataToSave.sections) {
-        await fetch(`/api/admin/pages/${section.id}`, {
+      const savePromises = dataToSave.sections.map(async (section) => {
+        const response = await fetch(`/api/admin/pages/${section.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -305,11 +352,39 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
             updated_at: new Date().toISOString()
           }),
         })
-      }
-      
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+          try {
+            const errorJson = JSON.parse(errorText)
+            errorMessage = errorJson.error || errorJson.message || errorMessage
+          } catch {
+            errorMessage = errorText || errorMessage
+          }
+          throw new Error(`Failed to save section ${section.section_name || section.id}: ${errorMessage}`)
+        }
+
+        const result = await response.json()
+        if (!result.success) {
+          throw new Error(`Failed to save section ${section.section_name || section.id}: ${result.error || 'Unknown error'}`)
+        }
+
+        // Verify the save persisted - API returns { success: true, data: {...} }
+        if (!result.data || !result.data.id) {
+          throw new Error(`Save response missing data for section ${section.section_name || section.id}`)
+        }
+
+        return result.data
+      })
+
+      await Promise.all(savePromises)
       setHasChanges(false)
     } catch (err) {
-      setError('Auto-save failed')
+      const errorMessage = err instanceof Error ? err.message : 'Auto-save failed'
+      console.error('Auto-save error:', err)
+      setError(errorMessage)
+      // Don't clear hasChanges on error so user can retry
     } finally {
       setSaving(false)
     }

@@ -13,9 +13,31 @@ import { useEffect, useState } from 'react'
 
 interface CMSSection {
   id: string
-  section_type: string
+  section: string  // Fixed: was section_type
   section_name?: string
-  content: any
+  title?: string
+  content?: string
+  video_url?: string  // Direct field from database
+  image_url?: string  // Direct field from database
+  json_content?: {
+    title?: string
+    description?: string
+    video_url?: string
+    videoUrl?: string
+    image_url?: string
+    imageUrl?: string
+    text?: string
+    html?: string
+    button_text?: string
+    button_url?: string
+    items?: Array<{
+      question?: string
+      answer?: string
+      title?: string
+      description?: string
+    }>
+    [key: string]: unknown
+  }
   order_index: number
 }
 
@@ -66,11 +88,19 @@ export default function SurfPage() {
     fetchNextSurfWeek()
   }, [])
 
-  // Extract CMS sections
-  const heroSection = cmsContent.find(s => s.section_type === 'hero')
-  const introSection = cmsContent.find(s => s.section_type === 'intro')
-  const ctaSection = cmsContent.find(s => s.section_type === 'text' && s.section_name?.toLowerCase().includes('cta'))
-  const faqItems = [
+  // Extract CMS sections - Fixed: use 'section' not 'section_type'
+  const heroSection = cmsContent.find(s => s.section === 'hero')
+  const introSection = cmsContent.find(s => s.section === 'intro')
+  const faqSection = cmsContent.find(s => s.section === 'faq')
+  const ctaSection = cmsContent.find(s => s.section === 'text' && s.section_name?.toLowerCase().includes('cta'))
+  
+  // FAQ items - Use CMS if available, otherwise fallback to defaults
+  const faqItems = faqSection?.json_content?.items && Array.isArray(faqSection.json_content.items)
+    ? faqSection.json_content.items.map((item: any) => ({
+        question: item.question || item.title || '',
+        answer: item.answer || item.description || item.text || ''
+      })).filter((item: any) => item.question && item.answer)
+    : [
     {
       question: 'What is the best time of year to surf in Santa Cruz?',
       answer: 'Portugal offers year-round surfing! Summer (June-September) provides smaller, more manageable waves perfect for beginners, with water temperatures around 18-20°C. Autumn and winter (October-March) bring bigger swells for experienced surfers, though the water is cooler (14-16°C). Spring (April-May) offers a great balance of consistent waves and pleasant weather.',
@@ -109,28 +139,38 @@ export default function SurfPage() {
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
-        title={heroSection?.content?.title || "Heiwa Surf"}
-        description={heroSection?.content?.description || "Experience the thrill of surfing in Portugal's pristine waters. From beginner lessons to advanced coaching, discover your perfect wave at our doorstep."}
-        videoUrl={heroSection?.content?.video_url || undefined}
-        imageUrl={heroSection?.content?.image_url || "/images/surf4.jpg"}
+        title={heroSection?.json_content?.title || heroSection?.title || "Heiwa Surf"}
+        description={heroSection?.json_content?.description || heroSection?.content || "Experience the thrill of surfing in Portugal's pristine waters. From beginner lessons to advanced coaching, discover your perfect wave at our doorstep."}
+        videoUrl={heroSection?.video_url || heroSection?.json_content?.video_url || heroSection?.json_content?.videoUrl || undefined}
+        imageUrl={heroSection?.image_url || heroSection?.json_content?.image_url || heroSection?.json_content?.imageUrl || "/images/surf4.jpg"}
       />
 
       {/* Introduction Section */}
       {introSection ? (
         <section className="py-20 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            {introSection.title && (
+              <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">
+                {introSection.title}
+              </h2>
+            )}
             {typeof introSection.content === 'string' ? (
               <div dangerouslySetInnerHTML={{ __html: introSection.content }} />
             ) : (
               <>
-                {introSection.content?.description && (
+                {introSection.json_content?.description && (
                   <p className="text-lg text-gray-700 leading-relaxed text-center">
-                    {introSection.content.description}
+                    {introSection.json_content.description}
                   </p>
                 )}
-                {introSection.content?.text && (
+                {introSection.json_content?.text && (
                   <p className="text-lg text-gray-700 leading-relaxed text-center">
-                    {introSection.content.text}
+                    {introSection.json_content.text}
+                  </p>
+                )}
+                {introSection.content && (
+                  <p className="text-lg text-gray-700 leading-relaxed text-center">
+                    {introSection.content}
                   </p>
                 )}
               </>
@@ -529,7 +569,7 @@ export default function SurfPage() {
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-            Surfing FAQs
+            {faqSection?.title || 'Surfing FAQs'}
           </h2>
           <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm">
             {faqItems.map((item, index) => (

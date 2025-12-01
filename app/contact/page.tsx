@@ -1,11 +1,50 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Mail, Phone, MapPin, Send, ArrowLeft, CheckCircle } from 'lucide-react'
 import { Navigation } from '@/components/navigation'
 
+interface CMSSection {
+  id: string
+  section: string
+  title?: string
+  content?: string
+  json_content?: {
+    title?: string
+    description?: string
+    phone?: string
+    email?: string
+    address?: string
+    [key: string]: unknown
+  }
+  order_index: number
+}
+
 export default function ContactPage() {
+  const [cmsContent, setCmsContent] = useState<CMSSection[]>([])
+
+  // Fetch CMS content
+  useEffect(() => {
+    const fetchCMSContent = async () => {
+      try {
+        const response = await fetch(`/api/cms/page-content?page_slug=contact&is_active=true&sort_by=order_index&sort_order=asc&limit=50`)
+        const result = await response.json()
+        if (result.data && Array.isArray(result.data)) {
+          console.log('✅ CMS content loaded for contact page:', result.data.length, 'sections')
+          setCmsContent(result.data)
+        }
+      } catch (error) {
+        console.error('❌ Error fetching CMS content:', error)
+      }
+    }
+
+    fetchCMSContent()
+  }, [])
+
+  // Extract CMS sections
+  const heroSection = cmsContent.find(s => s.section === 'hero')
+  const contactInfoSection = cmsContent.find(s => s.section === 'intro' || s.section === 'contact')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -75,10 +114,12 @@ export default function ContactPage() {
               <ArrowLeft className="w-4 h-4" />
               Back to Home
             </Link>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Get in Touch</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              {heroSection?.json_content?.title || heroSection?.title || "Get in Touch"}
+            </h1>
             <p className="text-xl text-white/90 max-w-2xl">
-              Have questions about our surf camps, rooms, or want to plan your perfect Portuguese adventure? 
-              We&apos;d love to hear from you!
+              {heroSection?.json_content?.description || heroSection?.content || 
+                "Have questions about our surf camps, rooms, or want to plan your perfect Portuguese adventure? We'd love to hear from you!"}
             </p>
           </div>
         </section>
@@ -97,32 +138,41 @@ export default function ContactPage() {
                 </div>
 
                 <div className="space-y-6">
+                  {/* Phone - Use CMS if available */}
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <Phone className="w-5 h-5 text-orange-600" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">Phone</h3>
-                      <a href="tel:+351915215883" className="text-gray-600 hover:text-orange-600 transition-colors">
-                        +351 915 215 883
+                      <a 
+                        href={`tel:${contactInfoSection?.json_content?.phone || '+351915215883'}`} 
+                        className="text-gray-600 hover:text-orange-600 transition-colors"
+                      >
+                        {contactInfoSection?.json_content?.phone || '+351 915 215 883'}
                       </a>
                       <p className="text-sm text-gray-500 mt-1">WhatsApp available</p>
                     </div>
                   </div>
 
+                  {/* Email - Use CMS if available */}
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <Mail className="w-5 h-5 text-orange-600" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">Email</h3>
-                      <a href="mailto:bookings@heiwahouse.com" className="text-gray-600 hover:text-orange-600 transition-colors">
-                        bookings@heiwahouse.com
+                      <a 
+                        href={`mailto:${contactInfoSection?.json_content?.email || 'bookings@heiwahouse.com'}`} 
+                        className="text-gray-600 hover:text-orange-600 transition-colors"
+                      >
+                        {contactInfoSection?.json_content?.email || 'bookings@heiwahouse.com'}
                       </a>
                       <p className="text-sm text-gray-500 mt-1">We reply within 24 hours</p>
                     </div>
                   </div>
 
+                  {/* Location - Use CMS if available */}
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <MapPin className="w-5 h-5 text-orange-600" />
@@ -130,7 +180,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-semibold text-gray-900">Location</h3>
                       <p className="text-gray-600">
-                        Ericeira, Portugal
+                        {contactInfoSection?.json_content?.address || contactInfoSection?.json_content?.location || 'Ericeira, Portugal'}
                       </p>
                       <p className="text-sm text-gray-500 mt-1">35 min from Lisbon Airport</p>
                     </div>

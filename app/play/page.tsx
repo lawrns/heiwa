@@ -10,13 +10,19 @@ import { useEffect, useState } from 'react'
 
 interface CMSSection {
   id: string
-  section_type: string
+  section: string  // Fixed: was section_type
   section_name?: string
-  content: string | {
+  title?: string
+  content?: string
+  video_url?: string  // Direct field from database
+  image_url?: string  // Direct field from database
+  json_content?: {
     title?: string
     description?: string
     video_url?: string
+    videoUrl?: string
     image_url?: string
+    imageUrl?: string
     text?: string
     html?: string
     button_text?: string
@@ -52,38 +58,44 @@ export default function PlayPage() {
     fetchCMSContent()
   }, [])
 
-  // Extract CMS sections
-  const heroSection = cmsContent.find(s => s.section_type === 'hero')
-  const introSection = cmsContent.find(s => s.section_type === 'intro')
-  const ctaSection = cmsContent.find(s => s.section_type === 'text' && s.section_name?.toLowerCase().includes('cta'))
+  // Extract CMS sections - Fixed: use 'section' not 'section_type'
+  const heroSection = cmsContent.find(s => s.section === 'hero')
+  const introSection = cmsContent.find(s => s.section === 'intro')
+  const faqSection = cmsContent.find(s => s.section === 'faq')
+  const ctaSection = cmsContent.find(s => s.section === 'text' && s.section_name?.toLowerCase().includes('cta'))
 
-  // FAQ items for Play page
-  const faqItems = [
-    {
-      question: 'Are the play activities included in the surf week package?',
-      answer: 'Yes! Most of our play activities including table games, skatepark access, pool usage, and gym facilities are included in your surf week stay. Some activities like bicycle rental may have additional costs.',
-    },
-    {
-      question: 'Do I need to bring my own equipment for activities?',
-      answer: 'No need to bring equipment! We provide all necessary gear for table games, skateboarding, and gym activities. For bicycles, we offer rentals with locks and board racks included.',
-    },
-    {
-      question: 'Is the skatepark suitable for beginners?',
-      answer: 'Absolutely! Our skatepark has obstacles and ramps for all skill levels, from first-time skaters to experienced riders. We also offer surfskate lessons as part of our surf weeks.',
-    },
-    {
-      question: 'What are the pool and sauna opening hours?',
-      answer: 'The pool is available throughout the day for guests. Sauna sessions are typically held in the evenings, with ice bath access available during sauna nights. Specific times may vary based on weather and season.',
-    },
-    {
-      question: 'Can I use the gym facilities anytime?',
-      answer: 'Yes, gym access is available to all guests throughout your stay. We have basic equipment for cardio and strength training to help you stay active during your visit.',
-    },
-    {
-      question: 'Are the activities supervised?',
-      answer: 'While most activities are self-guided, our staff is always available to help with equipment, provide tips, or join in the fun. During surf weeks, we often organize group activities and games.',
-    },
-  ]
+  // FAQ items - Use CMS if available, otherwise fallback to defaults
+  const faqItems = faqSection?.json_content?.items && Array.isArray(faqSection.json_content.items)
+    ? faqSection.json_content.items.map((item: any) => ({
+        question: item.question || item.title || '',
+        answer: item.answer || item.description || item.text || ''
+      })).filter((item: any) => item.question && item.answer)
+    : [
+        {
+          question: 'Are the play activities included in the surf week package?',
+          answer: 'Yes! Most of our play activities including table games, skatepark access, pool usage, and gym facilities are included in your surf week stay. Some activities like bicycle rental may have additional costs.',
+        },
+        {
+          question: 'Do I need to bring my own equipment for activities?',
+          answer: 'No need to bring equipment! We provide all necessary gear for table games, skateboarding, and gym activities. For bicycles, we offer rentals with locks and board racks included.',
+        },
+        {
+          question: 'Is the skatepark suitable for beginners?',
+          answer: 'Absolutely! Our skatepark has obstacles and ramps for all skill levels, from first-time skaters to experienced riders. We also offer surfskate lessons as part of our surf weeks.',
+        },
+        {
+          question: 'What are the pool and sauna opening hours?',
+          answer: 'The pool is available throughout the day for guests. Sauna sessions are typically held in the evenings, with ice bath access available during sauna nights. Specific times may vary based on weather and season.',
+        },
+        {
+          question: 'Can I use the gym facilities anytime?',
+          answer: 'Yes, gym access is available to all guests throughout your stay. We have basic equipment for cardio and strength training to help you stay active during your visit.',
+        },
+        {
+          question: 'Are the activities supervised?',
+          answer: 'While most activities are self-guided, our staff is always available to help with equipment, provide tips, or join in the fun. During surf weeks, we often organize group activities and games.',
+        },
+      ]
 
   // Reviews will be fetched from Google Reviews API via GoogleReviews component
 
@@ -91,10 +103,10 @@ export default function PlayPage() {
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
-        title={typeof heroSection?.content === 'object' && heroSection.content?.title || "Heiwa Play"}
-        description={typeof heroSection?.content === 'object' && heroSection.content?.description || "Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."}
-        videoUrl={typeof heroSection?.content === 'object' && heroSection.content?.video_url || "/images/videos/play-activities.mp4"}
-        imageUrl={typeof heroSection?.content === 'object' && heroSection.content?.image_url || "/images/games.jpg"}
+        title={heroSection?.json_content?.title || heroSection?.title || "Heiwa Play"}
+        description={heroSection?.json_content?.description || heroSection?.content || "Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."}
+        videoUrl={heroSection?.video_url || heroSection?.json_content?.video_url || heroSection?.json_content?.videoUrl || "/images/videos/play-activities.mp4"}
+        imageUrl={heroSection?.image_url || heroSection?.json_content?.image_url || heroSection?.json_content?.imageUrl || "/images/games.jpg"}
       />
 
       {/* Introduction Section */}
@@ -102,18 +114,28 @@ export default function PlayPage() {
         <section className="py-20 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-6">
+              {introSection.title && (
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  {introSection.title}
+                </h2>
+              )}
               {typeof introSection.content === 'string' ? (
                 <div dangerouslySetInnerHTML={{ __html: introSection.content }} />
               ) : (
                 <>
-                  {introSection.content?.description && (
+                  {introSection.json_content?.description && (
                     <p className="text-lg text-gray-700 leading-relaxed">
-                      {introSection.content.description}
+                      {introSection.json_content.description}
                     </p>
                   )}
-                  {introSection.content?.text && (
+                  {introSection.json_content?.text && (
                     <p className="text-lg text-gray-700 leading-relaxed">
-                      {introSection.content.text}
+                      {introSection.json_content.text}
+                    </p>
+                  )}
+                  {introSection.content && (
+                    <p className="text-lg text-gray-700 leading-relaxed">
+                      {introSection.content}
                     </p>
                   )}
                 </>
@@ -216,7 +238,7 @@ export default function PlayPage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-            Frequently Asked Questions
+            {faqSection?.title || 'Frequently Asked Questions'}
           </h2>
           <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm">
             {faqItems.map((item, index) => (
@@ -241,24 +263,24 @@ export default function PlayPage() {
               <div dangerouslySetInnerHTML={{ __html: ctaSection.content }} />
             ) : (
               <>
-                {ctaSection.content?.title && (
+                {ctaSection.json_content?.title && (
                   <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                    {ctaSection.content.title}
+                    {ctaSection.json_content.title}
                   </h2>
                 )}
-                {ctaSection.content?.description && (
+                {ctaSection.json_content?.description && (
                   <p className="text-lg text-gray-600 mb-8">
-                    {ctaSection.content.description}
+                    {ctaSection.json_content.description}
                   </p>
                 )}
-                {ctaSection.content?.button_text && ctaSection.content?.button_url && (
+                {ctaSection.json_content?.button_text && ctaSection.json_content?.button_url && (
                   <a
-                    href={ctaSection.content.button_url}
+                    href={ctaSection.json_content.button_url}
                     className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
                     style={{ backgroundColor: '#ec681c' }}
                   >
                     <Mail className="w-5 h-5" />
-                    {ctaSection.content.button_text}
+                    {ctaSection.json_content.button_text}
                   </a>
                 )}
               </>

@@ -119,6 +119,9 @@ export default function HomepageCMSPage() {
 
   const handleSave = async () => {
     setSaving(true)
+    const savedSections: string[] = []
+    const failedSections: Array<{ section: string; error: string }> = []
+    
     try {
       // Save each section to the API
       for (const section of content) {
@@ -138,31 +141,96 @@ export default function HomepageCMSPage() {
           blogConfig: section.blogConfig
         }
 
-        // Check if section exists (has a real UUID from database)
-        if (section.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(section.id)) {
-          // Update existing section
-          const response = await fetch('/api/admin/homepage', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          })
-          const result = await response.json()
-          if (!result.success) throw new Error(`Failed to update ${section.section}`)
-        } else {
-          // Create new section
-          const response = await fetch('/api/admin/homepage', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          })
-          const result = await response.json()
-          if (!result.success) throw new Error(`Failed to create ${section.section}`)
+        try {
+          // Check if section exists (has a real UUID from database)
+          if (section.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(section.id)) {
+            // Update existing section
+            const response = await fetch('/api/admin/homepage', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            })
+
+            // Check HTTP status code
+            if (!response.ok) {
+              const errorText = await response.text()
+              let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+              try {
+                const errorJson = JSON.parse(errorText)
+                errorMessage = errorJson.error || errorJson.message || errorMessage
+              } catch {
+                errorMessage = errorText || errorMessage
+              }
+              throw new Error(`Failed to update ${section.section}: ${errorMessage}`)
+            }
+
+            const result = await response.json()
+            if (!result.success) {
+              throw new Error(`Failed to update ${section.section}: ${result.error || 'Unknown error'}`)
+            }
+
+            // Verify the save persisted by checking the returned data
+            if (!result.data || !result.data.id) {
+              throw new Error(`Update response missing data for ${section.section}`)
+            }
+
+            savedSections.push(section.section)
+          } else {
+            // Create new section
+            const response = await fetch('/api/admin/homepage', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            })
+
+            // Check HTTP status code
+            if (!response.ok) {
+              const errorText = await response.text()
+              let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+              try {
+                const errorJson = JSON.parse(errorText)
+                errorMessage = errorJson.error || errorJson.message || errorMessage
+              } catch {
+                errorMessage = errorText || errorMessage
+              }
+              throw new Error(`Failed to create ${section.section}: ${errorMessage}`)
+            }
+
+            const result = await response.json()
+            if (!result.success) {
+              throw new Error(`Failed to create ${section.section}: ${result.error || 'Unknown error'}`)
+            }
+
+            // Verify the save persisted by checking the returned data
+            if (!result.data || !result.data.id) {
+              throw new Error(`Create response missing data for ${section.section}`)
+            }
+
+            savedSections.push(section.section)
+          }
+        } catch (sectionError) {
+          const errorMessage = sectionError instanceof Error ? sectionError.message : 'Unknown error'
+          console.error(`Error saving section ${section.section}:`, sectionError)
+          failedSections.push({ section: section.section, error: errorMessage })
         }
       }
-      alert('Homepage content saved successfully!')
+
+      // Report results
+      if (failedSections.length === 0) {
+        alert(`✅ Successfully saved ${savedSections.length} section(s)!`)
+        // Refresh content to show updated data
+        window.location.reload()
+      } else if (savedSections.length > 0) {
+        const failedList = failedSections.map(f => `\n- ${f.section}: ${f.error}`).join('')
+        alert(`⚠️ Partially saved:\n\nSaved: ${savedSections.length} section(s)\nFailed: ${failedSections.length} section(s)${failedList}`)
+      } else {
+        const failedList = failedSections.map(f => `\n- ${f.section}: ${f.error}`).join('')
+        throw new Error(`Failed to save all sections:${failedList}`)
+      }
     } catch (error) {
       console.error('Error saving content:', error)
-      alert(`Error saving content: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      alert(`❌ Error saving content: ${errorMessage}\n\nPlease check the browser console for details.`)
     } finally {
       setSaving(false)
     }

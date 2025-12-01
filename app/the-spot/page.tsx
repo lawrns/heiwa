@@ -2,13 +2,49 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ImageCarousel } from '@/components/ui/image-carousel'
+import { supabaseAdmin } from '@/lib/supabase'
 
 export const metadata: Metadata = {
   title: 'The Spot - Heiwa House Facilities & Activities',
   description: 'Discover Heiwa House - a premium surf destination with yoga dome, skatepark, beach access, and world-class facilities in Santa Cruz, Portugal.',
 }
 
-export default function TheSpotPage() {
+// Revalidate every 60 seconds to pick up CMS changes quickly
+export const revalidate = 60
+
+// Fetch CMS content for the-spot page
+async function getTheSpotCMSContent() {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_content')
+      .select('*')
+      .eq('page_slug', 'the-spot')
+      .eq('is_active', true)
+      .order('order_index', { ascending: true })
+    
+    if (error || !data) {
+      console.warn('CMS content not available for the-spot, using defaults')
+      return []
+    }
+    
+    return data
+  } catch (error) {
+    console.warn('Error fetching CMS content:', error)
+    return []
+  }
+}
+
+export default async function TheSpotPage() {
+  const cmsContent = await getTheSpotCMSContent()
+  
+  // Extract CMS sections
+  const heroSection = cmsContent.find((s: any) => s.section === 'hero')
+  const storySection = cmsContent.find((s: any) => s.section === 'intro' || s.section === 'story')
+  const yogaSection = cmsContent.find((s: any) => s.section === 'yoga' || s.section === 'features')
+  const skateparkSection = cmsContent.find((s: any) => s.section === 'skatepark' || s.section === 'features')
+  const poolSection = cmsContent.find((s: any) => s.section === 'pool' || s.section === 'features')
+  const gamesSection = cmsContent.find((s: any) => s.section === 'games' || s.section === 'features')
+  const ctaSection = cmsContent.find((s: any) => s.section === 'cta' || s.section === 'text')
   // Venue images (property overview)
   const venueImages = [
     '/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg',
@@ -57,8 +93,8 @@ export default function TheSpotPage() {
       {/* Hero Section with Featured Image */}
       <section className="relative h-96 w-full overflow-hidden bg-gray-900">
         <Image
-          src="/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg"
-          alt="Heiwa House Property Overview"
+          src={heroSection?.image_url || heroSection?.json_content?.image_url || heroSection?.json_content?.imageUrl || "/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg"}
+          alt={heroSection?.title || "Heiwa House Property Overview"}
           fill
           className="object-cover"
           priority
@@ -67,8 +103,12 @@ export default function TheSpotPage() {
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative h-full flex items-center justify-center text-center px-4">
           <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">The Spot</h1>
-            <p className="text-xl md:text-2xl text-white/90 drop-shadow-md">Your ultimate adult playground on Portugal&apos;s coast</p>
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
+              {heroSection?.json_content?.title || heroSection?.title || "The Spot"}
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90 drop-shadow-md">
+              {heroSection?.json_content?.description || heroSection?.content || "Your ultimate adult playground on Portugal's coast"}
+            </p>
           </div>
         </div>
       </section>
@@ -77,17 +117,27 @@ export default function TheSpotPage() {
       {/* Our Story Section */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-8">Our Story</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-8">
+            {storySection?.title || "Our Story"}
+          </h2>
           <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
-            <p>
-              Heiwa House started as a dream to create more than just a surf house—a place that feels like home. After years of running surf camps and renting spaces, it was time to build something permanent. Months of searching and a shared vision led us to the perfect location on Portugal&apos;s stunning coast.
-            </p>
-            <p>
-              A love for surfing, yoga, design, and good vibes helped shape the space into something truly special. We wanted to create a sanctuary where guests could disconnect from the everyday, reconnect with nature, and discover their true passion.
-            </p>
-            <p>
-              Now, Heiwa House is the ultimate adult playground—a place to catch waves, find your flow, connect with like-minded adventurers, and just enjoy life to the fullest.
-            </p>
+            {storySection?.content ? (
+              <div dangerouslySetInnerHTML={{ __html: storySection.content }} />
+            ) : storySection?.json_content?.description ? (
+              <p>{storySection.json_content.description}</p>
+            ) : (
+              <>
+                <p>
+                  Heiwa House started as a dream to create more than just a surf house—a place that feels like home. After years of running surf camps and renting spaces, it was time to build something permanent. Months of searching and a shared vision led us to the perfect location on Portugal&apos;s stunning coast.
+                </p>
+                <p>
+                  A love for surfing, yoga, design, and good vibes helped shape the space into something truly special. We wanted to create a sanctuary where guests could disconnect from the everyday, reconnect with nature, and discover their true passion.
+                </p>
+                <p>
+                  Now, Heiwa House is the ultimate adult playground—a place to catch waves, find your flow, connect with like-minded adventurers, and just enjoy life to the fullest.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>

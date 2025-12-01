@@ -55,16 +55,35 @@ export default function CMSSettingsPage() {
           cache_duration: settings.cacheDuration,
         }),
       })
+
+      if (!res.ok) {
+        const errorText = await res.text()
+        let errorMessage = `HTTP ${res.status}: ${res.statusText}`
+        try {
+          const errorJson = JSON.parse(errorText)
+          errorMessage = errorJson.error || errorJson.message || errorMessage
+        } catch {
+          errorMessage = errorText || errorMessage
+        }
+        throw new Error(errorMessage)
+      }
       
       const data = await res.json()
       
-      if (data.success) {
-        setMessage({ type: 'success', text: 'Settings saved successfully' })
-      } else {
-        setMessage({ type: 'error', text: 'Failed to save settings' })
+      if (!data.success) {
+        throw new Error(data.error || data.message || 'Failed to save settings')
       }
+
+      // Verify the save persisted - API returns { success: true, settings: {...} }
+      if (!data.settings || !data.settings.site_name) {
+        throw new Error('Save response missing settings data - save may not have persisted')
+      }
+      
+      setMessage({ type: 'success', text: 'Settings saved successfully' })
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to save settings' })
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save settings'
+      console.error('Error saving CMS settings:', error)
+      setMessage({ type: 'error', text: `Failed to save settings: ${errorMessage}` })
     } finally {
       setSaving(false)
     }

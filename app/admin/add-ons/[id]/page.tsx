@@ -84,16 +84,33 @@ export default function EditAddOnPage({ params }: { params: { id: string } }) {
         }),
       })
 
-      const data = await response.json()
-      if (data.success) {
-        router.push('/admin/add-ons')
-      } else {
-        console.error('Failed to update:', data.error)
-        alert('Failed to update add-on. Please try again.')
+      if (!response.ok) {
+        const errorText = await response.text()
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        try {
+          const errorJson = JSON.parse(errorText)
+          errorMessage = errorJson.error || errorJson.message || errorMessage
+        } catch {
+          errorMessage = errorText || errorMessage
+        }
+        throw new Error(errorMessage)
       }
+
+      const data = await response.json()
+      if (!data.success) {
+        throw new Error(data.error || data.message || 'Failed to update add-on')
+      }
+
+      // Verify the save persisted - API returns { success: true, addOn: {...} }
+      if (!data.addOn || !data.addOn.id) {
+        throw new Error('Save response missing add-on data - save may not have persisted')
+      }
+
+      router.push('/admin/add-ons')
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred'
       console.error('Error updating add-on:', err)
-      alert('An error occurred. Please try again.')
+      alert(`Failed to update add-on: ${errorMessage}`)
     } finally {
       setLoading(false)
     }

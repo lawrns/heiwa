@@ -58,6 +58,7 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
     if (!room) return
     
     setSaving(true)
+    setError(null)
     try {
       const response = await fetch(`/api/rooms/${params.id}`, {
         method: 'PUT',
@@ -66,17 +67,36 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
         },
         body: JSON.stringify(room),
       })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        try {
+          const errorJson = JSON.parse(errorText)
+          errorMessage = errorJson.error || errorJson.message || errorMessage
+        } catch {
+          errorMessage = errorText || errorMessage
+        }
+        throw new Error(errorMessage)
+      }
       
       const data = await response.json()
       
-      if (data.success) {
-        router.push('/admin/rooms')
-        router.refresh()
-      } else {
-        setError('Failed to save room')
+      if (!data.success) {
+        throw new Error(data.error || data.message || 'Failed to save room')
       }
+
+      // Verify the save persisted - API returns { success: true, data: { room: {...} } }
+      if (!data.data || !data.data.room || !data.data.room.id) {
+        throw new Error('Save response missing room data - save may not have persisted')
+      }
+      
+      router.push('/admin/rooms')
+      router.refresh()
     } catch (err) {
-      setError('Error saving room')
+      const errorMessage = err instanceof Error ? err.message : 'Error saving room'
+      console.error('Error saving room:', err)
+      setError(errorMessage)
     } finally {
       setSaving(false)
     }

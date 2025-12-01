@@ -129,7 +129,14 @@ export default async function SurfWeeksPage() {
   const surfWeeks = await getSurfWeeks()
   const cmsContent = await getSurfWeeksCMSContent()
   
-  // Gallery images
+  // Extract CMS sections
+  const heroSection = cmsContent?.find((s: any) => s.section === 'hero')
+  const introSection = cmsContent?.find((s: any) => s.section === 'intro')
+  const faqSection = cmsContent?.find((s: any) => s.section === 'faq')
+  const includedSection = cmsContent?.find((s: any) => s.section === 'features' || s.section === 'included')
+  const stepsSection = cmsContent?.find((s: any) => s.section === 'steps' || s.section === 'process')
+  
+  // Gallery images - Use CMS if available
   const galleryImages = [
     '/images/DSC03081-scaled.jpg',
     '/images/DSF8322-scaled.jpg',
@@ -301,8 +308,8 @@ export default async function SurfWeeksPage() {
       {/* Hero Section with Overlay */}
       <section className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
         <Image
-          src="/images/surf-weeks-front-page.jpg"
-          alt="Surf Weeks at Heiwa House"
+          src={heroSection?.image_url || heroSection?.json_content?.image_url || heroSection?.json_content?.imageUrl || "/images/surf-weeks-front-page.jpg"}
+          alt={heroSection?.title || "Surf Weeks at Heiwa House"}
           fill
           className="object-cover"
           priority
@@ -313,13 +320,11 @@ export default async function SurfWeeksPage() {
         <div className="relative h-full flex items-center justify-center text-center px-4">
           <div className="max-w-4xl">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-              Surf Weeks
+              {heroSection?.json_content?.title || heroSection?.title || "Surf Weeks"}
             </h1>
             <p className="text-xl md:text-2xl text-white/90 drop-shadow-md max-w-3xl mx-auto mb-8">
-              We strive to deliver an unforgettable surf week experience both in and out of the water. 
-              Even if surfing were taken out of the week, it would still be worth your while—amazing food,
-              yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and
-              the surfing? That&apos;s going to be awesome too 🙂
+              {heroSection?.json_content?.description || heroSection?.content || 
+                "We strive to deliver an unforgettable surf week experience both in and out of the water. Even if surfing were taken out of the week, it would still be worth your while—amazing food, yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and the surfing? That's going to be awesome too 🙂"}
             </p>
           </div>
         </div>
@@ -605,61 +610,44 @@ export default async function SurfWeeksPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* FAQ Section - Use CMS if available */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Frequently Asked Questions</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
+            {faqSection?.title || 'Frequently Asked Questions'}
+          </h2>
           
           <div className="max-w-4xl mx-auto">
             <Accordion type="single" collapsible className="space-y-4">
-              <AccordionItem value="item-1" className="border border-gray-200 rounded-lg px-4 sm:px-6">
-                <AccordionTrigger className="text-left text-sm sm:text-base">
-                  How much does Surf Week cost?
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-600 text-sm sm:text-base">
-                  Our prices start at 450€ for a bed in the dorm room. Prices increase if you prefer a private room. 
-                  Send us an email with your request, and we&apos;ll provide you with all the options. 
-                  Please note that surf lessons are not included. You can find more details in the add-ons section.
-                </AccordionContent>
-              </AccordionItem>
-              
-              <AccordionItem value="item-2" className="border border-gray-200 rounded-lg px-4 sm:px-6">
-                <AccordionTrigger className="text-left text-sm sm:text-base">
-                  Do I have to know how to surf or skateboard?
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-600 text-sm sm:text-base">
-                  No! Everyone is welcome—first-timers, improvers, intermediates, and pros 🙂
-                </AccordionContent>
-              </AccordionItem>
-              
-              <AccordionItem value="item-3" className="border border-gray-200 rounded-lg px-4 sm:px-6">
-                <AccordionTrigger className="text-left text-sm sm:text-base">
-                  How does a typical day during Surf Week look?
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-600 text-sm sm:text-base">
-                  We start the day with yoga, followed by breakfast. Afterward, we head out to surf. 
-                  Lunch is next, and in the afternoon, we enjoy activities like day trips, skateboarding, 
-                  relaxing at the house, or playing games. Dinner is at home, and sometimes, we even throw a party 🙂
-                </AccordionContent>
-              </AccordionItem>
-              
-              <AccordionItem value="item-4" className="border border-gray-200 rounded-lg px-4 sm:px-6">
-                <AccordionTrigger className="text-left text-sm sm:text-base">
-                  How many people are in Surf Week groups?
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-600 text-sm sm:text-base">
-                  We usually have up to 18 people in the house.
-                </AccordionContent>
-              </AccordionItem>
-              
-              <AccordionItem value="item-5" className="border border-gray-200 rounded-lg px-4 sm:px-6">
-                <AccordionTrigger className="text-left text-sm sm:text-base">
-                  What is the age of people who sign up?
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-600 text-sm sm:text-base">
-                  Generally 24+
-                </AccordionContent>
-              </AccordionItem>
+              {/* Use CMS FAQ items if available, otherwise fallback to defaults */}
+              {((faqSection?.json_content?.items && Array.isArray(faqSection.json_content.items) && faqSection.json_content.items.length > 0)
+                ? faqSection.json_content.items.map((item: any, index: number) => (
+                    <AccordionItem key={index} value={`item-${index}`} className="border border-gray-200 rounded-lg px-4 sm:px-6">
+                      <AccordionTrigger className="text-left text-sm sm:text-base">
+                        {item.question || item.title || ''}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-gray-600 text-sm sm:text-base">
+                        {item.answer || item.description || item.text || ''}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))
+                : [
+                    { question: 'How much does Surf Week cost?', answer: 'Our prices start at 450€ for a bed in the dorm room. Prices increase if you prefer a private room. Send us an email with your request, and we\'ll provide you with all the options. Please note that surf lessons are not included. You can find more details in the add-ons section.' },
+                    { question: 'Do I have to know how to surf or skateboard?', answer: 'No! Everyone is welcome—first-timers, improvers, intermediates, and pros 🙂' },
+                    { question: 'How does a typical day during Surf Week look?', answer: 'We start the day with yoga, followed by breakfast. Afterward, we head out to surf. Lunch is next, and in the afternoon, we enjoy activities like day trips, skateboarding, relaxing at the house, or playing games. Dinner is at home, and sometimes, we even throw a party 🙂' },
+                    { question: 'How many people are in Surf Week groups?', answer: 'We usually have up to 18 people in the house.' },
+                    { question: 'What is the age of people who sign up?', answer: 'Generally 24+' },
+                  ].map((item, index) => (
+                    <AccordionItem key={index} value={`item-${index}`} className="border border-gray-200 rounded-lg px-4 sm:px-6">
+                      <AccordionTrigger className="text-left text-sm sm:text-base">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-gray-600 text-sm sm:text-base">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))
+              )}
             </Accordion>
           </div>
         </div>

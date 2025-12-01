@@ -52,18 +52,35 @@ export default function NewAddOnPage() {
         }),
       })
 
+      if (!response.ok) {
+        const errorText = await response.text()
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        try {
+          const errorJson = JSON.parse(errorText)
+          errorMessage = errorJson.error || errorJson.message || errorMessage
+        } catch {
+          errorMessage = errorText || errorMessage
+        }
+        throw new Error(errorMessage)
+      }
+
       const result = await response.json()
 
-      if (result.success) {
-        console.log('Add-on saved successfully:', result.addOn)
-        router.push('/admin/add-ons')
-      } else {
-        console.error('Failed to save add-on:', result.error)
-        alert(`Failed to save add-on: ${result.error}`)
+      if (!result.success) {
+        throw new Error(result.error || result.message || 'Failed to save add-on')
       }
+
+      // Verify the save persisted
+      if (!result.addOn || !result.addOn.id) {
+        throw new Error('Save response missing data - save may not have persisted')
+      }
+
+      console.log('Add-on saved successfully:', result.addOn)
+      router.push('/admin/add-ons')
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred'
       console.error('Error saving add-on:', error)
-      alert('An error occurred while saving the add-on')
+      alert(`Failed to save add-on: ${errorMessage}`)
     }
   }
 

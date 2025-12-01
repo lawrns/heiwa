@@ -351,15 +351,39 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
       })
 
       if (!response.ok) {
-        throw new Error('Failed to save assignments')
+        const errorText = await response.text()
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        try {
+          const errorJson = JSON.parse(errorText)
+          errorMessage = errorJson.error || errorJson.message || errorMessage
+        } catch {
+          errorMessage = errorText || errorMessage
+        }
+        throw new Error(`Failed to save assignments: ${errorMessage}`)
       }
 
       const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.error || result.message || 'Failed to save assignments')
+      }
+
+      // Verify the save persisted - API returns { success: true, message: "Saved X assignments" }
+      // The message includes the count, so if it exists, we know assignments were saved
+      if (!result.message || !result.message.includes('Saved')) {
+        console.warn('Assignment save response missing expected message format:', result)
+        // Don't throw error - success flag is the primary indicator
+      }
+
       toast.success(result.message || 'Assignments saved successfully!')
       onSave(assignments)
+      
+      // Optionally refresh assignments from server to verify persistence
+      // This could be done by calling a refresh callback if provided
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save assignments'
       console.error('Error saving assignments:', error)
-      toast.error('Failed to save assignments')
+      toast.error(errorMessage)
     } finally {
       setSaving(false)
     }

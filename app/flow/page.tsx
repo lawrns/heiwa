@@ -12,13 +12,19 @@ import { useEffect, useState } from 'react'
 
 interface CMSSection {
   id: string
-  section_type: string
+  section: string  // Fixed: was section_type
   section_name?: string
-  content: string | {
+  title?: string
+  content?: string
+  video_url?: string  // Direct field from database
+  image_url?: string  // Direct field from database
+  json_content?: {
     title?: string
     description?: string
     video_url?: string
+    videoUrl?: string
     image_url?: string
+    imageUrl?: string
     text?: string
     html?: string
     button_text?: string
@@ -55,19 +61,19 @@ export default function FlowPage() {
   }, [])
 
 
-  // Extract CMS sections
-  const heroSection = cmsContent.find(s => s.section_type === 'hero')
-  const introSection = cmsContent.find(s => s.section_type === 'intro')
-  const ctaSection = cmsContent.find(s => s.section_type === 'text' && s.section_name?.toLowerCase().includes('cta'))
+  // Extract CMS sections - Fixed: use 'section' not 'section_type'
+  const heroSection = cmsContent.find(s => s.section === 'hero')
+  const introSection = cmsContent.find(s => s.section === 'intro')
+  const ctaSection = cmsContent.find(s => s.section === 'text' && s.section_name?.toLowerCase().includes('cta'))
 
   return (
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
-        title={typeof heroSection?.content === 'object' && heroSection.content?.title || "Heiwa Flow"}
-        description={typeof heroSection?.content === 'object' && heroSection.content?.description || "Find your inner flow through yoga, wellness, and mindful practices. Balance your body, mind, and spirit in our peaceful Portuguese sanctuary."}
-        videoUrl={typeof heroSection?.content === 'object' && heroSection.content?.video_url || "/optimized/videos/video_001_timeline-1.mp4"}
-        imageUrl={typeof heroSection?.content === 'object' && heroSection.content?.image_url || "/images/yoga_dome3.jpg"}
+        title={heroSection?.json_content?.title || heroSection?.title || "Heiwa Flow"}
+        description={heroSection?.json_content?.description || heroSection?.content || "Find your inner flow through yoga, wellness, and mindful practices. Balance your body, mind, and spirit in our peaceful Portuguese sanctuary."}
+        videoUrl={heroSection?.video_url || heroSection?.json_content?.video_url || heroSection?.json_content?.videoUrl || "/optimized/videos/video_001_timeline-1.mp4"}
+        imageUrl={heroSection?.image_url || heroSection?.json_content?.image_url || heroSection?.json_content?.imageUrl || "/images/yoga_dome3.jpg"}
       />
 
       {/* Introduction Section */}
@@ -75,18 +81,28 @@ export default function FlowPage() {
         <section className="py-20 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-6">
+              {introSection.title && (
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  {introSection.title}
+                </h2>
+              )}
               {typeof introSection.content === 'string' ? (
                 <div dangerouslySetInnerHTML={{ __html: introSection.content }} />
               ) : (
                 <>
-                  {introSection.content?.description && (
+                  {introSection.json_content?.description && (
                     <p className="text-lg text-gray-700 leading-relaxed">
-                      {introSection.content.description}
+                      {introSection.json_content.description}
                     </p>
                   )}
-                  {introSection.content?.text && (
+                  {introSection.json_content?.text && (
                     <p className="text-lg text-gray-700 leading-relaxed">
-                      {introSection.content.text}
+                      {introSection.json_content.text}
+                    </p>
+                  )}
+                  {introSection.content && (
+                    <p className="text-lg text-gray-700 leading-relaxed">
+                      {introSection.content}
                     </p>
                   )}
                 </>
@@ -220,24 +236,24 @@ export default function FlowPage() {
               <div dangerouslySetInnerHTML={{ __html: ctaSection.content }} />
             ) : (
               <>
-                {ctaSection.content?.title && (
+                {ctaSection.json_content?.title && (
                   <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                    {ctaSection.content.title}
+                    {ctaSection.json_content.title}
                   </h2>
                 )}
-                {ctaSection.content?.description && (
+                {ctaSection.json_content?.description && (
                   <p className="text-lg text-gray-600 mb-8">
-                    {ctaSection.content.description}
+                    {ctaSection.json_content.description}
                   </p>
                 )}
-                {ctaSection.content?.button_text && ctaSection.content?.button_url && (
+                {ctaSection.json_content?.button_text && ctaSection.json_content?.button_url && (
                   <a
-                    href={ctaSection.content.button_url}
+                    href={ctaSection.json_content.button_url}
                     className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
                     style={{ backgroundColor: '#ec681c' }}
                   >
                     <Mail className="w-5 h-5" />
-                    {ctaSection.content.button_text}
+                    {ctaSection.json_content.button_text}
                   </a>
                 )}
               </>

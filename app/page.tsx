@@ -123,23 +123,56 @@ export default async function HomePage() {
     rawSubtitle !== 'Edjizz'
     ? rawSubtitle 
     : 'Your surf and lifestyle destination in Santa Cruz, Portugal'
+  
+  // Use CMS video_url, fallback to image_url, then default video
+  // Database uses snake_case, but check both formats for compatibility
+  const heroVideoUrl = heroSection?.video_url || heroSection?.videoUrl
+  const heroImageUrl = heroSection?.image_url || heroSection?.imageUrl || heroSection?.background_image
+  const defaultVideoUrl = "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932934179_Timeline-1.mp4"
+  
+  // Use CMS link data, fallback to defaults
+  // Database uses snake_case, but check both formats for compatibility
+  const primaryLinkUrl = heroSection?.link_url || heroSection?.linkUrl || '/surf-weeks'
+  const primaryLinkText = heroSection?.link_text || heroSection?.linkText || 'Come for a Surf Camp'
+  
+  // Parse description if available
+  const heroDescription = heroSection?.description || ''
 
   return (
     <div className="min-h-screen">
       {/* Video Hero Section */}
       <section className="relative h-screen w-full overflow-hidden">
-        {/* Background Video */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932934179_Timeline-1.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        {/* Background Video or Image - Use CMS data */}
+        {heroVideoUrl ? (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src={heroVideoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : heroImageUrl ? (
+          <div 
+            className="absolute inset-0 w-full h-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${heroImageUrl})` }}
+          />
+        ) : (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src={defaultVideoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
 
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/30"></div>
@@ -155,16 +188,26 @@ export default async function HomePage() {
               {heroSubtitle}
             </p>
             
-            {/* Two Buttons */}
+            {/* Description from CMS */}
+            {heroDescription && (
+              <p className="text-lg md:text-xl text-white/80 mb-8 drop-shadow-md max-w-2xl mx-auto">
+                {heroDescription}
+              </p>
+            )}
+            
+            {/* CTA Buttons - Use CMS link data */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Link
-                href="/surf-weeks"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
-                style={{ backgroundColor: '#ec681c' }}
-              >
-                <Waves className="w-5 h-5" />
-                Come for a Surf Camp
-              </Link>
+              {primaryLinkUrl && primaryLinkText && (
+                <Link
+                  href={primaryLinkUrl}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
+                  style={{ backgroundColor: '#ec681c' }}
+                >
+                  <Waves className="w-5 h-5" />
+                  {primaryLinkText}
+                </Link>
+              )}
+              {/* Secondary button - keep default for now, could be made configurable */}
               <Link
                 href="/rooms"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white border-2 border-white hover:bg-white/10"
@@ -323,24 +366,37 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Activities Around Section */}
+      {/* Activities Around Section - Using CMS Data */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-            Activities Around
+            {facilitiesSection?.title || 'Activities Around'}
           </h2>
+          {facilitiesSection?.subtitle && (
+            <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+              {facilitiesSection.subtitle}
+            </p>
+          )}
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { title: 'Surf Lessons', desc: 'Learn to ride the waves with professional instructors', img: '/optimized/photography_001_dji_0098-scaled.webp' },
-              { title: 'Go Karts', desc: 'Feel the adrenaline rush on our local tracks', img: '/optimized/photography_002_dsc01794.webp' },
-              { title: 'Horseback Riding', desc: 'Explore the countryside on horseback', img: '/optimized/photography_003_dsc01829-enhanced-nr-2.webp' },
-              { title: 'Plane Flight', desc: 'Experience breathtaking aerial views', img: '/optimized/photography_004_dsc02099-scaled.webp' },
-              { title: 'Wineyard Tour', desc: 'Taste local wines and learn about Portuguese vineyards', img: '/optimized/photography_005_dsc02102-scaled.webp' },
-              { title: 'Hiking', desc: 'Discover scenic trails and natural beauty', img: '/optimized/photography_006_dsc02767-scaled.webp' },
-              { title: 'Paragliding', desc: 'Soar above the landscape with stunning views', img: '/optimized/photography_007_dsc03081-enhanced-nr-scaled.webp' },
-              { title: 'Bicycle Riding', desc: 'Pedal through coastal paths and hidden gems', img: '/optimized/photography_008_dsc03427-enhanced-nr-scaled.webp' },
-            ].map((activity) => (
+            {/* Use CMS facilities data if available, otherwise fallback to defaults */}
+            {((facilitiesSection?.facilities && Array.isArray(facilitiesSection.facilities) && facilitiesSection.facilities.length > 0)
+              ? facilitiesSection.facilities.map((activity: any) => ({
+                  title: activity.title || activity.name || '',
+                  desc: activity.description || activity.desc || '',
+                  img: activity.image || activity.imageUrl || activity.img || '/images/placeholder.webp'
+                }))
+              : [
+                  { title: 'Surf Lessons', desc: 'Learn to ride the waves with professional instructors', img: '/optimized/photography_001_dji_0098-scaled.webp' },
+                  { title: 'Go Karts', desc: 'Feel the adrenaline rush on our local tracks', img: '/optimized/photography_002_dsc01794.webp' },
+                  { title: 'Horseback Riding', desc: 'Explore the countryside on horseback', img: '/optimized/photography_003_dsc01829-enhanced-nr-2.webp' },
+                  { title: 'Plane Flight', desc: 'Experience breathtaking aerial views', img: '/optimized/photography_004_dsc02099-scaled.webp' },
+                  { title: 'Wineyard Tour', desc: 'Taste local wines and learn about Portuguese vineyards', img: '/optimized/photography_005_dsc02102-scaled.webp' },
+                  { title: 'Hiking', desc: 'Discover scenic trails and natural beauty', img: '/optimized/photography_006_dsc02767-scaled.webp' },
+                  { title: 'Paragliding', desc: 'Soar above the landscape with stunning views', img: '/optimized/photography_007_dsc03081-enhanced-nr-scaled.webp' },
+                  { title: 'Bicycle Riding', desc: 'Pedal through coastal paths and hidden gems', img: '/optimized/photography_008_dsc03427-enhanced-nr-scaled.webp' },
+                ]
+            ).map((activity) => (
               <div key={activity.title} className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-default">
                 <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
                   <img src={activity.img} alt={activity.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
