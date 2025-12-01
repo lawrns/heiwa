@@ -82,28 +82,62 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { data, error } = await supabaseAdmin
+    // Check if section already exists for this page
+    const { data: existing, error: checkError } = await supabaseAdmin
       .from('page_content')
-      .upsert({
-        page_slug,
-        section: section_type, // Old schema column
-        section_type, // New schema column
-        title: section_name || `${section_type} section`, // Old schema column
-        section_name: section_name || `${section_type} section`, // New schema column
-        content: typeof content === 'object' ? content : { text: content }, // New schema - JSONB
-        json_content: typeof content === 'object' ? content : {}, // Old schema - JSONB
-        order_index: order_index || 0,
-        is_active,
-        created_by,
-        updated_by: created_by,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      } as any, {
-        onConflict: 'page_slug,section',
-        ignoreDuplicates: false
-      })
-      .select()
+      .select('id')
+      .eq('page_slug', page_slug)
+      .eq('section', section_type)
       .single()
+
+    let data, error
+
+    if (existing && !checkError) {
+      // Update existing section
+      const result = await supabaseAdmin
+        .from('page_content')
+        .update({
+          section_type, // New schema column
+          title: section_name || `${section_type} section`, // Old schema column
+          section_name: section_name || `${section_type} section`, // New schema column
+          content: typeof content === 'object' ? content : { text: content }, // New schema - JSONB
+          json_content: typeof content === 'object' ? content : {}, // Old schema - JSONB
+          order_index: order_index || 0,
+          is_active,
+          updated_by: created_by,
+          updated_at: new Date().toISOString()
+        } as any)
+        .eq('id', existing.id)
+        .select()
+        .single()
+      
+      data = result.data
+      error = result.error
+    } else {
+      // Insert new section
+      const result = await supabaseAdmin
+        .from('page_content')
+        .insert({
+          page_slug,
+          section: section_type, // Old schema column
+          section_type, // New schema column
+          title: section_name || `${section_type} section`, // Old schema column
+          section_name: section_name || `${section_type} section`, // New schema column
+          content: typeof content === 'object' ? content : { text: content }, // New schema - JSONB
+          json_content: typeof content === 'object' ? content : {}, // Old schema - JSONB
+          order_index: order_index || 0,
+          is_active,
+          created_by,
+          updated_by: created_by,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        } as any)
+        .select()
+        .single()
+      
+      data = result.data
+      error = result.error
+    }
 
     if (error) {
       console.error('Error creating page content:', error)
