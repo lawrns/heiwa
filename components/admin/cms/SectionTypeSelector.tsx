@@ -4,13 +4,7 @@ import { useState } from 'react'
 import { 
   Target, 
   FileText, 
-  File, 
-  Star, 
-  Images, 
-  DollarSign, 
-  Image as ImageIcon, 
-  Video, 
-  Settings,
+  HelpCircle,
   type LucideIcon
 } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
@@ -40,57 +34,15 @@ const sectionTypes: SectionType[] = [
     category: 'Content'
   },
   {
-    type: 'text',
-    name: 'Text Section',
-    description: 'Rich text content with heading and body text',
-    icon: File,
+    type: 'faq',
+    name: 'FAQ Section',
+    description: 'Frequently asked questions list',
+    icon: HelpCircle,
     category: 'Content'
-  },
-  {
-    type: 'features',
-    name: 'Features Grid',
-    description: 'Grid of feature cards with icons and descriptions',
-    icon: Star,
-    category: 'Layout'
-  },
-  {
-    type: 'gallery',
-    name: 'Image Gallery',
-    description: 'Gallery of images with optional captions',
-    icon: Images,
-    category: 'Media'
-  },
-  {
-    type: 'pricing',
-    name: 'Pricing Table',
-    description: 'Pricing plans with features and call-to-action',
-    icon: DollarSign,
-    category: 'Layout'
-  },
-  {
-    type: 'image_text',
-    name: 'Image + Text',
-    description: 'Side-by-side image and text layout',
-    icon: ImageIcon,
-    category: 'Media'
-  },
-  {
-    type: 'video',
-    name: 'Video Section',
-    description: 'Video player with optional title and description',
-    icon: Video,
-    category: 'Media'
-  },
-  {
-    type: 'custom',
-    name: 'Custom Section',
-    description: 'Create a custom section with your own content',
-    icon: Settings,
-    category: 'Advanced'
   }
 ]
 
-const categories = ['All', 'Layout', 'Content', 'Media', 'Advanced']
+const categories = ['All', 'Layout', 'Content']
 
 interface SectionTypeSelectorProps {
   onSelect: (type: string, name: string) => void

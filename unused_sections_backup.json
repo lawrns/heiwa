@@ -1,0 +1,152 @@
+{
+  "id": "1201dcf4-517d-4f16-a8ec-9e37d8ac70a7",
+  "page_slug": "flow",
+  "section": "features",
+  "title": "Test Features",
+  "content": "{\"text\":\"{}\"}",
+  "video_url": null,
+  "image_url": null,
+  "json_content": {},
+  "is_active": true,
+  "order_index": 0,
+  "created_at": "2025-12-01T20:16:24.87+00:00",
+  "updated_at": "2025-12-01T22:16:11.110006+00:00",
+  "section_name": "Test Features",
+  "section_type": "features",
+  "created_by": null,
+  "updated_by": null
+}
+{
+  "id": "df1dfa1c-7b53-496c-94c0-27ccd27ce2a7",
+  "page_slug": "the-spot",
+  "section": "seo",
+  "title": "Test SEO",
+  "content": "{}",
+  "video_url": null,
+  "image_url": null,
+  "json_content": {},
+  "is_active": true,
+  "order_index": 0,
+  "created_at": "2025-12-01T20:21:40.785+00:00",
+  "updated_at": "2025-12-01T20:21:40.785+00:00",
+  "section_name": "Test SEO",
+  "section_type": "seo",
+  "created_by": null,
+  "updated_by": null
+}
+{
+  "id": "89baf2e1-715d-427d-8b35-0dfd06d6abbb",
+  "page_slug": "about",
+  "section": "features",
+  "title": "About Features",
+  "content": "{}",
+  "video_url": null,
+  "image_url": null,
+  "json_content": {},
+  "is_active": true,
+  "order_index": 0,
+  "created_at": "2025-12-01T20:23:11.769+00:00",
+  "updated_at": "2025-12-01T20:23:11.769+00:00",
+  "section_name": "About Features",
+  "section_type": "features",
+  "created_by": null,
+  "updated_by": null
+}
+{
+  "id": "9b060281-2f0e-44d4-a020-2e5638df9116",
+  "page_slug": "play",
+  "section": "seo",
+  "title": "Play SEO",
+  "content": "{}",
+  "video_url": null,
+  "image_url": null,
+  "json_content": {},
+  "is_active": true,
+  "order_index": 0,
+  "created_at": "2025-12-01T20:23:13.415+00:00",
+  "updated_at": "2025-12-01T20:23:13.415+00:00",
+  "section_name": "Play SEO",
+  "section_type": "seo",
+  "created_by": null,
+  "updated_by": null
+}
+{
+  "id": "cd7bce0d-a4dd-4f0b-b6c6-6b68ef9da020",
+  "page_slug": "the-spot",
+  "section": "features",
+  "title": "Spot Features",
+  "content": "{\"title\":\"Features\",\"items\":[]}",
+  "video_url": null,
+  "image_url": null,
+  "json_content": {
+    "items": [],
+    "title": "Features"
+  },
+  "is_active": true,
+  "order_index": 0,
+  "created_at": "2025-12-01T20:23:37.4+00:00",
+  "updated_at": "2025-12-01T20:23:37.4+00:00",
+  "section_name": "Spot Features",
+  "section_type": "features",
+  "created_by": null,
+  "updated_by": null
+}
+{
+  "id": "83af090d-14a7-4166-a59b-5d0c0d708800",
+  "page_slug": "surf",
+  "section": "features",
+  "title": "Surf Features Test",
+  "content": "{\"title\":\"Test\"}",
+  "video_url": null,
+  "image_url": null,
+  "json_content": {
+    "title": "Test"
+  },
+  "is_active": true,
+  "order_index": 0,
+  "created_at": "2025-12-01T22:15:41.752+00:00",
+  "updated_at": "2025-12-01T22:15:41.872279+00:00",
+  "section_name": "Surf Features Test",
+  "section_type": "features",
+  "created_by": null,
+  "updated_by": null
+}
+{
+  "id": "dc7d700c-34f4-4953-94b7-87b46c7ddb8d",
+  "page_slug": "about",
+  "section": "seo",
+  "title": "About SEO",
+  "content": "{\"title\":\"About SEO\",\"description\":\"SEO metadata\"}",
+  "video_url": null,
+  "image_url": null,
+  "json_content": {
+    "title": "About SEO",
+    "description": "SEO metadata"
+  },
+  "is_active": true,
+  "order_index": 0,
+  "created_at": "2025-12-01T18:30:45.658+00:00",
+  "updated_at": "2025-12-01T18:30:45.658+00:00",
+  "section_name": "About SEO",
+  "section_type": "seo",
+  "created_by": null,
+  "updated_by": null
+}
+{
+  "id": "4cbf6f3b-7e26-4445-9f76-c7fcb623f33a",
+  "page_slug": "play",
+  "section": "features",
+  "title": "Play Features 1764620654",
+  "content": "{}",
+  "video_url": null,
+  "image_url": null,
+  "json_content": {},
+  "is_active": true,
+  "order_index": 99,
+  "created_at": "2025-12-01T20:24:14.628+00:00",
+  "updated_at": "2025-12-01T20:24:14.628+00:00",
+  "section_name": "Play Features 1764620654",
+  "section_type": "features",
+  "created_by": null,
+  "updated_by": null
+}

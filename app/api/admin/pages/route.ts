@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate section_type - must match database CHECK constraint
-    const validSectionTypes = ['hero', 'intro', 'faq', 'features', 'seo']
+    const validSectionTypes = ['hero', 'intro', 'faq']
     if (!validSectionTypes.includes(section_type)) {
       return NextResponse.json(
         { success: false, error: `Invalid section_type. Must be one of: ${validSectionTypes.join(', ')}` },
