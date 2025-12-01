@@ -256,12 +256,12 @@ export async function GET(request: NextRequest) {
           if (participants.length === 0) {
             const dietaryMatches = notes.match(/Dietary Requirements:\s*(.+?)(?:\n|$)/gi)
             if (dietaryMatches) {
-              dietaryPreferences = dietaryMatches.map(m => m.replace(/Dietary Requirements:\s*/i, '').trim()).join(', ')
+              dietaryPreferences = dietaryMatches.map((m: string) => m.replace(/Dietary Requirements:\s*/i, '').trim()).join(', ')
             }
             
             const requestMatches = notes.match(/Special Requests:\s*(.+?)(?:\n|$)/gi)
             if (requestMatches) {
-              specialRequests = requestMatches.map(m => m.replace(/Special Requests:\s*/i, '').trim()).join('\n')
+              specialRequests = requestMatches.map((m: string) => m.replace(/Special Requests:\s*/i, '').trim()).join('\n')
             }
             
             // If no structured format found, use notes as special requests
@@ -286,8 +286,8 @@ export async function GET(request: NextRequest) {
         status: booking.status || 'pending',
         payment_status: booking.payment_status || 'pending',
         created_at: booking.created_at,
-        special_requests: specialRequests,
-        dietary_preferences: dietaryPreferences,
+        special_requests: booking.special_requests || specialRequests, // Use dedicated column, fallback to parsed notes
+        dietary_preferences: booking.dietary_requirements || dietaryPreferences, // Use dedicated column, fallback to parsed notes
         client_notes: clientNotes,
         notes: booking.notes || '', // Keep raw notes
         client_ids: booking.client_ids || [],
@@ -872,7 +872,7 @@ export async function POST(request: NextRequest) {
       }
 
     // Step 2: Create booking record
-    let bookingData
+    let bookingData: any
     try {
       // Fetch room details for room_type
       const { data: room } = await supabaseAdmin
@@ -892,7 +892,9 @@ export async function POST(request: NextRequest) {
         check_out: end_date, // REQUIRED - NOT NULL field
         room_type: room?.name || room_id, // Set room_type from room name
         notes: message || '',
-        source: 'api'
+        source: 'api',
+        dietary_requirements: participant?.dietaryRequirements || null,
+        special_requests: participant?.specialRequests || null
       }
 
       const { data: newBooking, error: bookingError } = await supabaseAdmin

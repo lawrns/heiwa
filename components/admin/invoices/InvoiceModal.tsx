@@ -38,12 +38,19 @@ interface InvoiceModalProps {
 
 export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: InvoiceModalProps) {
   const [loading, setLoading] = useState(false)
+  
+  // Helper function to format date for HTML input
+  const formatDateForInput = (dateString: string | undefined): string => {
+    if (!dateString) return ''
+    return dateString.split('T')[0] // Extract YYYY-MM-DD from ISO datetime
+  }
+  
   const [formData, setFormData] = useState({
     booking_id: bookingId || invoice?.booking_id || '',
     amount: invoice?.amount || 0,
     currency: invoice?.currency || 'EUR',
     status: invoice?.status || 'draft',
-    due_date: invoice?.due_date || '',
+    due_date: formatDateForInput(invoice?.due_date),
   })
   const [booking, setBooking] = useState<Booking | null>(null)
 
@@ -134,7 +141,7 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
               />
               {booking && (
                 <p className="text-sm text-gray-500 mt-2">
-                  Booking total: €{booking.total_price || booking.total_amount}
+                  Booking total: €{booking.total_amount}
                 </p>
               )}
             </div>

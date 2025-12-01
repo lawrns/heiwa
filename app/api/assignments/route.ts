@@ -25,11 +25,7 @@ export async function GET(request: NextRequest) {
         enrollment_id,
         check_in_date,
         check_out_date,
-        bed_number,
-        surf_camp_enrollments:enrollment_id (
-          id,
-          client_id
-        )
+        bed_number
       `)
       .eq('surf_camp_id', weekId)
 
@@ -40,10 +36,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Group assignments by room_id
-    const groupedAssignments: Record<string, string[]> = {}
+    const groupedAssignments: Record<string, string[]> = {} as Record<string, string[]>
     
     (assignments || []).forEach((assignment: any) => {
-      const enrollmentId = assignment.enrollment_id || assignment.surf_camp_enrollments?.id
+      const enrollmentId = assignment.enrollment_id
       if (enrollmentId && assignment.room_id) {
         if (!groupedAssignments[assignment.room_id]) {
           groupedAssignments[assignment.room_id] = []

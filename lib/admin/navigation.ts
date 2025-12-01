@@ -9,6 +9,7 @@ import {
   FileText,
   BookOpen,
   Package,
+  Receipt,
   LucideIcon
 } from 'lucide-react'
 
@@ -55,6 +56,12 @@ export const adminNavigationItems: NavigationItem[] = [
     href: '/admin/bookings',
     icon: ClipboardList,
     description: 'View and manage bookings'
+  },
+  {
+    name: 'Invoices',
+    href: '/admin/invoices',
+    icon: Receipt,
+    description: 'Manage invoices and billing'
   },
   {
     name: 'Calendar',

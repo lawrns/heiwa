@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { FileText, Download, Mail, Calendar, Euro } from 'lucide-react'
@@ -32,7 +33,36 @@ interface InvoiceViewModalProps {
 }
 
 export function InvoiceViewModal({ open, onClose, invoice, onEdit }: InvoiceViewModalProps) {
+  const [loading, setLoading] = useState(false)
+  
   if (!invoice) return null
+
+  const handleDownloadPDF = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch(`/api/invoices/${invoice.id}/pdf`)
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF')
+      }
+      
+      // Create blob from response and download
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `invoice-${invoice.invoice_number}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error('Error downloading PDF:', error)
+      alert('Failed to download PDF. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -145,9 +175,14 @@ export function InvoiceViewModal({ open, onClose, invoice, onEdit }: InvoiceView
 
           {/* Actions */}
           <div className="flex gap-2 pt-4 border-t">
-            <Button variant="outline" className="flex-1">
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={handleDownloadPDF}
+              disabled={loading}
+            >
               <Download className="h-4 w-4 mr-2" />
-              Download PDF
+              {loading ? 'Generating...' : 'Download PDF'}
             </Button>
             <Button variant="outline" className="flex-1">
               <Mail className="h-4 w-4 mr-2" />
