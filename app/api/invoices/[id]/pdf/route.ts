@@ -44,14 +44,14 @@ export async function GET(
       )
     }
 
-    // Generate simple HTML invoice
+    // Generate HTML invoice that can be printed to PDF by the browser
     const htmlContent = generateInvoiceHTML(data)
 
-    // For now, return as HTML download (can be enhanced with PDF library later)
+    // Return as HTML with proper headers for viewing/printing
     return new NextResponse(htmlContent, {
       headers: {
-        'Content-Type': 'text/html',
-        'Content-Disposition': `attachment; filename="invoice-${data.invoice_number}.html"`
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Disposition': `inline; filename="invoice-${data.invoice_number}.html"`
       }
     })
 

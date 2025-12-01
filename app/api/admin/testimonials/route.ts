@@ -94,11 +94,14 @@ export async function POST(request: NextRequest) {
       .from('testimonials')
       .insert({
         author_name: guest_name,
-        author_email: guest_email,
-        author_image: guest_image_url,
+        author_email: guest_email || null,
+        image_url: guest_image_url || null, // Legacy column
+        author_image: guest_image_url || null, // New column
         rating,
-        content: text,
-        is_featured,
+        text: text, // Legacy column
+        content: text, // New column
+        is_featured: is_featured || false,
+        is_active: true,
         created_by,
         updated_by: created_by
       } as any)

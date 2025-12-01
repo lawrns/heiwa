@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
       const { roomId, participantIds } = assignment
 
       for (const enrollmentId of participantIds) {
-        // Get enrollment to get client_id
+        // Get enrollment to get client_id (booking_id is optional)
         const { data: enrollment } = await supabaseAdmin
           .from('surf_camp_enrollments')
           .select('client_id, booking_id')
@@ -124,16 +124,22 @@ export async function POST(request: NextRequest) {
           .single()
 
         if (enrollment) {
-          roomAssignmentsToInsert.push({
+          const assignmentData: any = {
             room_id: roomId,
             client_id: enrollment.client_id,
-            booking_id: enrollment.booking_id,
             surf_camp_id: weekId,
             enrollment_id: enrollmentId,
             check_in_date: surfCamp.start_date,
             check_out_date: surfCamp.end_date,
             status: 'confirmed'
-          })
+          }
+          
+          // Only include booking_id if it exists
+          if (enrollment.booking_id) {
+            assignmentData.booking_id = enrollment.booking_id
+          }
+          
+          roomAssignmentsToInsert.push(assignmentData)
         }
       }
     }

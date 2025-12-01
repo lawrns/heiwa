@@ -17,7 +17,8 @@ export async function GET(request: NextRequest) {
     }
 
     if (sectionType) {
-      query = query.eq('section_type', sectionType)
+      // Query by section_type first (new column), fall back to section (legacy)
+      query = query.or(`section_type.eq.${sectionType},section.eq.${sectionType}`)
     }
 
     const { data, error } = await query
@@ -86,9 +87,11 @@ export async function POST(request: NextRequest) {
       .from('page_content')
       .insert({
         page_slug,
-        section_type,
+        section: section_type, // Legacy column
+        section_type, // New column
         section_name,
-        content,
+        json_content: typeof content === 'object' ? content : null,
+        content: typeof content === 'string' ? content : null,
         order_index: order_index || 0,
         is_active,
         created_by,
