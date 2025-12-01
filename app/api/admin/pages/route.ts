@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabaseAdmin
       .from('page_content')
-      .insert({
+      .upsert({
         page_slug,
         section: section_type, // Old schema column
         section_type, // New schema column
@@ -98,7 +98,10 @@ export async function POST(request: NextRequest) {
         updated_by: created_by,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      } as any)
+      } as any, {
+        onConflict: 'page_slug,section',
+        ignoreDuplicates: false
+      })
       .select()
       .single()
 
