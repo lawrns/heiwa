@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { measurePerformance } from '@/lib/monitoring'
 
 /**
  * Fix Supabase storage bucket name mismatch
@@ -20,15 +21,16 @@ function fixSupabaseBucketUrl(url: string): string {
 
 // API endpoint for getting all rooms (compatible with booking widget)
 export async function GET() {
-  try {
-    console.log('🏠 Fetching all rooms for booking widget')
+  return measurePerformance('api.rooms.get', async () => {
+    try {
+      console.log('🏠 Fetching all rooms for booking widget')
 
-    // Get all active rooms from database
-    const { data: rooms, error: roomsError } = await supabaseAdmin
-      .from('rooms')
-      .select('*')
-      .eq('is_active', true)
-      .order('name')
+      // Get all active rooms from database
+      const { data: rooms, error: roomsError } = await supabaseAdmin
+        .from('rooms')
+        .select('*')
+        .eq('is_active', true)
+        .order('name')
     
     // Use rooms directly as they're already filtered by is_active = true
     const activeRooms = rooms || []
@@ -136,34 +138,33 @@ export async function GET() {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Heiwa-API-Key',
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-        'X-Content-Version': Date.now().toString() // Cache busting
+        // Cache for 5 minutes, allow stale content for 1 hour while revalidating
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
+        'X-Content-Version': Date.now().toString() // Cache busting for debugging
       }
     })
-
-  } catch (error) {
-    console.error('❌ Unexpected error fetching rooms:', error)
-    console.error('🔍 Error type:', error instanceof Error ? error.constructor.name : typeof error)
-    console.error('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET')
-    console.error('🔍 Service Role Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET')
-    
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Internal server error',
-      message: process.env.NODE_ENV === 'development'
-        ? `Unexpected error: ${error instanceof Error ? error.stack : String(error)}`
-        : 'An unexpected error occurred. Please try again later.'
-    }, { 
-      status: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Heiwa-API-Key',
-      }
-    })
-  }
+    } catch (error) {
+      console.error('❌ Unexpected error fetching rooms:', error)
+      console.error('🔍 Error type:', error instanceof Error ? error.constructor.name : typeof error)
+      console.error('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET')
+      console.error('🔍 Service Role Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET')
+      
+      return NextResponse.json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Internal server error',
+        message: process.env.NODE_ENV === 'development'
+          ? `Unexpected error: ${error instanceof Error ? error.stack : String(error)}`
+          : 'An unexpected error occurred. Please try again later.'
+      }, { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Heiwa-API-Key',
+        }
+      })
+    }
+  })
 }
 
 // Handle OPTIONS for CORS
