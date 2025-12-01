@@ -62,9 +62,18 @@ export async function PUT(
     }
 
     if (page_slug !== undefined) updateData.page_slug = page_slug
-    if (section_type !== undefined) updateData.section_type = section_type
-    if (section_name !== undefined) updateData.section_name = section_name
-    if (content !== undefined) updateData.content = content
+    if (section_type !== undefined) {
+      updateData.section = section_type // Old schema column
+      updateData.section_type = section_type // New schema column
+    }
+    if (section_name !== undefined) {
+      updateData.title = section_name // Old schema column
+      updateData.section_name = section_name // New schema column
+    }
+    if (content !== undefined) {
+      updateData.content = typeof content === 'object' ? content : { text: content } // New schema - JSONB
+      updateData.json_content = typeof content === 'object' ? content : {} // Old schema - JSONB
+    }
     if (order_index !== undefined) updateData.order_index = order_index
     if (is_active !== undefined) updateData.is_active = is_active
     if (updated_by !== undefined) updateData.updated_by = updated_by

@@ -17,8 +17,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (sectionType) {
-      // Query by section_type first (new column), fall back to section (legacy)
-      query = query.or(`section_type.eq.${sectionType},section.eq.${sectionType}`)
+      query = query.eq('section', sectionType) // Use old schema column name
     }
 
     const { data, error } = await query
@@ -58,7 +57,7 @@ export async function POST(request: NextRequest) {
     } = body
 
     // Validation
-    if (!page_slug || !section_type || !content) {
+    if (!page_slug || !section_type || content === undefined || content === null) {
       return NextResponse.json(
         { success: false, error: 'Missing required fields: page_slug, section_type, content' },
         { status: 400 }
@@ -66,7 +65,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate page_slug
-    const validPages = ['flow', 'play', 'surf', 'the-spot', 'about', 'contact', 'surf-weeks']
+    const validPages = ['flow', 'play', 'surf', 'the-spot', 'about', 'contact']
     if (!validPages.includes(page_slug)) {
       return NextResponse.json(
         { success: false, error: 'Invalid page_slug' },
@@ -74,11 +73,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate section_type
-    const validSectionTypes = ['hero', 'intro', 'features', 'gallery', 'pricing', 'text', 'image_text', 'video', 'custom']
+    // Validate section_type - must match database CHECK constraint
+    const validSectionTypes = ['hero', 'intro', 'faq', 'features', 'seo']
     if (!validSectionTypes.includes(section_type)) {
       return NextResponse.json(
-        { success: false, error: 'Invalid section_type' },
+        { success: false, error: `Invalid section_type. Must be one of: ${validSectionTypes.join(', ')}` },
         { status: 400 }
       )
     }
@@ -87,15 +86,18 @@ export async function POST(request: NextRequest) {
       .from('page_content')
       .insert({
         page_slug,
-        section: section_type, // Legacy column
-        section_type, // New column
-        section_name,
-        json_content: typeof content === 'object' ? content : null,
-        content: typeof content === 'string' ? content : null,
+        section: section_type, // Old schema column
+        section_type, // New schema column
+        title: section_name || `${section_type} section`, // Old schema column
+        section_name: section_name || `${section_type} section`, // New schema column
+        content: typeof content === 'object' ? content : { text: content }, // New schema - JSONB
+        json_content: typeof content === 'object' ? content : {}, // Old schema - JSONB
         order_index: order_index || 0,
         is_active,
         created_by,
-        updated_by: created_by
+        updated_by: created_by,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       } as any)
       .select()
       .single()
