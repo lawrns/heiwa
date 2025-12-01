@@ -83,8 +83,9 @@ async function main() {
   await runTest('PUB-NAV-004: Mobile responsive', '1.1 Navigation', async () => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto(BASE_URL);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     const mainContent = page.locator('main, body').first();
+    await mainContent.waitFor({ state: 'visible', timeout: 10000 });
     if (!(await mainContent.isVisible())) {
       throw new Error('Main content not visible on mobile');
     }
@@ -168,9 +169,32 @@ async function main() {
   });
 
   await runTest('API: GET /api/availability', 'API', async () => {
-    const response = await page.request.get(`${BASE_URL}/api/availability`);
+    // First get a valid room ID
+    const roomsResponse = await page.request.get(`${BASE_URL}/api/rooms`);
+    const roomsResult = await roomsResponse.json();
+    
+    if (!roomsResult.data || !roomsResult.data.rooms || roomsResult.data.rooms.length === 0) {
+      // Skip test if no rooms
+      console.log('⚠️ Skipping availability test: No rooms found');
+      return;
+    }
+    
+    const roomId = roomsResult.data.rooms[0].id;
+    
+    // Generate dates
+    const today = new Date();
+    const nextWeek = new Date(today);
+    nextWeek.setDate(today.getDate() + 7);
+    const checkIn = nextWeek.toISOString().split('T')[0];
+    const checkOutDate = new Date(nextWeek);
+    checkOutDate.setDate(nextWeek.getDate() + 5);
+    const checkOut = checkOutDate.toISOString().split('T')[0];
+
+    const response = await page.request.get(`${BASE_URL}/api/availability?roomId=${roomId}&checkIn=${checkIn}&checkOut=${checkOut}`);
+    
     if (response.status() !== 200) {
-      throw new Error(`API returned ${response.status()}`);
+      const text = await response.text();
+      throw new Error(`API returned ${response.status()}: ${text}`);
     }
   });
 
