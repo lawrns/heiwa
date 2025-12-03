@@ -87,6 +87,8 @@ export async function POST(request: NextRequest) {
       description,
       capacity, 
       price_per_night,
+      pricing: pricingInput,
+      booking_type,
       amenities, 
       featured_image,
       images, 
@@ -101,10 +103,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Build pricing object from price_per_night
-    const pricing = {
-      standard: price_per_night || 0,
-      offSeason: price_per_night ? Math.round(price_per_night * 0.8) : 0 // Default off-season to 80% of standard
+    // Build pricing object - support both old format (price_per_night) and new format (pricing object)
+    let pricing
+    if (pricingInput) {
+      // New format with full pricing structure including surfCamp
+      pricing = {
+        standard: pricingInput.standard || 0,
+        offSeason: pricingInput.offSeason || pricingInput.standard || 0,
+        ...(pricingInput.surfCamp && { surfCamp: pricingInput.surfCamp })
+      }
+    } else {
+      // Legacy format with price_per_night
+      pricing = {
+        standard: price_per_night || 0,
+        offSeason: price_per_night ? Math.round(price_per_night * 0.8) : 0
+      }
     }
 
     // Prepare images array - include featured_image as first image if provided
@@ -120,7 +133,7 @@ export async function POST(request: NextRequest) {
       amenities: amenities || [],
       images: roomImages,
       is_active: is_active !== false,
-      booking_type: 'whole',
+      booking_type: booking_type || 'whole',
       bed_types: [],
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()

@@ -1,0 +1,1226 @@
+{
+  "config": {
+    "configFile": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/playwright.production.config.ts",
+    "rootDir": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/global-setup.ts",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "test-results-production"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results-production/results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/production-*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/production-*.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/production-*.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "production-admin-cms.spec.ts",
+      "file": "production-admin-cms.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Admin CMS Management",
+          "file": "production-admin-cms.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should load CMS homepage editor",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 10167,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/homepage/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/homepage\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/homepage\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/homepage/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/homepage\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/homepage\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:13:24",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                          "column": 24,
+                          "line": 13
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 12 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/homepage/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 14 |\u001b[39m     \n \u001b[90m 15 |\u001b[39m     \u001b[36mconst\u001b[39m editor \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form, [data-testid*=\"editor\"], [contenteditable]'\u001b[39m)\n \u001b[90m 16 |\u001b[39m     \u001b[36mawait\u001b[39m expect(editor\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                            "column": 24,
+                            "line": 13
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/homepage/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/homepage\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/homepage\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 12 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/homepage/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 14 |\u001b[39m     \n \u001b[90m 15 |\u001b[39m     \u001b[36mconst\u001b[39m editor \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form, [data-testid*=\"editor\"], [contenteditable]'\u001b[39m)\n \u001b[90m 16 |\u001b[39m     \u001b[36mawait\u001b[39m expect(editor\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:13:24\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:53:52.736Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                        "column": 24,
+                        "line": 13
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-37965efc6b6c4513d716",
+              "file": "production-admin-cms.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "should load CMS pages management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 10059,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/pages/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/pages\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/pages\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/pages/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/pages\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/pages\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:23:24",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                          "column": 24,
+                          "line": 23
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 21 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 22 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/pages/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 24 |\u001b[39m     \n \u001b[90m 25 |\u001b[39m     \u001b[36mconst\u001b[39m pagesList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"pages-list\"], [class*=\"page\"]'\u001b[39m)\n \u001b[90m 26 |\u001b[39m     \u001b[36mawait\u001b[39m expect(pagesList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                            "column": 24,
+                            "line": 23
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/pages/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/pages\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/pages\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 21 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 22 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/pages/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 24 |\u001b[39m     \n \u001b[90m 25 |\u001b[39m     \u001b[36mconst\u001b[39m pagesList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"pages-list\"], [class*=\"page\"]'\u001b[39m)\n \u001b[90m 26 |\u001b[39m     \u001b[36mawait\u001b[39m expect(pagesList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:23:24\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:54:03.506Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                        "column": 24,
+                        "line": 23
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-d7d89b4357e8bfd3d0d0",
+              "file": "production-admin-cms.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "should load FAQ management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 10168,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/faq/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/faq\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/faq\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/faq/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/faq\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/faq\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:33:24",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                          "column": 24,
+                          "line": 33
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 32 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/faq/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m     \n \u001b[90m 35 |\u001b[39m     \u001b[36mconst\u001b[39m faqList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"faq-list\"], [class*=\"faq\"]'\u001b[39m)\n \u001b[90m 36 |\u001b[39m     \u001b[36mawait\u001b[39m expect(faqList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                            "column": 24,
+                            "line": 33
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/faq/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/faq\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/faq\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 32 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/faq/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m     \n \u001b[90m 35 |\u001b[39m     \u001b[36mconst\u001b[39m faqList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"faq-list\"], [class*=\"faq\"]'\u001b[39m)\n \u001b[90m 36 |\u001b[39m     \u001b[36mawait\u001b[39m expect(faqList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:33:24\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:54:14.127Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                        "column": 24,
+                        "line": 33
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-c6c79437a2a4a10aacaf",
+              "file": "production-admin-cms.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "should load testimonials management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 10158,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/testimonials/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/testimonials/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:43:24",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                          "column": 24,
+                          "line": 43
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 41 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 42 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 43 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/testimonials/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 44 |\u001b[39m     \n \u001b[90m 45 |\u001b[39m     \u001b[36mconst\u001b[39m testimonialsList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"testimonials\"], [class*=\"testimonial\"]'\u001b[39m)\n \u001b[90m 46 |\u001b[39m     \u001b[36mawait\u001b[39m expect(testimonialsList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                            "column": 24,
+                            "line": 43
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/testimonials/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 41 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 42 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 43 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/testimonials/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 44 |\u001b[39m     \n \u001b[90m 45 |\u001b[39m     \u001b[36mconst\u001b[39m testimonialsList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"testimonials\"], [class*=\"testimonial\"]'\u001b[39m)\n \u001b[90m 46 |\u001b[39m     \u001b[36mawait\u001b[39m expect(testimonialsList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:43:24\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:54:24.925Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                        "column": 24,
+                        "line": 43
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-5b235b892a9d9e54ed24",
+              "file": "production-admin-cms.spec.ts",
+              "line": 39,
+              "column": 7
+            },
+            {
+              "title": "should load CMS settings",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 10081,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/settings/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/settings\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/settings\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/settings/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/settings\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/settings\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:53:24",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                          "column": 24,
+                          "line": 53
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/settings/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \n \u001b[90m 55 |\u001b[39m     \u001b[36mconst\u001b[39m settingsForm \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form, [data-testid*=\"settings\"]'\u001b[39m)\n \u001b[90m 56 |\u001b[39m     \u001b[36mawait\u001b[39m expect(settingsForm\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                            "column": 24,
+                            "line": 53
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/settings/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/settings\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/settings\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/settings/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \n \u001b[90m 55 |\u001b[39m     \u001b[36mconst\u001b[39m settingsForm \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form, [data-testid*=\"settings\"]'\u001b[39m)\n \u001b[90m 56 |\u001b[39m     \u001b[36mawait\u001b[39m expect(settingsForm\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:53:24\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:54:35.804Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-chromium/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
+                        "column": 24,
+                        "line": 53
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-ea87de7f5c6ef72779fc",
+              "file": "production-admin-cms.spec.ts",
+              "line": 49,
+              "column": 7
+            },
+            {
+              "title": "should load media library",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4988,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:54:46.578Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-602cdea641f0a8c7e0e0",
+              "file": "production-admin-cms.spec.ts",
+              "line": 59,
+              "column": 7
+            },
+            {
+              "title": "should load CMS homepage editor",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 33688,
+                      "error": {
+                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
+                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 23,
+                          "line": 15
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 23,
+                            "line": 15
+                          },
+                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:54:52.204Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 23,
+                        "line": 15
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-43410d23801251fadb81",
+              "file": "production-admin-cms.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "should load CMS pages management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 34075,
+                      "error": {
+                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
+                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 23,
+                          "line": 15
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 23,
+                            "line": 15
+                          },
+                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:55:27.765Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 23,
+                        "line": 15
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-67bdcc905a69bdb9cbec",
+              "file": "production-admin-cms.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "should load FAQ management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 33607,
+                      "error": {
+                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
+                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 23,
+                          "line": 15
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 23,
+                            "line": 15
+                          },
+                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:56:03.179Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 23,
+                        "line": 15
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-0d4016f67f89268ca554",
+              "file": "production-admin-cms.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "should load testimonials management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 33758,
+                      "error": {
+                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
+                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 23,
+                          "line": 15
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 23,
+                            "line": 15
+                          },
+                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:56:38.084Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 23,
+                        "line": 15
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-d0d2dc9325340b1df4b8",
+              "file": "production-admin-cms.spec.ts",
+              "line": 39,
+              "column": 7
+            },
+            {
+              "title": "should load CMS settings",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 33605,
+                      "error": {
+                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
+                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 23,
+                          "line": 15
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 23,
+                            "line": 15
+                          },
+                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:57:13.067Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 23,
+                        "line": 15
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-f056557554f420bacf80",
+              "file": "production-admin-cms.spec.ts",
+              "line": 49,
+              "column": 7
+            },
+            {
+              "title": "should load media library",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 33422,
+                      "error": {
+                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
+                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 23,
+                          "line": 15
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 23,
+                            "line": 15
+                          },
+                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:57:48.162Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-03352-t-should-load-media-library-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-03352-t-should-load-media-library-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-03352-t-should-load-media-library-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 23,
+                        "line": 15
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-de9e76538ade31bbd763",
+              "file": "production-admin-cms.spec.ts",
+              "line": 59,
+              "column": 7
+            },
+            {
+              "title": "should load CMS homepage editor",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:58:22.789Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-23d8960a62754963481a",
+              "file": "production-admin-cms.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "should load CMS pages management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:58:23.119Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-9878ef1c11834932bd67",
+              "file": "production-admin-cms.spec.ts",
+              "line": 19,
+              "column": 7
+            },
+            {
+              "title": "should load FAQ management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:58:23.460Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-64bf4e592b4365f42683",
+              "file": "production-admin-cms.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "should load testimonials management",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:58:23.757Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-4c0557221b61e523d7fa",
+              "file": "production-admin-cms.spec.ts",
+              "line": 39,
+              "column": 7
+            },
+            {
+              "title": "should load CMS settings",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:58:24.079Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-d993beafe5335188585c",
+              "file": "production-admin-cms.spec.ts",
+              "line": 49,
+              "column": 7
+            },
+            {
+              "title": "should load media library",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1,
+                      "error": {
+                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
+                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                      },
+                      "errors": [
+                        {
+                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-12-01T22:58:24.402Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "7384a94d97a3bf5f747c-682875b9a926080e3b64",
+              "file": "production-admin-cms.spec.ts",
+              "line": 59,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-12-01T22:53:44.176Z",
+    "duration": 280256.56,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 17,
+    "flaky": 0
+  }
+}

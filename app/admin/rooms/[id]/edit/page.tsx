@@ -5,15 +5,24 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save, Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 
+interface SurfCampPricing {
+  strategy: 'perBed' | 'perRoomOccupancy'
+  perBed?: number
+  occupancy?: Record<number, number>  // { 1: 800, 2: 580, 3: 500, ... }
+}
+
+interface RoomPricing {
+  standard: number
+  offSeason?: number
+  surfCamp?: SurfCampPricing
+}
+
 interface Room {
   id: string
   name: string
   capacity: number
   booking_type: 'whole' | 'perBed'
-  pricing: {
-    standard: number
-    offSeason?: number
-  }
+  pricing: RoomPricing
   amenities: string[]
   description: string
   images: string[]
@@ -295,9 +304,10 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {/* Pricing */}
+        {/* Standard Pricing */}
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Pricing</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Standard Room Pricing</h2>
+          <p className="text-sm text-gray-600 mb-4">Regular nightly rates for direct room bookings (not part of surf camp packages)</p>
           
           <div className="space-y-4">
             <div>
@@ -337,6 +347,153 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
               />
               <p className="text-xs text-gray-500 mt-1">Price per night during off-season (October-April). Leave empty to use peak rate.</p>
             </div>
+          </div>
+        </div>
+
+        {/* Surf Camp Pricing */}
+        <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Surf Camp Package Pricing</h2>
+          <p className="text-sm text-gray-600 mb-6">Configure pricing when this room is booked as part of a surf week package</p>
+          
+          <div className="space-y-6">
+            {/* Pricing Strategy Toggle */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Pricing Strategy
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="surfCampStrategy"
+                    value="perBed"
+                    checked={room.pricing?.surfCamp?.strategy === 'perBed' || !room.pricing?.surfCamp?.strategy}
+                    onChange={() => setRoom({
+                      ...room,
+                      pricing: {
+                        ...room.pricing,
+                        surfCamp: {
+                          ...room.pricing?.surfCamp,
+                          strategy: 'perBed',
+                          occupancy: undefined
+                        }
+                      }
+                    })}
+                    className="text-heiwaOrange-600 focus:ring-heiwaOrange-500"
+                  />
+                  <span className="text-sm font-medium">Per Bed (Fixed)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="surfCampStrategy"
+                    value="perRoomOccupancy"
+                    checked={room.pricing?.surfCamp?.strategy === 'perRoomOccupancy'}
+                    onChange={() => {
+                      const occupancy: Record<number, number> = {}
+                      for (let i = 1; i <= room.capacity; i++) {
+                        occupancy[i] = room.pricing?.surfCamp?.perBed || 500
+                      }
+                      setRoom({
+                        ...room,
+                        pricing: {
+                          ...room.pricing,
+                          surfCamp: {
+                            strategy: 'perRoomOccupancy',
+                            perBed: undefined,
+                            occupancy
+                          }
+                        }
+                      })
+                    }}
+                    className="text-heiwaOrange-600 focus:ring-heiwaOrange-500"
+                  />
+                  <span className="text-sm font-medium">Tiered by Occupancy</span>
+                </label>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                {room.pricing?.surfCamp?.strategy === 'perRoomOccupancy' 
+                  ? 'Set different prices per person based on how many guests share the room'
+                  : 'Same price per bed regardless of room occupancy'}
+              </p>
+            </div>
+
+            {/* Per Bed Pricing */}
+            {(!room.pricing?.surfCamp?.strategy || room.pricing?.surfCamp?.strategy === 'perBed') && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Price Per Bed (€/person for full surf week)
+                </label>
+                <input
+                  type="number"
+                  value={room.pricing?.surfCamp?.perBed || ''}
+                  onChange={(e) => setRoom({
+                    ...room,
+                    pricing: {
+                      ...room.pricing,
+                      surfCamp: {
+                        ...room.pricing?.surfCamp,
+                        strategy: 'perBed',
+                        perBed: parseFloat(e.target.value) || undefined
+                      }
+                    }
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                  placeholder="500.00"
+                  min="0"
+                  step="0.01"
+                />
+                <p className="text-xs text-gray-500 mt-1">Each guest pays this amount regardless of how many people share the room</p>
+              </div>
+            )}
+
+            {/* Tiered Occupancy Pricing */}
+            {room.pricing?.surfCamp?.strategy === 'perRoomOccupancy' && (
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-gray-700">
+                  Price Per Person by Occupancy (€/person for full surf week)
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {Array.from({ length: room.capacity }, (_, i) => i + 1).map((occupancy) => (
+                    <div key={occupancy} className="flex items-center gap-2">
+                      <span className="text-sm text-gray-600 w-24">
+                        {occupancy} {occupancy === 1 ? 'person' : 'people'}:
+                      </span>
+                      <div className="relative flex-1">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+                        <input
+                          type="number"
+                          value={room.pricing?.surfCamp?.occupancy?.[occupancy] || ''}
+                          onChange={(e) => {
+                            const newOccupancy = { ...room.pricing?.surfCamp?.occupancy }
+                            newOccupancy[occupancy] = parseFloat(e.target.value) || 0
+                            setRoom({
+                              ...room,
+                              pricing: {
+                                ...room.pricing,
+                                surfCamp: {
+                                  ...room.pricing?.surfCamp,
+                                  strategy: 'perRoomOccupancy',
+                                  occupancy: newOccupancy
+                                }
+                              }
+                            })
+                          }}
+                          className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                          placeholder={occupancy === 1 ? '800' : occupancy === 2 ? '580' : '500'}
+                          min="0"
+                          step="0.01"
+                        />
+                      </div>
+                      <span className="text-xs text-gray-500">/person</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500">
+                  Example: If 2 people share this room, each pays the "2 people" rate
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
