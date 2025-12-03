@@ -1,50 +1,105 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
-const BUCKET_NAME = 'media-library'
+const UPLOAD_BUCKET = 'media-library'
 
-// GET /api/media - List all media files
+// All buckets to aggregate images from
+const ALL_BUCKETS = [
+  'media-library',
+  'cms-media',
+  'page-images',
+  'surf-camp-images',
+  'room-images',
+  'blog-images',
+  'add-on-images',
+  'cms-images'
+]
+
+// Recursively list all files in a bucket (including subfolders)
+async function listAllFiles(bucket: string, path: string = ''): Promise<any[]> {
+  const { data: items, error } = await supabaseAdmin
+    .storage
+    .from(bucket)
+    .list(path, {
+      limit: 1000,
+      sortBy: { column: 'created_at', order: 'desc' }
+    })
+
+  if (error || !items) return []
+
+  const files: any[] = []
+  
+  for (const item of items) {
+    // Skip placeholder files
+    if (item.name === '.emptyFolderPlaceholder') continue
+    
+    const fullPath = path ? `${path}/${item.name}` : item.name
+    
+    // If it's a folder (no metadata), recurse into it
+    if (!item.metadata) {
+      const subFiles = await listAllFiles(bucket, fullPath)
+      files.push(...subFiles)
+    } else {
+      // It's a file
+      files.push({
+        ...item,
+        fullPath,
+        bucket
+      })
+    }
+  }
+  
+  return files
+}
+
+// GET /api/media - List all media files from ALL buckets
 export async function GET() {
   try {
-    // List all files in the media-library bucket
-    const { data: files, error } = await supabaseAdmin
-      .storage
-      .from(BUCKET_NAME)
-      .list('', {
-        limit: 1000,
-        sortBy: { column: 'created_at', order: 'desc' }
-      })
+    const allMediaItems: any[] = []
 
-    if (error) {
-      console.error('Error listing media:', error)
-      return NextResponse.json(
-        { success: false, error: 'Failed to list media' },
-        { status: 500 }
-      )
-    }
+    // Fetch from all buckets in parallel
+    const bucketPromises = ALL_BUCKETS.map(async (bucket) => {
+      try {
+        const files = await listAllFiles(bucket)
+        
+        return files.map(file => {
+          const { data: urlData } = supabaseAdmin
+            .storage
+            .from(bucket)
+            .getPublicUrl(file.fullPath)
 
-    // Transform files to include full URLs
-    const mediaItems = (files || [])
-      .filter(file => file.name !== '.emptyFolderPlaceholder')
-      .map(file => {
-        const { data: urlData } = supabaseAdmin
-          .storage
-          .from(BUCKET_NAME)
-          .getPublicUrl(file.name)
+          return {
+            id: `${bucket}/${file.fullPath}`,
+            name: file.name,
+            url: urlData.publicUrl,
+            size: file.metadata?.size || 0,
+            type: file.metadata?.mimetype || 'image/unknown',
+            created_at: file.created_at || new Date().toISOString(),
+            bucket: bucket,
+            folder: file.fullPath.includes('/') ? file.fullPath.split('/').slice(0, -1).join('/') : undefined
+          }
+        })
+      } catch (err) {
+        console.error(`Error listing bucket ${bucket}:`, err)
+        return []
+      }
+    })
 
-        return {
-          id: file.id || file.name,
-          name: file.name,
-          url: urlData.publicUrl,
-          size: file.metadata?.size || 0,
-          type: file.metadata?.mimetype || 'image/unknown',
-          created_at: file.created_at || new Date().toISOString()
-        }
-      })
+    const results = await Promise.all(bucketPromises)
+    results.forEach(items => allMediaItems.push(...items))
+
+    // Sort by created_at descending
+    allMediaItems.sort((a, b) => 
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    )
 
     return NextResponse.json({
       success: true,
-      data: mediaItems
+      data: allMediaItems,
+      stats: {
+        total: allMediaItems.length,
+        buckets: ALL_BUCKETS.length
+      }
     })
   } catch (error) {
     console.error('Error in media GET:', error)
@@ -83,7 +138,7 @@ export async function POST(request: NextRequest) {
       // Upload to Supabase Storage
       const { data, error } = await supabaseAdmin
         .storage
-        .from(BUCKET_NAME)
+        .from(UPLOAD_BUCKET)
         .upload(filename, buffer, {
           contentType: file.type,
           cacheControl: '3600',
@@ -98,7 +153,7 @@ export async function POST(request: NextRequest) {
       // Get public URL
       const { data: urlData } = supabaseAdmin
         .storage
-        .from(BUCKET_NAME)
+        .from(UPLOAD_BUCKET)
         .getPublicUrl(filename)
 
       uploadedFiles.push({

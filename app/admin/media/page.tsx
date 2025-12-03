@@ -25,6 +25,7 @@ interface MediaItem {
   type: string
   created_at: string
   folder?: string
+  bucket?: string
 }
 
 export default function MediaLibraryPage() {
@@ -307,7 +308,14 @@ export default function MediaLibraryPage() {
               </div>
               <div className="p-2">
                 <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
-                <p className="text-xs text-gray-500">{formatSize(item.size)}</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-xs text-gray-500">{formatSize(item.size)}</p>
+                  {item.bucket && (
+                    <span className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">
+                      {item.bucket.replace('-images', '').replace('-', ' ')}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -322,6 +330,9 @@ export default function MediaLibraryPage() {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Source
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Size
@@ -346,6 +357,13 @@ export default function MediaLibraryPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.bucket && (
+                      <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
+                        {item.bucket.replace('-images', '').replace('-', ' ')}
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {formatSize(item.size)}
