@@ -10,6 +10,7 @@ import {
   BookOpen,
   Package,
   Receipt,
+  Image,
   LucideIcon
 } from 'lucide-react'
 
@@ -74,6 +75,12 @@ export const adminNavigationItems: NavigationItem[] = [
     href: '/admin/analytics',
     icon: BarChart3,
     description: 'View reports and analytics'
+  },
+  {
+    name: 'Media Library',
+    href: '/admin/media',
+    icon: Image,
+    description: 'Upload images and copy links'
   },
   {
     name: 'CMS',
