@@ -877,9 +877,56 @@ export async function POST(request: NextRequest) {
       // Fetch room details for room_type
       const { data: room } = await supabaseAdmin
         .from('rooms')
-        .select('name, id')
+        .select('name, id, booking_type, capacity')
         .eq('id', room_id)
         .single()
+
+      if (!room) {
+        return NextResponse.json({
+          success: false,
+          error: 'Room not found'
+        }, { status: 404 })
+      }
+
+      // Check for conflicts
+      // 1. Get all overlapping bookings from 'bookings' table
+      const { data: existingBookings } = await supabaseAdmin
+        .from('bookings')
+        .select('guests')
+        .eq('room_type', room.name)
+        .neq('status', 'cancelled')
+        .lt('check_in', end_date)
+        .gt('check_out', start_date)
+
+      // 2. Get all overlapping assignments from 'room_assignments' table
+      const { data: existingAssignments } = await supabaseAdmin
+        .from('room_assignments')
+        .select('id')
+        .eq('room_id', room_id)
+        .lt('check_in_date', end_date)
+        .gt('check_out_date', start_date)
+      
+      // Calculate total occupancy
+      let currentOccupancy = 0
+      if (existingBookings) {
+          currentOccupancy += existingBookings.reduce((sum: number, b: any) => sum + (b.guests || 1), 0)
+      }
+      if (existingAssignments) {
+          currentOccupancy += existingAssignments.length
+      }
+
+      const requestedGuests = guests || participants.length || 1
+      
+      if (room.booking_type === 'whole') {
+          if (currentOccupancy > 0) {
+               return NextResponse.json({ success: false, error: 'Room is already booked for these dates' }, { status: 409 })
+          }
+      } else {
+          // Shared room / dorm
+          if (currentOccupancy + requestedGuests > room.capacity) {
+               return NextResponse.json({ success: false, error: 'Not enough capacity for these dates' }, { status: 409 })
+          }
+      }
 
       // Note: Database schema does NOT have 'items' field - removed to match actual schema
       const booking = {
