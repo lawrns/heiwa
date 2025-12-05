@@ -67,15 +67,33 @@ export async function GET(request: NextRequest) {
           console.error('Error checking room bookings:', roomError)
         }
 
-        // Check surf camp bookings for this date (via enrollments)
-        const { data: surfBookings, error: surfError } = await supabase
-          .from('surf_camp_enrollments')
-          .select('surf_camp_id')
-          .in('status', ['pending', 'confirmed'])
-          // Note: Surf camp dates are stored in surf_camps table
+        // Check surf camp bookings for this date
+        // First, get surf camps that include this date
+        const { data: activeSurfCamps, error: surfCampError } = await supabase
+          .from('surf_camps')
+          .select('id')
+          .lte('start_date', date)
+          .gte('end_date', date)
+          .eq('is_active', true)
 
-        if (surfError) {
-          console.error('Error checking surf bookings:', surfError)
+        if (surfCampError) {
+          console.error('Error checking surf camps:', surfCampError)
+        }
+
+        // Then count enrollments for those surf camps
+        let surfBookingsCount = 0
+        if (activeSurfCamps && activeSurfCamps.length > 0) {
+          const surfCampIds = activeSurfCamps.map(sc => sc.id)
+          const { count, error: surfError } = await supabase
+            .from('surf_camp_enrollments')
+            .select('*', { count: 'exact', head: true })
+            .in('surf_camp_id', surfCampIds)
+            .in('status', ['pending', 'confirmed'])
+
+          if (surfError) {
+            console.error('Error checking surf bookings:', surfError)
+          }
+          surfBookingsCount = count || 0
         }
 
         // Get total capacity (simplified - you might want to make this more sophisticated)
@@ -85,7 +103,7 @@ export async function GET(request: NextRequest) {
           .eq('is_active', true) as { data: { capacity: number }[] | null; error: unknown }
 
         const totalCapacity = rooms?.reduce((sum, room) => sum + (room.capacity || 0), 0) || 10
-        const bookedCapacity = (roomBookings?.length || 0) + (surfBookings?.length || 0)
+        const bookedCapacity = (roomBookings?.length || 0) + surfBookingsCount
         const remaining = Math.max(0, totalCapacity - bookedCapacity)
 
         return {

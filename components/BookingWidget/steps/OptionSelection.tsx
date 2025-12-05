@@ -466,26 +466,19 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <label htmlFor="check-in" className="block text-sm font-medium text-gray-700">
                   Check-in
                 </label>
-                <div className="relative">
-                  <input
-                    id="check-in"
-                    type="date"
-                    value={checkInDate}
-                    min={new Date().toISOString().split('T')[0]}
-                    onChange={(e) => handleCheckInChange(e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
-                      checkInDate && isDateSoldOut(checkInDate)
-                        ? 'border-red-300 bg-red-50 text-red-700'
-                        : 'border-gray-300'
-                    }`}
-                    required
-                  />
-                  {checkInDate && isDateSoldOut(checkInDate) && (
-                    <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
-                      <span className="text-red-500 text-sm font-medium">Sold Out</span>
-                    </div>
-                  )}
-                </div>
+                <input
+                  id="check-in"
+                  type="date"
+                  value={checkInDate}
+                  min={new Date().toISOString().split('T')[0]}
+                  onChange={(e) => handleCheckInChange(e.target.value)}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
+                    checkInDate && isDateSoldOut(checkInDate)
+                      ? 'border-red-300 bg-red-50 text-red-700'
+                      : 'border-gray-300'
+                  }`}
+                  required
+                />
                 {checkInDate && isDateSoldOut(checkInDate) && (
                   <p className="text-sm text-red-600 flex items-center gap-1">
                     <span className="w-2 h-2 bg-red-500 rounded-full"></span>
@@ -498,26 +491,19 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <label htmlFor="check-out" className="block text-sm font-medium text-gray-700">
                   Check-out
                 </label>
-                <div className="relative">
-                  <input
-                    id="check-out"
-                    type="date"
-                    value={checkOutDate}
-                    min={checkInDate || new Date().toISOString().split('T')[0]}
-                    onChange={(e) => handleCheckOutChange(e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
-                      checkOutDate && isDateSoldOut(checkOutDate)
-                        ? 'border-red-300 bg-red-50 text-red-700'
-                        : 'border-gray-300'
-                    }`}
-                    required
-                  />
-                  {checkOutDate && isDateSoldOut(checkOutDate) && (
-                    <div className="absolute inset-y-0 right-12 flex items-center pointer-events-none">
-                      <span className="text-red-500 text-sm font-medium">Sold Out</span>
-                    </div>
-                  )}
-                </div>
+                <input
+                  id="check-out"
+                  type="date"
+                  value={checkOutDate}
+                  min={checkInDate || new Date().toISOString().split('T')[0]}
+                  onChange={(e) => handleCheckOutChange(e.target.value)}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
+                    checkOutDate && isDateSoldOut(checkOutDate)
+                      ? 'border-red-300 bg-red-50 text-red-700'
+                      : 'border-gray-300'
+                  }`}
+                  required
+                />
                 {checkOutDate && isDateSoldOut(checkOutDate) && (
                   <p className="text-sm text-red-600 flex items-center gap-1">
                     <span className="w-2 h-2 bg-red-500 rounded-full"></span>
