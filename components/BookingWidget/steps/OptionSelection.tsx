@@ -105,11 +105,17 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     actions.setParticipantNames(participantNameObjects);
   };
 
-  // Fetch date availability only when both dates are selected
+  // Fetch date availability only when both dates are selected and valid
   useEffect(() => {
     if (checkInDate && checkOutDate) {
-      // Only check availability for the selected date range
-      fetchDateAvailability(checkInDate, checkOutDate);
+      // Validate that check-in is before check-out
+      const checkIn = new Date(checkInDate);
+      const checkOut = new Date(checkOutDate);
+      
+      // Only fetch if dates are valid and in correct order
+      if (!isNaN(checkIn.getTime()) && !isNaN(checkOut.getTime()) && checkIn < checkOut) {
+        fetchDateAvailability(checkInDate, checkOutDate);
+      }
     }
   }, [checkInDate, checkOutDate, fetchDateAvailability]);
 

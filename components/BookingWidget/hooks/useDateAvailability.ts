@@ -44,6 +44,20 @@ export function useDateAvailability(options: UseDateAvailabilityOptions = {}) {
   const [cache, setCache] = useState<Map<string, { data: DateAvailability[]; timestamp: number }>>(new Map());
 
   const fetchDateAvailability = useCallback(async (startDate: string, endDate: string) => {
+    // Validate dates before making API call
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      console.warn('Invalid date format provided to fetchDateAvailability');
+      return [];
+    }
+    
+    if (start >= end) {
+      console.warn('Start date must be before end date:', { startDate, endDate });
+      return [];
+    }
+    
     const cacheKey = `${startDate}-${endDate}-${participants}`;
     
     // Check cache first
