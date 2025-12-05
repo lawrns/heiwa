@@ -147,6 +147,17 @@ export function transformApiRoomToRoom(apiRoom: any): Room {
   const roomType = determineRoomType(apiRoom.booking_type || '', apiRoom.capacity || 1);
   const images = processRoomImages(apiRoom.images, apiRoom.featured_image, roomType);
 
+  // Extract and normalize pricing data
+  const pricing = apiRoom.pricing ? {
+    standard: apiRoom.pricing.standard,
+    offSeason: apiRoom.pricing.offSeason,
+    surfCamp: apiRoom.pricing.surfCamp ? {
+      strategy: apiRoom.pricing.surfCamp.strategy || 'perBed',
+      perBed: apiRoom.pricing.surfCamp.perBed,
+      occupancy: apiRoom.pricing.surfCamp.occupancy,
+    } : undefined,
+  } : undefined;
+
   return {
     id: apiRoom.id,
     name: apiRoom.name,
@@ -157,6 +168,7 @@ export function transformApiRoomToRoom(apiRoom: any): Room {
     amenities: apiRoom.amenities || [],
     images: images,
     isAvailable: true, // All returned rooms are available or shown
+    pricing: pricing,
   };
 }
 

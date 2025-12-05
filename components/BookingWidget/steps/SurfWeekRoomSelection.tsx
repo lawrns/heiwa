@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bed, Users, Star, ArrowRight, Calendar, CheckCircle, Check } from 'lucide-react';
-import { BookingState, Room, PricingBreakdown, RoomAssignment as RoomAssignmentType } from '../types';
+import { BookingState, Room, PricingBreakdown, RoomAssignment as RoomAssignmentType, SurfCampPricing } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 import { RoomImageGallery, RoomThumbnail } from '../components/RoomImageGallery';
@@ -15,6 +15,7 @@ interface TransformedRoom {
   pricePerNight: number;
   isIncluded: boolean;
   image: string;
+  surfCampPricing?: SurfCampPricing;
 }
 
 interface SurfWeekRoomSelectionProps {
@@ -43,8 +44,34 @@ const transformRoomForSurfWeek = (room: Room): TransformedRoom => {
     maxOccupancy: room.maxOccupancy,
     pricePerNight: upgradePrice,
     isIncluded,
-    image: room.images[0] || '/images/room-placeholder.jpg'
+    image: room.images[0] || '/images/room-placeholder.jpg',
+    surfCampPricing: room.pricing?.surfCamp,
   };
+};
+
+// Calculate surf camp price for a room based on occupancy
+const calculateSurfCampRoomPrice = (room: Room, guestCount: number): number => {
+  // If dorm room, it's included in package
+  if (room.type === 'dorm') {
+    return 0;
+  }
+
+  const surfCampPricing = room.pricing?.surfCamp;
+  
+  // Use surf camp pricing if configured
+  if (surfCampPricing) {
+    if (surfCampPricing.strategy === 'perBed' && surfCampPricing.perBed) {
+      // Fixed price per person
+      return surfCampPricing.perBed * guestCount;
+    } else if (surfCampPricing.strategy === 'perRoomOccupancy' && surfCampPricing.occupancy) {
+      // Tiered pricing based on occupancy
+      const pricePerPerson = surfCampPricing.occupancy[guestCount] || surfCampPricing.occupancy[1] || 0;
+      return pricePerPerson * guestCount;
+    }
+  }
+  
+  // Fallback to pricePerNight × 7 days if no surf camp pricing configured
+  return room.pricePerNight * 7 * guestCount;
 };
 
 export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionProps) {
@@ -99,22 +126,22 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
       return;
     }
 
-    // Calculate total room upgrade cost for surf week (weekly pricing)
+    // Calculate total room upgrade cost for surf week using surf camp pricing
     let totalRoomUpgrade = 0;
-    const surfWeekDuration = 7; // 7 days for surf week
 
     state.roomAssignments.forEach(assignment => {
       const room = rooms.find(r => r.id === assignment.roomId);
       if (room) {
-        // Transform room to check if it's included (dorm)
-        const transformedRoom = transformRoomForSurfWeek(room);
+        // Use surf camp pricing calculation (handles perBed and perRoomOccupancy strategies)
+        const roomUpgradeCost = calculateSurfCampRoomPrice(room, assignment.guestIds.length);
+        totalRoomUpgrade += roomUpgradeCost;
         
-        // Only calculate upgrade cost for non-included rooms
-        if (!transformedRoom.isIncluded) {
-          // Weekly upgrade cost = pricePerNight × 7 days × number of guests in that room
-          const roomUpgradeCost = transformedRoom.pricePerNight * surfWeekDuration * assignment.guestIds.length;
-          totalRoomUpgrade += roomUpgradeCost;
-        }
+        // Log pricing for debugging
+        console.log(`🏠 Room "${room.name}" pricing:`, {
+          guestCount: assignment.guestIds.length,
+          surfCampPricing: room.pricing?.surfCamp,
+          calculatedCost: roomUpgradeCost,
+        });
       }
     });
 
@@ -434,7 +461,30 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           const occupancy = getRoomOccupancy(transformedRoom.id);
           const assignment = state.roomAssignments.find(a => a.roomId === transformedRoom.id);
           const isFull = occupancy >= transformedRoom.maxOccupancy;
-          const weeklyUpgrade = transformedRoom.pricePerNight * 7; // 7 days
+          
+          // Calculate surf camp price for display (show per person price for 1 person)
+          const surfCampPricing = transformedRoom.surfCampPricing;
+          let displayPrice = 0;
+          let priceLabel = '/person';
+          
+          if (surfCampPricing) {
+            if (surfCampPricing.strategy === 'perBed' && surfCampPricing.perBed) {
+              displayPrice = surfCampPricing.perBed;
+            } else if (surfCampPricing.strategy === 'perRoomOccupancy' && surfCampPricing.occupancy) {
+              // Show range: highest (1 person) to lowest price
+              const prices = Object.values(surfCampPricing.occupancy).filter(p => p > 0);
+              if (prices.length > 0) {
+                displayPrice = Math.min(...prices); // Show lowest price
+                priceLabel = '/person (from)';
+              }
+            }
+          }
+          
+          // Fallback to pricePerNight × 7 if no surf camp pricing
+          if (!displayPrice && transformedRoom.pricePerNight > 0) {
+            displayPrice = transformedRoom.pricePerNight * 7;
+            priceLabel = '/week';
+          }
 
           return (
             <div
@@ -491,10 +541,10 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                   ) : (
                     <div className="flex flex-col items-end">
                       <div className="text-xl font-bold text-orange-600 leading-tight mb-1">
-                        +{formatPrice(weeklyUpgrade)}
+                        +{formatPrice(displayPrice)}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {formatPrice(transformedRoom.pricePerNight)}/night
+                        {priceLabel}
                       </div>
                     </div>
                   )}

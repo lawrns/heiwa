@@ -81,6 +81,18 @@ export interface SurfWeek {
   availableSpots?: number;
 }
 
+export interface SurfCampPricing {
+  strategy: 'perBed' | 'perRoomOccupancy';
+  perBed?: number;
+  occupancy?: Record<number, number>;
+}
+
+export interface RoomPricing {
+  standard?: number;
+  offSeason?: number;
+  surfCamp?: SurfCampPricing;
+}
+
 export interface Room {
   id: string;
   name: string;
@@ -91,6 +103,7 @@ export interface Room {
   amenities: string[];
   images: string[];
   isAvailable: boolean;
+  pricing?: RoomPricing;
 }
 
 export interface RoomAssignment {
