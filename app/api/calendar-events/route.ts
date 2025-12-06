@@ -138,6 +138,28 @@ export async function GET(request: NextRequest) {
       })
     }
 
+    // Fetch calendar events from calendar_events table
+    const { data: calendarEvents, error: calendarEventsError } = await supabaseAdmin
+      .from('calendar_events')
+      .select('id, title, description, start_date, end_date, event_type, location, color, created_at')
+      .order('created_at', { ascending: false })
+
+    if (!calendarEventsError && calendarEvents) {
+      calendarEvents.forEach((event: any) => {
+        events.push({
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          start_date: event.start_date,
+          end_date: event.end_date || event.start_date,
+          event_type: event.event_type || 'general',
+          location: event.location || 'Heiwa House',
+          color: event.color || '#3B82F6',
+          created_at: event.created_at
+        })
+      })
+    }
+
     // Filter by date range if provided
     let filteredEvents = events
     if (startDate && endDate) {
