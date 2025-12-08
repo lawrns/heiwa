@@ -1,0 +1,174 @@
+{
+  "timestamp": "2025-12-08T23:16:52.063Z",
+  "pages": [
+    {
+      "pageSlug": "surf",
+      "sectionsFound": 4,
+      "issues": [],
+      "warnings": [
+        {
+          "type": "unused_section",
+          "severity": "low",
+          "section": "features",
+          "message": "Section \"features\" exists in CMS but frontend doesn't use it",
+          "recommendation": "Either remove this section or update frontend to use it"
+        }
+      ]
+    },
+    {
+      "pageSlug": "play",
+      "sectionsFound": 5,
+      "issues": [],
+      "warnings": [
+        {
+          "type": "unused_section",
+          "severity": "low",
+          "section": "seo",
+          "message": "Section \"seo\" exists in CMS but frontend doesn't use it",
+          "recommendation": "Either remove this section or update frontend to use it"
+        },
+        {
+          "type": "unused_section",
+          "severity": "low",
+          "section": "features",
+          "message": "Section \"features\" exists in CMS but frontend doesn't use it",
+          "recommendation": "Either remove this section or update frontend to use it"
+        }
+      ]
+    },
+    {
+      "pageSlug": "flow",
+      "sectionsFound": 4,
+      "issues": [],
+      "warnings": [
+        {
+          "type": "unused_section",
+          "severity": "low",
+          "section": "faq",
+          "message": "Section \"faq\" exists in CMS but frontend doesn't use it",
+          "recommendation": "Either remove this section or update frontend to use it"
+        },
+        {
+          "type": "unused_section",
+          "severity": "low",
+          "section": "features",
+          "message": "Section \"features\" exists in CMS but frontend doesn't use it",
+          "recommendation": "Either remove this section or update frontend to use it"
+        }
+      ]
+    },
+    {
+      "pageSlug": "the-spot",
+      "sectionsFound": 2,
+      "issues": [],
+      "warnings": [
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "hero",
+          "message": "Section \"hero\" not found in CMS",
+          "recommendation": "Create a \"hero\" section for page \"the-spot\""
+        },
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "intro",
+          "message": "Section \"intro\" not found in CMS",
+          "recommendation": "Create a \"intro\" section for page \"the-spot\""
+        },
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "story",
+          "message": "Section \"story\" not found in CMS",
+          "recommendation": "Create a \"story\" section for page \"the-spot\""
+        },
+        {
+          "type": "unused_section",
+          "severity": "low",
+          "section": "seo",
+          "message": "Section \"seo\" exists in CMS but frontend doesn't use it",
+          "recommendation": "Either remove this section or update frontend to use it"
+        }
+      ]
+    },
+    {
+      "pageSlug": "surf-weeks",
+      "sectionsFound": 2,
+      "issues": [],
+      "warnings": [
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "faq",
+          "message": "Section \"faq\" not found in CMS",
+          "recommendation": "Create a \"faq\" section for page \"surf-weeks\""
+        },
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "features",
+          "message": "Section \"features\" not found in CMS",
+          "recommendation": "Create a \"features\" section for page \"surf-weeks\""
+        },
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "included",
+          "message": "Section \"included\" not found in CMS",
+          "recommendation": "Create a \"included\" section for page \"surf-weeks\""
+        },
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "steps",
+          "message": "Section \"steps\" not found in CMS",
+          "recommendation": "Create a \"steps\" section for page \"surf-weeks\""
+        },
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "process",
+          "message": "Section \"process\" not found in CMS",
+          "recommendation": "Create a \"process\" section for page \"surf-weeks\""
+        }
+      ]
+    },
+    {
+      "pageSlug": "contact",
+      "sectionsFound": 2,
+      "issues": [],
+      "warnings": [
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "hero",
+          "message": "Section \"hero\" not found in CMS",
+          "recommendation": "Create a \"hero\" section for page \"contact\""
+        },
+        {
+          "type": "missing_section",
+          "severity": "medium",
+          "section": "contact",
+          "message": "Section \"contact\" not found in CMS",
+          "recommendation": "Create a \"contact\" section for page \"contact\""
+        },
+        {
+          "type": "unused_section",
+          "severity": "low",
+          "section": "faq",
+          "message": "Section \"faq\" exists in CMS but frontend doesn't use it",
+          "recommendation": "Either remove this section or update frontend to use it"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalPages": 6,
+    "totalIssues": 0,
+    "totalWarnings": 17,
+    "highPriorityIssues": 0,
+    "mediumPriorityIssues": 10,
+    "lowPriorityItems": 7
+  }
+}

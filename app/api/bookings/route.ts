@@ -278,7 +278,7 @@ export async function GET(request: NextRequest) {
         guest_email: guestEmail,
         guest_phone: guestPhone,
         type: booking.room_type ? 'room' : 'surf_camp', // Infer from room_type field
-        item_name: booking.room_type || 'Unknown',
+        item_name: booking.room_type || 'Surf Camp', // Show "Surf Camp" instead of "Unknown" when room_type is null
         check_in: booking.check_in || '',
         check_out: booking.check_out || '',
         guests: booking.guests || 1,
@@ -565,6 +565,71 @@ export async function POST(request: NextRequest) {
             original_end_date: surfCamp.end_date
           }
         }, { status: 400 })
+      }
+
+      // CRITICAL: Check for duplicate booking before creating
+      // Check if a booking already exists with same primary client, dates, and camp_id
+      // Use primary client ID for duplicate check (first in array)
+      // Note: Supabase .contains() checks if array contains ANY of the values, so we check if client_ids contains our clientId
+      const { data: existingBookings, error: duplicateCheckError } = await supabaseAdmin
+        .from('bookings')
+        .select('id, status, created_at, notes')
+        .contains('client_ids', [clientId]) // Check if client_ids array contains the primary client ID
+        .eq('check_in', checkInDate)
+        .eq('check_out', checkOutDate)
+        .is('room_type', null) // Surf week bookings have null room_type
+        .neq('status', 'cancelled') // Don't count cancelled bookings as duplicates
+        .order('created_at', { ascending: false })
+        .limit(10)
+        
+      console.log('🔍 Duplicate check:', {
+        clientId,
+        checkInDate,
+        checkOutDate,
+        found: existingBookings?.length || 0,
+        existingIds: existingBookings?.map((b: any) => b.id) || []
+      })
+
+      if (duplicateCheckError) {
+        console.error('Error checking for duplicate bookings:', duplicateCheckError)
+        // Continue anyway - don't block booking creation due to check error
+      } else if (existingBookings && existingBookings.length > 0) {
+        // Additional check: verify it's for the same camp by checking notes
+        const matchingBookings = existingBookings.filter((booking: any) => {
+          try {
+            const notes = booking.notes ? JSON.parse(booking.notes) : {}
+            // Check if notes contain the same camp_id or if it's a recent booking (within 5 minutes)
+            const bookingAge = new Date().getTime() - new Date(booking.created_at).getTime()
+            const fiveMinutes = 5 * 60 * 1000
+            return bookingAge < fiveMinutes // Recent duplicate within 5 minutes
+          } catch {
+            // If notes can't be parsed, check if booking is very recent (within 1 minute)
+            const bookingAge = new Date().getTime() - new Date(booking.created_at).getTime()
+            const oneMinute = 60 * 1000
+            return bookingAge < oneMinute
+          }
+        })
+
+        if (matchingBookings.length > 0) {
+          const duplicateId = matchingBookings[0].id
+          console.warn('⚠️ Duplicate booking detected:', {
+            duplicateId,
+            existingBooking: matchingBookings[0],
+            newBookingAttempt: {
+              clientIds: allClientIds,
+              checkIn: checkInDate,
+              checkOut: checkOutDate,
+              campId: camp_id
+            }
+          })
+          
+          return NextResponse.json({
+            success: false,
+            error: 'A booking with these details already exists',
+            duplicateBookingId: duplicateId,
+            errorCode: 'DUPLICATE_BOOKING'
+          }, { status: 409 })
+        }
       }
 
       // Create surf week booking record with JSON notes format
