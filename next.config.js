@@ -53,7 +53,11 @@ const nextConfig = {
     // optimizePackageImports: ['lucide-react', 'framer-motion'], // Disabled due to malloc errors on macOS
     optimizeCss: false,
     scrollRestoration: true,
+    turbo: false, // Disable Turbopack to use webpack config
   },
+  
+  // Add empty turbopack config to silence Next.js 16 warning
+  turbopack: {},
   
   // Compiler optimizations
   compiler: {
