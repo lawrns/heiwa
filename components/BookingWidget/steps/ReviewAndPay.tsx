@@ -72,14 +72,19 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
   const paymentSectionRef = useRef<HTMLDivElement>(null);
 
   // Calculate pricing from established base price and current add-ons
+  // PRICING RULES:
+  // 1. Prices are tax-INCLUSIVE (tax is extracted for display, not added)
+  // 2. No service fee
+  // 3. Room upgrade = DIFFERENCE from base price (calculated in SurfWeekRoomSelection)
   useEffect(() => {
+    const TAX_RATE = 0.1; // 10% VAT included in prices
     const basePrice = state.pricing.basePrice || 0;
     const addOnsSubtotal = state.selectedAddOns.reduce((total, addOn) => total + addOn.price * addOn.quantity, 0);
     const roomUpgrade = state.pricing.roomUpgrade || 0;
     const subtotal = basePrice + addOnsSubtotal + roomUpgrade;
-    const taxes = Math.round(subtotal * 0.1);
-    const fees = Math.round(subtotal * 0.05);
-    const total = subtotal + taxes + fees;
+    // Tax is INCLUDED in price, extract for display (not added on top)
+    const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
+    const fees = 0; // No service fee
 
     const newPricing: PricingBreakdown = {
       basePrice,
@@ -87,7 +92,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       roomUpgrade,
       taxes,
       fees,
-      total,
+      total: subtotal, // Price already includes tax
       currency: 'EUR',
     };
 

@@ -49,29 +49,38 @@ const transformRoomForSurfWeek = (room: Room): TransformedRoom => {
   };
 };
 
-// Calculate surf camp price for a room based on occupancy
-const calculateSurfCampRoomPrice = (room: Room, guestCount: number): number => {
-  // If dorm room, it's included in package
+// Calculate room upgrade cost as the DIFFERENCE from base surf camp price
+// Example: Base surf camp €480/person, Room Two €580/person → Upgrade = €100/person
+const calculateSurfCampRoomUpgrade = (room: Room, guestCount: number, basePricePerPerson: number): number => {
+  // If dorm room, it's included in package - no upgrade cost
   if (room.type === 'dorm') {
     return 0;
   }
 
   const surfCampPricing = room.pricing?.surfCamp;
-  
-  // Use surf camp pricing if configured
+  let upgradedRoomPricePerPerson = 0;
+
+  // Get the per-person price for this upgraded room
   if (surfCampPricing) {
     if (surfCampPricing.strategy === 'perBed' && surfCampPricing.perBed) {
-      // Fixed price per person
-      return surfCampPricing.perBed * guestCount;
+      // Fixed price per person for this room type
+      upgradedRoomPricePerPerson = surfCampPricing.perBed;
     } else if (surfCampPricing.strategy === 'perRoomOccupancy' && surfCampPricing.occupancy) {
       // Tiered pricing based on occupancy
-      const pricePerPerson = surfCampPricing.occupancy[guestCount] || surfCampPricing.occupancy[1] || 0;
-      return pricePerPerson * guestCount;
+      upgradedRoomPricePerPerson = surfCampPricing.occupancy[guestCount] || surfCampPricing.occupancy[1] || 0;
     }
   }
-  
+
   // Fallback to pricePerNight × 7 days if no surf camp pricing configured
-  return room.pricePerNight * 7 * guestCount;
+  if (!upgradedRoomPricePerPerson && room.pricePerNight > 0) {
+    upgradedRoomPricePerPerson = room.pricePerNight * 7;
+  }
+
+  // Calculate the DIFFERENCE (upgrade cost) from base price
+  // If upgraded room is €580/person and base is €480/person, difference is €100/person
+  const upgradePerPerson = Math.max(0, upgradedRoomPricePerPerson - basePricePerPerson);
+
+  return upgradePerPerson * guestCount;
 };
 
 export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionProps) {
@@ -104,65 +113,71 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   }, [state.guests, state.roomAssignments]);
 
   // Calculate pricing based on room assignments for surf weeks
+  // PRICING RULES:
+  // 1. Prices are tax-INCLUSIVE (tax is extracted for display, not added)
+  // 2. No service fee
+  // 3. Room upgrade = DIFFERENCE from base price (not full room price)
   useEffect(() => {
+    const TAX_RATE = 0.1; // 10% VAT included in prices
+    const basePrice = state.pricing.basePrice || 0;
+    const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
+    const basePricePerPerson = state.guests > 0 ? basePrice / state.guests : 0;
+
     if (state.roomAssignments.length === 0 || rooms.length === 0) {
       // If no assignments, reset room upgrade to 0
       if (actions.updatePricing) {
-        const basePrice = state.pricing.basePrice || 0;
-        const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
         const subtotal = basePrice + addOnsSubtotal;
-        const taxes = Math.round(subtotal * 0.1);
-        const fees = Math.round(subtotal * 0.05);
-        const total = subtotal + taxes + fees;
+        // Tax is INCLUDED in price, extract for display (not added on top)
+        const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
+        const fees = 0; // No service fee
 
         actions.updatePricing({
           ...state.pricing,
           roomUpgrade: 0,
           taxes,
           fees,
-          total,
+          total: subtotal, // Price already includes tax
         });
       }
       return;
     }
 
-    // Calculate total room upgrade cost for surf week using surf camp pricing
+    // Calculate total room upgrade cost as DIFFERENCE from base price
     let totalRoomUpgrade = 0;
 
     state.roomAssignments.forEach(assignment => {
       const room = rooms.find(r => r.id === assignment.roomId);
       if (room) {
-        // Use surf camp pricing calculation (handles perBed and perRoomOccupancy strategies)
-        const roomUpgradeCost = calculateSurfCampRoomPrice(room, assignment.guestIds.length);
+        // Calculate upgrade as difference from base price (not full room price)
+        const roomUpgradeCost = calculateSurfCampRoomUpgrade(room, assignment.guestIds.length, basePricePerPerson);
         totalRoomUpgrade += roomUpgradeCost;
-        
+
         // Log pricing for debugging
-        console.log(`🏠 Room "${room.name}" pricing:`, {
+        console.log(`🏠 Room "${room.name}" upgrade pricing:`, {
           guestCount: assignment.guestIds.length,
+          basePricePerPerson,
           surfCampPricing: room.pricing?.surfCamp,
-          calculatedCost: roomUpgradeCost,
+          upgradeCost: roomUpgradeCost,
         });
       }
     });
 
     // Update pricing with room upgrade
     if (actions.updatePricing) {
-      const basePrice = state.pricing.basePrice || 0;
-      const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
       const subtotal = basePrice + totalRoomUpgrade + addOnsSubtotal;
-      const taxes = Math.round(subtotal * 0.1); // 10% tax
-      const fees = Math.round(subtotal * 0.05); // 5% service fee
-      const total = subtotal + taxes + fees;
+      // Tax is INCLUDED in price, extract for display (not added on top)
+      const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
+      const fees = 0; // No service fee
 
       actions.updatePricing({
         ...state.pricing,
         roomUpgrade: totalRoomUpgrade,
         taxes,
         fees,
-        total,
+        total: subtotal, // Price already includes tax
       });
     }
-  }, [state.roomAssignments, rooms, state.pricing, actions]);
+  }, [state.roomAssignments, rooms, state.pricing, actions, state.guests]);
 
   // Auto-advance when all guests are assigned
   useEffect(() => {

@@ -153,18 +153,22 @@ export function calculateTotalAmount(items: BookingItem[]): number {
 }
 
 /**
- * Calculate comprehensive price breakdown with taxes and fees
+ * Calculate comprehensive price breakdown with taxes
+ * PRICING RULES:
+ * 1. Prices are tax-INCLUSIVE (tax is extracted for display, not added)
+ * 2. No service fee
  */
 export function calculatePriceBreakdown(
   items: BookingItem[],
-  taxRate: number = 0.1, // 10% default tax
-  serviceFeeRate: number = 0.05, // 5% service fee
+  taxRate: number = 0.1, // 10% VAT included in prices
+  _serviceFeeRate: number = 0, // No service fee (kept for API compatibility)
   discountAmount: number = 0
 ): PriceBreakdown {
   const subtotal = calculateTotalAmount(items);
-  const taxes = subtotal * taxRate;
-  const fees = subtotal * serviceFeeRate;
-  const total = subtotal + taxes + fees - discountAmount;
+  // Tax is INCLUDED in price, extract for display (not added on top)
+  const taxes = subtotal * taxRate / (1 + taxRate);
+  const fees = 0; // No service fee
+  const total = subtotal - discountAmount; // Price already includes tax
 
   return {
     subtotal,

@@ -249,12 +249,17 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         });
       }
 
+      // PRICING RULES:
+      // 1. Prices are tax-INCLUSIVE (tax is extracted for display, not added)
+      // 2. No service fee
       if (basePrice > 0) {
+        const TAX_RATE = 0.1; // 10% VAT included in prices
         const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
-        const taxes = Math.round((basePrice + addOnsSubtotal) * 0.1);
-        const fees = Math.round((basePrice + addOnsSubtotal) * 0.05);
-        const total = basePrice + addOnsSubtotal + taxes + fees;
-        actions.updatePricing({ ...state.pricing, basePrice, taxes, fees, total, currency: 'EUR' });
+        const subtotal = basePrice + addOnsSubtotal;
+        // Tax is INCLUDED in price, extract for display (not added on top)
+        const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
+        const fees = 0; // No service fee
+        actions.updatePricing({ ...state.pricing, basePrice, taxes, fees, total: subtotal, currency: 'EUR' });
       }
     } else if (state.experienceType === 'surf-week') {
       // For surf weeks: single selection
@@ -265,12 +270,17 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       const unit = typeof opt.price === 'number' ? opt.price : (opt.priceFrom ?? 0);
       const basePrice = unit * Math.max(1, state.guests);
 
+      // PRICING RULES:
+      // 1. Prices are tax-INCLUSIVE (tax is extracted for display, not added)
+      // 2. No service fee
       if (basePrice > 0) {
+        const TAX_RATE = 0.1; // 10% VAT included in prices
         const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
-        const taxes = Math.round((basePrice + addOnsSubtotal) * 0.1);
-        const fees = Math.round((basePrice + addOnsSubtotal) * 0.05);
-        const total = basePrice + addOnsSubtotal + taxes + fees;
-        actions.updatePricing({ ...state.pricing, basePrice, taxes, fees, total, currency: 'EUR' });
+        const subtotal = basePrice + addOnsSubtotal;
+        // Tax is INCLUDED in price, extract for display (not added on top)
+        const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
+        const fees = 0; // No service fee
+        actions.updatePricing({ ...state.pricing, basePrice, taxes, fees, total: subtotal, currency: 'EUR' });
       }
     }
   }, [selectedOptions, state.dates.checkIn, state.dates.checkOut, state.guests, state.experienceType, state.selectedOption, options, state.pricing, actions]);

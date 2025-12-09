@@ -31,7 +31,11 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
   // They will be synced to the parent state when the user proceeds to the next step
 
   // Update pricing when add-ons change
+  // PRICING RULES:
+  // 1. Prices are tax-INCLUSIVE (tax is extracted for display, not added)
+  // 2. No service fee
   useEffect(() => {
+    const TAX_RATE = 0.1; // 10% VAT included in prices
     const addOnsSubtotal = getAddOnSubtotal();
     const basePrice = basePriceRef.current;
 
@@ -48,16 +52,17 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
       return;
     }
 
-    const taxes = Math.round((basePrice + addOnsSubtotal) * 0.1);
-    const fees = Math.round((basePrice + addOnsSubtotal) * 0.05);
-    const total = basePrice + addOnsSubtotal + taxes + fees;
+    const subtotal = basePrice + addOnsSubtotal;
+    // Tax is INCLUDED in price, extract for display (not added on top)
+    const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
+    const fees = 0; // No service fee
 
     actions.updatePricing({
       ...state.pricing,
       addOnsSubtotal,
       taxes,
       fees,
-      total,
+      total: subtotal, // Price already includes tax
     });
   }, [selectedAddOns, getAddOnSubtotal]); // Removed actions from dependencies
 
