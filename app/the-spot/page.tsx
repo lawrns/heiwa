@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { supabaseAdmin } from '@/lib/supabase'
+import { PageSection } from '@/lib/cms-schemas'
 
 export const metadata: Metadata = {
   title: 'The Spot - Heiwa House Facilities & Activities',
@@ -12,39 +13,43 @@ export const metadata: Metadata = {
 // Revalidate every 60 seconds to pick up CMS changes quickly
 export const revalidate = 60
 
-// Fetch CMS content for the-spot page
-async function getTheSpotCMSContent() {
+// Fetch CMS content for the-spot page using new page_sections table
+async function getTheSpotSections(): Promise<PageSection[]> {
   try {
     const { data, error } = await supabaseAdmin
-      .from('page_content')
+      .from('page_sections')
       .select('*')
       .eq('page_slug', 'the-spot')
       .eq('is_active', true)
       .order('order_index', { ascending: true })
-    
+
     if (error || !data) {
-      console.warn('CMS content not available for the-spot, using defaults')
+      console.warn('CMS sections not available for the-spot, using defaults')
       return []
     }
-    
-    return data
+
+    return data as PageSection[]
   } catch (error) {
-    console.warn('Error fetching CMS content:', error)
+    console.warn('Error fetching CMS sections:', error)
     return []
   }
 }
 
 export default async function TheSpotPage() {
-  const cmsContent = await getTheSpotCMSContent()
-  
+  const sections = await getTheSpotSections()
+
+  // Helper to get section by type
+  const getSection = (type: string) => sections.find(s => s.section_type === type)
+
   // Extract CMS sections
-  const heroSection = cmsContent.find((s: any) => s.section === 'hero')
-  const storySection = cmsContent.find((s: any) => s.section === 'intro' || s.section === 'story')
-  const yogaSection = cmsContent.find((s: any) => s.section === 'yoga' || s.section === 'features')
-  const skateparkSection = cmsContent.find((s: any) => s.section === 'skatepark' || s.section === 'features')
-  const poolSection = cmsContent.find((s: any) => s.section === 'pool' || s.section === 'features')
-  const gamesSection = cmsContent.find((s: any) => s.section === 'games' || s.section === 'features')
-  const ctaSection = cmsContent.find((s: any) => s.section === 'cta' || s.section === 'text')
+  const heroSection = getSection('hero')
+  const introSection = getSection('intro')
+  const ctaSection = getSection('cta')
+
+  // Type-safe content accessors
+  const heroContent = heroSection?.content as { title?: string; description?: string; imageUrl?: string } | undefined
+  const introContent = introSection?.content as { title?: string; content?: string } | undefined
+  const ctaContent = ctaSection?.content as { title?: string; description?: string; buttonText?: string; buttonUrl?: string } | undefined
   // Venue images (property overview)
   const venueImages = [
     '/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg',
@@ -93,8 +98,8 @@ export default async function TheSpotPage() {
       {/* Hero Section with Featured Image */}
       <section className="relative h-96 w-full overflow-hidden bg-gray-900">
         <Image
-          src={heroSection?.image_url || heroSection?.json_content?.image_url || heroSection?.json_content?.imageUrl || "/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg"}
-          alt={heroSection?.title || "Heiwa House Property Overview"}
+          src={heroContent?.imageUrl || "/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg"}
+          alt={heroContent?.title || "Heiwa House Property Overview"}
           fill
           className="object-cover"
           priority
@@ -104,10 +109,10 @@ export default async function TheSpotPage() {
         <div className="relative h-full flex items-center justify-center text-center px-4">
           <div className="max-w-4xl">
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-              {heroSection?.json_content?.title || heroSection?.title || "The Spot"}
+              {heroContent?.title || "The Spot"}
             </h1>
             <p className="text-xl md:text-2xl text-white/90 drop-shadow-md">
-              {heroSection?.json_content?.description || heroSection?.content || "Your ultimate adult playground on Portugal's coast"}
+              {heroContent?.description || "Your ultimate adult playground on Portugal's coast"}
             </p>
           </div>
         </div>
@@ -118,13 +123,11 @@ export default async function TheSpotPage() {
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-8">
-            {storySection?.title || "Our Story"}
+            {introContent?.title || "Our Story"}
           </h2>
           <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
-            {storySection?.content ? (
-              <div dangerouslySetInnerHTML={{ __html: storySection.content }} />
-            ) : storySection?.json_content?.description ? (
-              <p>{storySection.json_content.description}</p>
+            {introContent?.content ? (
+              <div dangerouslySetInnerHTML={{ __html: introContent.content }} />
             ) : (
               <>
                 <p>
@@ -316,13 +319,17 @@ export default async function TheSpotPage() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-accent to-accent-hover text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-6 text-white">Ready to Experience The Spot?</h2>
-          <p className="text-xl mb-8 text-white/90">Book your stay and discover your paradise at Heiwa House</p>
+          <h2 className="text-4xl font-bold mb-6 text-white">
+            {ctaContent?.title || "Ready to Experience The Spot?"}
+          </h2>
+          <p className="text-xl mb-8 text-white/90">
+            {ctaContent?.description || "Book your stay and discover your paradise at Heiwa House"}
+          </p>
           <Link
-            href="/rooms"
+            href={ctaContent?.buttonUrl || "/rooms"}
             className="inline-block px-8 py-4 bg-white text-accent font-bold rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
           >
-            Explore Rooms
+            {ctaContent?.buttonText || "Explore Rooms"}
           </Link>
         </div>
       </section>

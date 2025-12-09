@@ -6,61 +6,38 @@ import { Waves, Clock, Car, MapPin } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { HeroVideo } from '@/components/hero/hero-video'
-import { ActivityGrid } from '@/components/activities/activity-grid'
 import { SeasonalSurfLevelChart } from '@/components/surf/SeasonalSurfLevelChart'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { useEffect, useState } from 'react'
-
-interface CMSSection {
-  id: string
-  section: string  // Fixed: was section_type
-  section_name?: string
-  title?: string
-  content?: string
-  video_url?: string  // Direct field from database
-  image_url?: string  // Direct field from database
-  json_content?: {
-    title?: string
-    description?: string
-    video_url?: string
-    videoUrl?: string
-    image_url?: string
-    imageUrl?: string
-    text?: string
-    html?: string
-    button_text?: string
-    button_url?: string
-    items?: Array<{
-      question?: string
-      answer?: string
-      title?: string
-      description?: string
-    }>
-    [key: string]: unknown
-  }
-  order_index: number
-}
+import { PageSection } from '@/lib/cms-schemas'
 
 export default function SurfPage() {
-  const [cmsContent, setCmsContent] = useState<CMSSection[]>([])
-  const [nextSurfWeek, setNextSurfWeek] = useState<any>(null)
+  const [sections, setSections] = useState<PageSection[]>([])
+  const [nextSurfWeek, setNextSurfWeek] = useState<{
+    id: string
+    name: string
+    start_date: string
+    end_date: string
+    price: number
+    images: string[]
+  } | null>(null)
 
-  // Fetch CMS content
+  // Fetch sections from new CMS API
   useEffect(() => {
-    const fetchCMSContent = async () => {
+    const fetchSections = async () => {
       try {
-        const response = await fetch(`/api/cms/page-content?page_slug=surf&is_active=true&sort_by=order_index&sort_order=asc&limit=50`)
+        const response = await fetch('/api/cms/pages/surf/sections')
         const result = await response.json()
-        if (result.data && Array.isArray(result.data)) {
-          console.log('✅ CMS content loaded for surf page:', result.data.length, 'sections')
-          setCmsContent(result.data)
+        if (result.success && Array.isArray(result.data)) {
+          console.log('✅ CMS sections loaded for surf page:', result.data.length, 'sections')
+          setSections(result.data)
         }
       } catch (error) {
-        console.error('❌ Error fetching CMS content:', error)
+        console.error('❌ Error fetching CMS sections:', error)
       }
     }
 
-    fetchCMSContent()
+    fetchSections()
   }, [])
 
   // Fetch next upcoming surf week
@@ -88,18 +65,22 @@ export default function SurfPage() {
     fetchNextSurfWeek()
   }, [])
 
-  // Extract CMS sections - Fixed: use 'section' not 'section_type'
-  const heroSection = cmsContent.find(s => s.section === 'hero')
-  const introSection = cmsContent.find(s => s.section === 'intro')
-  const faqSection = cmsContent.find(s => s.section === 'faq')
-  const ctaSection = cmsContent.find(s => s.section === 'text' && s.section_name?.toLowerCase().includes('cta'))
-  
+  // Helper to get section by type
+  const getSection = (type: string) => sections.find(s => s.section_type === type)
+
+  // Extract sections
+  const heroSection = getSection('hero')
+  const introSection = getSection('intro')
+  const faqSection = getSection('faq')
+
+  // Type-safe content accessors
+  const heroContent = heroSection?.content as { title?: string; description?: string; videoUrl?: string; imageUrl?: string } | undefined
+  const introContent = introSection?.content as { title?: string; content?: string } | undefined
+  const faqContent = faqSection?.content as { title?: string; items?: Array<{ question: string; answer: string }> } | undefined
+
   // FAQ items - Use CMS if available, otherwise fallback to defaults
-  const faqItems = faqSection?.json_content?.items && Array.isArray(faqSection.json_content.items)
-    ? faqSection.json_content.items.map((item: any) => ({
-        question: item.question || item.title || '',
-        answer: item.answer || item.description || item.text || ''
-      })).filter((item: any) => item.question && item.answer)
+  const faqItems = faqContent?.items && Array.isArray(faqContent.items)
+    ? faqContent.items.filter(item => item.question && item.answer)
     : [
     {
       question: 'What is the best time of year to surf in Santa Cruz?',
@@ -139,62 +120,43 @@ export default function SurfPage() {
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
-        title={heroSection?.json_content?.title || heroSection?.title || "Heiwa Surf"}
-        description={heroSection?.json_content?.description || heroSection?.content || "Experience the thrill of surfing in Portugal's pristine waters. From beginner lessons to advanced coaching, discover your perfect wave at our doorstep."}
-        videoUrl={heroSection?.video_url || heroSection?.json_content?.video_url || heroSection?.json_content?.videoUrl || undefined}
-        imageUrl={heroSection?.image_url || heroSection?.json_content?.image_url || heroSection?.json_content?.imageUrl || "/images/surf4.jpg"}
+        title={heroContent?.title || "Heiwa Surf"}
+        description={heroContent?.description || "Experience the thrill of surfing in Portugal's pristine waters. From beginner lessons to advanced coaching, discover your perfect wave at our doorstep."}
+        videoUrl={heroContent?.videoUrl}
+        imageUrl={heroContent?.imageUrl || "/images/surf4.jpg"}
       />
 
       {/* Introduction Section */}
-      {introSection ? (
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            {introSection.title && (
-              <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">
-                {introSection.title}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-6">
+            {introContent?.title && (
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                {introContent.title}
               </h2>
             )}
-            {typeof introSection.content === 'string' ? (
-              <div dangerouslySetInnerHTML={{ __html: introSection.content }} />
+            {introContent?.content ? (
+              <div
+                className="text-lg text-gray-700 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: introContent.content }}
+              />
             ) : (
               <>
-                {introSection.json_content?.description && (
-                  <p className="text-lg text-gray-700 leading-relaxed text-center">
-                    {introSection.json_content.description}
-                  </p>
-                )}
-                {introSection.json_content?.text && (
-                  <p className="text-lg text-gray-700 leading-relaxed text-center">
-                    {introSection.json_content.text}
-                  </p>
-                )}
-                {introSection.content && (
-                  <p className="text-lg text-gray-700 leading-relaxed text-center">
-                    {introSection.content}
-                  </p>
-                )}
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Located in the heart of Portugal&apos;s surf paradise, Heiwa House offers direct access to some of Europe&apos;s most beautiful beaches.
+                  Our prime location between Ericeira and Peniche puts you within minutes of world-class surf breaks suitable for all levels.
+                </p>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Whether you&apos;re catching your first wave or perfecting advanced techniques, our experienced instructors and pristine conditions
+                  create the perfect environment for your surfing journey.
+                </p>
               </>
             )}
           </div>
-        </section>
-      ) : (
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-6">
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Located in the heart of Portugal&apos;s surf paradise, Heiwa House offers direct access to some of Europe&apos;s most beautiful beaches. 
-                Our prime location between Ericeira and Peniche puts you within minutes of world-class surf breaks suitable for all levels.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Whether you&apos;re catching your first wave or perfecting advanced techniques, our experienced instructors and pristine conditions 
-                create the perfect environment for your surfing journey.
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
+        </div>
+      </section>
 
-      {/* Local Surfing Section - Moved to be first section after intro */}
+      {/* Local Surfing Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -269,11 +231,10 @@ export default function SurfPage() {
         </div>
       </section>
 
-      {/* Promotional Surf Week Card Section - Moved to top */}
+      {/* Promotional Surf Week Card Section */}
       {nextSurfWeek && nextSurfWeek.id && nextSurfWeek.start_date && nextSurfWeek.end_date && typeof nextSurfWeek.price === 'number' && (
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Temporarily render content directly to avoid component error */}
             <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
               <div className="text-center py-6 bg-gray-50 border-b border-gray-200">
                 <h3 className="text-3xl font-bold text-gray-900">
@@ -353,7 +314,7 @@ export default function SurfPage() {
               Experience the softer side of Santa Cruz waves - perfect for learning and progression
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left: Epic Picture */}
             <div className="space-y-4">
@@ -370,7 +331,7 @@ export default function SurfPage() {
                 once in a blue moon it is like this
               </p>
             </div>
-            
+
             {/* Right: Realistic Video */}
             <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
               <iframe
@@ -569,7 +530,7 @@ export default function SurfPage() {
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-            {faqSection?.title || 'Surfing FAQs'}
+            {faqContent?.title || 'Surfing FAQs'}
           </h2>
           <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm">
             {faqItems.map((item, index) => (
@@ -649,6 +610,9 @@ export default function SurfPage() {
           </div>
         </div>
       </section>
+
+      {/* Floating Check Availability Button */}
+      <FloatingCheckAvailability />
     </div>
   )
 }

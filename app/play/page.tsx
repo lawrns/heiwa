@@ -7,69 +7,53 @@ import { HeroVideo } from '@/components/hero/hero-video'
 import { ActivityGrid } from '@/components/activities/activity-grid'
 import { ActivityHighlight } from '@/components/activities/activity-highlight'
 import { useEffect, useState } from 'react'
-
-interface CMSSection {
-  id: string
-  section: string  // Fixed: was section_type
-  section_name?: string
-  title?: string
-  content?: string
-  video_url?: string  // Direct field from database
-  image_url?: string  // Direct field from database
-  json_content?: {
-    title?: string
-    description?: string
-    video_url?: string
-    videoUrl?: string
-    image_url?: string
-    imageUrl?: string
-    text?: string
-    html?: string
-    button_text?: string
-    button_url?: string
-    items?: Array<{
-      title?: string
-      description?: string
-      icon?: string
-    }>
-    [key: string]: unknown
-  }
-  order_index: number
-}
+import { PageSection } from '@/lib/cms-schemas'
 
 export default function PlayPage() {
-  const [cmsContent, setCmsContent] = useState<CMSSection[]>([])
+  const [sections, setSections] = useState<PageSection[]>([])
+  const [, setLoading] = useState(true)
 
-  // Fetch CMS content
+  // Fetch sections from new CMS API
   useEffect(() => {
-    const fetchCMSContent = async () => {
+    const fetchSections = async () => {
       try {
-        const response = await fetch(`/api/cms/page-content?page_slug=play&is_active=true&sort_by=order_index&sort_order=asc&limit=50`)
+        const response = await fetch('/api/cms/pages/play/sections')
         const result = await response.json()
-        if (result.data && Array.isArray(result.data)) {
-          console.log('✅ CMS content loaded for play page:', result.data.length, 'sections')
-          setCmsContent(result.data)
+        if (result.success && Array.isArray(result.data)) {
+          console.log('✅ CMS sections loaded for play page:', result.data.length, 'sections')
+          setSections(result.data)
         }
       } catch (error) {
-        console.error('❌ Error fetching CMS content:', error)
+        console.error('❌ Error fetching CMS sections:', error)
+      } finally {
+        setLoading(false)
       }
     }
 
-    fetchCMSContent()
+    fetchSections()
   }, [])
 
-  // Extract CMS sections - Fixed: use 'section' not 'section_type'
-  const heroSection = cmsContent.find(s => s.section === 'hero')
-  const introSection = cmsContent.find(s => s.section === 'intro')
-  const faqSection = cmsContent.find(s => s.section === 'faq')
-  const ctaSection = cmsContent.find(s => s.section === 'text' && s.section_name?.toLowerCase().includes('cta'))
+  // Helper to get section by type
+  const getSection = (type: string) => sections.find(s => s.section_type === type)
+  const getSectionsByType = (type: string) => sections.filter(s => s.section_type === type)
+
+  // Extract sections
+  const heroSection = getSection('hero')
+  const introSection = getSection('intro')
+  const faqSection = getSection('faq')
+  const activityHighlights = getSectionsByType('activity_highlight')
+  const activityGrids = getSectionsByType('activity_grid')
+  const ctaSection = getSection('cta')
+
+  // Type-safe content accessors
+  const heroContent = heroSection?.content as { title?: string; description?: string; videoUrl?: string; imageUrl?: string } | undefined
+  const introContent = introSection?.content as { title?: string; content?: string } | undefined
+  const faqContent = faqSection?.content as { title?: string; items?: Array<{ question: string; answer: string }> } | undefined
+  const ctaContent = ctaSection?.content as { title?: string; description?: string; buttonText?: string; buttonUrl?: string } | undefined
 
   // FAQ items - Use CMS if available, otherwise fallback to defaults
-  const faqItems = faqSection?.json_content?.items && Array.isArray(faqSection.json_content.items)
-    ? faqSection.json_content.items.map((item: any) => ({
-        question: item.question || item.title || '',
-        answer: item.answer || item.description || item.text || ''
-      })).filter((item: any) => item.question && item.answer)
+  const faqItems = faqContent?.items && Array.isArray(faqContent.items)
+    ? faqContent.items.filter(item => item.question && item.answer)
     : [
         {
           question: 'Are the play activities included in the surf week package?',
@@ -97,148 +81,115 @@ export default function PlayPage() {
         },
       ]
 
-  // Reviews will be fetched from Google Reviews API via GoogleReviews component
-
   return (
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
-        title={heroSection?.json_content?.title || heroSection?.title || "Heiwa Play"}
-        description={heroSection?.json_content?.description || heroSection?.content || "Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."}
-        videoUrl={heroSection?.video_url || heroSection?.json_content?.video_url || heroSection?.json_content?.videoUrl || "/images/videos/play-activities.mp4"}
-        imageUrl={heroSection?.image_url || heroSection?.json_content?.image_url || heroSection?.json_content?.imageUrl || "/images/games.jpg"}
+        title={heroContent?.title || "Heiwa Play"}
+        description={heroContent?.description || "Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."}
+        videoUrl={heroContent?.videoUrl || "/images/videos/play-activities.mp4"}
+        imageUrl={heroContent?.imageUrl || "/images/games.jpg"}
       />
 
       {/* Introduction Section */}
-      {introSection ? (
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-6">
-              {introSection.title && (
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  {introSection.title}
-                </h2>
-              )}
-              {typeof introSection.content === 'string' ? (
-                <div dangerouslySetInnerHTML={{ __html: introSection.content }} />
-              ) : (
-                <>
-                  {introSection.json_content?.description && (
-                    <p className="text-lg text-gray-700 leading-relaxed">
-                      {introSection.json_content.description}
-                    </p>
-                  )}
-                  {introSection.json_content?.text && (
-                    <p className="text-lg text-gray-700 leading-relaxed">
-                      {introSection.json_content.text}
-                    </p>
-                  )}
-                  {introSection.content && (
-                    <p className="text-lg text-gray-700 leading-relaxed">
-                      {introSection.content}
-                    </p>
-                  )}
-                </>
-              )}
-            </div>
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-6">
+            {introContent?.title && (
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                {introContent.title}
+              </h2>
+            )}
+            {introContent?.content ? (
+              <div
+                className="text-lg text-gray-700 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: introContent.content }}
+              />
+            ) : (
+              <>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  At Heiwa Play, we believe that adventure and fun are essential parts of the perfect surf holiday.
+                  When you&apos;re not catching waves, you&apos;ll find countless ways to stay active, connect with others,
+                  and create unforgettable memories.
+                </p>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Whether you&apos;re competing in table tennis, relaxing in our giant pool, pushing your limits at the skatepark,
+                  or finding your zen in the sauna, there&apos;s something for everyone at Heiwa Play.
+                </p>
+              </>
+            )}
           </div>
-        </section>
-      ) : (
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-6">
-              <p className="text-lg text-gray-700 leading-relaxed">
-                At Heiwa Play, we believe that adventure and fun are essential parts of the perfect surf holiday. 
-                When you&apos;re not catching waves, you&apos;ll find countless ways to stay active, connect with others, 
-                and create unforgettable memories.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Whether you&apos;re competing in table tennis, relaxing in our giant pool, pushing your limits at the skatepark, 
-                or finding your zen in the sauna, there&apos;s something for everyone at Heiwa Play.
-              </p>
-            </div>
+        </div>
+      </section>
+
+      {/* Activity Highlights Section - CMS Driven */}
+      {activityHighlights.length > 0 && (
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+            {activityHighlights.map((section) => {
+              const content = section.content as {
+                title?: string
+                description?: string
+                videoUrl?: string
+                videoPoster?: string
+                carouselImages?: string[]
+                reversed?: boolean
+              }
+              return (
+                <ActivityHighlight
+                  key={section.id}
+                  title={content.title || ''}
+                  description={content.description || ''}
+                  videoUrl={content.videoUrl || ''}
+                  videoPoster={content.videoPoster || ''}
+                  carouselImages={content.carouselImages || []}
+                  reversed={content.reversed}
+                />
+              )
+            })}
           </div>
         </section>
       )}
 
-      {/* Skateboarding & Music Highlights */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
-          
-          <ActivityHighlight
-            title="Skateboarding"
-            description="Carve your own path in our custom-designed skatepark. Whether you're dropping in for the first time or perfecting your tricks, our concrete waves are waiting for you."
-            videoUrl="/images/videos/sk81.mp4"
-            videoPoster="/images/park4444.jpg"
-            carouselImages={[
-              '/images/park4444.jpg',
-              '/images/DSC03081-scaled.jpg',
-              '/images/DSC08054-scaled.jpg'
-            ]}
-          />
+      {/* Activity Grids - CMS Driven */}
+      {activityGrids.map((section, index) => {
+        const content = section.content as {
+          title?: string
+          description?: string
+          category?: 'flow' | 'play' | 'surf'
+          tier?: 'always' | 'on-request'
+          showTierBadge?: boolean
+        }
+        return (
+          <section key={section.id} className={`py-20 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                  {content.title || 'Activities'}
+                </h2>
+                {content.description && (
+                  <p className="text-lg text-gray-600">
+                    {content.description}
+                  </p>
+                )}
+              </div>
 
-          <ActivityHighlight
-            title="Music"
-            description="Find your rhythm in our fully equipped jam room. Connect with fellow musicians, create something new, or just enjoy the vibes."
-            videoUrl="/images/videos/Timeline-1.mp4"
-            videoPoster="/images/DSC08736-scaled.jpg"
-            carouselImages={[
-              '/images/DSC08736-scaled.jpg',
-              '/images/DSC01794.jpg',
-              '/images/DSC08054-scaled.jpg'
-            ]}
-          />
-
-        </div>
-      </section>
-
-      {/* Activities On-Site Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Activities On-Site
-            </h2>
-            <p className="text-lg text-gray-600">
-              These fun experiences are included in your stay at Heiwa House
-            </p>
-          </div>
-
-          <ActivityGrid 
-            category="play" 
-            tier="always" 
-            showTierBadge={false}
-            hideIcons={true}
-          />
-        </div>
-      </section>
-
-      {/* Activities Around Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Activities Around
-            </h2>
-            <p className="text-lg text-gray-600">
-              Special activities available upon request - contact us to arrange
-            </p>
-          </div>
-
-          <ActivityGrid 
-            category="play" 
-            tier="on-request" 
-            showTierBadge={true}
-            hideIcons={true}
-          />
-        </div>
-      </section>
+              <ActivityGrid
+                category={content.category || 'play'}
+                tier={content.tier || 'always'}
+                showTierBadge={content.showTierBadge || false}
+                hideIcons={true}
+              />
+            </div>
+          </section>
+        )
+      })}
 
       {/* FAQ Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-            {faqSection?.title || 'Frequently Asked Questions'}
+            {faqContent?.title || 'Frequently Asked Questions'}
           </h2>
           <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm">
             {faqItems.map((item, index) => (
@@ -256,58 +207,24 @@ export default function PlayPage() {
       </section>
 
       {/* CTA Section */}
-      {ctaSection ? (
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            {typeof ctaSection.content === 'string' ? (
-              <div dangerouslySetInnerHTML={{ __html: ctaSection.content }} />
-            ) : (
-              <>
-                {ctaSection.json_content?.title && (
-                  <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                    {ctaSection.json_content.title}
-                  </h2>
-                )}
-                {ctaSection.json_content?.description && (
-                  <p className="text-lg text-gray-600 mb-8">
-                    {ctaSection.json_content.description}
-                  </p>
-                )}
-                {ctaSection.json_content?.button_text && ctaSection.json_content?.button_url && (
-                  <a
-                    href={ctaSection.json_content.button_url}
-                    className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-                    style={{ backgroundColor: '#ec681c' }}
-                  >
-                    <Mail className="w-5 h-5" />
-                    {ctaSection.json_content.button_text}
-                  </a>
-                )}
-              </>
-            )}
-          </div>
-        </section>
-      ) : (
-        <section className="py-20 bg-gray-50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Ready to Play?
-            </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Join our surf weeks and experience all the amazing activities Heiwa Play has to offer. 
-              From adventure to relaxation, we have it all!
-            </p>
-            <a
-              href="mailto:info@heiwahouse.com"
-              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-              style={{ backgroundColor: '#ec681c' }}
-            >
-              <Mail className="w-5 h-5" />
-              Book Your Adventure
-            </a>
-          </div>
-        </section>
-      )}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            {ctaContent?.title || "Ready to Play?"}
+          </h2>
+          <p className="text-lg text-gray-600 mb-8">
+            {ctaContent?.description || "Join our surf weeks and experience all the amazing activities Heiwa Play has to offer. From adventure to relaxation, we have it all!"}
+          </p>
+          <a
+            href={ctaContent?.buttonUrl || "mailto:info@heiwahouse.com"}
+            className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
+            style={{ backgroundColor: '#ec681c' }}
+          >
+            <Mail className="w-5 h-5" />
+            {ctaContent?.buttonText || "Book Your Adventure"}
+          </a>
+        </div>
+      </section>
 
       {/* Floating Check Availability Button */}
       <FloatingCheckAvailability />

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 // Link import removed - using router navigation
-import { FileText, Edit, Plus, Eye } from 'lucide-react'
+import { FileText, Edit, Plus, Eye, Wand2 } from 'lucide-react'
 import { CMSLayout } from '@/components/admin/cms/CMSLayout'
 import { CMSCard } from '@/components/admin/cms/CMSCard'
 // CMSHeader import removed - not currently used
@@ -210,15 +210,22 @@ export default function CMSPagesPage() {
                 ]}
                 actions={[
                   {
+                    label: 'Visual Editor',
+                    icon: <Wand2 className="w-4 h-4" />,
+                    variant: 'primary',
+                    href: page.slug === 'homepage' ? '/admin/homepage' : `/admin/visual-editor/${page.slug}`
+                  },
+                  {
                     label: 'Edit',
                     icon: <Edit className="w-4 h-4" />,
-                    variant: 'primary',
+                    variant: 'secondary',
                     href: page.slug === 'homepage' ? '/admin/homepage' : `/admin/cms/pages/${page.slug}`
                   },
                   {
                     label: 'View',
                     icon: <Eye className="w-4 h-4" />,
-                    variant: 'secondary'
+                    variant: 'secondary',
+                    href: `/${page.slug === 'homepage' ? '' : page.slug}`
                   }
                 ]}
                 href={page.slug === 'homepage' ? '/admin/homepage' : `/admin/cms/pages/${page.slug}`}
