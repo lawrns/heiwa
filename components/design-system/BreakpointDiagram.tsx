@@ -1,127 +1,128 @@
+'use client';
+
 import React from 'react';
+import { Monitor, Tablet, Smartphone } from 'lucide-react';
 
-interface BreakpointItemProps {
-  name: string;
-  minWidth: number;
-  usage: string;
-  color: string;
-}
+const breakpoints = [
+  { name: 'sm', minWidth: '640px', icon: Smartphone, description: 'Small devices, landscape phones' },
+  { name: 'md', minWidth: '768px', icon: Tablet, description: 'Tablets, portrait' },
+  { name: 'lg', minWidth: '1024px', icon: Tablet, description: 'Tablets landscape, small laptops' },
+  { name: 'xl', minWidth: '1280px', icon: Monitor, description: 'Desktops' },
+  { name: '2xl', minWidth: '1536px', icon: Monitor, description: 'Large desktops' },
+];
 
-function BreakpointItem({ name, minWidth, usage, color }: BreakpointItemProps) {
-  return (
-    <div className="flex items-center gap-4 py-3">
-      <div
-        className="w-4 h-4 rounded-full shrink-0"
-        style={{ backgroundColor: color }}
-      />
-      <div className="w-12 shrink-0">
-        <code className="text-sm font-mono font-medium">{name}</code>
-      </div>
-      <div className="w-20 shrink-0">
-        <span className="text-sm text-gray-500">{minWidth}px</span>
-      </div>
-      <div className="flex-1">
-        <span className="text-sm text-gray-600">{usage}</span>
-      </div>
-    </div>
-  );
-}
+const containerWidths = [
+  { breakpoint: 'default', maxWidth: '100%' },
+  { breakpoint: 'sm', maxWidth: '640px' },
+  { breakpoint: 'md', maxWidth: '768px' },
+  { breakpoint: 'lg', maxWidth: '1024px' },
+  { breakpoint: 'xl', maxWidth: '1280px' },
+  { breakpoint: '2xl', maxWidth: '1400px (custom)' },
+];
 
 export function BreakpointDiagram() {
-  const breakpoints = [
-    { name: 'sm', minWidth: 640, usage: 'Large phones (landscape)', color: '#ec681c' },
-    { name: 'md', minWidth: 768, usage: 'Tablets', color: '#f77b2f' },
-    { name: 'lg', minWidth: 1024, usage: 'Small laptops, tablets (landscape)', color: '#2B5F75' },
-    { name: 'xl', minWidth: 1280, usage: 'Desktops', color: '#4A9DB5' },
-    { name: '2xl', minWidth: 1536, usage: 'Large displays', color: '#1A4252' },
-  ];
-
-  const patterns = [
-    {
-      name: 'Stack to Side-by-Side',
-      description: 'Content stacks vertically on mobile, goes horizontal on larger screens',
-      code: 'flex flex-col md:flex-row',
-    },
-    {
-      name: 'Responsive Grid',
-      description: '1 column on mobile, 2 on tablet, 3-4 on desktop',
-      code: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-    },
-    {
-      name: 'Hide/Show Elements',
-      description: 'Toggle visibility at different breakpoints',
-      code: 'hidden md:block / md:hidden',
-    },
-    {
-      name: 'Responsive Text',
-      description: 'Scale typography with viewport',
-      code: 'text-2xl md:text-4xl lg:text-5xl',
-    },
-  ];
-
   return (
     <div className="space-y-8">
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h4 className="text-lg font-semibold mb-2">Breakpoint Scale</h4>
-        <p className="text-sm text-gray-600 mb-6">
-          Mobile-first breakpoints. Styles apply from the breakpoint width and up.
-        </p>
+      {/* Breakpoint Scale */}
+      <div>
+        <h3 className="text-base font-medium mb-4">Breakpoint Scale</h3>
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Prefix</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Min Width</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {breakpoints.map((bp) => (
+                  <tr key={bp.name} className="border-b border-gray-100 last:border-0">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <bp.icon className="h-4 w-4 text-heiwaOrange-500" />
+                        <code className="font-mono text-heiwaOrange-600">{bp.name}:</code>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 font-mono text-gray-700">{bp.minWidth}</td>
+                    <td className="px-4 py-3 text-gray-500">{bp.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-        {/* Visual diagram */}
-        <div className="mb-8 overflow-x-auto">
-          <div className="min-w-[600px] h-12 bg-gray-100 rounded-lg relative">
+      {/* Visual Diagram */}
+      <div>
+        <h3 className="text-base font-medium mb-4">Visual Representation</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <div className="space-y-3">
             {breakpoints.map((bp, index) => {
-              const left = ((bp.minWidth - 320) / (1536 - 320)) * 100;
+              const widthPercent = 20 + (index * 16); // 20%, 36%, 52%, 68%, 84%
               return (
-                <div
-                  key={bp.name}
-                  className="absolute top-0 h-full flex items-center"
-                  style={{ left: `${left}%` }}
-                >
-                  <div
-                    className="w-0.5 h-full"
-                    style={{ backgroundColor: bp.color }}
-                  />
-                  <div
-                    className="absolute -top-6 -translate-x-1/2 text-xs font-mono font-medium"
-                    style={{ color: bp.color }}
-                  >
-                    {bp.name}
-                  </div>
-                  <div className="absolute -bottom-5 -translate-x-1/2 text-xs text-gray-400">
-                    {bp.minWidth}
+                <div key={bp.name} className="flex items-center gap-4">
+                  <code className="font-mono text-sm text-gray-500 w-12">{bp.name}</code>
+                  <div className="flex-1 h-8 bg-gray-100 rounded relative overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-heiwaOrange-400 to-heiwaOrange-500 rounded flex items-center justify-end pr-2"
+                      style={{ width: `${widthPercent}%` }}
+                    >
+                      <span className="text-xs text-white font-medium">{bp.minWidth}</span>
+                    </div>
                   </div>
                 </div>
               );
             })}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full pr-2 text-xs text-gray-400">
-              320px
-            </div>
           </div>
-        </div>
-
-        <div className="divide-y divide-gray-100">
-          {breakpoints.map((bp) => (
-            <BreakpointItem key={bp.name} {...bp} />
-          ))}
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h4 className="text-lg font-semibold mb-4">Common Patterns</h4>
-        <div className="space-y-4">
-          {patterns.map((pattern) => (
-            <div key={pattern.name} className="flex flex-col md:flex-row md:items-start gap-2 md:gap-4 py-2">
-              <div className="md:w-1/3">
-                <span className="text-sm font-medium">{pattern.name}</span>
-                <p className="text-xs text-gray-500">{pattern.description}</p>
+      {/* Container Widths */}
+      <div>
+        <h3 className="text-base font-medium mb-4">Container Max Widths</h3>
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex flex-wrap gap-2">
+            {containerWidths.map((cw) => (
+              <div key={cw.breakpoint} className="bg-gray-100 rounded px-3 py-2 text-sm">
+                <code className="text-heiwaOrange-600">{cw.breakpoint}:</code>
+                <span className="text-gray-600 ml-1">{cw.maxWidth}</span>
               </div>
-              <code className="text-xs bg-gray-100 px-3 py-2 rounded font-mono text-gray-700 md:flex-1">
-                {pattern.code}
-              </code>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+      </div>
+
+      {/* Usage Examples */}
+      <div>
+        <h3 className="text-base font-medium mb-4">Usage Examples</h3>
+        <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+          <pre className="text-sm text-gray-300 font-mono">
+{`{/* Mobile-first responsive classes */}
+<div className="w-full md:w-1/2 lg:w-1/3">
+  {/* Full width on mobile, half on tablet, third on desktop */}
+</div>
+
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+  {/* Responsive grid */}
+</div>
+
+<div className="text-base md:text-lg lg:text-xl">
+  {/* Responsive text sizing */}
+</div>`}
+          </pre>
+        </div>
+      </div>
+
+      {/* Current Viewport */}
+      <div className="bg-heiwaOrange-50 border border-heiwaOrange-200 rounded-lg p-4">
+        <h4 className="font-medium text-heiwaOrange-800 mb-2">Mobile-First Approach</h4>
+        <p className="text-sm text-heiwaOrange-700">
+          Always design for mobile first, then use breakpoint prefixes to enhance the layout for larger screens.
+          Unprefixed utilities target all screen sizes, prefixed utilities target that breakpoint <em>and above</em>.
+        </p>
       </div>
     </div>
   );

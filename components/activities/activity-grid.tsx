@@ -158,27 +158,32 @@ export function ActivityGrid({
               </div>
             </div>
             
-            <div className="p-6">
-              <p className="text-gray-600 leading-relaxed mb-4">
-                {activity.description}
-              </p>
-              
-              {activity.features && activity.features.length > 0 && (
-                <ul className="space-y-2">
-                  {activity.features.slice(0, 3).map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-sm text-gray-600">
-                      <span className="w-1.5 h-1.5 bg-accent rounded-full"></span>
-                      {feature}
-                    </li>
-                  ))}
-                  {activity.features.length > 3 && (
-                    <li className="text-sm text-gray-500 italic">
-                      +{activity.features.length - 3} more features
-                    </li>
-                  )}
-                </ul>
-              )}
-            </div>
+            {/* Only show content section if there's description or features */}
+            {(activity.description || (activity.features && activity.features.length > 0)) && (
+              <div className="p-6">
+                {activity.description && (
+                  <p className="text-gray-600 leading-relaxed mb-4">
+                    {activity.description}
+                  </p>
+                )}
+
+                {activity.features && activity.features.length > 0 && (
+                  <ul className="space-y-2">
+                    {activity.features.slice(0, 3).map((feature, idx) => (
+                      <li key={idx} className="flex items-center gap-2 text-sm text-gray-600">
+                        <span className="w-1.5 h-1.5 bg-accent rounded-full"></span>
+                        {feature}
+                      </li>
+                    ))}
+                    {activity.features.length > 3 && (
+                      <li className="text-sm text-gray-500 italic">
+                        +{activity.features.length - 3} more features
+                      </li>
+                    )}
+                  </ul>
+                )}
+              </div>
+            )}
           </div>
         )
       })}

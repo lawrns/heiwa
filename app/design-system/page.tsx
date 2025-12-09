@@ -34,6 +34,11 @@ import {
   Play,
   Monitor,
   ExternalLink,
+  Check,
+  Waves,
+  Clock,
+  DollarSign,
+  Image as ImageIcon,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -134,6 +139,15 @@ export default function DesignSystemPage() {
                 <NavLink href="#accessibility" icon={Smartphone}>Accessibility</NavLink>
               </nav>
             </div>
+            <div>
+              <h3 className="font-semibold mb-3 px-3 text-xs text-gray-400 uppercase tracking-wider">App Components</h3>
+              <nav className="space-y-0.5">
+                <NavLink href="#booking-components" icon={Calendar}>Booking</NavLink>
+                <NavLink href="#surf-components" icon={Waves}>Surf Weeks</NavLink>
+                <NavLink href="#room-activity-components" icon={Bed}>Rooms</NavLink>
+                <NavLink href="#review-components" icon={Star}>Reviews</NavLink>
+              </nav>
+            </div>
           </div>
         </aside>
 
@@ -151,9 +165,80 @@ export default function DesignSystemPage() {
 
           <Section id="colors" title="Colors" description="Our color palette reflects the ocean, sand, and sunset themes of Heiwa House. Click any value to copy.">
 
-            <h3 className="text-lg font-semibold mb-4 mt-8">Primary (Ocean)</h3>
+            {/* HEIWA ORANGE - THE HERO */}
+            <div className="bg-gradient-to-br from-heiwaOrange-500 to-heiwaOrange-600 rounded-2xl p-8 mb-10 text-white">
+              <div className="flex items-center gap-3 mb-4">
+                <Waves className="h-8 w-8" />
+                <h3 className="text-2xl font-bold">Heiwa Orange — Primary Brand Color</h3>
+              </div>
+              <p className="text-white/90 mb-6 max-w-2xl">
+                Heiwa Orange is the heart of our visual identity. It represents the warmth of sunset over the ocean and the energy of surf culture. Use it for all primary CTAs, buttons, and key interactive elements.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                <div className="bg-heiwaOrange-50 rounded-lg p-3 text-center">
+                  <div className="text-gray-900 font-mono text-xs mb-1">50</div>
+                  <div className="text-gray-600 font-mono text-[10px]">#fff7ed</div>
+                </div>
+                <div className="bg-heiwaOrange-100 rounded-lg p-3 text-center">
+                  <div className="text-gray-900 font-mono text-xs mb-1">100</div>
+                  <div className="text-gray-600 font-mono text-[10px]">#ffedd5</div>
+                </div>
+                <div className="bg-heiwaOrange-200 rounded-lg p-3 text-center">
+                  <div className="text-gray-900 font-mono text-xs mb-1">200</div>
+                  <div className="text-gray-600 font-mono text-[10px]">#fed7aa</div>
+                </div>
+                <div className="bg-heiwaOrange-300 rounded-lg p-3 text-center">
+                  <div className="text-gray-900 font-mono text-xs mb-1">300</div>
+                  <div className="text-gray-600 font-mono text-[10px]">#fdba74</div>
+                </div>
+                <div className="bg-heiwaOrange-400 rounded-lg p-3 text-center">
+                  <div className="text-gray-900 font-mono text-xs mb-1">400</div>
+                  <div className="text-gray-600 font-mono text-[10px]">#fb923c</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-3">
+                <div className="bg-heiwaOrange-500 rounded-lg p-3 text-center ring-2 ring-white ring-offset-2 ring-offset-heiwaOrange-500">
+                  <div className="text-white font-mono text-xs mb-1 font-bold">500 ★</div>
+                  <div className="text-white/80 font-mono text-[10px]">#f97316</div>
+                </div>
+                <div className="bg-heiwaOrange-600 rounded-lg p-3 text-center">
+                  <div className="text-white font-mono text-xs mb-1">600</div>
+                  <div className="text-white/80 font-mono text-[10px]">#ea580c</div>
+                </div>
+                <div className="bg-heiwaOrange-700 rounded-lg p-3 text-center">
+                  <div className="text-white font-mono text-xs mb-1">700</div>
+                  <div className="text-white/80 font-mono text-[10px]">#c2410c</div>
+                </div>
+                <div className="bg-heiwaOrange-800 rounded-lg p-3 text-center">
+                  <div className="text-white font-mono text-xs mb-1">800</div>
+                  <div className="text-white/80 font-mono text-[10px]">#9a3412</div>
+                </div>
+                <div className="bg-heiwaOrange-900 rounded-lg p-3 text-center">
+                  <div className="text-white font-mono text-xs mb-1">900</div>
+                  <div className="text-white/80 font-mono text-[10px]">#7c2d12</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Usage Examples */}
+            <div className="mb-10">
+              <h3 className="text-lg font-semibold mb-4">Heiwa Orange in Action</h3>
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="flex flex-wrap gap-4 items-center">
+                  <Button className="bg-heiwaOrange-500 hover:bg-heiwaOrange-600">Book Now</Button>
+                  <Button className="bg-heiwaOrange-600 hover:bg-heiwaOrange-700">Check Availability</Button>
+                  <Badge className="bg-heiwaOrange-100 text-heiwaOrange-800 border-transparent">Featured</Badge>
+                  <span className="text-heiwaOrange-600 font-semibold">€450/night</span>
+                  <div className="w-10 h-10 rounded-full bg-heiwaOrange-500 flex items-center justify-center text-white">
+                    <Star className="h-5 w-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold mb-4">Primary (Ocean)</h3>
             <ComponentShowcase grid cols={3}>
-              <ColorSwatch name="Primary" hex="#2B5F75" variable="--color-primary" tailwindClass="bg-primary" usage="Main brand color, headers, primary actions" textColor="white" />
+              <ColorSwatch name="Primary" hex="#2B5F75" variable="--color-primary" tailwindClass="bg-primary" usage="Secondary brand color, headers" textColor="white" />
               <ColorSwatch name="Primary Light" hex="#4A9DB5" variable="--color-primary-light" tailwindClass="bg-primary-light" usage="Hover states, illustrations" textColor="black" />
               <ColorSwatch name="Primary Dark" hex="#1A4252" variable="--color-primary-dark" tailwindClass="bg-primary-dark" usage="Active states, footers" textColor="white" />
             </ComponentShowcase>
@@ -165,15 +250,7 @@ export default function DesignSystemPage() {
               <ColorSwatch name="Secondary Dark" hex="#B8A88C" variable="--color-secondary-dark" tailwindClass="bg-secondary-dark" usage="Borders, secondary text" textColor="black" />
             </ComponentShowcase>
 
-            <h3 className="text-lg font-semibold mb-4 mt-10">Accent (Sunset)</h3>
-            <ComponentShowcase grid cols={4}>
-              <ColorSwatch name="Accent" hex="#ec681c" variable="--color-accent" tailwindClass="bg-accent" usage="CTAs, highlights, links" textColor="white" />
-              <ColorSwatch name="Accent Hover" hex="#d65d16" variable="--color-accent-hover" tailwindClass="hover:bg-accent-hover" usage="Button hover states" textColor="white" />
-              <ColorSwatch name="Accent Dark" hex="#b8491a" variable="--color-accent-dark" tailwindClass="bg-accent-dark" usage="Active states" textColor="white" />
-              <ColorSwatch name="Accent Light" hex="rgba(236, 104, 28, 0.1)" variable="--color-accent-light" tailwindClass="bg-accent/10" usage="Background tints" textColor="black" />
-            </ComponentShowcase>
-
-            <h3 className="text-lg font-semibold mb-4 mt-10">Status</h3>
+            <h3 className="text-lg font-semibold mb-4 mt-10">Status Colors</h3>
             <ComponentShowcase grid cols={4}>
               <ColorSwatch name="Success" hex="#16a34a" variable="--color-success" tailwindClass="bg-success" usage="Success states, confirmations" textColor="white" />
               <ColorSwatch name="Warning" hex="#d97706" variable="--color-warning" tailwindClass="bg-warning" usage="Warnings, attention needed" textColor="white" />
@@ -527,7 +604,7 @@ export default function DesignSystemPage() {
                 <CardHeader><CardTitle className="text-lg">Touch Targets</CardTitle></CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-11 h-11 bg-accent/10 border-2 border-accent border-dashed flex items-center justify-center text-xs text-accent font-mono rounded">44px</div>
+                    <div className="w-11 h-11 bg-heiwaOrange-100 border-2 border-heiwaOrange-500 border-dashed flex items-center justify-center text-xs text-heiwaOrange-600 font-mono rounded">44px</div>
                     <p className="text-sm text-gray-600">Minimum touch target for interactive elements.</p>
                   </div>
                   <p className="text-sm text-gray-500">Ensures buttons and links are easily tappable on mobile devices.</p>
@@ -538,7 +615,7 @@ export default function DesignSystemPage() {
                 <CardHeader><CardTitle className="text-lg">Focus Indicators</CardTitle></CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <button className="px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-shadow">
+                    <button className="px-4 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-heiwaOrange-500 focus:ring-offset-2 transition-shadow">
                       Tab to focus
                     </button>
                     <p className="text-sm text-gray-500">Visible focus states enable keyboard navigation. Use 2px ring with offset.</p>
@@ -556,9 +633,9 @@ export default function DesignSystemPage() {
                       <Badge className="bg-green-100 text-green-800 text-xs">AAA</Badge>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-primary rounded" />
-                      <span className="text-sm">Primary on white: 5.9:1</span>
-                      <Badge className="bg-green-100 text-green-800 text-xs">AA</Badge>
+                      <div className="w-4 h-4 bg-heiwaOrange-500 rounded" />
+                      <span className="text-sm">Orange on white: 3.5:1</span>
+                      <Badge className="bg-green-100 text-green-800 text-xs">AA Large</Badge>
                     </div>
                   </div>
                   <p className="text-sm text-gray-500">Minimum 4.5:1 for normal text, 3:1 for large text.</p>
@@ -578,6 +655,257 @@ export default function DesignSystemPage() {
                 </CardContent>
               </Card>
             </div>
+          </Section>
+
+          {/* APPLICATION-SPECIFIC COMPONENTS */}
+          
+          <div className="h-px bg-gray-200 my-16" />
+          <h2 className="text-2xl font-bold tracking-tight mb-2">Application Components</h2>
+          <p className="text-gray-600 mb-12">Domain-specific components unique to Heiwa House.</p>
+
+          <Section id="booking-components" title="Booking Flow Components" description="Components used in the multi-step booking widget.">
+            {/* Progress Indicator */}
+            <h3 className="text-base font-medium mb-4">Progress Stepper</h3>
+            <ComponentShowcase>
+              <div className="bg-white rounded-lg p-6">
+                <div className="flex items-center justify-center gap-4">
+                  {['Experience', 'Options', 'Add-ons', 'Details', 'Review'].map((step, index) => (
+                    <div key={step} className="flex items-center">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                        index < 2 
+                          ? 'bg-gradient-to-br from-heiwaOrange-500 to-heiwaOrange-600 text-white' 
+                          : index === 2 
+                            ? 'bg-gradient-to-br from-heiwaOrange-500 to-heiwaOrange-600 text-white ring-2 ring-heiwaOrange-300 ring-offset-2'
+                            : 'bg-gray-200 text-gray-500'
+                      }`}>
+                        {index < 2 ? <Check className="h-4 w-4" /> : index + 1}
+                      </div>
+                      <span className={`ml-2 text-sm hidden sm:inline ${index <= 2 ? 'text-heiwaOrange-600 font-medium' : 'text-gray-500'}`}>
+                        {step}
+                      </span>
+                      {index < 4 && <div className={`w-8 h-0.5 mx-2 ${index < 2 ? 'bg-heiwaOrange-500' : 'bg-gray-200'}`} />}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </ComponentShowcase>
+
+            {/* Experience Cards */}
+            <h3 className="text-base font-medium mb-4 mt-10">Experience Selection Cards</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-heiwaOrange-500 to-heiwaOrange-600 p-6 text-white cursor-pointer hover:scale-[1.02] transition-transform">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+                <Waves className="h-10 w-10 mb-4" />
+                <h4 className="text-xl font-bold mb-2">Surf Week Package</h4>
+                <p className="text-white/80 text-sm mb-4">7 days of surf, yoga, and community</p>
+                <div className="text-2xl font-bold">From €450</div>
+              </div>
+              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-primary-dark p-6 text-white cursor-pointer hover:scale-[1.02] transition-transform">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+                <Bed className="h-10 w-10 mb-4" />
+                <h4 className="text-xl font-bold mb-2">Room Only</h4>
+                <p className="text-white/80 text-sm mb-4">Flexible stays at our beachfront house</p>
+                <div className="text-2xl font-bold">From €35/night</div>
+              </div>
+            </div>
+
+            {/* Room Selection Card */}
+            <h3 className="text-base font-medium mb-4 mt-10">Room Selection Card</h3>
+            <ComponentShowcase>
+              <div className="max-w-md">
+                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="h-48 bg-gradient-to-br from-heiwaOrange-100 to-heiwaOrange-200 flex items-center justify-center">
+                    <ImageIcon className="h-16 w-16 text-heiwaOrange-400" />
+                  </div>
+                  <div className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="font-bold text-gray-900">Ocean View Private</h4>
+                      <Badge className="bg-green-100 text-green-800 border-transparent text-xs">Available</Badge>
+                    </div>
+                    <p className="text-sm text-gray-500 mb-3">Private room with stunning ocean views</p>
+                    <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                      <span className="flex items-center gap-1"><Users className="h-4 w-4" /> 2 guests</span>
+                      <span className="flex items-center gap-1"><Bed className="h-4 w-4" /> Queen bed</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="text-2xl font-bold text-heiwaOrange-600">€65</span>
+                        <span className="text-gray-500 text-sm">/night</span>
+                      </div>
+                      <Button size="sm" className="bg-heiwaOrange-500 hover:bg-heiwaOrange-600">Select</Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ComponentShowcase>
+          </Section>
+
+          <Section id="surf-components" title="Surf Week Components" description="Components for surf week promotions and bookings.">
+            {/* Surf Week Promo Card */}
+            <h3 className="text-base font-medium mb-4">Surf Week Promo Card</h3>
+            <ComponentShowcase>
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 max-w-2xl">
+                <div className="text-center py-4 bg-gray-50 border-b border-gray-200">
+                  <h3 className="text-xl font-bold text-gray-900">March 15th to March 22nd, 2025!</h3>
+                </div>
+                <div className="p-6">
+                  <ul className="space-y-3 text-gray-900 mb-6">
+                    <li className="flex items-start gap-3">
+                      <span className="text-heiwaOrange-500 font-semibold">-</span>
+                      <span className="italic">Professional instructors for all levels</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-heiwaOrange-500 font-semibold">-</span>
+                      <span className="italic">Amazing food prepared by our chef</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-heiwaOrange-500 font-semibold">-</span>
+                      <span className="italic">Daily yoga and meditation sessions</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="text-heiwaOrange-500 font-semibold">-</span>
+                      <span className="italic">Prices starting from EUR 450!</span>
+                    </li>
+                  </ul>
+                  <Button className="w-full bg-heiwaOrange-500 hover:bg-heiwaOrange-600 text-lg py-6">
+                    Book Now
+                  </Button>
+                  <div className="flex items-center gap-2 mt-4 justify-center">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                    <span className="text-sm text-gray-600 ml-2">5 based on 73 reviews</span>
+                  </div>
+                </div>
+              </div>
+            </ComponentShowcase>
+          </Section>
+
+          <Section id="room-activity-components" title="Room & Activity Components" description="Cards and badges for rooms and activities.">
+            {/* Activity Card */}
+            <h3 className="text-base font-medium mb-4">Activity Card</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {['Surfing', 'Yoga', 'Skateboarding'].map((activity) => (
+                <div key={activity} className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all">
+                  <div className="aspect-[4/3] bg-gradient-to-br from-heiwaOrange-300 to-heiwaOrange-500" />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <h3 className="text-lg font-bold text-white">{activity}</h3>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Availability Badges */}
+            <h3 className="text-base font-medium mb-4 mt-10">Availability Badges</h3>
+            <ComponentShowcase className="flex flex-wrap gap-4">
+              <div className="flex items-center gap-2">
+                <Badge className="flex items-center gap-1 bg-heiwaOrange-500 text-white">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Always Available
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  On Request
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  Seasonal
+                </Badge>
+              </div>
+            </ComponentShowcase>
+
+            {/* Price Badges */}
+            <h3 className="text-base font-medium mb-4 mt-10">Price Badges</h3>
+            <ComponentShowcase>
+              <div className="flex gap-6 items-center">
+                <div className="relative w-32 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg">
+                  <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded font-semibold">
+                    65€
+                  </div>
+                </div>
+                <div className="relative w-32 h-24 bg-gradient-to-br from-heiwaOrange-100 to-heiwaOrange-200 rounded-lg">
+                  <div className="absolute top-2 right-2 bg-heiwaOrange-500 text-white text-sm px-3 py-1.5 rounded font-semibold">
+                    450€
+                  </div>
+                </div>
+              </div>
+            </ComponentShowcase>
+          </Section>
+
+          <Section id="review-components" title="Review Components" description="Google reviews and testimonials display.">
+            {/* Review Card */}
+            <h3 className="text-base font-medium mb-4">Review Card</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">G</div>
+                    <div>
+                      <div className="flex items-center gap-1">
+                        <span className="font-semibold text-gray-900 text-sm">Sarah M.</span>
+                        <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                      </div>
+                      <span className="text-xs text-gray-500">2 weeks ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-0.5 mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  Amazing experience! The surf lessons were top-notch and the house has such a peaceful vibe. Can&apos;t wait to come back!
+                </p>
+              </div>
+              <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">G</div>
+                    <div>
+                      <span className="font-semibold text-gray-900 text-sm">Tom K.</span>
+                      <span className="text-xs text-gray-500 block">1 month ago</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-0.5 mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  Perfect place for a surf retreat. Great instructors, delicious food, and met some wonderful people!
+                </p>
+              </div>
+            </div>
+
+            {/* Google Reviews Summary */}
+            <h3 className="text-base font-medium mb-4 mt-10">Reviews Summary Header</h3>
+            <ComponentShowcase>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-500 rounded flex items-center justify-center text-white font-bold">G</div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Reviews</h3>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold text-gray-900">5.0</span>
+                      <div className="flex items-center gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                        ))}
+                      </div>
+                      <span className="text-sm text-gray-600">(73)</span>
+                    </div>
+                  </div>
+                </div>
+                <Button className="bg-blue-600 hover:bg-blue-700">Review us on Google</Button>
+              </div>
+            </ComponentShowcase>
           </Section>
 
         </main>

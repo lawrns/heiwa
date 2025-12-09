@@ -155,22 +155,22 @@ export const getFallbackRooms = (): Room[] => [
   {
     id: 'room-1',
     name: 'Room Nr 1',
-    image: 'https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-52-scaled-570x600.jpg'
+    image: '/images/rooms/room1.jpg'
   },
   {
     id: 'room-2',
     name: 'Room Nr 2',
-    image: 'https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-29-scaled-570x600.webp'
+    image: '/images/rooms/room2.webp'
   },
   {
     id: 'room-3',
     name: 'Room Nr 3',
-    image: 'https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-22-scaled-570x600.webp'
+    image: '/images/rooms/room3.webp'
   },
   {
     id: 'dorm-room',
     name: 'Dorm room',
-    image: 'https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-1-scaled-570x600.webp'
+    image: '/images/rooms/dorm.webp'
   }
 ]
 
@@ -207,42 +207,42 @@ const getFallbackExperiences = (): Experience[] => [
   {
     id: 'hiking',
     title: 'Hiking',
-    image: 'https://heiwahouse.com/wp-content/uploads/2025/01/8B8BA276-6D91-419B-B8F4-7696042ED92F-01.jpeg'
+    image: '/images/DSC02767-scaled.jpg'
   },
   {
     id: 'horseback-riding',
     title: 'Horseback Riding',
-    image: 'https://heiwahouse.com/wp-content/uploads/2025/01/Freedomroutes_35mm-39-scaled.jpg'
+    image: '/images/DSC01829-Enhanced-NR-2.jpg'
   },
   {
     id: 'sauna',
     title: 'Sauna',
-    image: 'https://heiwahouse.com/wp-content/uploads/2024/12/portrait_sauna3.jpg'
+    image: '/images/DSF8812-scaled.jpg'
   },
   {
     id: 'surfing',
     title: 'Surfing',
-    image: 'https://heiwahouse.com/wp-content/uploads/2025/01/Surf-Lessons.jpg'
+    image: '/images/surf4.jpg'
   },
   {
     id: 'skatepark',
     title: 'Skatepark',
-    image: 'https://heiwahouse.com/wp-content/uploads/2025/01/skatepark-1.jpg'
+    image: '/images/skatepark-1.jpg'
   },
   {
     id: 'yoga',
     title: 'Yoga',
-    image: 'https://heiwahouse.com/wp-content/uploads/2025/01/Yoga.jpg'
+    image: '/images/yoga_dome4.jpg'
   },
   {
     id: 'bicycle-ride',
     title: 'Bicycle Ride',
-    image: 'https://heiwahouse.com/wp-content/uploads/2025/01/Freedomroutes_35mm-7-scaled.jpg'
+    image: '/images/Freedomroutes-rooms-1.jpg'
   },
   {
     id: 'day-trips',
     title: 'Day Trips',
-    image: 'https://heiwahouse.com/wp-content/uploads/2025/01/DSCF8628.jpg'
+    image: '/images/DSF8298-scaled.jpg'
   }
 ]
 
