@@ -2,7 +2,7 @@
 // GET, PUT, DELETE operations for individual sections
 
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 
 // GET /api/cms/sections/[id] - Get a specific section
 export async function GET(
@@ -12,7 +12,7 @@ export async function GET(
   try {
     const { id } = await params
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('page_sections')
       .select('*')
       .eq('id', id)
@@ -70,7 +70,7 @@ export async function PUT(
       )
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('page_sections')
       .update(updateData)
       .eq('id', id)
@@ -117,7 +117,7 @@ export async function DELETE(
 
     if (hardDelete) {
       // Hard delete - actually remove from database
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('page_sections')
         .delete()
         .eq('id', id)
@@ -131,7 +131,7 @@ export async function DELETE(
       }
     } else {
       // Soft delete - just mark as inactive
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('page_sections')
         .update({ is_active: false })
         .eq('id', id)

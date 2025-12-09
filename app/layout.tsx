@@ -8,6 +8,7 @@ import { FloatingBookingWidget } from '@/components/floating-booking-widget'
 import { SkipToContent } from '@/components/ui/skip-to-content'
 import { PageTransition } from '@/components/ui/page-transition'
 import { WhatsAppButton } from '@/components/ui/whatsapp-button'
+import { AdminToolbar } from '@/components/admin/inline-editor/AdminToolbar'
 import './globals.css'
 
 const inter = Inter({
@@ -107,6 +108,7 @@ export default function RootLayout({
             <Footer />
             <FloatingBookingWidget />
             <WhatsAppButton />
+            <AdminToolbar />
           </BookingProvider>
         </SupabaseProvider>
       </body>

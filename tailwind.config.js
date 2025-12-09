@@ -46,6 +46,27 @@ module.exports = {
           alt: '#F9F7F4',
           light: '#FAFAFA',
         },
+        // Status Colors
+        success: {
+          DEFAULT: '#16a34a', // green-600
+          light: '#dcfce7',   // green-50
+          dark: '#15803d',    // green-700
+        },
+        warning: {
+          DEFAULT: '#d97706', // amber-600
+          light: '#fef3c7',   // amber-50
+          dark: '#b45309',    // amber-700
+        },
+        error: {
+          DEFAULT: '#dc2626', // red-600
+          light: '#fee2e2',   // red-50
+          dark: '#b91c1c',    // red-700
+        },
+        info: {
+          DEFAULT: '#2563eb', // blue-600
+          light: '#eff6ff',   // blue-50
+          dark: '#1d4ed8',    // blue-700
+        },
         text: {
           DEFAULT: '#1A1A1A',
           muted: '#5A5A5A',

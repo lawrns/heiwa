@@ -213,10 +213,10 @@ export default function CMSPagesPage() {
                     label: 'Visual Editor',
                     icon: <Wand2 className="w-4 h-4" />,
                     variant: 'primary',
-                    href: page.slug === 'homepage' ? '/admin/homepage' : `/admin/visual-editor/${page.slug}`
+                    href: `/${page.slug === 'homepage' ? '' : page.slug}`
                   },
                   {
-                    label: 'Edit',
+                    label: 'Form Editor',
                     icon: <Edit className="w-4 h-4" />,
                     variant: 'secondary',
                     href: page.slug === 'homepage' ? '/admin/homepage' : `/admin/cms/pages/${page.slug}`

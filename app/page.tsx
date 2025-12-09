@@ -17,43 +17,21 @@ export const revalidate = 60
 
 // Server Component - fetches data at build/request time
 export default async function HomePage() {
-  // Fetch homepage content from CMS (server-side)
-  let homepageContent: any[] = []
+  // Fetch homepage content from unified page_sections table
+  let pageSections: any[] = []
   try {
     const { data, error } = await supabaseAdmin
-      .from('homepage_content' as any)
+      .from('page_sections')
       .select('*')
+      .eq('page_slug', 'home')
+      .eq('is_active', true)
       .order('order_index', { ascending: true })
 
     if (!error && data) {
-      // Parse JSON fields for complex data types
-      homepageContent = data.map((item: any) => {
-        try {
-          return {
-            ...item,
-            cards: item.cards ? JSON.parse(item.cards) : undefined,
-            bookingData: item.booking_data ? JSON.parse(item.booking_data) : undefined,
-            testimonials: item.testimonials ? JSON.parse(item.testimonials) : undefined,
-            facilities: item.facilities ? JSON.parse(item.facilities) : undefined,
-            googleRating: item.google_rating ? JSON.parse(item.google_rating) : undefined,
-            blogConfig: item.blog_config ? JSON.parse(item.blog_config) : undefined,
-            videoId: item.video_id || undefined
-          }
-        } catch {
-          return item
-        }
-      })
+      pageSections = data
     }
   } catch (error) {
     console.error('Error fetching homepage content:', error)
-    // Log error for monitoring
-    if (typeof error === 'object' && error !== null) {
-      const { logError } = await import('@/lib/error-handler')
-      logError(error as Error, {
-        component: 'HomePage',
-        action: 'fetchHomepageContent',
-      })
-    }
     // Continue with empty content - page will use defaults
   }
 
@@ -105,14 +83,19 @@ export default async function HomePage() {
     // Continue with empty array - page will show loading state
   }
 
-  // Extract CMS content or use defaults
-  const heroSection = homepageContent?.find((s: any) => s.section === 'hero')
-  const surfWeeksSection = homepageContent?.find((s: any) => s.section === 'surf-weeks')
-  const aboutSection = homepageContent?.find((s: any) => s.section === 'about')
-  const roomsSection = homepageContent?.find((s: any) => s.section === 'rooms')
-  const hostsSection = homepageContent?.find((s: any) => s.section === 'hosts')
-  const reviewsSection = homepageContent?.find((s: any) => s.section === 'reviews')
-  const facilitiesSection = homepageContent?.find((s: any) => s.section === 'facilities')
+  // Extract CMS content from page_sections - content is stored in JSONB 'content' field
+  const getSection = (sectionType: string) => {
+    const section = pageSections?.find((s: any) => s.section_type === sectionType)
+    return section?.content || null
+  }
+
+  const heroSection = getSection('hero')
+  const surfWeeksSection = getSection('surf-weeks')
+  const aboutSection = getSection('about')
+  const roomsSection = getSection('rooms')
+  const hostsSection = getSection('hosts')
+  const reviewsSection = getSection('reviews')
+  const facilitiesSection = getSection('facilities')
   
   const heroTitle = heroSection?.title || 'Welcome to Heiwa House'
   const rawSubtitle = heroSection?.subtitle || ''
@@ -396,7 +379,7 @@ export default async function HomePage() {
                   { title: 'Paragliding', desc: 'Soar above the landscape with stunning views', img: '/optimized/photography_007_dsc03081-enhanced-nr-scaled.webp' },
                   { title: 'Bicycle Riding', desc: 'Pedal through coastal paths and hidden gems', img: '/optimized/photography_008_dsc03427-enhanced-nr-scaled.webp' },
                 ]
-            ).map((activity) => (
+            ).map((activity: { title: string; desc: string; img: string }) => (
               <div key={activity.title} className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-default">
                 <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
                   <img src={activity.img} alt={activity.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />

@@ -1,0 +1,95 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { Edit, LayoutDashboard } from 'lucide-react'
+import { EditSidebar } from './EditSidebar'
+
+// Map URL paths to page slugs for CMS
+function getPageSlug(pathname: string): string | null {
+  // Don't show on admin pages
+  if (pathname.startsWith('/admin')) return null
+
+  // Map paths to slugs
+  if (pathname === '/') return 'home'
+  if (pathname === '/flow') return 'flow'
+  if (pathname === '/play') return 'play'
+  if (pathname === '/surf') return 'surf'
+  if (pathname === '/contact') return 'contact'
+  if (pathname === '/the-spot') return 'the-spot'
+  if (pathname === '/about') return 'about'
+  if (pathname === '/surf-weeks') return 'surf-weeks'
+
+  return null
+}
+
+export function AdminToolbar() {
+  const pathname = usePathname()
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+
+  useEffect(() => {
+    // Check for admin cookie
+    const checkAdmin = () => {
+      const cookies = document.cookie.split(';')
+      const adminCookie = cookies.find(c => c.trim().startsWith('admin_auth='))
+      setIsAdmin(!!adminCookie)
+    }
+
+    checkAdmin()
+    // Re-check when cookies might change
+    window.addEventListener('focus', checkAdmin)
+    return () => window.removeEventListener('focus', checkAdmin)
+  }, [])
+
+  const pageSlug = getPageSlug(pathname)
+
+  // Don't render if not admin or not on an editable page
+  if (!isAdmin || !pageSlug) return null
+
+  return (
+    <>
+      {/* Floating bottom toolbar - hide when editing */}
+      {!isEditing && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900 text-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-sm font-medium">Admin Mode</span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg font-medium text-sm transition-colors"
+              >
+                <Edit className="w-4 h-4" />
+                Edit Page
+              </button>
+
+              <Link
+                href="/admin"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium text-sm transition-colors"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Sidebar */}
+      {isEditing && (
+        <EditSidebar
+          pageSlug={pageSlug}
+          onClose={() => setIsEditing(false)}
+        />
+      )}
+
+      {/* Bottom padding to prevent content from being hidden - only when toolbar visible */}
+      {!isEditing && <div className="h-16" />}
+    </>
+  )
+}
