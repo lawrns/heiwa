@@ -99,17 +99,44 @@ export function CMSCard({
       {/* Actions */}
       {actions.length > 0 && (
         <div className="flex items-center gap-1 sm:gap-2 pt-3 sm:pt-4 border-t border-gray-100 flex-wrap">
-          {actions.map((action, idx) => (
-            <button
-              key={idx}
-              onClick={action.onClick}
-              className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${getActionColor(action.variant)}`}
-              title={action.label}
-            >
-              {action.icon && <span className="w-3 h-3 sm:w-4 sm:h-4">{action.icon}</span>}
-              <span className="hidden sm:inline">{!action.icon && action.label}</span>
-            </button>
-          ))}
+          {actions.map((action, idx) => {
+            const buttonContent = (
+              <>
+                {action.icon && <span className="w-3 h-3 sm:w-4 sm:h-4">{action.icon}</span>}
+                <span className="hidden sm:inline">{!action.icon && action.label}</span>
+              </>
+            )
+            const buttonClass = `inline-flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${getActionColor(action.variant)}`
+
+            if (action.href) {
+              return (
+                <Link
+                  key={idx}
+                  href={action.href}
+                  onClick={(e) => e.stopPropagation()}
+                  className={buttonClass}
+                  title={action.label}
+                >
+                  {buttonContent}
+                </Link>
+              )
+            }
+
+            return (
+              <button
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                  action.onClick?.()
+                }}
+                className={buttonClass}
+                title={action.label}
+              >
+                {buttonContent}
+              </button>
+            )
+          })}
         </div>
       )}
     </div>
