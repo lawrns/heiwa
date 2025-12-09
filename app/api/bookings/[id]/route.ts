@@ -2,6 +2,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import type { Booking, UpdateBooking } from '@/lib/database.types'
+import type { Participant } from '@/lib/types/api.types'
 
 // GET /api/bookings/[id] - Get a specific booking
 export async function GET(
@@ -131,7 +133,7 @@ export async function PUT(
 
     // Transform admin UI format back to database format
     // The bookings table uses: room_type, check_in, check_out, guests, total_amount, status, payment_status, notes
-    const updateData: any = {
+    const updateData: UpdateBooking = {
       updated_at: new Date().toISOString()
     }
 
@@ -236,7 +238,7 @@ export async function PUT(
       if (notesData && typeof notesData === 'object' && notesData.participants) {
         // JSON format with participants - aggregate special requests
         specialRequests = notesData.participants
-          .map((p: any) => p.specialRequests)
+          .map((p: Participant) => p.specialRequests)
           .filter(Boolean)
           .join('\n\n')
       }
@@ -301,7 +303,7 @@ export async function PATCH(
     }
 
     // Build partial update object - only update provided fields
-    const updateData: any = {
+    const updateData: UpdateBooking = {
       updated_at: new Date().toISOString()
     }
 
