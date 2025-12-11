@@ -129,11 +129,12 @@ export async function GET(request: Request) {
     // Get enrollment counts for each surf camp (with timeout protection)
     const surfCampsWithAvailability = await Promise.all(
       (surfCamps || []).map(async (camp: SurfCamp) => {
+        // Count both confirmed and pending enrollments (pending = booked but not yet paid)
         const enrollmentQuery = supabaseAdmin
           .from('surf_camp_enrollments')
           .select('*', { count: 'exact', head: true })
           .eq('surf_camp_id', camp.id)
-          .eq('status', 'confirmed')
+          .in('status', ['confirmed', 'pending'])
         
         const enrollmentResult = await executeWithTimeout(
           enrollmentQuery as any,

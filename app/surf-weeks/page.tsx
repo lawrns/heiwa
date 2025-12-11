@@ -70,11 +70,12 @@ async function getSurfWeeks() {
     // Get enrollment counts for each surf camp
     const surfCampsWithAvailability = await Promise.all(
       surfCamps.map(async (camp: any) => {
+        // Count both confirmed and pending enrollments (pending = booked but not yet paid)
         const { count: enrolledCount } = await supabaseAdmin
           .from('surf_camp_enrollments')
           .select('*', { count: 'exact', head: true })
           .eq('surf_camp_id', camp.id)
-          .eq('status', 'confirmed')
+          .in('status', ['confirmed', 'pending'])
         
         // Use max_participants as the primary source, fall back to total_spots for legacy data
         const totalSpots = camp.max_participants || camp.total_spots || 18
