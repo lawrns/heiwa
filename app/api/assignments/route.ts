@@ -103,6 +103,50 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Get room capacities for validation
+    const roomIds = assignments.map((a: { roomId: string }) => a.roomId).filter(Boolean)
+    const { data: rooms, error: roomsError } = await supabaseAdmin
+      .from('rooms')
+      .select('id, name, capacity')
+      .in('id', roomIds)
+
+    if (roomsError) {
+      console.error('Error fetching rooms:', roomsError)
+      return NextResponse.json(
+        { error: 'Failed to validate room capacities' },
+        { status: 500 }
+      )
+    }
+
+    // Create a map of room capacities for quick lookup
+    const roomCapacities = new Map<string, { name: string; capacity: number }>()
+    for (const room of rooms || []) {
+      roomCapacities.set(room.id, { name: room.name, capacity: room.capacity })
+    }
+
+    // Validate that no room exceeds its capacity
+    const capacityErrors: string[] = []
+    for (const assignment of assignments) {
+      const { roomId, participantIds } = assignment
+      const room = roomCapacities.get(roomId)
+
+      if (room && participantIds.length > room.capacity) {
+        capacityErrors.push(
+          `Room "${room.name}" has capacity ${room.capacity} but ${participantIds.length} guests assigned`
+        )
+      }
+    }
+
+    if (capacityErrors.length > 0) {
+      return NextResponse.json(
+        {
+          error: 'Room capacity exceeded',
+          details: capacityErrors
+        },
+        { status: 400 }
+      )
+    }
+
     // Delete existing assignments for this week
     await supabaseAdmin
       .from('room_assignments')

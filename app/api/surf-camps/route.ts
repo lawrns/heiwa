@@ -142,11 +142,10 @@ export async function GET(request: Request) {
         const { error } = enrollmentResult
         const enrolledCount = (enrollmentResult as any).count || 0
         
-        // Handle both old schema (max_participants) and new schema (total_spots)
-        const totalSpots = (camp as any).total_spots || camp.max_participants || 18
-        const dbAvailableSpots = (camp as any).available_spots
+        // Use max_participants as the primary source, fall back to total_spots for legacy data
+        const totalSpots = camp.max_participants || (camp as any).total_spots || 18
         const calculatedAvailableSpots = totalSpots - (enrolledCount || 0)
-        const availableSpots = dbAvailableSpots !== undefined ? dbAvailableSpots : calculatedAvailableSpots
+        const availableSpots = Math.max(0, calculatedAvailableSpots)
         
         if (error) {
           console.warn(`Error fetching enrollment count for camp ${camp.id}:`, error)

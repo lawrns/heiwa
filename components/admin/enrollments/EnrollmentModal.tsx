@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -28,6 +28,7 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
   const { supabase } = useSupabase()
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(false)
+  const [searchLoading, setSearchLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedClientId, setSelectedClientId] = useState('')
   const [skillLevel, setSkillLevel] = useState('beginner')
@@ -40,33 +41,53 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
   const [notes, setNotes] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch clients for selection
-  useEffect(() => {
-    if (open) {
-      fetchClients()
-    }
-  }, [open])
-
-  const fetchClients = async () => {
+  // Fetch clients with server-side search
+  const fetchClients = useCallback(async (search: string = '') => {
     try {
-      const { data, error } = await supabase
+      setSearchLoading(true)
+      let query = supabase
         .from('clients')
         .select('id, name, email, phone')
         .order('name', { ascending: true })
         .limit(100)
+
+      // Apply server-side search if search term provided
+      if (search.trim()) {
+        query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%`)
+      }
+
+      const { data, error } = await query
 
       if (error) throw error
       setClients(data || [])
     } catch (error) {
       console.error('Error fetching clients:', error)
       toast.error('Failed to load clients')
+    } finally {
+      setSearchLoading(false)
     }
-  }
+  }, [supabase])
 
-  const filteredClients = clients.filter(client =>
-    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Initial fetch when modal opens
+  useEffect(() => {
+    if (open) {
+      fetchClients('')
+    }
+  }, [open, fetchClients])
+
+  // Debounced search - fetch from server when search term changes
+  useEffect(() => {
+    if (!open) return
+
+    const debounceTimer = setTimeout(() => {
+      fetchClients(searchTerm)
+    }, 300)
+
+    return () => clearTimeout(debounceTimer)
+  }, [searchTerm, open, fetchClients])
+
+  // Use all clients from server (already filtered server-side)
+  const filteredClients = clients
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -154,13 +175,20 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
           <div className="space-y-2">
             <Label htmlFor="client">Select Client *</Label>
             <div className="space-y-2">
-              <Input
-                id="client-search"
-                placeholder="Search clients..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="mb-2"
-              />
+              <div className="relative">
+                <Input
+                  id="client-search"
+                  placeholder="Search clients by name or email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="mb-2"
+                />
+                {searchLoading && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+                  </div>
+                )}
+              </div>
               <Select value={selectedClientId} onValueChange={setSelectedClientId}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a client" />

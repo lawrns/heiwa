@@ -8,8 +8,9 @@ import { SurfWeeksTable } from '@/components/surf-weeks/SurfWeeksTable'
 import { BookNowButton } from '@/components/surf-weeks/BookNowButton'
 import { GoogleReviews } from '@/components/ui/google-reviews'
 
-// Revalidate every 60 seconds to pick up CMS changes quickly
-export const revalidate = 60
+// Disable caching to ensure surf camp active status changes are reflected immediately
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export const metadata: Metadata = {
   title: 'Surf Weeks in Santa Cruz, Portugal - Learn Surfing With Heiwa',
@@ -75,11 +76,10 @@ async function getSurfWeeks() {
           .eq('surf_camp_id', camp.id)
           .eq('status', 'confirmed')
         
-        // Use available_spots from database, or calculate from total_spots - enrollments
-        const totalSpots = camp.total_spots || 18
-        const dbAvailableSpots = camp.available_spots
+        // Use max_participants as the primary source, fall back to total_spots for legacy data
+        const totalSpots = camp.max_participants || camp.total_spots || 18
         const calculatedAvailableSpots = totalSpots - (enrolledCount || 0)
-        const availableSpots = dbAvailableSpots !== undefined ? dbAvailableSpots : calculatedAvailableSpots
+        const availableSpots = Math.max(0, calculatedAvailableSpots)
         
         return {
           id: camp.id,

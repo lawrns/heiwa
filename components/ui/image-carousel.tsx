@@ -96,9 +96,9 @@ export function ImageCarousel({
           alt={`${alt} ${currentIndex + 1}`}
           fill
           className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 800px"
           priority={currentIndex === 0}
-          unoptimized={validImages[currentIndex]?.includes('supabase.co')}
+          quality={85}
           onError={(e) => {
             const target = e.target as HTMLImageElement
             // Try fallback image
