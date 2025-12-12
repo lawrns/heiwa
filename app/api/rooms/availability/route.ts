@@ -105,6 +105,38 @@ export async function GET(request: NextRequest) {
       existingBookings = []
     }
 
+    // Check room_assignments table for overlapping assignments
+    // This is critical for surf camp bookings where rooms are assigned via room_assignments
+    interface RoomAssignmentCount {
+      room_id: string
+      assignment_count: number
+    }
+    let roomAssignmentCounts: RoomAssignmentCount[] = []
+
+    try {
+      const { data: assignments, error: assignmentsError } = await supabaseAdmin
+        .from('room_assignments')
+        .select('room_id')
+        .gte('check_out_date', startDate)
+        .lte('check_in_date', endDate)
+
+      if (assignmentsError) {
+        console.warn('Room assignments table error:', assignmentsError.message)
+      } else if (assignments) {
+        // Count assignments per room
+        const countMap = new Map<string, number>()
+        assignments.forEach((a: { room_id: string }) => {
+          countMap.set(a.room_id, (countMap.get(a.room_id) || 0) + 1)
+        })
+        roomAssignmentCounts = Array.from(countMap.entries()).map(([room_id, count]) => ({
+          room_id,
+          assignment_count: count
+        }))
+      }
+    } catch (error) {
+      console.warn('Error checking room assignments:', error)
+    }
+
     // Create a map of room names to IDs for matching
     const roomNameToId = new Map<string, string>()
     ;(allRooms || []).forEach((room: { id?: string; name?: string }) => {
@@ -114,25 +146,36 @@ export async function GET(request: NextRequest) {
     })
 
     // Filter available rooms - check both date availability AND capacity
-    const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; name?: string; [key: string]: unknown }) => {
-      // Check if room is already booked for these dates
+    const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; name?: string; booking_type?: string; bookingType?: string; [key: string]: unknown }) => {
+      // Check if room is already booked for these dates via bookings table
       // Match by room name since bookings table uses room_type (text)
-      const isBooked = existingBookings.some(booking =>
+      const isBookedViaBookings = existingBookings.some(booking =>
         booking.room_type === room.name
       )
 
-      if (isBooked) {
+      // For "whole" room types, any booking means it's unavailable
+      const roomBookingType = room.booking_type || room.bookingType || 'whole'
+      if (roomBookingType === 'whole' && isBookedViaBookings) {
         return false
       }
 
-      // Check capacity: For single room selection, room must accommodate all guests
-      // For multi-room selection, we'll allow it and validate in UI
-      // But at minimum, if a single room can't fit guests, filter it out
+      // Check room_assignments for capacity
+      const assignmentCount = roomAssignmentCounts.find(a => a.room_id === room.id)?.assignment_count || 0
       const roomCapacity = room.capacity || 0
-      if (roomCapacity > 0 && guests > roomCapacity) {
-        // Room can't accommodate all guests alone - but allow for multi-room selection
-        // We'll validate total capacity in the UI
-        return true // Keep it for multi-room selection possibility
+
+      // For "whole" room types, any assignment means it's unavailable
+      if (roomBookingType === 'whole' && assignmentCount > 0) {
+        console.log(`🚫 Room ${room.name} (whole) unavailable: ${assignmentCount} assignments`)
+        return false
+      }
+
+      // For "perBed" room types (dorms), check if there's remaining capacity
+      if (roomBookingType === 'perBed') {
+        const remainingBeds = roomCapacity - assignmentCount
+        if (remainingBeds < guests) {
+          console.log(`🚫 Room ${room.name} (perBed) insufficient: ${remainingBeds} beds available, ${guests} requested`)
+          return false
+        }
       }
 
       return true
