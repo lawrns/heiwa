@@ -39,7 +39,8 @@ export default function SurfCampsPage() {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch('/api/surf-camps', {
+      // Admin needs to manage both active + inactive camps
+      const response = await fetch('/api/surf-camps?admin=true', {
         credentials: 'include',
       })
       

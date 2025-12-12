@@ -38,15 +38,22 @@ export async function GET(
       )
     }
 
-    // Get enrollment count
+    // Get enrollment counts (confirmed + pending for availability, confirmed for legacy display)
     const { count: enrolledCount } = await supabaseAdmin
+      .from('surf_camp_enrollments')
+      .select('*', { count: 'exact', head: true })
+      .eq('surf_camp_id', id)
+      .in('status', ['confirmed', 'pending'])
+
+    const { count: confirmedCount } = await supabaseAdmin
       .from('surf_camp_enrollments')
       .select('*', { count: 'exact', head: true })
       .eq('surf_camp_id', id)
       .eq('status', 'confirmed')
 
-    const confirmedBooked = enrolledCount || 0
-    const availableSpots = surfCamp.max_participants - confirmedBooked
+    const enrolledCountNum = enrolledCount || 0
+    const confirmedBooked = confirmedCount || 0
+    const availableSpots = surfCamp.max_participants - enrolledCountNum
 
     return NextResponse.json({
       success: true,
@@ -60,6 +67,7 @@ export async function GET(
           price: surfCamp.price,
           max_participants: surfCamp.max_participants,
           confirmed_booked: confirmedBooked,
+          enrolled_count: enrolledCountNum,
           available_spots: Math.max(0, availableSpots),
           is_full: availableSpots <= 0,
           level: surfCamp.level,

@@ -34,12 +34,18 @@ interface SurfCamp {
 }
 
 // API endpoint for getting all surf camps
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     const showAll = searchParams.get('admin') === 'true'
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined
+
+    // Only admins can request inactive/past camps
+    if (showAll) {
+      const authError = requireAdminAuth(request)
+      if (authError) return authError
+    }
     
     // Build query with timeout protection
     let query = supabaseAdmin
@@ -63,8 +69,8 @@ export async function GET(request: Request) {
     }
     
     // Execute with timeout to prevent long waits
-    const queryPromise = query as any
-    const { data: surfCamps, error: surfCampsError } = await executeWithTimeout(
+    const queryPromise = query as unknown as Promise<{ data: SurfCamp[] | null; error: any }>
+    const { data: surfCamps, error: surfCampsError } = await executeWithTimeout<SurfCamp[]>(
       queryPromise,
       3000 // 3 second timeout for fast failure
     )
@@ -168,8 +174,10 @@ export async function GET(request: Request) {
           enrolled_count: enrolledCount || 0,
           is_full: availableSpots <= 0,
           level: camp.level || 'all',
+          category: camp.category,
           images: fixImageUrls(camp.images || []),
-          includes: camp.includes || []
+          includes: camp.includes || [],
+          is_active: camp.is_active,
         }
       })
     )
