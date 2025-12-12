@@ -14,7 +14,6 @@ import {
   AdminTable
 } from '../ui'
 import { HomepageSection } from '@/lib/cms-validators'
-import { useSupabase } from '@/lib/supabase-context'
 import { 
   Eye, 
   EyeOff, 
@@ -35,7 +34,6 @@ const SECTION_TYPES = [
 ] as const
 
 const HomepageEditor: React.FC<HomepageEditorProps> = ({ className }) => {
-  const { supabase } = useSupabase()
   const [sections, setSections] = useState<HomepageSection[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -49,14 +47,16 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ className }) => {
     try {
       setLoading(true)
       setError(null)
-      
-      const { data, error } = await supabase
-        .from('homepage_sections')
-        .select('*')
-        .order('order_index', { ascending: true })
 
-      if (error) throw error
-      setSections(data || [])
+      const response = await fetch('/api/cms/homepage?limit=200&sort_by=order_index&sort_order=asc', {
+        method: 'GET'
+      })
+      const result = await response.json().catch(() => null)
+      if (!response.ok) {
+        throw new Error(result?.message || `Failed to load sections (${response.status})`)
+      }
+
+      setSections(result?.data || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load sections')
     } finally {
@@ -91,12 +91,11 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ className }) => {
     if (!confirm('Are you sure you want to delete this section?')) return
 
     try {
-      const { error } = await supabase
-        .from('homepage_sections')
-        .delete()
-        .eq('id', section.id)
-
-      if (error) throw error
+      const response = await fetch(`/api/cms/homepage?id=${encodeURIComponent(String(section.id))}`, {
+        method: 'DELETE'
+      })
+      const result = await response.json().catch(() => null)
+      if (!response.ok) throw new Error(result?.message || `Failed to delete (${response.status})`)
       
       showAlert('success', 'Section deleted successfully')
       loadSections()
@@ -108,12 +107,13 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ className }) => {
   // Handle toggle active
   const handleToggleActive = async (section: HomepageSection) => {
     try {
-      const { error } = await supabase
-        .from('homepage_sections')
-        .update({ is_active: !section.is_active })
-        .eq('id', section.id)
-
-      if (error) throw error
+      const response = await fetch('/api/cms/homepage', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: section.id, is_active: !section.is_active })
+      })
+      const result = await response.json().catch(() => null)
+      if (!response.ok) throw new Error(result?.message || `Failed to toggle (${response.status})`)
       
       showAlert('success', `Section ${section.is_active ? 'deactivated' : 'activated'} successfully`)
       loadSections()
@@ -135,16 +135,21 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ className }) => {
       updatedSections.splice(newIndex, 0, movedSection)
 
       // Update order indices
-      const updates = updatedSections.map((s, index) => ({
-        id: s.id,
-        order_index: index
-      }))
+      const updates = updatedSections.map((s, index) => ({ id: s.id, order_index: index }))
 
-      const { error } = await supabase
-        .from('homepage_sections')
-        .upsert(updates)
-
-      if (error) throw error
+      await Promise.all(
+        updates.map(async (u) => {
+          const response = await fetch('/api/cms/homepage', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(u),
+          })
+          if (!response.ok) {
+            const result = await response.json().catch(() => null)
+            throw new Error(result?.message || `Failed to reorder (${response.status})`)
+          }
+        })
+      )
       
       showAlert('success', 'Section reordered successfully')
       loadSections()
@@ -320,7 +325,6 @@ const HomepageSectionForm: React.FC<{
   onCancel: () => void
   onError: (message: string) => void
 }> = ({ section, onSave, onCancel, onError }) => {
-  const { supabase } = useSupabase()
   const [formData, setFormData] = useState({
     section_type: section?.section_type || 'hero',
     title: section?.title || '',
@@ -345,19 +349,21 @@ const HomepageSectionForm: React.FC<{
       }
 
       if (section) {
-        const { error } = await supabase
-          .from('homepage_sections')
-          .update(payload)
-          .eq('id', section.id)
-
-        if (error) throw error
+        const response = await fetch('/api/cms/homepage', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: section.id, ...payload })
+        })
+        const result = await response.json().catch(() => null)
+        if (!response.ok) throw new Error(result?.message || `Failed to update (${response.status})`)
       } else {
-        const { data, error } = await supabase
-          .from('homepage_sections')
-          .insert([payload as any])
-          .select()
-
-        if (error) throw error
+        const response = await fetch('/api/cms/homepage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        const result = await response.json().catch(() => null)
+        if (!response.ok) throw new Error(result?.message || `Failed to create (${response.status})`)
       }
 
       onSave()

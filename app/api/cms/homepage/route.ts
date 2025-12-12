@@ -2,7 +2,8 @@
 // CRUD operations for homepage content sections
 
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 import { 
   validateCreateHomepageSection, 
   validateUpdateHomepageSection,
@@ -91,6 +92,9 @@ export async function GET(request: NextRequest) {
 
 // POST /api/cms/homepage - Create new homepage section
 export async function POST(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
 
@@ -100,7 +104,7 @@ export async function POST(request: NextRequest) {
       handleValidationError(validation)
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('homepage_sections')
       .insert([validation.data])
       .select()
@@ -148,6 +152,9 @@ export async function POST(request: NextRequest) {
 
 // PUT /api/cms/homepage - Update homepage section
 export async function PUT(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { id, ...updateData } = body
@@ -168,7 +175,7 @@ export async function PUT(request: NextRequest) {
       handleValidationError(validation)
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('homepage_sections')
       .update(validation.data)
       .eq('id', id)
@@ -226,6 +233,9 @@ export async function PUT(request: NextRequest) {
 
 // DELETE /api/cms/homepage - Delete homepage section
 export async function DELETE(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
@@ -240,7 +250,7 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('homepage_sections')
       .delete()
       .eq('id', id)

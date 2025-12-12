@@ -1,19 +1,17 @@
 'use client'
 
 import React, { createContext, useContext, useMemo, useRef } from 'react'
-import { supabase, supabaseAdmin } from './supabase'
+import { supabase } from './supabase'
 
 interface SupabaseContextType {
   supabase: typeof supabase
-  supabaseAdmin: typeof supabaseAdmin
 }
 
 const SupabaseContext = createContext<SupabaseContextType | undefined>(undefined)
 
 function getSupabaseInstances(): SupabaseContextType {
   return {
-    supabase,
-    supabaseAdmin
+    supabase
   }
 }
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
 
 /**
  * Fix Supabase storage bucket name mismatch
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
     let existingBookings: RoomBooking[] = []
 
     try {
-      const { data, error: bookingsError } = await supabase
+      const { data, error: bookingsError } = await supabaseAdmin
         .from('bookings')
         .select('room_type, check_in, check_out')
         .gte('check_out', startDate)

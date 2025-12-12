@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
 
 // API endpoint for checking date availability
 export async function GET(request: NextRequest) {
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     const dateAvailability = await Promise.all(
       dateRange.map(async (date) => {
         // Check room bookings for this date
-        const { data: roomBookings, error: roomError } = await supabase
+        const { data: roomBookings, error: roomError } = await supabaseAdmin
           .from('bookings')
           .select('room_type, guests')
           .lte('check_in', date)

@@ -13,7 +13,6 @@ import {
   AdminTable
 } from '../ui'
 import { MediaItem } from '@/lib/cms-validators'
-import { useSupabase } from '@/lib/supabase-context'
 import { 
   Upload, 
   Image as ImageIcon,
@@ -48,7 +47,6 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
   multiSelect = false,
   maxSelections = 10
 }) => {
-  const { supabase } = useSupabase()
   const [media, setMedia] = useState<MediaItem[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
@@ -72,27 +70,22 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
     try {
       setLoading(true)
       setError(null)
-      
-      let query = supabase
-        .from('media_library')
-        .select('*')
-        .order('created_at', { ascending: false })
 
-      // Apply filters
-      if (filters.file_type) {
-        query = query.eq('file_type', filters.file_type)
-      }
-      if (filters.category) {
-        query = query.eq('category', filters.category)
-      }
-      if (filters.search) {
-        query = query.ilike('original_name', `%${filters.search}%`)
+      const params = new URLSearchParams()
+      if (filters.file_type) params.set('file_type', filters.file_type)
+      if (filters.category) params.set('category', filters.category)
+      if (filters.search) params.set('search', filters.search)
+      params.set('sort_by', 'created_at')
+      params.set('sort_order', 'desc')
+      params.set('limit', '200')
+
+      const response = await fetch(`/api/cms/media?${params.toString()}`, { method: 'GET' })
+      const result = await response.json().catch(() => null)
+      if (!response.ok) {
+        throw new Error(result?.message || `Failed to load media (${response.status})`)
       }
 
-      const { data, error } = await query
-
-      if (error) throw error
-      setMedia(data || [])
+      setMedia(result?.data || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load media')
     } finally {
@@ -117,62 +110,23 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
     setUploading(true)
     const uploadPromises = Array.from(files).map(async (file) => {
       try {
-        // Determine file type
-        let fileType: MediaItem['file_type']
-        if (file.type.startsWith('image/')) {
-          fileType = 'image'
-        } else if (file.type.startsWith('video/')) {
-          fileType = 'video'
-        } else {
-          fileType = 'document'
+        const form = new FormData()
+        form.set('file', file)
+        form.set('alt_text', '')
+        form.set('category', 'general')
+        form.set('tags', '')
+
+        const response = await fetch('/api/cms/media', {
+          method: 'POST',
+          body: form,
+        })
+
+        const result = await response.json().catch(() => null)
+        if (!response.ok) {
+          throw new Error(result?.message || `Upload failed (${response.status})`)
         }
 
-        // Generate unique filename
-        const timestamp = Date.now()
-        const randomString = Math.random().toString(36).substring(2, 15)
-        const fileExtension = file.name.split('.').pop()
-        const filename = `${timestamp}_${randomString}.${fileExtension}`
-        const supabasePath = `cms-media/${filename}`
-
-        // Upload file to Supabase Storage
-        const { error: uploadError } = await supabase.storage
-          .from('cms-media')
-          .upload(supabasePath, file, {
-            contentType: file.type,
-            upsert: false
-          })
-
-        if (uploadError) throw uploadError
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('cms-media')
-          .getPublicUrl(supabasePath)
-
-        // Create media item record
-        const mediaItemData = {
-          filename,
-          original_name: file.name,
-          file_type: fileType,
-          file_size: file.size,
-          supabase_path: supabasePath,
-          public_url: publicUrl,
-          alt_text: '',
-          tags: [],
-          category: 'general',
-          is_active: true,
-          order_index: 0
-        }
-
-        const { data, error } = await supabase
-          .from('media_library')
-          .insert([mediaItemData])
-          .select()
-          .single()
-
-        if (error) throw error
-
-        return data
+        return result?.data
       } catch (err) {
         console.error('Upload error:', err)
         throw err
@@ -205,18 +159,13 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
     if (!confirm('Are you sure you want to delete this media file?')) return
 
     try {
-      // Delete from database
-      const { error } = await supabase
-        .from('media_library')
-        .delete()
-        .eq('id', item.id)
-
-      if (error) throw error
-
-      // Delete from storage
-      await supabase.storage
-        .from('cms-media')
-        .remove([item.supabase_path])
+      const response = await fetch(`/api/cms/media?id=${encodeURIComponent(String(item.id))}`, {
+        method: 'DELETE',
+      })
+      const result = await response.json().catch(() => null)
+      if (!response.ok) {
+        throw new Error(result?.message || `Failed to delete media (${response.status})`)
+      }
 
       showAlert('success', 'Media deleted successfully')
       loadMedia()

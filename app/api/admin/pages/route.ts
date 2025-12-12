@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 export async function GET(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { searchParams } = new URL(request.url)
     const pageSlug = searchParams.get('page_slug')
     const sectionType = searchParams.get('section_type')
@@ -45,6 +49,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const {
       page_slug,
@@ -65,7 +72,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate page_slug
-    const validPages = ['flow', 'play', 'surf', 'the-spot', 'about', 'contact']
+    const validPages = ['flow', 'play', 'surf', 'surf-weeks', 'the-spot', 'about', 'contact']
     if (!validPages.includes(page_slug)) {
       return NextResponse.json(
         { success: false, error: 'Invalid page_slug' },

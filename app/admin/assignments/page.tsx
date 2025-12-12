@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Users, MapPin } from 'lucide-react'
-import { useSupabase } from '@/lib/supabase-context'
 import { toast } from 'react-toastify'
 import AssignmentBoard from '@/components/admin/assignments/AssignmentBoard'
 
@@ -36,7 +35,6 @@ interface CampApiResponse {
 }
 
 export default function AdminAssignmentsPage() {
-  const { supabase } = useSupabase()
   const [selectedWeek, setSelectedWeek] = useState<string>('')
   const [, setAssignments] = useState<Assignment[]>([])
   const [weeks, setWeeks] = useState<WeekData[]>([])
@@ -46,20 +44,18 @@ export default function AdminAssignmentsPage() {
   const fetchSurfCampWeeks = useCallback(async () => {
     try {
       setLoading(true)
-      const { data, error } = await supabase
-        .from('surf_camps')
-        .select('id, name, start_date, end_date, max_participants, total_spots, available_spots, is_active')
-        .eq('is_active', true)
-        .order('start_date', { ascending: true })
+      const response = await fetch('/api/surf-camps', { method: 'GET' })
+      const result = await response.json().catch(() => null)
 
-      if (error) {
-        console.error('Error fetching surf camps:', error)
+      if (!response.ok || !result?.success) {
+        console.error('Error fetching surf camps:', result?.error || response.statusText)
         toast.error('Failed to load surf camp weeks')
         return
       }
 
-      if (data) {
-        const formattedWeeks: WeekData[] = data.map((camp: CampApiResponse) => ({
+      const camps: CampApiResponse[] = result?.data?.surf_camps || []
+      if (camps) {
+        const formattedWeeks: WeekData[] = camps.map((camp: CampApiResponse) => ({
           id: camp.id,
           name: `${camp.name} (${new Date(camp.start_date).toLocaleDateString()} - ${new Date(camp.end_date).toLocaleDateString()})`,
           category: camp.name.toLowerCase().includes('frenchman') ? 'Freedom Routes' : 'Heiwa House',
@@ -80,7 +76,7 @@ export default function AdminAssignmentsPage() {
     } finally {
       setLoading(false)
     }
-  }, [selectedWeek, supabase])
+  }, [selectedWeek])
 
   useEffect(() => {
     fetchSurfCampWeeks()

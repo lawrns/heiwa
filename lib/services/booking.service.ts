@@ -569,6 +569,7 @@ export const bookingService = {
         .insert({
           surf_camp_id: camp_id,
           client_id: pClientId,
+          booking_id: bookingId,
           participant_name: pName,
           participant_email: participant.email,
           participant_phone: participant.phone || '',

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { Clock, User, Eye, RotateCcw, Trash2 } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminModal from '@/components/admin/ui/AdminModal'
-import { useSupabase } from '@/lib/supabase-context'
 
 interface VersionEntry {
   id: string
@@ -29,7 +28,6 @@ export default function VersionHistory({
   onClose,
   onRestore
 }: VersionHistoryProps) {
-  const { supabaseAdmin } = useSupabase()
   const [versions, setVersions] = useState<VersionEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -48,16 +46,17 @@ export default function VersionHistory({
       setLoading(true)
       setError(null)
 
-      const { data, error } = await supabaseAdmin
-        .from('page_versions')
-        .select('*')
-        .eq('page_slug', pageSlug)
-        .order('version', { ascending: false })
-        .limit(50)
+      const response = await fetch(`/api/admin/page-versions?page_slug=${encodeURIComponent(pageSlug)}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
 
-      if (error) throw error
+      const result = await response.json().catch(() => null)
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || `Failed to load version history (${response.status})`)
+      }
 
-      setVersions(data || [])
+      setVersions(result.versions || [])
     } catch (err) {
       setError('Failed to load version history')
       console.error('Error fetching versions:', err)
@@ -88,12 +87,14 @@ export default function VersionHistory({
     }
 
     try {
-      const { error } = await supabaseAdmin
-        .from('page_versions')
-        .delete()
-        .eq('id', versionId)
+      const response = await fetch(`/api/admin/page-versions?id=${encodeURIComponent(versionId)}`, {
+        method: 'DELETE'
+      })
 
-      if (error) throw error
+      const result = await response.json().catch(() => null)
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || `Failed to delete version (${response.status})`)
+      }
 
       setVersions(prev => prev.filter(v => v.id !== versionId))
     } catch (err) {

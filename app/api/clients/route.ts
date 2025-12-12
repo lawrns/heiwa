@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // GET all clients
 export async function GET(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search')
     const includeDeleted = searchParams.get('include_deleted') === 'true'
+    const limitParam = searchParams.get('limit')
+    const limit = limitParam ? Math.min(500, Math.max(1, parseInt(limitParam))) : undefined
 
     let query = supabaseAdmin
       .from('clients')
@@ -16,6 +22,16 @@ export async function GET(request: NextRequest) {
     // Filter out deleted clients unless explicitly requested
     if (!includeDeleted) {
       query = query.is('deleted_at', null)
+    }
+
+    // Apply server-side search when provided
+    if (search && search.trim()) {
+      const s = search.trim()
+      query = query.or(`name.ilike.%${s}%,email.ilike.%${s}%,phone.ilike.%${s}%`)
+    }
+
+    if (limit) {
+      query = query.limit(limit)
     }
 
     const { data: clients, error } = await query
@@ -28,21 +44,9 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Apply search filter if provided
-    let filteredClients = clients || []
-    if (search) {
-      const searchLower = search.toLowerCase()
-      filteredClients = filteredClients.filter(
-        (client: any) =>
-          client.name?.toLowerCase().includes(searchLower) ||
-          client.email?.toLowerCase().includes(searchLower) ||
-          client.phone?.toLowerCase().includes(searchLower)
-      )
-    }
-
     // Calculate statistics for each client
     const clientsWithStats = await Promise.all(
-      filteredClients.map(async (client: any) => {
+      (clients || []).map(async (client: any) => {
         // Get booking count using count query (more efficient)
         const { count: totalBookings } = await supabaseAdmin
           .from('bookings')
@@ -93,6 +97,9 @@ export async function GET(request: NextRequest) {
 
 // POST - Create new client
 export async function POST(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { name, email, phone, company, notes, vip } = body

@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+type WidgetParticipant = {
+  firstName?: string
+  lastName?: string
+  name?: string
+  email?: string
+  phone?: string
+  dietaryRequirements?: string
+  specialRequests?: string
+  skillLevel?: string
+  emergencyContact?: unknown
+}
+
+function getParticipantName(participant: WidgetParticipant): string {
+  const computed = `${participant.firstName || ''} ${participant.lastName || ''}`.trim()
+  return (participant.name || computed || 'Guest').trim()
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -33,8 +50,17 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
+    for (let i = 0; i < participants.length; i++) {
+      if (!participants[i]?.email) {
+        return NextResponse.json(
+          { success: false, error: `Participant ${i + 1} email is required` },
+          { status: 400 }
+        )
+      }
+    }
+
     const primaryParticipant = participants[0]
-    const clientName = primaryParticipant.name || `${primaryParticipant.firstName} ${primaryParticipant.lastName}`.trim()
+    const clientName = getParticipantName(primaryParticipant)
     const email = primaryParticipant.email
     const phone = primaryParticipant.phone || ''
 
@@ -55,52 +81,69 @@ export async function POST(request: NextRequest) {
       add_ons_count: add_ons.length
     })
 
-    // Step 1: Create or find client
-    let clientData
+    // Step 1: Create or find clients for ALL participants
+    const allClientIds: string[] = []
+    const participantDetails = []
+    let primaryClientData: any = null
+
     try {
-      const { data: existingClient, error: findClientError } = await supabaseAdmin
-        .from('clients')
-        .select('*')
-        .eq('email', email)
-        .single()
+      for (const participant of participants as WidgetParticipant[]) {
+        const pEmail = participant.email!
+        const pName = getParticipantName(participant)
 
-      if (findClientError && findClientError.code !== 'PGRST116') {
-        console.error('Error finding client:', findClientError)
-        return NextResponse.json({
-          success: false,
-          error: `Database error finding client: ${findClientError.message}`
-        }, { status: 500 })
-      }
-
-      if (existingClient) {
-        clientData = existingClient as any
-        console.log('✅ Found existing client:', (clientData as any).id)
-      } else {
-        // Create new client
-        const newClient = {
-          name: clientName,
-          email,
-          phone: phone || '',
-          notes: `Widget booking from ${source_url || 'unknown source'}`,
-          brand: 'Heiwa House'
-        }
-
-        const { data: newClientData, error: createClientError } = await supabaseAdmin
+        const { data: existingClient, error: findClientError } = await supabaseAdmin
           .from('clients')
-          .insert([newClient] as any)
-          .select()
+          .select('*')
+          .eq('email', pEmail)
           .single()
 
-        if (createClientError) {
-          console.error('Error creating client:', createClientError)
-          return NextResponse.json({
-            success: false,
-            error: `Database error creating client: ${createClientError.message}`
-          }, { status: 500 })
+        if (findClientError && findClientError.code !== 'PGRST116') {
+          console.error('Error finding client:', findClientError)
+          return NextResponse.json(
+            { success: false, error: `Database error finding client: ${findClientError.message}` },
+            { status: 500 }
+          )
         }
 
-        clientData = newClientData as any
-        console.log('✅ Created new client:', (clientData as any).id)
+        let clientData: any = existingClient as any
+        if (!clientData) {
+          const newClient = {
+            name: pName,
+            email: pEmail,
+            phone: participant.phone || '',
+            notes: `Widget booking from ${source_url || 'unknown source'}`,
+            brand: 'Heiwa House',
+          }
+
+          const { data: newClientData, error: createClientError } = await supabaseAdmin
+            .from('clients')
+            .insert([newClient] as any)
+            .select()
+            .single()
+
+          if (createClientError) {
+            console.error('Error creating client:', createClientError)
+            return NextResponse.json(
+              { success: false, error: `Database error creating client: ${createClientError.message}` },
+              { status: 500 }
+            )
+          }
+
+          clientData = newClientData as any
+        }
+
+        if (!primaryClientData) primaryClientData = clientData
+        allClientIds.push(clientData.id)
+        participantDetails.push({
+          name: pName,
+          firstName: participant.firstName,
+          lastName: participant.lastName,
+          email: pEmail,
+          phone: participant.phone || '',
+          dietaryRequirements: participant.dietaryRequirements || '',
+          specialRequests: participant.specialRequests || '',
+          clientId: clientData.id,
+        })
       }
     } catch (clientError) {
       console.error('Client creation error:', clientError)
@@ -127,14 +170,22 @@ export async function POST(request: NextRequest) {
         : ''
 
       const booking = {
-        client_ids: [clientData.id],
+        client_ids: allClientIds,
         total_amount: pricing.total || 0,
         payment_status: 'pending',
         guests: guests || participants.length, // Save guest count as field
         check_in: start_date, // REQUIRED - NOT NULL field
         check_out: end_date, // REQUIRED - NOT NULL field
         room_type: room?.name || room_id, // Set room_type from room name
-        notes: `Widget booking - ${guests || participants.length} guest(s).${addOnsNote}`,
+        notes: JSON.stringify({
+          source: 'widget',
+          widget_version: widget_version || 'unknown',
+          source_url: source_url || undefined,
+          participants: participantDetails,
+          add_ons: add_ons || [],
+          pricing,
+          legacy_note: `Widget booking - ${guests || participants.length} guest(s).${addOnsNote}`.trim(),
+        }),
         source: 'api', // Widget bookings are API submissions
         status: 'pending'
       }
@@ -163,12 +214,69 @@ export async function POST(request: NextRequest) {
       }, { status: 500 })
     }
 
+    // Step 2.5: If dates match a surf camp week, create enrollments for ALL participants
+    let matchedSurfCampId: string | null = null
+    let primaryEnrollmentId: string | null = null
+    try {
+      const { data: matchingCamps, error: matchError } = await supabaseAdmin
+        .from('surf_camps')
+        .select('id, name, is_active')
+        .eq('start_date', start_date)
+        .eq('end_date', end_date)
+        .limit(2)
+
+      if (!matchError && matchingCamps && matchingCamps.length > 0) {
+        const surfCamp = matchingCamps[0] as any
+        matchedSurfCampId = surfCamp.id
+        console.log('🏄‍♂️ Booking dates match surf camp:', surfCamp.id)
+
+        const enrollmentResults = await Promise.all(
+          (participants as WidgetParticipant[]).map(async (participant, idx) => {
+            const clientId = allClientIds[idx]
+            const pName = getParticipantName(participant)
+            const pEmail = participant.email!
+
+            const { data: enrollment, error: enrollmentError } = await supabaseAdmin
+              .from('surf_camp_enrollments')
+              .insert({
+                surf_camp_id: surfCamp.id,
+                client_id: clientId,
+                booking_id: (bookingData as any).id,
+                participant_name: pName,
+                participant_email: pEmail,
+                participant_phone: participant.phone || null,
+                status: 'pending',
+                skill_level: participant.skillLevel || 'beginner',
+                dietary_restrictions: participant.dietaryRequirements || null,
+                emergency_contact: participant.emergencyContact || null,
+                notes: participant.specialRequests || null,
+              } as any)
+              .select('id')
+              .single()
+
+            if (enrollmentError) {
+              console.warn('⚠️ Enrollment creation failed:', enrollmentError)
+              return null
+            }
+
+            return enrollment as any
+          })
+        )
+
+        primaryEnrollmentId = enrollmentResults[0]?.id || null
+      }
+    } catch (e) {
+      console.warn('⚠️ Surf camp enrollment detection/creation failed:', e)
+    }
+
     // Step 3: Create room assignment
     try {
       const roomAssignment = {
         room_id,
         booking_id: (bookingData as any).id,
-        client_id: (clientData as any).id,
+        client_id: (primaryClientData as any).id,
+        surf_camp_id: matchedSurfCampId,
+        enrollment_id: primaryEnrollmentId,
         check_in_date: start_date,
         check_out_date: end_date,
         bed_number: null
@@ -201,7 +309,7 @@ export async function POST(request: NextRequest) {
           booking_number: `HW-${(bookingData as any).id.slice(-8).toUpperCase()}`
         },
         client: {
-          id: (clientData as any).id,
+          id: (primaryClientData as any).id,
           name: clientName,
           email
         },

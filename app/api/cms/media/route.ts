@@ -2,7 +2,8 @@
 // CRUD operations for media management with file upload
 
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase, supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 import { 
   validateCreateMediaItem, 
   validateUpdateMediaItem,
@@ -102,6 +103,9 @@ export async function GET(request: NextRequest) {
 
 // POST /api/cms/media - Upload new media item
 export async function POST(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File
@@ -137,7 +141,7 @@ export async function POST(request: NextRequest) {
     const supabasePath = `cms-media/${filename}`
 
     // Upload file to Supabase Storage
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabaseAdmin.storage
       .from('cms-media')
       .upload(supabasePath, file, {
         contentType: file.type,
@@ -157,7 +161,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get public URL
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseAdmin.storage
       .from('cms-media')
       .getPublicUrl(supabasePath)
 
@@ -180,11 +184,11 @@ export async function POST(request: NextRequest) {
     const validation = validateCreateMediaItem(mediaItemData)
     if (!validation.success) {
       // Clean up uploaded file if validation fails
-      await supabase.storage.from('cms-media').remove([supabasePath])
+      await supabaseAdmin.storage.from('cms-media').remove([supabasePath])
       handleValidationError(validation)
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('media_library')
       .insert([validation.data!])
       .select()
@@ -192,7 +196,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       // Clean up uploaded file if database insert fails
-      await supabase.storage.from('cms-media').remove([supabasePath])
+      await supabaseAdmin.storage.from('cms-media').remove([supabasePath])
       console.error('Error creating media item:', error)
       return NextResponse.json(
         { 
@@ -234,6 +238,9 @@ export async function POST(request: NextRequest) {
 
 // PUT /api/cms/media - Update media item
 export async function PUT(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { id, ...updateData } = body
@@ -254,7 +261,7 @@ export async function PUT(request: NextRequest) {
       handleValidationError(validation)
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('media_library')
       .update(validation.data!)
       .eq('id', id)
@@ -312,6 +319,9 @@ export async function PUT(request: NextRequest) {
 
 // DELETE /api/cms/media - Delete media item
 export async function DELETE(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
@@ -327,7 +337,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Get media item to delete file from storage
-    const { data: mediaItem, error: fetchError } = await supabase
+    const { data: mediaItem, error: fetchError } = await supabaseAdmin
       .from('media_library')
       .select('supabase_path')
       .eq('id', id)
@@ -346,7 +356,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete from database
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('media_library')
       .delete()
       .eq('id', id)
@@ -365,7 +375,7 @@ export async function DELETE(request: NextRequest) {
 
     // Delete file from storage
     if ((mediaItem as { supabase_path?: string })?.supabase_path) {
-      const { error: deleteError } = await supabase.storage
+      const { error: deleteError } = await supabaseAdmin.storage
         .from('cms-media')
         .remove([(mediaItem as { supabase_path?: string }).supabase_path!])
 

@@ -8,7 +8,6 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'react-toastify'
-import { useSupabase } from '@/lib/supabase-context'
 
 interface Client {
   id: string
@@ -25,7 +24,6 @@ interface EnrollmentModalProps {
 }
 
 export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: EnrollmentModalProps) {
-  const { supabase } = useSupabase()
   const [clients, setClients] = useState<Client[]>([])
   const [loading, setLoading] = useState(false)
   const [searchLoading, setSearchLoading] = useState(false)
@@ -45,28 +43,29 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
   const fetchClients = useCallback(async (search: string = '') => {
     try {
       setSearchLoading(true)
-      let query = supabase
-        .from('clients')
-        .select('id, name, email, phone')
-        .order('name', { ascending: true })
-        .limit(100)
+      const params = new URLSearchParams()
+      if (search.trim()) params.set('search', search.trim())
+      params.set('limit', '100')
 
-      // Apply server-side search if search term provided
-      if (search.trim()) {
-        query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%`)
+      const response = await fetch(`/api/clients?${params.toString()}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      const result = await response.json().catch(() => null)
+      if (!response.ok || !result?.success) {
+        const message = result?.error || `Failed to load clients (${response.status})`
+        throw new Error(message)
       }
 
-      const { data, error } = await query
-
-      if (error) throw error
-      setClients(data || [])
+      setClients(result.clients || [])
     } catch (error) {
       console.error('Error fetching clients:', error)
       toast.error('Failed to load clients')
     } finally {
       setSearchLoading(false)
     }
-  }, [supabase])
+  }, [])
 
   // Initial fetch when modal opens
   useEffect(() => {

@@ -26,6 +26,11 @@ interface Booking {
 interface DashboardData {
   stats: Stat[]
   recentBookings: Booking[]
+  counts?: {
+    clients: number
+    rooms: number
+    activeSurfCamps: number
+  }
 }
 
 export default function AdminDashboard() {
@@ -142,8 +147,24 @@ export default function AdminDashboard() {
           checkIn: b.check_in ? new Date(b.check_in).toLocaleDateString() : 'N/A',
           status: b.status || 'pending'
         }))
-        
-        setData({ stats, recentBookings })
+
+        // Fetch admin counts (clients, rooms, active surf camps)
+        let counts: DashboardData['counts'] | undefined
+        try {
+          const countsRes = await fetch('/api/admin/stats')
+          const countsJson = await countsRes.json().catch(() => null)
+          if (countsRes.ok && countsJson?.success) {
+            counts = {
+              clients: countsJson.data?.clients || 0,
+              rooms: countsJson.data?.rooms || 0,
+              activeSurfCamps: countsJson.data?.activeSurfCamps || 0,
+            }
+          }
+        } catch {
+          // ignore; dashboard can render without counts
+        }
+
+        setData({ stats, recentBookings, counts })
         setError(null)
       } catch (err) {
         console.error('Dashboard error:', err)
@@ -204,6 +225,7 @@ export default function AdminDashboard() {
 
   const stats = data?.stats || []
   const recentBookings = data?.recentBookings || []
+  const counts = data?.counts
   
   const iconMap: { [key: string]: any } = {
     'Bed': Bed,
@@ -268,7 +290,7 @@ export default function AdminDashboard() {
           buttonText="Manage Rooms"
           stat={{
             label: 'Available Rooms',
-            value: '4'
+            value: (counts?.rooms ?? 0).toString()
           }}
           color="blue"
         />
@@ -280,7 +302,7 @@ export default function AdminDashboard() {
           buttonText="Manage Surf Camps"
           stat={{
             label: 'Active Camps',
-            value: '7'
+            value: (counts?.activeSurfCamps ?? 0).toString()
           }}
           color="green"
         />
@@ -292,7 +314,7 @@ export default function AdminDashboard() {
           buttonText="Manage Clients"
           stat={{
             label: 'Total Clients',
-            value: stats[1]?.value || '0'
+            value: (counts?.clients ?? 0).toString()
           }}
           color="purple"
         />

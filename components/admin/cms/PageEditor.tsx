@@ -13,7 +13,6 @@ import SectionTypeSelector from './SectionTypeSelector'
 import AutoSaveManager from './AutoSaveManager'
 import VersionHistory from './VersionHistory'
 import CollaborationManager from './CollaborationManager'
-import { useSupabase } from '@/lib/supabase-context'
 import { PageSection, PageData } from '@/lib/cms-types'
 
 interface PageEditorProps {
@@ -43,7 +42,6 @@ const pageDescriptions: Record<string, string> = {
 }
 
 export default function PageEditor({ pageSlug, onBack, initialData }: PageEditorProps) {
-  const { supabaseAdmin } = useSupabase()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -74,14 +72,17 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
       setLoading(true)
       setError(null)
 
-      const { data: sections, error } = await supabaseAdmin
-        .from('page_content')
-        .select('*')
-        .eq('page_slug', pageSlug)
-        .eq('is_active', true)
-        .order('order_index', { ascending: true })
+      const response = await fetch(`/api/admin/pages?page_slug=${encodeURIComponent(pageSlug)}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
 
-      if (error) throw error
+      const result = await response.json().catch(() => null)
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || `Failed to load page data (${response.status})`)
+      }
+
+      const sections = (result.data || []) as any[]
 
       setPageData({
         slug: pageSlug,
@@ -290,28 +291,20 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
 
   const handleCreateVersion = async (data: PageData, notes?: string) => {
     try {
-      // Get next version number
-      const { data: existingVersions } = await supabaseAdmin
-        .from('page_versions' as any)
-        .select('version' as any)
-        .eq('page_slug', pageSlug)
-        .order('version', { ascending: false })
-        .limit(1)
-
-      const nextVersion = (existingVersions?.[0]?.version || 0) + 1
-
-      // Create version entry
-      const { error } = await supabaseAdmin
-        .from('page_versions' as any)
-        .insert({
+      const response = await fetch('/api/admin/page-versions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           page_slug: pageSlug,
           content: data,
-          version: nextVersion,
-          created_by: 'admin', // In production, get from auth
-          notes: notes || `Version ${nextVersion}`
-        } as any)
+          notes: notes || undefined,
+        })
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        const result = await response.json().catch(() => null)
+        throw new Error(result?.error || `Failed to create version (${response.status})`)
+      }
     } catch (err) {
       console.error('Failed to create version:', err)
     }
