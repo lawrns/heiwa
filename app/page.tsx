@@ -390,34 +390,53 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Your Hosts Section */}
-      {hostsSection && Array.isArray(hostsSection.hosts) && hostsSection.hosts.length > 0 ? (
+      {/* Your Hosts Section - CMS driven with text + image layout */}
+      {hostsSection && (hostsSection.paragraphs?.length > 0 || hostsSection.imageUrl) ? (
         <section id="section-hosts" className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center italic">
               {hostsSection.title || 'Your Hosts'}
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {hostsSection.hosts
-                .filter((h: any) => h && typeof h === 'object')
-                .map((host: any, idx: number) => (
-                  <div key={idx} className="bg-gray-50 border border-gray-200 rounded-xl p-6">
-                    {host.imageUrl && (
-                      <div className="mb-4 w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
+              {/* Polaroid-style Image */}
+              {hostsSection.imageUrl && (
+                <div className="lg:col-span-1 flex justify-center">
+                  <div className="relative">
+                    <div className="bg-white p-4 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                      <div className="bg-gray-100 p-2">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={host.imageUrl}
-                          alt={host.name || 'Host'}
-                          className="w-full h-full object-cover"
+                          src={hostsSection.imageUrl}
+                          alt="Heiwa House Hosts"
+                          width={300}
+                          height={400}
+                          className="object-cover rounded"
                         />
                       </div>
-                    )}
-                    <div className="text-xl font-semibold text-gray-900">{host.name || ''}</div>
-                    {host.role && <div className="text-sm text-gray-600 mt-1">{host.role}</div>}
-                    {host.bio && <p className="text-gray-700 mt-3 leading-relaxed">{host.bio}</p>}
+                      <div className="h-8 bg-white"></div>
+                    </div>
                   </div>
-                ))}
+                </div>
+              )}
+
+              {/* Text Content */}
+              <div className={hostsSection.imageUrl ? 'lg:col-span-2 space-y-6' : 'lg:col-span-3 space-y-6'}>
+                <div className="prose prose-lg max-w-none">
+                  {Array.isArray(hostsSection.paragraphs) && hostsSection.paragraphs.map((para: string, idx: number) => (
+                    <p key={idx} className="text-gray-700 leading-relaxed">{para}</p>
+                  ))}
+                </div>
+
+                {/* Signature */}
+                {hostsSection.signature && (
+                  <div className="pt-6">
+                    <p className="text-2xl font-handwriting text-gray-800 italic">
+                      {hostsSection.signature}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </section>
