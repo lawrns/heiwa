@@ -426,17 +426,27 @@ export const bookingService = {
       const pName = participant.name || `${participant.firstName} ${participant.lastName}`.trim();
       const pEmail = participant.email;
 
-      // Check if client exists
-      const { data: existingClient, error: findError } = await supabaseAdmin
+      // Check if client exists with SAME name AND email (not just email)
+      // This allows multiple participants with different names but same email
+      const { data: existingClients, error: findError } = await supabaseAdmin
         .from('clients')
-        .select('id')
-        .eq('email', pEmail)
-        .single();
+        .select('id, name')
+        .eq('email', pEmail);
 
       let pClientId: string;
 
-      if (findError && findError.code === 'PGRST116') {
-        // Create new client
+      // Find exact match by name AND email
+      const exactMatch = existingClients?.find(
+        (c: { id: string; name: string }) => c.name?.toLowerCase() === pName.toLowerCase()
+      );
+
+      if (exactMatch) {
+        // Use existing client with same name and email
+        pClientId = exactMatch.id;
+      } else if (findError) {
+        return { success: false, error: `Failed to verify client for ${pName}` };
+      } else {
+        // Create new client (either no clients with this email, or none with matching name)
         const { data: newClient, error: createError } = await supabaseAdmin
           .from('clients')
           .insert({
@@ -454,10 +464,6 @@ export const bookingService = {
           return { success: false, error: `Failed to create client record for ${pName}` };
         }
         pClientId = newClient.id;
-      } else if (findError) {
-        return { success: false, error: `Failed to verify client for ${pName}` };
-      } else {
-        pClientId = existingClient.id;
       }
 
       allClientIds.push(pClientId);
