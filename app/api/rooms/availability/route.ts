@@ -209,6 +209,7 @@ export async function GET(request: NextRequest) {
         description?: string
         capacity: number
         bookingType?: string
+        booking_type?: string
         pricing?: { standard?: number; offSeason?: number }
         amenities?: string[]
         images?: string[]
@@ -226,12 +227,21 @@ export async function GET(request: NextRequest) {
         ? fixSupabaseBucketUrl(r.images[0]) 
         : null;
 
+      // Calculate available beds/spots for this room
+      const roomBookingType = r.booking_type || r.bookingType || 'whole'
+      const assignedCount = roomAssignmentCounts.find(a => a.room_id === r.id)?.assignment_count || 0
+      const availableBeds = roomBookingType === 'perBed' 
+        ? Math.max(0, r.capacity - assignedCount)
+        : (assignedCount > 0 ? 0 : 1) // For whole rooms: 0 if assigned, 1 if available
+
       return {
         id: r.id,
         name: r.name,
         description: r.description || `Comfortable accommodation with capacity for ${r.capacity} guests`,
         capacity: r.capacity,
-        booking_type: r.bookingType || 'whole',
+        booking_type: roomBookingType,
+        available_beds: availableBeds, // NEW: remaining spots for this room
+        assigned_count: assignedCount, // NEW: how many already assigned
         price_per_night: pricePerNight,
         price_per_night_standard: r.pricing?.standard || null,
         price_per_night_off_season: r.pricing?.offSeason || null,

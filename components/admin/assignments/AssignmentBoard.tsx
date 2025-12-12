@@ -275,12 +275,26 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
   }, [weekId])
 
   const handleParticipantDrop = useCallback((roomId: string, participantId: string) => {
+    // Find the room to check capacity
+    const room = rooms.find(r => r.id === roomId)
+    if (!room) return
+
     setAssignments(prev => {
       const existing = prev.find(a => a.roomId === roomId)
+      const currentCount = existing?.participantIds.length || 0
+
+      // Check if already assigned to this room
+      if (existing?.participantIds.includes(participantId)) {
+        return prev
+      }
+
+      // Prevent overbooking - check capacity before allowing drop
+      if (currentCount >= room.capacity) {
+        toast.error(`${room.name} is at full capacity (${room.capacity} beds)`)
+        return prev
+      }
+
       if (existing) {
-        if (existing.participantIds.includes(participantId)) {
-          return prev
-        }
         const updated = prev.map(a =>
           a.roomId === roomId
             ? { ...a, participantIds: [...a.participantIds, participantId] }
@@ -295,7 +309,7 @@ export default function AssignmentBoard({ weekId, onSave }: AssignmentBoardProps
         return [...prev.filter(a => a.participantIds.length > 0), newAssignment]
       }
     })
-  }, [])
+  }, [rooms])
 
   const handleParticipantRemove = useCallback((roomId: string, participantId: string) => {
     setAssignments(prev =>

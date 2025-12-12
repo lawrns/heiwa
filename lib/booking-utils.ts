@@ -174,6 +174,9 @@ export function transformApiRoomToRoom(apiRoom: any): Room {
     images: images,
     isAvailable: true, // All returned rooms are available or shown
     pricing: pricing,
+    // NEW: Available beds info from availability API
+    availableBeds: apiRoom.available_beds ?? apiRoom.capacity, // Fallback to capacity if not provided
+    assignedCount: apiRoom.assigned_count ?? 0,
   };
 }
 

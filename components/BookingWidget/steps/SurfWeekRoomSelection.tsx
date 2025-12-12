@@ -93,16 +93,20 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   const [galleryRoomName, setGalleryRoomName] = useState('');
   const [galleryRoom, setGalleryRoom] = useState<Room | null>(null);
 
-  // Fetch real room data (no date filtering needed for surf weeks)
-  const { rooms, loading, error } = useRooms({
-    checkIn: null,
-    checkOut: null,
-    guests: 1
-  });
-
-  // Fetch surf week details to display selected surf week info
+  // Fetch surf week details to get dates for availability check
   const { surfCamps } = useSurfCamps();
   const selectedSurfWeekData = surfCamps.find(camp => camp.id === state.selectedSurfWeek);
+  
+  // Fetch real room data WITH date filtering for surf weeks
+  // This ensures we check room_assignments for the surf camp dates
+  const surfCampStartDate = selectedSurfWeekData?.startDate ? new Date(selectedSurfWeekData.startDate) : null;
+  const surfCampEndDate = selectedSurfWeekData?.endDate ? new Date(selectedSurfWeekData.endDate) : null;
+  
+  const { rooms, loading, error } = useRooms({
+    checkIn: surfCampStartDate,
+    checkOut: surfCampEndDate,
+    guests: state.guests || 1
+  });
   
   // Initialize guest IDs
   useEffect(() => {

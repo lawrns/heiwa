@@ -110,6 +110,10 @@ export interface Room {
   images: string[];
   isAvailable: boolean;
   pricing?: RoomPricing;
+  /** Number of beds/spots currently available (capacity - assigned) */
+  availableBeds?: number;
+  /** Number of beds/spots already assigned for the requested dates */
+  assignedCount?: number;
 }
 
 export interface RoomAssignment {
