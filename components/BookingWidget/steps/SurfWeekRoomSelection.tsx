@@ -333,10 +333,32 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     }
   };
 
-  // Get room occupancy
+  // Get room occupancy (includes both existing DB assignments AND current session assignments)
   const getRoomOccupancy = (roomId: string) => {
-    const assignment = state.roomAssignments.find(a => a.roomId === roomId);
-    return assignment ? assignment.guestIds.length : 0;
+    // Get existing assignments from database (via availableBeds calculation)
+    const room = rooms.find(r => r.id === roomId);
+    const existingAssignments = room?.assignedCount || 0;
+    
+    // Get current session assignments
+    const sessionAssignment = state.roomAssignments.find(a => a.roomId === roomId);
+    const sessionAssignments = sessionAssignment ? sessionAssignment.guestIds.length : 0;
+    
+    return existingAssignments + sessionAssignments;
+  };
+  
+  // Get available beds (accounting for existing assignments)
+  const getAvailableBeds = (roomId: string) => {
+    const room = rooms.find(r => r.id === roomId);
+    if (!room) return 0;
+    
+    // Start with available beds from API (already accounts for DB assignments)
+    const availableFromDb = room.availableBeds ?? room.maxOccupancy;
+    
+    // Subtract current session assignments
+    const sessionAssignment = state.roomAssignments.find(a => a.roomId === roomId);
+    const sessionAssignments = sessionAssignment ? sessionAssignment.guestIds.length : 0;
+    
+    return Math.max(0, availableFromDb - sessionAssignments);
   };
 
   // Get guest display name
@@ -478,8 +500,10 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           if (!originalRoom) return null;
 
           const occupancy = getRoomOccupancy(transformedRoom.id);
+          const availableBeds = getAvailableBeds(transformedRoom.id);
+          const existingAssignments = originalRoom.assignedCount || 0;
           const assignment = state.roomAssignments.find(a => a.roomId === transformedRoom.id);
-          const isFull = occupancy >= transformedRoom.maxOccupancy;
+          const isFull = availableBeds <= 0;
           
           // Calculate surf camp price for display (show per person price for 1 person)
           const surfCampPricing = transformedRoom.surfCampPricing;
@@ -587,17 +611,27 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
               )}
 
               {/* Room Capacity and Occupancy */}
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex flex-wrap items-center gap-4 mb-4">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Bed size={16} />
-                  <span>Up to {transformedRoom.maxOccupancy} {transformedRoom.maxOccupancy === 1 ? 'guest' : 'guests'}</span>
+                  <span>{availableBeds} of {transformedRoom.maxOccupancy} beds available</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Users size={16} />
-                  <span className={occupancy > 0 ? 'text-orange-600 font-medium' : 'text-gray-600'}>
-                    {occupancy}/{transformedRoom.maxOccupancy} assigned
-                  </span>
-                </div>
+                {existingAssignments > 0 && (
+                  <div className="flex items-center gap-2 text-sm text-orange-600">
+                    <Users size={16} />
+                    <span className="font-medium">
+                      {existingAssignments} already booked
+                    </span>
+                  </div>
+                )}
+                {assignment && assignment.guestIds.length > 0 && (
+                  <div className="flex items-center gap-2 text-sm text-green-600">
+                    <CheckCircle size={16} />
+                    <span className="font-medium">
+                      {assignment.guestIds.length} from your group
+                    </span>
+                  </div>
+                )}
                 {transformedRoom.type === 'private' && (
                   <div className="flex items-center gap-1.5">
                     <Star size={16} className="text-yellow-500 fill-current" />
