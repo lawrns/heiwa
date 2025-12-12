@@ -127,25 +127,48 @@ export default function NewBookingPage() {
     setError(null)
 
     try {
-      // Get item name
-      let itemName = ''
-      if (formData.type === 'room') {
-        const room = rooms.find(r => r.id === formData.item_id)
-        itemName = room?.name || 'Unknown Room'
-      } else {
-        const camp = surfCamps.find(c => c.id === formData.item_id)
-        itemName = camp?.name || 'Unknown Surf Camp'
-      }
+      // Translate the admin form shape into the public booking API contract.
+      // /api/bookings expects:
+      // - room booking: { room_id, start_date, end_date, clientName, email, ... }
+      // - surf week booking: { camp_id, participants, pricing, ... }
+      const participants = Array.from({ length: Math.max(1, formData.guests || 1) }).map((_, idx) => ({
+        name: idx === 0 ? formData.guest_name : `${formData.guest_name} (Guest ${idx + 1})`,
+        email: formData.guest_email,
+        phone: formData.guest_phone || undefined,
+      }))
+
+      const payload =
+        formData.type === 'surf_camp'
+          ? {
+              camp_id: formData.item_id,
+              participants,
+              pricing: {
+                total: formData.total_price,
+                checkIn: formData.check_in,
+                checkOut: formData.check_out,
+              },
+              source_url: '/admin/bookings/new',
+              widget_version: 'admin-manual',
+            }
+          : {
+              room_id: formData.item_id,
+              start_date: formData.check_in,
+              end_date: formData.check_out,
+              guests: formData.guests,
+              participants,
+              clientName: formData.guest_name,
+              email: formData.guest_email,
+              phone: formData.guest_phone || undefined,
+              message: formData.special_requests || undefined,
+              source_url: '/admin/bookings/new',
+            }
 
       const response = await fetch('/api/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          item_name: itemName,
-        }),
+        body: JSON.stringify(payload),
       })
 
       const data = await response.json()
