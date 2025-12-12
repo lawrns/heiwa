@@ -356,7 +356,7 @@ export async function PATCH(
   }
 }
 
-// DELETE /api/bookings/[id] - Delete a booking
+// DELETE /api/bookings/[id] - Delete a booking (with cascade to related records)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -367,6 +367,29 @@ export async function DELETE(
 
     const { id } = await params
 
+    // Step 1: Delete room_assignments related to this booking
+    const { error: roomAssignmentError } = await supabaseAdmin
+      .from('room_assignments')
+      .delete()
+      .eq('booking_id', id)
+
+    if (roomAssignmentError) {
+      console.error('Error deleting room assignments:', roomAssignmentError)
+      // Continue anyway - room assignments might not exist
+    }
+
+    // Step 2: Delete surf_camp_enrollments related to this booking
+    const { error: enrollmentError } = await supabaseAdmin
+      .from('surf_camp_enrollments')
+      .delete()
+      .eq('booking_id', id)
+
+    if (enrollmentError) {
+      console.error('Error deleting enrollments:', enrollmentError)
+      // Continue anyway - enrollments might not exist
+    }
+
+    // Step 3: Delete the booking itself
     const { error } = await supabaseAdmin
       .from('bookings')
       .delete()
@@ -375,14 +398,14 @@ export async function DELETE(
     if (error) {
       console.error('Error deleting booking:', error)
       return NextResponse.json(
-        { success: false, error: 'Failed to delete booking' },
+        { success: false, error: 'Failed to delete booking: ' + error.message },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Booking deleted successfully'
+      message: 'Booking and related records deleted successfully'
     })
   } catch (error) {
     console.error('Unexpected error:', error)

@@ -505,20 +505,27 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           const assignment = state.roomAssignments.find(a => a.roomId === transformedRoom.id);
           const isFull = availableBeds <= 0;
           
-          // Calculate surf camp price for display (show per person price for 1 person)
+          // Calculate surf camp price for display
           const surfCampPricing = transformedRoom.surfCampPricing;
           let displayPrice = 0;
           let priceLabel = '/person';
+          let occupancyPrices: Array<{occupancy: number, price: number}> = [];
+          const isPrivateRoom = transformedRoom.type === 'private' || originalRoom?.bookingType === 'entire_room';
           
           if (surfCampPricing) {
             if (surfCampPricing.strategy === 'perBed' && surfCampPricing.perBed) {
               displayPrice = surfCampPricing.perBed;
             } else if (surfCampPricing.strategy === 'perRoomOccupancy' && surfCampPricing.occupancy) {
-              // Show range: highest (1 person) to lowest price
-              const prices = Object.values(surfCampPricing.occupancy).filter(p => p > 0);
-              if (prices.length > 0) {
-                displayPrice = Math.min(...prices); // Show lowest price
-                priceLabel = '/person (from)';
+              // For private rooms, collect all occupancy prices for display
+              const occupancyEntries = Object.entries(surfCampPricing.occupancy)
+                .filter(([_, price]) => price > 0)
+                .map(([occ, price]) => ({ occupancy: parseInt(occ), price: price as number }))
+                .sort((a, b) => a.occupancy - b.occupancy);
+              
+              if (occupancyEntries.length > 0) {
+                occupancyPrices = occupancyEntries;
+                displayPrice = Math.min(...occupancyEntries.map(e => e.price));
+                priceLabel = isPrivateRoom && occupancyEntries.length > 1 ? '/person (see rates below)' : '/person';
               }
             }
           }
@@ -593,6 +600,23 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                   )}
                 </div>
               </div>
+
+              {/* Detailed Occupancy Pricing for Private Rooms */}
+              {isPrivateRoom && occupancyPrices.length > 1 && !transformedRoom.isIncluded && (
+                <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-orange-100">
+                  <div className="text-xs font-semibold text-orange-800 mb-2">Pricing per person (based on room occupancy):</div>
+                  <div className="flex flex-wrap gap-2">
+                    {occupancyPrices.map(({ occupancy: occ, price }) => (
+                      <div key={occ} className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-orange-200">
+                        <span className="text-xs font-bold text-orange-600">{formatPrice(price)}</span>
+                        <span className="text-xs text-gray-600">
+                          ({occ} {occ === 1 ? 'person' : 'people'})
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Room Features */}
               {transformedRoom.features && transformedRoom.features.length > 0 && (

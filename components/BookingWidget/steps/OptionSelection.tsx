@@ -725,26 +725,37 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             const end = new Date(w.endDate);
             const dateText = `${start.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} > ${end.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}`;
 
-            // Enhanced occupancy display logic
+            // Enhanced occupancy display logic with percentage
+            const maxParticipants = w.maxParticipants || 0;
+            const confirmedBooked = w.confirmedBooked || 0;
+            const availableSpots = w.availableSpots ?? (maxParticipants - confirmedBooked);
+            const occupancyPercent = maxParticipants > 0 ? Math.round((confirmedBooked / maxParticipants) * 100) : 0;
+            
+            // Check if this week has enough spots for the selected number of participants
+            const hasEnoughSpots = availableSpots >= state.guests;
+            const isFullyBooked = availableSpots === 0;
+            const isUnavailableForGroup = !hasEnoughSpots && !isFullyBooked;
+            const isDisabled = isFullyBooked || isUnavailableForGroup;
+            
+            // Build occupancy text with percentage
             let occupancyText = '';
-            if (typeof w.confirmedBooked === 'number' && typeof w.maxParticipants === 'number') {
-              occupancyText = `${w.confirmedBooked}/${w.maxParticipants} booked`;
-            } else if (typeof w.availableSpots === 'number') {
-              occupancyText = w.availableSpots > 0 ? `${w.availableSpots} spots left` : 'Fully booked';
+            if (maxParticipants > 0) {
+              occupancyText = `${occupancyPercent}% booked`;
+              if (availableSpots > 0) {
+                occupancyText += ` • ${availableSpots} spots left`;
+              }
             }
-
-            const isFullyBooked = w.availableSpots === 0;
 
             return (
               <button
                 key={w.id}
                 data-testid="surf-week-row"
-                onClick={() => handleOptionSelect(w.id)}
-                className={`w-full p-6 rounded-xl border-2 bg-white text-left transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500/50 relative
-                  ${isSelected ? 'border-orange-500 bg-orange-50 shadow-md ring-2 ring-orange-500/30' : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50/50'}
-                  ${isFullyBooked ? 'opacity-60 cursor-not-allowed' : ''}`}
+                onClick={() => !isDisabled && handleOptionSelect(w.id)}
+                className={`w-full p-6 rounded-xl border-2 bg-white text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50 relative
+                  ${isSelected ? 'border-orange-500 bg-orange-50 shadow-md ring-2 ring-orange-500/30' : 'border-gray-200'}
+                  ${isDisabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-lg hover:border-orange-300 hover:bg-orange-50/50'}`}
                 style={{ animationDelay: `${index * 80}ms` }}
-                disabled={isFullyBooked}
+                disabled={isDisabled}
               >
                 <div className="flex gap-6">
                   {/* Surf Week Hero Image */}
@@ -816,8 +827,31 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
                     {/* Occupancy and View Photos */}
                     <div className="flex items-center justify-between">
-                      <div className={`text-xs ${isFullyBooked ? 'text-red-500 font-medium' : 'text-gray-500'}`} data-testid="surf-week-occupancy">
-                        {occupancyText}
+                      <div className="flex flex-col gap-1">
+                        {/* Occupancy percentage with progress bar */}
+                        <div className="flex items-center gap-2">
+                          <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full rounded-full transition-all ${
+                                occupancyPercent >= 80 ? 'bg-red-500' : 
+                                occupancyPercent >= 50 ? 'bg-orange-500' : 'bg-green-500'
+                              }`}
+                              style={{ width: `${occupancyPercent}%` }}
+                            />
+                          </div>
+                          <span className={`text-xs ${isDisabled ? 'text-red-500 font-medium' : 'text-gray-500'}`} data-testid="surf-week-occupancy">
+                            {occupancyText}
+                          </span>
+                        </div>
+                        {/* Unavailability message */}
+                        {isFullyBooked && (
+                          <span className="text-xs text-red-600 font-medium">Fully booked</span>
+                        )}
+                        {isUnavailableForGroup && (
+                          <span className="text-xs text-orange-600 font-medium">
+                            Not enough spots for {state.guests} {state.guests === 1 ? 'person' : 'people'}
+                          </span>
+                        )}
                       </div>
 
                       {/* View Photos Link */}
