@@ -57,8 +57,14 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
       state.roomAssignments.forEach(assignment => {
         const room = rooms.find(r => r.id === assignment.roomId);
         if (room) {
-          // Price per room per night × number of guests in that room × nights
-          const roomPrice = room.pricePerNight * assignment.guestIds.length * nights;
+          // Pricing logic:
+          // - entire_room: charge once per room per night (occupancy doesn't multiply price)
+          // - per_bed: charge per guest per night
+          const bookingType = room.bookingType || 'entire_room';
+          const roomPrice =
+            bookingType === 'per_bed'
+              ? room.pricePerNight * assignment.guestIds.length * nights
+              : room.pricePerNight * nights;
           totalBasePrice += roomPrice;
         }
       });

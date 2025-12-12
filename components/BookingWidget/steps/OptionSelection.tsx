@@ -36,7 +36,8 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     isDateSoldOut,
     loading: dateAvailabilityLoading
   } = useDateAvailability({ participants: state.guests || 1 });
-  // For room bookings: support multi-select; for surf weeks: single-select
+  // Room bookings: single-select (multi-room is handled via the dedicated RoomAssignment step)
+  // Surf weeks: single-select
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     state.experienceType === 'room' && typeof state.selectedOption === 'string' && state.selectedOption
       ? [state.selectedOption]
@@ -142,14 +143,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     }
 
     if (state.experienceType === 'room') {
-      // For rooms: multi-select - toggle room on/off
-      const newSelection = selectedOptions.includes(optionId)
-        ? selectedOptions.filter(id => id !== optionId)
-        : [...selectedOptions, optionId];
-
+      // For rooms: single-select. Clicking a different room replaces the selection.
+      // This avoids the illogical UX of "select multiple rooms" while only sending one room_id at checkout.
+      const isAlreadySelected = selectedOptions[0] === optionId;
+      const newSelection = isAlreadySelected ? [] : [optionId];
       setSelectedOptions(newSelection);
-
-      // Store the first selected room in selectedOption for backwards compatibility
       actions.selectOption(newSelection[0] || '');
     } else {
       // For surf weeks: single-select
@@ -213,7 +211,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   // Recompute base price and totals when selection/dates/guests change
   useEffect(() => {
     if (state.experienceType === 'room') {
-      // For rooms: sum prices of all selected rooms
+      // For rooms: single room selection (multi-room pricing happens in RoomAssignment step)
       if (selectedOptions.length === 0) return;
 
       let basePrice = 0;
@@ -223,30 +221,33 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
         const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
 
-        // Sum prices for all selected rooms using seasonal rates
-        selectedOptions.forEach((roomId) => {
-          const room: any = (options as any[]).find((o) => o.id === roomId);
-          if (room && room.pricing) {
-            // Determine if dates fall in peak season (May-September)
-            const peakSeasonMonths = [5, 6, 7, 8, 9]
-            const checkInMonth = checkInUTC.getMonth() + 1
-            const checkOutMonth = checkOutUTC.getMonth() + 1
-            const isPeakSeason = peakSeasonMonths.some(month => 
-              month >= checkInMonth && month <= checkOutMonth
-            ) || peakSeasonMonths.includes(checkInMonth) || peakSeasonMonths.includes(checkOutMonth)
-            
-            // Use seasonal rate based on dates
-            const pricePerNight = isPeakSeason
-              ? (room.pricing.standard || room.pricing.offSeason || room.price_per_night || 0)
-              : (room.pricing.offSeason || room.pricing.standard || room.price_per_night || 0)
-            
-            basePrice += pricePerNight * nights
-          } else if (room) {
-            // Fallback to pricePerNight if pricing object not available
-            const unit = typeof room.pricePerNight === 'number' ? room.pricePerNight : (room.price ?? 0);
-            basePrice += unit * nights;
-          }
-        });
+        const roomId = selectedOptions[0];
+        const room: any = (options as any[]).find((o) => o.id === roomId);
+
+        if (room) {
+          // Determine if dates fall in peak season (May-September)
+          const peakSeasonMonths = [5, 6, 7, 8, 9];
+          const checkInMonth = checkInUTC.getMonth() + 1;
+          const checkOutMonth = checkOutUTC.getMonth() + 1;
+          const isPeakSeason =
+            peakSeasonMonths.some((month) => month >= checkInMonth && month <= checkOutMonth) ||
+            peakSeasonMonths.includes(checkInMonth) ||
+            peakSeasonMonths.includes(checkOutMonth);
+
+          // Use seasonal rate based on dates (prefer normalized pricing fields when present)
+          const seasonalUnit =
+            room.pricing
+              ? (isPeakSeason
+                  ? (room.pricing.standard || room.pricing.offSeason || room.pricePerNight || 0)
+                  : (room.pricing.offSeason || room.pricing.standard || room.pricePerNight || 0))
+              : (room.pricePerNight || room.price || 0);
+
+          const bookingType = room.bookingType || 'entire_room';
+          basePrice =
+            bookingType === 'per_bed'
+              ? seasonalUnit * nights * Math.max(1, state.guests)
+              : seasonalUnit * nights;
+        }
       }
 
       // PRICING RULES:
@@ -287,14 +288,13 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
   // Set capacity error if insufficient capacity
   useEffect(() => {
-    const tc = selectedOptions.reduce((sum, roomId) => {
-      const room: any = (options as any[]).find((o) => o.id === roomId);
-      return sum + (room?.capacity || room?.maxOccupancy || 0);
-    }, 0);
-    const isInsufficient = selectedOptions.length > 0 && tc < state.guests;
+    const selectedRoomId = selectedOptions[0];
+    const room: any = selectedRoomId ? (options as any[]).find((o) => o.id === selectedRoomId) : null;
+    const capacity = room?.maxOccupancy || room?.capacity || 0;
+    const isInsufficient = !!selectedRoomId && capacity > 0 && capacity < state.guests;
 
-    if (state.experienceType === 'room' && selectedOptions.length > 0 && isInsufficient) {
-      actions.setError('capacity', 'Selected rooms cannot accommodate all guests. Please select additional rooms or reduce guest count.');
+    if (state.experienceType === 'room' && selectedRoomId && isInsufficient) {
+      actions.setError('capacity', 'Selected room cannot accommodate all guests. Please reduce guest count or choose a different room.');
     } else if (state.errors.capacity) {
       actions.clearError('capacity');
     }
@@ -372,10 +372,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
   // Calculate total capacity of selected rooms
   const getTotalCapacity = () => {
-    return selectedOptions.reduce((total, roomId) => {
-      const room = (options as any[]).find(o => o.id === roomId);
-      return total + (room?.maxOccupancy || room?.capacity || 0);
-    }, 0);
+    const selectedRoomId = selectedOptions[0];
+    const room = selectedRoomId ? (options as any[]).find((o) => o.id === selectedRoomId) : null;
+    return room?.maxOccupancy || room?.capacity || 0;
   };
 
   const totalCapacity = getTotalCapacity();
@@ -871,7 +870,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     </div>
                     {hasInsufficientCapacity && (
                       <p className="text-xs text-red-700 mt-1 ml-6">
-                        Selected rooms cannot accommodate all guests. Please select additional rooms or reduce guest count.
+                        Selected room cannot accommodate all guests. Please reduce guest count or choose a different room.
                       </p>
                     )}
                   </div>

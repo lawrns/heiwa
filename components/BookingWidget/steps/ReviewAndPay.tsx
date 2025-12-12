@@ -213,11 +213,12 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       // Determine endpoint and payload based on experience type
       if (state.experienceType === 'room') {
         // Room booking validation - check all required fields
-        if (!state.dates.checkIn || !state.dates.checkOut || !state.selectedOption) {
+        const hasAssignments = state.roomAssignments && state.roomAssignments.length > 0;
+        if (!state.dates.checkIn || !state.dates.checkOut || (!state.selectedOption && !hasAssignments)) {
           const missing = [];
           if (!state.dates.checkIn) missing.push('check-in date');
           if (!state.dates.checkOut) missing.push('check-out date');
-          if (!state.selectedOption) missing.push('room selection');
+          if (!state.selectedOption && !hasAssignments) missing.push('room selection');
           setPaymentError(`Missing required information: ${missing.join(', ')}`);
           setIsProcessing(false);
           return;
@@ -225,7 +226,16 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
         endpoint = '/widget/room-bookings';
         payload = {
-          room_id: state.selectedOption,
+          ...(hasAssignments
+            ? {
+                room_assignments: state.roomAssignments.map((a) => ({
+                  room_id: a.roomId,
+                  guest_ids: a.guestIds,
+                })),
+              }
+            : {
+                room_id: state.selectedOption,
+              }),
           start_date: state.dates.checkIn.toISOString().split('T')[0],
           end_date: state.dates.checkOut.toISOString().split('T')[0],
           participants,

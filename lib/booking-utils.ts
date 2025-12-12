@@ -146,6 +146,10 @@ export function processRoomImages(
 export function transformApiRoomToRoom(apiRoom: any): Room {
   const roomType = determineRoomType(apiRoom.booking_type || '', apiRoom.capacity || 1);
   const images = processRoomImages(apiRoom.images, apiRoom.featured_image, roomType);
+  const bookingType: Room['bookingType'] =
+    typeof apiRoom.booking_type === 'string' && apiRoom.booking_type.toLowerCase().includes('bed')
+      ? 'per_bed'
+      : 'entire_room';
 
   // Extract and normalize pricing data
   const pricing = apiRoom.pricing ? {
@@ -163,6 +167,7 @@ export function transformApiRoomToRoom(apiRoom: any): Room {
     name: apiRoom.name,
     description: apiRoom.description || '',
     type: roomType,
+    bookingType,
     maxOccupancy: apiRoom.capacity,
     pricePerNight: apiRoom.price_per_night,
     amenities: apiRoom.amenities || [],
@@ -193,6 +198,7 @@ export function validateBookingSubmission(state: {
   };
   selectedOption: string | null;
   selectedSurfWeek: string | null;
+  roomAssignments?: Array<{ roomId: string; guestIds: string[] }>;
   guests: number;
   guestDetails: Array<{
     firstName: string;
@@ -222,8 +228,10 @@ export function validateBookingSubmission(state: {
       errors.push('Check-out date is required');
       missingFields.push('checkOut');
     }
-    if (!state.selectedOption) {
-      errors.push('Please select a room');
+    const hasRoomSelection = !!state.selectedOption;
+    const hasRoomAssignments = (state.roomAssignments?.length || 0) > 0;
+    if (!hasRoomSelection && !hasRoomAssignments) {
+      errors.push('Please select a room (or assign guests to rooms)');
       missingFields.push('selectedOption');
     }
     if (state.guests < 1) {

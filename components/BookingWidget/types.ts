@@ -98,6 +98,12 @@ export interface Room {
   name: string;
   description: string;
   type: 'private' | 'shared' | 'dorm';
+  /**
+   * How pricing should be applied for room bookings:
+   * - entire_room: pricePerNight applies once per room per night
+   * - per_bed: pricePerNight applies per guest per night (beds)
+   */
+  bookingType?: 'entire_room' | 'per_bed';
   maxOccupancy: number;
   pricePerNight: number;
   amenities: string[];

@@ -44,6 +44,7 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
         ...state, 
         experienceType: action.payload,
         selectedOption: null, // Reset selection when changing type
+        roomAssignments: [], // Reset assignments when changing type
       };
     
     case 'SET_DATES':
@@ -51,6 +52,7 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
         ...state, 
         dates: action.payload,
         selectedOption: null, // Reset selection when dates change
+        roomAssignments: [], // Dates change invalidates any assignments
       };
     
     case 'SET_GUESTS':
@@ -58,6 +60,7 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
         ...state,
         guests: action.payload,
         selectedOption: null, // Reset selection when guest count changes
+        roomAssignments: [], // Guest count change invalidates any assignments
       };
 
     case 'SET_PARTICIPANT_NAMES':
@@ -165,12 +168,6 @@ export function useBookingFlow() {
     } else if (state.experienceType === 'surf-week') {
       // For surf weeks, add guest-details after room selection
       baseSteps.push('guest-details');
-      
-      // Add room-assignment step for surf weeks if multiple guests
-      // This allows assigning multiple guests to rooms for surf week bookings
-      if (state.guests > 1) {
-        baseSteps.push('room-assignment');
-      }
     }
 
     baseSteps.push('add-ons', 'review-pay');
@@ -327,14 +324,16 @@ export function useBookingFlow() {
           // Also require all participant names to be filled
           return ((state.selectedSurfWeek !== null) || (state.selectedOption !== null)) && allParticipantNamesFilled;
         }
-        // For rooms: must have dates, guest count, at least one room selected, sufficient capacity, and all participant names
-        // Note: Multi-room selection is supported - selectedOption stores the first selected room
-        // Capacity validation is handled in OptionSelection component via error state
+        // For rooms:
+        // - Always require dates, guest count, and participant names
+        // - For single-guest bookings we require a selected room at this step
+        // - For multi-guest bookings room selection happens in the RoomAssignment step (supports multiple rooms)
+        // Capacity validation is handled in OptionSelection / RoomAssignment via error state
         const hasCapacityError = state.errors.capacity !== undefined;
         return state.dates.checkIn && 
                state.dates.checkOut && 
                state.guests > 0 && 
-               state.selectedOption !== null && 
+               (state.guests > 1 ? true : state.selectedOption !== null) &&
                !hasCapacityError &&
                allParticipantNamesFilled;
 
@@ -362,6 +361,7 @@ export function useBookingFlow() {
           dates: state.dates,
           selectedOption: state.selectedOption,
           selectedSurfWeek: state.selectedSurfWeek,
+          roomAssignments: state.roomAssignments,
           guests: state.guests,
           guestDetails: state.guestDetails,
           paymentMethod: state.paymentMethod,
@@ -408,6 +408,7 @@ export function useBookingFlow() {
       dates: state.dates,
       selectedOption: state.selectedOption,
       selectedSurfWeek: state.selectedSurfWeek,
+      roomAssignments: state.roomAssignments,
       guests: state.guests,
       guestDetails: state.guestDetails,
       paymentMethod: state.paymentMethod,
@@ -439,6 +440,11 @@ export function useBookingFlow() {
 
     setLoading(true);
     try {
+      if (!state.dates.checkIn || !state.dates.checkOut) {
+        setError('dates', 'Check-in and check-out dates are required');
+        return null;
+      }
+
       const primaryGuest = state.guestDetails[0];
       const result = await bookingService.submitBooking({
         clientName: `${primaryGuest.firstName} ${primaryGuest.lastName}`,
