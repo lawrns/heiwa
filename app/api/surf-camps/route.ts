@@ -132,6 +132,15 @@ export async function GET(request: NextRequest) {
       })
     }
 
+    // Fetch all active rooms to calculate dynamic bed availability
+    const { data: allRooms } = await supabaseAdmin
+      .from('rooms')
+      .select('id, name, capacity, booking_type')
+      .eq('is_active', true)
+    
+    // Calculate total bed capacity across all rooms
+    const totalBedCapacity = (allRooms || []).reduce((sum, room) => sum + (room.capacity || 0), 0)
+
     // Get enrollment counts for each surf camp (with timeout protection)
     const surfCampsWithAvailability = await Promise.all(
       (surfCamps || []).map(async (camp: SurfCamp) => {
@@ -146,20 +155,61 @@ export async function GET(request: NextRequest) {
           enrollmentQuery as any,
           500 // 500ms timeout for enrollment count
         )
-        const { error } = enrollmentResult
+        const { error: enrollmentError } = enrollmentResult
         const enrolledCount = (enrollmentResult as any).count || 0
+        
+        if (enrollmentError) {
+          console.warn(`Error fetching enrollment count for camp ${camp.id}:`, enrollmentError)
+        }
+
+        // DYNAMIC AVAILABILITY: Calculate actual available beds for this camp's dates
+        // This accounts for room assignments that block beds even if not all beds are used
+        let dynamicAvailableBeds = totalBedCapacity
+
+        try {
+          // Get room assignments that overlap with this camp's dates
+          const { data: roomAssignments } = await supabaseAdmin
+            .from('room_assignments')
+            .select('room_id')
+            .gte('check_out_date', camp.start_date)
+            .lte('check_in_date', camp.end_date)
+
+          if (roomAssignments && roomAssignments.length > 0) {
+            // Count assignments per room
+            const assignmentCountByRoom = new Map<string, number>()
+            roomAssignments.forEach((ra: { room_id: string }) => {
+              assignmentCountByRoom.set(ra.room_id, (assignmentCountByRoom.get(ra.room_id) || 0) + 1)
+            })
+
+            // Calculate remaining beds per room
+            dynamicAvailableBeds = (allRooms || []).reduce((sum, room) => {
+              const assignedInRoom = assignmentCountByRoom.get(room.id) || 0
+              const roomCapacity = room.capacity || 0
+              const roomBookingType = room.booking_type || 'whole'
+              
+              // For "whole" room types, if ANY assignment exists, the entire room is blocked
+              if (roomBookingType === 'whole' && assignedInRoom > 0) {
+                return sum // Room is fully blocked, add 0 beds
+              }
+              
+              // For "perBed" rooms (dorms), subtract assigned beds from capacity
+              const remainingBeds = Math.max(0, roomCapacity - assignedInRoom)
+              return sum + remainingBeds
+            }, 0)
+          }
+        } catch (roomError) {
+          console.warn(`Error calculating room availability for camp ${camp.id}:`, roomError)
+          // Fall back to enrollment-based calculation if room query fails
+        }
         
         // Use max_participants as the primary source, fall back to total_spots for legacy data
         const totalSpots = camp.max_participants || (camp as any).total_spots || 18
-        const calculatedAvailableSpots = totalSpots - (enrolledCount || 0)
-        const availableSpots = Math.max(0, calculatedAvailableSpots)
         
-        if (error) {
-          console.warn(`Error fetching enrollment count for camp ${camp.id}:`, error)
-        }
-        
-        // Cast enrolledCount to number since it might be undefined
-        const enrolledCountNum = typeof enrolledCount === 'number' ? enrolledCount : 0
+        // Available spots is the MINIMUM of:
+        // 1. max_participants - enrolled (admin-set limit minus people already signed up)
+        // 2. dynamicAvailableBeds (actual beds available based on room assignments)
+        const spotsBasedOnEnrollment = totalSpots - (enrolledCount || 0)
+        const availableSpots = Math.max(0, Math.min(spotsBasedOnEnrollment, dynamicAvailableBeds))
         
         return {
           id: camp.id,
@@ -170,7 +220,8 @@ export async function GET(request: NextRequest) {
           price: camp.price,
           max_participants: totalSpots,
           total_spots: totalSpots,
-          available_spots: Math.max(0, availableSpots),
+          available_spots: availableSpots,
+          available_beds: dynamicAvailableBeds, // NEW: actual bed availability
           enrolled_count: enrolledCount || 0,
           is_full: availableSpots <= 0,
           level: camp.level || 'all',
