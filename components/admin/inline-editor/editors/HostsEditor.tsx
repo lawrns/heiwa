@@ -60,21 +60,20 @@ export function HostsEditor({ content, onChange }: HostsEditorProps) {
 
   return (
     <div className="space-y-4">
-      {/* Seed defaults button if empty */}
-      {isEmpty && (
-        <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-          <p className="text-sm text-orange-800 mb-2">
-            This section is empty. Load the default content?
-          </p>
-          <button
-            type="button"
-            onClick={seedDefaults}
-            className="px-3 py-1.5 bg-orange-500 text-white text-sm rounded hover:bg-orange-600"
-          >
-            Load Default Content
-          </button>
-        </div>
-      )}
+      {/* Reset to Default button - always visible */}
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={seedDefaults}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg border border-orange-200 transition-colors"
+          title="Reset to default content"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Reset to Default
+        </button>
+      </div>
 
       {/* Section Title */}
       <div>
