@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Calendar, Users, Euro, Edit, Trash2, MapPin, CheckCircle, XCircle } from 'lucide-react'
+import { ArrowLeft, Calendar, Users, Euro, Edit, Trash2, MapPin, CheckCircle, XCircle, UserPlus } from 'lucide-react'
 import Image from 'next/image'
+import { ParticipantsList } from '@/components/admin/enrollments/ParticipantsList'
+import { EnrollmentModal } from '@/components/admin/enrollments/EnrollmentModal'
 
 interface SurfCamp {
   id: string
@@ -29,6 +31,8 @@ export default function SurfCampDetailPage({ params }: { params: { id: string } 
   const [surfCamp, setSurfCamp] = useState<SurfCamp | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [enrollmentModalOpen, setEnrollmentModalOpen] = useState(false)
+  const [participantsKey, setParticipantsKey] = useState(0) // Force refresh
 
   useEffect(() => {
     const fetchSurfCamp = async () => {
@@ -52,6 +56,20 @@ export default function SurfCampDetailPage({ params }: { params: { id: string } 
 
     fetchSurfCamp()
   }, [params.id])
+
+  const refreshData = () => {
+    // Refresh both surf camp data and participants list
+    setParticipantsKey(prev => prev + 1)
+    // Re-fetch surf camp to update counts
+    fetch(`/api/surf-camps/${params.id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setSurfCamp(data.data.surf_camp)
+        }
+      })
+      .catch(console.error)
+  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-GB', {
@@ -106,6 +124,13 @@ export default function SurfCampDetailPage({ params }: { params: { id: string } 
           Back to Surf Weeks
         </Link>
         <div className="flex gap-2">
+          <button
+            onClick={() => setEnrollmentModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <UserPlus className="h-4 w-4" />
+            Enroll
+          </button>
           <Link
             href={`/admin/surf-camps/${surfCamp.id}/edit`}
             className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -247,6 +272,21 @@ export default function SurfCampDetailPage({ params }: { params: { id: string } 
           )}
         </div>
       </div>
+
+      {/* Participants List */}
+      <ParticipantsList 
+        key={participantsKey}
+        surfCampId={surfCamp.id} 
+        onParticipantRemoved={refreshData}
+      />
+
+      {/* Enrollment Modal */}
+      <EnrollmentModal
+        open={enrollmentModalOpen}
+        onClose={() => setEnrollmentModalOpen(false)}
+        surfCampId={surfCamp.id}
+        onEnrolled={refreshData}
+      />
     </div>
   )
 }
