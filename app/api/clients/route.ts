@@ -11,12 +11,13 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search')
     const includeDeleted = searchParams.get('include_deleted') === 'true'
+    const minimal = searchParams.get('minimal') === 'true'
     const limitParam = searchParams.get('limit')
     const limit = limitParam ? Math.min(500, Math.max(1, parseInt(limitParam))) : undefined
 
     let query = supabaseAdmin
       .from('clients')
-      .select('*')
+      .select(minimal ? 'id,name,email,phone,created_at,updated_at' : '*')
       .order('created_at', { ascending: false })
 
     // Filter out deleted clients unless explicitly requested
@@ -44,43 +45,49 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Calculate statistics for each client
-    const clientsWithStats = await Promise.all(
-      (clients || []).map(async (client: any) => {
-        // Get booking count using count query (more efficient)
-        const { count: totalBookings } = await supabaseAdmin
-          .from('bookings')
-          .select('*', { count: 'exact', head: true })
-          .contains('client_ids', [client.id])
-
-        // Get total spent from paid bookings only
-        const { data: paidBookings } = await supabaseAdmin
-          .from('bookings')
-          .select('total_amount')
-          .contains('client_ids', [client.id])
-          .eq('payment_status', 'paid')
-
-        const totalSpent =
-          paidBookings
-            ?.reduce((sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
-
-        return {
+    const clientsWithStats = minimal
+      ? (clients || []).map((client: any) => ({
           id: client.id,
           name: client.name,
           email: client.email,
           phone: client.phone,
-          company: client.brand || null,
-          totalBookings,
-          totalSpent,
-          joinDate: client.registration_date || client.created_at,
-          lastBooking: client.last_booking_date || null,
-          notes: client.notes || '',
-          vip: client.vip || false,
           created_at: client.created_at,
           updated_at: client.updated_at,
-        }
-      })
-    )
+        }))
+      : await Promise.all(
+          (clients || []).map(async (client: any) => {
+            const { count: totalBookings } = await supabaseAdmin
+              .from('bookings')
+              .select('*', { count: 'exact', head: true })
+              .contains('client_ids', [client.id])
+
+            const { data: paidBookings } = await supabaseAdmin
+              .from('bookings')
+              .select('total_amount')
+              .contains('client_ids', [client.id])
+              .eq('payment_status', 'paid')
+
+            const totalSpent =
+              paidBookings
+                ?.reduce((sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
+
+            return {
+              id: client.id,
+              name: client.name,
+              email: client.email,
+              phone: client.phone,
+              company: client.brand || null,
+              totalBookings,
+              totalSpent,
+              joinDate: client.registration_date || client.created_at,
+              lastBooking: client.last_booking_date || null,
+              notes: client.notes || '',
+              vip: client.vip || false,
+              created_at: client.created_at,
+              updated_at: client.updated_at,
+            }
+          })
+        )
 
     return NextResponse.json({
       success: true,

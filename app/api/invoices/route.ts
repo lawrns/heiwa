@@ -120,6 +120,16 @@ export async function POST(request: NextRequest) {
       status: status || 'draft',
     })
 
+    const invoiceResponse = {
+      id: (invoice as any).id,
+      invoice_number: (invoice as any).invoice_number,
+      booking_id,
+      amount,
+      currency: currency || 'EUR',
+      due_date: due_date || calculateDueDate(),
+      status: status || 'draft',
+    }
+
     // Fetch client details for email
     const { data: booking } = await supabaseAdmin
       .from('bookings')
@@ -165,7 +175,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: invoice
+      data: { invoice: invoiceResponse }
     }, { status: 201 })
   } catch (error: any) {
     console.error('Error creating invoice:', error)

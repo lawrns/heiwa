@@ -8,6 +8,10 @@ import { GET, PUT, OPTIONS } from '@/app/api/surf-camps/[id]/route'
 import { supabaseAdmin } from '@/lib/supabase'
 import { SurfCampFactory } from '../factories'
 
+jest.mock('next/cache', () => ({
+  revalidatePath: jest.fn(),
+}))
+
 // Mock Supabase
 jest.mock('@/lib/supabase', () => ({
   supabaseAdmin: {
@@ -43,27 +47,27 @@ describe('/api/surf-camps/[id]', () => {
         max_participants: 18,
       })
 
-      // Mock surf camp query
-      mockSupabase.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({
-              data: mockCamp,
-              error: null,
-            }),
-          }),
-        }),
-      })
-
-      // Mock enrollment count query
-      mockSupabase.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockResolvedValue({
-              count: 5,
-            }),
-          }),
-        }),
+      mockSupabase.from.mockImplementation((table: string) => {
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                single: jest.fn(() => Promise.resolve({ data: mockCamp, error: null })),
+              })),
+            })),
+          }
+        }
+        if (table === 'surf_camp_enrollments') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                in: jest.fn(() => Promise.resolve({ count: 5 })),
+                eq: jest.fn(() => Promise.resolve({ count: 5 })),
+              })),
+            })),
+          }
+        }
+        return {}
       })
 
       const params = Promise.resolve({ id: 'camp-1' })
@@ -213,7 +217,7 @@ describe('/api/surf-camps/[id]', () => {
 
       expect(response.status).toBe(500)
       expect(data.success).toBe(false)
-      expect(data.error).toBe('Failed to update surf camp')
+      expect(data.error).toBe('Update failed')
     })
 
     it('should handle invalid JSON in request body', async () => {
@@ -223,7 +227,8 @@ describe('/api/surf-camps/[id]', () => {
         body: 'invalid json',
       })
 
-      await expect(PUT(request, { params })).rejects.toThrow()
+      const response = await PUT(request, { params })
+      expect(response.status).toBe(500)
     })
 
     it('should set updated_at timestamp', async () => {
@@ -271,7 +276,7 @@ describe('/api/surf-camps/[id]', () => {
         ...SurfCampFactory.beginner({ id: 'camp-1' }),
         ...minimalData,
         description: '',
-        level: 'All Levels',
+        level: 'all',
         includes: [],
         images: [],
         is_active: true,

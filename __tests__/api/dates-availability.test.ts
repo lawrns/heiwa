@@ -14,7 +14,18 @@ jest.mock('@/lib/supabase', () => ({
         }))
       }))
     }))
-  }
+  },
+  supabaseAdmin: {
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        lte: jest.fn(() => ({
+          gte: jest.fn(() => ({
+            in: jest.fn(() => Promise.resolve({ data: [], error: null })),
+          })),
+        })),
+      })),
+    })),
+  },
 }))
 
 const mockSupabase = supabase as any
@@ -26,57 +37,40 @@ describe('/api/dates/availability', () => {
 
   describe('GET /api/dates/availability', () => {
     it('should return availability for valid date range', async () => {
-      const mockRoomBookings: Array<{ room_id: string }> = [{ room_id: 'room-1' }]
-      const mockSurfBookings: Array<{ surf_camp_id: string }> = [{ surf_camp_id: 'camp-1' }]
+      const mockRoomBookings: Array<{ room_type: string; guests: number }> = [{ room_type: 'Dorm', guests: 1 }]
       const mockRooms = [
         { capacity: 6 },
         { capacity: 4 },
         { capacity: 2 }
       ]
 
-      // Mock bookings query (using bookings table instead of room_assignments)
+      // Mock rooms capacity query (supabase)
       mockSupabase.from.mockImplementation((table: string) => {
+        if (table === 'rooms') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ data: mockRooms, error: null })
+            })
+          }
+        }
+        return { select: jest.fn(), eq: jest.fn() }
+      })
+
+      // Mock bookings query (supabaseAdmin)
+      const { supabaseAdmin } = require('@/lib/supabase')
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
         if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               lte: jest.fn().mockReturnValue({
                 gte: jest.fn().mockReturnValue({
-                  in: jest.fn().mockResolvedValue({ 
-                    data: mockRoomBookings, 
-                    error: null 
-                  })
+                  in: jest.fn().mockResolvedValue({ data: mockRoomBookings, error: null })
                 })
               })
             })
           }
         }
-        if (table === 'surf_camp_enrollments') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockSurfBookings, 
-                error: null 
-              })
-            })
-          }
-        }
-        if (table === 'rooms') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockRooms, 
-                error: null 
-              })
-            })
-          }
-        }
-        return {
-          select: jest.fn(),
-          lte: jest.fn(),
-          gte: jest.fn(),
-          eq: jest.fn(),
-          in: jest.fn()
-        }
+        return { select: jest.fn() }
       })
 
       const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-02&participants=2')
@@ -113,54 +107,37 @@ describe('/api/dates/availability', () => {
     })
 
     it('should default participants to 1 when not provided', async () => {
-      const mockRoomBookings: Array<{ room_id: string }> = []
-      const mockSurfBookings: Array<{ surf_camp_id: string }> = []
+      const mockRoomBookings: Array<{ room_type: string; guests: number }> = []
       const mockRooms = [{ capacity: 6 }]
 
       mockSupabase.from.mockImplementation((table: string) => {
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ data: mockRooms, error: null })
+            })
+          }
+        }
+        return { select: jest.fn(), eq: jest.fn() }
+      })
+
+      const { supabaseAdmin } = require('@/lib/supabase')
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               lte: jest.fn().mockReturnValue({
                 gte: jest.fn().mockReturnValue({
-                  eq: jest.fn().mockResolvedValue({ 
-                    data: mockRoomBookings, 
-                    error: null 
-                  })
+                  in: jest.fn().mockResolvedValue({ data: mockRoomBookings, error: null })
                 })
               })
             })
           }
         }
-        if (table === 'surf_week_assignments') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockSurfBookings, 
-                error: null 
-              })
-            })
-          }
-        }
-        if (table === 'rooms') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockRooms, 
-                error: null 
-              })
-            })
-          }
-        }
-        return {
-          select: jest.fn(),
-          lte: jest.fn(),
-          gte: jest.fn(),
-          eq: jest.fn()
-        }
+        return { select: jest.fn() }
       })
 
-      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-01')
+      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-02')
       const response = await GET(request)
       const data = await response.json()
 
@@ -170,7 +147,8 @@ describe('/api/dates/availability', () => {
     })
 
     it('should handle database errors gracefully', async () => {
-      mockSupabase.from.mockImplementation(() => {
+      const { supabaseAdmin } = require('@/lib/supabase')
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation(() => {
         throw new Error('Database connection failed')
       })
 
@@ -184,53 +162,36 @@ describe('/api/dates/availability', () => {
     })
 
     it('should handle empty rooms data', async () => {
-      const mockRoomBookings: Array<{ room_id: string }> = []
-      const mockSurfBookings: Array<{ surf_camp_id: string }> = []
+      const mockRoomBookings: Array<{ room_type: string; guests: number }> = []
 
       mockSupabase.from.mockImplementation((table: string) => {
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ data: null, error: null })
+            })
+          }
+        }
+        return { select: jest.fn(), eq: jest.fn() }
+      })
+
+      const { supabaseAdmin } = require('@/lib/supabase')
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               lte: jest.fn().mockReturnValue({
                 gte: jest.fn().mockReturnValue({
-                  eq: jest.fn().mockResolvedValue({ 
-                    data: mockRoomBookings, 
-                    error: null 
-                  })
+                  in: jest.fn().mockResolvedValue({ data: mockRoomBookings, error: null })
                 })
               })
             })
           }
         }
-        if (table === 'surf_week_assignments') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockSurfBookings, 
-                error: null 
-              })
-            })
-          }
-        }
-        if (table === 'rooms') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: null, 
-                error: null 
-              })
-            })
-          }
-        }
-        return {
-          select: jest.fn(),
-          lte: jest.fn(),
-          gte: jest.fn(),
-          eq: jest.fn()
-        }
+        return { select: jest.fn() }
       })
 
-      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-01')
+      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-02')
       const response = await GET(request)
       const data = await response.json()
 
@@ -240,60 +201,43 @@ describe('/api/dates/availability', () => {
     })
 
     it('should handle single date availability check', async () => {
-      const mockRoomBookings: Array<{ room_id: string }> = []
-      const mockSurfBookings: Array<{ surf_camp_id: string }> = []
+      const mockRoomBookings: Array<{ room_type: string; guests: number }> = []
       const mockRooms = [{ capacity: 6 }]
 
       mockSupabase.from.mockImplementation((table: string) => {
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ data: mockRooms, error: null })
+            })
+          }
+        }
+        return { select: jest.fn(), eq: jest.fn() }
+      })
+
+      const { supabaseAdmin } = require('@/lib/supabase')
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               lte: jest.fn().mockReturnValue({
                 gte: jest.fn().mockReturnValue({
-                  eq: jest.fn().mockResolvedValue({ 
-                    data: mockRoomBookings, 
-                    error: null 
-                  })
+                  in: jest.fn().mockResolvedValue({ data: mockRoomBookings, error: null })
                 })
               })
             })
           }
         }
-        if (table === 'surf_week_assignments') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockSurfBookings, 
-                error: null 
-              })
-            })
-          }
-        }
-        if (table === 'rooms') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockRooms, 
-                error: null 
-              })
-            })
-          }
-        }
-        return {
-          select: jest.fn(),
-          lte: jest.fn(),
-          gte: jest.fn(),
-          eq: jest.fn()
-        }
+        return { select: jest.fn() }
       })
 
-      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-01&participants=4')
+      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-02&participants=4')
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      expect(data.data.date_availability).toHaveLength(1)
+      expect(data.data.date_availability).toHaveLength(2)
       expect(data.data.date_availability[0].date).toBe('2026-02-01')
       expect(data.data.date_availability[0].available).toBe(true)
       expect(data.data.date_availability[0].capacity).toBe(6)
@@ -302,65 +246,51 @@ describe('/api/dates/availability', () => {
     })
 
     it('should handle sold out dates', async () => {
-      const mockRoomBookings: Array<{ room_id: string }> = [{ room_id: 'room-1' }, { room_id: 'room-2' }, { room_id: 'room-3' }]
-      const mockSurfBookings: Array<{ surf_camp_id: string }> = []
+      const mockRoomBookings: Array<{ room_type: string; guests: number }> = [
+        { room_type: 'Dorm', guests: 6 },
+      ]
+
       const mockRooms = [
         { capacity: 2 },
         { capacity: 2 },
-        { capacity: 2 }
+        { capacity: 2 },
       ]
 
       mockSupabase.from.mockImplementation((table: string) => {
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ data: mockRooms, error: null })
+            })
+          }
+        }
+        return { select: jest.fn(), eq: jest.fn() }
+      })
+
+      const { supabaseAdmin } = require('@/lib/supabase')
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               lte: jest.fn().mockReturnValue({
                 gte: jest.fn().mockReturnValue({
-                  eq: jest.fn().mockResolvedValue({ 
-                    data: mockRoomBookings, 
-                    error: null 
-                  })
+                  in: jest.fn().mockResolvedValue({ data: mockRoomBookings, error: null })
                 })
               })
             })
           }
         }
-        if (table === 'surf_week_assignments') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockSurfBookings, 
-                error: null 
-              })
-            })
-          }
-        }
-        if (table === 'rooms') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockRooms, 
-                error: null 
-              })
-            })
-          }
-        }
-        return {
-          select: jest.fn(),
-          lte: jest.fn(),
-          gte: jest.fn(),
-          eq: jest.fn()
-        }
+        return { select: jest.fn() }
       })
 
-      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-01&participants=1')
+      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-02&participants=1')
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      expect(data.data.date_availability[0].available).toBe(true) // 6 capacity - 3 booked = 3 remaining >= 1 participant
-      expect(data.data.summary.sold_out_dates).toBe(0)
+      expect(data.data.date_availability[0].available).toBe(false)
+      expect(data.data.summary.sold_out_dates).toBeGreaterThan(0)
     })
   })
 
@@ -384,54 +314,37 @@ describe('/api/dates/availability', () => {
 
   describe('Integration Tests', () => {
     it('should maintain consistent response structure', async () => {
-      const mockRoomBookings: Array<{ room_id: string }> = []
-      const mockSurfBookings: Array<{ surf_camp_id: string }> = []
+      const mockRoomBookings: Array<{ room_type: string; guests: number }> = []
       const mockRooms = [{ capacity: 6 }]
 
       mockSupabase.from.mockImplementation((table: string) => {
-        if (table === 'room_assignments') {
+        if (table === 'rooms') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ data: mockRooms, error: null })
+            })
+          }
+        }
+        return { select: jest.fn(), eq: jest.fn() }
+      })
+
+      const { supabaseAdmin } = require('@/lib/supabase')
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'bookings') {
           return {
             select: jest.fn().mockReturnValue({
               lte: jest.fn().mockReturnValue({
                 gte: jest.fn().mockReturnValue({
-                  eq: jest.fn().mockResolvedValue({ 
-                    data: mockRoomBookings, 
-                    error: null 
-                  })
+                  in: jest.fn().mockResolvedValue({ data: mockRoomBookings, error: null })
                 })
               })
             })
           }
         }
-        if (table === 'surf_week_assignments') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockSurfBookings, 
-                error: null 
-              })
-            })
-          }
-        }
-        if (table === 'rooms') {
-          return {
-            select: jest.fn().mockReturnValue({
-              eq: jest.fn().mockResolvedValue({ 
-                data: mockRooms, 
-                error: null 
-              })
-            })
-          }
-        }
-        return {
-          select: jest.fn(),
-          lte: jest.fn(),
-          gte: jest.fn(),
-          eq: jest.fn()
-        }
+        return { select: jest.fn() }
       })
 
-      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-01')
+      const request = new NextRequest('http://localhost:3000/api/dates/availability?start_date=2026-02-01&end_date=2026-02-02')
       const response = await GET(request)
       const data = await response.json()
 

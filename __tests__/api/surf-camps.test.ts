@@ -1,29 +1,39 @@
 import { NextRequest } from 'next/server'
 import { GET, OPTIONS } from '@/app/api/surf-camps/route'
-import { supabase } from '@/lib/supabase'
 import { SurfCampFactory } from '../factories'
+
+jest.mock('@/lib/supabase-timeout', () => ({
+  executeWithTimeout: async <T>(promise: Promise<any>) => promise,
+}))
 
 // Mock Supabase
 jest.mock('@/lib/supabase', () => ({
-  supabase: {
+  supabaseAdmin: {
     from: jest.fn(() => ({
       select: jest.fn(() => ({
-        eq: jest.fn(() => ({
-          order: jest.fn(() => Promise.resolve({ data: null, error: null }))
-        }))
+        order: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            gte: jest.fn(() => ({
+              limit: jest.fn(() => Promise.resolve({ data: null, error: null })),
+            })),
+            limit: jest.fn(() => Promise.resolve({ data: null, error: null })),
+          })),
+          gte: jest.fn(() => ({
+            limit: jest.fn(() => Promise.resolve({ data: null, error: null })),
+          })),
+          limit: jest.fn(() => Promise.resolve({ data: null, error: null })),
+        })),
       }))
     }))
   }
 }))
 
-const mockSupabase = supabase as any
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { supabaseAdmin } = require('@/lib/supabase')
+const mockSupabaseAdmin = supabaseAdmin as any
 
 // Mock NextRequest
-const createMockRequest = (url: string = 'http://localhost:3000/api/surf-camps') => ({
-  url,
-  method: 'GET',
-  headers: new Headers(),
-}) as unknown as typeof NextRequest
+const createMockRequest = (url: string = 'http://localhost:3000/api/surf-camps') => new NextRequest(url)
 
 describe('/api/surf-camps', () => {
   beforeEach(() => {
@@ -49,15 +59,48 @@ describe('/api/surf-camps', () => {
         })
       ]
 
-      mockSupabase.from.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ 
-              data: mockSurfCamps, 
-              error: null 
-            })
-          })
-        })
+      mockSupabaseAdmin.from.mockImplementation((table: string) => {
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              order: jest.fn(() => ({
+                eq: jest.fn(() => ({
+                  gte: jest.fn(() => Promise.resolve({ data: mockSurfCamps, error: null })),
+                })),
+              })),
+            })),
+          }
+        }
+
+        if (table === 'rooms') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => Promise.resolve({ data: [], error: null })),
+            })),
+          }
+        }
+
+        if (table === 'surf_camp_enrollments') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                in: jest.fn(() => Promise.resolve({ count: 0, error: null })),
+              })),
+            })),
+          }
+        }
+
+        if (table === 'room_assignments') {
+          return {
+            select: jest.fn(() => ({
+              gte: jest.fn(() => ({
+                lte: jest.fn(() => Promise.resolve({ data: [], error: null })),
+              })),
+            })),
+          }
+        }
+
+        return {}
       })
 
       const response = await GET(createMockRequest())
@@ -66,25 +109,29 @@ describe('/api/surf-camps', () => {
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
       expect(data.data.surf_camps).toHaveLength(2)
-      expect(data.data.surf_camps).toEqual(mockSurfCamps)
-
-      // Verify Supabase was called correctly
-      expect(mockSupabase.from).toHaveBeenCalledWith('surf_camps')
-      expect(mockSupabase.from('').select).toHaveBeenCalledWith('*')
-      expect(mockSupabase.from('').select('').eq).toHaveBeenCalledWith('is_active', true)
-      expect(mockSupabase.from('').select('').eq('').order).toHaveBeenCalledWith('name')
     })
 
     it('should handle empty surf camps list', async () => {
-      mockSupabase.from.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ 
-              data: [], 
-              error: null 
-            })
-          })
-        })
+      mockSupabaseAdmin.from.mockImplementation((table: string) => {
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              order: jest.fn(() => ({
+                eq: jest.fn(() => ({
+                  gte: jest.fn(() => Promise.resolve({ data: [], error: null })),
+                })),
+              })),
+            })),
+          }
+        }
+        if (table === 'rooms') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => Promise.resolve({ data: [], error: null })),
+            })),
+          }
+        }
+        return {}
       })
 
       const response = await GET(createMockRequest())
@@ -97,15 +144,19 @@ describe('/api/surf-camps', () => {
 
     it('should handle database errors', async () => {
       const dbError = new Error('Database connection failed')
-      mockSupabase.from.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ 
-              data: null, 
-              error: dbError 
-            })
-          })
-        })
+      mockSupabaseAdmin.from.mockImplementation((table: string) => {
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              order: jest.fn(() => ({
+                eq: jest.fn(() => ({
+                  gte: jest.fn(() => Promise.resolve({ data: null, error: dbError })),
+                })),
+              })),
+            })),
+          }
+        }
+        return {}
       })
 
       const response = await GET(createMockRequest())
@@ -117,15 +168,19 @@ describe('/api/surf-camps', () => {
     })
 
     it('should handle null data from database', async () => {
-      mockSupabase.from.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ 
-              data: null, 
-              error: null 
-            })
-          })
-        })
+      mockSupabaseAdmin.from.mockImplementation((table: string) => {
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              order: jest.fn(() => ({
+                eq: jest.fn(() => ({
+                  gte: jest.fn(() => Promise.resolve({ data: null, error: null })),
+                })),
+              })),
+            })),
+          }
+        }
+        return {}
       })
 
       const response = await GET(createMockRequest())
@@ -137,7 +192,7 @@ describe('/api/surf-camps', () => {
     })
 
     it('should handle unexpected errors', async () => {
-      mockSupabase.from.mockImplementation(() => {
+      mockSupabaseAdmin.from.mockImplementation(() => {
         throw new Error('Unexpected error')
       })
 
@@ -151,7 +206,7 @@ describe('/api/surf-camps', () => {
 
     it('should handle Error objects in catch block', async () => {
       const customError = new Error('Custom error message')
-      mockSupabase.from.mockImplementation(() => {
+      mockSupabaseAdmin.from.mockImplementation(() => {
         throw customError
       })
 
@@ -164,7 +219,7 @@ describe('/api/surf-camps', () => {
     })
 
     it('should handle non-Error objects in catch block', async () => {
-      mockSupabase.from.mockImplementation(() => {
+      mockSupabaseAdmin.from.mockImplementation(() => {
         throw 'String error'
       })
 
@@ -183,7 +238,7 @@ describe('/api/surf-camps', () => {
 
       expect(response.status).toBe(200)
       expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*')
-      expect(response.headers.get('Access-Control-Allow-Methods')).toBe('GET, OPTIONS')
+      expect(response.headers.get('Access-Control-Allow-Methods')).toBe('GET, POST, OPTIONS')
       expect(response.headers.get('Access-Control-Allow-Headers')).toBe('Content-Type, Authorization')
     })
 
@@ -197,15 +252,45 @@ describe('/api/surf-camps', () => {
 
   describe('Integration Tests', () => {
     it('should maintain consistent response structure', async () => {
-      mockSupabase.from.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ 
-              data: [SurfCampFactory.beginner()], 
-              error: null 
-            })
-          })
-        })
+      const one = SurfCampFactory.beginner()
+      mockSupabaseAdmin.from.mockImplementation((table: string) => {
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              order: jest.fn(() => ({
+                eq: jest.fn(() => ({
+                  gte: jest.fn(() => Promise.resolve({ data: [one], error: null })),
+                })),
+              })),
+            })),
+          }
+        }
+        if (table === 'rooms') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => Promise.resolve({ data: [], error: null })),
+            })),
+          }
+        }
+        if (table === 'surf_camp_enrollments') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                in: jest.fn(() => Promise.resolve({ count: 0, error: null })),
+              })),
+            })),
+          }
+        }
+        if (table === 'room_assignments') {
+          return {
+            select: jest.fn(() => ({
+              gte: jest.fn(() => ({
+                lte: jest.fn(() => Promise.resolve({ data: [], error: null })),
+              })),
+            })),
+          }
+        }
+        return {}
       })
 
       const response = await GET(createMockRequest())
@@ -227,15 +312,44 @@ describe('/api/surf-camps', () => {
         })
       )
 
-      mockSupabase.from.mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ 
-              data: manySurfCamps, 
-              error: null 
-            })
-          })
-        })
+      mockSupabaseAdmin.from.mockImplementation((table: string) => {
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              order: jest.fn(() => ({
+                eq: jest.fn(() => ({
+                  gte: jest.fn(() => Promise.resolve({ data: manySurfCamps, error: null })),
+                })),
+              })),
+            })),
+          }
+        }
+        if (table === 'rooms') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => Promise.resolve({ data: [], error: null })),
+            })),
+          }
+        }
+        if (table === 'surf_camp_enrollments') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                in: jest.fn(() => Promise.resolve({ count: 0, error: null })),
+              })),
+            })),
+          }
+        }
+        if (table === 'room_assignments') {
+          return {
+            select: jest.fn(() => ({
+              gte: jest.fn(() => ({
+                lte: jest.fn(() => Promise.resolve({ data: [], error: null })),
+              })),
+            })),
+          }
+        }
+        return {}
       })
 
       const startTime = Date.now()

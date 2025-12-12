@@ -139,7 +139,7 @@ export async function GET(request: NextRequest) {
 
     // Create a map of room names to IDs for matching
     const roomNameToId = new Map<string, string>()
-    ;(allRooms || []).forEach((room: { id?: string; name?: string }) => {
+    ;(allRooms || []).forEach((room: { id?: string; name?: string; [key: string]: unknown }) => {
       if (room.id && room.name) {
         roomNameToId.set(room.name, room.id)
       }
@@ -147,6 +147,11 @@ export async function GET(request: NextRequest) {
 
     // Filter available rooms - check both date availability AND capacity
     const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; name?: string; booking_type?: string; bookingType?: string; [key: string]: unknown }) => {
+      const roomCapacity = room.capacity || 0
+      if (roomCapacity < guests) {
+        return false
+      }
+
       // Check if room is already booked for these dates via bookings table
       // Match by room name since bookings table uses room_type (text)
       const isBookedViaBookings = existingBookings.some(booking =>
@@ -161,7 +166,6 @@ export async function GET(request: NextRequest) {
 
       // Check room_assignments for capacity
       const assignmentCount = roomAssignmentCounts.find(a => a.room_id === room.id)?.assignment_count || 0
-      const roomCapacity = room.capacity || 0
 
       // For "whole" room types, any assignment means it's unavailable
       if (roomBookingType === 'whole' && assignmentCount > 0) {
@@ -291,7 +295,7 @@ export async function GET(request: NextRequest) {
 
 // Handle OPTIONS for CORS
 export async function OPTIONS() {
-  return new NextResponse(null, {
+  return new NextResponse('', {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',

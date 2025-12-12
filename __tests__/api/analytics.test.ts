@@ -14,15 +14,19 @@ jest.mock('@/lib/supabase', () => ({
   supabaseAdmin: {
     from: jest.fn(() => ({
       select: jest.fn(() => ({
-        gte: jest.fn(() => ({
-          lte: jest.fn(() => ({
-            eq: jest.fn(() => ({
+        in: jest.fn(() => ({
+          gte: jest.fn(() => ({
+            lte: jest.fn(() => ({
               order: jest.fn(() => Promise.resolve({ data: [], error: null })),
             })),
             order: jest.fn(() => Promise.resolve({ data: [], error: null })),
           })),
+          order: jest.fn(() => Promise.resolve({ data: [], error: null })),
         })),
-        eq: jest.fn(() => ({
+        gte: jest.fn(() => ({
+          lte: jest.fn(() => ({
+            order: jest.fn(() => Promise.resolve({ data: [], error: null })),
+          })),
           order: jest.fn(() => Promise.resolve({ data: [], error: null })),
         })),
         order: jest.fn(() => Promise.resolve({ data: [], error: null })),
@@ -30,6 +34,8 @@ jest.mock('@/lib/supabase', () => ({
     })),
   },
 }))
+
+const mockSupabaseAdmin = require('@/lib/supabase').supabaseAdmin
 
 describe('Analytics API', () => {
   beforeEach(() => {
@@ -43,28 +49,24 @@ describe('Analytics API', () => {
           id: 'booking-1',
           total_amount: 100,
           created_at: '2025-01-01T00:00:00Z',
+          payment_status: 'paid',
         },
         {
           id: 'booking-2',
           total_amount: 200,
           created_at: '2025-01-15T00:00:00Z',
+          payment_status: 'completed',
         },
       ]
 
-      const mockQuery = {
-        select: jest.fn(() => ({
-          gte: jest.fn(() => ({
-            lte: jest.fn(() => ({
-              eq: jest.fn(() => ({
-                order: jest.fn(() => Promise.resolve({ data: mockBookings, error: null })),
-              })),
-              order: jest.fn(() => Promise.resolve({ data: mockBookings, error: null })),
-            })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
+      // Route chain: .select().in().order()
+      mockSupabaseAdmin.from.mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          in: jest.fn().mockReturnValue({
+            order: jest.fn().mockResolvedValue({ data: mockBookings, error: null }),
+          }),
+        }),
+      })
 
       const request = new NextRequest('http://localhost/api/analytics/revenue')
       const response = await GETRevenue(request)
@@ -72,23 +74,28 @@ describe('Analytics API', () => {
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      expect(data.data).toHaveProperty('revenue')
+      expect(data.data).toHaveProperty('totalRevenue')
     })
   })
 
   describe('GET /api/analytics/occupancy', () => {
     it('should fetch occupancy data', async () => {
-      const mockQuery = {
-        select: jest.fn(() => ({
-          gte: jest.fn(() => ({
-            lte: jest.fn(() => ({
-              order: jest.fn(() => Promise.resolve({ data: [], error: null })),
-            })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
+      // Occupancy route makes 2 queries: rooms with .eq(), then room_assignments with .select()
+      mockSupabaseAdmin.from.mockImplementation((table: string) => {
+        if (table === 'rooms') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ data: [{ id: 'room-1', name: 'Room 1', capacity: 4, is_active: true }], error: null }),
+            }),
+          }
+        }
+        if (table === 'room_assignments') {
+          return {
+            select: jest.fn().mockResolvedValue({ data: [], error: null }),
+          }
+        }
+        return { select: jest.fn() }
+      })
 
       const request = new NextRequest('http://localhost/api/analytics/occupancy')
       const response = await GETOccupancy(request)
@@ -96,34 +103,23 @@ describe('Analytics API', () => {
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      expect(data.data).toHaveProperty('occupancy')
+      expect(data.data).toHaveProperty('overallOccupancyRate')
     })
   })
 
   describe('GET /api/analytics/clients', () => {
     it('should fetch client growth data', async () => {
       const mockClients = [
-        {
-          id: 'client-1',
-          created_at: '2025-01-01T00:00:00Z',
-        },
-        {
-          id: 'client-2',
-          created_at: '2025-01-15T00:00:00Z',
-        },
+        { id: 'client-1', created_at: '2025-01-01T00:00:00Z' },
+        { id: 'client-2', created_at: '2025-01-15T00:00:00Z' },
       ]
 
-      const mockQuery = {
-        select: jest.fn(() => ({
-          gte: jest.fn(() => ({
-            lte: jest.fn(() => ({
-              order: jest.fn(() => Promise.resolve({ data: mockClients, error: null })),
-            })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
+      // Clients route: .select().order() (no date filters without params)
+      mockSupabaseAdmin.from.mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          order: jest.fn().mockResolvedValue({ data: mockClients, error: null }),
+        }),
+      })
 
       const request = new NextRequest('http://localhost/api/analytics/clients')
       const response = await GETClients(request)
@@ -138,29 +134,16 @@ describe('Analytics API', () => {
   describe('GET /api/analytics/bookings', () => {
     it('should fetch booking trends', async () => {
       const mockBookings = [
-        {
-          id: 'booking-1',
-          status: 'confirmed',
-          created_at: '2025-01-01T00:00:00Z',
-        },
-        {
-          id: 'booking-2',
-          status: 'pending',
-          created_at: '2025-01-15T00:00:00Z',
-        },
+        { id: 'booking-1', status: 'confirmed', created_at: '2025-01-01T00:00:00Z' },
+        { id: 'booking-2', status: 'pending', created_at: '2025-01-15T00:00:00Z' },
       ]
 
-      const mockQuery = {
-        select: jest.fn(() => ({
-          gte: jest.fn(() => ({
-            lte: jest.fn(() => ({
-              order: jest.fn(() => Promise.resolve({ data: mockBookings, error: null })),
-            })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
+      // Bookings route: .select().order() (no date filters without params)
+      mockSupabaseAdmin.from.mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          order: jest.fn().mockResolvedValue({ data: mockBookings, error: null }),
+        }),
+      })
 
       const request = new NextRequest('http://localhost/api/analytics/bookings')
       const response = await GETBookings(request)
@@ -168,7 +151,7 @@ describe('Analytics API', () => {
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      expect(data.data).toHaveProperty('trends')
+      expect(data.data).toHaveProperty('statusCounts')
     })
   })
 })

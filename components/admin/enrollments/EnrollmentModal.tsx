@@ -46,6 +46,7 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
       const params = new URLSearchParams()
       if (search.trim()) params.set('search', search.trim())
       params.set('limit', '100')
+      params.set('minimal', 'true')
 
       const response = await fetch(`/api/clients?${params.toString()}`, {
         method: 'GET',
@@ -193,11 +194,17 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
                   <SelectValue placeholder="Select a client" />
                 </SelectTrigger>
                 <SelectContent>
-                  {filteredClients.map((client) => (
-                    <SelectItem key={client.id} value={client.id}>
-                      {client.name} ({client.email})
+                  {filteredClients.length === 0 ? (
+                    <SelectItem value="__none" disabled>
+                      No clients found
                     </SelectItem>
-                  ))}
+                  ) : (
+                    filteredClients.map((client) => (
+                      <SelectItem key={client.id} value={client.id}>
+                        {client.name} ({client.email})
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
               {error && <div className="text-red-500">{error}</div>}

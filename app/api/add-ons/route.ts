@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
 
 // Handle OPTIONS for CORS
 export async function OPTIONS() {
-  return new NextResponse(null, {
+  return new NextResponse('', {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',

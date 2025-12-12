@@ -17,7 +17,21 @@ jest.mock('@/lib/supabase', () => ({
         }))
       }))
     }))
-  }
+  },
+  supabaseAdmin: {
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        gte: jest.fn(() => ({
+          lte: jest.fn(() => ({
+            in: jest.fn(() => Promise.resolve({ data: [], error: null })),
+          })),
+        })),
+        lte: jest.fn(() => ({
+          gte: jest.fn(() => Promise.resolve({ data: [], error: null })),
+        })),
+      })),
+    })),
+  },
 }))
 
 const mockSupabase = supabase as any

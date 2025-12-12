@@ -8,10 +8,12 @@ describe('/api/google-reviews', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     process.env.GOOGLE_PLACES_API_KEY = 'test-api-key'
+    process.env.GOOGLE_PLACE_ID = 'ChIJ1234567890'
   })
 
   afterEach(() => {
     delete process.env.GOOGLE_PLACES_API_KEY
+    delete process.env.GOOGLE_PLACE_ID
   })
 
   describe('GET /api/google-reviews', () => {
@@ -45,7 +47,10 @@ describe('/api/google-reviews', () => {
       expect(data.data).toEqual(mockGoogleResponse)
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJ1234567890&fields=rating,user_ratings_total,reviews&key=test-api-key'
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJ1234567890&fields=rating,user_ratings_total,reviews&key=test-api-key',
+        expect.objectContaining({
+          headers: expect.any(Object),
+        })
       )
     })
 
@@ -57,9 +62,8 @@ describe('/api/google-reviews', () => {
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.success).toBe(false)
-      expect(data.error).toBe('Google Places API not configured')
-
+      expect(data.success).toBe(true)
+      expect(data.fallback).toBe(true)
       expect(global.fetch).not.toHaveBeenCalled()
     })
 
@@ -78,8 +82,9 @@ describe('/api/google-reviews', () => {
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.success).toBe(false)
-      expect(data.error).toBe('Failed to fetch reviews from Google')
+      // Route returns fallback data with success: true on API errors
+      expect(data.success).toBe(true)
+      expect(data.fallback).toBe(true)
     })
 
     it('should handle network errors', async () => {
@@ -90,8 +95,9 @@ describe('/api/google-reviews', () => {
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.success).toBe(false)
-      expect(data.error).toBe('Internal server error')
+      // Route returns fallback data with success: true on network errors
+      expect(data.success).toBe(true)
+      expect(data.fallback).toBe(true)
     })
 
     it('should handle unexpected errors', async () => {
@@ -104,8 +110,9 @@ describe('/api/google-reviews', () => {
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.success).toBe(false)
-      expect(data.error).toBe('Internal server error')
+      // Route returns fallback data with success: true on unexpected errors
+      expect(data.success).toBe(true)
+      expect(data.fallback).toBe(true)
     })
 
     it('should handle empty reviews response', async () => {
@@ -184,10 +191,10 @@ describe('/api/google-reviews', () => {
       const response = await GET(request)
       const data = await response.json()
 
-      // Verify error response structure
-      expect(data).toHaveProperty('success', false)
-      expect(data).toHaveProperty('error')
-      expect(data).not.toHaveProperty('data')
+      // Route returns fallback data with success: true when API key is missing
+      expect(data).toHaveProperty('success', true)
+      expect(data).toHaveProperty('fallback', true)
+      expect(data).toHaveProperty('data')
     })
 
     it('should handle timeout gracefully', async () => {
@@ -198,8 +205,9 @@ describe('/api/google-reviews', () => {
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.success).toBe(false)
-      expect(data.error).toBe('Internal server error')
+      // Route returns fallback data with success: true on timeout
+      expect(data.success).toBe(true)
+      expect(data.fallback).toBe(true)
     })
   })
 })

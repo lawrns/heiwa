@@ -8,17 +8,45 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accentUI: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+
         // Primary ocean blues
         primary: {
           DEFAULT: '#2B5F75',
           light: '#4A9DB5',
           dark: '#1A4252',
+          foreground: '#FFFFFF',
         },
         // Secondary warm tones
         secondary: {
           DEFAULT: '#D4C5A9',
           light: '#E8DCC4',
           dark: '#B8A88C',
+          foreground: '#1A1A1A',
         },
         // Accent sunset tones
         accent: {
@@ -26,6 +54,7 @@ module.exports = {
           light: '#f77b2f',
           dark: '#d65d16',
           hover: '#d65d16',
+          foreground: '#FFFFFF',
         },
         // Admin theme - Heiwa Orange
         heiwaOrange: {
@@ -74,7 +103,7 @@ module.exports = {
         },
         // Legacy support
         'on-primary': '#FFFFFF',
-        muted: '#5A5A5A',
+        // NOTE: do not re-define `muted` here; it is used for shadcn token colors above
       },
       fontFamily: {
         sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],

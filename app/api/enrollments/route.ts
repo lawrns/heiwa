@@ -5,12 +5,15 @@ import { requireAdminAuth } from '@/lib/admin-auth'
 // GET enrollments for a surf camp
 export async function GET(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { searchParams } = new URL(request.url)
     const surfCampId = searchParams.get('surf_camp_id')
 
     if (!surfCampId) {
       return NextResponse.json(
-        { error: 'surf_camp_id is required' },
+        { success: false, error: 'surf_camp_id is required' },
         { status: 400 }
       )
     }
@@ -44,16 +47,21 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching enrollments:', error)
       return NextResponse.json(
-        { error: 'Failed to fetch enrollments' },
+        { success: false, error: 'Failed to fetch enrollments' },
         { status: 500 }
       )
     }
 
-    return NextResponse.json(enrollments || [])
+    return NextResponse.json({
+      success: true,
+      data: {
+        enrollments: enrollments || [],
+      },
+    })
   } catch (error) {
     console.error('Error in enrollments GET API:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }
@@ -79,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     if (!surf_camp_id || !client_id) {
       return NextResponse.json(
-        { error: 'surf_camp_id and client_id are required' },
+        { success: false, error: 'surf_camp_id and client_id are required' },
         { status: 400 }
       )
     }
@@ -94,7 +102,7 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       return NextResponse.json(
-        { error: 'Client is already enrolled in this surf camp' },
+        { success: false, error: 'Client is already enrolled in this surf camp' },
         { status: 409 }
       )
     }
@@ -108,7 +116,7 @@ export async function POST(request: NextRequest) {
 
     if (!surfCamp) {
       return NextResponse.json(
-        { error: 'Surf camp not found' },
+        { success: false, error: 'Surf camp not found' },
         { status: 404 }
       )
     }
@@ -122,7 +130,7 @@ export async function POST(request: NextRequest) {
 
     if (count !== null && count >= surfCamp.max_participants) {
       return NextResponse.json(
-        { error: 'Surf camp is full' },
+        { success: false, error: 'Surf camp is full' },
         { status: 400 }
       )
     }
@@ -155,7 +163,7 @@ export async function POST(request: NextRequest) {
     if (insertError) {
       console.error('Error creating enrollment:', insertError)
       return NextResponse.json(
-        { error: 'Failed to create enrollment' },
+        { success: false, error: 'Failed to create enrollment' },
         { status: 500 }
       )
     }
@@ -189,14 +197,19 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json({
-      success: true,
-      data: enrollment
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          enrollment,
+        },
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error in enrollments POST API:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }
@@ -214,7 +227,7 @@ export async function PUT(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: 'enrollment id is required' },
+        { success: false, error: 'enrollment id is required' },
         { status: 400 }
       )
     }
@@ -229,19 +242,21 @@ export async function PUT(request: NextRequest) {
     if (error) {
       console.error('Error updating enrollment:', error)
       return NextResponse.json(
-        { error: 'Failed to update enrollment' },
+        { success: false, error: 'Failed to update enrollment' },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      data: enrollment
+      data: {
+        enrollment,
+      },
     })
   } catch (error) {
     console.error('Error in enrollments PUT API:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }
@@ -259,32 +274,34 @@ export async function DELETE(request: NextRequest) {
 
     if (!id) {
       return NextResponse.json(
-        { error: 'enrollment id is required' },
+        { success: false, error: 'enrollment id is required' },
         { status: 400 }
       )
     }
 
     const { error } = await supabaseAdmin
       .from('surf_camp_enrollments')
-      .delete()
+      .update({ status: 'cancelled' })
       .eq('id', id)
 
     if (error) {
-      console.error('Error deleting enrollment:', error)
+      console.error('Error cancelling enrollment:', error)
       return NextResponse.json(
-        { error: 'Failed to delete enrollment' },
+        { success: false, error: 'Failed to cancel enrollment' },
         { status: 500 }
       )
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Enrollment cancelled successfully'
+      data: {
+        message: 'Enrollment cancelled successfully',
+      },
     })
   } catch (error) {
     console.error('Error in enrollments DELETE API:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
     )
   }

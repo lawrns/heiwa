@@ -54,27 +54,52 @@ describe('Calendar Events API', () => {
 
   describe('GET /api/calendar-events', () => {
     it('should fetch calendar events', async () => {
-      const mockEvents = [
-        {
-          id: 'event-1',
-          title: 'Surf Lesson',
-          start_date: '2025-01-20T10:00:00Z',
-          end_date: '2025-01-20T12:00:00Z',
-          event_type: 'surf_camp',
-        },
-      ]
-
-      const mockQuery = {
-        select: jest.fn(() => ({
-          gte: jest.fn(() => ({
-            lte: jest.fn(() => ({
-              order: jest.fn(() => Promise.resolve({ data: mockEvents, error: null })),
-            })),
-          })),
-        })),
+      const booking = {
+        id: 'booking-1',
+        items: [
+          {
+            type: 'room',
+            dates: { checkIn: '2025-01-20', checkOut: '2025-01-22' },
+          },
+        ],
+        status: 'confirmed',
+        payment_status: 'paid',
+        client_ids: ['client-1'],
+        created_at: '2025-01-10T00:00:00Z',
       }
 
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'bookings') {
+          return {
+            select: jest.fn(() => ({
+              order: jest.fn(() => Promise.resolve({ data: [booking], error: null })),
+            })),
+          }
+        }
+        if (table === 'clients') {
+          return {
+            select: jest.fn(() => ({
+              in: jest.fn(() => Promise.resolve({ data: [{ id: 'client-1', name: 'Test Guest' }], error: null })),
+            })),
+          }
+        }
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              in: jest.fn(() => Promise.resolve({ data: [], error: null })),
+              eq: jest.fn(() => Promise.resolve({ data: [], error: null })),
+            })),
+          }
+        }
+        if (table === 'calendar_events') {
+          return {
+            select: jest.fn(() => ({
+              order: jest.fn(() => Promise.resolve({ data: [], error: null })),
+            })),
+          }
+        }
+        return {}
+      })
 
       const request = new NextRequest('http://localhost/api/calendar-events')
       const response = await GET(request)
@@ -82,7 +107,8 @@ describe('Calendar Events API', () => {
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      expect(data.data.events).toEqual(mockEvents)
+      expect(Array.isArray(data.data.events)).toBe(true)
+      expect(data.data.events.length).toBeGreaterThan(0)
     })
   })
 

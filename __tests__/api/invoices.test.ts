@@ -8,6 +8,11 @@ import { GET, POST } from '@/app/api/invoices/route'
 import { GET as GETById, PUT, DELETE } from '@/app/api/invoices/[id]/route'
 import { supabaseAdmin } from '@/lib/supabase'
 
+jest.mock('@/lib/invoices/generator', () => ({
+  createInvoiceFromBooking: jest.fn(async () => ({ id: 'invoice-1', invoice_number: 'HW-INV-2025-0001' })),
+  calculateDueDate: jest.fn(() => '2025-02-01'),
+}))
+
 jest.mock('@/lib/supabase', () => ({
   supabaseAdmin: {
     from: jest.fn(() => ({
@@ -90,13 +95,15 @@ describe('Invoices API', () => {
     })
 
     it('should filter invoices by status', async () => {
+      const mockEq = jest.fn(() => ({
+        order: jest.fn(() => ({
+          range: jest.fn(() => Promise.resolve({ data: [], error: null, count: 0 })),
+        })),
+      }))
+
       const mockQuery = {
         select: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            order: jest.fn(() => ({
-              range: jest.fn(() => Promise.resolve({ data: [], error: null, count: 0 })),
-            })),
-          })),
+          eq: mockEq,
         })),
       }
 
@@ -107,7 +114,7 @@ describe('Invoices API', () => {
       })
       await GET(request)
 
-      expect(mockQuery.select().eq).toHaveBeenCalledWith('status', 'sent')
+      expect(mockEq).toHaveBeenCalledWith('status', 'sent')
     })
   })
 
@@ -124,18 +131,30 @@ describe('Invoices API', () => {
         id: 'invoice-1',
         ...invoiceData,
         invoice_number: 'HW-INV-2025-0001',
-        created_at: '2025-01-20T00:00:00Z',
+        due_date: '2025-02-01',
       }
 
-      const mockInsert = {
-        insert: jest.fn(() => ({
-          select: jest.fn(() => ({
-            single: jest.fn(() => Promise.resolve({ data: mockInvoice, error: null })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockInsert)
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'invoices') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                single: jest.fn(() => Promise.resolve({ data: null, error: { code: 'PGRST116' } })),
+              })),
+            })),
+          }
+        }
+        if (table === 'bookings') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                single: jest.fn(() => Promise.resolve({ data: null, error: null })),
+              })),
+            })),
+          }
+        }
+        return {}
+      })
 
       const request = new NextRequest('http://localhost/api/invoices', {
         method: 'POST',

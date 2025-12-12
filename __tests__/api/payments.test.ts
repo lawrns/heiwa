@@ -9,6 +9,11 @@ import { GET as GETById, PUT, DELETE } from '@/app/api/payments/[id]/route'
 import { POST as POSTRefund } from '@/app/api/payments/[id]/refund/route'
 import { supabaseAdmin } from '@/lib/supabase'
 
+// Mock admin auth to bypass authentication in tests
+jest.mock('@/lib/admin-auth', () => ({
+  requireAdminAuth: jest.fn(() => null),
+}))
+
 // Mock Supabase
 jest.mock('@/lib/supabase', () => ({
   supabaseAdmin: {
@@ -92,14 +97,18 @@ describe('Payments API', () => {
     })
 
     it('should filter payments by status', async () => {
+      const mockEq = jest.fn().mockReturnValue({
+        order: jest.fn().mockReturnValue({
+          range: jest.fn().mockResolvedValue({ data: [], error: null, count: 0 }),
+        }),
+      })
       const mockQuery = {
-        select: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            order: jest.fn(() => ({
-              range: jest.fn(() => Promise.resolve({ data: [], error: null, count: 0 })),
-            })),
-          })),
-        })),
+        select: jest.fn().mockReturnValue({
+          eq: mockEq,
+          order: jest.fn().mockReturnValue({
+            range: jest.fn().mockResolvedValue({ data: [], error: null, count: 0 }),
+          }),
+        }),
       }
 
       ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
@@ -109,7 +118,7 @@ describe('Payments API', () => {
       })
       await GET(request)
 
-      expect(mockQuery.select().eq).toHaveBeenCalledWith('payment_status', 'completed')
+      expect(mockEq).toHaveBeenCalledWith('payment_status', 'completed')
     })
 
     it('should handle errors', async () => {
@@ -146,18 +155,31 @@ describe('Payments API', () => {
 
       const mockPayment = { id: 'payment-1', ...paymentData, created_at: '2025-01-20T00:00:00Z' }
 
-      const mockInsert = {
-        insert: jest.fn(() => ({
-          select: jest.fn(() => ({
-            single: jest.fn(() => Promise.resolve({ data: mockPayment, error: null })),
-          })),
-        })),
-        update: jest.fn(() => ({
-          eq: jest.fn(() => Promise.resolve({ data: null, error: null })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockInsert)
+      // Route makes multiple calls: insert payment, update booking, get booking
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'payments') {
+          return {
+            insert: jest.fn().mockReturnValue({
+              select: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: mockPayment, error: null }),
+              }),
+            }),
+          }
+        }
+        if (table === 'bookings') {
+          return {
+            update: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ error: null }),
+            }),
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'booking-1', client_ids: [] }, error: null }),
+              }),
+            }),
+          }
+        }
+        return { select: jest.fn() }
+      })
 
       const request = new NextRequest('http://localhost/api/payments', {
         method: 'POST',
@@ -280,33 +302,40 @@ describe('Payments API', () => {
         payment_status: 'completed',
       }
 
-      const mockGet = {
-        select: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            single: jest.fn(() => Promise.resolve({ data: mockPayment, error: null })),
-          })),
-        })),
-      }
+      const refundedPayment = { ...mockPayment, refund_amount: 100, payment_status: 'refunded' }
 
-      const mockUpdate = {
-        update: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            select: jest.fn(() => ({
-              single: jest.fn(() =>
-                Promise.resolve({
-                  data: { ...mockPayment, refund_amount: 100, payment_status: 'refunded' },
-                  error: null,
-                })
-              ),
-            })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock)
-        .mockReturnValueOnce(mockGet)
-        .mockReturnValueOnce(mockUpdate)
-        .mockReturnValueOnce(mockUpdate)
+      // Route makes multiple calls: get payment, update payment, update booking, get booking
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'payments') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: mockPayment, error: null }),
+              }),
+            }),
+            update: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                select: jest.fn().mockReturnValue({
+                  single: jest.fn().mockResolvedValue({ data: refundedPayment, error: null }),
+                }),
+              }),
+            }),
+          }
+        }
+        if (table === 'bookings') {
+          return {
+            update: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ error: null }),
+            }),
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'booking-1', client_ids: [] }, error: null }),
+              }),
+            }),
+          }
+        }
+        return { select: jest.fn() }
+      })
 
       const request = new NextRequest('http://localhost/api/payments/payment-1/refund', {
         method: 'POST',
@@ -330,32 +359,37 @@ describe('Payments API', () => {
         payment_status: 'completed',
       }
 
-      const mockGet = {
-        select: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            single: jest.fn(() => Promise.resolve({ data: mockPayment, error: null })),
-          })),
-        })),
-      }
+      const partialRefundPayment = { ...mockPayment, refund_amount: 50, payment_status: 'partially_refunded' }
 
-      const mockUpdate = {
-        update: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            select: jest.fn(() => ({
-              single: jest.fn(() =>
-                Promise.resolve({
-                  data: { ...mockPayment, refund_amount: 50, payment_status: 'partially_refunded' },
-                  error: null,
-                })
-              ),
-            })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock)
-        .mockReturnValueOnce(mockGet)
-        .mockReturnValueOnce(mockUpdate)
+      // Route makes multiple calls: get payment, update payment, get booking
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'payments') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: mockPayment, error: null }),
+              }),
+            }),
+            update: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                select: jest.fn().mockReturnValue({
+                  single: jest.fn().mockResolvedValue({ data: partialRefundPayment, error: null }),
+                }),
+              }),
+            }),
+          }
+        }
+        if (table === 'bookings') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({ data: { id: 'booking-1', client_ids: [] }, error: null }),
+              }),
+            }),
+          }
+        }
+        return { select: jest.fn() }
+      })
 
       const request = new NextRequest('http://localhost/api/payments/payment-1/refund', {
         method: 'POST',

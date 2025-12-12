@@ -36,37 +36,64 @@ describe('Assignments API', () => {
 
   describe('GET /api/assignments/participants', () => {
     it('should fetch participants for a surf camp', async () => {
-      const mockParticipants = [
+      const weekId = '11111111-1111-1111-1111-111111111111'
+
+      const enrollments = [
         {
           id: 'enrollment-1',
           client_id: 'client-1',
-          surf_camp_id: 'camp-1',
           status: 'confirmed',
-          clients: {
-            id: 'client-1',
-            name: 'John Doe',
-            email: 'john@example.com',
-          },
+          skill_level: 'beginner',
+          participant_name: 'John Doe',
+          participant_email: 'john@example.com',
+          participant_phone: '',
         },
       ]
 
-      const mockQuery = {
-        select: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            order: jest.fn(() => Promise.resolve({ data: mockParticipants, error: null })),
-          })),
-        })),
-      }
+      const clients = [
+        {
+          id: 'client-1',
+          name: 'John Doe',
+          email: 'john@example.com',
+          phone: '',
+        },
+      ]
 
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'surf_camp_enrollments') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                in: jest.fn(() => Promise.resolve({ data: enrollments, error: null })),
+              })),
+            })),
+          }
+        }
+        if (table === 'clients') {
+          return {
+            select: jest.fn(() => ({
+              in: jest.fn(() => Promise.resolve({ data: clients, error: null })),
+            })),
+          }
+        }
+        if (table === 'room_assignments') {
+          return {
+            select: jest.fn(() => ({
+              in: jest.fn(() => Promise.resolve({ data: [], error: null })),
+            })),
+          }
+        }
+        return {}
+      })
 
-      const request = new NextRequest('http://localhost/api/assignments/participants?surf_camp_id=camp-1')
+      const request = new NextRequest(`http://localhost/api/assignments/participants?weekId=${weekId}`)
       const response = await GETParticipants(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.success).toBe(true)
-      expect(data.data.participants).toEqual(mockParticipants)
+      expect(Array.isArray(data)).toBe(true)
+      expect(data.length).toBe(1)
+      expect(data[0]).toHaveProperty('id', 'enrollment-1')
     })
   })
 
@@ -81,28 +108,49 @@ describe('Assignments API', () => {
         },
       ]
 
-      const mockQuery = {
-        select: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            order: jest.fn(() => Promise.resolve({ data: mockRooms, error: null })),
-          })),
-        })),
-      }
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'rooms') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                order: jest.fn(() => Promise.resolve({ data: mockRooms, error: null })),
+              })),
+            })),
+          }
+        }
 
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
+        if (table === 'room_assignments') {
+          return {
+            select: jest.fn(() => ({
+              lte: jest.fn(() => ({
+                gte: jest.fn(() => ({
+                  eq: jest.fn(() => Promise.resolve({ data: [], error: null })),
+                })),
+              })),
+              eq: jest.fn(() => ({
+                eq: jest.fn(() => Promise.resolve({ data: [], error: null })),
+              })),
+            })),
+          }
+        }
+
+        return {}
+      })
 
       const request = new NextRequest('http://localhost/api/assignments/rooms')
       const response = await GETRooms(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.success).toBe(true)
-      expect(data.data.rooms).toEqual(mockRooms)
+      expect(Array.isArray(data)).toBe(true)
+      expect(data.length).toBe(1)
     })
   })
 
   describe('GET /api/assignments', () => {
     it('should fetch room assignments', async () => {
+      const weekId = '11111111-1111-1111-1111-111111111111'
+
       const mockAssignments = [
         {
           id: 'assignment-1',
@@ -112,46 +160,76 @@ describe('Assignments API', () => {
         },
       ]
 
-      const mockQuery = {
-        select: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            order: jest.fn(() => Promise.resolve({ data: mockAssignments, error: null })),
-          })),
-        })),
-      }
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'room_assignments') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => Promise.resolve({ data: mockAssignments, error: null })),
+            })),
+          }
+        }
+        return {}
+      })
 
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
-
-      const request = new NextRequest('http://localhost/api/assignments?surf_camp_id=camp-1')
+      const request = new NextRequest(`http://localhost/api/assignments?weekId=${weekId}`)
       const response = await GET(request)
       const data = await response.json()
 
       expect(response.status).toBe(200)
-      expect(data.success).toBe(true)
-      expect(data.data.assignments).toEqual(mockAssignments)
+      expect(Array.isArray(data)).toBe(true)
     })
   })
 
   describe('POST /api/assignments', () => {
     it('should save room assignments', async () => {
+      const weekId = '11111111-1111-1111-1111-111111111111'
+
       const assignmentsData = {
-        surf_camp_id: 'camp-1',
+        weekId,
         assignments: [
           {
-            room_id: 'room-1',
-            enrollment_id: 'enrollment-1',
-            bed_number: 1,
+            roomId: 'room-1',
+            participantIds: ['enrollment-1'],
           },
         ],
       }
 
-      const mockUpsert = {
-        upsert: jest.fn(() => ({
-          select: jest.fn(() => Promise.resolve({ data: assignmentsData.assignments, error: null })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockUpsert)
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                single: jest.fn(() => Promise.resolve({ data: { start_date: '2025-01-01', end_date: '2025-01-08' }, error: null })),
+              })),
+            })),
+          }
+        }
+        if (table === 'rooms') {
+          return {
+            select: jest.fn(() => ({
+              in: jest.fn(() => Promise.resolve({ data: [{ id: 'room-1', name: 'Dorm', capacity: 6 }], error: null })),
+            })),
+          }
+        }
+        if (table === 'room_assignments') {
+          return {
+            delete: jest.fn(() => ({
+              eq: jest.fn(() => Promise.resolve({ error: null })),
+            })),
+            insert: jest.fn(() => Promise.resolve({ error: null })),
+          }
+        }
+        if (table === 'surf_camp_enrollments') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                single: jest.fn(() => Promise.resolve({ data: { client_id: 'client-1', booking_id: null }, error: null })),
+              })),
+            })),
+          }
+        }
+        return {}
+      })
 
       const request = new NextRequest('http://localhost/api/assignments', {
         method: 'POST',

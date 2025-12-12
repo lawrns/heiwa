@@ -59,15 +59,18 @@ describe('Enrollments API', () => {
         },
       ]
 
-      const mockQuery = {
-        select: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            order: jest.fn(() => Promise.resolve({ data: mockEnrollments, error: null })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'surf_camp_enrollments') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                order: jest.fn(() => Promise.resolve({ data: mockEnrollments, error: null })),
+              })),
+            })),
+          }
+        }
+        return {}
+      })
 
       const request = new NextRequest('http://localhost/api/enrollments?surf_camp_id=camp-1')
       const response = await GET(request)
@@ -95,15 +98,47 @@ describe('Enrollments API', () => {
         created_at: '2025-01-20T00:00:00Z',
       }
 
-      const mockInsert = {
-        insert: jest.fn(() => ({
-          select: jest.fn(() => ({
-            single: jest.fn(() => Promise.resolve({ data: mockEnrollment, error: null })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockInsert)
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'surf_camp_enrollments') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                eq: jest.fn(() => ({
+                  single: jest.fn(() => Promise.resolve({ data: null, error: { code: 'PGRST116' } })),
+                })),
+                in: jest.fn(() => Promise.resolve({ count: 0, error: null })),
+              })),
+            })),
+            insert: jest.fn(() => ({
+              select: jest.fn(() => ({
+                single: jest.fn(() => Promise.resolve({ data: mockEnrollment, error: null })),
+              })),
+            })),
+          }
+        }
+        if (table === 'surf_camps') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                single: jest.fn(() => Promise.resolve({
+                  data: { max_participants: 10, name: 'Camp' },
+                  error: null,
+                })),
+              })),
+            })),
+          }
+        }
+        if (table === 'clients') {
+          return {
+            select: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                single: jest.fn(() => Promise.resolve({ data: { name: 'John', email: 'john@example.com', phone: '' }, error: null })),
+              })),
+            })),
+          }
+        }
+        return {}
+      })
 
       const request = new NextRequest('http://localhost/api/enrollments', {
         method: 'POST',
@@ -138,17 +173,20 @@ describe('Enrollments API', () => {
         skill_level: 'intermediate',
       }
 
-      const mockUpdate = {
-        update: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            select: jest.fn(() => ({
-              single: jest.fn(() => Promise.resolve({ data: { ...updateData }, error: null })),
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'surf_camp_enrollments') {
+          return {
+            update: jest.fn(() => ({
+              eq: jest.fn(() => ({
+                select: jest.fn(() => ({
+                  single: jest.fn(() => Promise.resolve({ data: { ...updateData }, error: null })),
+                })),
+              })),
             })),
-          })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockUpdate)
+          }
+        }
+        return {}
+      })
 
       const request = new NextRequest('http://localhost/api/enrollments', {
         method: 'PUT',
@@ -164,13 +202,16 @@ describe('Enrollments API', () => {
 
   describe('DELETE /api/enrollments', () => {
     it('should delete an enrollment', async () => {
-      const mockDelete = {
-        delete: jest.fn(() => ({
-          eq: jest.fn(() => Promise.resolve({ error: null })),
-        })),
-      }
-
-      ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockDelete)
+      ;(supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'surf_camp_enrollments') {
+          return {
+            update: jest.fn(() => ({
+              eq: jest.fn(() => Promise.resolve({ error: null })),
+            })),
+          }
+        }
+        return {}
+      })
 
       const request = new NextRequest('http://localhost/api/enrollments?id=enrollment-1', {
         method: 'DELETE',

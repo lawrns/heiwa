@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 export async function GET(request: NextRequest) {
   try {
-    // Check authentication
-    const adminAuth = request.cookies.get('admin_auth')?.value
-    const adminPassword = process.env.ADMIN_PASSWORD || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'heiwa_admin_2024'
-
-    if (!adminAuth || adminAuth !== adminPassword) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
 
     const { searchParams } = new URL(request.url)
     const startDate = searchParams.get('start_date')
@@ -188,16 +181,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication
-    const adminAuth = request.cookies.get('admin_auth')?.value
-    const adminPassword = process.env.ADMIN_PASSWORD || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'heiwa_admin_2024'
-
-    if (!adminAuth || adminAuth !== adminPassword) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
 
     const body = await request.json()
     const { title, description, start_date, end_date, event_type, location, color } = body
