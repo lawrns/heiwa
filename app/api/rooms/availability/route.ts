@@ -230,9 +230,9 @@ export async function GET(request: NextRequest) {
       // Calculate available beds/spots for this room
       const roomBookingType = r.booking_type || r.bookingType || 'whole'
       const assignedCount = roomAssignmentCounts.find(a => a.room_id === r.id)?.assignment_count || 0
-      const availableBeds = roomBookingType === 'perBed' 
-        ? Math.max(0, r.capacity - assignedCount)
-        : (assignedCount > 0 ? 0 : 1) // For whole rooms: 0 if assigned, 1 if available
+      // Always calculate available beds based on capacity minus assignments
+      // This works for both perBed (dorms) and whole/private rooms
+      const availableBeds = Math.max(0, r.capacity - assignedCount)
 
       return {
         id: r.id,
