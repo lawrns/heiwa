@@ -63,6 +63,20 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     state.participantNames.map(p => p.firstName) || Array(state.guests).fill('')
   );
 
+  // Keep local selection UI in sync with global state.
+  // This prevents stale "Selected" UI when reducers reset `selectedOption` (e.g., after changing dates/guest count).
+  useEffect(() => {
+    if (state.experienceType === 'room') {
+      setSelectedOptions(state.selectedOption ? [state.selectedOption] : []);
+      return;
+    }
+    if (state.experienceType === 'surf-week') {
+      setSelectedOptions(state.selectedOption ? [state.selectedOption] : []);
+      return;
+    }
+    setSelectedOptions([]);
+  }, [state.experienceType, state.selectedOption]);
+
   // Sync local date state with global state when it changes
   useEffect(() => {
     if (state.dates.checkIn) {
