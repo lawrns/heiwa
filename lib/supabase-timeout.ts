@@ -7,11 +7,11 @@ const DEFAULT_TIMEOUT_MS = 1000 // 1 second timeout for fast failure
  * Wrap a Supabase query with a timeout to prevent long waits
  */
 export function withTimeout<T>(
-  promise: Promise<T>,
+  promise: PromiseLike<T>,
   timeoutMs: number = DEFAULT_TIMEOUT_MS
 ): Promise<T> {
   return Promise.race([
-    promise,
+    Promise.resolve(promise),
     new Promise<T>((_, reject) =>
       setTimeout(() => {
         reject(new Error(`Query timeout after ${timeoutMs}ms - Supabase may be unreachable`))
@@ -25,7 +25,7 @@ export function withTimeout<T>(
  * Wraps Supabase query promises with timeout to prevent long waits
  */
 export async function executeWithTimeout<T>(
-  queryPromise: Promise<{ data: T | null; error: any }>,
+  queryPromise: PromiseLike<{ data: T | null; error: any }>,
   timeoutMs: number = DEFAULT_TIMEOUT_MS
 ): Promise<{ data: T | null; error: any }> {
   try {

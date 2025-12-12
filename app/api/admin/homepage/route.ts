@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase'
 import { executeWithTimeout } from '@/lib/supabase-timeout'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 export interface HomepageSection {
   id: string
@@ -77,8 +78,11 @@ export interface GoogleRatingData {
 }
 
 // GET - Fetch all homepage sections
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     console.log('🏠 Homepage API - Starting GET request')
     
     // Fetch homepage content with timeout protection
@@ -89,8 +93,8 @@ export async function GET() {
       .select('*')
       .order('order_index', { ascending: true })
     
-    const { data, error } = await executeWithTimeout(
-      homepageQuery,
+    const { data, error } = await executeWithTimeout<any[]>(
+      homepageQuery as any,
       1000 // 1 second timeout for fast failure
     )
     
@@ -207,6 +211,9 @@ export async function GET() {
 // POST - Create new homepage section
 export async function POST(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const { 
       section, 
@@ -282,6 +289,9 @@ export async function POST(request: NextRequest) {
 // PUT - Update homepage section
 export async function PUT(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const { 
       id, 
@@ -382,6 +392,9 @@ export async function PUT(request: NextRequest) {
 // DELETE - Delete homepage section
 export async function DELETE(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
 

@@ -50,6 +50,8 @@ jest.mock('@/lib/supabase', () => ({
 }))
 
 describe('Payments API', () => {
+  const adminCookie = 'admin_auth=heiwa_admin_2024'
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -78,7 +80,9 @@ describe('Payments API', () => {
 
       ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
 
-      const request = new NextRequest('http://localhost/api/payments')
+      const request = new NextRequest('http://localhost/api/payments', {
+        headers: { cookie: adminCookie },
+      })
       const response = await GET(request)
       const data = await response.json()
 
@@ -100,7 +104,9 @@ describe('Payments API', () => {
 
       ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
 
-      const request = new NextRequest('http://localhost/api/payments?status=completed')
+      const request = new NextRequest('http://localhost/api/payments?status=completed', {
+        headers: { cookie: adminCookie },
+      })
       await GET(request)
 
       expect(mockQuery.select().eq).toHaveBeenCalledWith('payment_status', 'completed')
@@ -117,7 +123,9 @@ describe('Payments API', () => {
 
       ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
 
-      const request = new NextRequest('http://localhost/api/payments')
+      const request = new NextRequest('http://localhost/api/payments', {
+        headers: { cookie: adminCookie },
+      })
       const response = await GET(request)
       const data = await response.json()
 
@@ -154,6 +162,7 @@ describe('Payments API', () => {
       const request = new NextRequest('http://localhost/api/payments', {
         method: 'POST',
         body: JSON.stringify(paymentData),
+        headers: { cookie: adminCookie },
       })
       const response = await POST(request)
       const data = await response.json()
@@ -167,6 +176,7 @@ describe('Payments API', () => {
       const request = new NextRequest('http://localhost/api/payments', {
         method: 'POST',
         body: JSON.stringify({ amount: 100 }),
+        headers: { cookie: adminCookie },
       })
       const response = await POST(request)
       const data = await response.json()
@@ -197,7 +207,9 @@ describe('Payments API', () => {
 
       ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
 
-      const request = new NextRequest('http://localhost/api/payments/payment-1')
+      const request = new NextRequest('http://localhost/api/payments/payment-1', {
+        headers: { cookie: adminCookie },
+      })
       const response = await GETById(request, { params: Promise.resolve({ id: 'payment-1' }) })
       const data = await response.json()
 
@@ -226,6 +238,7 @@ describe('Payments API', () => {
       const request = new NextRequest('http://localhost/api/payments/payment-1', {
         method: 'PUT',
         body: JSON.stringify(updateData),
+        headers: { cookie: adminCookie },
       })
       const response = await PUT(request, { params: Promise.resolve({ id: 'payment-1' }) })
       const data = await response.json()
@@ -247,6 +260,7 @@ describe('Payments API', () => {
 
       const request = new NextRequest('http://localhost/api/payments/payment-1', {
         method: 'DELETE',
+        headers: { cookie: adminCookie },
       })
       const response = await DELETE(request, { params: Promise.resolve({ id: 'payment-1' }) })
       const data = await response.json()
@@ -297,6 +311,7 @@ describe('Payments API', () => {
       const request = new NextRequest('http://localhost/api/payments/payment-1/refund', {
         method: 'POST',
         body: JSON.stringify({ amount: 100, reason: 'Customer cancellation' }),
+        headers: { cookie: adminCookie },
       })
       const response = await POSTRefund(request, { params: Promise.resolve({ id: 'payment-1' }) })
       const data = await response.json()
@@ -345,6 +360,7 @@ describe('Payments API', () => {
       const request = new NextRequest('http://localhost/api/payments/payment-1/refund', {
         method: 'POST',
         body: JSON.stringify({ amount: 50 }),
+        headers: { cookie: adminCookie },
       })
       const response = await POSTRefund(request, { params: Promise.resolve({ id: 'payment-1' }) })
       const data = await response.json()
@@ -376,6 +392,7 @@ describe('Payments API', () => {
       const request = new NextRequest('http://localhost/api/payments/payment-1/refund', {
         method: 'POST',
         body: JSON.stringify({ amount: 150 }),
+        headers: { cookie: adminCookie },
       })
       const response = await POSTRefund(request, { params: Promise.resolve({ id: 'payment-1' }) })
       const data = await response.json()

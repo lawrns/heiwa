@@ -688,7 +688,7 @@ describe('/api/bookings', () => {
 
       expect(response.status).toBe(200)
       expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*')
-      expect(response.headers.get('Access-Control-Allow-Methods')).toBe('POST, OPTIONS')
+      expect(response.headers.get('Access-Control-Allow-Methods')).toBe('GET, POST, OPTIONS')
       expect(response.headers.get('Access-Control-Allow-Headers')).toBe('Content-Type, Authorization')
     })
 

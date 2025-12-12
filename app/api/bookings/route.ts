@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { bookingService } from '@/lib/services/booking.service';
 import type { SurfWeekBookingInput, RoomBookingInput } from '@/lib/services/booking.service';
+import { requireAdminAuth } from '@/lib/admin-auth';
 
 /**
  * Booking API Routes
@@ -19,6 +20,9 @@ const noCacheHeaders = {
 
 export async function GET(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request);
+    if (authError) return authError;
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || undefined;
     const roomId = searchParams.get('roomId') || undefined;
@@ -197,7 +201,7 @@ export async function OPTIONS() {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   });

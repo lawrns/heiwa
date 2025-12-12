@@ -48,6 +48,8 @@ jest.mock('@/lib/supabase', () => ({
 }))
 
 describe('Invoices API', () => {
+  const adminCookie = 'admin_auth=heiwa_admin_2024'
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -76,7 +78,9 @@ describe('Invoices API', () => {
 
       ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
 
-      const request = new NextRequest('http://localhost/api/invoices')
+      const request = new NextRequest('http://localhost/api/invoices', {
+        headers: { cookie: adminCookie },
+      })
       const response = await GET(request)
       const data = await response.json()
 
@@ -98,7 +102,9 @@ describe('Invoices API', () => {
 
       ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
 
-      const request = new NextRequest('http://localhost/api/invoices?status=sent')
+      const request = new NextRequest('http://localhost/api/invoices?status=sent', {
+        headers: { cookie: adminCookie },
+      })
       await GET(request)
 
       expect(mockQuery.select().eq).toHaveBeenCalledWith('status', 'sent')
@@ -134,6 +140,7 @@ describe('Invoices API', () => {
       const request = new NextRequest('http://localhost/api/invoices', {
         method: 'POST',
         body: JSON.stringify(invoiceData),
+        headers: { cookie: adminCookie },
       })
       const response = await POST(request)
       const data = await response.json()
@@ -147,6 +154,7 @@ describe('Invoices API', () => {
       const request = new NextRequest('http://localhost/api/invoices', {
         method: 'POST',
         body: JSON.stringify({ amount: 100 }),
+        headers: { cookie: adminCookie },
       })
       const response = await POST(request)
       const data = await response.json()
@@ -177,7 +185,9 @@ describe('Invoices API', () => {
 
       ;(supabaseAdmin.from as jest.Mock).mockReturnValue(mockQuery)
 
-      const request = new NextRequest('http://localhost/api/invoices/invoice-1')
+      const request = new NextRequest('http://localhost/api/invoices/invoice-1', {
+        headers: { cookie: adminCookie },
+      })
       const response = await GETById(request, { params: Promise.resolve({ id: 'invoice-1' }) })
       const data = await response.json()
 
@@ -206,6 +216,7 @@ describe('Invoices API', () => {
       const request = new NextRequest('http://localhost/api/invoices/invoice-1', {
         method: 'PUT',
         body: JSON.stringify(updateData),
+        headers: { cookie: adminCookie },
       })
       const response = await PUT(request, { params: Promise.resolve({ id: 'invoice-1' }) })
       const data = await response.json()
@@ -227,6 +238,7 @@ describe('Invoices API', () => {
 
       const request = new NextRequest('http://localhost/api/invoices/invoice-1', {
         method: 'DELETE',
+        headers: { cookie: adminCookie },
       })
       const response = await DELETE(request, { params: Promise.resolve({ id: 'invoice-1' }) })
       const data = await response.json()

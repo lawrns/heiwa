@@ -2,6 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // GET /api/payments/[id] - Get a specific payment
 export async function GET(
@@ -9,6 +10,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { id } = await params
 
     const { data, error } = await supabaseAdmin
@@ -60,6 +64,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { id } = await params
     const body = await request.json()
 
@@ -100,6 +107,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { id } = await params
 
     const { error } = await supabaseAdmin

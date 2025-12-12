@@ -3,6 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // POST /api/payments/[id]/refund - Process a refund
 export async function POST(
@@ -10,6 +11,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { id } = await params
     const body = await request.json()
     const { amount, reason, notes } = body

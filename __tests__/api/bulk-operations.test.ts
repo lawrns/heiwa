@@ -25,6 +25,8 @@ jest.mock('@/lib/email-service', () => ({
 const mockSupabase = supabaseAdmin as any
 
 describe('Bulk Operations API', () => {
+  const adminCookie = 'admin_auth=heiwa_admin_2024'
+
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -54,6 +56,7 @@ describe('Bulk Operations API', () => {
           bookingIds,
           status: 'confirmed',
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await BookingsBulk(request)
@@ -90,6 +93,7 @@ describe('Bulk Operations API', () => {
           bookingIds,
           payment_status: 'paid',
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await BookingsBulk(request)
@@ -117,6 +121,7 @@ describe('Bulk Operations API', () => {
           action: 'delete',
           bookingIds,
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await BookingsBulk(request)
@@ -135,6 +140,7 @@ describe('Bulk Operations API', () => {
           action: 'update_status',
           // Missing bookingIds
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await BookingsBulk(request)
@@ -152,6 +158,7 @@ describe('Bulk Operations API', () => {
           action: 'invalid_action',
           bookingIds: ['booking-1'],
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await BookingsBulk(request)
@@ -184,6 +191,7 @@ describe('Bulk Operations API', () => {
           bookingIds: ['booking-1'],
           status: 'confirmed',
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await BookingsBulk(request)
@@ -219,6 +227,7 @@ describe('Bulk Operations API', () => {
           invoiceIds,
           status: 'paid',
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await InvoicesBulk(request)
@@ -308,6 +317,7 @@ describe('Bulk Operations API', () => {
           action: 'send',
           invoiceIds,
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await InvoicesBulk(request)
@@ -335,6 +345,7 @@ describe('Bulk Operations API', () => {
           action: 'delete',
           invoiceIds,
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await InvoicesBulk(request)
@@ -371,6 +382,7 @@ describe('Bulk Operations API', () => {
           paymentIds,
           payment_status: 'completed',
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await PaymentsBulk(request)
@@ -398,6 +410,7 @@ describe('Bulk Operations API', () => {
           action: 'delete',
           paymentIds,
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await PaymentsBulk(request)
@@ -416,6 +429,7 @@ describe('Bulk Operations API', () => {
           paymentIds: [],
           payment_status: 'completed',
         }),
+        headers: { cookie: adminCookie },
       })
 
       const response = await PaymentsBulk(request)

@@ -4,9 +4,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { emailService } from '@/lib/email-service'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 export async function POST(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const { action, invoiceIds } = body
 

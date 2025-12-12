@@ -3,10 +3,14 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // GET /api/payments - Get all payments with filters
 export async function GET(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const paymentMethod = searchParams.get('payment_method')
@@ -83,6 +87,9 @@ export async function GET(request: NextRequest) {
 // POST /api/payments - Create a new payment (manual payment recording)
 export async function POST(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const { booking_id, amount, currency, payment_method, payment_status, transaction_id, payment_date, notes } = body
 

@@ -4,10 +4,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { createInvoiceFromBooking, calculateDueDate } from '@/lib/invoices/generator'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // GET /api/invoices - Get all invoices with filters
 export async function GET(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const bookingId = searchParams.get('booking_id')
@@ -80,6 +84,9 @@ export async function GET(request: NextRequest) {
 // POST /api/invoices - Create a new invoice
 export async function POST(request: NextRequest) {
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     const body = await request.json()
     const { booking_id, amount, currency, due_date, status } = body
 
