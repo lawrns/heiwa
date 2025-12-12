@@ -6,6 +6,16 @@ import { HeroEditor } from './editors/HeroEditor'
 import { CardsEditor } from './editors/CardsEditor'
 import { TextEditor } from './editors/TextEditor'
 import { FacilitiesEditor } from './editors/FacilitiesEditor'
+import { SurfWeeksEditor } from './editors/SurfWeeksEditor'
+import { RoomsPickerEditor } from './editors/RoomsPickerEditor'
+import { HostsEditor } from './editors/HostsEditor'
+import { FAQEditor } from './editors/FAQEditor'
+import { SEOEditor } from './editors/SEOEditor'
+import { ActivityHighlightEditor } from './editors/ActivityHighlightEditor'
+import { ActivityGridEditor } from './editors/ActivityGridEditor'
+import { GalleryEditor } from './editors/GalleryEditor'
+import { IntroEditor } from './editors/IntroEditor'
+import { CTAEditor } from './editors/CTAEditor'
 
 interface Section {
   id: string
@@ -22,10 +32,20 @@ interface EditSidebarProps {
 }
 
 // Determine editor type based on section type
-function getEditorType(sectionType: string): 'hero' | 'cards' | 'text' | 'facilities' {
+function getEditorType(sectionType: string): 'hero' | 'cards' | 'text' | 'facilities' | 'surfWeeks' | 'roomsPicker' | 'hosts' | 'faq' | 'seo' | 'activityHighlight' | 'activityGrid' | 'gallery' | 'intro' | 'cta' {
   if (sectionType === 'hero') return 'hero'
-  if (sectionType === 'about' || sectionType === 'rooms') return 'cards'
-  if (sectionType === 'facilities' || sectionType === 'activity_grid' || sectionType === 'activity_highlight') return 'facilities'
+  if (sectionType === 'surf-weeks') return 'surfWeeks'
+  if (sectionType === 'rooms') return 'roomsPicker'
+  if (sectionType === 'hosts') return 'hosts'
+  if (sectionType === 'about') return 'cards'
+  if (sectionType === 'faq') return 'faq'
+  if (sectionType === 'seo') return 'seo'
+  if (sectionType === 'activity_highlight') return 'activityHighlight'
+  if (sectionType === 'activity_grid') return 'activityGrid'
+  if (sectionType === 'gallery') return 'gallery'
+  if (sectionType === 'intro') return 'intro'
+  if (sectionType === 'cta') return 'cta'
+  if (sectionType === 'facilities') return 'facilities'
   return 'text'
 }
 
@@ -45,6 +65,35 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
   const [error, setError] = useState<string | null>(null)
   const [editedContent, setEditedContent] = useState<Record<string, unknown>>({})
 
+  const hasHostsSection = sections.some(s => s.section_type === 'hosts')
+
+  const handleAddHostsSection = async () => {
+    try {
+      setError(null)
+      const res = await fetch('/api/cms/sections', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page_slug: pageSlug,
+          section_type: 'hosts',
+          content: {
+            title: 'Your Hosts',
+            hosts: [],
+          },
+          order_index: sections.length,
+        }),
+      })
+
+      if (!res.ok) throw new Error('Failed to create hosts section')
+      const data = await res.json()
+      if (!data?.section) throw new Error('Invalid response creating hosts section')
+
+      setSections(prev => [...prev, data.section])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create hosts section')
+    }
+  }
+
   // Fetch sections for this page
   useEffect(() => {
     async function fetchSections() {
@@ -60,7 +109,6 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
         setIsLoading(false)
       }
     }
-
     fetchSections()
   }, [pageSlug])
 
@@ -126,8 +174,28 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
         return <HeroEditor {...props} />
       case 'cards':
         return <CardsEditor {...props} />
+      case 'surfWeeks':
+        return <SurfWeeksEditor {...props} />
+      case 'roomsPicker':
+        return <RoomsPickerEditor {...props} />
+      case 'hosts':
+        return <HostsEditor {...props} />
       case 'facilities':
         return <FacilitiesEditor {...props} />
+      case 'faq':
+        return <FAQEditor {...props} />
+      case 'seo':
+        return <SEOEditor {...props} />
+      case 'activityHighlight':
+        return <ActivityHighlightEditor {...props} />
+      case 'activityGrid':
+        return <ActivityGridEditor {...props} />
+      case 'gallery':
+        return <GalleryEditor {...props} />
+      case 'intro':
+        return <IntroEditor {...props} />
+      case 'cta':
+        return <CTAEditor {...props} />
       default:
         return <TextEditor {...props} />
     }
@@ -177,6 +245,24 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
             <p className="text-sm text-gray-500 mb-4">
               Select a section to edit:
             </p>
+
+            {/* Common missing section helpers */}
+            {pageSlug === 'home' && !hasHostsSection && (
+              <div className="mb-4 p-3 border border-orange-200 bg-orange-50 rounded-lg">
+                <div className="text-sm text-orange-900 font-medium">Hosts section is missing</div>
+                <div className="text-xs text-orange-800 mt-1">
+                  Add it so you can edit it from the inline editor.
+                </div>
+                <button
+                  onClick={handleAddHostsSection}
+                  className="mt-3 w-full px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg"
+                  type="button"
+                >
+                  Add Hosts Section
+                </button>
+              </div>
+            )}
+
             <div className="space-y-2">
               {sections.map(section => (
                 <button

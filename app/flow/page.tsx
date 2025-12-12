@@ -59,7 +59,7 @@ export default function FlowPage() {
       />
 
       {/* Introduction Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="section-intro" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6">
             {introContent?.title && (
@@ -91,7 +91,7 @@ export default function FlowPage() {
 
       {/* Activity Highlights Section - CMS Driven */}
       {activityHighlights.length > 0 && (
-        <section className="py-20 bg-white">
+        <section id="section-activity_highlight" className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
             {activityHighlights.map((section) => {
               const content = section.content as {

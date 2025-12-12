@@ -32,7 +32,7 @@ export function VideoPlayer({
   const [duration, setDuration] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [showControls, setShowControls] = useState(true)
-  const controlsTimeoutRef = useRef<NodeJS.Timeout>()
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const video = videoRef.current
@@ -114,6 +114,8 @@ export function VideoPlayer({
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
+  const hasSrc = typeof src === 'string' && src.trim().length > 0
+
   return (
     <div className={`w-full ${className}`}>
       {/* Video Container */}
@@ -129,17 +131,29 @@ export function VideoPlayer({
         style={{ aspectRatio: '16 / 9' }}
       >
         {/* Video Element */}
-        <video
-          ref={videoRef}
-          src={src}
-          poster={poster}
-          muted={isMuted}
-          className="w-full h-full object-cover"
-          playsInline
-        />
+        {hasSrc ? (
+          <video
+            ref={videoRef}
+            src={src}
+            poster={poster}
+            muted={isMuted}
+            className="w-full h-full object-cover"
+            playsInline
+          />
+        ) : poster ? (
+          <Image
+            src={poster}
+            alt={title || 'Video poster'}
+            fill
+            className="object-cover"
+            sizes="100vw"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-black" />
+        )}
 
         {/* Play Button Overlay (when not playing) */}
-        {!isPlaying && isLoaded && (
+        {!isPlaying && isLoaded && hasSrc && (
           <motion.button
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}

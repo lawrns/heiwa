@@ -98,7 +98,7 @@ export default function ContactPage() {
 
       <main className="min-h-screen bg-gray-50 pt-20">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-orange-500 to-orange-600 text-white py-20">
+        <section id="section-hero" className="relative bg-gradient-to-br from-orange-500 to-orange-600 text-white py-20">
           <div className="container mx-auto px-6">
             <Link
               href="/"

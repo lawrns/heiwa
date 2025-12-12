@@ -96,7 +96,7 @@ export default async function TheSpotPage() {
   return (
     <div className="min-h-screen pt-20 bg-white">
       {/* Hero Section with Featured Image */}
-      <section className="relative h-96 w-full overflow-hidden bg-gray-900">
+      <section id="section-hero" className="relative h-96 w-full overflow-hidden bg-gray-900">
         <Image
           src={heroContent?.imageUrl || "/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg"}
           alt={heroContent?.title || "Heiwa House Property Overview"}

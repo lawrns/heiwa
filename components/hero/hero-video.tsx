@@ -54,8 +54,9 @@ export function HeroVideo({
             }}
             poster={imageUrl}
           >
-            <source src={videoUrl} type="video/mp4" />
-            <source src={videoUrl?.replace('.mp4', '.webm')} type="video/webm" />
+            {typeof videoUrl === 'string' && videoUrl.trim().length > 0 && (
+              <source src={videoUrl} type="video/mp4" />
+            )}
             Your browser does not support the video tag.
           </video>
         </>

@@ -42,20 +42,20 @@ export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProp
         <div className="text-white">Loading video...</div>
       </div>
       
-      {/* Always render iframe with same structure to prevent hydration mismatch */}
-      {/* Use empty string instead of undefined to ensure consistent rendering */}
-      <iframe
-        width="560"
-        height="315"
-        src={embedUrl || ''} // Empty string on server, set on client
-        title={title || "YouTube video player"}
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        className="absolute inset-0 w-full h-full"
-        suppressHydrationWarning // Suppress warning for src attribute that changes after hydration
-      />
+      {embedUrl ? (
+        <iframe
+          width="560"
+          height="315"
+          src={embedUrl}
+          title={title || "YouTube video player"}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+          suppressHydrationWarning
+        />
+      ) : null}
     </div>
   )
 }

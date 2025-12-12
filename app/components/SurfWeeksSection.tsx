@@ -7,8 +7,10 @@ import { YouTubeVideo } from '@/components/ui/youtube-video'
 interface SurfWeeksSectionProps {
   surfWeeksSection?: {
     videoId?: string
+    video_id?: string
     title?: string
     subtitle?: string
+    bullets?: string[]
   }
   surfWeeks: SurfWeek[]
 }
@@ -23,8 +25,13 @@ interface SurfWeek {
 export function SurfWeeksSection({ surfWeeksSection, surfWeeks }: SurfWeeksSectionProps) {
   const [showAllSurfWeeks, setShowAllSurfWeeks] = useState(false)
 
+  const videoId = surfWeeksSection?.videoId || surfWeeksSection?.video_id || '9nhQiKGsgHg'
+  const bullets = Array.isArray(surfWeeksSection?.bullets)
+    ? surfWeeksSection?.bullets.filter(b => typeof b === 'string' && b.trim().length > 0)
+    : null
+
   return (
-    <section className="py-20 bg-gray-50">
+    <section id="section-surf-weeks" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -40,7 +47,7 @@ export function SurfWeeksSection({ surfWeeksSection, surfWeeks }: SurfWeeksSecti
             {/* YouTube Video */}
             <div className="w-full">
               <YouTubeVideo 
-                videoId={surfWeeksSection?.videoId || '9nhQiKGsgHg'}
+                videoId={videoId}
                 title="Heiwa Surf Weeks Video"
                 className="w-full"
               />
@@ -52,30 +59,22 @@ export function SurfWeeksSection({ surfWeeksSection, surfWeeks }: SurfWeeksSecti
                 Why Join Our Surf Camps?
               </h3>
               <ul className="space-y-4 text-gray-600">
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Professional surf instruction for all levels</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Daily yoga and meditation sessions</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Amazing food prepared by our chef</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Exciting day trips to explore Portugal</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Skateboarding and other activities</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-accent font-bold mt-1">•</span>
-                  <span>Prices starting at 450€</span>
-                </li>
+                {(bullets && bullets.length > 0
+                  ? bullets
+                  : [
+                      'Professional surf instruction for all levels',
+                      'Daily yoga and meditation sessions',
+                      'Amazing food prepared by our chef',
+                      'Exciting day trips to explore Portugal',
+                      'Skateboarding and other activities',
+                      'Prices starting at 450€'
+                    ]
+                ).map((text, idx) => (
+                  <li key={idx} className="flex items-start gap-3">
+                    <span className="text-accent font-bold mt-1">•</span>
+                    <span>{text}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

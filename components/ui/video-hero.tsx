@@ -34,6 +34,10 @@ export function VideoHero({
   const { scrollY } = useScroll()
   const yOffset = useTransform(scrollY, [0, 500], [0, 150])
 
+  const hasVideoSrc = typeof videoSrc === 'string' && videoSrc.trim().length > 0
+
+  const easeOut = [0.16, 1, 0.3, 1] as const
+
   useEffect(() => {
     setIsLoaded(true)
   }, [])
@@ -46,7 +50,7 @@ export function VideoHero({
       transition: {
         delay: i * 0.1,
         duration: 0.8,
-        ease: 'easeOut',
+        ease: easeOut,
       },
     }),
   }
@@ -59,7 +63,7 @@ export function VideoHero({
       transition: {
         delay: 0.5,
         duration: 0.8,
-        ease: 'easeOut',
+        ease: easeOut,
       },
     },
   }
@@ -72,7 +76,7 @@ export function VideoHero({
       transition: {
         delay: 0.7,
         duration: 0.6,
-        ease: 'easeOut',
+        ease: easeOut,
       },
     },
     hover: {
@@ -87,18 +91,29 @@ export function VideoHero({
       className="relative h-screen w-full overflow-hidden"
     >
       {/* Video Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        className="absolute inset-0 w-full h-full object-cover"
-        poster={posterImage}
-      >
-        <source src={videoSrc} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      {hasVideoSrc ? (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-cover"
+          poster={posterImage}
+        >
+          <source src={videoSrc} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      ) : (
+        <Image
+          src={posterImage || '/images/placeholder-hero.jpg'}
+          alt={title}
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
+        />
+      )}
 
       {/* Gradient Overlay - animated from dark to transparent */}
       <motion.div

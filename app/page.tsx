@@ -96,6 +96,29 @@ export default async function HomePage() {
   const hostsSection = getSection('hosts')
   const reviewsSection = getSection('reviews')
   const facilitiesSection = getSection('facilities')
+
+  // Homepage curated rooms (A1): allow CMS to specify roomIds[] and render real rooms
+  const roomIds: string[] = Array.isArray(roomsSection?.roomIds)
+    ? roomsSection.roomIds.filter((id: unknown) => typeof id === 'string')
+    : []
+
+  let featuredRooms: any[] = []
+  if (roomIds.length > 0) {
+    try {
+      const { data: roomsData, error: roomsError } = await supabaseAdmin
+        .from('rooms')
+        .select('*')
+        .in('id', roomIds)
+        .eq('is_active', true)
+
+      if (!roomsError && roomsData) {
+        const byId = new Map(roomsData.map((r: any) => [r.id, r]))
+        featuredRooms = roomIds.map((id) => byId.get(id)).filter(Boolean)
+      }
+    } catch (error) {
+      console.error('Error fetching featured rooms:', error)
+    }
+  }
   
   const heroTitle = heroSection?.title || 'Welcome to Heiwa House'
   const rawSubtitle = heroSection?.subtitle || ''
@@ -115,8 +138,27 @@ export default async function HomePage() {
   
   // Use CMS link data, fallback to defaults
   // Database uses snake_case, but check both formats for compatibility
-  const primaryLinkUrl = heroSection?.link_url || heroSection?.linkUrl || '/surf-weeks'
-  const primaryLinkText = heroSection?.link_text || heroSection?.linkText || 'Come for a Surf Camp'
+  const primaryLinkUrl =
+    heroSection?.primary_link_url ||
+    heroSection?.primaryLinkUrl ||
+    heroSection?.link_url ||
+    heroSection?.linkUrl ||
+    '/surf-weeks'
+  const primaryLinkText =
+    heroSection?.primary_link_text ||
+    heroSection?.primaryLinkText ||
+    heroSection?.link_text ||
+    heroSection?.linkText ||
+    'Come for a Surf Camp'
+
+  const secondaryLinkUrl =
+    heroSection?.secondary_link_url ||
+    heroSection?.secondaryLinkUrl ||
+    null
+  const secondaryLinkText =
+    heroSection?.secondary_link_text ||
+    heroSection?.secondaryLinkText ||
+    null
   
   // Parse description if available
   const heroDescription = heroSection?.description || ''
@@ -124,7 +166,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Video Hero Section */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section id="section-hero" className="relative h-screen w-full overflow-hidden">
         {/* Background Video or Image - Use CMS data */}
         {heroVideoUrl ? (
           <video
@@ -190,14 +232,23 @@ export default async function HomePage() {
                   {primaryLinkText}
                 </Link>
               )}
-              {/* Secondary button - keep default for now, could be made configurable */}
-              <Link
-                href="/rooms"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white border-2 border-white hover:bg-white/10"
-              >
-                <Bed className="w-5 h-5" />
-                Rent a Room
-              </Link>
+              {secondaryLinkUrl && secondaryLinkText ? (
+                <Link
+                  href={secondaryLinkUrl}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white border-2 border-white hover:bg-white/10"
+                >
+                  <Bed className="w-5 h-5" />
+                  {secondaryLinkText}
+                </Link>
+              ) : (
+                <Link
+                  href="/rooms"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white border-2 border-white hover:bg-white/10"
+                >
+                  <Bed className="w-5 h-5" />
+                  Rent a Room
+                </Link>
+              )}
             </div>
             
             {/* Google Reviews */}
@@ -218,7 +269,7 @@ export default async function HomePage() {
       />
 
       {/* What We Are About Section - Using CMS Data */}
-      <section className="py-20 bg-white">
+      <section id="section-about" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
             {aboutSection?.title || 'What we are about'}
@@ -263,7 +314,7 @@ export default async function HomePage() {
       </section>
 
       {/* Our Rooms Section - Using CMS Data */}
-      <section className="py-20 bg-gray-50">
+      <section id="section-rooms" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
             {roomsSection?.title || 'Our Rooms'}
@@ -275,44 +326,54 @@ export default async function HomePage() {
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {/* Rooms Cards - Using CMS Data */}
-            {(roomsSection?.cards || [
-              { title: 'Private Rooms', description: 'Step into the charm of our beautifully designed rooms, blending modern comfort with traditional Portuguese aesthetics. Perfect for couples or solo travelers seeking peace and style.', images: ['/images/rooms/room1.jpg', '/images/rooms/room2.webp', '/images/rooms/room3.webp'], link: '/rooms/private' },
-              { title: 'Shared Rooms', description: 'Join our vibrant community in spacious shared accommodations. Meet fellow travelers, share stories, and make lifelong friendships in our comfortable dorm-style rooms.', images: ['/images/rooms/dorm.webp', '/images/Freedomroutes-rooms-50.jpg', '/images/rooms/room1.jpg'], link: '/rooms/shared' }
-            ]).map((room: any, idx: number) => {
-              const validRoomImagePaths = [
-                '/images/rooms/',
-                '/images/Freedomroutes-rooms-',
-                '/images/DSC03479',
-                '/images/DSC03491'
-              ]
-              
-              const filteredImages = (room.images || []).filter((img: string) => 
-                validRoomImagePaths.some(path => img.includes(path))
-              )
-              
-              const finalImages = filteredImages.length > 0 
-                ? filteredImages 
-                : idx === 0 
+            {/* Rooms Cards - Curated from real rooms table if roomIds[] configured */}
+            {(featuredRooms.length > 0
+              ? featuredRooms
+              : [
+                  {
+                    title: 'Private Rooms',
+                    description:
+                      'Step into the charm of our beautifully designed rooms, blending modern comfort with traditional Portuguese aesthetics. Perfect for couples or solo travelers seeking peace and style.',
+                    images: ['/images/rooms/room1.jpg', '/images/rooms/room2.webp', '/images/rooms/room3.webp'],
+                    link: '/rooms/private'
+                  },
+                  {
+                    title: 'Shared Rooms',
+                    description:
+                      'Join our vibrant community in spacious shared accommodations. Meet fellow travelers, share stories, and make lifelong friendships in our comfortable dorm-style rooms.',
+                    images: ['/images/rooms/dorm.webp', '/images/Freedomroutes-rooms-50.jpg', '/images/rooms/room1.jpg'],
+                    link: '/rooms/shared'
+                  }
+                ]
+            ).map((room: any, idx: number) => {
+              const title = room.name || room.title || ''
+              const description = room.description || ''
+              const images = Array.isArray(room.images) && room.images.length > 0
+                ? room.images
+                : room.image_url
+                  ? [room.image_url]
+                  : Array.isArray(room.images)
+                    ? room.images
+                    : []
+              const finalImages = images.length > 0
+                ? images
+                : idx === 0
                   ? ['/images/rooms/room1.jpg', '/images/rooms/room2.webp', '/images/rooms/room3.webp']
                   : ['/images/rooms/dorm.webp', '/images/Freedomroutes-rooms-50.jpg', '/images/rooms/room1.jpg']
-              
+              const link = room.id ? `/rooms/${room.id}` : (room.link || '/rooms')
+
               return (
-                <div key={idx} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                  <div className="relative w-full h-80">
-                    <ImageCarousel
-                      images={finalImages}
-                      alt={room.title}
-                      className="h-80"
-                    />
+                <Link key={room.id || idx} href={link} className="group">
+                  <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div className="relative w-full h-80">
+                      <ImageCarousel images={finalImages} alt={title} className="h-80" />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-3">{title}</h3>
+                      <p className="text-gray-600 leading-relaxed line-clamp-3">{description}</p>
+                    </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-3">{room.title}</h3>
-                    <p className="text-gray-600 leading-relaxed line-clamp-3">
-                      {room.description}
-                    </p>
-                  </div>
-                </div>
+                </Link>
               )
             })}
           </div>
@@ -330,7 +391,41 @@ export default async function HomePage() {
       </section>
 
       {/* Your Hosts Section */}
-      <HostSection />
+      {hostsSection && Array.isArray(hostsSection.hosts) && hostsSection.hosts.length > 0 ? (
+        <section id="section-hosts" className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center italic">
+              {hostsSection.title || 'Your Hosts'}
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {hostsSection.hosts
+                .filter((h: any) => h && typeof h === 'object')
+                .map((host: any, idx: number) => (
+                  <div key={idx} className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                    {host.imageUrl && (
+                      <div className="mb-4 w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-200">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={host.imageUrl}
+                          alt={host.name || 'Host'}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="text-xl font-semibold text-gray-900">{host.name || ''}</div>
+                    {host.role && <div className="text-sm text-gray-600 mt-1">{host.role}</div>}
+                    {host.bio && <p className="text-gray-700 mt-3 leading-relaxed">{host.bio}</p>}
+                  </div>
+                ))}
+            </div>
+          </div>
+        </section>
+      ) : (
+        <div id="section-hosts">
+          <HostSection />
+        </div>
+      )}
 
       {/* What Our Customers Say Section - Using CMS Data */}
       <section className="py-20 bg-gray-50">
@@ -350,7 +445,7 @@ export default async function HomePage() {
       </section>
 
       {/* Activities Around Section - Using CMS Data */}
-      <section className="py-20 bg-white">
+      <section id="section-facilities" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
             {facilitiesSection?.title || 'Activities Around'}
@@ -363,8 +458,16 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {/* Use CMS facilities data if available, otherwise fallback to defaults */}
-            {((facilitiesSection?.facilities && Array.isArray(facilitiesSection.facilities) && facilitiesSection.facilities.length > 0)
-              ? facilitiesSection.facilities.map((activity: any) => ({
+            {(((facilitiesSection?.facilities && Array.isArray(facilitiesSection.facilities) && facilitiesSection.facilities.length > 0)
+              ? facilitiesSection.facilities
+              : (facilitiesSection?.items && Array.isArray(facilitiesSection.items) && facilitiesSection.items.length > 0)
+                ? facilitiesSection.items
+                : null
+            )
+              ? ((facilitiesSection?.facilities && Array.isArray(facilitiesSection.facilities) && facilitiesSection.facilities.length > 0)
+                  ? facilitiesSection.facilities
+                  : facilitiesSection.items
+                ).map((activity: any) => ({
                   title: activity.title || activity.name || '',
                   desc: activity.description || activity.desc || '',
                   img: activity.image || activity.imageUrl || activity.img || '/images/placeholder.webp'

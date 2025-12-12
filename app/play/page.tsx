@@ -51,9 +51,16 @@ export default function PlayPage() {
   const faqContent = faqSection?.content as { title?: string; items?: Array<{ question: string; answer: string }> } | undefined
   const ctaContent = ctaSection?.content as { title?: string; description?: string; buttonText?: string; buttonUrl?: string } | undefined
 
+  const rawHeroVideoUrl = typeof heroContent?.videoUrl === 'string' ? heroContent.videoUrl.trim() : ''
+  const resolvedHeroVideoUrl = rawHeroVideoUrl && !rawHeroVideoUrl.includes('/images/videos/play-activities')
+    ? rawHeroVideoUrl
+    : '/images/videos/sk81.mp4'
+
   // FAQ items - Use CMS if available, otherwise fallback to defaults
-  const faqItems = faqContent?.items && Array.isArray(faqContent.items)
-    ? faqContent.items.filter(item => item.question && item.answer)
+  const faqItems = (faqContent?.items && Array.isArray(faqContent.items) ? faqContent.items : [])
+    .filter(item => item.question && item.answer)
+  const resolvedFaqItems = faqItems.length > 0
+    ? faqItems
     : [
         {
           question: 'Are the play activities included in the surf week package?',
@@ -87,12 +94,12 @@ export default function PlayPage() {
       <HeroVideo
         title={heroContent?.title || "Heiwa Play"}
         description={heroContent?.description || "Unleash your inner child with endless activities and adventures. From skateboarding to sauna sessions, every day is filled with fun and excitement."}
-        videoUrl={heroContent?.videoUrl || "/images/videos/play-activities.mp4"}
+        videoUrl={resolvedHeroVideoUrl}
         imageUrl={heroContent?.imageUrl || "/images/games.jpg"}
       />
 
       {/* Introduction Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="section-intro" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6">
             {introContent?.title && (
@@ -124,7 +131,7 @@ export default function PlayPage() {
 
       {/* Activity Highlights Section - CMS Driven */}
       {activityHighlights.length > 0 && (
-        <section className="py-20 bg-white">
+        <section id="section-activity_highlight" className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
             {activityHighlights.map((section) => {
               const content = section.content as {
@@ -186,13 +193,13 @@ export default function PlayPage() {
       })}
 
       {/* FAQ Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="section-faq" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
             {faqContent?.title || 'Frequently Asked Questions'}
           </h2>
           <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm">
-            {faqItems.map((item, index) => (
+            {resolvedFaqItems.map((item, index) => (
               <AccordionItem key={index} value={`item-${index}`} className="border-b border-gray-200 last:border-0">
                 <AccordionTrigger className="px-6 py-4 text-left hover:no-underline hover:bg-gray-50">
                   <span className="font-semibold text-gray-900">{item.question}</span>
@@ -207,7 +214,7 @@ export default function PlayPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="section-cta" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-gray-900 mb-6">
             {ctaContent?.title || "Ready to Play?"}

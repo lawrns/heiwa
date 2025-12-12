@@ -18,7 +18,9 @@ function renderBackgroundMedia(video?: string, image?: string) {
           transform: 'scale(1.02)'
         }}
       >
-        <source src={video} type="video/mp4" />
+        {typeof video === 'string' && video.trim().length > 0 && (
+          <source src={video} type="video/mp4" />
+        )}
         Your browser does not support the video tag.
       </video>
     )
@@ -43,7 +45,7 @@ function renderBackgroundMedia(video?: string, image?: string) {
   )
 }
 
-export function Hero({ title, subtitle, image, video, ctas, className }: Readonly<HeroProps>) {
+export default function Hero({ title, subtitle, image, video, ctas, className }: Readonly<HeroProps>) {
   return (
     <header
       className={cn('relative h-screen flex items-center justify-center overflow-hidden', className)}

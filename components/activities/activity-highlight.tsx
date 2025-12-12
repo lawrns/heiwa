@@ -37,7 +37,9 @@ export function ActivityHighlight({
               preload="metadata"
               poster={videoPoster}
             >
-              <source src={videoUrl} type="video/mp4" />
+              {typeof videoUrl === 'string' && videoUrl.trim().length > 0 && (
+                <source src={videoUrl} type="video/mp4" />
+              )}
               Your browser does not support the video tag.
             </video>
         </div>

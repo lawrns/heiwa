@@ -17,27 +17,27 @@ export const metadata: Metadata = {
   description: 'We strive to deliver an unforgettable surf week experience both in and out of the water. Join us for surf, yoga, amazing food, skateboarding, and more.',
 }
 
-// Fetch CMS content for surf-weeks page
-async function getSurfWeeksCMSContent() {
+// Fetch CMS content for surf-weeks page from unified page_sections table
+async function getSurfWeeksSections() {
   try {
     const { supabaseAdmin } = await import('@/lib/supabase')
     
     const { data, error } = await supabaseAdmin
-      .from('page_content')
+      .from('page_sections')
       .select('*')
       .eq('page_slug', 'surf-weeks')
       .eq('is_active', true)
       .order('order_index', { ascending: true })
     
     if (error || !data) {
-      console.warn('CMS content not available for surf-weeks, using defaults')
-      return null
+      console.warn('CMS sections not available for surf-weeks, using defaults')
+      return []
     }
     
     return data
   } catch (error) {
-    console.warn('Error fetching CMS content:', error)
-    return null
+    console.warn('Error fetching CMS sections:', error)
+    return []
   }
 }
 
@@ -128,14 +128,22 @@ function getPriceDisplay(price: number) {
 
 export default async function SurfWeeksPage() {
   const surfWeeks = await getSurfWeeks()
-  const cmsContent = await getSurfWeeksCMSContent()
+  const sections = await getSurfWeeksSections()
   
-  // Extract CMS sections
-  const heroSection = cmsContent?.find((s: any) => s.section === 'hero')
-  const introSection = cmsContent?.find((s: any) => s.section === 'intro')
-  const faqSection = cmsContent?.find((s: any) => s.section === 'faq')
-  const includedSection = cmsContent?.find((s: any) => s.section === 'features' || s.section === 'included')
-  const stepsSection = cmsContent?.find((s: any) => s.section === 'steps' || s.section === 'process')
+  // Helper to get section by type from unified page_sections
+  const getSection = (type: string) => sections.find((s: any) => s.section_type === type)
+  
+  // Extract CMS sections (unified page_sections table uses section_type + content)
+  const heroSection = getSection('hero')
+  const introSection = getSection('intro')
+  const faqSection = getSection('faq')
+  const includedSection = getSection('features') || getSection('included')
+  const stepsSection = getSection('steps') || getSection('process')
+  
+  // Type-safe content accessors
+  const heroContent = heroSection?.content as { title?: string; description?: string; imageUrl?: string; videoUrl?: string } | undefined
+  const introContent = introSection?.content as { title?: string; content?: string } | undefined
+  const faqContent = faqSection?.content as { title?: string; items?: Array<{ question: string; answer: string }> } | undefined
   
   // Gallery images - Use CMS if available
   const galleryImages = [
@@ -307,10 +315,10 @@ export default async function SurfWeeksPage() {
     <div className="min-h-screen pt-20 bg-white">
       <SurfWeeksClient />
       {/* Hero Section with Overlay */}
-      <section className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
+      <section id="section-hero" className="relative h-[70vh] min-h-[500px] w-full overflow-hidden">
         <Image
-          src={heroSection?.image_url || heroSection?.json_content?.image_url || heroSection?.json_content?.imageUrl || "/images/surf-weeks-front-page.jpg"}
-          alt={heroSection?.title || "Surf Weeks at Heiwa House"}
+          src={heroContent?.imageUrl || "/images/surf-weeks-front-page.jpg"}
+          alt={heroContent?.title || "Surf Weeks at Heiwa House"}
           fill
           className="object-cover"
           priority
@@ -321,10 +329,10 @@ export default async function SurfWeeksPage() {
         <div className="relative h-full flex items-center justify-center text-center px-4">
           <div className="max-w-4xl">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-              {heroSection?.json_content?.title || heroSection?.title || "Surf Weeks"}
+              {heroContent?.title || "Surf Weeks"}
             </h1>
             <p className="text-xl md:text-2xl text-white/90 drop-shadow-md max-w-3xl mx-auto mb-8">
-              {heroSection?.json_content?.description || heroSection?.content || 
+              {heroContent?.description || 
                 "We strive to deliver an unforgettable surf week experience both in and out of the water. Even if surfing were taken out of the week, it would still be worth your while—amazing food, yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and the surfing? That's going to be awesome too 🙂"}
             </p>
           </div>
@@ -365,7 +373,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* Available Surf Weeks */}
-      <section className="py-10 bg-gray-50">
+      <section id="section-surf-weeks" className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Available Surf Weeks</h2>
@@ -383,7 +391,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* How a Surf Week Works - With Images */}
-      <section className="py-12 bg-white">
+      <section id="section-steps" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -422,7 +430,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* Photo Gallery - 2 Rows, Horizontal Scroll */}
-      <section className="py-10 bg-gray-50">
+      <section id="section-gallery" className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-4">
             {/* First Row */}
@@ -468,7 +476,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* What is Included & Pricing Section - Advertisement Style Overlay */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section id="section-pricing" className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -602,7 +610,7 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* Customer Reviews Section */}
-      <section className="py-12 sm:py-16 bg-white">
+      <section id="section-reviews" className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center">What Our Customers Say</h2>
           
@@ -612,17 +620,17 @@ export default async function SurfWeeksPage() {
       </section>
 
       {/* FAQ Section - Use CMS if available */}
-      <section className="py-12 bg-white">
+      <section id="section-faq" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            {faqSection?.title || 'Frequently Asked Questions'}
+            {faqContent?.title || 'Frequently Asked Questions'}
           </h2>
           
           <div className="max-w-4xl mx-auto">
             <Accordion type="single" collapsible className="space-y-4">
               {/* Use CMS FAQ items if available, otherwise fallback to defaults */}
-              {((faqSection?.json_content?.items && Array.isArray(faqSection.json_content.items) && faqSection.json_content.items.length > 0)
-                ? faqSection.json_content.items.map((item: any, index: number) => (
+              {((faqContent?.items && Array.isArray(faqContent.items) && faqContent.items.length > 0)
+                ? faqContent.items.map((item: any, index: number) => (
                     <AccordionItem key={index} value={`item-${index}`} className="border border-gray-200 rounded-lg px-4 sm:px-6">
                       <AccordionTrigger className="text-left text-sm sm:text-base">
                         {item.question || item.title || ''}
