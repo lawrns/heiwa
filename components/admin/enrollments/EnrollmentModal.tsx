@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { Combobox } from '@/components/ui/combobox'
 import { toast } from 'react-toastify'
 
 interface Client {
@@ -174,41 +175,21 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
           {/* Client Selection */}
           <div className="space-y-2">
             <Label htmlFor="client">Select Client *</Label>
-            <div className="space-y-2">
-              <div className="relative">
-                <Input
-                  id="client-search"
-                  placeholder="Search clients by name or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="mb-2"
-                />
-                {searchLoading && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
-                  </div>
-                )}
-              </div>
-              <Select value={selectedClientId} onValueChange={setSelectedClientId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a client" />
-                </SelectTrigger>
-                <SelectContent>
-                  {filteredClients.length === 0 ? (
-                    <SelectItem value="__none" disabled>
-                      No clients found
-                    </SelectItem>
-                  ) : (
-                    filteredClients.map((client) => (
-                      <SelectItem key={client.id} value={client.id}>
-                        {client.name} ({client.email})
-                      </SelectItem>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-              {error && <div className="text-red-500">{error}</div>}
-            </div>
+            <Combobox
+              options={filteredClients.map((client) => ({
+                value: client.id,
+                label: client.name,
+                description: client.email,
+              }))}
+              value={selectedClientId}
+              onValueChange={setSelectedClientId}
+              placeholder="Select a client..."
+              searchPlaceholder="Search by name or email..."
+              emptyText={searchLoading ? "Searching..." : "No clients found."}
+              loading={searchLoading}
+              onSearchChange={setSearchTerm}
+            />
+            {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
           </div>
 
           {/* Skill Level */}
