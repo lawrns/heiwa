@@ -63,14 +63,9 @@ export function Combobox({
     onSearchChange?.(newSearch)
   }
 
-  const handleSelect = (selectedLabel: string) => {
-    // cmdk passes the label (display text), not the value, so we need to find the matching option
-    const selectedOption = options.find(
-      (opt) => opt.label.toLowerCase() === selectedLabel.toLowerCase()
-    )
-    if (selectedOption) {
-      onValueChange(selectedOption.value === value ? "" : selectedOption.value)
-    }
+  const handleSelect = (optionValue: string) => {
+    // Toggle selection: if already selected, deselect; otherwise select
+    onValueChange(optionValue === value ? "" : optionValue)
     setOpen(false)
   }
 
@@ -82,7 +77,7 @@ export function Combobox({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-full justify-between font-normal",
+            "w-full justify-between font-normal h-auto min-h-10",
             !value && "text-gray-500",
             className
           )}
@@ -111,6 +106,7 @@ export function Combobox({
                     key={option.value}
                     value={option.label}
                     onSelect={() => handleSelect(option.value)}
+                    className="cursor-pointer"
                   >
                     <Check
                       className={cn(
