@@ -63,8 +63,14 @@ export function Combobox({
     onSearchChange?.(newSearch)
   }
 
-  const handleSelect = (selectedValue: string) => {
-    onValueChange(selectedValue === value ? "" : selectedValue)
+  const handleSelect = (selectedLabel: string) => {
+    // cmdk passes the label (display text), not the value, so we need to find the matching option
+    const selectedOption = options.find(
+      (opt) => opt.label.toLowerCase() === selectedLabel.toLowerCase()
+    )
+    if (selectedOption) {
+      onValueChange(selectedOption.value === value ? "" : selectedOption.value)
+    }
     setOpen(false)
   }
 
