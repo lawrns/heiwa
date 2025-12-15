@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save, Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
+import { ImageUpload } from '@/components/admin/ImageUpload'
 
 interface SurfCampPricing {
   strategy: 'perBed' | 'perRoomOccupancy'
@@ -584,6 +585,14 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Images</h2>
           
           <div className="space-y-4">
+            <ImageUpload
+              value={room.images}
+              onChange={(urls) => setRoom({ ...room, images: urls })}
+              maxFiles={12}
+              bucketName="room-images"
+              storagePath={room.id}
+            />
+
             <div className="flex gap-2">
               <input
                 type="url"
@@ -607,7 +616,7 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
                   <img
                     src={image}
                     alt={`Room image ${index + 1}`}
-                    className="w-full h-24 object-cover rounded-lg bg-gray-100"
+                    className="w-full h-28 object-cover rounded-lg bg-gray-100"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement
                       target.src = '/placeholder-room.svg'

@@ -28,6 +28,7 @@ export default function SurfCampsPage() {
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [levelFilter, setLevelFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'past'>('all')
   const [enrollmentModalOpen, setEnrollmentModalOpen] = useState(false)
   const [selectedCampId, setSelectedCampId] = useState<string>('')
 
@@ -89,6 +90,16 @@ export default function SurfCampsPage() {
   const toggleActive = async (campId: string) => {
     const camp = surfCamps.find(c => c.id === campId)
     if (!camp) return
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const endDate = new Date(camp.end_date)
+    endDate.setHours(0, 0, 0, 0)
+    const isPast = endDate < today
+    if (isPast) {
+      alert('This surf week has already ended. Past surf weeks are intentionally hidden from the public booking widget, even if activated.')
+      return
+    }
     
     // Show confirmation for deactivation
     if (camp.is_active && !confirm('Are you sure you want to deactivate this surf week? It will no longer be available for booking.')) {
@@ -156,6 +167,62 @@ export default function SurfCampsPage() {
           <h1 className="text-3xl font-bold text-gray-900">Surf Weeks Management</h1>
           <p className="text-gray-600 mt-2">Manage your surf week programs</p>
         </div>
+
+      {/* Explanation */}
+      <div className="bg-heiwaOrange-50 border border-heiwaOrange-200 rounded-lg p-4">
+        <p className="text-sm text-heiwaOrange-900">
+          Public booking only shows surf weeks that are <span className="font-semibold">Active</span> and <span className="font-semibold">not ended</span>.
+          Past surf weeks are kept here for reference and reporting.
+        </p>
+      </div>
+
+      {/* Status Filters */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => setStatusFilter('all')}
+          className={
+            statusFilter === 'all'
+              ? 'px-3 py-1.5 rounded-full bg-gray-900 text-white text-sm'
+              : 'px-3 py-1.5 rounded-full bg-gray-100 text-gray-800 text-sm hover:bg-gray-200'
+          }
+        >
+          All
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter('active')}
+          className={
+            statusFilter === 'active'
+              ? 'px-3 py-1.5 rounded-full bg-green-700 text-white text-sm'
+              : 'px-3 py-1.5 rounded-full bg-green-50 text-green-800 text-sm hover:bg-green-100'
+          }
+        >
+          Active
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter('inactive')}
+          className={
+            statusFilter === 'inactive'
+              ? 'px-3 py-1.5 rounded-full bg-yellow-700 text-white text-sm'
+              : 'px-3 py-1.5 rounded-full bg-yellow-50 text-yellow-800 text-sm hover:bg-yellow-100'
+          }
+        >
+          Inactive
+        </button>
+        <button
+          type="button"
+          onClick={() => setStatusFilter('past')}
+          className={
+            statusFilter === 'past'
+              ? 'px-3 py-1.5 rounded-full bg-gray-700 text-white text-sm'
+              : 'px-3 py-1.5 rounded-full bg-gray-50 text-gray-800 text-sm hover:bg-gray-100'
+          }
+        >
+          Past
+        </button>
+      </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <RoomCardSkeleton key={i} />
@@ -169,7 +236,24 @@ export default function SurfCampsPage() {
   const filteredCamps = surfCamps.filter(camp => {
     const matchesSearch = camp.name.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesLevel = levelFilter === 'all' || camp.level === levelFilter
-    return matchesSearch && matchesLevel
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const endDate = new Date(camp.end_date)
+    endDate.setHours(0, 0, 0, 0)
+    const isPast = endDate < today
+    const isInactive = !camp.is_active
+
+    const matchesStatus =
+      statusFilter === 'all'
+        ? true
+        : statusFilter === 'past'
+          ? isPast
+          : statusFilter === 'inactive'
+            ? (!isPast && isInactive)
+            : (!isPast && !isInactive)
+
+    return matchesSearch && matchesLevel && matchesStatus
   })
 
   if (error) {
