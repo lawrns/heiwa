@@ -68,22 +68,12 @@ async function checkSurfWeeksPage() {
     const cmsTitle = introSection.content?.title
     const cmsContent = introSection.content?.content
     
-    // From page.tsx - introContent is extracted but NOT USED in the rendered page!
-    // Line 161: const introContent = introSection?.content as { title?: string; content?: string } | undefined
-    // But it's never rendered!
+    // FIXED: Intro section is now rendered on the page (added 2025-01-15)
+    // See app/surf-weeks/page.tsx - section added after hero
     
     console.log(`Intro: title="${cmsTitle || 'NOT SET'}", content="${cmsContent ? cmsContent.substring(0, 50) + '...' : 'NOT SET'}"`)
     
-    if (cmsTitle || cmsContent) {
-      mismatches.push({
-        page: 'surf-weeks',
-        section: 'intro',
-        field: 'content',
-        cms: `Title: ${cmsTitle || 'N/A'}, Content: ${cmsContent || 'N/A'}`,
-        displayed: 'NOT DISPLAYED',
-        issue: 'CMS intro content exists but is never rendered on the page'
-      })
-    }
+    // Intro is now displayed - no mismatch to report
   }
   
   // Check FAQ section
