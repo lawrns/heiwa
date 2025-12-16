@@ -1,6 +1,7 @@
 'use client'
 
 import { Plus, X } from 'lucide-react'
+import { ImagePicker } from '../ImagePicker'
 
 interface ActivityHighlightContent {
   title?: string
@@ -73,16 +74,12 @@ export function ActivityHighlightEditor({ content, onChange }: ActivityHighlight
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Video Poster (optional)</label>
-        <input
-          type="text"
-          value={data.videoPoster || ''}
-          onChange={(e) => updateField('videoPoster', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-          placeholder="/images/poster.jpg"
-        />
-      </div>
+      <ImagePicker
+        label="Video Poster (optional)"
+        value={data.videoPoster || ''}
+        onChange={url => updateField('videoPoster', url)}
+        placeholder="Select video poster image..."
+      />
 
       <div className="flex items-center gap-2">
         <input
@@ -110,14 +107,14 @@ export function ActivityHighlightEditor({ content, onChange }: ActivityHighlight
 
         <div className="space-y-2">
           {images.map((img, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <input
-                type="text"
-                value={img}
-                onChange={(e) => updateImage(index, e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="/images/example.jpg"
-              />
+            <div key={index} className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg">
+              <div className="flex-1">
+                <ImagePicker
+                  value={img}
+                  onChange={url => updateImage(index, url)}
+                  placeholder="Select carousel image..."
+                />
+              </div>
               <button
                 type="button"
                 onClick={() => removeImage(index)}

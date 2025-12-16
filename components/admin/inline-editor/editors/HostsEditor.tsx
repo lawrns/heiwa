@@ -1,6 +1,7 @@
 'use client'
 
 import { Plus, Trash2 } from 'lucide-react'
+import { ImagePicker } from '../ImagePicker'
 
 interface HostsEditorProps {
   content: Record<string, unknown>
@@ -9,7 +10,7 @@ interface HostsEditorProps {
 
 /**
  * HostsEditor - Edits the "Your Hosts" section on the homepage
- * 
+ *
  * This section has:
  * - Title (e.g., "Your Hosts")
  * - Image URL (polaroid-style photo)
@@ -56,8 +57,6 @@ export function HostsEditor({ content, onChange }: HostsEditorProps) {
     })
   }
 
-  const isEmpty = !content.title && paragraphs.length === 0 && !content.signature
-
   return (
     <div className="space-y-4">
       {/* Reset to Default button - always visible */}
@@ -87,27 +86,13 @@ export function HostsEditor({ content, onChange }: HostsEditorProps) {
         />
       </div>
 
-      {/* Image URL */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-        <input
-          type="text"
-          value={(content.imageUrl as string) || ''}
-          onChange={e => updateField('imageUrl', e.target.value)}
-          placeholder="/images/hosts-photo.jpg"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-        />
-        {typeof content.imageUrl === 'string' && content.imageUrl && (
-          <div className="mt-2 w-32 h-32 bg-gray-100 rounded overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={content.imageUrl}
-              alt="Preview"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-      </div>
+      {/* Image Picker */}
+      <ImagePicker
+        label="Photo"
+        value={(content.imageUrl as string) || ''}
+        onChange={url => updateField('imageUrl', url)}
+        placeholder="Select hosts photo..."
+      />
 
       <hr className="my-4" />
 

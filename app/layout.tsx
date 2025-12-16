@@ -99,16 +99,16 @@ export default function RootLayout({
         <SkipToContent />
         <SupabaseProvider>
           <BookingProvider>
-            <NavigationWrapper />
-            <main id="main-content" className="min-h-screen">
-              <PageTransition>
-                {children}
-              </PageTransition>
-            </main>
-            <Footer />
-            <FloatingBookingWidget />
-            <WhatsAppButton />
-            <AdminToolbar />
+              <NavigationWrapper />
+              <main id="main-content" className="min-h-screen">
+                <PageTransition>
+                  {children}
+                </PageTransition>
+              </main>
+              <Footer />
+              <FloatingBookingWidget />
+              <WhatsAppButton />
+              <AdminToolbar />
           </BookingProvider>
         </SupabaseProvider>
       </body>

@@ -1,6 +1,7 @@
 'use client'
 
-import { Plus, X, GripVertical } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
+import { ImagePicker } from '../ImagePicker'
 
 interface GalleryContent {
   title?: string
@@ -109,13 +110,13 @@ export function GalleryEditor({ content, onChange }: GalleryEditorProps) {
                   ▼
                 </button>
               </div>
-              <input
-                type="text"
-                value={img}
-                onChange={(e) => updateImage(index, e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="/images/example.jpg"
-              />
+              <div className="flex-1">
+                <ImagePicker
+                  value={img}
+                  onChange={url => updateImage(index, url)}
+                  placeholder="Select gallery image..."
+                />
+              </div>
               <button
                 type="button"
                 onClick={() => removeImage(index)}

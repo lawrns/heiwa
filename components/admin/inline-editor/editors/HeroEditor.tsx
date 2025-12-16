@@ -1,5 +1,7 @@
 'use client'
 
+import { ImagePicker } from '../ImagePicker'
+
 interface HeroEditorProps {
   content: Record<string, unknown>
   onChange: (content: Record<string, unknown>) => void
@@ -61,18 +63,12 @@ export function HeroEditor({ content, onChange }: HeroEditorProps) {
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Image URL (fallback)
-        </label>
-        <input
-          type="url"
-          value={(content.image_url as string) || ''}
-          onChange={e => updateField('image_url', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-          placeholder="/images/..."
-        />
-      </div>
+      <ImagePicker
+        label="Image (fallback)"
+        value={(content.image_url as string) || ''}
+        onChange={url => updateField('image_url', url)}
+        placeholder="Select fallback image..."
+      />
 
       <hr className="my-4" />
 

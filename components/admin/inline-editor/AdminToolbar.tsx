@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Edit, LayoutDashboard } from 'lucide-react'
+import { LayoutDashboard, PencilLine } from 'lucide-react'
 import { EditSidebar } from './EditSidebar'
 
 // Map URL paths to page slugs for CMS
@@ -27,8 +27,7 @@ function getPageSlug(pathname: string): string | null {
 export function AdminToolbar() {
   const pathname = usePathname()
   const [isAdmin, setIsAdmin] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
-  const [isChecking, setIsChecking] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {
     // Check for admin cookie
@@ -36,7 +35,6 @@ export function AdminToolbar() {
       const cookies = document.cookie.split(';')
       const adminCookie = cookies.find(c => c.trim().startsWith('admin_auth='))
       setIsAdmin(!!adminCookie)
-      setIsChecking(false)
     }
 
     checkAdmin()
@@ -58,46 +56,46 @@ export function AdminToolbar() {
 
   return (
     <>
-      {/* Floating bottom toolbar - hide when editing */}
-      {!isEditing && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900 text-white shadow-lg">
-          <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-sm font-medium">Admin Mode</span>
-            </div>
+      {/* Floating bottom toolbar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900 text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-green-500" />
+            <span className="text-sm font-medium">Admin Mode</span>
+          </div>
 
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setIsEditing(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg font-medium text-sm transition-colors"
-              >
-                <Edit className="w-4 h-4" />
-                Edit Page
-              </button>
+          <div className="flex items-center gap-3">
+            {/* Edit Page Button - Opens Sidebar */}
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg font-medium text-sm transition-colors"
+            >
+              <PencilLine className="w-4 h-4" />
+              Edit Page
+            </button>
 
-              <Link
-                href="/admin"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium text-sm transition-colors"
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                Dashboard
-              </Link>
-            </div>
+            {/* Dashboard Link */}
+            <Link
+              href="/admin"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium text-sm transition-colors"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              Dashboard
+            </Link>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Edit Sidebar */}
-      {isEditing && (
+      {isSidebarOpen && (
         <EditSidebar
           pageSlug={pageSlug}
-          onClose={() => setIsEditing(false)}
+          onClose={() => setIsSidebarOpen(false)}
         />
       )}
 
-      {/* Bottom padding to prevent content from being hidden - only when toolbar visible */}
-      {!isEditing && <div className="h-16" />}
+      {/* Bottom padding to prevent content from being hidden */}
+      <div className="h-16" />
     </>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { Plus, Trash2, GripVertical } from 'lucide-react'
+import { ImagePicker } from '../ImagePicker'
 
 interface Card {
   title: string
@@ -123,18 +124,12 @@ export function CardsEditor({ content, onChange }: CardsEditorProps) {
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Image URL
-                </label>
-                <input
-                  type="text"
-                  value={card.image || (card.images?.[0] || '')}
-                  onChange={e => updateCard(index, { image: e.target.value })}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  placeholder="/images/..."
-                />
-              </div>
+              <ImagePicker
+                label="Image"
+                value={card.image || (card.images?.[0] || '')}
+                onChange={url => updateCard(index, { image: url })}
+                placeholder="Select card image..."
+              />
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">

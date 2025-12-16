@@ -1,6 +1,7 @@
 'use client'
 
 import { Plus, Trash2, GripVertical } from 'lucide-react'
+import { ImagePicker } from '../ImagePicker'
 
 interface Facility {
   title: string
@@ -124,18 +125,12 @@ export function FacilitiesEditor({ content, onChange }: FacilitiesEditorProps) {
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Image URL
-                </label>
-                <input
-                  type="text"
-                  value={facility.image || ''}
-                  onChange={e => updateFacility(index, { image: e.target.value })}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  placeholder="/images/..."
-                />
-              </div>
+              <ImagePicker
+                label="Image"
+                value={facility.image || ''}
+                onChange={url => updateFacility(index, { image: url })}
+                placeholder="Select item image..."
+              />
             </div>
           </div>
         ))}
