@@ -115,3 +115,74 @@ app/admin/calendar/page.tsx
 - Desktop (1024px+): Two-column, sidebar always visible
 - Tablet (768-1023px): Sidebar collapses to bottom drawer
 - Mobile (<768px): Full-width calendar, sidebar as slide-up sheet
+
+---
+
+## Phase 2: Timeline Views (Quarter & Year)
+
+### View Switching
+
+Tab navigation at top of calendar:
+```
+[ Month ]  [ Quarter ]  [ Year ]
+```
+
+### Quarter View (Gantt Timeline)
+
+3 months stacked vertically as rows, days as columns:
+```
+┌─────────┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬...
+│         │ 1│ 2│ 3│ 4│ 5│ 6│ 7│ 8│ 9│10│11│12│13│
+├─────────┼──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴...
+│ October │████ R1 Airbnb ████│  │███ Gunta █████████
+│         │  │██ R2 Airbnb ██│  │  │  │  │  │  │  │
+├─────────┼──────────────────────────────────────...
+│ November│  │████ Surf Week ████████│  │  │  │  │
+│         │███ Emils ███│  │  │  │  │  │  │  │  │
+├─────────┼──────────────────────────────────────...
+│ December│  │  │  │  │  │  │  │  │  │  │  │  │  │
+└─────────┴──────────────────────────────────────...
+          ↑ Today marker (vertical blue line)
+```
+
+Features:
+- Horizontal bars spanning event duration
+- Color-coded by event type (same scheme as month view)
+- Month label sticky on left
+- Day numbers in header row
+- Weekend columns subtly shaded
+- Today highlighted with vertical line
+- Click event bar → popover with details
+
+### Year View (Gantt Timeline)
+
+12 months stacked, compressed day columns:
+- Same layout as quarter view
+- Narrower day columns (16px vs 28px)
+- Horizontal scroll for full year
+- Month abbreviations (Jan, Feb, etc.)
+
+### Event Popover
+
+On click in Gantt views, show popover near the bar:
+```
+┌─────────────────────────┐
+│ 🛏️ ROOM BOOKING         │
+│ John Doe - Room 2       │
+│ 📅 Dec 15 - Dec 18      │
+│ 📍 Heiwa House          │
+│ ● Confirmed             │
+│ [View Details]          │
+└─────────────────────────┘
+```
+
+### Technical Implementation (Phase 2)
+
+New files:
+- `components/admin/calendar/CalendarViewTabs.tsx` - View toggle tabs
+- `components/admin/calendar/GanttTimeline.tsx` - Quarter/year Gantt view
+- `components/admin/calendar/GanttEventBar.tsx` - Horizontal event bar
+- `components/admin/calendar/EventPopover.tsx` - Click popover for Gantt
+
+Modified:
+- `app/admin/calendar/page.tsx` - View switching logic, date range fetching

@@ -4,32 +4,57 @@ import { useState, useEffect, useMemo } from 'react'
 import { Plus } from 'lucide-react'
 import { CalendarGrid } from '@/components/admin/calendar/CalendarGrid'
 import { CalendarSidebar } from '@/components/admin/calendar/CalendarSidebar'
+import { GanttTimeline } from '@/components/admin/calendar/GanttTimeline'
+import { CalendarViewTabs, CalendarView } from '@/components/admin/calendar/CalendarViewTabs'
 import { EventDetailsModal } from '@/components/admin/calendar/EventDetailsModal'
 import { CreateEventModal } from '@/components/admin/calendar/CreateEventModal'
 import { CalendarEvent } from '@/components/admin/calendar/calendar-constants'
 
 const startOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1)
 const endOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0)
+const startOfQuarter = (date: Date) => {
+  const quarter = Math.floor(date.getMonth() / 3)
+  return new Date(date.getFullYear(), quarter * 3, 1)
+}
+const endOfQuarter = (date: Date) => {
+  const quarter = Math.floor(date.getMonth() / 3)
+  return new Date(date.getFullYear(), quarter * 3 + 3, 0)
+}
+const startOfYear = (date: Date) => new Date(date.getFullYear(), 0, 1)
+const endOfYear = (date: Date) => new Date(date.getFullYear(), 11, 31)
 
 export default function CalendarPage() {
   const [events, setEvents] = useState<CalendarEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [currentMonth, setCurrentMonth] = useState(new Date())
+  const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [currentView, setCurrentView] = useState<CalendarView>('month')
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEventModal, setShowEventModal] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
 
+  // Fetch events when date or view changes
   useEffect(() => {
     fetchEvents()
-  }, [currentMonth])
+  }, [currentDate, currentView])
 
   const fetchEvents = async () => {
     try {
       setLoading(true)
-      const start = startOfMonth(currentMonth).toISOString().split('T')[0]
-      const end = endOfMonth(currentMonth).toISOString().split('T')[0]
+      let start: string
+      let end: string
+
+      if (currentView === 'month') {
+        start = startOfMonth(currentDate).toISOString().split('T')[0]
+        end = endOfMonth(currentDate).toISOString().split('T')[0]
+      } else if (currentView === 'quarter') {
+        start = startOfQuarter(currentDate).toISOString().split('T')[0]
+        end = endOfQuarter(currentDate).toISOString().split('T')[0]
+      } else {
+        start = startOfYear(currentDate).toISOString().split('T')[0]
+        end = endOfYear(currentDate).toISOString().split('T')[0]
+      }
 
       const response = await fetch(`/api/calendar-events?start_date=${start}&end_date=${end}`)
       const data = await response.json()
@@ -82,7 +107,11 @@ export default function CalendarPage() {
     setShowCreateModal(true)
   }
 
-  if (loading) {
+  const handleViewChange = (view: CalendarView) => {
+    setCurrentView(view)
+  }
+
+  if (loading && events.length === 0) {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
@@ -91,10 +120,7 @@ export default function CalendarPage() {
             <p className="text-gray-600 mt-1">Manage events and schedules</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
-          <div className="animate-pulse bg-gray-200 rounded-lg h-[600px]" />
-          <div className="animate-pulse bg-gray-200 rounded-lg h-[600px]" />
-        </div>
+        <div className="animate-pulse bg-gray-200 rounded-lg h-[600px]" />
       </div>
     )
   }
@@ -102,18 +128,21 @@ export default function CalendarPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Calendar</h1>
           <p className="text-gray-600 mt-1">Manage events and schedules</p>
         </div>
-        <button
-          onClick={handleCreateEvent}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-        >
-          <Plus className="h-4 w-4" />
-          Create Event
-        </button>
+        <div className="flex items-center gap-3">
+          <CalendarViewTabs currentView={currentView} onViewChange={handleViewChange} />
+          <button
+            onClick={handleCreateEvent}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            <Plus className="h-4 w-4" />
+            Create Event
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -122,29 +151,36 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* Two-column layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
-        {/* Calendar Grid */}
-        <CalendarGrid
-          currentMonth={currentMonth}
-          selectedDate={selectedDate}
+      {/* Calendar Views */}
+      {currentView === 'month' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+          <CalendarGrid
+            currentMonth={currentDate}
+            selectedDate={selectedDate}
+            events={events}
+            onMonthChange={setCurrentDate}
+            onDateSelect={setSelectedDate}
+            onEventClick={handleEventClick}
+          />
+          <CalendarSidebar
+            selectedDate={selectedDate}
+            events={events}
+            allEventsEmpty={events.length === 0}
+            hasBookings={hasBookings}
+            onEventUpdate={handleEventUpdated}
+            onEventViewFull={handleEventClick}
+            onCreateEvent={handleCreateEvent}
+          />
+        </div>
+      ) : (
+        <GanttTimeline
+          viewType={currentView}
+          currentDate={currentDate}
           events={events}
-          onMonthChange={setCurrentMonth}
-          onDateSelect={setSelectedDate}
-          onEventClick={handleEventClick}
+          onDateChange={setCurrentDate}
+          onEventViewDetails={handleEventClick}
         />
-
-        {/* Sidebar */}
-        <CalendarSidebar
-          selectedDate={selectedDate}
-          events={events}
-          allEventsEmpty={events.length === 0}
-          hasBookings={hasBookings}
-          onEventUpdate={handleEventUpdated}
-          onEventViewFull={handleEventClick}
-          onCreateEvent={handleCreateEvent}
-        />
-      </div>
+      )}
 
       {/* Modals */}
       {showCreateModal && (
