@@ -355,6 +355,24 @@ export default async function SurfWeeksPage() {
         </div>
       </section>
 
+      {/* Intro Section - CMS Driven */}
+      {(introContent?.title || introContent?.content) && (
+        <section id="section-intro" className="py-16 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            {introContent.title && (
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                {introContent.title}
+              </h2>
+            )}
+            {introContent.content && (
+              <p className="text-lg text-gray-600 leading-relaxed">
+                {introContent.content}
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* Book Now + Google Reviews Section */}
       <section className="py-8 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
