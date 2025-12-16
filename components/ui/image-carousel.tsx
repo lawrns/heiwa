@@ -93,7 +93,9 @@ export function ImageCarousel({
       <div className={`relative ${aspectRatio} overflow-hidden rounded-lg`}>
         <Image
           src={validImages[currentIndex]}
-          alt={`${alt} ${currentIndex + 1}`}
+          alt={validImages.length > 1 
+            ? `${alt} - Image ${currentIndex + 1} of ${validImages.length}`
+            : alt}
           fill
           className="object-cover"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 800px"

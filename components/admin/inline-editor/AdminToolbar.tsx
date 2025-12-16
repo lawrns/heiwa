@@ -28,6 +28,7 @@ export function AdminToolbar() {
   const pathname = usePathname()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+  const [isChecking, setIsChecking] = useState(true)
 
   useEffect(() => {
     // Check for admin cookie
@@ -35,6 +36,7 @@ export function AdminToolbar() {
       const cookies = document.cookie.split(';')
       const adminCookie = cookies.find(c => c.trim().startsWith('admin_auth='))
       setIsAdmin(!!adminCookie)
+      setIsChecking(false)
     }
 
     checkAdmin()
@@ -45,8 +47,14 @@ export function AdminToolbar() {
 
   const pageSlug = getPageSlug(pathname)
 
-  // Don't render if not admin or not on an editable page
-  if (!isAdmin || !pageSlug) return null
+  // Reserve space for toolbar to prevent layout shift
+  // Always render the spacer if we're on an editable page (even if not admin yet)
+  const shouldReserveSpace = pageSlug !== null
+
+  // Don't render toolbar if not admin or not on an editable page
+  if (!isAdmin || !pageSlug) {
+    return shouldReserveSpace ? <div className="h-16" /> : null
+  }
 
   return (
     <>

@@ -38,147 +38,84 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchDashboardData = async (isRefresh = false) => {
       try {
-        setLoading(true)
+        if (!isRefresh) {
+          setLoading(true)
+        } else {
+          setIsRefreshing(true)
+        }
         
-        // Fetch bookings data - get all bookings (no limit)
-        const bookingsResponse = await fetch('/api/bookings?limit=10000') // Large limit to get all
-        const bookingsResult = await bookingsResponse.json()
+        // Fetch aggregated statistics (much more efficient than fetching all bookings)
+        const statsResponse = await fetch('/api/admin/stats/aggregated')
+        const statsResult = await statsResponse.json()
         
-        if (!bookingsResult.success || !bookingsResult.data.bookings) {
+        if (!statsResult.success || !statsResult.data) {
           setError('Failed to fetch dashboard data')
-          setLoading(false)
+          if (!isRefresh) setLoading(false)
+          setIsRefreshing(false)
           return
         }
 
-        const bookings = bookingsResult.data.bookings
-        const totalCount = bookingsResult.count || bookingsResult.total || bookings.length
+        const { stats, recentBookings, counts } = statsResult.data
         
-        // Calculate statistics - use totalCount from API, not just returned bookings length
-        const totalBookings = totalCount
-        const confirmedCount = bookings.filter((b: Booking) => b.status === 'confirmed').length
-        const pendingCount = bookings.filter((b: Booking) => b.status === 'pending').length
-        const cancelledCount = bookings.filter((b: Booking) => b.status === 'cancelled').length
-        const totalRevenue = bookings.reduce((sum: number, b: Booking) => sum + (b.total_price || 0), 0)
-        
-        // Calculate month-over-month growth
-        const thisMonthBookings = bookings.filter((b: Booking) => {
-          const bookingDate = new Date(b.created_at || '')
-          const today = new Date()
-          return bookingDate.getMonth() === today.getMonth() && 
-                 bookingDate.getFullYear() === today.getFullYear()
-        }).length
-        
-        const lastMonthBookings = bookings.filter((b: Booking) => {
-          const bookingDate = new Date(b.created_at || '')
-          const today = new Date()
-          const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1)
-          return bookingDate.getMonth() === lastMonth.getMonth() && 
-                 bookingDate.getFullYear() === lastMonth.getFullYear()
-        }).length
-        
-        const bookingGrowth = lastMonthBookings > 0 
-          ? Math.round(((thisMonthBookings - lastMonthBookings) / lastMonthBookings) * 100)
-          : 0
-        
-        // Calculate revenue growth
-        const thisMonthRevenue = bookings
-          .filter((b: any) => {
-            const bookingDate = new Date(b.created_at)
-            const today = new Date()
-            return bookingDate.getMonth() === today.getMonth() && 
-                   bookingDate.getFullYear() === today.getFullYear()
-          })
-          .reduce((sum: number, b: any) => sum + (b.total_price || 0), 0)
-        
-        const lastMonthRevenue = bookings
-          .filter((b: any) => {
-            const bookingDate = new Date(b.created_at)
-            const today = new Date()
-            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1)
-            return bookingDate.getMonth() === lastMonth.getMonth() && 
-                   bookingDate.getFullYear() === lastMonth.getFullYear()
-          })
-          .reduce((sum: number, b: any) => sum + (b.total_price || 0), 0)
-        
-        const revenueGrowth = lastMonthRevenue > 0 
-          ? Math.round(((thisMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100)
-          : 0
-        
-        // Create stats array
-        const stats: Stat[] = [
+        // Create stats array from aggregated data
+        const statsArray: Stat[] = [
           {
             name: 'Total Bookings',
-            value: totalBookings.toString(),
+            value: stats.totalBookings.toString(),
             icon: Calendar,
-            change: `${bookingGrowth > 0 ? '+' : ''}${bookingGrowth}%`,
-            changeType: bookingGrowth >= 0 ? 'positive' : 'negative'
+            change: `${stats.bookingGrowth > 0 ? '+' : ''}${stats.bookingGrowth}%`,
+            changeType: stats.bookingGrowth >= 0 ? 'positive' : 'negative'
           },
           {
             name: 'Confirmed',
-            value: confirmedCount.toString(),
+            value: stats.confirmedCount.toString(),
             icon: CheckCircle,
-            change: `${((confirmedCount / totalBookings) * 100).toFixed(0)}%`,
+            change: stats.totalBookings > 0 
+              ? `${((stats.confirmedCount / stats.totalBookings) * 100).toFixed(0)}%`
+              : '0%',
             changeType: 'positive'
           },
           {
             name: 'Pending',
-            value: pendingCount.toString(),
+            value: stats.pendingCount.toString(),
             icon: Clock,
-            change: `${((pendingCount / totalBookings) * 100).toFixed(0)}%`,
+            change: stats.totalBookings > 0
+              ? `${((stats.pendingCount / stats.totalBookings) * 100).toFixed(0)}%`
+              : '0%',
             changeType: 'positive'
           },
           {
             name: 'Revenue',
-            value: `€${(totalRevenue / 1000).toFixed(1)}k`,
+            value: `€${(stats.totalRevenue / 1000).toFixed(1)}k`,
             icon: TrendingUp,
-            change: `${revenueGrowth > 0 ? '+' : ''}${revenueGrowth}%`,
-            changeType: revenueGrowth >= 0 ? 'positive' : 'negative'
+            change: `${stats.revenueGrowth > 0 ? '+' : ''}${stats.revenueGrowth}%`,
+            changeType: stats.revenueGrowth >= 0 ? 'positive' : 'negative'
           }
         ]
-        
-        // Get recent bookings
-        const recentBookings = bookings.slice(0, 5).map((b: any) => ({
-          id: b.id.substring(0, 8) + '...',
-          guest: b.guest_name || 'Unknown',
-          room: b.item_name || 'N/A',
-          checkIn: b.check_in ? new Date(b.check_in).toLocaleDateString() : 'N/A',
-          status: b.status || 'pending'
-        }))
 
-        // Fetch admin counts (clients, rooms, active surf camps)
-        let counts: DashboardData['counts'] | undefined
-        try {
-          const countsRes = await fetch('/api/admin/stats')
-          const countsJson = await countsRes.json().catch(() => null)
-          if (countsRes.ok && countsJson?.success) {
-            counts = {
-              clients: countsJson.data?.clients || 0,
-              rooms: countsJson.data?.rooms || 0,
-              activeSurfCamps: countsJson.data?.activeSurfCamps || 0,
-            }
-          }
-        } catch {
-          // ignore; dashboard can render without counts
-        }
-
-        setData({ stats, recentBookings, counts })
+        setData({ stats: statsArray, recentBookings, counts })
         setError(null)
       } catch (err) {
         console.error('Dashboard error:', err)
         const errorMessage = err instanceof Error ? err.message : 'Error loading dashboard data'
         setError(errorMessage)
       } finally {
-        setLoading(false)
+        if (!isRefresh) {
+          setLoading(false)
+        }
+        setIsRefreshing(false)
       }
     }
 
     fetchDashboardData()
     
     // Set up auto-refresh every 30 seconds
-    const interval = setInterval(fetchDashboardData, 30000)
+    const interval = setInterval(() => fetchDashboardData(true), 30000)
     return () => clearInterval(interval)
   }, [])
 
@@ -241,9 +178,17 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       {/* Dashboard Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-gray-600 mt-2">Manage your bookings, rooms, and surf camps from one central location</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="text-gray-600 mt-2">Manage your bookings, rooms, and surf camps from one central location</p>
+        </div>
+        {isRefreshing && (
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <span>Refreshing...</span>
+          </div>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -252,6 +197,23 @@ export default function AdminDashboard() {
           const Icon = stat.icon
           const colors = ['orange', 'green', 'blue', 'purple'] as const
           const color = colors[idx % colors.length]
+          
+          // Determine filter URL based on stat type
+          const getFilterUrl = () => {
+            switch (stat.name) {
+              case 'Total Bookings':
+                return '/admin/bookings'
+              case 'Confirmed':
+                return '/admin/bookings?status=confirmed'
+              case 'Pending':
+                return '/admin/bookings?status=pending'
+              case 'Revenue':
+                return '/admin/bookings?payment_status=paid'
+              default:
+                return '/admin/bookings'
+            }
+          }
+          
           return (
             <StatCard
               key={stat.name}
@@ -259,6 +221,7 @@ export default function AdminDashboard() {
               value={stat.value}
               icon={Icon}
               color={color}
+              href={getFilterUrl()}
               trend={{
                 value: parseInt(stat.change),
                 direction: stat.changeType === 'positive' ? 'up' : 'down'

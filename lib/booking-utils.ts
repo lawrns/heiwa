@@ -238,7 +238,10 @@ export function validateBookingSubmission(state: {
       missingFields.push('selectedOption');
     }
     if (state.guests < 1) {
-      errors.push('Number of guests must be at least 1');
+      errors.push('Please select at least 1 guest for your booking');
+      missingFields.push('guests');
+    } else if (state.guests > 20) {
+      errors.push('Maximum 20 guests allowed per booking. Please contact us for larger groups');
       missingFields.push('guests');
     }
   } else if (state.experienceType === 'surf-week') {
@@ -249,11 +252,36 @@ export function validateBookingSubmission(state: {
       errors.push('Please select a surf week');
       missingFields.push('selectedSurfWeek');
     }
+    // Validate guest count for surf weeks
+    if (state.guests < 1) {
+      errors.push('Please select at least 1 participant for the surf week');
+      missingFields.push('guests');
+    } else if (state.guests > 20) {
+      errors.push('Maximum 20 participants allowed per surf week booking. Please contact us for larger groups');
+      missingFields.push('guests');
+    }
+  }
+
+  // Validate guest details match guest count
+  const guestDetailsCount = state.guestDetails?.length || 0;
+  if (state.guests > 0 && guestDetailsCount !== state.guests) {
+    if (guestDetailsCount === 0) {
+      errors.push(`Please provide details for all ${state.guests} guest${state.guests > 1 ? 's' : ''}`);
+    } else if (guestDetailsCount < state.guests) {
+      errors.push(`You selected ${state.guests} guest${state.guests > 1 ? 's' : ''}, but only provided details for ${guestDetailsCount}. Please complete all guest information.`);
+    } else {
+      errors.push(`You selected ${state.guests} guest${state.guests > 1 ? 's' : ''}, but provided details for ${guestDetailsCount}. Please adjust the guest count or remove extra guest details.`);
+    }
+    missingFields.push('guestDetails');
   }
 
   // Validate guest details
   if (!state.guestDetails || state.guestDetails.length === 0) {
-    errors.push('At least one guest is required');
+    if (state.guests > 0) {
+      errors.push(`Please provide details for all ${state.guests} guest${state.guests > 1 ? 's' : ''}`);
+    } else {
+      errors.push('Please add at least one guest to your booking');
+    }
     missingFields.push('guestDetails');
   } else {
     state.guestDetails.forEach((guest, index) => {

@@ -57,12 +57,13 @@ export default function BookingsPage() {
   const initialPaymentStatus = searchParams.get('payment_status') || 'all'
 
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [totalBookings, setTotalBookings] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState(initialSearch)
   const [currentPage, setCurrentPage] = useState(initialPage)
   const [isRealtimeConnected, setIsRealtimeConnected] = useState(false)
-  const itemsPerPage = 10
+  const itemsPerPage = 25
   const [filters, setFilters] = useState({
     status: initialStatus,
     type: initialType,
@@ -153,28 +154,57 @@ export default function BookingsPage() {
     router.push(`/admin/bookings${queryString ? '?' + queryString : ''}`, { scroll: false })
   }, [router])
 
-  const [bookingsFetched, setBookingsFetched] = useState(false)
-
+  // Refetch bookings when filters, search, or page changes
   useEffect(() => {
-    if (!bookingsFetched) {
-      fetchBookings()
-      setBookingsFetched(true)
-    }
-  }, [bookingsFetched])
+    fetchBookings()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, filters.status, filters.type, filters.payment_status, searchTerm, dateRange.startDate, dateRange.endDate])
 
   const fetchBookings = async () => {
     try {
-      // Fetch all bookings (no limit) for accurate counts
-      const response = await fetch('/api/bookings?limit=10000')
+      setLoading(true)
+      setError(null)
+      
+      // Calculate pagination
+      const offset = (currentPage - 1) * itemsPerPage
+      
+      // Build query params
+      const params = new URLSearchParams()
+      params.set('limit', itemsPerPage.toString())
+      params.set('offset', offset.toString())
+      
+      if (filters.status !== 'all') {
+        params.set('status', filters.status)
+      }
+      if (filters.type !== 'all') {
+        params.set('type', filters.type)
+      }
+      if (filters.payment_status !== 'all') {
+        params.set('payment_status', filters.payment_status)
+      }
+      if (searchTerm) {
+        params.set('search', searchTerm)
+      }
+      if (dateRange.startDate) {
+        params.set('start_date', dateRange.startDate)
+      }
+      if (dateRange.endDate) {
+        params.set('end_date', dateRange.endDate)
+      }
+      
+      const response = await fetch(`/api/bookings?${params.toString()}`)
       const data = await response.json()
       
       if (data.success) {
-        // Replace all bookings to avoid duplicates from realtime updates
+        // Replace bookings with paginated results
         setBookings(data.data.bookings || [])
+        // Store total count for pagination
+        setTotalBookings(data.total || data.count || 0)
       } else {
         setError('Failed to fetch bookings')
       }
-    } catch {
+    } catch (err) {
+      console.error('Error fetching bookings:', err)
       setError('Error loading bookings')
     } finally {
       setLoading(false)
@@ -386,10 +416,21 @@ export default function BookingsPage() {
     }
   }
 
-  const exportBookings = () => {
+  const exportBookings = async () => {
     try {
-      // Use filtered bookings for export, not all bookings
-      const bookingsToExport = filteredBookings.length > 0 ? filteredBookings : bookings
+      // Fetch all bookings for export (without pagination)
+      const params = new URLSearchParams()
+      if (filters.status !== 'all') params.set('status', filters.status)
+      if (filters.type !== 'all') params.set('type', filters.type)
+      if (filters.payment_status !== 'all') params.set('payment_status', filters.payment_status)
+      if (searchTerm) params.set('search', searchTerm)
+      if (dateRange.startDate) params.set('start_date', dateRange.startDate)
+      if (dateRange.endDate) params.set('end_date', dateRange.endDate)
+      // No limit for export
+      
+      const response = await fetch(`/api/bookings?${params.toString()}`)
+      const data = await response.json()
+      const bookingsToExport = data.success ? (data.data.bookings || []) : bookings
       
       // Escape CSV values properly
       const escapeCsvValue = (value: any): string => {
@@ -438,38 +479,10 @@ export default function BookingsPage() {
     }
   }
 
-  // Filter and search bookings
-  const filteredBookings = bookings.filter(booking => {
-    // Apply status filter
-    if (filters.status !== 'all' && booking.status !== filters.status) return false
-    // Apply type filter
-    if (filters.type !== 'all' && booking.type !== filters.type) return false
-    // Apply payment status filter
-    if (filters.payment_status !== 'all' && booking.payment_status !== filters.payment_status) return false
-    // Apply date range filter
-    if (dateRange.startDate || dateRange.endDate) {
-      const checkInDate = new Date(booking.check_in)
-      if (dateRange.startDate && checkInDate < new Date(dateRange.startDate)) return false
-      if (dateRange.endDate && checkInDate > new Date(dateRange.endDate)) return false
-    }
-    // Apply search term
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase()
-      const matchesSearch = 
-        booking.id.toLowerCase().includes(searchLower) ||
-        booking.guest_name.toLowerCase().includes(searchLower) ||
-        booking.guest_email.toLowerCase().includes(searchLower) ||
-        booking.guest_phone.toLowerCase().includes(searchLower) ||
-        booking.item_name.toLowerCase().includes(searchLower)
-      if (!matchesSearch) return false
-    }
-    return true
-  })
-
-  // Pagination
-  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage)
+  // Server-side pagination - bookings are already filtered and paginated
+  const paginatedBookings = bookings
+  const totalPages = Math.ceil(totalBookings / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
-  const paginatedBookings = filteredBookings.slice(startIndex, startIndex + itemsPerPage)
 
   const getStatusIcon = (status: Booking['status']) => {
     switch (status) {
@@ -595,7 +608,7 @@ export default function BookingsPage() {
           </div>
           <div>
             <p className="text-gray-500 text-sm">Total Bookings</p>
-            <p className="text-2xl font-bold text-gray-900">{filteredBookings.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{totalBookings}</p>
           </div>
         </div>
         
@@ -625,7 +638,7 @@ export default function BookingsPage() {
           </div>
           <div>
             <p className="text-gray-500 text-sm">Filtered</p>
-            <p className="text-2xl font-bold text-gray-900">{filteredBookings.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{totalBookings}</p>
           </div>
         </div>
       </div>
@@ -730,7 +743,7 @@ export default function BookingsPage() {
       {/* Calendar or Table View */}
       {view === 'calendar' ? (
         <BookingCalendar 
-          bookings={filteredBookings.map(booking => ({
+          bookings={bookings.map(booking => ({
             id: booking.id,
             customerName: booking.guest_name,
             type: booking.type === 'surf_camp' ? 'surf-week' : 'room',
@@ -750,7 +763,7 @@ export default function BookingsPage() {
           {selectedBookings.size > 0 && (
             <BulkActions
               selectedCount={selectedBookings.size}
-              totalCount={filteredBookings.length}
+              totalCount={totalBookings}
               onSelectAll={handleSelectAll}
               onDeselectAll={handleDeselectAll}
               actions={[
@@ -779,7 +792,7 @@ export default function BookingsPage() {
           <div className="bg-white shadow rounded-lg overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <h3 className="text-lg font-medium text-gray-900">
-                Bookings ({filteredBookings.length})
+                Bookings ({totalBookings})
               </h3>
               <span className="text-sm text-gray-500">
                 Page {currentPage} of {totalPages || 1}
@@ -922,7 +935,7 @@ export default function BookingsPage() {
           {totalPages > 1 && (
             <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
               <div className="text-sm text-gray-600">
-                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredBookings.length)} of {filteredBookings.length} bookings
+                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, totalBookings)} of {totalBookings} bookings
               </div>
               <div className="flex gap-2">
                 <button
@@ -970,7 +983,7 @@ export default function BookingsPage() {
         </>
       )}
 
-      {filteredBookings.length === 0 && (
+      {bookings.length === 0 && !loading && (
         <div className="text-center py-12">
           <h3 className="text-lg font-medium text-gray-900 mb-2">No bookings found</h3>
           <p className="text-gray-600">No bookings match your current filters.</p>

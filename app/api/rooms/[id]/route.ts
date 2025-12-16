@@ -56,7 +56,8 @@ export async function PUT(
       description, 
       images, 
       is_active, 
-      bed_types 
+      bed_types,
+      tax_category_id
     } = body
 
     // Validate required fields
@@ -77,6 +78,7 @@ export async function PUT(
       images: images || [],
       is_active: is_active !== undefined ? is_active : true,
       bed_types: bed_types || [],
+      tax_category_id: tax_category_id || null,
       updated_at: new Date().toISOString()
     }
 

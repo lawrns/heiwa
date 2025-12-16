@@ -75,6 +75,7 @@ export async function GET(
           images: fixImageUrls(surfCamp.images || []), // Ensure CMS images are used correctly
           includes: surfCamp.includes || [],
           is_active: surfCamp.is_active,
+          tax_category_id: (surfCamp as any).tax_category_id || null,
           location: surfCamp.location || null,
         },
       },
@@ -109,7 +110,8 @@ export async function PUT(
       level, 
       includes, 
       images, 
-      is_active 
+      is_active,
+      tax_category_id
     } = body
 
     // Validate required fields
@@ -159,6 +161,7 @@ export async function PUT(
       includes: includes || [],
       images: images || [],
       is_active: is_active !== undefined ? is_active : true,
+      tax_category_id: tax_category_id || null,
       updated_at: new Date().toISOString()
     }
 

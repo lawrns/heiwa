@@ -139,37 +139,162 @@ export function handleBookingError(step: string, error: any): BookingError {
 
 /**
  * User-friendly error messages
+ * Maps technical API errors to user-friendly messages
  */
 
-export function getUserFriendlyMessage(error: Error): string {
-  if (error instanceof APIError) {
-    switch (error.statusCode) {
-      case 400:
-        return 'Invalid request. Please check your input and try again.'
-      case 401:
-        return 'You need to be logged in to perform this action.'
-      case 403:
-        return 'You don\'t have permission to perform this action.'
-      case 404:
-        return 'The requested resource was not found.'
-      case 429:
-        return 'Too many requests. Please try again later.'
-      case 500:
-        return 'A server error occurred. Please try again later.'
-      default:
-        return 'An error occurred. Please try again.'
+// Common error patterns and their user-friendly messages
+const ERROR_PATTERNS: Array<{ pattern: RegExp | string; message: string }> = [
+  // Network errors
+  { pattern: /network|fetch|connection|offline/i, message: 'Connection error. Please check your internet connection and try again.' },
+  { pattern: /timeout|timed out/i, message: 'Request timed out. Please try again.' },
+  { pattern: /failed to fetch/i, message: 'Unable to connect to the server. Please check your internet connection.' },
+  
+  // Database errors
+  { pattern: /duplicate|already exists|unique constraint/i, message: 'This item already exists. Please check for duplicates.' },
+  { pattern: /foreign key|constraint|reference/i, message: 'Cannot complete this action due to related data. Please contact support.' },
+  { pattern: /not found|does not exist/i, message: 'The requested item was not found. It may have been deleted.' },
+  
+  // Validation errors
+  { pattern: /required|missing|empty/i, message: 'Please fill in all required fields.' },
+  { pattern: /invalid|format|malformed/i, message: 'Invalid format. Please check your input and try again.' },
+  { pattern: /email|e-mail/i, message: 'Please enter a valid email address.' },
+  { pattern: /phone|telephone/i, message: 'Please enter a valid phone number.' },
+  { pattern: /date|calendar/i, message: 'Please select a valid date.' },
+  
+  // Booking-specific errors
+  { pattern: /availability|available|booked|reserved/i, message: 'This room or date is no longer available. Please select different dates or options.' },
+  { pattern: /capacity|guests|occupancy/i, message: 'The number of guests exceeds the room capacity. Please adjust your selection.' },
+  { pattern: /payment|stripe|card/i, message: 'Payment processing failed. Please check your payment details and try again.' },
+  
+  // Authentication errors
+  { pattern: /unauthorized|authentication|login/i, message: 'Please log in to continue.' },
+  { pattern: /forbidden|permission|access denied/i, message: 'You don\'t have permission to perform this action.' },
+  { pattern: /session|expired|token/i, message: 'Your session has expired. Please log in again.' },
+  
+  // Server errors
+  { pattern: /server|internal|500/i, message: 'A server error occurred. Our team has been notified. Please try again later.' },
+  { pattern: /service unavailable|503/i, message: 'Service temporarily unavailable. Please try again in a few moments.' },
+  { pattern: /bad gateway|502/i, message: 'Service temporarily unavailable. Please try again later.' },
+  
+  // Rate limiting
+  { pattern: /too many|rate limit|429/i, message: 'Too many requests. Please wait a moment and try again.' },
+]
+
+export function getUserFriendlyMessage(error: Error | string | unknown): string {
+  // Handle string errors
+  if (typeof error === 'string') {
+    return mapErrorString(error)
+  }
+  
+  // Handle Error objects
+  if (error instanceof Error) {
+    // Check for APIError first
+    if (error instanceof APIError) {
+      // Try to extract more specific message from error message
+      const specificMessage = mapErrorString(error.message)
+      if (specificMessage !== error.message) {
+        return specificMessage
+      }
+      
+      // Fall back to status code mapping
+      switch (error.statusCode) {
+        case 400:
+          return 'Invalid request. Please check your input and try again.'
+        case 401:
+          return 'Please log in to continue.'
+        case 403:
+          return 'You don\'t have permission to perform this action.'
+        case 404:
+          return 'The requested item was not found.'
+        case 409:
+          return 'This action conflicts with existing data. Please refresh and try again.'
+        case 422:
+          return 'Invalid data provided. Please check your input.'
+        case 429:
+          return 'Too many requests. Please wait a moment and try again.'
+        case 500:
+          return 'A server error occurred. Our team has been notified. Please try again later.'
+        case 502:
+          return 'Service temporarily unavailable. Please try again later.'
+        case 503:
+          return 'Service temporarily unavailable. Please try again in a few moments.'
+        default:
+          return mapErrorString(error.message) || 'An error occurred. Please try again.'
+      }
     }
+
+    if (error instanceof ValidationError) {
+      return error.message
+    }
+
+    if (error instanceof BookingError) {
+      return mapErrorString(error.message) || 'An error occurred during the booking process. Please try again or contact support.'
+    }
+
+    // Check error name for network errors
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      return 'Connection error. Please check your internet connection and try again.'
+    }
+
+    // Try to map the error message
+    return mapErrorString(error.message) || 'An unexpected error occurred. Please try again.'
   }
 
-  if (error instanceof ValidationError) {
-    return error.message
-  }
-
-  if (error instanceof BookingError) {
-    return 'An error occurred during the booking process. Please try again or contact support.'
+  // Handle unknown error types
+  if (error && typeof error === 'object' && 'message' in error) {
+    return mapErrorString(String(error.message)) || 'An error occurred. Please try again.'
   }
 
   return 'An unexpected error occurred. Please try again.'
+}
+
+/**
+ * Map error string to user-friendly message using patterns
+ */
+function mapErrorString(errorMessage: string): string {
+  if (!errorMessage) return ''
+  
+  const lowerMessage = errorMessage.toLowerCase()
+  
+  // Check against patterns
+  for (const { pattern, message } of ERROR_PATTERNS) {
+    if (typeof pattern === 'string') {
+      if (lowerMessage.includes(pattern.toLowerCase())) {
+        return message
+      }
+    } else {
+      if (pattern.test(errorMessage)) {
+        return message
+      }
+    }
+  }
+  
+  // Return original message if no pattern matches
+  return errorMessage
+}
+
+/**
+ * Check if error is a network error
+ */
+export function isNetworkError(error: unknown): boolean {
+  if (error instanceof Error) {
+    // Check error name
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      return true
+    }
+    
+    // Check error message for network-related keywords
+    const networkKeywords = ['network', 'fetch', 'connection', 'offline', 'timeout', 'failed to fetch']
+    const lowerMessage = error.message.toLowerCase()
+    return networkKeywords.some(keyword => lowerMessage.includes(keyword))
+  }
+  
+  if (typeof error === 'string') {
+    const networkKeywords = ['network', 'fetch', 'connection', 'offline', 'timeout', 'failed to fetch']
+    return networkKeywords.some(keyword => error.toLowerCase().includes(keyword))
+  }
+  
+  return false
 }
 
 /**

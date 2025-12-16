@@ -71,12 +71,13 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        'fixed top-0 left-0 right-0 transition-all duration-300',
         isHomepage 
           ? 'bg-black/20 backdrop-blur-md' 
           : 'bg-gray-800 backdrop-blur-sm',
         className
       )}
+      style={{ zIndex: 'var(--z-fixed)' }}
       role="navigation"
       aria-label="Main navigation"
     >
@@ -150,7 +151,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   <ChevronDown className="w-3 h-3" />
                 </button>
                 {activitiesOpen && (
-                  <div className="absolute top-full left-0 pt-2 z-50">
+                  <div className="absolute top-full left-0 pt-2" style={{ zIndex: 'var(--z-dropdown)' }}>
                     <div className="w-40 bg-gray-900 border border-gray-700 rounded-md shadow-lg py-1">
                       {activitiesItems.map((item) => (
                         <Link
@@ -197,7 +198,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
               {/* Book Now Button */}
               <button
-                onClick={openBooking}
+                onClick={() => openBooking()}
                 className="px-4 py-2 text-xs font-medium tracking-wide transition-colors flex items-center gap-1 uppercase rounded text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                 style={{ backgroundColor: '#ec681c' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}

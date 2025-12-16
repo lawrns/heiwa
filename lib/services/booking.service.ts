@@ -14,7 +14,12 @@ import type { Booking, Client, Room, SurfCamp, SurfCampEnrollment, RoomAssignmen
 
 export interface BookingFilters {
   status?: string;
+  payment_status?: string;
+  type?: string;
   roomId?: string;
+  search?: string;
+  start_date?: string;
+  end_date?: string;
   limit?: number;
   offset?: number;
 }
@@ -253,7 +258,17 @@ export const bookingService = {
     bookings: TransformedBooking[];
     total: number;
   }> {
-    const { status, roomId, limit, offset = 0 } = filters;
+    const { 
+      status, 
+      payment_status,
+      type,
+      roomId, 
+      search,
+      start_date,
+      end_date,
+      limit, 
+      offset = 0 
+    } = filters;
 
     // Build query
     let query = supabaseAdmin
@@ -261,18 +276,38 @@ export const bookingService = {
       .select('*', { count: 'exact' })
       .order('created_at', { ascending: false });
 
-    if (limit !== undefined) {
-      query = query.range(offset, offset + limit - 1);
-    } else if (offset > 0) {
-      query = query.range(offset, offset + 999999);
+    // Apply filters
+    if (status) {
+      query = query.eq('status', status);
     }
 
-    if (status) {
-      query = query.eq('payment_status', status);
+    if (payment_status) {
+      query = query.eq('payment_status', payment_status);
+    }
+
+    if (type === 'room') {
+      query = query.not('room_type', 'is', null);
+    } else if (type === 'surf_camp') {
+      query = query.is('room_type', null);
     }
 
     if (roomId) {
       query = query.eq('room_type', roomId);
+    }
+
+    if (start_date) {
+      query = query.gte('check_in', start_date);
+    }
+
+    if (end_date) {
+      query = query.lte('check_in', end_date);
+    }
+
+    // Apply pagination
+    if (limit !== undefined) {
+      query = query.range(offset, offset + limit - 1);
+    } else if (offset > 0) {
+      query = query.range(offset, offset + 999999);
     }
 
     const { data: bookings, error, count } = await query;
@@ -348,8 +383,19 @@ export const bookingService = {
       }
     }
 
+    // Apply search filter client-side (since Supabase text search requires full-text search setup)
+    let filteredBookings = bookings || [];
+    if (search) {
+      const searchLower = search.toLowerCase();
+      filteredBookings = filteredBookings.filter((booking: Booking) => {
+        const bookingId = booking.id?.toLowerCase() || '';
+        const notes = booking.notes?.toLowerCase() || '';
+        return bookingId.includes(searchLower) || notes.includes(searchLower);
+      });
+    }
+
     // Transform bookings
-    const transformedData: TransformedBooking[] = (bookings || []).map((booking: Booking) => {
+    const transformedData: TransformedBooking[] = filteredBookings.map((booking: Booking) => {
       let guestName = 'Unknown';
       let guestEmail = '';
       let guestPhone = '';
@@ -391,9 +437,15 @@ export const bookingService = {
       };
     });
 
+    // If search filter was applied, we need to recalculate total
+    // Otherwise use the count from the query
+    const total = search 
+      ? transformedData.length 
+      : (count || transformedData.length);
+
     return {
       bookings: transformedData,
-      total: count || transformedData.length,
+      total,
     };
   },
 

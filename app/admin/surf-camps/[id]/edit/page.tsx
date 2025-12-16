@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
+import { TaxCategorySelect } from '@/components/admin/TaxCategorySelect'
 
 interface SurfCampFormData {
   name: string
@@ -17,6 +18,7 @@ interface SurfCampFormData {
   includes: string[]
   images: string[]
   is_active: boolean
+  tax_category_id: string | null
 }
 
 const surfLevels = ['Beginner', 'Intermediate', 'Advanced', 'All Levels']
@@ -48,6 +50,7 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
     includes: [],
     images: [],
     is_active: true,
+    tax_category_id: null,
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -77,6 +80,7 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
           includes: camp.includes || [],
           images: camp.images || [],
           is_active: camp.is_active !== undefined ? camp.is_active : true,
+          tax_category_id: camp.tax_category_id || null,
         })
       } else {
         setError('Failed to fetch surf week')
@@ -134,7 +138,10 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          tax_category_id: formData.tax_category_id,
+        }),
       })
       
       const data = await response.json()
@@ -337,6 +344,12 @@ export default function EditSurfCampPage({ params }: { params: { id: string } })
                   placeholder="450.00"
                 />
               </div>
+
+              <TaxCategorySelect
+                value={formData.tax_category_id}
+                onChange={(taxCategoryId) => setFormData(prev => ({ ...prev, tax_category_id: taxCategoryId }))}
+                label="Tax Category"
+              />
             </div>
 
             {/* Includes */}

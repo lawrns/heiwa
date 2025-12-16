@@ -51,11 +51,18 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const [galleryRoom, setGalleryRoom] = useState<any>(null);
 
   // Local state for room booking dates
+  // Helper to safely convert date to string
+  const dateToString = (date: Date | string | null | undefined): string => {
+    if (!date) return ''
+    const dateObj = date instanceof Date ? date : new Date(date)
+    return isNaN(dateObj.getTime()) ? '' : dateObj.toISOString().split('T')[0]
+  }
+
   const [checkInDate, setCheckInDate] = useState(
-    state.dates.checkIn?.toISOString().split('T')[0] || ''
+    dateToString(state.dates.checkIn)
   );
   const [checkOutDate, setCheckOutDate] = useState(
-    state.dates.checkOut?.toISOString().split('T')[0] || ''
+    dateToString(state.dates.checkOut)
   );
 
   // Local state for participant names - sync with global state
@@ -79,19 +86,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
   // Sync local date state with global state when it changes
   useEffect(() => {
-    if (state.dates.checkIn) {
-      const newCheckIn = state.dates.checkIn.toISOString().split('T')[0];
-      if (newCheckIn !== checkInDate) {
-        setCheckInDate(newCheckIn);
-      }
+    const newCheckIn = dateToString(state.dates.checkIn)
+    if (newCheckIn && newCheckIn !== checkInDate) {
+      setCheckInDate(newCheckIn)
     }
-    if (state.dates.checkOut) {
-      const newCheckOut = state.dates.checkOut.toISOString().split('T')[0];
-      if (newCheckOut !== checkOutDate) {
-        setCheckOutDate(newCheckOut);
-      }
+    const newCheckOut = dateToString(state.dates.checkOut)
+    if (newCheckOut && newCheckOut !== checkOutDate) {
+      setCheckOutDate(newCheckOut)
     }
-  }, [state.dates.checkIn, state.dates.checkOut]);
+  }, [state.dates.checkIn, state.dates.checkOut, checkInDate, checkOutDate]);
 
   // Sync participant names array with guest count
   useEffect(() => {
@@ -223,6 +226,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   // Removed auto-select logic - users must explicitly select a room
 
   // Recompute base price and totals when selection/dates/guests change
+  // Use ref to track last computed pricing to prevent infinite loops
+  const lastComputedPricingRef = useRef<string>('')
+  
   useEffect(() => {
     if (state.experienceType === 'room') {
       // For rooms: single room selection (multi-room pricing happens in RoomAssignment step)
@@ -231,8 +237,20 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       let basePrice = 0;
       if (state.dates.checkIn && state.dates.checkOut) {
         // Calculate nights using UTC dates to avoid timezone issues
-        const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
-        const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
+        // Handle both Date objects and string dates (from localStorage)
+        const checkInDate = state.dates.checkIn instanceof Date 
+          ? state.dates.checkIn 
+          : new Date(state.dates.checkIn)
+        const checkOutDate = state.dates.checkOut instanceof Date 
+          ? state.dates.checkOut 
+          : new Date(state.dates.checkOut)
+        
+        if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
+          return // Invalid dates, skip pricing calculation
+        }
+        
+        const checkInUTC = new Date(checkInDate.getFullYear(), checkInDate.getMonth(), checkInDate.getDate());
+        const checkOutUTC = new Date(checkOutDate.getFullYear(), checkOutDate.getMonth(), checkOutDate.getDate());
         const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
 
         const roomId = selectedOptions[0];
@@ -274,7 +292,12 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         // Tax is INCLUDED in price, extract for display (not added on top)
         const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
         const fees = 0; // No service fee
-        actions.updatePricing({ ...state.pricing, basePrice, taxes, fees, total: subtotal, currency: 'EUR' });
+        // Create pricing key to compare (prevents infinite loop)
+        const pricingKey = `${basePrice}-${taxes}-${fees}-${subtotal}-${state.pricing.addOnsSubtotal || 0}`
+        if (lastComputedPricingRef.current !== pricingKey) {
+          lastComputedPricingRef.current = pricingKey
+          actions.updatePricing({ ...state.pricing, basePrice, taxes, fees, total: subtotal, currency: 'EUR' });
+        }
       }
     } else if (state.experienceType === 'surf-week') {
       // For surf weeks: single selection
@@ -295,10 +318,15 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         // Tax is INCLUDED in price, extract for display (not added on top)
         const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
         const fees = 0; // No service fee
-        actions.updatePricing({ ...state.pricing, basePrice, taxes, fees, total: subtotal, currency: 'EUR' });
+        // Create pricing key to compare (prevents infinite loop)
+        const pricingKey = `${basePrice}-${taxes}-${fees}-${subtotal}-${state.pricing.addOnsSubtotal || 0}`
+        if (lastComputedPricingRef.current !== pricingKey) {
+          lastComputedPricingRef.current = pricingKey
+          actions.updatePricing({ ...state.pricing, basePrice, taxes, fees, total: subtotal, currency: 'EUR' });
+        }
       }
     }
-  }, [selectedOptions, state.dates.checkIn, state.dates.checkOut, state.guests, state.experienceType, state.selectedOption, options, state.pricing, actions]);
+  }, [selectedOptions, state.dates.checkIn, state.dates.checkOut, state.guests, state.experienceType, state.selectedOption, options, state.pricing.addOnsSubtotal, actions]);
 
   // Set capacity error if insufficient capacity
   useEffect(() => {
@@ -412,7 +440,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             </p>
           </div>
           <p className="text-sm text-gray-500">
-            This may take up to 15 seconds
+            Please wait while we fetch availability...
           </p>
         </div>
 

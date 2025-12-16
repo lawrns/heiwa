@@ -25,8 +25,18 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
 
   // Create stable string representations of dates to prevent infinite loops
   // Convert dates to timestamps for stable comparison
-  const checkInTime = checkIn?.getTime() ?? null;
-  const checkOutTime = checkOut?.getTime() ?? null;
+  // Handle both Date objects and string dates (from localStorage)
+  const ensureDateObj = (date: Date | string | null | undefined): Date | null => {
+    if (!date) return null
+    if (date instanceof Date) return isNaN(date.getTime()) ? null : date
+    const parsed = new Date(date)
+    return isNaN(parsed.getTime()) ? null : parsed
+  }
+  
+  const checkInDateObj = ensureDateObj(checkIn)
+  const checkOutDateObj = ensureDateObj(checkOut)
+  const checkInTime = checkInDateObj?.getTime() ?? null;
+  const checkOutTime = checkOutDateObj?.getTime() ?? null;
 
   const fetchRooms = useCallback(async () => {
     try {

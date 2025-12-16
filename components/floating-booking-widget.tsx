@@ -30,15 +30,16 @@ export function FloatingBookingWidget() {
     <>
       {/* React Booking Widget - Direct render when open */}
       {isBookingOpen && (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0" style={{ zIndex: 'var(--z-modal)' }}>
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            style={{ zIndex: 'var(--z-modal-backdrop)' }}
             onClick={closeBooking}
           />
 
           {/* StandaloneWidget positioned on the right */}
-          <div className="absolute top-0 right-0 h-full w-full max-w-lg shadow-2xl overflow-hidden" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 20px)' }}>
+          <div className="absolute top-0 right-0 h-full w-full sm:max-w-lg shadow-2xl overflow-hidden" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 20px)' }}>
             <StandaloneWidget
               config={{
                 buildId: 'react-widget-heiwa-page',

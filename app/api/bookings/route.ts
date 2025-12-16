@@ -25,14 +25,24 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || undefined;
+    const payment_status = searchParams.get('payment_status') || undefined;
+    const type = searchParams.get('type') || undefined;
     const roomId = searchParams.get('roomId') || undefined;
+    const search = searchParams.get('search') || undefined;
+    const start_date = searchParams.get('start_date') || undefined;
+    const end_date = searchParams.get('end_date') || undefined;
     const limitParam = searchParams.get('limit');
     const limit = limitParam ? parseInt(limitParam) : undefined;
     const offset = parseInt(searchParams.get('offset') || '0');
 
     const { bookings, total } = await bookingService.getBookings({
       status,
+      payment_status,
+      type,
       roomId,
+      search,
+      start_date,
+      end_date,
       limit,
       offset,
     });

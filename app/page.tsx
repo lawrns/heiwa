@@ -175,6 +175,7 @@ export default async function HomePage() {
             muted
             playsInline
             preload="metadata"
+            poster={heroImageUrl || '/images/hero/heiwa-hero.jpg'}
             className="absolute inset-0 w-full h-full object-cover"
           >
             <source src={heroVideoUrl} type="video/mp4" />
@@ -192,6 +193,7 @@ export default async function HomePage() {
             muted
             playsInline
             preload="metadata"
+            poster="/images/hero/heiwa-hero.jpg"
             className="absolute inset-0 w-full h-full object-cover"
           >
             <source src={defaultVideoUrl} type="video/mp4" />
@@ -297,7 +299,7 @@ export default async function HomePage() {
               return (
                 <Link key={idx} href={card.link || '#'} className="group">
                   <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
-                    <img src={imageUrl} alt={card.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={imageUrl} alt={card.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors"></div>
                     <div className="absolute inset-0 flex items-end">
                       <div className="w-full p-6">
@@ -504,7 +506,7 @@ export default async function HomePage() {
             ).map((activity: { title: string; desc: string; img: string }) => (
               <div key={activity.title} className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-default">
                 <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
-                  <img src={activity.img} alt={activity.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={activity.img} alt={activity.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors"></div>
                   
                   {/* Title - always visible */}

@@ -25,7 +25,7 @@ export function YouTubeVideo({ videoId, title, className = '' }: VideoPlayerProp
   // Only set URL on client side to prevent hydration mismatch
   useEffect(() => {
     const cleanVideoId = extractVideoId(videoId)
-    setEmbedUrl(`https://www.youtube.com/embed/${cleanVideoId}?si=WWXSAJs0SAnR0wHY&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3&playsinline=1`)
+    setEmbedUrl(`https://www.youtube.com/embed/${cleanVideoId}?si=WWXSAJs0SAnR0wHY&controls=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1`)
   }, [videoId])
 
   // Always render the same structure to prevent hydration mismatch

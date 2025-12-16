@@ -131,7 +131,6 @@ export function SurfWeeksSection({ surfWeeksSection, surfWeeks }: SurfWeeksSecti
                                   }
                                 }}
                                 className="w-full px-6 py-2.5 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 min-h-[44px]"
-                                style={{ backgroundColor: '#ec681c' }}
                               >
                                 Book Now
                               </button>
@@ -152,7 +151,6 @@ export function SurfWeeksSection({ surfWeeksSection, surfWeeks }: SurfWeeksSecti
                                     }
                                   }}
                                   className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 min-h-[44px]"
-                                  style={{ backgroundColor: '#ec681c' }}
                                 >
                                   Book
                                 </button>
@@ -163,7 +161,8 @@ export function SurfWeeksSection({ surfWeeksSection, surfWeeks }: SurfWeeksSecti
                       </>
                     ) : (
                       <div className="px-4 sm:px-6 py-8 text-center text-gray-600">
-                        Loading surf weeks...
+                        <p className="text-lg font-medium text-gray-700 mb-2">No upcoming surf weeks at this time</p>
+                        <p className="text-sm text-gray-500">Check back soon for new dates!</p>
                       </div>
                     )}
                   </div>

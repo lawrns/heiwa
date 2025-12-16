@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
+import { TaxCategorySelect } from '@/components/admin/TaxCategorySelect'
 
 interface SurfCampFormData {
   name: string
@@ -17,6 +18,7 @@ interface SurfCampFormData {
   includes: string[]
   images: string[]
   is_active: boolean
+  tax_category_id: string | null
 }
 
 const surfLevels = ['Beginner', 'Intermediate', 'Advanced', 'All Levels']
@@ -48,6 +50,7 @@ export default function NewSurfCampPage() {
     includes: [],
     images: [],
     is_active: true,
+    tax_category_id: null,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -76,6 +79,7 @@ export default function NewSurfCampPage() {
         includes: formData.includes,
         images: formData.images,
         is_active: formData.is_active,
+        tax_category_id: formData.tax_category_id,
       }
 
       const response = await fetch('/api/surf-camps', {
@@ -272,6 +276,12 @@ export default function NewSurfCampPage() {
                   placeholder="450.00"
                 />
               </div>
+
+              <TaxCategorySelect
+                value={formData.tax_category_id}
+                onChange={(taxCategoryId) => setFormData(prev => ({ ...prev, tax_category_id: taxCategoryId }))}
+                label="Tax Category"
+              />
             </div>
 
             {/* Includes */}

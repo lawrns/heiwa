@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save, Upload } from 'lucide-react'
 import { ImageUpload } from '@/components/admin/ImageUpload'
+import { TaxCategorySelect } from '@/components/admin/TaxCategorySelect'
 
 interface SurfCampPricing {
   strategy: 'perBed' | 'perRoomOccupancy'
@@ -24,6 +25,7 @@ interface RoomFormData {
   featured_image: string
   images: string[]
   is_active: boolean
+  tax_category_id: string | null
 }
 
 export default function NewRoomPage() {
@@ -44,6 +46,7 @@ export default function NewRoomPage() {
     featured_image: '',
     images: [],
     is_active: true,
+    tax_category_id: null,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -92,6 +95,7 @@ export default function NewRoomPage() {
           featured_image: formData.featured_image,
           images: formData.images,
           is_active: formData.is_active,
+          tax_category_id: formData.tax_category_id,
         }),
       })
 
@@ -212,6 +216,13 @@ export default function NewRoomPage() {
                 <option value="perBed">Per Bed</option>
               </select>
             </div>
+
+            {/* Tax Category */}
+            <TaxCategorySelect
+              value={formData.tax_category_id}
+              onChange={(taxCategoryId) => setFormData(prev => ({ ...prev, tax_category_id: taxCategoryId }))}
+              label="Tax Category"
+            />
 
             {/* Standard Pricing Section */}
             <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">

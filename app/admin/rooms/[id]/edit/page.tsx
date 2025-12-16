@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Save, Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 import { ImageUpload } from '@/components/admin/ImageUpload'
+import { TaxCategorySelect } from '@/components/admin/TaxCategorySelect'
 
 interface SurfCampPricing {
   strategy: 'perBed' | 'perRoomOccupancy'
@@ -29,6 +30,7 @@ interface Room {
   images: string[]
   is_active: boolean
   bed_types: string[]
+  tax_category_id: string | null
   created_at: string
   updated_at: string
 }
@@ -289,6 +291,12 @@ export default function EditRoomPage({ params }: { params: { id: string } }) {
                 <option value="perBed">Per Bed</option>
               </select>
             </div>
+
+            <TaxCategorySelect
+              value={room.tax_category_id}
+              onChange={(taxCategoryId) => setRoom({ ...room, tax_category_id: taxCategoryId })}
+              label="Tax Category"
+            />
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

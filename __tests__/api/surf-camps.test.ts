@@ -93,8 +93,8 @@ describe('/api/surf-camps', () => {
         if (table === 'room_assignments') {
           return {
             select: jest.fn(() => ({
-              gte: jest.fn(() => ({
-                lte: jest.fn(() => Promise.resolve({ data: [], error: null })),
+              gt: jest.fn(() => ({
+                lt: jest.fn(() => Promise.resolve({ data: [], error: null })),
               })),
             })),
           }
@@ -284,8 +284,8 @@ describe('/api/surf-camps', () => {
         if (table === 'room_assignments') {
           return {
             select: jest.fn(() => ({
-              gte: jest.fn(() => ({
-                lte: jest.fn(() => Promise.resolve({ data: [], error: null })),
+              gt: jest.fn(() => ({
+                lt: jest.fn(() => Promise.resolve({ data: [], error: null })),
               })),
             })),
           }
@@ -343,8 +343,8 @@ describe('/api/surf-camps', () => {
         if (table === 'room_assignments') {
           return {
             select: jest.fn(() => ({
-              gte: jest.fn(() => ({
-                lte: jest.fn(() => Promise.resolve({ data: [], error: null })),
+              gt: jest.fn(() => ({
+                lt: jest.fn(() => Promise.resolve({ data: [], error: null })),
               })),
             })),
           }

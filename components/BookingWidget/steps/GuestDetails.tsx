@@ -148,6 +148,30 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
       const newErrors = { ...errors };
       newErrors[`guest-${index}`] = formErrors[0]; // Show first error
       setErrors(newErrors);
+      
+      // Scroll to first error field in this guest form
+      setTimeout(() => {
+        const guestFormElement = document.getElementById(`guest-form-${index}`)
+        if (guestFormElement) {
+          // Try to find the first invalid input in this guest form
+          const firstInvalidInput = guestFormElement.querySelector('input[aria-invalid="true"], input:invalid, textarea[aria-invalid="true"], textarea:invalid')
+          if (firstInvalidInput) {
+            (firstInvalidInput as HTMLElement).scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            })
+            setTimeout(() => {
+              (firstInvalidInput as HTMLElement).focus()
+            }, 300)
+          } else {
+            // Fallback: scroll to the guest form container
+            guestFormElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            })
+          }
+        }
+      }, 100)
       return;
     }
 
@@ -300,7 +324,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
             {/* Error Message */}
             {errors[`guest-${index}`] && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700" data-testid={`guest-${index}-error`}>
+              <div id={`guest-${index}-error`} className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700" data-testid={`guest-${index}-error`} role="alert">
                 <AlertCircle size={16} />
                 <span className="text-sm">{errors[`guest-${index}`]}</span>
               </div>
@@ -322,6 +346,8 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                     onChange={(e) => handleInputChange(index, 'firstName', e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
                     placeholder="Enter first name"
+                    aria-invalid={errors[`guest-${index}`] ? 'true' : 'false'}
+                    aria-describedby={errors[`guest-${index}`] ? `guest-${index}-error` : undefined}
                   />
                 </div>
               </div>
@@ -340,6 +366,8 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                     onChange={(e) => handleInputChange(index, 'lastName', e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
                     placeholder="Enter last name"
+                    aria-invalid={errors[`guest-${index}`] ? 'true' : 'false'}
+                    aria-describedby={errors[`guest-${index}`] ? `guest-${index}-error` : undefined}
                   />
                 </div>
               </div>
@@ -362,6 +390,12 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                         : 'border-gray-300'
                     }`}
                     placeholder="Enter email address"
+                    aria-invalid={guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) ? 'true' : 'false'}
+                    aria-describedby={
+                      guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email)
+                        ? `email-${index}-validation`
+                        : errors[`guest-${index}`] ? `guest-${index}-error` : undefined
+                    }
                   />
                   {/* Real-time email validation indicator */}
                   {guestForm.email && (
@@ -376,7 +410,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 </div>
                 {/* Real-time email validation message */}
                 {guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) && (
-                  <p className="text-xs text-red-600 mt-1">Please enter a valid email address</p>
+                  <p id={`email-${index}-validation`} className="text-xs text-red-600 mt-1" role="alert">Please enter a valid email address</p>
                 )}
               </div>
 
@@ -394,6 +428,8 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                     onChange={(e) => handleInputChange(index, 'phone', e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
                     placeholder="Enter phone number"
+                    aria-invalid={errors[`guest-${index}`] ? 'true' : 'false'}
+                    aria-describedby={errors[`guest-${index}`] ? `guest-${index}-error` : undefined}
                   />
                 </div>
               </div>

@@ -12,6 +12,8 @@ interface StatCardProps {
     value: number
     direction: 'up' | 'down'
   }
+  onClick?: () => void
+  href?: string
 }
 
 const colorClasses = {
@@ -44,11 +46,16 @@ export function StatCard({
   description,
   color = 'orange',
   trend,
+  onClick,
+  href,
 }: StatCardProps) {
   const colors = colorClasses[color]
+  const isClickable = onClick || href
 
-  return (
-    <div className={`${colors.bg} rounded-lg border ${colors.border} p-6 transition-all duration-300 hover:shadow-md`}>
+  const content = (
+    <div className={`${colors.bg} rounded-lg border ${colors.border} p-6 transition-all duration-300 ${
+      isClickable ? 'hover:shadow-md cursor-pointer hover:scale-[1.02] active:scale-[0.98]' : ''
+    }`}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-600">{title}</p>
@@ -70,6 +77,24 @@ export function StatCard({
       </div>
     </div>
   )
+
+  if (href) {
+    return (
+      <a href={href} className="block">
+        {content}
+      </a>
+    )
+  }
+
+  if (onClick) {
+    return (
+      <button onClick={onClick} className="w-full text-left" type="button">
+        {content}
+      </button>
+    )
+  }
+
+  return content
 }
 
 export default StatCard

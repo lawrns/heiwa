@@ -168,11 +168,13 @@ export async function GET(request: NextRequest) {
 
         try {
           // Get room assignments that overlap with this camp's dates
+          // Use > (not >=) for check_out_date because checkout day = checkin day is not a conflict
+          // A guest checking out on July 10 doesn't block a new guest checking in July 10
           const { data: roomAssignments } = await supabaseAdmin
             .from('room_assignments')
             .select('room_id')
-            .gte('check_out_date', camp.start_date)
-            .lte('check_in_date', camp.end_date)
+            .gt('check_out_date', camp.start_date)
+            .lt('check_in_date', camp.end_date)
 
           if (roomAssignments && roomAssignments.length > 0) {
             // Count assignments per room
@@ -296,7 +298,8 @@ export async function POST(request: NextRequest) {
       level,
       includes,
       images,
-      is_active
+      is_active,
+      tax_category_id
     } = body
 
     // Validate required fields
@@ -348,7 +351,8 @@ export async function POST(request: NextRequest) {
         level: finalLevel,
         includes: includes || [],
         images: images || [],
-        is_active: is_active !== undefined ? is_active : true
+        is_active: is_active !== undefined ? is_active : true,
+        ...(tax_category_id ? { tax_category_id } : {})
       })
       .select()
       .single()

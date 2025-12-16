@@ -92,7 +92,8 @@ export async function POST(request: NextRequest) {
       amenities, 
       featured_image,
       images, 
-      is_active 
+      is_active,
+      tax_category_id
     } = body
 
     // Validate required fields
@@ -134,6 +135,7 @@ export async function POST(request: NextRequest) {
       images: roomImages,
       is_active: is_active !== false,
       booking_type: booking_type || 'whole',
+      tax_category_id: tax_category_id || null,
       bed_types: [],
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()

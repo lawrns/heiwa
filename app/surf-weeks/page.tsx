@@ -67,38 +67,54 @@ async function getSurfWeeks() {
       return []
     }
 
-    // Get enrollment counts for each surf camp
-    const surfCampsWithAvailability = await Promise.all(
-      surfCamps.map(async (camp: any) => {
-        // Count both confirmed and pending enrollments (pending = booked but not yet paid)
-        const { count: enrolledCount } = await supabaseAdmin
-          .from('surf_camp_enrollments')
-          .select('*', { count: 'exact', head: true })
-          .eq('surf_camp_id', camp.id)
-          .in('status', ['confirmed', 'pending'])
-        
-        // Use max_participants as the primary source, fall back to total_spots for legacy data
-        const totalSpots = camp.max_participants || camp.total_spots || 18
-        const calculatedAvailableSpots = totalSpots - (enrolledCount || 0)
-        const availableSpots = Math.max(0, calculatedAvailableSpots)
-        
-        return {
-          id: camp.id,
-          name: camp.name,
-          description: camp.description,
-          start_date: camp.start_date,
-          end_date: camp.end_date,
-          price: camp.price,
-          max_participants: totalSpots,
-          enrolled_count: enrolledCount || 0,
-          available_spots: Math.max(0, availableSpots),
-          is_full: availableSpots <= 0,
-          level: camp.level || 'all',
-          images: camp.images || [],
-          includes: camp.includes || []
-        }
+    // Get enrollment counts for all surf camps in a single query (fixes N+1)
+    const campIds = surfCamps.map((camp: any) => camp.id)
+    
+    // Single aggregated query for all enrollment counts
+    const { data: enrollments, error: enrollmentsError } = await supabaseAdmin
+      .from('surf_camp_enrollments')
+      .select('surf_camp_id, status')
+      .in('surf_camp_id', campIds)
+      .in('status', ['confirmed', 'pending'])
+    
+    if (enrollmentsError) {
+      console.error('Error fetching enrollments:', enrollmentsError)
+    }
+    
+    // Aggregate enrollment counts by camp_id
+    const enrollmentCounts = new Map<string, number>()
+    if (enrollments) {
+      enrollments.forEach((enrollment: any) => {
+        const count = enrollmentCounts.get(enrollment.surf_camp_id) || 0
+        enrollmentCounts.set(enrollment.surf_camp_id, count + 1)
       })
-    )
+    }
+    
+    // Map camps with availability counts
+    const surfCampsWithAvailability = surfCamps.map((camp: any) => {
+      const enrolledCount = enrollmentCounts.get(camp.id) || 0
+      
+      // Use max_participants as the primary source, fall back to total_spots for legacy data
+      const totalSpots = camp.max_participants || camp.total_spots || 18
+      const calculatedAvailableSpots = totalSpots - enrolledCount
+      const availableSpots = Math.max(0, calculatedAvailableSpots)
+      
+      return {
+        id: camp.id,
+        name: camp.name,
+        description: camp.description,
+        start_date: camp.start_date,
+        end_date: camp.end_date,
+        price: camp.price,
+        max_participants: totalSpots,
+        enrolled_count: enrolledCount,
+        available_spots: availableSpots,
+        is_full: availableSpots <= 0,
+        level: camp.level || 'all',
+        images: camp.images || [],
+        includes: camp.includes || []
+      }
+    })
 
     return surfCampsWithAvailability
   } catch (error) {

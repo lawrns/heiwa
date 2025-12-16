@@ -20,7 +20,8 @@ import {
   CreditCard,
   BookOpen,
   AlertCircle,
-  Package
+  Package,
+  Percent
 } from 'lucide-react'
 
 interface ErrorBoundaryState {
@@ -114,6 +115,7 @@ const navigationItems = [
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'CMS', href: '/admin/cms', icon: FileText },
   { name: 'Blog', href: '/admin/blog', icon: BookOpen },
+  { name: 'Tax Categories', href: '/admin/settings/tax-categories', icon: Percent },
 ]
 
 // Admin Logo component
