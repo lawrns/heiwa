@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2, ShoppingBag, ChevronDown } from 'lucide-react';
+import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2, ShoppingBag, ChevronDown, ChevronUp } from 'lucide-react';
 import { BookingState, PricingBreakdown } from '../types';
 import { PaymentMethodSelector } from '../components/PaymentMethodSelector';
 import { BankWireInstructions } from '../components/BankWireInstructions';
 import { ScrollIndicator } from '../components/ScrollIndicator';
 import { apiFetch } from '../lib/api';
+import { scrollToFirstError } from '@/lib/utils/scroll-to-error';
+import { clearBookingProgress } from '@/lib/utils/booking-persistence';
+import { ensureDate } from '@/lib/utils/date-helpers';
+import { useRooms } from '../hooks/useRooms';
+import { useSurfCamps } from '../hooks/useSurfCamps';
 
 interface BookingData {
   booking?: {
@@ -61,6 +66,89 @@ interface ReviewAndPayProps {
   onComplete: (bookingData?: BookingData) => void;
 }
 
+interface TaxBreakdownSectionProps {
+  taxes: number;
+  basePrice: number;
+  roomUpgrade: number;
+  addOnsSubtotal: number;
+}
+
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 0,
+  }).format(price);
+};
+
+function TaxBreakdownSection({ taxes, basePrice, roomUpgrade, addOnsSubtotal }: TaxBreakdownSectionProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const TAX_RATE = 0.1; // 10% VAT - TODO: Fetch from tax_categories table based on room/surf camp
+  
+  // For now, show single tax line. Later can be enhanced to show breakdown by tax category
+  // when we fetch tax_category_id from selected room/surf camp
+  // Calculate VAT by rounding to nearest cent (2 decimal places)
+  const accommodationTax = Math.round(basePrice * TAX_RATE / (1 + TAX_RATE) * 100) / 100;
+  const roomUpgradeTax = roomUpgrade > 0 ? Math.round(roomUpgrade * TAX_RATE / (1 + TAX_RATE) * 100) / 100 : 0;
+  // For add-ons, round to nearest cent - very small amounts like €1 will show €0.09 VAT
+  // When displayed with 0 decimals, this may show as €0, which is mathematically correct for very small amounts
+  const addOnsTax = addOnsSubtotal > 0 ? Math.round(addOnsSubtotal * TAX_RATE / (1 + TAX_RATE) * 100) / 100 : 0;
+  
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex justify-between items-center text-gray-700 hover:text-gray-900 transition-colors"
+        aria-expanded={isExpanded}
+        aria-label={isExpanded ? 'Collapse tax details' : 'Expand tax details'}
+      >
+        <span>Taxes (VAT included)</span>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{formatPrice(taxes)}</span>
+          {isExpanded ? (
+            <ChevronUp className="w-4 h-4 text-gray-500" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-gray-500" />
+          )}
+        </div>
+      </button>
+      
+      {isExpanded && (
+        <div className="mt-2 pl-4 border-l-2 border-orange-300 space-y-2 animate-in slide-in-from-top-2 duration-200">
+          <div className="text-xs text-gray-600 mb-2">
+            All prices include VAT. Tax breakdown shown below:
+          </div>
+          {basePrice > 0 && (
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">Accommodation VAT (10%)</span>
+              <span className="font-medium text-gray-700">{formatPrice(accommodationTax)}</span>
+            </div>
+          )}
+          {roomUpgrade > 0 && (
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">Room Upgrade VAT (10%)</span>
+              <span className="font-medium text-gray-700">{formatPrice(roomUpgradeTax)}</span>
+            </div>
+          )}
+          {addOnsSubtotal > 0 && (
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">Add-ons VAT (10%)</span>
+              <span className="font-medium text-gray-700">{formatPrice(addOnsTax)}</span>
+            </div>
+          )}
+          <div className="pt-2 border-t border-orange-200 mt-2">
+            <div className="flex justify-between items-center text-sm font-semibold text-orange-900">
+              <span>Total VAT</span>
+              <span>{formatPrice(taxes)}</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
@@ -70,6 +158,28 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
   const [showJumpButton, setShowJumpButton] = useState(false);
   const bankInstructionsRef = useRef<HTMLDivElement>(null);
   const paymentSectionRef = useRef<HTMLDivElement>(null);
+
+  // Fetch rooms and surf camps to get names for display
+  const { rooms } = useRooms({
+    checkIn: state.experienceType === 'room' ? state.dates.checkIn : null,
+    checkOut: state.experienceType === 'room' ? state.dates.checkOut : null,
+    guests: state.guests || 1
+  });
+  const { surfCamps } = useSurfCamps();
+
+  // Get room name for display
+  const getRoomName = () => {
+    if (state.experienceType !== 'room' || !state.selectedOption) return 'Room Booking';
+    const selectedRoom = rooms.find(r => r.id === state.selectedOption);
+    return selectedRoom?.name || 'Room Booking';
+  };
+
+  // Get surf week name for display
+  const getSurfWeekName = () => {
+    if (state.experienceType !== 'surf-week' || !state.selectedSurfWeek) return 'Surf Week Package';
+    const selectedCamp = surfCamps.find(c => c.id === state.selectedSurfWeek);
+    return selectedCamp?.name || 'Surf Week Package';
+  };
 
   // Calculate pricing from established base price and current add-ons
   // PRICING RULES:
@@ -130,20 +240,32 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
     }
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
+  // Helper to ensure date is a Date object (handles localStorage string dates)
+  const ensureDate = (date: Date | string | null | undefined): Date | null => {
+    if (!date) return null
+    if (date instanceof Date) return date
+    const parsed = new Date(date)
+    return isNaN(parsed.getTime()) ? null : parsed
+  }
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
+  const formatDate = (date: Date | string | null | undefined) => {
+    const dateObj = ensureDate(date)
+    if (!dateObj) return 'N/A'
+    
+    // Use UTC dates to avoid timezone issues
+    // Convert to UTC date string and parse to ensure consistent display
+    const utcDate = new Date(Date.UTC(
+      dateObj.getUTCFullYear(),
+      dateObj.getUTCMonth(),
+      dateObj.getUTCDate()
+    ));
+    
+    return utcDate.toLocaleDateString('en-US', {
       weekday: 'short',
       year: 'numeric',
       month: 'short',
       day: 'numeric',
+      timeZone: 'UTC'
     });
   };
 
@@ -184,6 +306,34 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         });
         setPaymentError(errorMessage);
         setIsProcessing(false);
+        
+        // Scroll to first error field or relevant section
+        setTimeout(() => {
+          // Try to scroll to error based on validation errors
+          if (validation.errors.some(e => e.includes('guest') || e.includes('Guest'))) {
+            // Scroll to guest details step
+            const guestDetailsSection = document.querySelector('[data-step="guest-details"]') || 
+                                       document.getElementById('guest-details-section')
+            if (guestDetailsSection) {
+              guestDetailsSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            } else {
+              scrollToFirstError()
+            }
+          } else if (validation.errors.some(e => e.includes('date') || e.includes('Date'))) {
+            // Scroll to date selection
+            const dateSection = document.querySelector('[data-step="dates"]') ||
+                               document.querySelector('[aria-label*="date" i]')
+            if (dateSection) {
+              dateSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            } else {
+              scrollToFirstError()
+            }
+          } else {
+            // Generic scroll to first error
+            scrollToFirstError()
+          }
+        }, 100)
+        
         return;
       }
 
@@ -236,8 +386,8 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             : {
                 room_id: state.selectedOption,
               }),
-          start_date: state.dates.checkIn.toISOString().split('T')[0],
-          end_date: state.dates.checkOut.toISOString().split('T')[0],
+          start_date: ensureDate(state.dates.checkIn)?.toISOString().split('T')[0] || '',
+          end_date: ensureDate(state.dates.checkOut)?.toISOString().split('T')[0] || '',
           participants,
           add_ons: state.selectedAddOns.map(a => ({ id: a.id, quantity: a.quantity, price: a.price })),
           pricing: pricing,
@@ -281,8 +431,8 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             experienceType: state.experienceType,
             selectedOption: state.selectedOption,
             selectedSurfWeek: state.selectedSurfWeek,
-            checkIn: state.dates.checkIn?.toISOString(),
-            checkOut: state.dates.checkOut?.toISOString(),
+            checkIn: ensureDate(state.dates.checkIn)?.toISOString(),
+            checkOut: ensureDate(state.dates.checkOut)?.toISOString(),
             guests: state.guests,
             guestDetailsCount: state.guestDetails.length,
             paymentMethod: state.paymentMethod,
@@ -375,6 +525,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         // For now, mark as completed for testing user flow
         // In production, you would render Stripe Elements here with the clientSecret
         setBookingCompleted(true);
+        clearBookingProgress(); // Clear saved progress on successful booking
         onComplete(data.data);
 
       } else {
@@ -392,6 +543,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         }, 100);
         
         // Still call onComplete for booking context
+        clearBookingProgress(); // Clear saved progress on successful booking
         onComplete(data.data);
       }
     } catch (error: unknown) {
@@ -427,7 +579,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                 {state.experienceType === 'room' ? 'Room Booking' : 'Surf Week Package'}
               </div>
               <div className="text-sm text-gray-600">
-                {state.experienceType === 'room' ? 'Ocean View Private Room' : 'Beginner Surf Week - Portugal'}
+                {state.experienceType === 'room' ? getRoomName() : getSurfWeekName()}
               </div>
             </div>
           </div>
@@ -442,7 +594,12 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                   {formatDate(state.dates.checkIn)} - {formatDate(state.dates.checkOut)}
                   {state.experienceType === 'room' && (
                     <span className="ml-2">
-                      ({Math.ceil((state.dates.checkOut.getTime() - state.dates.checkIn.getTime()) / (1000 * 60 * 60 * 24))} nights)
+                      ({(() => {
+                        const checkIn = ensureDate(state.dates.checkIn)
+                        const checkOut = ensureDate(state.dates.checkOut)
+                        if (!checkIn || !checkOut) return '0'
+                        return Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))
+                      })()} nights)
                     </span>
                   )}
                 </div>
@@ -584,10 +741,15 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
               <span className="font-medium">{formatPrice(pricing.addOnsSubtotal)}</span>
             </div>
           )}
-          <div className="flex justify-between items-center">
-            <span className="text-gray-700">Taxes (10%)</span>
-            <span className="font-medium">{formatPrice(pricing.taxes)}</span>
-          </div>
+          
+          {/* Expandable Tax Details */}
+          <TaxBreakdownSection 
+            taxes={pricing.taxes}
+            basePrice={pricing.basePrice}
+            roomUpgrade={pricing.roomUpgrade || 0}
+            addOnsSubtotal={pricing.addOnsSubtotal}
+          />
+          
           <div className="flex justify-between items-center">
             <span className="text-gray-700">Service Fee (5%)</span>
             <span className="font-medium">{formatPrice(pricing.fees)}</span>

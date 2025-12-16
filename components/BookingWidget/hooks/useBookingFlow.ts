@@ -1,8 +1,10 @@
-import { useReducer, useCallback, useMemo } from 'react';
+import { useReducer, useCallback, useMemo, useEffect } from 'react';
 import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelection, BankWireDetails, RoomAssignment, ParticipantName } from '../types';
 import { availabilityService } from '@/lib/availability';
 import { bookingService } from '@/lib/booking-service';
 import { validateBookingSubmission } from '@/lib/booking-utils';
+import { saveBookingProgress, loadBookingProgress, clearBookingProgress } from '@/lib/utils/booking-persistence';
+import { dateToISOString } from '@/lib/utils/date-helpers';
 
 const initialState: BookingState = {
   currentStep: 1,
@@ -108,6 +110,11 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
       return { ...state, guestDetails: updatedDetails };
     
     case 'UPDATE_PRICING':
+      // #region agent log
+      if (typeof window !== 'undefined') {
+        fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/hooks/useBookingFlow.ts:bookingReducer:UPDATE_PRICING',message:'Reducer handling UPDATE_PRICING',data:{prevTotal:(state as any)?.pricing?.total,prevTaxes:(state as any)?.pricing?.taxes,prevRoomUpgrade:(state as any)?.pricing?.roomUpgrade,nextTotal:(action as any)?.payload?.total,nextTaxes:(action as any)?.payload?.taxes,nextRoomUpgrade:(action as any)?.payload?.roomUpgrade,nextBasePrice:(action as any)?.payload?.basePrice,nextAddOnsSubtotal:(action as any)?.payload?.addOnsSubtotal,nextTotalIsNaN:Number.isNaN((action as any)?.payload?.total),nextTaxesIsNaN:Number.isNaN((action as any)?.payload?.taxes),nextRoomUpgradeIsNaN:Number.isNaN((action as any)?.payload?.roomUpgrade),nextTotalType:typeof (action as any)?.payload?.total,nextTaxesType:typeof (action as any)?.payload?.taxes,nextRoomUpgradeType:typeof (action as any)?.payload?.roomUpgrade},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+      }
+      // #endregion
       return { ...state, pricing: action.payload };
     
     case 'SET_LOADING':
@@ -135,7 +142,45 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
 }
 
 export function useBookingFlow() {
-  const [state, dispatch] = useReducer(bookingReducer, initialState);
+  // Try to restore state from localStorage on mount - use lazy initialization to only call once
+  const [state, dispatch] = useReducer(
+    bookingReducer,
+    initialState,
+    () => {
+      // Lazy initializer function - only runs once on mount
+      const restoredState = typeof window !== 'undefined' ? loadBookingProgress() : null;
+      const initialRestoredState = restoredState 
+        ? { ...initialState, ...restoredState }
+        : initialState;
+      
+      // #region agent log
+      if (typeof window !== 'undefined') {
+        fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/hooks/useBookingFlow.ts:useBookingFlow',message:'Initialized booking flow (restoredState summary)',data:{hasRestored:!!restoredState,restoredCheckInType:typeof (restoredState as any)?.dates?.checkIn,restoredCheckOutType:typeof (restoredState as any)?.dates?.checkOut,restoredStep:(restoredState as any)?.currentStep},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'H2'})}).catch(()=>{});
+      }
+      // #endregion
+      
+      return initialRestoredState;
+    }
+  );
+
+  // Save state to localStorage whenever it changes (debounced)
+  useEffect(() => {
+    // Don't save if we're on step 1 with no selections (initial state)
+    if (state.currentStep === 1 && 
+        !state.experienceType && 
+        !state.selectedOption && 
+        !state.selectedSurfWeek &&
+        state.guests === 1) {
+      return
+    }
+
+    // Debounce saves to avoid excessive localStorage writes
+    const timeoutId = setTimeout(() => {
+      saveBookingProgress(state)
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
+  }, [state])
 
   // Enhanced room assignment: Reordered step flow to collect guest details before room assignment
   const getStepFlow = useCallback(() => {
@@ -384,8 +429,8 @@ export function useBookingFlow() {
     try {
       const result = await availabilityService.checkAvailability({
         roomId,
-        checkIn: state.dates.checkIn.toISOString().split('T')[0],
-        checkOut: state.dates.checkOut.toISOString().split('T')[0],
+        checkIn: dateToISOString(state.dates.checkIn),
+        checkOut: dateToISOString(state.dates.checkOut),
       });
 
       if (!result.available) {
@@ -450,8 +495,8 @@ export function useBookingFlow() {
         clientName: `${primaryGuest.firstName} ${primaryGuest.lastName}`,
         email: primaryGuest.email,
         phone: primaryGuest.phone,
-        checkIn: state.dates.checkIn.toISOString().split('T')[0],
-        checkOut: state.dates.checkOut.toISOString().split('T')[0],
+        checkIn: dateToISOString(state.dates.checkIn),
+        checkOut: dateToISOString(state.dates.checkOut),
         roomId: state.selectedOption || 'unknown',
         guests: state.guests,
         message: state.guestDetails[0]?.specialRequests,

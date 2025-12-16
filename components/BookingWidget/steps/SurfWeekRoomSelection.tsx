@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import { Bed, Users, Star, ArrowRight, Calendar, CheckCircle, Check } from 'lucide-react';
 import { BookingState, Room, PricingBreakdown, RoomAssignment as RoomAssignmentType, SurfCampPricing } from '../types';
 import { useRooms } from '../hooks/useRooms';
@@ -99,12 +99,38 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   
   // Fetch real room data WITH date filtering for surf weeks
   // This ensures we check room_assignments for the surf camp dates
-  const surfCampStartDate = selectedSurfWeekData?.startDate ? new Date(selectedSurfWeekData.startDate) : null;
-  const surfCampEndDate = selectedSurfWeekData?.endDate ? new Date(selectedSurfWeekData.endDate) : null;
+  // Validate dates before creating Date objects to prevent API errors
+  const parseDate = (dateStr: string | undefined): Date | null => {
+    if (!dateStr) return null;
+    try {
+      const date = new Date(dateStr);
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        console.warn('Invalid date string:', dateStr);
+        return null;
+      }
+      return date;
+    } catch (error) {
+      console.warn('Error parsing date:', dateStr, error);
+      return null;
+    }
+  };
+  
+  const surfCampStartDate = parseDate(selectedSurfWeekData?.startDate);
+  const surfCampEndDate = parseDate(selectedSurfWeekData?.endDate);
+  
+  // Only fetch rooms if we have valid dates and a selected surf week
+  const shouldFetchRooms = !!(
+    state.selectedSurfWeek &&
+    selectedSurfWeekData &&
+    surfCampStartDate &&
+    surfCampEndDate &&
+    surfCampStartDate < surfCampEndDate
+  );
   
   const { rooms, loading, error } = useRooms({
-    checkIn: surfCampStartDate,
-    checkOut: surfCampEndDate,
+    checkIn: shouldFetchRooms ? surfCampStartDate : null,
+    checkOut: shouldFetchRooms ? surfCampEndDate : null,
     guests: state.guests || 1
   });
   
@@ -113,6 +139,11 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     const guestIds = Array.from({ length: state.guests }, (_, i) => `guest-${i + 1}`);
     const assignedGuestIds = state.roomAssignments.flatMap(a => a.guestIds);
     const unassigned = guestIds.filter(id => !assignedGuestIds.includes(id));
+    // #region agent log
+    if (typeof window !== 'undefined') {
+      fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/steps/SurfWeekRoomSelection.tsx:unassignedGuestsEffect',message:'Computed unassigned guest ids',data:{guests:state.guests,assignmentsCount:state.roomAssignments.length,assignedCount:assignedGuestIds.length,unassignedCount:unassigned.length},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2'})}).catch(()=>{});
+    }
+    // #endregion
     setUnassignedGuests(unassigned);
   }, [state.guests, state.roomAssignments]);
 
@@ -121,27 +152,81 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   // 1. Prices are tax-INCLUSIVE (tax is extracted for display, not added)
   // 2. No service fee
   // 3. Room upgrade = DIFFERENCE from base price (not full room price)
+  // Use refs to track previous values and prevent infinite loops
+  const prevRoomAssignmentsRef = useRef<string>('');
+  const prevRoomsRef = useRef<string>('');
+  const prevBasePriceRef = useRef<number>(0);
+  const prevAddOnsSubtotalRef = useRef<number>(0);
+  const prevGuestsRef = useRef<number>(0);
+  const isUpdatingPricingRef = useRef<boolean>(false);
+
+  // Create stable keys for rooms and room assignments to use in dependency array
+  const roomsKey = useMemo(() => JSON.stringify(rooms.map(r => r.id).sort()), [rooms]);
+  const roomAssignmentsKey = useMemo(() => JSON.stringify(state.roomAssignments.map(a => ({
+    roomId: a.roomId,
+    guestIds: [...a.guestIds].sort()
+  })).sort((a, b) => a.roomId.localeCompare(b.roomId))), [state.roomAssignments]);
+
   useEffect(() => {
+    // Prevent re-entry if we're currently updating pricing ourselves
+    if (isUpdatingPricingRef.current) {
+      return;
+    }
+
     const TAX_RATE = 0.1; // 10% VAT included in prices
     const basePrice = state.pricing.basePrice || 0;
     const addOnsSubtotal = state.pricing.addOnsSubtotal || 0;
     const basePricePerPerson = state.guests > 0 ? basePrice / state.guests : 0;
 
+    // Check if anything actually changed using stable keys
+    const assignmentsChanged = prevRoomAssignmentsRef.current !== roomAssignmentsKey;
+    const roomsChanged = prevRoomsRef.current !== roomsKey;
+    const basePriceChanged = prevBasePriceRef.current !== basePrice;
+    const addOnsChanged = prevAddOnsSubtotalRef.current !== addOnsSubtotal;
+    const guestsChanged = prevGuestsRef.current !== state.guests;
+
+    // #region agent log
+    if (typeof window !== 'undefined') {
+      fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/steps/SurfWeekRoomSelection.tsx:pricingEffect',message:'Pricing effect tick (deps + key values)',data:{roomsCount:rooms.length,assignmentsCount:state.roomAssignments.length,guests:state.guests,basePriceValue:state.pricing.basePrice,basePriceType:typeof (state.pricing as any).basePrice,addOnsSubtotalValue:state.pricing.addOnsSubtotal,addOnsSubtotalType:typeof (state.pricing as any).addOnsSubtotal,currentRoomUpgrade:state.pricing.roomUpgrade,currentTaxes:state.pricing.taxes,currentTotal:state.pricing.total,roomsKeyLen:roomsKey.length,roomAssignmentsKeyLen:roomAssignmentsKey.length,assignmentsChanged,roomsChanged,basePriceChanged,addOnsChanged,guestsChanged},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
+    }
+    // #endregion
+
+    // Only proceed if something relevant changed
+    if (!assignmentsChanged && !roomsChanged && !basePriceChanged && !addOnsChanged && !guestsChanged) {
+      return;
+    }
+
+    // Update refs BEFORE updating pricing
+    prevRoomAssignmentsRef.current = roomAssignmentsKey;
+    prevRoomsRef.current = roomsKey;
+    prevBasePriceRef.current = basePrice;
+    prevAddOnsSubtotalRef.current = addOnsSubtotal;
+    prevGuestsRef.current = state.guests;
+
     if (state.roomAssignments.length === 0 || rooms.length === 0) {
       // If no assignments, reset room upgrade to 0
-      if (actions.updatePricing) {
-        const subtotal = basePrice + addOnsSubtotal;
-        // Tax is INCLUDED in price, extract for display (not added on top)
-        const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
-        const fees = 0; // No service fee
+      const subtotal = basePrice + addOnsSubtotal;
+      // Tax is INCLUDED in price, extract for display (not added on top)
+      const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
+      const fees = 0; // No service fee
 
-        actions.updatePricing({
-          ...state.pricing,
-          roomUpgrade: 0,
-          taxes,
-          fees,
-          total: subtotal, // Price already includes tax
-        });
+      const newPricing = {
+        ...state.pricing,
+        roomUpgrade: 0,
+        taxes,
+        fees,
+        total: subtotal, // Price already includes tax
+      };
+
+      // Only update if pricing actually changed
+      if (state.pricing.roomUpgrade !== 0 || state.pricing.taxes !== taxes || state.pricing.total !== subtotal) {
+        // #region agent log
+        if (typeof window !== 'undefined') {
+          fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/steps/SurfWeekRoomSelection.tsx:pricingEffect:noAssignments',message:'Dispatching updatePricing (no assignments branch)',data:{subtotal,taxes,fees,roomUpgrade:0,subtotalIsNaN:Number.isNaN(subtotal),taxesIsNaN:Number.isNaN(taxes),basePriceValue:state.pricing.basePrice,addOnsSubtotalValue:state.pricing.addOnsSubtotal},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'H3'})}).catch(()=>{});
+        }
+        // #endregion
+        isUpdatingPricingRef.current = true;
+        actions.updatePricing(newPricing);
       }
       return;
     }
@@ -167,21 +252,45 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     });
 
     // Update pricing with room upgrade
-    if (actions.updatePricing) {
-      const subtotal = basePrice + totalRoomUpgrade + addOnsSubtotal;
-      // Tax is INCLUDED in price, extract for display (not added on top)
-      const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
-      const fees = 0; // No service fee
+    const subtotal = basePrice + totalRoomUpgrade + addOnsSubtotal;
+    // Tax is INCLUDED in price, extract for display (not added on top)
+    const taxes = Math.round(subtotal * TAX_RATE / (1 + TAX_RATE));
+    const fees = 0; // No service fee
 
-      actions.updatePricing({
-        ...state.pricing,
-        roomUpgrade: totalRoomUpgrade,
-        taxes,
-        fees,
-        total: subtotal, // Price already includes tax
-      });
+    const newPricing = {
+      ...state.pricing,
+      roomUpgrade: totalRoomUpgrade,
+      taxes,
+      fees,
+      total: subtotal, // Price already includes tax
+    };
+
+    // Only update if pricing actually changed
+    if (
+      state.pricing.roomUpgrade !== totalRoomUpgrade ||
+      state.pricing.taxes !== taxes ||
+      state.pricing.total !== subtotal
+    ) {
+      // #region agent log
+      if (typeof window !== 'undefined') {
+        fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/steps/SurfWeekRoomSelection.tsx:pricingEffect:withAssignments',message:'Dispatching updatePricing (with assignments branch)',data:{subtotal,taxes,fees,roomUpgrade:totalRoomUpgrade,subtotalIsNaN:Number.isNaN(subtotal),taxesIsNaN:Number.isNaN(taxes),roomUpgradeIsNaN:Number.isNaN(totalRoomUpgrade),basePricePerPerson},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'H3'})}).catch(()=>{});
+      }
+      // #endregion
+      isUpdatingPricingRef.current = true;
+      actions.updatePricing(newPricing);
     }
-  }, [state.roomAssignments, rooms, state.pricing, actions, state.guests]);
+    // Note: basePrice and addOnsSubtotal are intentionally NOT in deps - they're set in earlier steps
+    // and shouldn't change during room selection. The ref guard prevents infinite loops.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomAssignmentsKey, roomsKey, state.guests]);
+
+  // Reset the updating flag after pricing state updates (synchronously)
+  useLayoutEffect(() => {
+    if (isUpdatingPricingRef.current) {
+      // Reset flag after React has processed the state update
+      isUpdatingPricingRef.current = false;
+    }
+  }, [state.pricing.roomUpgrade, state.pricing.taxes, state.pricing.total]);
 
   // Auto-advance when all guests are assigned
   useEffect(() => {
