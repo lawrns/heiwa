@@ -4,15 +4,16 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   X,
   ChevronRight,
+  ChevronDown,
   Save,
   Loader2,
   Plus,
   Trash2,
   GripVertical,
-  Eye,
-  EyeOff,
   AlertTriangle,
+  Settings,
 } from 'lucide-react'
+import { ImagePicker } from './ImagePicker'
 import { HeroEditor } from './editors/HeroEditor'
 import { CardsEditor } from './editors/CardsEditor'
 import { TextEditor } from './editors/TextEditor'
@@ -36,6 +37,15 @@ interface Section {
   content: Record<string, unknown>
   order_index: number
   is_active: boolean
+}
+
+interface PageMeta {
+  slug: string
+  title: string
+  meta_description: string
+  meta_keywords: string
+  og_image: string
+  is_published: boolean
 }
 
 interface EditSidebarProps {
@@ -140,6 +150,11 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 
+  // Page SEO settings
+  const [pageMeta, setPageMeta] = useState<PageMeta | null>(null)
+  const [showSeoPanel, setShowSeoPanel] = useState(false)
+  const [isSavingSeo, setIsSavingSeo] = useState(false)
+
   // Fetch sections for this page
   useEffect(() => {
     async function fetchSections() {
@@ -160,6 +175,47 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
     }
     fetchSections()
   }, [pageSlug])
+
+  // Fetch page metadata
+  useEffect(() => {
+    async function fetchPageMeta() {
+      try {
+        const res = await fetch(`/api/cms/pages/${pageSlug}`)
+        if (res.ok) {
+          const data = await res.json()
+          if (data.success && data.data) {
+            setPageMeta(data.data)
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load page meta:', err)
+      }
+    }
+    fetchPageMeta()
+  }, [pageSlug])
+
+  // Save page SEO settings
+  const handleSaveSeo = async () => {
+    if (!pageMeta) return
+
+    try {
+      setIsSavingSeo(true)
+      const res = await fetch(`/api/cms/pages/${pageSlug}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pageMeta),
+      })
+
+      if (!res.ok) throw new Error('Failed to save SEO settings')
+
+      // Close panel after save
+      setShowSeoPanel(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save SEO settings')
+    } finally {
+      setIsSavingSeo(false)
+    }
+  }
 
   // Select a section and scroll to it
   const handleSelectSection = (section: Section) => {
@@ -418,6 +474,109 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
             </div>
           ) : (
             <div className="p-4">
+              {/* SEO Settings Panel */}
+              <div className="mb-6 border border-gray-200 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setShowSeoPanel(!showSeoPanel)}
+                  className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Settings className="w-4 h-4 text-gray-500" />
+                    <span className="font-medium text-gray-900">Page Settings & SEO</span>
+                  </div>
+                  <ChevronDown
+                    className={cn(
+                      'w-4 h-4 text-gray-500 transition-transform',
+                      showSeoPanel && 'rotate-180'
+                    )}
+                  />
+                </button>
+
+                {showSeoPanel && pageMeta && (
+                  <div className="p-4 space-y-4 border-t border-gray-200">
+                    {/* Page Title */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Page Title
+                      </label>
+                      <input
+                        type="text"
+                        value={pageMeta.title || ''}
+                        onChange={(e) => setPageMeta({ ...pageMeta, title: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        placeholder="Page title"
+                      />
+                    </div>
+
+                    {/* Meta Description */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Meta Description
+                      </label>
+                      <textarea
+                        value={pageMeta.meta_description || ''}
+                        onChange={(e) =>
+                          setPageMeta({ ...pageMeta, meta_description: e.target.value })
+                        }
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                        placeholder="Brief description for search engines (160 chars recommended)"
+                      />
+                      <p className="mt-1 text-xs text-gray-500">
+                        {(pageMeta.meta_description || '').length}/160 characters
+                      </p>
+                    </div>
+
+                    {/* Meta Keywords */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Meta Keywords
+                      </label>
+                      <input
+                        type="text"
+                        value={pageMeta.meta_keywords || ''}
+                        onChange={(e) =>
+                          setPageMeta({ ...pageMeta, meta_keywords: e.target.value })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        placeholder="keyword1, keyword2, keyword3"
+                      />
+                    </div>
+
+                    {/* OG Image */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Social Share Image (OG Image)
+                      </label>
+                      <ImagePicker
+                        value={pageMeta.og_image || ''}
+                        onChange={(url) => setPageMeta({ ...pageMeta, og_image: url })}
+                        placeholder="Select an image for social sharing"
+                      />
+                    </div>
+
+                    {/* Save Button */}
+                    <button
+                      onClick={handleSaveSeo}
+                      disabled={isSavingSeo}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                      {isSavingSeo ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          Save SEO Settings
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="flex items-center justify-between mb-4">
                 <p className="text-sm text-gray-500">Drag to reorder sections:</p>
                 <button
