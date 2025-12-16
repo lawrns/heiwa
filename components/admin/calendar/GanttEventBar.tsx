@@ -7,7 +7,7 @@ interface GanttEventBarProps {
   event: CalendarEvent
   startDay: number
   endDay: number
-  totalDays: number
+  dayWidth: number
   row: number
   onClick: (event: CalendarEvent, anchorEl: HTMLElement) => void
 }
@@ -16,7 +16,7 @@ export function GanttEventBar({
   event,
   startDay,
   endDay,
-  totalDays,
+  dayWidth,
   row,
   onClick,
 }: GanttEventBarProps) {
@@ -29,15 +29,15 @@ export function GanttEventBar({
     ? `${event.guest_name}${event.room_name ? ` - ${event.room_name}` : ''}`
     : event.title
 
-  // Calculate position and width as percentages
-  const leftPercent = ((startDay - 1) / totalDays) * 100
-  const widthPercent = ((endDay - startDay + 1) / totalDays) * 100
+  // Calculate position and width in pixels
+  const leftPx = (startDay - 1) * dayWidth
+  const widthPx = (endDay - startDay + 1) * dayWidth
 
   return (
     <button
       onClick={(e) => onClick(event, e.currentTarget)}
       className={cn(
-        'absolute h-6 rounded text-xs font-medium truncate px-2 flex items-center gap-1',
+        'absolute h-6 rounded text-xs font-medium truncate px-1 flex items-center gap-1',
         'hover:ring-2 hover:ring-offset-1 focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all',
         'shadow-sm hover:shadow-md cursor-pointer',
         isConfirmed && 'opacity-100',
@@ -45,8 +45,8 @@ export function GanttEventBar({
         isCancelled && 'opacity-50 line-through'
       )}
       style={{
-        left: `${leftPercent}%`,
-        width: `${widthPercent}%`,
+        left: `${leftPx}px`,
+        width: `${widthPx}px`,
         top: `${row * 28 + 4}px`,
         backgroundColor: config.color,
         color: 'white',

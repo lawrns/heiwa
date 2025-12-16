@@ -233,7 +233,7 @@ export function GanttTimeline({
                         event={eventData.event}
                         startDay={eventData.startDay}
                         endDay={eventData.endDay}
-                        totalDays={daysInMonth}
+                        dayWidth={dayWidth}
                         row={idx}
                         onClick={handleEventClick}
                       />
