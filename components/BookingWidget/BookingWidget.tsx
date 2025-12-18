@@ -119,8 +119,8 @@ export function BookingWidget({
     }
 
     // Batch all state updates to prevent flickering
-    // Add small delay for mobile Safari to ensure state is ready
-    const delay = typeof window !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 100 : 0;
+    // Reduced delay for better UX - only keep minimal delay for Safari
+    const delay = typeof window !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 50 : 0;
     
     const timeoutId = setTimeout(() => {
       if (selectedSurfWeek) {

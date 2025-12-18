@@ -142,26 +142,38 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
 }
 
 export function useBookingFlow() {
-  // Try to restore state from localStorage on mount - use lazy initialization to only call once
-  const [state, dispatch] = useReducer(
-    bookingReducer,
-    initialState,
-    () => {
-      // Lazy initializer function - only runs once on mount
-      const restoredState = typeof window !== 'undefined' ? loadBookingProgress() : null;
-      const initialRestoredState = restoredState 
-        ? { ...initialState, ...restoredState }
-        : initialState;
-      
-      // #region agent log
-      if (typeof window !== 'undefined') {
-        fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/hooks/useBookingFlow.ts:useBookingFlow',message:'Initialized booking flow (restoredState summary)',data:{hasRestored:!!restoredState,restoredCheckInType:typeof (restoredState as any)?.dates?.checkIn,restoredCheckOutType:typeof (restoredState as any)?.dates?.checkOut,restoredStep:(restoredState as any)?.currentStep},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'H2'})}).catch(()=>{});
+  // Start with initialState to ensure SSR/client match
+  const [state, dispatch] = useReducer(bookingReducer, initialState);
+
+  // Restore from localStorage AFTER hydration to prevent mismatch
+  useEffect(() => {
+    const restoredState = loadBookingProgress();
+    if (restoredState) {
+      // Restore each field individually to avoid overwriting the entire state
+      if (restoredState.experienceType) {
+        dispatch({ type: 'SET_EXPERIENCE_TYPE', payload: restoredState.experienceType });
       }
-      // #endregion
-      
-      return initialRestoredState;
+      if (restoredState.dates?.checkIn && restoredState.dates?.checkOut) {
+        const checkIn = new Date(restoredState.dates.checkIn);
+        const checkOut = new Date(restoredState.dates.checkOut);
+        if (!isNaN(checkIn.getTime()) && !isNaN(checkOut.getTime())) {
+          dispatch({ type: 'SET_DATES', payload: { checkIn, checkOut } });
+        }
+      }
+      if (restoredState.guests && restoredState.guests > 1) {
+        dispatch({ type: 'SET_GUESTS', payload: restoredState.guests });
+      }
+      if (restoredState.selectedOption) {
+        dispatch({ type: 'SET_SELECTED_OPTION', payload: restoredState.selectedOption });
+      }
+      if (restoredState.selectedSurfWeek) {
+        dispatch({ type: 'SET_SURF_WEEK', payload: restoredState.selectedSurfWeek });
+      }
+      if (restoredState.currentStep && restoredState.currentStep > 1) {
+        dispatch({ type: 'SET_STEP', payload: restoredState.currentStep });
+      }
     }
-  );
+  }, []); // Empty dependency array - run once on mount
 
   // Save state to localStorage whenever it changes (debounced)
   useEffect(() => {
@@ -230,8 +242,13 @@ export function useBookingFlow() {
   }, [state.currentStep, maxStep]);
 
   const prevStep = useCallback(() => {
-    // Don't allow going back to skipped steps
+    // Don't allow going back to skipped steps or from the first effective step
     if (state.currentStep > 1) {
+      // Check if we're at the first effective step when steps are skipped
+      if (state.skippedSteps && state.skippedSteps.length > 0 && state.currentStep === 1) {
+        return; // Already at first effective step
+      }
+      
       const newStep = state.currentStep - 1;
       const targetStepType = stepFlow[newStep - 1];
 
@@ -244,8 +261,10 @@ export function useBookingFlow() {
       // If we're trying to go back to a skipped step, skip it
       if (state.skippedSteps && state.skippedSteps.length > 0) {
         // When steps are skipped, step 1 is already the first non-skipped step
-        // So we can safely go back
-        dispatch({ type: 'SET_STEP', payload: newStep });
+        // So we can safely go back as long as we're not going to step 0
+        if (newStep >= 1) {
+          dispatch({ type: 'SET_STEP', payload: newStep });
+        }
       } else {
         dispatch({ type: 'SET_STEP', payload: newStep });
       }
