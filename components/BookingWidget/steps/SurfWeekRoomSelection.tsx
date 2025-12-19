@@ -553,7 +553,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
       {/* Selected Surf Week Summary - Optimized for conversion */}
       {(selectedSurfWeekData || state.selectedSurfWeek) && (
-        <div className="bg-gradient-to-r from-orange-50 via-orange-100 to-orange-50 rounded-xl p-5 md:p-6 border-2 border-orange-300 shadow-md">
+        <div className="bg-orange-50 rounded-xl p-5 md:p-6 border-2 border-orange-200 shadow-sm">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">

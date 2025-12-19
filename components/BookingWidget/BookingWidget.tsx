@@ -260,17 +260,18 @@ export function BookingWidget({
     <>
       {/* Trigger Button - Only render for non-Web Component usage */}
       {!isWebComponent && (
-        <button
+        <Button
+          size="lg"
           onClick={openWidget}
-          className="relative z-50 flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-sm rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-orange-500/30 animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-300 group"
+          className="relative z-50 animate-in fade-in-0 slide-in-from-top-2 duration-700 delay-300"
           aria-label="Open booking widget"
         >
-          <Calendar size={18} className="transition-transform duration-300 group-hover:rotate-12" />
+          <Calendar size={18} />
           <span className="relative">
             {config?.triggerText || 'Book Now'}
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
           </span>
-        </button>
+        </Button>
       )}
 
       {/* Widget Modal */}
@@ -416,7 +417,8 @@ export function BookingWidget({
               <div className="flex items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white">
                 <div className="relative group">
                   <Button
-                    variant="ghost"
+                    variant="outline"
+                    size="default"
                     onClick={actions.prevStep}
                     disabled={computed.isFirstStep}
                     className="min-h-[44px]"
@@ -460,9 +462,10 @@ export function BookingWidget({
                   </div>
 
                   <Button
+                    size="lg"
                     onClick={actions.nextStep}
                     disabled={!computed.canProceedToNextStep || state.isLoading}
-                    className="min-h-[44px] px-6"
+                    className="min-h-[44px]"
                     aria-label={computed.isLastStep ? 'Complete booking' : 'Continue to next step'}
                   >
                     {state.isLoading ? (
