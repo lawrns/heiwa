@@ -279,6 +279,18 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
+    // First, delete any room assignments for this enrollment
+    const { error: assignmentError } = await supabaseAdmin
+      .from('room_assignments')
+      .delete()
+      .eq('enrollment_id', id)
+
+    if (assignmentError) {
+      console.error('Error deleting room assignment for enrollment:', assignmentError)
+      // Continue anyway - the room assignment deletion is not critical
+    }
+
+    // Then cancel the enrollment
     const { error } = await supabaseAdmin
       .from('surf_camp_enrollments')
       .update({ status: 'cancelled' })
