@@ -779,13 +779,13 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 key={w.id}
                 data-testid="surf-week-row"
                 onClick={() => !isDisabled && handleOptionSelect(w.id)}
-                className={`w-full p-6 rounded-xl border-2 bg-white text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50 relative
+                className={`w-full p-4 sm:p-6 rounded-xl border-2 bg-white text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50 relative
                   ${isSelected ? 'border-orange-500 bg-orange-50 shadow-md ring-2 ring-orange-500/30' : 'border-gray-200'}
                   ${isDisabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-lg hover:border-orange-300 hover:bg-orange-50/50'}`}
                 style={{ animationDelay: `${index * 80}ms` }}
                 disabled={isDisabled}
               >
-                <div className="flex gap-6">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
                   {/* Surf Week Hero Image */}
                   <div className="flex-shrink-0">
                     {w.images && w.images.length > 0 ? (
@@ -793,10 +793,10 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         image={w.images[0]}
                         roomName={w.name}
                         onClick={() => openGallery(w)}
-                        className="w-32 h-24"
+                        className="w-full h-40 sm:w-32 sm:h-24"
                       />
                     ) : (
-                      <div className="w-32 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                      <div className="w-full h-40 sm:w-32 sm:h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
                         <div className="text-white text-2xl font-bold">🏄‍♂️</div>
                       </div>
                     )}
@@ -805,19 +805,19 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   {/* Content */}
                   <div className="flex-1 space-y-3">
                     {/* Title and Price */}
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4">
                       <div>
-                        <div className="text-lg font-bold text-gray-900">{dateText}</div>
+                        <div className="text-base sm:text-lg font-bold text-gray-900">{dateText}</div>
                         <div className="text-accent font-extrabold uppercase tracking-wide text-sm mt-1" data-testid="surf-week-title">{w.name}</div>
                         <p className="text-sm text-gray-600 line-clamp-2 mt-1">
                           {w.description}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-orange-600">
+                      <div className="sm:text-right flex-shrink-0">
+                        <span className="text-xl sm:text-2xl font-bold text-orange-600">
                           {`from €${Math.round(from)}`}
-                        </div>
-                        <div className="text-xs text-gray-500">per person</div>
+                        </span>
+                        <span className="text-xs text-gray-500 ml-1 sm:ml-0 sm:block">per person</span>
                       </div>
                     </div>
 
@@ -973,7 +973,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         onClick={() => handleOptionSelect(option.id)}
                         disabled={false}
                         className={`
-                          w-full p-6 rounded-lg border text-left
+                          w-full p-4 sm:p-6 rounded-lg border text-left
                           transition-all duration-200
                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-500
                           relative
@@ -984,7 +984,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         `}
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
-                        <div className="flex gap-6">
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
                           {/* Enhanced Hero Image */}
                           <div className="flex-shrink-0 relative">
                             {option.images && option.images.length > 0 ? (
@@ -993,7 +993,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                   image={option.images[0]}
                                   roomName={option.name}
                                   onClick={() => openGallery(option)}
-                                  className="w-32 h-24"
+                                  className="w-full h-40 sm:w-32 sm:h-24"
                                 />
                                 {/* Checkbox indicator - positioned on image */}
                                 <div
@@ -1009,7 +1009,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                 </div>
                               </>
                             ) : (
-                              <div className="w-32 h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center relative">
+                              <div className="w-full h-40 sm:w-32 sm:h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center relative">
                                 <div className="text-white text-2xl font-bold">
                                   {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
                                 </div>
@@ -1032,22 +1032,22 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                           {/* Content */}
                           <div className="flex-1 space-y-3">
                             {/* Title and Price */}
-                            <div className="flex justify-between items-start">
-                              <div className="flex-1 pr-4">
-                                <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4">
+                              <div className="flex-1 sm:pr-4">
+                                <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
                                   {option.name}
                                 </h4>
                                 <p className="text-sm text-gray-600 line-clamp-2">
                                   {option.description}
                                 </p>
                               </div>
-                              <div className="text-right flex-shrink-0">
-                                <div className="text-2xl font-bold text-orange-600">
+                              <div className="sm:text-right flex-shrink-0">
+                                <span className="text-xl sm:text-2xl font-bold text-orange-600">
                                   {typeof totalPrice === 'number' && !Number.isNaN(totalPrice)
                                     ? formatPrice(totalPrice)
                                     : (state.experienceType === 'room' ? 'Select dates' : (option.price ? formatPrice(option.price) : '—'))}
-                                </div>
-                                <div className="text-xs text-gray-500">
+                                </span>
+                                <span className="text-xs text-gray-500 ml-1 sm:ml-0 sm:block">
                                   {state.experienceType === 'room'
                                     ? (state.dates.checkIn && state.dates.checkOut ? (() => {
                                         const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
@@ -1057,7 +1057,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                       })() : 'per night')
                                     : 'per person'
                                   }
-                                </div>
+                                </span>
                               </div>
                             </div>
 
