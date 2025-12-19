@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { X, Calendar, CheckCircle, ArrowLeft, Info } from 'lucide-react';
+import { X, Calendar, CheckCircle, ArrowLeft, ArrowRight, Loader2, Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useBookingFlow } from './hooks/useBookingFlow';
 import { useBooking } from '@/lib/booking-context';
 import type { BookingSuccessData } from '@/lib/types';
@@ -275,35 +276,12 @@ export function BookingWidget({
       {/* Widget Modal */}
       {isOpen && (
         <div
-          className="heiwa-modal-overlay"
+          className="fixed inset-0 z-[999999] flex items-center justify-end bg-black/50 backdrop-blur-sm"
           onClick={handleBackdropClick}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 999999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(4px)'
-          }}
         >
           {/* Widget Panel */}
           <div
             className="relative w-full max-w-md h-full bg-white shadow-2xl animate-in slide-in-from-right duration-500 ease-out flex flex-col sm:max-w-lg lg:max-w-xl transform-gpu"
-            style={{
-              position: 'relative',
-              width: '100%',
-              maxWidth: '28rem',
-              height: '100%',
-              backgroundColor: 'white',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-              display: 'flex',
-              flexDirection: 'column'
-            }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
@@ -437,27 +415,16 @@ export function BookingWidget({
             {!bookingSuccess && computed.currentStepType !== 'review-pay' && (
               <div className="flex items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white">
                 <div className="relative group">
-                  <button
+                  <Button
+                    variant="ghost"
                     onClick={actions.prevStep}
                     disabled={computed.isFirstStep}
-                    className="
-                      inline-flex items-center gap-2 px-4 py-3
-                      text-sm font-medium
-                      bg-white hover:bg-gray-50
-                      text-gray-700 hover:text-gray-900
-                      border border-gray-300 hover:border-gray-400
-                      disabled:text-gray-400 disabled:bg-gray-100 disabled:border-gray-200 disabled:cursor-not-allowed
-                      rounded-lg shadow-sm hover:shadow-md
-                      transition-all duration-200 ease-out
-                      focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2
-                      min-h-[44px] min-w-[100px]
-                      hover:scale-[1.02] disabled:hover:scale-100
-                    "
+                    className="min-h-[44px]"
                     aria-label="Go back to previous step"
                   >
                     <ArrowLeft size={16} className="flex-shrink-0" />
                     <span>Back</span>
-                  </button>
+                  </Button>
                   
                   {/* Tooltip */}
                   {!computed.isFirstStep && (
@@ -492,23 +459,26 @@ export function BookingWidget({
                     </div>
                   </div>
 
-                  <button
+                  <Button
                     onClick={actions.nextStep}
                     disabled={!computed.canProceedToNextStep || state.isLoading}
-                    className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-[1.02] disabled:hover:scale-100 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 disabled:cursor-not-allowed flex items-center gap-2 min-h-[44px]"
+                    className="min-h-[44px] px-6"
                     aria-label={computed.isLastStep ? 'Complete booking' : 'Continue to next step'}
                   >
                     {state.isLoading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <>
+                        <Loader2 size={16} className="animate-spin" />
                         <span className="hidden sm:inline">Loading...</span>
-                      </div>
+                      </>
                     ) : computed.isLastStep ? (
                       'Complete Booking'
                     ) : (
-                      'Next'
+                      <>
+                        <span>Next</span>
+                        <ArrowRight size={16} />
+                      </>
                     )}
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
