@@ -282,10 +282,10 @@ export function BookingWidget({
         >
           {/* Widget Panel */}
           <div
-            className="relative w-full max-w-md h-full bg-white shadow-2xl animate-in slide-in-from-right duration-500 ease-out flex flex-col sm:max-w-lg lg:max-w-xl transform-gpu"
+            className="relative w-full max-w-md h-full bg-white shadow-2xl animate-in slide-in-from-right duration-500 ease-out flex flex-col sm:max-w-lg md:max-w-2xl lg:max-w-3xl transform-gpu"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+            <div className="flex items-center justify-between p-4 sm:p-5 md:p-6 border-b border-gray-200 bg-gray-50">
               <h2 className="text-xl font-bold text-gray-900">
                 Book Your Surf Adventure
               </h2>
@@ -299,7 +299,7 @@ export function BookingWidget({
             </div>
 
             {/* Progress Indicator */}
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div className="px-4 sm:px-5 md:px-6 py-3 sm:py-4 bg-gray-50 border-b border-gray-200">
               <ProgressIndicator
                 currentStep={computed.currentStep}
                 stepFlow={computed.stepFlow}
@@ -310,8 +310,8 @@ export function BookingWidget({
             </div>
 
             {/* Content */}
-            <div ref={contentScrollRef} className="flex-1 overflow-y-auto">
-              <div className="p-4 sm:p-6 lg:p-8">
+            <div ref={contentScrollRef} className="flex-1 overflow-y-auto relative shadow-inner">
+              <div className="p-3 sm:p-4 md:p-6 lg:p-8">
                 {bookingSuccess ? (
                   <div className="text-center space-y-6">
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -399,12 +399,14 @@ export function BookingWidget({
                       </div>
                     </div>
 
-                    <button
+                    <Button
                       onClick={closeWidget}
-                      className="w-full max-w-xs py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+                      variant="secondary"
+                      size="lg"
+                      className="w-full max-w-xs bg-green-600 hover:bg-green-700 text-white"
                     >
                       Close & Return to Site
-                    </button>
+                    </Button>
                   </div>
                 ) : (
                   renderCurrentStep()
@@ -414,7 +416,7 @@ export function BookingWidget({
 
             {/* Footer Navigation */}
             {!bookingSuccess && computed.currentStepType !== 'review-pay' && (
-              <div className="flex items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white">
+              <div className="flex items-center justify-between p-3 sm:p-4 md:p-5 lg:p-6 border-t border-gray-200 bg-white">
                 <div className="relative group">
                   <Button
                     variant="outline"
@@ -449,16 +451,11 @@ export function BookingWidget({
                 </div>
 
                 <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="text-right hidden sm:block">
-                    <div className="text-lg font-bold text-gray-900">
+                  <div className="text-right">
+                    <div className="text-base sm:text-lg font-bold text-gray-900">
                       €{state.pricing.total?.toFixed(2) || '0.00'}
                     </div>
-                    <div className="text-xs text-gray-500">Total</div>
-                  </div>
-                  <div className="text-right sm:hidden">
-                    <div className="text-base font-bold text-gray-900">
-                      €{state.pricing.total?.toFixed(2) || '0.00'}
-                    </div>
+                    <div className="text-xs text-gray-500 hidden sm:block">Total</div>
                   </div>
 
                   <Button
@@ -471,7 +468,7 @@ export function BookingWidget({
                     {state.isLoading ? (
                       <>
                         <Loader2 size={16} className="animate-spin" />
-                        <span className="hidden sm:inline">Loading...</span>
+                        <span>Loading...</span>
                       </>
                     ) : computed.isLastStep ? (
                       'Complete Booking'

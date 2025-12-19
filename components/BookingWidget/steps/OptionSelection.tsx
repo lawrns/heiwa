@@ -5,6 +5,7 @@ import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 import { useDateAvailability } from '../hooks/useDateAvailability';
 import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
+import { Button } from '@/components/ui/button';
 
 interface OptionSelectionProps {
   state: BookingState;
@@ -475,12 +476,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             <p className="text-red-600">
               Error loading {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}: {error}
             </p>
-            <button
+            <Button
               onClick={handleRetry}
-              className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-hover transition-colors"
             >
               Try Again
-            </button>
+            </Button>
           </div>
         </div>
       </div>

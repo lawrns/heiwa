@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Mail, Phone, Utensils, AlertCircle, Edit3, ChevronDown, CheckCircle } from 'lucide-react';
 import { BookingState, GuestInfo } from '../types';
+import { Button } from '@/components/ui/button';
 
 interface GuestDetailsProps {
   state: BookingState;
@@ -470,24 +471,20 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
             {/* Save Button */}
             <div className="mt-4 flex justify-end">
-              <button
+              <Button
                 onClick={() => handleSaveGuest(index)}
                 disabled={isSaved}
-                className={`px-6 py-3 text-white font-semibold text-sm rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 min-h-[44px] ${
-                  isSaved
-                    ? 'bg-green-500 cursor-not-allowed opacity-75'
-                    : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:scale-105 focus:ring-orange-500/30'
-                }`}
+                className={isSaved ? 'bg-green-500 hover:bg-green-500' : ''}
               >
                 {isSaved ? (
-                  <span className="flex items-center gap-2">
+                  <>
                     <CheckCircle size={16} />
                     Saved
-                  </span>
+                  </>
                 ) : (
                   `Save Guest ${index + 1}${index + 1 < state.guests ? ' & Continue' : ''}`
                 )}
-              </button>
+              </Button>
             </div>
           </div>
         );

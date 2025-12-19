@@ -59,3 +59,6 @@ WHERE room_type IS NULL
 2. **Add constraint** for `surf_camp_enrollments.booking_id` for new enrollments (with migration for existing data)
 3. **Regular integrity checks** via scheduled queries to catch future data issues early
 
+
+
+

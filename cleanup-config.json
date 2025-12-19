@@ -1,0 +1,296 @@
+{
+  "version": "1.0.0",
+  "description": "Comprehensive cleanup configuration for Heiwa House codebase",
+  "strategy": "lean-and-mean",
+  "priority": "critical",
+  "phases": [
+    {
+      "id": 1,
+      "name": "Remove Unused Dependencies",
+      "risk": "low",
+      "actions": [
+        {
+          "type": "removeDependency",
+          "target": "unused",
+          "items": [
+            "@hookform/resolvers",
+            "@radix-ui/react-alert-dialog",
+            "@radix-ui/react-avatar", 
+            "@radix-ui/react-progress",
+            "@radix-ui/react-radio-group",
+            "@tailwindcss/postcss",
+            "@use-gesture/react",
+            "autoprefixer",
+            "critters",
+            "eslint",
+            "eslint-config-next",
+            "postcss",
+            "react-player"
+          ]
+        },
+        {
+          "type": "removeDevDependency",
+          "target": "unused",
+          "items": [
+            "@types/jest",
+            "jest-environment-jsdom",
+            "netlify-cli",
+            "puppeteer"
+          ]
+        },
+        {
+          "type": "addDependency",
+          "items": [
+            { "name": "@eslint/eslintrc", "version": "^3.0.0" },
+            { "name": "playwright", "version": "^1.56.1" },
+            { "name": "axios", "version": "^1.6.0" },
+            { "name": "@jest/globals", "version": "^30.0.0" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Remove Development-Only Routes",
+      "risk": "low",
+      "actions": [
+        {
+          "type": "removeDirectory",
+          "paths": [
+            "app/test-booking",
+            "app/play",
+            "app/design-system",
+            "app/flow",
+            "app/the-spot"
+          ],
+          "reason": "Development routes not needed in production"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Consolidate Component Directories",
+      "risk": "medium",
+      "actions": [
+        {
+          "type": "moveDirectory",
+          "from": "app/components",
+          "to": "components/app-migrated",
+          "updateImports": true
+        },
+        {
+          "type": "removeDuplicateComponents",
+          "strategy": "keep-root",
+          "duplicates": [
+            { "file": "app/components/ui/button.tsx", "keep": "components/ui/button.tsx" },
+            { "file": "app/components/ui/input.tsx", "keep": "components/ui/input.tsx" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Simplify Test Structure",
+      "risk": "medium",
+      "actions": [
+        {
+          "type": "removeDirectory",
+          "paths": [
+            "__tests__/admin",
+            "__tests__/api",
+            "__tests__/components",
+            "__tests__/contracts",
+            "__tests__/factories",
+            "__tests__/fixtures",
+            "__tests__/hooks",
+            "__tests__/integration",
+            "__tests__/mocks",
+            "__tests__/security",
+            "__tests__/setup",
+            "__tests__/unit",
+            "__tests__/utils"
+          ],
+          "condition": "keepOnlyCriticalTests"
+        },
+        {
+          "type": "removeFiles",
+          "patterns": [
+            "jest.*.config.js",
+            "*.test.ts",
+            "*.test.tsx"
+          ],
+          "exclude": ["e2e/"]
+        },
+        {
+          "type": "updatePackageScripts",
+          "remove": [
+            "test",
+            "test:watch",
+            "test:coverage",
+            "test:ci",
+            "test:api",
+            "test:api:watch",
+            "test:api:coverage",
+            "test:unit",
+            "test:integration"
+          ],
+          "keep": ["test:e2e", "test:e2e:ui", "test:e2e:debug"]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Fix Build Configuration",
+      "risk": "low",
+      "actions": [
+        {
+          "type": "fixNextConfig",
+          "issues": [
+            {
+              "problem": "experimental.turbo should be object",
+              "fix": "Remove or set to { resolveExtension: '' }"
+            }
+          ]
+        },
+        {
+          "type": "fixCSSImports",
+          "file": "app/globals.css",
+          "action": "Move @import rules above all @layer declarations"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Standardize Naming Conventions",
+      "risk": "medium",
+      "actions": [
+        {
+          "type": "renameFiles",
+          "convention": "kebab-case",
+          "targets": [
+            { "from": "surfWeeks", "to": "surf-weeks" },
+            { "from": "surfCamps", "to": "surf-camps" },
+            { "from": "addOns", "to": "add-ons" }
+          ]
+        },
+        {
+          "type": "updateInterfaces",
+          "convention": "PascalCase",
+          "targets": [
+            { "from": "booking_data", "to": "BookingData" },
+            { "from": "room_info", "to": "RoomInfo" },
+            { "from": "surf_camp", "to": "SurfCamp" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Database Optimization",
+      "risk": "high",
+      "actions": [
+        {
+          "type": "removeUnusedTables",
+          "tables": [
+            "features_sections",
+            "seo_sections",
+            "test_data",
+            "deprecated_metadata"
+          ],
+          "backup": true
+        },
+        {
+          "type": "optimizeIndexes",
+          "actions": [
+            "Add index on bookings(check_in, check_out)",
+            "Add index on rooms(active)",
+            "Add index on surf_camps(start_date, active)"
+          ]
+        },
+        {
+          "type": "cleanupColumns",
+          "actions": [
+            "Remove unused 'legacy_id' columns",
+            "Convert JSON columns to proper types where applicable",
+            "Standardize timestamp columns to use timezone"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Remove Unused Assets",
+      "risk": "low",
+      "actions": [
+        {
+          "type": "removeFiles",
+          "patterns": [
+            "public/photography_*",
+            "public/images/unused/*",
+            "*.backup.*",
+            "*.old.*",
+            "DS_Store",
+            ".env.example"
+          ],
+          "exclude": ["public/optimized/"]
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Final Cleanup",
+      "risk": "low",
+      "actions": [
+        {
+          "type": "removeEmptyDirectories",
+          "recursive": true
+        },
+        {
+          "type": "updateImports",
+          "removeUnused": true,
+          "sortImports": true
+        },
+        {
+          "type": "generateBundleAnalysis",
+          "tool": "@next/bundle-analyzer"
+        }
+      ]
+    }
+  ],
+  "namingConventions": {
+    "files": "kebab-case",
+    "directories": "kebab-case",
+    "components": "PascalCase",
+    "interfaces": "PascalCase",
+    "types": "PascalCase",
+    "constants": "UPPER_SNAKE_CASE",
+    "functions": "camelCase",
+    "variables": "camelCase",
+    "cssClasses": "kebab-case"
+  },
+  "databaseOptimizations": {
+    "removeUnusedTables": true,
+    "addIndexes": true,
+    "cleanupColumns": true,
+    "backupBeforeChanges": true
+  },
+  "qualityChecks": {
+    "runBuild": true,
+    "runLint": true,
+    "runTypeCheck": true,
+    "runE2ETests": true,
+    "checkBundleSize": true
+  },
+  "expectedResults": {
+    "dependencyReduction": "~15%",
+    "fileCountReduction": "~30%",
+    "buildTimeImprovement": "~20%",
+    "bundleSizeReduction": "~10%",
+    "testSuiteSimplification": "Jest removed, Playwright only"
+  },
+  "rollback": {
+    "enabled": true,
+    "backupBranch": "backup-before-cleanup",
+    "gitTags": ["pre-cleanup-v1.0.0"]
+  }
+}

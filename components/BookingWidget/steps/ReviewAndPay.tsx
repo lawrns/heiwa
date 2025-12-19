@@ -10,6 +10,7 @@ import { clearBookingProgress } from '@/lib/utils/booking-persistence';
 import { ensureDate } from '@/lib/utils/date-helpers';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
+import { Button } from '@/components/ui/button';
 
 interface BookingData {
   booking?: {
@@ -815,21 +816,14 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       {/* Jump to Instructions Button for Bank Transfer */}
       {showJumpButton && state.paymentMethod === 'bank_wire' && (
         <div className="flex justify-center">
-          <button
+          <Button
             onClick={scrollToInstructions}
-            className="
-              inline-flex items-center gap-2 px-4 py-2
-              bg-orange-100 hover:bg-orange-200
-              text-orange-700 hover:text-orange-800
-              font-medium text-sm rounded-lg
-              border border-orange-200 hover:border-orange-300
-              transition-all duration-200
-              focus:outline-none focus:ring-2 focus:ring-orange-500/50
-            "
+            variant="outline"
+            className="bg-orange-100 hover:bg-orange-200 text-orange-700 hover:text-orange-800 border-orange-200 hover:border-orange-300"
           >
             <ChevronDown size={16} className="animate-bounce" />
             View Bank Transfer Instructions
-          </button>
+          </Button>
         </div>
       )}
 
@@ -873,21 +867,11 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       {/* Payment Button */}
       {state.paymentMethod && (
         <div className="space-y-4">
-          <button
+          <Button
             onClick={handlePayment}
             disabled={isProcessing || !termsAccepted}
-            className="
-              w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600
-              hover:from-orange-600 hover:to-orange-700
-              disabled:from-gray-300 disabled:to-gray-400
-              text-white font-semibold text-lg rounded-lg
-              shadow-lg hover:shadow-xl
-              transition-all duration-300 ease-out
-              hover:scale-[1.02] disabled:hover:scale-100
-              focus:outline-none focus:ring-4 focus:ring-orange-500/30
-              disabled:cursor-not-allowed
-              flex items-center justify-center gap-3
-            "
+            size="lg"
+            className="w-full"
           >
             {isProcessing ? (
               <>
@@ -905,7 +889,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                 Complete Booking
               </>
             )}
-          </button>
+          </Button>
 
           {!bookingCompleted && (
             <div className="text-center">

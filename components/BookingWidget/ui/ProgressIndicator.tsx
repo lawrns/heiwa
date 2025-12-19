@@ -123,7 +123,7 @@ export function ProgressIndicator({
                       }
                     }}
                     className={`
-                      relative z-10 w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center overflow-hidden
+                      relative z-10 w-11 h-11 rounded-full flex items-center justify-center overflow-hidden
                       transition-all duration-500 ease-out
                       ${clickable
                         ? 'cursor-pointer hover:scale-110 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2'
@@ -163,9 +163,9 @@ export function ProgressIndicator({
                       />
                     )}
                     {isCompleted ? (
-                      <Check size={12} className="drop-shadow-sm sm:w-[14px] sm:h-[14px]" />
+                      <Check size={16} className="drop-shadow-sm" />
                     ) : (
-                      <span className="text-xs sm:text-sm font-bold">{stepNumber}</span>
+                      <span className="text-sm font-bold">{stepNumber}</span>
                     )}
                   </button>
 

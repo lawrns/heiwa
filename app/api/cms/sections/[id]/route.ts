@@ -54,7 +54,7 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
 
-    const { content, section_type, order_index, is_active } = body
+    const { content, section_type, order_index, is_active, skipVersioning } = body
 
     // Build update object with only provided fields
     const updateData: Record<string, unknown> = {}
@@ -68,6 +68,28 @@ export async function PUT(
         { success: false, error: 'No fields to update' },
         { status: 400 }
       )
+    }
+
+    // Save current content as version before updating (if content is changing)
+    if (content !== undefined && !skipVersioning) {
+      try {
+        const { data: currentSection } = await supabaseAdmin
+          .from('page_sections')
+          .select('content')
+          .eq('id', id)
+          .single()
+
+        if (currentSection?.content) {
+          await supabaseAdmin
+            .from('page_section_versions')
+            .insert({
+              section_id: id,
+              content: currentSection.content,
+            })
+        }
+      } catch {
+        // Version history table might not exist yet, continue with update
+      }
     }
 
     const { data, error } = await supabaseAdmin
