@@ -73,10 +73,10 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h3 className="text-2xl font-bold text-gray-900">
+        <h3 className="text-3xl font-bold text-gray-900">
           Choose Your Adventure
         </h3>
-        <p className="text-gray-600">
+        <p className="text-lg text-gray-600">
           How would you like to experience Heiwa House?
         </p>
       </div>
@@ -141,12 +141,12 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
 
                   {/* Title and Price */}
                   <div className="flex-1 flex items-start justify-between gap-3 min-w-0">
-                    <h4 className="text-lg sm:text-xl font-bold text-white leading-tight drop-shadow-lg">
+                    <h4 className="text-xl sm:text-2xl font-bold text-white leading-tight drop-shadow-lg">
                       {experience.title}
                     </h4>
                     <div className="text-right flex-shrink-0 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/30">
-                      <div className="text-xs text-white/90 font-medium mb-0.5">From</div>
-                      <div className="text-xl sm:text-2xl font-bold text-white">
+                      <div className="text-sm text-white/90 font-medium mb-0.5">From</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-white">
                         €{experience.priceFrom}
                       </div>
                     </div>
@@ -154,7 +154,7 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                 </div>
 
                 {/* Description */}
-                <p className="text-white/95 text-sm sm:text-base leading-relaxed drop-shadow-md">
+                <p className="text-white/95 text-base sm:text-lg leading-relaxed drop-shadow-md">
                   {experience.description}
                 </p>
               </div>
@@ -165,7 +165,7 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
 
       {/* Help Text */}
       <div className="text-center pt-2">
-        <p className="text-sm text-gray-500 leading-relaxed">
+        <p className="text-base text-gray-500 leading-relaxed">
           Not sure which option? Our room booking offers more flexibility,
           while surf weeks provide a complete guided experience.
         </p>

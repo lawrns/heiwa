@@ -153,7 +153,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-white/10">
-              <h2 className="text-lg font-bold text-white">Menu</h2>
+              <h2 className="text-xl font-bold text-white">Menu</h2>
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
@@ -181,7 +181,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
                       <div>
                         <button
                           onClick={() => setExpandedItems(isExpanded ? [] : ['activities'])}
-                          className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 font-medium uppercase text-sm tracking-wide ${
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 font-medium uppercase text-base tracking-wide ${
                             currentPath?.includes('/flow') || currentPath?.includes('/play') || currentPath?.includes('/surf')
                               ? 'bg-orange-500 text-white'
                               : 'text-gray-300 hover:bg-gray-800 hover:text-white'
@@ -201,7 +201,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
                                 key={subitem.path}
                                 href={subitem.path}
                                 onClick={onClose}
-                                className={`block px-4 py-2 rounded-lg transition-all duration-200 font-medium uppercase text-xs tracking-wide ${
+                                className={`block px-4 py-2 rounded-lg transition-all duration-200 font-medium uppercase text-sm tracking-wide ${
                                   currentPath === subitem.path
                                     ? 'bg-orange-500 text-white'
                                     : 'text-gray-400 hover:bg-gray-800 hover:text-white'
@@ -217,7 +217,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
                       <Link
                         href={item.path}
                         onClick={onClose}
-                        className={`block px-4 py-3 rounded-lg transition-all duration-200 font-medium uppercase text-sm tracking-wide ${
+                        className={`block px-4 py-3 rounded-lg transition-all duration-200 font-medium uppercase text-base tracking-wide ${
                           currentPath === item.path
                             ? 'bg-orange-500 text-white'
                             : 'text-gray-300 hover:bg-gray-800 hover:text-white'
@@ -234,7 +234,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
             {/* Footer CTA */}
             <div className="sticky bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-gray-900">
               <button
-                className="w-full px-4 py-3 text-white font-semibold rounded-lg transition-colors uppercase text-sm flex items-center justify-center gap-2"
+                className="w-full px-4 py-3 text-white font-semibold rounded-lg transition-colors uppercase text-base flex items-center justify-center gap-2"
                 style={{ backgroundColor: '#ec681c' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
@@ -243,7 +243,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
                   onClose()
                 }}
               >
-                <Bed className="w-4 h-4" />
+                <Bed className="w-5 h-5" />
                 BOOK NOW
               </button>
             </div>

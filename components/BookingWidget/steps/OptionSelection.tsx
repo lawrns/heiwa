@@ -491,10 +491,10 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h3 className="text-2xl font-bold text-gray-900">
+        <h3 className="text-3xl font-bold text-gray-900">
           Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
         </h3>
-        <p className="text-gray-600">
+        <p className="text-lg text-gray-600">
           {state.experienceType === 'room'
             ? 'Select your dates and find the perfect room'
             : 'Select your perfect surf adventure'
@@ -507,14 +507,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-4">
           {/* Date Selection */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <h4 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
               <Calendar size={20} className="text-accent" />
               Select Dates
             </h4>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label htmlFor="check-in" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="check-in" className="block text-base font-medium text-gray-700">
                   Check-in
                 </label>
                 <input
@@ -531,7 +531,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   required
                 />
                 {checkInDate && isDateSoldOut(checkInDate) && (
-                  <p className="text-sm text-red-600 flex items-center gap-1">
+                  <p className="text-base text-red-600 flex items-center gap-1">
                     <span className="w-2 h-2 bg-red-500 rounded-full"></span>
                     This date is fully booked. Please select another date.
                   </p>
@@ -539,7 +539,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="check-out" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="check-out" className="block text-base font-medium text-gray-700">
                   Check-out
                 </label>
                 <input
@@ -556,7 +556,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   required
                 />
                 {checkOutDate && isDateSoldOut(checkOutDate) && (
-                  <p className="text-sm text-red-600 flex items-center gap-1">
+                  <p className="text-base text-red-600 flex items-center gap-1">
                     <span className="w-2 h-2 bg-red-500 rounded-full"></span>
                     This date is fully booked. Please select another date.
                   </p>
@@ -566,7 +566,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
             {/* Date Availability Loading Indicator - Only show when dates are selected */}
             {dateAvailabilityLoading && checkInDate && checkOutDate && (
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="flex items-center gap-2 text-base text-gray-600">
                 <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
                 Checking availability for selected dates...
               </div>
@@ -575,7 +575,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
           {/* Guest Counter */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <h4 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
               <Users size={20} className="text-accent" />
               Number of Guests
             </h4>
@@ -583,7 +583,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
               <div>
                 <div className="font-medium text-gray-900">Guests</div>
-                <div className="text-sm text-gray-600">How many people will be staying?</div>
+                <div className="text-base text-gray-600">How many people will be staying?</div>
               </div>
 
               <div className="flex items-center gap-3">
@@ -596,7 +596,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   <Minus size={18} />
                 </button>
 
-                <span className="w-12 text-center text-lg font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
+                <span className="w-12 text-center text-xl font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
                   {state.guests}
                 </span>
 
@@ -614,7 +614,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             {/* Participant Name Inputs */}
             {state.guests > 0 && (
               <div className="space-y-3 pt-2">
-                <div className="text-sm font-medium text-gray-700">
+                <div className="text-base font-medium text-gray-700">
                   Enter guest names (required for room assignment)
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -637,7 +637,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   ))}
                 </div>
                 {participantNames.some(n => !n) && (
-                  <p className="text-sm text-amber-600 flex items-center gap-1">
+                  <p className="text-base text-amber-600 flex items-center gap-1">
                     <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
                     Please enter all guest names to continue
                   </p>
@@ -651,7 +651,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       {/* Guest Counter for Surf Weeks */}
       {state.experienceType === 'surf-week' && (
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-4">
-          <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <h4 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
             <Users size={20} className="text-accent" />
             Number of Participants
           </h4>
@@ -659,7 +659,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200">
             <div>
               <div className="font-medium text-gray-900">Participants</div>
-              <div className="text-sm text-gray-600">How many people will join the surf camp?</div>
+              <div className="text-base text-gray-600">How many people will join the surf camp?</div>
             </div>
 
             <div className="flex items-center gap-3">
@@ -672,7 +672,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <Minus size={18} />
               </button>
 
-              <span className="w-12 text-center text-lg font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
+              <span className="w-12 text-center text-xl font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
                 {state.guests}
               </span>
 
@@ -690,7 +690,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           {/* Participant Name Inputs */}
           {state.guests > 0 && (
             <div className="space-y-3 pt-2">
-              <div className="text-sm font-medium text-gray-700">
+              <div className="text-base font-medium text-gray-700">
                 Enter participant names (required for room assignment)
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -713,7 +713,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 ))}
               </div>
               {participantNames.some(n => !n) && (
-                <p className="text-sm text-amber-600 flex items-center gap-1">
+                <p className="text-base text-amber-600 flex items-center gap-1">
                   <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
                   Please enter all participant names to continue
                 </p>
@@ -725,14 +725,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
           {state.dates.checkIn && state.dates.checkOut && (
             <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-orange-800">
+                <span className="text-base font-medium text-orange-800">
                   Duration: {(() => {
                     const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
                     const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
                     return Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
                   })()} nights
                 </span>
-                <span className="text-sm text-orange-600">
+                <span className="text-base text-orange-600">
                   {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
                 </span>
               </div>
@@ -807,22 +807,22 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     {/* Title and Price */}
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4">
                       <div>
-                        <div className="text-base sm:text-lg font-bold text-gray-900">{dateText}</div>
-                        <div className="text-accent font-extrabold uppercase tracking-wide text-sm mt-1" data-testid="surf-week-title">{w.name}</div>
-                        <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                        <div className="text-lg sm:text-xl font-bold text-gray-900">{dateText}</div>
+                        <div className="text-accent font-extrabold uppercase tracking-wide text-base mt-1" data-testid="surf-week-title">{w.name}</div>
+                        <p className="text-base text-gray-600 line-clamp-2 mt-1">
                           {w.description}
                         </p>
                       </div>
                       <div className="sm:text-right flex-shrink-0">
-                        <span className="text-xl sm:text-2xl font-bold text-orange-600">
+                        <span className="text-2xl sm:text-3xl font-bold text-orange-600">
                           {`from €${Math.round(from)}`}
                         </span>
-                        <span className="text-xs text-gray-500 ml-1 sm:ml-0 sm:block">per person</span>
+                        <span className="text-sm text-gray-500 ml-1 sm:ml-0 sm:block">per person</span>
                       </div>
                     </div>
 
                     {/* Details */}
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-4 text-base text-gray-600">
                       <div className="flex items-center gap-1">
                         <Users size={14} />
                         <span>Up to {w.maxParticipants} participants</span>
@@ -839,14 +839,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         {w.includes.slice(0, 3).map((include: string, index: number) => (
                           <span
                             key={index}
-                            className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full"
+                            className="flex items-center gap-1 px-2 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-full"
                           >
                             <Check size={10} />
                             {include}
                           </span>
                         ))}
                         {w.includes.length > 3 && (
-                          <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full">
+                          <span className="px-2 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-full">
                             +{w.includes.length - 3} more
                           </span>
                         )}
@@ -859,24 +859,24 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         {/* Occupancy percentage with progress bar */}
                         <div className="flex items-center gap-2">
                           <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
+                            <div
                               className={`h-full rounded-full transition-all ${
-                                occupancyPercent >= 80 ? 'bg-red-500' : 
+                                occupancyPercent >= 80 ? 'bg-red-500' :
                                 occupancyPercent >= 50 ? 'bg-orange-500' : 'bg-green-500'
                               }`}
                               style={{ width: `${occupancyPercent}%` }}
                             />
                           </div>
-                          <span className={`text-xs ${isDisabled ? 'text-red-500 font-medium' : 'text-gray-500'}`} data-testid="surf-week-occupancy">
+                          <span className={`text-sm ${isDisabled ? 'text-red-500 font-medium' : 'text-gray-500'}`} data-testid="surf-week-occupancy">
                             {occupancyText}
                           </span>
                         </div>
                         {/* Unavailability message */}
                         {isFullyBooked && (
-                          <span className="text-xs text-red-600 font-medium">Fully booked</span>
+                          <span className="text-sm text-red-600 font-medium">Fully booked</span>
                         )}
                         {isUnavailableForGroup && (
-                          <span className="text-xs text-orange-600 font-medium">
+                          <span className="text-sm text-orange-600 font-medium">
                             Not enough spots for {state.guests} {state.guests === 1 ? 'person' : 'people'}
                           </span>
                         )}
@@ -889,7 +889,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                             e.stopPropagation();
                             openGallery(w);
                           }}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200 cursor-pointer select-none"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200 cursor-pointer select-none"
                         >
                           📸 View {w.images.length} Photo{w.images.length > 1 ? 's' : ''}
                         </span>
@@ -902,7 +902,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 {isSelected && (
                   <div className="mt-4 flex items-center gap-2 text-orange-600">
                     <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-                    <span className="text-sm font-medium">Selected</span>
+                    <span className="text-base font-medium">Selected</span>
                   </div>
                 )}
               </button>
@@ -917,7 +917,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               {/* Booking Summary */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <h4 className="font-semibold text-blue-900 mb-2">Your Selection</h4>
-                <p className="text-blue-700 text-sm">
+                <p className="text-blue-700 text-base">
                   {state.guests} guest{state.guests !== 1 ? 's' : ''} • {(() => {
                     const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
                     const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
@@ -940,12 +940,12 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                       <div className={`${hasInsufficientCapacity ? 'text-red-600' : 'text-green-600'}`}>
                         {hasInsufficientCapacity ? '⚠️' : '✓'}
                       </div>
-                      <span className={`text-sm font-medium ${hasInsufficientCapacity ? 'text-red-900' : 'text-green-900'}`}>
+                      <span className={`text-base font-medium ${hasInsufficientCapacity ? 'text-red-900' : 'text-green-900'}`}>
                         Capacity: {capacityMessage}
                       </span>
                     </div>
                     {hasInsufficientCapacity && (
-                      <p className="text-xs text-red-700 mt-1 ml-6">
+                      <p className="text-sm text-red-700 mt-1 ml-6">
                         Selected room cannot accommodate all guests. Please reduce guest count or choose a different room.
                       </p>
                     )}
@@ -1034,20 +1034,20 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                             {/* Title and Price */}
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4">
                               <div className="flex-1 sm:pr-4">
-                                <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
+                                <h4 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">
                                   {option.name}
                                 </h4>
-                                <p className="text-sm text-gray-600 line-clamp-2">
+                                <p className="text-base text-gray-600 line-clamp-2">
                                   {option.description}
                                 </p>
                               </div>
                               <div className="sm:text-right flex-shrink-0">
-                                <span className="text-xl sm:text-2xl font-bold text-orange-600">
+                                <span className="text-2xl sm:text-3xl font-bold text-orange-600">
                                   {typeof totalPrice === 'number' && !Number.isNaN(totalPrice)
                                     ? formatPrice(totalPrice)
                                     : (state.experienceType === 'room' ? 'Select dates' : (option.price ? formatPrice(option.price) : '—'))}
                                 </span>
-                                <span className="text-xs text-gray-500 ml-1 sm:ml-0 sm:block">
+                                <span className="text-sm text-gray-500 ml-1 sm:ml-0 sm:block">
                                   {state.experienceType === 'room'
                                     ? (state.dates.checkIn && state.dates.checkOut ? (() => {
                                         const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
@@ -1062,7 +1062,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                             </div>
 
                             {/* Details */}
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <div className="flex items-center gap-4 text-base text-gray-600">
                               <>
                                 <div className="flex items-center gap-1">
                                   <Users size={14} />
@@ -1081,14 +1081,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                 {amenities.slice(0, 4).map((amenity: string, index: number) => (
                                   <span
                                     key={index}
-                                    className="flex items-center gap-1 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full"
+                                    className="flex items-center gap-1 px-2 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-full"
                                   >
                                     {getAmenityIcon(amenity)}
                                     {amenity}
                                   </span>
                                 ))}
                                 {amenities.length > 4 && (
-                                  <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full">
+                                  <span className="px-2 py-1 text-sm font-medium bg-gray-100 text-gray-700 rounded-full">
                                     +{amenities.length - 4} more
                                   </span>
                                 )}
@@ -1099,7 +1099,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                       e.stopPropagation();
                                       openGallery(option);
                                     }}
-                                    className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-full cursor-pointer transition-colors duration-200 select-none"
+                                    className="flex items-center gap-1 px-2 py-1 text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-full cursor-pointer transition-colors duration-200 select-none"
                                   >
                                     📸 {option.images.length} Photo{option.images.length > 1 ? 's' : ''}
                                   </span>
@@ -1113,7 +1113,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         {isSelected && (
                           <div className="mt-4 flex items-center gap-2 text-orange-600">
                             <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-                            <span className="text-sm font-medium">Selected</span>
+                            <span className="text-base font-medium">Selected</span>
                           </div>
                         )}
                       </button>
@@ -1125,8 +1125,8 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Calendar size={24} className="text-gray-400" />
                   </div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2">No Rooms Available</h4>
-                  <p className="text-gray-600">
+                  <h4 className="text-xl font-semibold text-gray-900 mb-2">No Rooms Available</h4>
+                  <p className="text-lg text-gray-600">
                     No rooms are available for your selected dates. Please try different dates.
                   </p>
                 </div>
@@ -1137,8 +1137,8 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Calendar size={24} className="text-gray-400" />
               </div>
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">Complete Your Selection</h4>
-              <p className="text-gray-600">
+              <h4 className="text-xl font-semibold text-gray-900 mb-2">Complete Your Selection</h4>
+              <p className="text-lg text-gray-600">
                 Please select your check-in/check-out dates and number of guests above to continue.
               </p>
             </div>
@@ -1157,7 +1157,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
       {/* Help Text */}
       <div className="text-center">
-        <p className="text-sm text-gray-500">
+        <p className="text-base text-gray-500">
           {state.experienceType === 'room'
             ? 'All rooms include WiFi, linens, and access to common areas.'
             : 'All surf weeks include accommodation, meals, equipment, and professional coaching.'

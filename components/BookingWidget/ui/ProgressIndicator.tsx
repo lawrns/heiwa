@@ -165,14 +165,14 @@ export function ProgressIndicator({
                     {isCompleted ? (
                       <Check size={16} className="drop-shadow-sm" />
                     ) : (
-                      <span className="text-sm font-bold">{stepNumber}</span>
+                      <span className="text-base font-bold">{stepNumber}</span>
                     )}
                   </button>
 
                   {/* Step Label - fully responsive */}
                   <div className="mt-1 sm:mt-2 text-center">
                     <div className={`
-                      text-xs font-medium transition-colors duration-200 whitespace-nowrap
+                      text-sm font-medium transition-colors duration-200 whitespace-nowrap
                       ${isCurrent
                         ? 'text-orange-600'
                         : isCompleted

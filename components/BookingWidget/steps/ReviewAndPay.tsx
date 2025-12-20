@@ -559,13 +559,13 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h3 className="text-2xl font-bold text-gray-900" data-testid="review-pay-title">Review & Pay</h3>
-        <p className="text-gray-600">Confirm your booking details and complete payment</p>
+        <h3 className="text-3xl font-bold text-gray-900" data-testid="review-pay-title">Review & Pay</h3>
+        <p className="text-lg text-gray-600">Confirm your booking details and complete payment</p>
       </div>
 
       {/* Booking Summary */}
       <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-        <h4 className="text-lg font-semibold text-gray-900 mb-4" data-testid="booking-summary-title">Booking Summary</h4>
+        <h4 className="text-xl font-semibold text-gray-900 mb-4" data-testid="booking-summary-title">Booking Summary</h4>
         
         <div className="space-y-4">
           {/* Experience Type */}
@@ -579,7 +579,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
               <div className="font-medium text-gray-900">
                 {state.experienceType === 'room' ? 'Room Booking' : 'Surf Week Package'}
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-base text-gray-600">
                 {state.experienceType === 'room' ? getRoomName() : getSurfWeekName()}
               </div>
             </div>
@@ -591,7 +591,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
               <Calendar size={20} className="text-gray-400" />
               <div>
                 <div className="font-medium text-gray-900">Dates</div>
-                <div className="text-sm text-gray-600">
+                <div className="text-base text-gray-600">
                   {formatDate(state.dates.checkIn)} - {formatDate(state.dates.checkOut)}
                   {state.experienceType === 'room' && (
                     <span className="ml-2">
@@ -613,7 +613,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             <Users size={20} className="text-gray-400" />
             <div>
               <div className="font-medium text-gray-900">Guests</div>
-              <div className="text-sm text-gray-600">
+              <div className="text-base text-gray-600">
                 {state.guests} {state.guests === 1 ? 'guest' : 'guests'}
               </div>
             </div>
@@ -624,7 +624,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             <MapPin size={20} className="text-gray-400" />
             <div>
               <div className="font-medium text-gray-900">Location</div>
-              <div className="text-sm text-gray-600">
+              <div className="text-base text-gray-600">
                 {state.experienceType === 'room' ? 'Heiwa House, Santa Cruz, Portugal' : 'Santa Cruz, Portugal'}
               </div>
             </div>
@@ -634,7 +634,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
       {/* Guest Details Summary */}
       <div className="bg-gray-50 rounded-xl p-6 border border-gray-200" data-testid="guest-completion-status">
-        <h4 className="text-lg font-semibold text-gray-900 mb-4">Guest Information</h4>
+        <h4 className="text-xl font-semibold text-gray-900 mb-4">Guest Information</h4>
 
         <div className="space-y-3">
           {state.guestDetails.map((guest) => (
@@ -643,18 +643,18 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                 <div className="font-medium text-gray-900">
                   {guest.firstName} {guest.lastName}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-base text-gray-600">
                   {guest.email} • {guest.phone}
                 </div>
                 {guest.dietaryRequirements && (
-                  <div className="text-xs text-orange-600 mt-1">
+                  <div className="text-sm text-orange-600 mt-1">
                     Dietary: {guest.dietaryRequirements}
                   </div>
                 )}
               </div>
               <div className="flex items-center gap-2 text-green-600">
                 <CheckCircle size={16} />
-                <span className="text-sm font-medium">Complete</span>
+                <span className="text-base font-medium">Complete</span>
               </div>
             </div>
           ))}
@@ -664,7 +664,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       {/* Room Assignments Summary */}
       {state.roomAssignments.length > 0 && (
         <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-          <h4 className="text-lg font-semibold text-blue-900 mb-4 flex items-center gap-2">
+          <h4 className="text-xl font-semibold text-blue-900 mb-4 flex items-center gap-2">
             <MapPin size={20} className="text-blue-600" />
             Room Assignments
           </h4>
@@ -677,11 +677,11 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                     <div className="font-medium text-gray-900">
                       {assignment.roomId}
                     </div>
-                    <div className="text-sm text-blue-600 font-medium">
+                    <div className="text-base text-blue-600 font-medium">
                       {assignment.guestIds.length} {assignment.guestIds.length === 1 ? 'guest' : 'guests'}
                     </div>
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-base text-gray-600">
                     {assignment.guestIds.map((guestId) => {
                       const guestNumber = parseInt(guestId.split('-')[1]) - 1;
                       const guest = state.guestDetails[guestNumber];
@@ -698,7 +698,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       {/* Add-ons Summary */}
       {state.selectedAddOns.length > 0 && (
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <h4 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <ShoppingBag size={20} className="text-gray-600" />
             Selected Add-ons
           </h4>
@@ -708,7 +708,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
               <div key={addOn.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
                 <div>
                   <div className="font-medium text-gray-900">{addOn.name}</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-base text-gray-600">
                     {formatPrice(addOn.price)} × {addOn.quantity}
                   </div>
                 </div>
@@ -723,7 +723,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
       {/* Pricing Breakdown */}
       <div className="bg-orange-50 rounded-xl p-6 border border-orange-200">
-        <h4 className="text-lg font-semibold text-orange-900 mb-4" data-testid="pricing-breakdown-title">Pricing Breakdown</h4>
+        <h4 className="text-xl font-semibold text-orange-900 mb-4" data-testid="pricing-breakdown-title">Pricing Breakdown</h4>
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
@@ -757,8 +757,8 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           </div>
           <div className="border-t border-orange-300 pt-3">
             <div className="flex justify-between items-center">
-              <span className="text-lg font-semibold text-orange-900">Total</span>
-              <span className="text-2xl font-bold text-orange-600">{formatPrice(pricing.total)}</span>
+              <span className="text-xl font-semibold text-orange-900">Total</span>
+              <span className="text-3xl font-bold text-orange-600">{formatPrice(pricing.total)}</span>
             </div>
           </div>
         </div>
@@ -770,9 +770,9 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             <div className="flex items-start gap-2">
               <AlertCircle size={16} className="mt-0.5 flex-shrink-0" />
               <div className="flex-1">
-                <p className="text-sm font-medium mb-1">Booking Failed</p>
-                <p className="text-sm">{paymentError}</p>
-                <p className="text-xs mt-2 text-red-600">
+                <p className="text-base font-medium mb-1">Booking Failed</p>
+                <p className="text-base">{paymentError}</p>
+                <p className="text-sm mt-2 text-red-600">
                   Please check your information and try again. If the problem persists, contact support.
                 </p>
               </div>
@@ -791,7 +791,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             className="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
             required
           />
-          <label htmlFor="terms" className="text-sm text-gray-700">
+          <label htmlFor="terms" className="text-base text-gray-700">
             I agree to the{' '}
             <a href="/terms" className="text-orange-600 hover:text-orange-700 underline">
               Terms and Conditions
@@ -833,13 +833,13 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           <div className="flex items-start gap-3">
             <CheckCircle size={24} className="text-green-600 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
-              <h4 className="text-lg font-semibold text-green-900 mb-2">
+              <h4 className="text-xl font-semibold text-green-900 mb-2">
                 Booking Confirmed! 🎉
               </h4>
-              <p className="text-green-800 mb-3">
+              <p className="text-lg text-green-800 mb-3">
                 Your booking has been confirmed. Please complete the bank transfer below to secure your reservation.
               </p>
-              <p className="text-sm text-green-700">
+              <p className="text-base text-green-700">
                 <strong>Next step:</strong> Check your email for booking confirmation and complete the bank transfer using the instructions below.
               </p>
             </div>
@@ -893,7 +893,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
           {!bookingCompleted && (
             <div className="text-center">
-              <p className="text-xs text-gray-500">
+              <p className="text-sm text-gray-500">
                 {state.paymentMethod === 'card_stripe'
                   ? 'Secure payment powered by Stripe • Your payment information is encrypted and secure'
                   : 'Your booking will be confirmed. Complete the bank transfer below to secure your reservation.'

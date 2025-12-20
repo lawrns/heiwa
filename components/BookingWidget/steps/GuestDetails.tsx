@@ -236,8 +236,8 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h3 className="text-2xl font-bold text-gray-900">Guest Details</h3>
-        <p className="text-gray-600" data-testid="guest-count-instruction">
+        <h3 className="text-3xl font-bold text-gray-900">Guest Details</h3>
+        <p className="text-lg text-gray-600" data-testid="guest-count-instruction">
           Please provide details for all {state.guests} {state.guests === 1 ? 'guest' : 'guests'}
         </p>
       </div>
@@ -305,9 +305,9 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 {isSaved ? <CheckCircle size={20} /> : index + 1}
               </div>
               <div className="flex-1">
-                <h4 className="text-lg font-semibold text-gray-900">
+                <h4 className="text-xl font-semibold text-gray-900">
                   Guest {index + 1} {index === 0 && '(Primary Guest)'}
-                  {isSaved && <span className="ml-2 text-sm font-normal text-green-600">✓ Saved</span>}
+                  {isSaved && <span className="ml-2 text-base font-normal text-green-600">✓ Saved</span>}
                 </h4>
               </div>
             </div>
@@ -316,7 +316,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             {showSuccess && (
               <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700 animate-in fade-in-0 slide-in-from-top-2 duration-300" data-testid={`guest-${index}-success`}>
                 <CheckCircle size={16} className="flex-shrink-0" />
-                <span className="text-sm font-medium">
+                <span className="text-base font-medium">
                   Guest {index + 1} saved successfully!
                   {index + 1 < state.guests && ` Continue with Guest ${index + 2} below.`}
                 </span>
@@ -327,7 +327,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             {errors[`guest-${index}`] && (
               <div id={`guest-${index}-error`} className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700" data-testid={`guest-${index}-error`} role="alert">
                 <AlertCircle size={16} />
-                <span className="text-sm">{errors[`guest-${index}`]}</span>
+                <span className="text-base">{errors[`guest-${index}`]}</span>
               </div>
             )}
 
@@ -335,7 +335,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* First Name */}
               <div className="space-y-2">
-                <label htmlFor={`firstName-${index}`} className="block text-sm font-medium text-gray-700">
+                <label htmlFor={`firstName-${index}`} className="block text-base font-medium text-gray-700">
                   First Name *
                 </label>
                 <div className="relative">
@@ -355,7 +355,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
               {/* Last Name */}
               <div className="space-y-2">
-                <label htmlFor={`lastName-${index}`} className="block text-sm font-medium text-gray-700">
+                <label htmlFor={`lastName-${index}`} className="block text-base font-medium text-gray-700">
                   Last Name *
                 </label>
                 <div className="relative">
@@ -375,7 +375,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
               {/* Email */}
               <div className="space-y-2">
-                <label htmlFor={`email-${index}`} className="block text-sm font-medium text-gray-700">
+                <label htmlFor={`email-${index}`} className="block text-base font-medium text-gray-700">
                   Email Address *
                 </label>
                 <div className="relative">
@@ -411,13 +411,13 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 </div>
                 {/* Real-time email validation message */}
                 {guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) && (
-                  <p id={`email-${index}-validation`} className="text-xs text-red-600 mt-1" role="alert">Please enter a valid email address</p>
+                  <p id={`email-${index}-validation`} className="text-sm text-red-600 mt-1" role="alert">Please enter a valid email address</p>
                 )}
               </div>
 
               {/* Phone */}
               <div className="space-y-2">
-                <label htmlFor={`phone-${index}`} className="block text-sm font-medium text-gray-700">
+                <label htmlFor={`phone-${index}`} className="block text-base font-medium text-gray-700">
                   Phone Number *
                 </label>
                 <div className="relative">
@@ -438,7 +438,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
             {/* Dietary Requirements */}
             <div className="mt-4 space-y-2">
-              <label htmlFor={`dietary-${index}`} className="block text-sm font-medium text-gray-700">
+              <label htmlFor={`dietary-${index}`} className="block text-base font-medium text-gray-700">
                 Dietary Requirements
               </label>
               <div className="relative">
@@ -456,7 +456,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
             {/* Special Requests */}
             <div className="mt-4 space-y-2">
-              <label htmlFor={`requests-${index}`} className="block text-sm font-medium text-gray-700">
+              <label htmlFor={`requests-${index}`} className="block text-base font-medium text-gray-700">
                 Special Requests
               </label>
               <textarea
@@ -498,7 +498,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
           <div className="flex items-center justify-between">
             <div>
               <h5 className="font-semibold text-orange-900">Guest Information Status</h5>
-              <p className="text-sm text-orange-700" data-testid="guest-completion-status">
+              <p className="text-base text-orange-700" data-testid="guest-completion-status">
                 {completedGuestsCount} of {state.guests} guests completed
               </p>
             </div>
@@ -506,12 +506,12 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
               {allCompleted ? (
                 <div className="flex items-center gap-2 text-green-600">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm font-medium">All guests ready</span>
+                  <span className="text-base font-medium">All guests ready</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 text-orange-600">
                   <div className="w-2 h-2 bg-accent rounded-full"></div>
-                  <span className="text-sm font-medium">Complete all fields</span>
+                  <span className="text-base font-medium">Complete all fields</span>
                 </div>
               )}
             </div>
@@ -521,7 +521,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
       {/* Help Text */}
       <div className="text-center">
-        <p className="text-sm text-gray-500">
+        <p className="text-base text-gray-500">
           All information is required for booking confirmation and emergency contact purposes.
         </p>
       </div>

@@ -93,7 +93,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-xs font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
+                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
                           currentPath === item.path
                             ? 'text-orange-400'
                             : 'text-white'
@@ -118,9 +118,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 <Image
                   src="https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909543_heiwalogo.webp"
                   alt="Heiwa House"
-                  width={96}
-                  height={32}
-                  className="h-8 w-auto"
+                  width={134}
+                  height={45}
+                  className="h-11 w-auto"
                   priority
                   style={{ height: 'auto' }}
                   suppressHydrationWarning
@@ -138,7 +138,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               >
                 <button
                   className={cn(
-                    'text-xs font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1 flex items-center gap-1',
+                    'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1 flex items-center gap-1',
                     (currentPath?.includes('/flow') || currentPath?.includes('/play'))
                       ? 'text-orange-400'
                       : 'text-white'
@@ -148,7 +148,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   aria-haspopup="true"
                 >
                   ACTIVITIES
-                  <ChevronDown className="w-3 h-3" />
+                  <ChevronDown className="w-4 h-4" />
                 </button>
                 {activitiesOpen && (
                   <div className="absolute top-full left-0 pt-2" style={{ zIndex: 'var(--z-dropdown)' }}>
@@ -158,7 +158,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                           key={item.path}
                           href={item.path}
                           className={cn(
-                            'block px-4 py-2 text-xs font-medium tracking-wide transition-colors hover:bg-gray-800 hover:text-orange-400 uppercase',
+                            'block px-4 py-2 text-sm font-medium tracking-wide transition-colors hover:bg-gray-800 hover:text-orange-400 uppercase',
                             currentPath === item.path
                               ? 'text-orange-400'
                               : 'text-white'
@@ -192,19 +192,19 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               ))}
 
               {/* Phone Number */}
-              <div className="flex items-center text-xs text-white">
+              <div className="flex items-center text-sm text-white">
                 <span className="tracking-wide">+351 912 193 785</span>
               </div>
 
               {/* Book Now Button */}
               <button
                 onClick={() => openBooking()}
-                className="px-4 py-2 text-xs font-medium tracking-wide transition-colors flex items-center gap-1 uppercase rounded text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                className="px-4 py-2 text-sm font-medium tracking-wide transition-colors flex items-center gap-1 uppercase rounded text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
                 style={{ backgroundColor: '#ec681c' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
               >
-                <Bed className="w-3 h-3" />
+                <Bed className="w-4 h-4" />
                 BOOK
               </button>
             </div>

@@ -122,8 +122,8 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h3 className="text-2xl font-bold text-gray-900">Add-ons & Extras</h3>
-        <p className="text-gray-600">
+        <h3 className="text-3xl font-bold text-gray-900">Add-ons & Extras</h3>
+        <p className="text-lg text-gray-600">
           Enhance your experience with optional add-ons
         </p>
       </div>
@@ -154,14 +154,14 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                   <div>
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       {getCategoryIcon(addOn.category)}
-                      <h4 className="text-base sm:text-lg font-semibold text-gray-900 flex-1 min-w-0">
+                      <h4 className="text-lg sm:text-xl font-semibold text-gray-900 flex-1 min-w-0">
                         {addOn.name}
                       </h4>
-                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full capitalize shrink-0">
+                      <span className="px-2 py-1 text-sm font-medium bg-gray-100 text-gray-600 rounded-full capitalize shrink-0">
                         {addOn.category}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">
+                    <p className="text-base text-gray-600 mb-2">
                       {addOn.description}
                     </p>
                   </div>
@@ -169,11 +169,11 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                   {/* Price and Controls Row */}
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1">
-                      <div className="text-lg font-bold text-orange-600">
+                      <div className="text-xl font-bold text-orange-600">
                         {formatPrice(addOn.price)}
                       </div>
                       {quantity > 0 && (
-                        <div className="text-sm text-gray-500">
+                        <div className="text-base text-gray-500">
                           × {quantity} = {formatPrice(addOn.price * quantity)}
                         </div>
                       )}
@@ -197,7 +197,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                         <Minus size={16} />
                       </button>
 
-                      <span className="w-10 sm:w-12 text-center text-base sm:text-lg font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
+                      <span className="w-10 sm:w-12 text-center text-lg sm:text-xl font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
                         {quantity}
                       </span>
 
@@ -238,7 +238,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
           <h5 className="font-semibold text-orange-900 mb-3">Selected Add-ons</h5>
           <div className="space-y-2">
             {selectedAddOns.map((addOn) => (
-              <div key={addOn.id} className="flex justify-between text-sm">
+              <div key={addOn.id} className="flex justify-between text-base">
                 <span className="text-orange-700">
                   {addOn.name} × {addOn.quantity}
                 </span>
@@ -259,7 +259,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
 
       {/* Help Text */}
       <div className="text-center">
-        <p className="text-sm text-gray-500">
+        <p className="text-base text-gray-500">
           Add-ons are optional and can enhance your surf experience. You can always modify your selection later.
         </p>
       </div>

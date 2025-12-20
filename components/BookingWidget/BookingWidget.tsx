@@ -286,7 +286,7 @@ export function BookingWidget({
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 sm:p-5 md:p-6 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-gray-900">
                 Book Your Surf Adventure
               </h2>
               <button
@@ -320,19 +320,19 @@ export function BookingWidget({
 
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-base text-gray-600 mb-4">
                         Booking #{bookingSuccess.booking?.booking_number || 'N/A'}
                       </p>
 
                       {/* Booking Details Card */}
                       <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 mb-6 text-left max-w-md mx-auto">
-                        <h4 className="text-lg font-semibold text-gray-900 mb-4">Booking Details</h4>
+                        <h4 className="text-xl font-semibold text-gray-900 mb-4">Booking Details</h4>
 
                         <div className="space-y-3">
                           {/* Booking Type */}
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-600">Type:</span>
-                            <span className="font-medium text-gray-900">
+                            <span className="text-base text-gray-600">Type:</span>
+                            <span className="font-medium text-base text-gray-900">
                               {state.experienceType === 'room' ? 'Room Booking' : 'Surf Week Package'}
                             </span>
                           </div>
@@ -340,8 +340,8 @@ export function BookingWidget({
                           {/* Dates */}
                           {state.dates.checkIn && state.dates.checkOut && (
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-600">Dates:</span>
-                              <span className="font-medium text-gray-900 text-right">
+                              <span className="text-base text-gray-600">Dates:</span>
+                              <span className="font-medium text-base text-gray-900 text-right">
                                 {state.dates.checkIn.toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric'
@@ -452,10 +452,10 @@ export function BookingWidget({
 
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div className="text-right">
-                    <div className="text-base sm:text-lg font-bold text-gray-900">
+                    <div className="text-lg sm:text-xl font-bold text-gray-900">
                       €{state.pricing.total?.toFixed(2) || '0.00'}
                     </div>
-                    <div className="text-xs text-gray-500 hidden sm:block">Total</div>
+                    <div className="text-sm text-gray-500 hidden sm:block">Total</div>
                   </div>
 
                   <Button

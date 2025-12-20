@@ -259,10 +259,10 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">
+        <h3 className="text-3xl font-bold text-gray-900 mb-2">
           Assign Guests to Rooms
         </h3>
-        <p className="text-gray-600">
+        <p className="text-lg text-gray-600">
           Assign each guest to their preferred room and bed
         </p>
       </div>
@@ -278,7 +278,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
             {unassignedGuests.map(guestId => (
               <span
                 key={guestId}
-                className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium"
+                className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-base font-medium"
               >
                 {getGuestName(guestId)}
               </span>
@@ -321,25 +321,25 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-lg font-semibold text-gray-900">{room.name}</h4>
-                      <p className="text-gray-600 text-sm">{room.description}</p>
+                      <h4 className="text-xl font-semibold text-gray-900">{room.name}</h4>
+                      <p className="text-gray-600 text-base">{room.description}</p>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold text-gray-900">
+                      <div className="text-xl font-bold text-gray-900">
                         €{room.pricePerNight}
                       </div>
-                      <div className="text-sm text-gray-600">per night</div>
+                      <div className="text-base text-gray-600">per night</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-4 mb-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-base text-gray-600">
                   <Bed size={16} />
                   <span>Up to {room.maxOccupancy} guests</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
+                <div className="flex items-center gap-2 text-base">
                   <Users size={16} />
                   <span className={occupancy > 0 ? 'text-orange-600 font-medium' : 'text-gray-600'}>
                     {occupancy}/{room.maxOccupancy} assigned
@@ -350,12 +350,12 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
               {/* Assigned Guests */}
               {assignment && assignment.guestIds.length > 0 && (
                 <div className="mb-4">
-                  <h5 className="text-sm font-medium text-gray-700 mb-2">Assigned Guests:</h5>
+                  <h5 className="text-base font-medium text-gray-700 mb-2">Assigned Guests:</h5>
                   <div className="flex flex-wrap gap-2">
                     {assignment.guestIds.map(guestId => (
                       <div
                         key={guestId}
-                        className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"
+                        className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-full text-base"
                       >
                         <Check size={14} />
                         <span>{getGuestName(guestId)}</span>
@@ -374,24 +374,24 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
               {/* Assignment Actions */}
               {!isFull && unassignedGuests.length > 0 && (
                 <div className="border-t pt-4">
-                  <h5 className="text-sm font-medium text-gray-700 mb-2">Assign Guest to this Room:</h5>
+                  <h5 className="text-base font-medium text-gray-700 mb-2">Assign Guest to this Room:</h5>
                   <div className="flex flex-wrap gap-2">
                     {unassignedGuests.map(guestId => {
                       // Check if guest is already assigned to another room
                       const isAssignedElsewhere = state.roomAssignments.some(
                         a => a.roomId !== room.id && a.guestIds.includes(guestId)
                       );
-                      
+
                       // Don't show guests assigned to other rooms (exclusivity)
                       if (isAssignedElsewhere) {
                         return null;
                       }
-                      
+
                       return (
                         <button
                           key={guestId}
                           onClick={() => handleAssignGuestToRoom(room.id, guestId)}
-                          className="flex items-center gap-2 px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg text-sm font-medium transition-colors border-2 border-transparent hover:border-orange-300"
+                          className="flex items-center gap-2 px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg text-base font-medium transition-colors border-2 border-transparent hover:border-orange-300"
                         >
                           <ArrowRight size={14} />
                           {getGuestName(guestId)}
@@ -404,7 +404,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
 
               {isFull && (
                 <div className="border-t pt-4">
-                  <p className="text-sm text-gray-500 italic">Room is at full capacity</p>
+                  <p className="text-base text-gray-500 italic">Room is at full capacity</p>
                 </div>
               )}
             </div>
@@ -415,7 +415,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
       {/* Summary */}
       <div className="bg-gray-50 rounded-lg p-4">
         <h4 className="font-semibold text-gray-800 mb-2">Assignment Summary</h4>
-        <div className="text-sm text-gray-600">
+        <div className="text-base text-gray-600">
           <p>Total Guests: {state.guests}</p>
           <p>Assigned: {state.roomAssignments.flatMap(a => a.guestIds).length}</p>
           <p>Unassigned: {unassignedGuests.length}</p>
