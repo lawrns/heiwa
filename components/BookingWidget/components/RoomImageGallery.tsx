@@ -1,13 +1,101 @@
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, X, ZoomIn, Users } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, X, ZoomIn, Users, ImageOff } from 'lucide-react';
 
 // Local fallback images from the property
-const FALLBACK_IMAGES = [
+export const FALLBACK_IMAGES = [
+  '/images/rooms/room1.jpg',
+  '/images/rooms/room2.webp',
+  '/images/rooms/room3.webp',
+  '/images/rooms/dorm.webp',
   '/images/DSC02099-scaled.jpg',
   '/images/DSC03521-scaled.jpg',
-  '/images/DSC03530-scaled.jpg',
-  '/images/DSC08054-scaled.jpg',
 ];
+
+// Image loading states
+export type ImageLoadState = 'loading' | 'loaded' | 'error' | 'fallback';
+
+interface ImageWithFallbackProps {
+  src: string;
+  alt: string;
+  fallbackIndex?: number;
+  className?: string;
+  onLoadComplete?: () => void;
+}
+
+/**
+ * Robust image component with fallback chain and loading states
+ * Prevents broken image icons by gracefully handling errors
+ */
+export function ImageWithFallback({
+  src,
+  alt,
+  fallbackIndex = 0,
+  className = '',
+  onLoadComplete,
+}: ImageWithFallbackProps) {
+  // If no src provided, start with fallback immediately
+  const initialSrc = src && src.trim() !== '' ? src : FALLBACK_IMAGES[fallbackIndex % FALLBACK_IMAGES.length];
+  const [loadState, setLoadState] = useState<ImageLoadState>(src && src.trim() !== '' ? 'loading' : 'fallback');
+  const [currentSrc, setCurrentSrc] = useState(initialSrc);
+  const [fallbackAttempt, setFallbackAttempt] = useState(src && src.trim() !== '' ? 0 : 1);
+
+  // Reset state when src changes
+  useEffect(() => {
+    if (src && src.trim() !== '' && src !== currentSrc) {
+      setCurrentSrc(src);
+      setLoadState('loading');
+      setFallbackAttempt(0);
+    } else if (!src || src.trim() === '') {
+      // If src becomes empty, use fallback
+      setCurrentSrc(FALLBACK_IMAGES[fallbackIndex % FALLBACK_IMAGES.length]);
+      setLoadState('fallback');
+      setFallbackAttempt(1);
+    }
+  }, [src, currentSrc, fallbackIndex]);
+
+  const handleLoad = useCallback(() => {
+    setLoadState(fallbackAttempt > 0 ? 'fallback' : 'loaded');
+    onLoadComplete?.();
+  }, [fallbackAttempt, onLoadComplete]);
+
+  const handleError = useCallback(() => {
+    // Try next fallback image
+    if (fallbackAttempt < FALLBACK_IMAGES.length) {
+      const nextFallback = FALLBACK_IMAGES[(fallbackIndex + fallbackAttempt) % FALLBACK_IMAGES.length];
+      setCurrentSrc(nextFallback);
+      setFallbackAttempt(prev => prev + 1);
+    } else {
+      // All fallbacks exhausted
+      setLoadState('error');
+    }
+  }, [fallbackAttempt, fallbackIndex]);
+
+  // Show placeholder for error state
+  if (loadState === 'error') {
+    return (
+      <div className={`flex items-center justify-center bg-gray-200 ${className}`}>
+        <ImageOff className="text-gray-400" size={24} />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {loadState === 'loading' && (
+        <div className={`absolute inset-0 flex items-center justify-center bg-gray-100 animate-pulse ${className}`}>
+          <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+        </div>
+      )}
+      <img
+        src={currentSrc}
+        alt={alt}
+        className={`${className} ${loadState === 'loading' ? 'opacity-0' : 'opacity-100'} transition-opacity duration-200`}
+        onLoad={handleLoad}
+        onError={handleError}
+      />
+    </>
+  );
+}
 
 interface RoomImageGalleryProps {
   images: string[];
@@ -71,15 +159,11 @@ export function RoomImageGallery({
 
           {/* Main image */}
           <div className="relative w-full h-full flex items-center justify-center">
-            <img
+            <ImageWithFallback
               src={images[currentImageIndex]}
               alt={`${roomName} - ${currentImageIndex + 1}`}
+              fallbackIndex={currentImageIndex}
               className="max-w-full max-h-full object-contain rounded-lg"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                // Use local fallback image based on current index
-                target.src = FALLBACK_IMAGES[currentImageIndex % FALLBACK_IMAGES.length];
-              }}
             />
 
             {/* Navigation arrows */}
@@ -108,20 +192,17 @@ export function RoomImageGallery({
                 <button
                   key={`${roomName}-thumb-${index}`}
                   onClick={() => goToImage(index)}
-                  className={`flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all duration-200 ${
+                  className={`relative flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all duration-200 ${
                     index === currentImageIndex
                       ? 'border-blue-400 opacity-100'
                       : 'border-transparent opacity-60 hover:opacity-80'
                   }`}
                 >
-                  <img
+                  <ImageWithFallback
                     src={image}
                     alt={`${roomName} thumbnail ${index + 1}`}
+                    fallbackIndex={index}
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
-                    }}
                   />
                 </button>
               ))}
@@ -135,6 +216,7 @@ export function RoomImageGallery({
               {/* Room Header */}
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">{roomName}</h2>
+                {/* TOON-compliant icon-text gap (8px) */}
                 <div className="flex items-center gap-4 text-sm text-gray-600">
                   {roomType && (
                     <span className="capitalize bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
@@ -142,8 +224,8 @@ export function RoomImageGallery({
                     </span>
                   )}
                   {maxOccupancy && (
-                    <span className="flex items-center gap-1">
-                      <Users size={16} />
+                    <span className="flex items-center gap-2">
+                      <Users size={16} className="flex-shrink-0" />
                       Up to {maxOccupancy} guests
                     </span>
                   )}
@@ -192,20 +274,70 @@ interface RoomThumbnailProps {
 }
 
 export function RoomThumbnail({ image, roomName, onClick, className = '' }: RoomThumbnailProps) {
+  // If no image provided, start with fallback immediately
+  const initialImage = image && image.trim() !== '' ? image : FALLBACK_IMAGES[0];
+  const [loadState, setLoadState] = useState<ImageLoadState>(image && image.trim() !== '' ? 'loading' : 'fallback');
+  const [currentSrc, setCurrentSrc] = useState(initialImage);
+  const [fallbackAttempt, setFallbackAttempt] = useState(image && image.trim() !== '' ? 0 : 1);
+
+  // Reset state when image prop changes
+  useEffect(() => {
+    if (image && image.trim() !== '' && image !== currentSrc) {
+      setCurrentSrc(image);
+      setLoadState('loading');
+      setFallbackAttempt(0);
+    } else if (!image || image.trim() === '') {
+      // If image becomes empty, use fallback
+      setCurrentSrc(FALLBACK_IMAGES[0]);
+      setLoadState('fallback');
+      setFallbackAttempt(1);
+    }
+  }, [image, currentSrc]);
+
+  const handleLoad = useCallback(() => {
+    setLoadState(fallbackAttempt > 0 ? 'fallback' : 'loaded');
+  }, [fallbackAttempt]);
+
+  const handleError = useCallback(() => {
+    // Try next fallback image
+    if (fallbackAttempt < FALLBACK_IMAGES.length) {
+      const nextFallback = FALLBACK_IMAGES[fallbackAttempt % FALLBACK_IMAGES.length];
+      setCurrentSrc(nextFallback);
+      setFallbackAttempt(prev => prev + 1);
+    } else {
+      // All fallbacks exhausted
+      setLoadState('error');
+    }
+  }, [fallbackAttempt]);
+
   return (
     <button
       onClick={onClick}
       className={`relative group overflow-hidden rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg ${className}`}
     >
-      <img
-        src={image}
-        alt={`${roomName} thumbnail`}
-        className="w-full h-full object-cover"
-        onError={(e) => {
-          const target = e.target as HTMLImageElement;
-          target.src = FALLBACK_IMAGES[0];
-        }}
-      />
+      {/* Loading state */}
+      {loadState === 'loading' && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 animate-pulse z-10">
+          <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+        </div>
+      )}
+      
+      {/* Error state - show placeholder */}
+      {loadState === 'error' ? (
+        <div className="w-full h-full flex items-center justify-center bg-gray-200">
+          <ImageOff className="text-gray-400" size={20} />
+        </div>
+      ) : (
+        <img
+          src={currentSrc}
+          alt={`${roomName} thumbnail`}
+          className={`w-full h-full object-cover ${loadState === 'loading' ? 'opacity-0' : 'opacity-100'} transition-opacity duration-200`}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+      )}
+      
+      {/* Hover overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
         <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-all duration-200" size={20} />
       </div>
@@ -221,63 +353,74 @@ interface RoomHeroImageProps {
 }
 
 export function RoomHeroImage({ image, roomName, onClick, className = '' }: RoomHeroImageProps) {
-  const [imgSrc, setImgSrc] = useState(image);
-  const [hasError, setHasError] = useState(false);
+  // If no image provided, start with fallback immediately
+  const initialImage = image && image.trim() !== '' ? image : FALLBACK_IMAGES[0];
+  const [loadState, setLoadState] = useState<ImageLoadState>(image && image.trim() !== '' ? 'loading' : 'fallback');
+  const [currentSrc, setCurrentSrc] = useState(initialImage);
+  const [fallbackAttempt, setFallbackAttempt] = useState(image && image.trim() !== '' ? 0 : 1);
 
-  // Log initial image prop
+  // Reset state when image prop changes
   useEffect(() => {
-    console.log(`🖼️ RoomHeroImage for "${roomName}" received image prop:`, image);
-    if (image && (image.includes('yoga_dome') || image.includes('yoga-dome'))) {
-      console.error(`🚨 ERROR: RoomHeroImage received yoga dome image for room "${roomName}":`, image);
-    }
-  }, [image, roomName]);
-
-  // Use useEffect to sync prop changes properly (fixes hydration issues)
-  useEffect(() => {
-    if (image && image !== imgSrc && !hasError) {
+    if (image && image.trim() !== '' && image !== currentSrc) {
       // Add cache-busting to image URL to prevent browser cache issues
       const cacheBustedImage = image.includes('?') 
         ? `${image}&_v=${Date.now()}` 
         : `${image}?_v=${Date.now()}`;
-      console.log(`🔄 RoomHeroImage updating image for "${roomName}":`, cacheBustedImage);
-      setImgSrc(cacheBustedImage);
-      setHasError(false); // Reset error state when new image is provided
+      setCurrentSrc(cacheBustedImage);
+      setLoadState('loading');
+      setFallbackAttempt(0);
+    } else if (!image || image.trim() === '') {
+      // If image becomes empty, use fallback
+      setCurrentSrc(FALLBACK_IMAGES[0]);
+      setLoadState('fallback');
+      setFallbackAttempt(1);
     }
-  }, [image, imgSrc, hasError]);
+  }, [image, currentSrc]);
 
-  // Log image source for debugging
-  useEffect(() => {
-    if (imgSrc && (imgSrc.includes('yoga_dome') || imgSrc.includes('yoga-dome'))) {
-      console.error(`🚨 ERROR: Yoga dome image detected in imgSrc for room "${roomName}":`, imgSrc);
+  const handleLoad = useCallback(() => {
+    setLoadState(fallbackAttempt > 0 ? 'fallback' : 'loaded');
+  }, [fallbackAttempt]);
+
+  const handleError = useCallback(() => {
+    // Try next fallback image
+    if (fallbackAttempt < FALLBACK_IMAGES.length) {
+      const nextFallback = FALLBACK_IMAGES[fallbackAttempt % FALLBACK_IMAGES.length];
+      setCurrentSrc(nextFallback);
+      setFallbackAttempt(prev => prev + 1);
+    } else {
+      // All fallbacks exhausted
+      setLoadState('error');
     }
-  }, [imgSrc, roomName]);
+  }, [fallbackAttempt]);
 
   return (
     <div
       className={`relative group overflow-hidden rounded-lg cursor-pointer ${className}`}
       onClick={onClick}
     >
-      <img
-        src={hasError ? FALLBACK_IMAGES[0] : imgSrc}
-        alt={`${roomName} hero image`}
-        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        onLoad={() => {
-          console.log(`✅ Image loaded successfully for "${roomName}":`, imgSrc);
-        }}
-        onError={(e) => {
-          const target = e.target as HTMLImageElement;
-          console.error(`❌ Image failed to load for "${roomName}":`, {
-            attemptedUrl: imgSrc,
-            error: e,
-            willUseFallback: FALLBACK_IMAGES[0]
-          });
-          if (!hasError) {
-            setHasError(true);
-            setImgSrc(FALLBACK_IMAGES[0]);
-            console.log(`🔄 Using fallback image for "${roomName}":`, FALLBACK_IMAGES[0]);
-          }
-        }}
-      />
+      {/* Loading state */}
+      {loadState === 'loading' && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 animate-pulse z-10">
+          <div className="w-10 h-10 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+        </div>
+      )}
+      
+      {/* Error state - show placeholder */}
+      {loadState === 'error' ? (
+        <div className="w-full h-full flex items-center justify-center bg-gray-200">
+          <ImageOff className="text-gray-400" size={32} />
+        </div>
+      ) : (
+        <img
+          src={currentSrc}
+          alt={`${roomName} hero image`}
+          className={`w-full h-full object-cover transition-all duration-300 group-hover:scale-105 ${loadState === 'loading' ? 'opacity-0' : 'opacity-100'}`}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+      )}
+      
+      {/* Hover overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
       <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
         <ZoomIn className="text-white" size={16} />

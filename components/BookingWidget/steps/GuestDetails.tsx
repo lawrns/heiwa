@@ -246,7 +246,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
       {isCollapsed && allCompleted && (
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200 transition-all duration-300">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
                 <User size={20} className="text-white" />
               </div>
@@ -266,10 +266,29 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 setUserManuallyExpanded(true);
                 setIsCollapsed(false);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-green-300 text-green-700 rounded-lg hover:bg-green-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/30"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 20px',
+                backgroundColor: 'white',
+                border: '1px solid #86efac',
+                color: '#15803d',
+                borderRadius: '10px',
+                fontSize: '14px',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 150ms ease-out',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f0fdf4';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+              }}
             >
               <Edit3 size={16} />
-              <span className="font-medium">Edit</span>
+              <span>Edit</span>
               <ChevronDown size={16} />
             </button>
           </div>
@@ -295,8 +314,8 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                   : 'border-gray-200'
               }`}
             >
-            {/* Guest Header */}
-            <div className="flex items-center gap-3 mb-4">
+            {/* Guest Header - TOON-compliant icon-text gap (8px) */}
+            <div className="flex items-center gap-2 mb-4">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm transition-all duration-300 ${
                 isSaved 
                   ? 'bg-gradient-to-br from-green-500 to-green-600' 
@@ -469,11 +488,14 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
               />
             </div>
 
-            {/* Save Button */}
-            <div className="mt-4 flex justify-end">
+            {/* Save Button - TOON-compliant CTA with 24px margin-top for isolation */}
+            {/* Requirements: 9.1, 9.2, 9.3, 2.4 */}
+            <div className="mt-6 flex justify-end">
               <Button
                 onClick={() => handleSaveGuest(index)}
                 disabled={isSaved}
+                variant="default"
+                size="default"
                 className={isSaved ? 'bg-green-500 hover:bg-green-500' : ''}
               >
                 {isSaved ? (

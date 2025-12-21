@@ -125,6 +125,14 @@ const FormControl = React.forwardRef<
 })
 FormControl.displayName = "FormControl"
 
+/**
+ * FormDescription - TOON-compliant helper text
+ * 
+ * Styling specifications:
+ * - Font-size: 12px (text-xs)
+ * - Color: muted (text-gray-500)
+ * - Line-height: 1.4 for readability
+ */
 const FormDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
@@ -135,13 +143,21 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-xs text-gray-500 leading-snug mt-1", className)}
       {...props}
     />
   )
 })
 FormDescription.displayName = "FormDescription"
 
+/**
+ * FormMessage - TOON-compliant error/validation message
+ * 
+ * Styling specifications:
+ * - Font-size: 12px (text-xs)
+ * - Color: destructive red
+ * - Font-weight: 500 (medium)
+ */
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
@@ -157,7 +173,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-sm font-medium text-destructive", className)}
+      className={cn("text-xs font-medium text-destructive mt-1", className)}
       {...props}
     >
       {body}

@@ -8,19 +8,22 @@
  */
 export const ROOM_FALLBACK_IMAGES = {
   dorm: [
+    '/images/rooms/dorm.webp',
     '/images/Freedomroutes-rooms-1.jpg',
     '/images/Freedomroutes-rooms-50.jpg',
     '/images/DSC03521-scaled.jpg'
   ],
   private: [
-    '/images/DSC02099-scaled.jpg',
-    '/images/DSC02102-scaled.jpg',
-    '/images/DSC03530-scaled.jpg'
+    '/images/rooms/room1.jpg',
+    '/images/rooms/room2.webp',
+    '/images/rooms/room3.webp',
+    '/images/DSC02099-scaled.jpg'
   ],
   shared: [
+    '/images/rooms/room2.webp',
+    '/images/rooms/room3.webp',
     '/images/DSC02099-scaled.jpg',
-    '/images/DSC02102-scaled.jpg',
-    '/images/DSC03530-scaled.jpg'
+    '/images/DSC02102-scaled.jpg'
   ]
 } as const;
 

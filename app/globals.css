@@ -20,8 +20,8 @@
     --popover-foreground: 222.2 84% 4.9%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 24 89% 52%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
@@ -151,6 +151,98 @@
   .bg-heiwaOrange-700:hover {
     background-color: #9a3412 !important;
   }
+
+  /* ============================================
+   * TOON-Compliant Form Input Styles
+   * Requirements: 4.1, 4.2, 4.3, 8.4
+   * ============================================ */
+
+  /* Base input styles - TOON compliant */
+  .form-input,
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="search"],
+  select,
+  textarea {
+    min-height: 40px;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: all 150ms ease-out;
+    border: 1px solid #d1d5db; /* gray-300 */
+  }
+
+  /* TOON-compliant focus states for form inputs (Requirement 8.4) */
+  .form-input:focus,
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  input[type="date"]:focus,
+  input[type="search"]:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(236, 104, 28, 0.2); /* orange-500/20 ring */
+    border-color: #ec681c; /* orange-500 */
+  }
+
+  /* Focus-visible states for keyboard navigation */
+  .form-input:focus-visible,
+  input[type="text"]:focus-visible,
+  input[type="email"]:focus-visible,
+  input[type="tel"]:focus-visible,
+  input[type="password"]:focus-visible,
+  input[type="number"]:focus-visible,
+  input[type="date"]:focus-visible,
+  input[type="search"]:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(236, 104, 28, 0.2); /* orange-500/20 ring */
+    border-color: #ec681c; /* orange-500 */
+  }
+
+  /* Form label styles - TOON compliant */
+  .form-label {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    display: block;
+    color: #374151;
+  }
+
+  /* Helper text styles - TOON compliant */
+  .form-helper-text {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* Error helper text */
+  .form-helper-text.error {
+    color: #dc2626;
+  }
+
+  /* Form group spacing */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group > label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+  }
 }
 
 @layer base {
@@ -210,6 +302,49 @@
   
   .prose p {
     margin-bottom: 1.5em;
+  }
+}
+
+/* ============================================
+ * TOON-Compliant Icon-Text Alignment Utilities
+ * Requirements: 7.1, 7.3
+ * - Icon-text gap: 8px
+ * - Vertical alignment with text baseline
+ * ============================================ */
+@layer utilities {
+  /* Icon-text container with proper gap and alignment */
+  .icon-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* TOON-compliant 8px gap */
+  }
+
+  /* Icon-text for flex containers */
+  .icon-text-flex {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* TOON-compliant 8px gap */
+  }
+
+  /* Icon sizing relative to text (0.9x ratio) */
+  .icon-text svg,
+  .icon-text-flex svg {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+  }
+
+  /* Larger icon variant for headings */
+  .icon-text-lg {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-text-lg svg {
+    flex-shrink: 0;
+    width: 1.25em;
+    height: 1.25em;
   }
 }
 

@@ -50,9 +50,10 @@ export function PaymentMethodSelector({ selectedMethod, onMethodChange }: Paymen
               `}
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+                {/* TOON-compliant icon-text gap (8px) */}
+                <div className="flex items-center gap-2">
                   <div className={`
-                    p-2 rounded-lg
+                    p-2 rounded-lg flex-shrink-0
                     ${isSelected ? 'bg-accent text-white' : 'bg-gray-100 text-gray-600'}
                   `}>
                     <Icon size={20} />

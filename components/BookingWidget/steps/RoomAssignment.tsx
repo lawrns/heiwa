@@ -309,10 +309,10 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                       image={room.images[0]}
                       roomName={room.name}
                       onClick={() => openGallery(room)}
-                      className="w-20 h-15"
+                      className="w-20 h-16"
                     />
                   ) : (
-                    <div className="w-20 h-15 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                    <div className="w-20 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
                       <span className="text-white text-lg">🏠</span>
                     </div>
                   )}
@@ -391,7 +391,28 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                         <button
                           key={guestId}
                           onClick={() => handleAssignGuestToRoom(room.id, guestId)}
-                          className="flex items-center gap-2 px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg text-base font-medium transition-colors border-2 border-transparent hover:border-orange-300"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '10px 20px',
+                            backgroundColor: '#fed7aa',
+                            color: '#9a3412',
+                            borderRadius: '10px',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            border: '2px solid transparent',
+                            cursor: 'pointer',
+                            transition: 'all 150ms ease-out',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#fdba74';
+                            e.currentTarget.style.borderColor = '#fb923c';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#fed7aa';
+                            e.currentTarget.style.borderColor = 'transparent';
+                          }}
                         >
                           <ArrowRight size={14} />
                           {getGuestName(guestId)}

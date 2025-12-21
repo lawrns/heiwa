@@ -399,14 +399,40 @@ export function BookingWidget({
                       </div>
                     </div>
 
-                    <Button
+                    <button
                       onClick={closeWidget}
-                      variant="secondary"
-                      size="lg"
-                      className="w-full max-w-xs bg-green-600 hover:bg-green-700 text-white"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        width: '100%',
+                        maxWidth: '320px',
+                        minHeight: '48px',
+                        padding: '14px 24px',
+                        backgroundColor: '#16a34a',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '10px',
+                        fontSize: '16px',
+                        fontWeight: 500,
+                        cursor: 'pointer',
+                        transition: 'all 150ms ease-out',
+                        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#15803d';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                        e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#16a34a';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
+                      }}
                     >
                       Close & Return to Site
-                    </Button>
+                    </button>
                   </div>
                 ) : (
                   renderCurrentStep()
@@ -418,17 +444,47 @@ export function BookingWidget({
             {!bookingSuccess && computed.currentStepType !== 'review-pay' && (
               <div className="flex items-center justify-between p-3 sm:p-4 md:p-5 lg:p-6 border-t border-gray-200 bg-white">
                 <div className="relative group">
-                  <Button
-                    variant="outline"
-                    size="default"
+                  {/* Back Button - Custom styled for proper padding */}
+                  <button
                     onClick={actions.prevStep}
                     disabled={computed.isFirstStep}
-                    className="min-h-[44px]"
                     aria-label="Go back to previous step"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      minHeight: '44px',
+                      padding: '12px 24px',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      borderRadius: '10px',
+                      border: '1px solid #d1d5db',
+                      backgroundColor: 'white',
+                      color: '#374151',
+                      cursor: computed.isFirstStep ? 'not-allowed' : 'pointer',
+                      opacity: computed.isFirstStep ? 0.5 : 1,
+                      transition: 'all 150ms ease-out',
+                      boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!computed.isFirstStep) {
+                        e.currentTarget.style.backgroundColor = '#f9fafb';
+                        e.currentTarget.style.borderColor = '#9ca3af';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                        e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'white';
+                      e.currentTarget.style.borderColor = '#d1d5db';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+                    }}
                   >
-                    <ArrowLeft size={16} className="flex-shrink-0" />
+                    <ArrowLeft size={16} style={{ flexShrink: 0 }} />
                     <span>Back</span>
-                  </Button>
+                  </button>
                   
                   {/* Tooltip */}
                   {!computed.isFirstStep && (
@@ -458,12 +514,43 @@ export function BookingWidget({
                     <div className="text-sm text-gray-500 hidden sm:block">Total</div>
                   </div>
 
-                  <Button
-                    size="lg"
+                  {/* Next Button - Custom styled for proper padding */}
+                  <button
                     onClick={actions.nextStep}
                     disabled={!computed.canProceedToNextStep || state.isLoading}
-                    className="min-h-[44px]"
                     aria-label={computed.isLastStep ? 'Complete booking' : 'Continue to next step'}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      minHeight: '44px',
+                      padding: '12px 24px',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      borderRadius: '10px',
+                      border: 'none',
+                      backgroundColor: (!computed.canProceedToNextStep || state.isLoading) ? '#f5a97a' : '#ec681c',
+                      color: 'white',
+                      cursor: (!computed.canProceedToNextStep || state.isLoading) ? 'not-allowed' : 'pointer',
+                      opacity: (!computed.canProceedToNextStep || state.isLoading) ? 0.6 : 1,
+                      transition: 'all 150ms ease-out',
+                      boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (computed.canProceedToNextStep && !state.isLoading) {
+                        e.currentTarget.style.backgroundColor = '#d65d16';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                        e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (computed.canProceedToNextStep && !state.isLoading) {
+                        e.currentTarget.style.backgroundColor = '#ec681c';
+                      }
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
+                    }}
                   >
                     {state.isLoading ? (
                       <>
@@ -478,7 +565,7 @@ export function BookingWidget({
                         <ArrowRight size={16} />
                       </>
                     )}
-                  </Button>
+                  </button>
                 </div>
               </div>
             )}

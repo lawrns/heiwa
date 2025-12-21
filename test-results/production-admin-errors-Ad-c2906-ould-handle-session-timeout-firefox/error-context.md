@@ -1,0 +1,180 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - generic [ref=e5]:
+      - navigation "Main navigation" [ref=e7]:
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Navigate to HOME page" [ref=e10] [cursor=pointer]:
+              - /url: /
+              - text: HOME
+          - listitem [ref=e11]:
+            - link "Navigate to ROOM RENTALS page" [ref=e12] [cursor=pointer]:
+              - /url: /rooms
+              - text: ROOM RENTALS
+          - listitem [ref=e13]:
+            - link "Navigate to SURF WEEK page" [ref=e14] [cursor=pointer]:
+              - /url: /surf-weeks
+              - text: SURF WEEK
+      - link "Heiwa House" [ref=e16] [cursor=pointer]:
+        - /url: /
+        - img "Heiwa House" [ref=e17]
+      - generic [ref=e18]:
+        - button "Open activities menu" [ref=e20]:
+          - text: ACTIVITIES
+          - img [ref=e21]
+        - generic [ref=e24]: +351 912 193 785
+        - button "BOOK" [ref=e25]:
+          - img [ref=e26]
+          - text: BOOK
+  - main [ref=e31]:
+    - generic [ref=e33]:
+      - heading "Room List" [level=1] [ref=e36]
+      - generic [ref=e39]:
+        - link "Dorm room 30€ Dorm room 6 beds 1 bath Welcome to our spacious and airy shared dormitory, thoughtfully designed for comfort and community. This room features sturdy, handcrafted wooden bunk beds and a welcoming atmosphere. Room Detail →" [ref=e41] [cursor=pointer]:
+          - /url: /rooms/f3f00cbb-c30e-4d84-9352-cfb6a76684d0
+          - generic [ref=e42]:
+            - img "Dorm room" [ref=e45]
+            - generic [ref=e46]: 30€
+          - generic [ref=e47]:
+            - heading "Dorm room" [level=3] [ref=e48]
+            - generic [ref=e49]:
+              - generic [ref=e50]:
+                - img [ref=e51]
+                - generic [ref=e56]: 6 beds
+              - generic [ref=e57]:
+                - img [ref=e58]
+                - generic [ref=e64]: 1 bath
+            - paragraph [ref=e65]: Welcome to our spacious and airy shared dormitory, thoughtfully designed for comfort and community. This room features sturdy, handcrafted wooden bunk beds and a welcoming atmosphere.
+            - generic [ref=e66]:
+              - text: Room Detail
+              - generic [ref=e67]: →
+        - link "Room 1 - Image 2 of 7 Previous image Next image Pause slideshow 2/7 Go to image 1 Go to image 2 Go to image 3 Go to image 4 Go to image 5 Go to image 6 Go to image 7 95€ Room 1 3 beds 1 bath Best room in the house - Updated via browser test Room Detail →" [ref=e69] [cursor=pointer]:
+          - /url: /rooms/1fb4d803-728a-46bd-aecf-1498b63b9b26
+          - generic [ref=e70]:
+            - generic [ref=e71]:
+              - generic [ref=e72]:
+                - img "Room 1 - Image 2 of 7" [ref=e73]
+                - button "Previous image" [ref=e74]:
+                  - img [ref=e75]
+                - button "Next image" [ref=e77]:
+                  - img [ref=e78]
+                - button "Pause slideshow" [ref=e80]:
+                  - img [ref=e81]
+              - generic [ref=e84]: 2/7
+              - generic [ref=e85]:
+                - button "Go to image 1" [ref=e86]
+                - button "Go to image 2" [ref=e87]
+                - button "Go to image 3" [ref=e88]
+                - button "Go to image 4" [ref=e89]
+                - button "Go to image 5" [ref=e90]
+                - button "Go to image 6" [ref=e91]
+                - button "Go to image 7" [ref=e92]
+            - generic [ref=e93]: 95€
+          - generic [ref=e94]:
+            - heading "Room 1" [level=3] [ref=e95]
+            - generic [ref=e96]:
+              - generic [ref=e97]:
+                - img [ref=e98]
+                - generic [ref=e103]: 3 beds
+              - generic [ref=e104]:
+                - img [ref=e105]
+                - generic [ref=e111]: 1 bath
+            - paragraph [ref=e112]: Best room in the house - Updated via browser test
+            - generic [ref=e113]:
+              - text: Room Detail
+              - generic [ref=e114]: →
+        - link "Room 2 - Image 2 of 4 Previous image Next image Pause slideshow 2/4 Go to image 1 Go to image 2 Go to image 3 Go to image 4 85€ Room 2 2 beds 1 bath Double troom Room Detail →" [ref=e116] [cursor=pointer]:
+          - /url: /rooms/68df9d13-1b86-48e1-8b52-d04557b49bd0
+          - generic [ref=e117]:
+            - generic [ref=e118]:
+              - generic [ref=e119]:
+                - img "Room 2 - Image 2 of 4" [ref=e120]
+                - button "Previous image" [ref=e121]:
+                  - img [ref=e122]
+                - button "Next image" [ref=e124]:
+                  - img [ref=e125]
+                - button "Pause slideshow" [ref=e127]:
+                  - img [ref=e128]
+              - generic [ref=e131]: 2/4
+              - generic [ref=e132]:
+                - button "Go to image 1" [ref=e133]
+                - button "Go to image 2" [ref=e134]
+                - button "Go to image 3" [ref=e135]
+                - button "Go to image 4" [ref=e136]
+            - generic [ref=e137]: 85€
+          - generic [ref=e138]:
+            - heading "Room 2" [level=3] [ref=e139]
+            - generic [ref=e140]:
+              - generic [ref=e141]:
+                - img [ref=e142]
+                - generic [ref=e147]: 2 beds
+              - generic [ref=e148]:
+                - img [ref=e149]
+                - generic [ref=e155]: 1 bath
+            - paragraph [ref=e156]: Double troom
+            - generic [ref=e157]:
+              - text: Room Detail
+              - generic [ref=e158]: →
+        - link "Room Nr 3 80€ Room Nr 3 2 beds 1 bath Step into the charm of this beautifully designed twin room, blending modern comfort with traditional Portuguese aesthetics. The room features handcrafted wooden furniture and traditional tiles. Room Detail →" [ref=e160] [cursor=pointer]:
+          - /url: /rooms/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9
+          - generic [ref=e161]:
+            - img "Room Nr 3" [ref=e164]
+            - generic [ref=e165]: 80€
+          - generic [ref=e166]:
+            - heading "Room Nr 3" [level=3] [ref=e167]
+            - generic [ref=e168]:
+              - generic [ref=e169]:
+                - img [ref=e170]
+                - generic [ref=e175]: 2 beds
+              - generic [ref=e176]:
+                - img [ref=e177]
+                - generic [ref=e183]: 1 bath
+            - paragraph [ref=e184]: Step into the charm of this beautifully designed twin room, blending modern comfort with traditional Portuguese aesthetics. The room features handcrafted wooden furniture and traditional tiles.
+            - generic [ref=e185]:
+              - text: Room Detail
+              - generic [ref=e186]: →
+  - contentinfo [ref=e187]:
+    - generic [ref=e189]:
+      - generic [ref=e190]:
+        - heading "Find us here" [level=3] [ref=e191]
+        - iframe [ref=e193]:
+          
+      - generic [ref=e194]:
+        - heading "General" [level=3] [ref=e195]
+        - list [ref=e196]:
+          - listitem [ref=e197]:
+            - link "HOME" [ref=e198] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e199]:
+            - link "ROOM RENTALS" [ref=e200] [cursor=pointer]:
+              - /url: /rooms
+          - listitem [ref=e201]:
+            - link "SURF CAMP" [ref=e202] [cursor=pointer]:
+              - /url: /surf-weeks
+          - listitem [ref=e203]:
+            - link "Blog" [ref=e204] [cursor=pointer]:
+              - /url: /blog
+      - generic [ref=e205]:
+        - heading "Connect" [level=3] [ref=e206]
+        - link "Instagram" [ref=e207] [cursor=pointer]:
+          - /url: https://www.instagram.com/heiwahouse_portugal
+          - img [ref=e208]
+          - generic [ref=e212]: Instagram
+      - generic [ref=e213]:
+        - heading "About Us" [level=3] [ref=e214]
+        - generic [ref=e215]:
+          - paragraph [ref=e216]:
+            - link "E. info@heiwahouse.com" [ref=e217] [cursor=pointer]:
+              - /url: mailto:info@heiwahouse.com
+          - paragraph [ref=e218]:
+            - link "T. + 351 912 193 785" [ref=e219] [cursor=pointer]:
+              - /url: tel:+351912193785
+  - button "Contact us on WhatsApp" [ref=e220]:
+    - img [ref=e221]
+  - alert [ref=e223]
+```

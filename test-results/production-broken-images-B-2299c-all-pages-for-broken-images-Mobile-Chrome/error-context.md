@@ -1,0 +1,177 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - generic [ref=e5]:
+      - link "Heiwa House" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - img "Heiwa House" [ref=e8]
+      - button "Toggle mobile menu" [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e12]:
+    - generic [ref=e14]:
+      - navigation [ref=e17]:
+        - link "← Back to Room List" [ref=e18] [cursor=pointer]:
+          - /url: /rooms
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - generic [ref=e22]:
+              - heading "Room 1" [level=1] [ref=e23]
+              - generic [ref=e24]:
+                - generic [ref=e25]:
+                  - img [ref=e26]
+                  - generic [ref=e29]: 3 beds
+                - generic [ref=e30]:
+                  - img [ref=e31]
+                  - generic [ref=e34]: 1 bathroom
+                - generic [ref=e35]:
+                  - img [ref=e36]
+                  - generic [ref=e41]: 25m²
+                - generic [ref=e42]:
+                  - img [ref=e43]
+                  - generic [ref=e48]: Up to 3 guests
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - img "Room 1 - Image 1 of 7" [ref=e52]
+                - button "Previous image" [ref=e53]:
+                  - img [ref=e54]
+                - button "Next image" [ref=e56]:
+                  - img [ref=e57]
+                - button "Pause slideshow" [ref=e59]:
+                  - img [ref=e60]
+              - generic [ref=e63]: 1/7
+              - generic [ref=e64]:
+                - button "Go to image 1" [ref=e65]
+                - button "Go to image 2" [ref=e66]
+                - button "Go to image 3" [ref=e67]
+                - button "Go to image 4" [ref=e68]
+                - button "Go to image 5" [ref=e69]
+                - button "Go to image 6" [ref=e70]
+                - button "Go to image 7" [ref=e71]
+            - generic [ref=e72]:
+              - heading "About this room" [level=2] [ref=e73]
+              - paragraph [ref=e74]: Best room in the house - Updated via browser test
+            - generic [ref=e75]:
+              - heading "Room Facilities" [level=2] [ref=e76]
+              - generic [ref=e77]:
+                - generic [ref=e78]:
+                  - generic [ref=e80]: ✓
+                  - generic [ref=e81]: Towels
+                - generic [ref=e82]:
+                  - generic [ref=e84]: ✓
+                  - generic [ref=e85]: Wifi Access
+            - generic [ref=e86]:
+              - heading "Room Features" [level=2] [ref=e87]
+              - list [ref=e88]:
+                - listitem [ref=e89]:
+                  - generic [ref=e90]: ✓
+                  - generic [ref=e91]: WiFi
+          - generic [ref=e93]:
+            - heading "Book Your Room" [level=3] [ref=e94]
+            - generic [ref=e95]:
+              - generic [ref=e96]:
+                - generic [ref=e97]: 95€
+                - generic [ref=e98]: / night
+              - paragraph [ref=e99]: Best price guarantee
+            - button "Check Availability" [ref=e100]
+            - paragraph [ref=e102]: You won't be charged yet
+            - generic [ref=e103]:
+              - heading "Good to know" [level=4] [ref=e104]
+              - list [ref=e105]:
+                - listitem [ref=e106]:
+                  - generic [ref=e107]: ✓
+                  - generic [ref=e108]: Free cancellation up to 48 hours
+                - listitem [ref=e109]:
+                  - generic [ref=e110]: ✓
+                  - generic [ref=e111]: Check-in from 15:00
+                - listitem [ref=e112]:
+                  - generic [ref=e113]: ✓
+                  - generic [ref=e114]: Check-out by 10:00
+                - listitem [ref=e115]:
+                  - generic [ref=e116]: ✓
+                  - generic [ref=e117]: Common kitchen access
+            - paragraph [ref=e119]:
+              - text: Questions?
+              - link "Call us" [ref=e120] [cursor=pointer]:
+                - /url: tel:+351912193785
+        - generic [ref=e121]:
+          - heading "Similar Rooms" [level=2] [ref=e122]
+          - generic [ref=e123]:
+            - link "Dorm room 30€ per night Dorm room 6 beds • 1 bathroom" [ref=e124] [cursor=pointer]:
+              - /url: /rooms/f3f00cbb-c30e-4d84-9352-cfb6a76684d0
+              - generic [ref=e125]:
+                - img "Dorm room" [ref=e126]
+                - generic [ref=e127]:
+                  - generic [ref=e128]: 30€
+                  - generic [ref=e129]: per night
+              - generic [ref=e130]:
+                - heading "Dorm room" [level=3] [ref=e131]
+                - generic [ref=e132]:
+                  - generic [ref=e133]:
+                    - img [ref=e134]
+                    - text: 6 beds
+                  - generic [ref=e137]: •
+                  - generic [ref=e138]:
+                    - img [ref=e139]
+                    - text: 1 bathroom
+            - link "Room 2 85€ per night Room 2 2 beds • 1 bathroom" [ref=e142] [cursor=pointer]:
+              - /url: /rooms/68df9d13-1b86-48e1-8b52-d04557b49bd0
+              - generic [ref=e143]:
+                - img "Room 2" [ref=e144]
+                - generic [ref=e145]:
+                  - generic [ref=e146]: 85€
+                  - generic [ref=e147]: per night
+              - generic [ref=e148]:
+                - heading "Room 2" [level=3] [ref=e149]
+                - generic [ref=e150]:
+                  - generic [ref=e151]:
+                    - img [ref=e152]
+                    - text: 2 beds
+                  - generic [ref=e155]: •
+                  - generic [ref=e156]:
+                    - img [ref=e157]
+                    - text: 1 bathroom
+  - contentinfo [ref=e160]:
+    - generic [ref=e162]:
+      - generic [ref=e163]:
+        - heading "Find us here" [level=3] [ref=e164]
+        - iframe [ref=e166]:
+          
+      - generic [ref=e167]:
+        - heading "General" [level=3] [ref=e168]
+        - list [ref=e169]:
+          - listitem [ref=e170]:
+            - link "HOME" [ref=e171] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e172]:
+            - link "ROOM RENTALS" [ref=e173] [cursor=pointer]:
+              - /url: /rooms
+          - listitem [ref=e174]:
+            - link "SURF CAMP" [ref=e175] [cursor=pointer]:
+              - /url: /surf-weeks
+          - listitem [ref=e176]:
+            - link "Blog" [ref=e177] [cursor=pointer]:
+              - /url: /blog
+      - generic [ref=e178]:
+        - heading "Connect" [level=3] [ref=e179]
+        - link "Instagram" [ref=e180] [cursor=pointer]:
+          - /url: https://www.instagram.com/heiwahouse_portugal
+          - img [ref=e181]
+          - generic [ref=e184]: Instagram
+      - generic [ref=e185]:
+        - heading "About Us" [level=3] [ref=e186]
+        - generic [ref=e187]:
+          - paragraph [ref=e188]:
+            - link "E. info@heiwahouse.com" [ref=e189] [cursor=pointer]:
+              - /url: mailto:info@heiwahouse.com
+          - paragraph [ref=e190]:
+            - link "T. + 351 912 193 785" [ref=e191] [cursor=pointer]:
+              - /url: tel:+351912193785
+  - button "Contact us on WhatsApp" [ref=e192]:
+    - img [ref=e193]
+  - alert [ref=e195]
+```

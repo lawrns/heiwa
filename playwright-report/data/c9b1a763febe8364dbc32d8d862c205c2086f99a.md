@@ -1,0 +1,69 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - generic [ref=e5]:
+      - navigation "Main navigation" [ref=e7]:
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Navigate to HOME page" [ref=e10] [cursor=pointer]:
+              - /url: /
+              - text: HOME
+          - listitem [ref=e11]:
+            - link "Navigate to ROOM RENTALS page" [ref=e12] [cursor=pointer]:
+              - /url: /rooms
+              - text: ROOM RENTALS
+          - listitem [ref=e13]:
+            - link "Navigate to SURF WEEK page" [ref=e14] [cursor=pointer]:
+              - /url: /surf-weeks
+              - text: SURF WEEK
+      - link "Heiwa House" [ref=e16] [cursor=pointer]:
+        - /url: /
+        - img "Heiwa House" [ref=e17]
+      - generic [ref=e18]:
+        - button "Open activities menu" [ref=e20]:
+          - text: ACTIVITIES
+          - img [ref=e21]
+        - generic [ref=e23]: +351 912 193 785
+        - button "BOOK" [ref=e24]:
+          - img [ref=e25]
+          - text: BOOK
+      - button "Toggle mobile menu" [ref=e28]:
+        - img [ref=e29]
+  - main [ref=e30]:
+    - generic [ref=e33]:
+      - heading "404" [level=1] [ref=e34]
+      - heading "This page could not be found." [level=2] [ref=e36]
+  - contentinfo [ref=e37]:
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - heading "Find us here" [level=3] [ref=e41]
+        - iframe [ref=e43]:
+          
+      - generic [ref=e44]:
+        - heading "General" [level=3] [ref=e45]
+        - list [ref=e46]:
+          - listitem [ref=e47]:
+            - link "Blog" [ref=e48] [cursor=pointer]:
+              - /url: /blog
+      - generic [ref=e49]:
+        - heading "Connect" [level=3] [ref=e50]
+        - link "Instagram" [ref=e51] [cursor=pointer]:
+          - /url: https://www.instagram.com/heiwahouse_portugal
+          - img [ref=e52]
+          - text: Instagram
+      - generic [ref=e55]:
+        - heading "About Us" [level=3] [ref=e56]
+        - generic [ref=e57]:
+          - paragraph [ref=e58]:
+            - link "E. info@heiwahouse.com" [ref=e59] [cursor=pointer]:
+              - /url: mailto:info@heiwahouse.com
+          - paragraph [ref=e60]:
+            - link "T. + 351 912 193 785" [ref=e61] [cursor=pointer]:
+              - /url: tel:+351912193785
+  - button "Contact us on WhatsApp" [ref=e62]:
+    - img [ref=e63]
+```

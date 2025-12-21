@@ -569,7 +569,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         
         <div className="space-y-4">
           {/* Experience Type */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-bold">
                 {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
@@ -585,10 +585,10 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             </div>
           </div>
 
-          {/* Dates */}
+          {/* Dates - TOON-compliant icon-text gap (8px) */}
           {state.dates.checkIn && state.dates.checkOut && (
-            <div className="flex items-center gap-3">
-              <Calendar size={20} className="text-gray-400" />
+            <div className="flex items-center gap-2">
+              <Calendar size={20} className="text-gray-400 flex-shrink-0" />
               <div>
                 <div className="font-medium text-gray-900">Dates</div>
                 <div className="text-base text-gray-600">
@@ -608,9 +608,9 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             </div>
           )}
 
-          {/* Guests */}
-          <div className="flex items-center gap-3">
-            <Users size={20} className="text-gray-400" />
+          {/* Guests - TOON-compliant icon-text gap (8px) */}
+          <div className="flex items-center gap-2">
+            <Users size={20} className="text-gray-400 flex-shrink-0" />
             <div>
               <div className="font-medium text-gray-900">Guests</div>
               <div className="text-base text-gray-600">
@@ -619,9 +619,9 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             </div>
           </div>
 
-          {/* Location */}
-          <div className="flex items-center gap-3">
-            <MapPin size={20} className="text-gray-400" />
+          {/* Location - TOON-compliant icon-text gap (8px) */}
+          <div className="flex items-center gap-2">
+            <MapPin size={20} className="text-gray-400 flex-shrink-0" />
             <div>
               <div className="font-medium text-gray-900">Location</div>
               <div className="text-base text-gray-600">
@@ -816,14 +816,37 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       {/* Jump to Instructions Button for Bank Transfer */}
       {showJumpButton && state.paymentMethod === 'bank_wire' && (
         <div className="flex justify-center">
-          <Button
+          <button
             onClick={scrollToInstructions}
-            variant="outline"
-            className="bg-orange-100 hover:bg-orange-200 text-orange-700 hover:text-orange-800 border-orange-200 hover:border-orange-300"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              padding: '10px 20px',
+              backgroundColor: '#ffedd5',
+              color: '#c2410c',
+              border: '1px solid #fed7aa',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              transition: 'all 150ms ease-out',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#fed7aa';
+              e.currentTarget.style.borderColor = '#fdba74';
+              e.currentTarget.style.color = '#9a3412';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#ffedd5';
+              e.currentTarget.style.borderColor = '#fed7aa';
+              e.currentTarget.style.color = '#c2410c';
+            }}
           >
             <ChevronDown size={16} className="animate-bounce" />
             View Bank Transfer Instructions
-          </Button>
+          </button>
         </div>
       )}
 
@@ -867,11 +890,42 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       {/* Payment Button */}
       {state.paymentMethod && (
         <div className="space-y-4">
-          <Button
+          <button
             onClick={handlePayment}
             disabled={isProcessing || !termsAccepted}
-            size="lg"
-            className="w-full"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              width: '100%',
+              minHeight: '48px',
+              padding: '14px 24px',
+              backgroundColor: (isProcessing || !termsAccepted) ? '#f5a97a' : '#ec681c',
+              color: 'white',
+              border: 'none',
+              borderRadius: '10px',
+              fontSize: '16px',
+              fontWeight: 500,
+              cursor: (isProcessing || !termsAccepted) ? 'not-allowed' : 'pointer',
+              opacity: (isProcessing || !termsAccepted) ? 0.6 : 1,
+              transition: 'all 150ms ease-out',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+            }}
+            onMouseEnter={(e) => {
+              if (!isProcessing && termsAccepted) {
+                e.currentTarget.style.backgroundColor = '#d65d16';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isProcessing && termsAccepted) {
+                e.currentTarget.style.backgroundColor = '#ec681c';
+              }
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
+            }}
           >
             {isProcessing ? (
               <>
@@ -889,7 +943,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                 Complete Booking
               </>
             )}
-          </Button>
+          </button>
 
           {!bookingCompleted && (
             <div className="text-center">

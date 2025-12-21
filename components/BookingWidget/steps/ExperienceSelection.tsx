@@ -129,7 +129,8 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
 
               {/* Card Content */}
               <div className="relative z-10 p-5 sm:p-6">
-                <div className="flex items-start gap-3 mb-3">
+                {/* TOON-compliant icon-text gap (8px) */}
+                <div className="flex items-start gap-2 mb-3">
                   {/* Icon */}
                   <div className={`
                     p-3 rounded-lg bg-white/20 backdrop-blur-md
@@ -140,7 +141,7 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                   </div>
 
                   {/* Title and Price */}
-                  <div className="flex-1 flex items-start justify-between gap-3 min-w-0">
+                  <div className="flex-1 flex items-start justify-between gap-2 min-w-0">
                     <h4 className="text-xl sm:text-2xl font-bold text-white leading-tight drop-shadow-lg">
                       {experience.title}
                     </h4>

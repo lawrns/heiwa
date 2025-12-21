@@ -40,9 +40,9 @@ export function BankWireInstructions({ totalAmount, currency, bookingReference }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
-        <Building2 size={24} className="text-blue-600" />
+      {/* Header - TOON-compliant icon-text gap (8px) */}
+      <div className="flex items-center gap-2 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <Building2 size={24} className="text-blue-600 flex-shrink-0" />
         <div>
           <h4 className="font-semibold text-blue-900">Bank Wire Transfer Instructions</h4>
           <p className="text-sm text-blue-700">
@@ -154,9 +154,9 @@ export function BankWireInstructions({ totalAmount, currency, bookingReference }
         </div>
       </div>
 
-      {/* Important Notes */}
+      {/* Important Notes - TOON-compliant icon-text gap (8px) */}
       <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-2">
           <AlertCircle size={20} className="text-amber-600 mt-0.5 flex-shrink-0" />
           <div className="space-y-2">
             <h6 className="font-semibold text-amber-900">Important Notes</h6>

@@ -520,7 +520,26 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
             <p className="text-red-800 font-medium mb-2">Error loading rooms: {error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '10px 20px',
+                backgroundColor: '#ea580c',
+                color: 'white',
+                borderRadius: '10px',
+                fontSize: '14px',
+                fontWeight: 500,
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 150ms ease-out',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#c2410c';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ea580c';
+              }}
             >
               Try Again
             </button>
@@ -663,17 +682,18 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                       image={originalRoom?.images?.[0] || transformedRoom.image || '/images/room-placeholder.jpg'}
                       roomName={transformedRoom.name}
                       onClick={() => openGallery(originalRoom)}
-                      className="w-20 h-15"
+                      className="w-20 h-16"
                     />
                   ) : (
-                    <div className="w-20 h-15 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                    <div className="w-20 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
                       <span className="text-white text-lg">🏠</span>
                     </div>
                   )}
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start gap-3 mb-2">
+                  {/* TOON-compliant icon-text gap (8px) */}
+                  <div className="flex items-start gap-2 mb-2">
                     <Bed size={20} className="text-accent flex-shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
                       <h4 className="text-lg font-semibold text-gray-900 leading-tight mb-1">
@@ -700,7 +720,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                   ) : (
                     <div className="flex flex-col items-end">
                       <div className="text-2xl font-bold text-orange-600 leading-tight mb-1">
-                        +{formatPrice(displayPrice)}
+                        from {formatPrice(displayPrice)}
                       </div>
                       <div className="text-sm text-gray-500">
                         {priceLabel}
@@ -817,7 +837,28 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                         <button
                           key={guestId}
                           onClick={() => handleAssignGuestToRoom(transformedRoom.id, guestId)}
-                          className="flex items-center gap-2 px-3 py-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg text-base font-medium transition-colors border-2 border-transparent hover:border-orange-300"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '10px 20px',
+                            backgroundColor: '#fed7aa',
+                            color: '#9a3412',
+                            borderRadius: '10px',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            border: '2px solid transparent',
+                            cursor: 'pointer',
+                            transition: 'all 150ms ease-out',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#fdba74';
+                            e.currentTarget.style.borderColor = '#fb923c';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#fed7aa';
+                            e.currentTarget.style.borderColor = 'transparent';
+                          }}
                         >
                           <ArrowRight size={14} />
                           {getGuestName(guestId)}
@@ -839,8 +880,29 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                 <div className="border-t pt-4 mt-4">
                   <button
                     onClick={() => openGallery(originalRoom)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 text-base font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-all duration-200 hover:shadow-sm"
                     aria-label={`View ${originalRoom.images.length} photo${originalRoom.images.length > 1 ? 's' : ''} of ${transformedRoom.name}`}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '10px 20px',
+                      backgroundColor: '#fff7ed',
+                      color: '#ea580c',
+                      borderRadius: '10px',
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 150ms ease-out',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#ffedd5';
+                      e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#fff7ed';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                   >
                     <span>📸</span>
                     <span>View {originalRoom.images.length} Photo{originalRoom.images.length > 1 ? 's' : ''}</span>

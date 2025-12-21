@@ -889,7 +889,26 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                             e.stopPropagation();
                             openGallery(w);
                           }}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200 cursor-pointer select-none"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '8px 16px',
+                            backgroundColor: '#fff7ed',
+                            color: '#ea580c',
+                            borderRadius: '10px',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                            userSelect: 'none',
+                            transition: 'all 150ms ease-out',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#ffedd5';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#fff7ed';
+                          }}
                         >
                           📸 View {w.images.length} Photo{w.images.length > 1 ? 's' : ''}
                         </span>

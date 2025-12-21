@@ -1,0 +1,109 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - generic [ref=e5]:
+      - link "Heiwa House" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - img "Heiwa House" [ref=e8]
+      - button "Toggle mobile menu" [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e12]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - img "Heiwa House Gallery" [ref=e16]
+        - generic [ref=e19]:
+          - heading "Gallery" [level=1] [ref=e20]
+          - paragraph [ref=e21]: Explore Heiwa House through our photos and videos
+      - generic [ref=e24]:
+        - img [ref=e25]
+        - button "All" [ref=e27]
+        - button "property" [ref=e28]
+        - button "surf" [ref=e29]
+        - button "yoga" [ref=e30]
+        - button "activities" [ref=e31]
+        - button "rooms" [ref=e32]
+      - generic [ref=e35]:
+        - generic [ref=e36] [cursor=pointer]:
+          - img "Aerial view of Heiwa House" [ref=e37]
+          - generic [ref=e39]:
+            - paragraph [ref=e40]: Heiwa House
+            - paragraph [ref=e41]: property
+        - generic [ref=e42] [cursor=pointer]:
+          - img "Surfing in Santa Cruz" [ref=e43]
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: Surf Session
+            - paragraph [ref=e47]: surf
+        - generic [ref=e48] [cursor=pointer]:
+          - img "Yoga dome at Heiwa House" [ref=e49]
+          - generic [ref=e51]:
+            - paragraph [ref=e52]: Yoga Dome
+            - paragraph [ref=e53]: yoga
+        - generic [ref=e54] [cursor=pointer]:
+          - img "Skatepark at Heiwa House" [ref=e55]
+          - generic [ref=e57]:
+            - paragraph [ref=e58]: Skatepark
+            - paragraph [ref=e59]: activities
+        - generic [ref=e60] [cursor=pointer]:
+          - img "Room at Heiwa House" [ref=e61]
+          - generic [ref=e63]:
+            - paragraph [ref=e64]: Room Interior
+            - paragraph [ref=e65]: rooms
+        - generic [ref=e66] [cursor=pointer]:
+          - img "Common area at Heiwa House" [ref=e67]
+          - generic [ref=e69]:
+            - paragraph [ref=e70]: Common Area
+            - paragraph [ref=e71]: property
+        - generic [ref=e72] [cursor=pointer]:
+          - img "Beach near Heiwa House" [ref=e73]
+          - generic [ref=e75]:
+            - paragraph [ref=e76]: Beach View
+            - paragraph [ref=e77]: surf
+        - generic [ref=e78] [cursor=pointer]:
+          - img "Pool at Heiwa House" [ref=e79]
+          - generic [ref=e81]:
+            - paragraph [ref=e82]: Pool Area
+            - paragraph [ref=e83]: property
+  - contentinfo [ref=e84]:
+    - generic [ref=e86]:
+      - generic [ref=e87]:
+        - heading "Find us here" [level=3] [ref=e88]
+        - iframe [ref=e90]:
+          
+      - generic [ref=e91]:
+        - heading "General" [level=3] [ref=e92]
+        - list [ref=e93]:
+          - listitem [ref=e94]:
+            - link "HOME" [ref=e95] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e96]:
+            - link "ROOM RENTALS" [ref=e97] [cursor=pointer]:
+              - /url: /rooms
+          - listitem [ref=e98]:
+            - link "SURF CAMP" [ref=e99] [cursor=pointer]:
+              - /url: /surf-weeks
+          - listitem [ref=e100]:
+            - link "Blog" [ref=e101] [cursor=pointer]:
+              - /url: /blog
+      - generic [ref=e102]:
+        - heading "Connect" [level=3] [ref=e103]
+        - link "Instagram" [ref=e104] [cursor=pointer]:
+          - /url: https://www.instagram.com/heiwahouse_portugal
+          - img [ref=e105]
+          - generic [ref=e108]: Instagram
+      - generic [ref=e109]:
+        - heading "About Us" [level=3] [ref=e110]
+        - generic [ref=e111]:
+          - paragraph [ref=e112]:
+            - link "E. info@heiwahouse.com" [ref=e113] [cursor=pointer]:
+              - /url: mailto:info@heiwahouse.com
+          - paragraph [ref=e114]:
+            - link "T. + 351 912 193 785" [ref=e115] [cursor=pointer]:
+              - /url: tel:+351912193785
+  - button "Contact us on WhatsApp" [ref=e116]:
+    - img [ref=e117]
+  - alert [ref=e119]
+```

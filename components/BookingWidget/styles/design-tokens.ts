@@ -1,6 +1,8 @@
 /**
  * Booking Widget Design Tokens
  * Centralized design system for consistent styling across all booking widget components
+ * 
+ * TOON Protocol Compliant - Pixel-Perfect UI Standards
  */
 
 export const bookingWidgetTokens = {
@@ -29,24 +31,26 @@ export const bookingWidgetTokens = {
     info: '#2563eb', // blue-600
   },
   
+  // TOON-compliant spacing scale
   spacing: {
-    xs: '0.5rem', // 8px
-    sm: '0.75rem', // 12px
-    md: '1rem', // 16px
-    lg: '1.5rem', // 24px
-    xl: '2rem', // 32px
-    '2xl': '2.5rem', // 40px
+    xs: '4px',    // 0.25rem
+    sm: '8px',    // 0.5rem
+    md: '12px',   // 0.75rem
+    lg: '16px',   // 1rem
+    xl: '24px',   // 1.5rem
+    xxl: '32px',  // 2rem
   },
   
+  // TOON-compliant typography
   typography: {
     fontSizes: {
-      xs: '0.75rem', // 12px
-      sm: '0.875rem', // 14px
-      base: '1rem', // 16px
-      lg: '1.125rem', // 18px
-      xl: '1.25rem', // 20px
-      '2xl': '1.5rem', // 24px
-      '3xl': '1.875rem', // 30px
+      xs: '12px',   // Labels, helper text
+      sm: '13px',   // Secondary buttons
+      base: '14px', // Primary buttons, inputs
+      lg: '16px',   // Headings
+      xl: '20px',   // Large headings
+      '2xl': '24px', // Section titles
+      '3xl': '30px', // Page titles
     },
     fontWeights: {
       normal: 400,
@@ -55,17 +59,71 @@ export const bookingWidgetTokens = {
       bold: 700,
     },
     lineHeights: {
-      tight: 1.25,
+      tight: 1.2,
       normal: 1.5,
       relaxed: 1.625,
     },
   },
   
+  // Button-specific tokens (TOON-compliant)
+  button: {
+    minHeight: '40px',
+    paddingX: '16px',
+    paddingY: '10px',
+    borderRadius: '10px',
+    fontSize: {
+      primary: '14px',
+      secondary: '13px',
+    },
+    fontWeight: 500,
+    opticalOffset: '-0.5px',
+  },
+  
+  // Input-specific tokens (TOON-compliant)
+  input: {
+    height: '40px',
+    paddingX: '12px',
+    paddingY: '8px',
+    borderRadius: '10px',
+    fontSize: '14px',
+  },
+  
+  // Form layout tokens (TOON-compliant)
+  form: {
+    labelSpacing: '6px',
+    elementGap: '16px',
+    groupSpacing: '24px',
+    ctaMarginTop: '24px',
+    containerPadding: '16px',
+  },
+  
+  // Interaction tokens (TOON-compliant)
+  interactions: {
+    hoverTranslateY: '-1px',
+    activeScale: '0.98',
+    transitionDuration: '150ms',
+    transitionEasing: 'ease-out',
+  },
+  
+  // Focus state tokens (TOON-compliant) - Requirement 8.4
+  focus: {
+    ringWidth: '2px',
+    ringColor: 'rgba(236, 104, 28, 0.2)', // orange-500/20
+    borderColor: '#ec681c', // orange-500
+    outlineOffset: '0px',
+  },
+  
+  // Icon tokens (TOON-compliant)
+  icons: {
+    textGap: '8px',
+    sizeRatio: 0.9,
+  },
+  
   borderRadius: {
-    sm: '0.375rem', // 6px
-    md: '0.5rem', // 8px
-    lg: '0.75rem', // 12px
-    xl: '1rem', // 16px
+    sm: '6px',
+    md: '8px',
+    lg: '10px',  // Updated to match TOON standard
+    xl: '16px',
   },
   
   shadows: {
@@ -73,6 +131,8 @@ export const bookingWidgetTokens = {
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
     xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    // Hover shadow for buttons
+    hover: '0 4px 12px rgba(0, 0, 0, 0.15)',
   },
   
   transitions: {

@@ -1,0 +1,280 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - generic [ref=e5]:
+      - navigation "Main navigation" [ref=e7]:
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Navigate to HOME page" [ref=e10] [cursor=pointer]:
+              - /url: /
+              - text: HOME
+          - listitem [ref=e11]:
+            - link "Navigate to ROOM RENTALS page" [ref=e12] [cursor=pointer]:
+              - /url: /rooms
+              - text: ROOM RENTALS
+          - listitem [ref=e13]:
+            - link "Navigate to SURF WEEK page" [ref=e14] [cursor=pointer]:
+              - /url: /surf-weeks
+              - text: SURF WEEK
+      - generic:
+        - link "Heiwa House":
+          - /url: /
+          - img "Heiwa House"
+      - generic [ref=e15]:
+        - button "Open activities menu" [ref=e17]:
+          - text: ACTIVITIES
+          - img [ref=e18]
+        - generic [ref=e21]: +351 912 193 785
+        - button "BOOK" [ref=e22]:
+          - img [ref=e23]
+          - text: BOOK
+  - main [ref=e28]:
+    - generic [ref=e30]:
+      - generic [ref=e35]:
+        - generic [ref=e36]: Welcome to Heiwa House
+        - paragraph [ref=e37]: Your surf and lifestyle destination in Santa Cruz, Portugal
+        - paragraph [ref=e38]: Experience the perfect blend of surfing, yoga, and Portuguese culture at our unique retreat.
+        - generic [ref=e39]:
+          - link "Come for a Surf Camp" [ref=e40] [cursor=pointer]:
+            - /url: /surf-weeks
+            - img [ref=e41]
+            - text: Come for a Surf Camp
+          - link "Rent a Room" [ref=e45] [cursor=pointer]:
+            - /url: /rooms
+            - img [ref=e46]
+            - text: Rent a Room
+      - generic [ref=e66]:
+        - generic [ref=e67]:
+          - heading "Heiwa Surf Weeks" [level=2] [ref=e68]
+          - paragraph [ref=e69]: All-inclusive weeks with surf, yoga, great food, and coastal adventures.
+        - generic [ref=e71]:
+          - generic [ref=e75]: Loading video...
+          - generic [ref=e76]:
+            - heading "Why Join Our Surf Camps?" [level=3] [ref=e77]
+            - list [ref=e78]:
+              - listitem [ref=e79]:
+                - generic [ref=e80]: •
+                - generic [ref=e81]: Professional surf instruction for all levels
+              - listitem [ref=e82]:
+                - generic [ref=e83]: •
+                - generic [ref=e84]: Daily yoga and meditation sessions
+              - listitem [ref=e85]:
+                - generic [ref=e86]: •
+                - generic [ref=e87]: Amazing food prepared by our chef
+              - listitem [ref=e88]:
+                - generic [ref=e89]: •
+                - generic [ref=e90]: Exciting day trips to explore Portugal
+              - listitem [ref=e91]:
+                - generic [ref=e92]: •
+                - generic [ref=e93]: Skateboarding and other activities
+              - listitem [ref=e94]:
+                - generic [ref=e95]: •
+                - generic [ref=e96]: Prices starting at 450€
+        - generic [ref=e98]:
+          - heading "Upcoming Surf Weeks" [level=3] [ref=e99]
+          - generic [ref=e100]:
+            - generic [ref=e101]:
+              - generic [ref=e103]:
+                - generic [ref=e104]: Dates
+                - generic [ref=e105]:
+                  - text: Price
+                  - img [ref=e106]
+                - generic [ref=e108]: Available Spots
+              - generic [ref=e111]:
+                - generic [ref=e113]:
+                  - generic [ref=e114]: Jun 13, 2026 - Jun 20, 2026
+                  - generic [ref=e115]: From €480
+                  - generic [ref=e116]: 16/18
+                  - button "Book" [ref=e118]
+                - generic [ref=e120]:
+                  - generic [ref=e121]: Jul 3, 2026 - Jul 10, 2026
+                  - generic [ref=e122]: From €480
+                  - generic [ref=e123]: 11/18
+                  - button "Book" [ref=e125]
+                - generic [ref=e127]:
+                  - generic [ref=e128]: Jul 10, 2026 - Jul 17, 2026
+                  - generic [ref=e129]: From €480
+                  - generic [ref=e130]: 18/18
+                  - button "Book" [ref=e132]
+            - link "View all surf weeks →" [ref=e134] [cursor=pointer]:
+              - /url: /surf-weeks
+      - generic [ref=e136]:
+        - heading "What we are about" [level=2] [ref=e137]
+        - generic [ref=e138]:
+          - link "Play Play Explore activities and experiences around our location" [ref=e139] [cursor=pointer]:
+            - /url: /play
+            - generic [ref=e140]:
+              - img "Play" [ref=e141]
+              - generic [ref=e144]:
+                - heading "Play" [level=3] [ref=e145]
+                - paragraph [ref=e146]: Explore activities and experiences around our location
+          - link "Surf Surf Discover the best surfing spots and conditions" [ref=e147] [cursor=pointer]:
+            - /url: /surf
+            - generic [ref=e148]:
+              - img "Surf" [ref=e149]
+              - generic [ref=e152]:
+                - heading "Surf" [level=3] [ref=e153]
+                - paragraph [ref=e154]: Discover the best surfing spots and conditions
+          - link "Flow Flow Wellness, yoga, and mindfulness experiences" [ref=e155] [cursor=pointer]:
+            - /url: /flow
+            - generic [ref=e156]:
+              - img "Flow" [ref=e157]
+              - generic [ref=e160]:
+                - heading "Flow" [level=3] [ref=e161]
+                - paragraph [ref=e162]: Wellness, yoga, and mindfulness experiences
+      - generic [ref=e164]:
+        - heading "Our Rooms" [level=2] [ref=e165]
+        - generic [ref=e166]:
+          - link "Dorm room Dorm room Welcome to our spacious and airy shared dormitory, thoughtfully designed for comfort and community. This room features sturdy, handcrafted wooden bunk beds and a welcoming atmosphere." [ref=e167] [cursor=pointer]:
+            - /url: /rooms/f3f00cbb-c30e-4d84-9352-cfb6a76684d0
+            - generic [ref=e168]:
+              - img "Dorm room" [ref=e172]
+              - generic [ref=e173]:
+                - heading "Dorm room" [level=3] [ref=e174]
+                - paragraph [ref=e175]: Welcome to our spacious and airy shared dormitory, thoughtfully designed for comfort and community. This room features sturdy, handcrafted wooden bunk beds and a welcoming atmosphere.
+          - link "Room 1 - Image 1 of 7 Previous image Next image Pause slideshow 1/7 Go to image 1 Go to image 2 Go to image 3 Go to image 4 Go to image 5 Go to image 6 Go to image 7 Room 1 Best room in the house - Updated via browser test" [ref=e176] [cursor=pointer]:
+            - /url: /rooms/1fb4d803-728a-46bd-aecf-1498b63b9b26
+            - generic [ref=e177]:
+              - generic [ref=e179]:
+                - generic [ref=e180]:
+                  - img "Room 1 - Image 1 of 7" [ref=e181]
+                  - button "Previous image" [ref=e182]:
+                    - img [ref=e183]
+                  - button "Next image" [ref=e185]:
+                    - img [ref=e186]
+                  - button "Pause slideshow" [ref=e188]:
+                    - img [ref=e189]
+                - generic [ref=e192]: 1/7
+                - generic [ref=e193]:
+                  - button "Go to image 1" [ref=e194]
+                  - button "Go to image 2" [ref=e195]
+                  - button "Go to image 3" [ref=e196]
+                  - button "Go to image 4" [ref=e197]
+                  - button "Go to image 5" [ref=e198]
+                  - button "Go to image 6" [ref=e199]
+                  - button "Go to image 7" [ref=e200]
+              - generic [ref=e201]:
+                - heading "Room 1" [level=3] [ref=e202]
+                - paragraph [ref=e203]: Best room in the house - Updated via browser test
+          - link "Room 2 - Image 1 of 4 Previous image Next image Pause slideshow 1/4 Go to image 1 Go to image 2 Go to image 3 Go to image 4 Room 2 Double troom" [ref=e204] [cursor=pointer]:
+            - /url: /rooms/68df9d13-1b86-48e1-8b52-d04557b49bd0
+            - generic [ref=e205]:
+              - generic [ref=e207]:
+                - generic [ref=e208]:
+                  - img "Room 2 - Image 1 of 4" [ref=e209]
+                  - button "Previous image" [ref=e210]:
+                    - img [ref=e211]
+                  - button "Next image" [ref=e213]:
+                    - img [ref=e214]
+                  - button "Pause slideshow" [ref=e216]:
+                    - img [ref=e217]
+                - generic [ref=e220]: 1/4
+                - generic [ref=e221]:
+                  - button "Go to image 1" [ref=e222]
+                  - button "Go to image 2" [ref=e223]
+                  - button "Go to image 3" [ref=e224]
+                  - button "Go to image 4" [ref=e225]
+              - generic [ref=e226]:
+                - heading "Room 2" [level=3] [ref=e227]
+                - paragraph [ref=e228]: Double troom
+          - link "Room Nr 3 Room Nr 3 Step into the charm of this beautifully designed twin room, blending modern comfort with traditional Portuguese aesthetics. The room features handcrafted wooden furniture and traditional tiles." [ref=e229] [cursor=pointer]:
+            - /url: /rooms/6a6e6bb0-d3e5-4fab-87d8-7e39174637e9
+            - generic [ref=e230]:
+              - img "Room Nr 3" [ref=e234]
+              - generic [ref=e235]:
+                - heading "Room Nr 3" [level=3] [ref=e236]
+                - paragraph [ref=e237]: Step into the charm of this beautifully designed twin room, blending modern comfort with traditional Portuguese aesthetics. The room features handcrafted wooden furniture and traditional tiles.
+        - link "Explore All Rooms" [ref=e239] [cursor=pointer]:
+          - /url: /rooms
+      - generic [ref=e241]:
+        - heading "Your Hosts" [level=2] [ref=e242]
+        - generic [ref=e243]:
+          - img "Heiwa House Hosts" [ref=e248]
+          - generic [ref=e250]:
+            - generic [ref=e251]:
+              - paragraph [ref=e252]: Surf the waves, flow through yoga, and find your rhythm in the heartbeat of Heiwa House. We believe in the power of connection, the joy of play, and the magic of living in the moment.
+              - paragraph [ref=e253]: You can book a room and enjoy our amazing facilities, or join one of our all-inclusive surf weeks for the ultimate experience. Our space is designed to bring people together, create lasting memories, and help you discover your best self.
+              - paragraph [ref=e254]: To join a group of like-minded people who share your passion for surfing, adventure, and authentic experiences, check out our surf weeks. We create an environment where friendships are born and adventures begin.
+              - paragraph [ref=e255]: We also offer the option to rent the space for your own events, retreats, or special occasions. Whether it's a yoga retreat, team building, or a private celebration, Heiwa House provides the perfect backdrop for your gathering.
+            - paragraph [ref=e257]: Janis, Buka & Edijs
+      - heading "What Our Customers Say" [level=2] [ref=e260]
+      - generic [ref=e272]:
+        - heading "Activities Around" [level=2] [ref=e273]
+        - generic [ref=e274]:
+          - generic [ref=e276]:
+            - img "Surf Lessons" [ref=e277]
+            - heading "Surf Lessons" [level=3] [ref=e280]
+            - paragraph [ref=e282]: Learn to ride the waves with professional instructors
+          - generic [ref=e284]:
+            - img "Go Karts" [ref=e285]
+            - heading "Go Karts" [level=3] [ref=e288]
+            - paragraph [ref=e290]: Feel the adrenaline rush on our local tracks
+          - generic [ref=e292]:
+            - img "Horseback Riding" [ref=e293]
+            - heading "Horseback Riding" [level=3] [ref=e296]
+            - paragraph [ref=e298]: Explore the countryside on horseback
+          - generic [ref=e300]:
+            - img "Plane Flight" [ref=e301]
+            - heading "Plane Flight" [level=3] [ref=e304]
+            - paragraph [ref=e306]: Experience breathtaking aerial views
+          - generic [ref=e308]:
+            - img "Wineyard Tour" [ref=e309]
+            - heading "Wineyard Tour" [level=3] [ref=e312]
+            - paragraph [ref=e314]: Taste local wines and learn about Portuguese vineyards
+          - generic [ref=e316]:
+            - img "Hiking" [ref=e317]
+            - heading "Hiking" [level=3] [ref=e320]
+            - paragraph [ref=e322]: Discover scenic trails and natural beauty
+          - generic [ref=e324]:
+            - img "Paragliding" [ref=e325]
+            - heading "Paragliding" [level=3] [ref=e328]
+            - paragraph [ref=e330]: Soar above the landscape with stunning views
+          - generic [ref=e332]:
+            - img "Bicycle Riding" [ref=e333]
+            - heading "Bicycle Riding" [level=3] [ref=e336]
+            - paragraph [ref=e338]: Pedal through coastal paths and hidden gems
+  - contentinfo [ref=e339]:
+    - generic [ref=e341]:
+      - generic [ref=e342]:
+        - heading "Find us here" [level=3] [ref=e343]
+        - iframe [ref=e345]:
+          
+      - generic [ref=e346]:
+        - heading "General" [level=3] [ref=e347]
+        - list [ref=e348]:
+          - listitem [ref=e349]:
+            - link "Blog" [ref=e350] [cursor=pointer]:
+              - /url: /blog
+      - generic [ref=e351]:
+        - heading "Connect" [level=3] [ref=e352]
+        - link "Instagram" [ref=e353] [cursor=pointer]:
+          - /url: https://www.instagram.com/heiwahouse_portugal
+          - img [ref=e354]
+          - generic [ref=e358]: Instagram
+      - generic [ref=e359]:
+        - heading "About Us" [level=3] [ref=e360]
+        - generic [ref=e361]:
+          - paragraph [ref=e362]:
+            - link "E. info@heiwahouse.com" [ref=e363] [cursor=pointer]:
+              - /url: mailto:info@heiwahouse.com
+          - paragraph [ref=e364]:
+            - link "T. + 351 912 193 785" [ref=e365] [cursor=pointer]:
+              - /url: tel:+351912193785
+  - button "Contact us on WhatsApp" [ref=e366]:
+    - img [ref=e367]
+  - generic [ref=e370]:
+    - generic [ref=e373]: Admin Mode
+    - generic [ref=e374]:
+      - button "Edit Page" [ref=e375]:
+        - img [ref=e376]
+        - text: Edit Page
+      - link "Dashboard" [ref=e380] [cursor=pointer]:
+        - /url: /admin
+        - img [ref=e381]
+        - text: Dashboard
+  - alert [ref=e386]
+```

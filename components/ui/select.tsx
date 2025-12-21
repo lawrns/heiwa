@@ -12,6 +12,14 @@ const SelectGroup = SelectPrimitive.Group
 
 const SelectValue = SelectPrimitive.Value
 
+/**
+ * TOON-compliant SelectTrigger Component
+ * 
+ * Focus state specifications (Requirement 8.4):
+ * - Focus ring: 2px with orange-500/20 color
+ * - Border color: orange-500 on focus
+ * - Transition: 150ms ease-out
+ */
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
@@ -19,7 +27,21 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm data-[placeholder]:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      // TOON-compliant dimensions: height 40px, border-radius 10px
+      "flex min-h-[40px] w-full items-center justify-between whitespace-nowrap rounded-[10px]",
+      // Border and background
+      "border border-gray-300 bg-white",
+      // Padding and typography
+      "px-3 py-2 text-[14px]",
+      // Placeholder styling
+      "data-[placeholder]:text-gray-500",
+      // TOON-compliant focus state with subtle ring (Requirement 8.4)
+      "focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500",
+      // Transition for smooth interactions
+      "transition-all duration-150 ease-out",
+      // Disabled state
+      "disabled:cursor-not-allowed disabled:opacity-50",
+      "[&>span]:line-clamp-1",
       className
     )}
     {...props}
