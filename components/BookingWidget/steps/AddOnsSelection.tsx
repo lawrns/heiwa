@@ -141,8 +141,8 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                 className={`
                   p-4 rounded-[10px] border transition-all duration-300
                   ${isSelected
-                    ? 'border-[#ec681c] bg-orange-50 shadow-md shadow-[#ec681c]/20'
-                    : 'border-gray-200 bg-white hover:border-[#ec681c]/30 hover:bg-orange-50/30'
+                    ? 'border-[#ec681c] bg-[#ec681c]/5 shadow-md shadow-[#ec681c]/20'
+                    : 'border-gray-200 bg-white hover:border-[#ec681c]/30 hover:bg-[#ec681c]/5'
                   }
                   animate-in fade-in-0 slide-in-from-bottom-4
                 `}
@@ -232,23 +232,23 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
 
       {/* Summary */}
       {selectedAddOns.length > 0 && (
-        <div className="bg-orange-50 rounded-xl p-4 border border-orange-200">
-          <h5 className="font-semibold text-orange-900 mb-3">Selected Add-ons</h5>
+        <div className="bg-[#ec681c]/5 rounded-[10px] p-4 border border-[#ec681c]/20">
+          <h5 className="font-semibold text-gray-900 mb-3">Selected Add-ons</h5>
           <div className="space-y-2">
             {selectedAddOns.map((addOn) => (
               <div key={addOn.id} className="flex justify-between text-base">
-                <span className="text-orange-700">
+                <span className="text-gray-700">
                   {addOn.name} × {addOn.quantity}
                 </span>
-                <span className="font-medium text-orange-900">
+                <span className="font-medium text-gray-900">
                   {formatPrice(addOn.price * addOn.quantity)}
                 </span>
               </div>
             ))}
-            <div className="border-t border-orange-300 pt-2 mt-3">
+            <div className="border-t border-[#ec681c]/20 pt-2 mt-3">
               <div className="flex justify-between font-semibold">
-                <span className="text-orange-900">Add-ons Subtotal</span>
-                <span className="text-orange-600">{formatPrice(getAddOnSubtotal())}</span>
+                <span className="text-gray-900">Add-ons Subtotal</span>
+                <span className="text-[#ec681c]">{formatPrice(getAddOnSubtotal())}</span>
               </div>
             </div>
           </div>

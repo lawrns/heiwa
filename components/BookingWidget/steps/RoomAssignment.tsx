@@ -278,7 +278,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
             {unassignedGuests.map(guestId => (
               <span
                 key={guestId}
-                className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-base font-medium"
+                className="px-3 py-1 bg-[#ec681c]/10 text-[#ec681c] rounded-full text-sm font-medium"
               >
                 {getGuestName(guestId)}
               </span>

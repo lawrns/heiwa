@@ -572,7 +572,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
       {/* Selected Surf Week Summary - Optimized for conversion */}
       {(selectedSurfWeekData || state.selectedSurfWeek) && (
-        <div className="bg-orange-50 rounded-[10px] p-5 md:p-6 border border-orange-200 shadow-sm">
+        <div className="bg-[#ec681c]/5 rounded-[10px] p-5 md:p-6 border border-[#ec681c]/20 shadow-sm">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
@@ -603,8 +603,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
       {/* Unassigned Guests */}
       {unassignedGuests.length > 0 && (
-        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-          <h4 className="font-semibold text-orange-800 mb-2 flex items-center gap-2">
+        <div className="bg-[#ec681c]/5 border border-[#ec681c]/20 rounded-lg p-4">
+          <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
             <Users size={18} />
             Unassigned Guests ({unassignedGuests.length})
           </h4>
@@ -612,7 +612,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
             {unassignedGuests.map(guestId => (
               <span
                 key={guestId}
-                className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-base font-medium"
+                className="px-3 py-1 bg-[#ec681c]/10 text-[#ec681c] rounded-full text-sm font-medium"
               >
                 {getGuestName(guestId)}
               </span>
@@ -669,7 +669,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
               key={transformedRoom.id}
               className={`border rounded-[10px] p-5 md:p-6 transition-all duration-300 ${
                 assignment && assignment.guestIds.length > 0
-                  ? 'border-[#ec681c] bg-orange-50'
+                  ? 'border-[#ec681c] bg-[#ec681c]/5'
                   : 'border-gray-200 bg-white'
               }`}
             >
@@ -732,8 +732,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
               {/* Detailed Occupancy Pricing for Private Rooms */}
               {isPrivateRoom && occupancyPrices.length > 1 && !transformedRoom.isIncluded && (
-                <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-orange-100">
-                  <div className="text-sm font-semibold text-orange-800 mb-2">Pricing per person (based on room occupancy):</div>
+                <div className="mb-4 p-3 bg-[#ec681c]/5 rounded-lg border border-[#ec681c]/20">
+                  <div className="text-sm font-semibold text-gray-900 mb-2">Pricing per person (based on room occupancy):</div>
                   <div className="flex flex-wrap gap-2">
                     {occupancyPrices.map(({ occupancy: occ, price }) => (
                       <div key={occ} className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-[#ec681c]/20">

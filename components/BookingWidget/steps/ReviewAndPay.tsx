@@ -116,7 +116,7 @@ function TaxBreakdownSection({ taxes, basePrice, roomUpgrade, addOnsSubtotal }: 
       </button>
       
       {isExpanded && (
-        <div className="mt-2 pl-4 border-l-2 border-orange-300 space-y-2 animate-in slide-in-from-top-2 duration-200">
+        <div className="mt-2 pl-4 border-l-2 border-[#ec681c]/20 space-y-2 animate-in slide-in-from-top-2 duration-200">
           <div className="text-xs text-gray-600 mb-2">
             All prices include VAT. Tax breakdown shown below:
           </div>
@@ -138,8 +138,8 @@ function TaxBreakdownSection({ taxes, basePrice, roomUpgrade, addOnsSubtotal }: 
               <span className="font-medium text-gray-700">{formatPrice(addOnsTax)}</span>
             </div>
           )}
-          <div className="pt-2 border-t border-orange-200 mt-2">
-            <div className="flex justify-between items-center text-sm font-semibold text-orange-900">
+          <div className="pt-2 border-t border-[#ec681c]/20 mt-2">
+            <div className="flex justify-between items-center text-sm font-semibold text-gray-900">
               <span>Total VAT</span>
               <span>{formatPrice(taxes)}</span>
             </div>
@@ -722,8 +722,8 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       )}
 
       {/* Pricing Breakdown */}
-      <div className="bg-orange-50 rounded-xl p-6 border border-orange-200">
-        <h4 className="text-xl font-semibold text-orange-900 mb-4" data-testid="pricing-breakdown-title">Pricing Breakdown</h4>
+      <div className="bg-[#ec681c]/5 rounded-[10px] p-6 border border-[#ec681c]/20">
+        <h4 className="text-xl font-semibold text-gray-900 mb-4" data-testid="pricing-breakdown-title">Pricing Breakdown</h4>
 
         <div className="space-y-3">
           <div className="flex justify-between items-center">
@@ -755,7 +755,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             <span className="text-gray-700">Service Fee (5%)</span>
             <span className="font-medium">{formatPrice(pricing.fees)}</span>
           </div>
-          <div className="border-t border-orange-300 pt-3">
+          <div className="border-t border-[#ec681c]/20 pt-3">
             <div className="flex justify-between items-center">
               <span className="text-xl font-semibold text-gray-900">Total</span>
               <span className="text-3xl font-bold text-[#ec681c]">{formatPrice(pricing.total)}</span>

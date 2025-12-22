@@ -701,7 +701,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                       value={name}
                       onChange={(e) => handleParticipantNameChange(index, e.target.value)}
                       placeholder={`Participant ${index + 1} first name`}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/30 focus:border-[#ec681c] motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px]"
                       aria-label={`Participant ${index + 1} first name`}
                     />
                     {name && (
@@ -723,16 +723,16 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
           {/* Date Summary */}
           {state.dates.checkIn && state.dates.checkOut && (
-            <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+            <div className="p-4 bg-[#ec681c]/5 rounded-lg border border-[#ec681c]/20">
               <div className="flex items-center justify-between">
-                <span className="text-base font-medium text-orange-800">
+                <span className="text-sm font-medium text-gray-900">
                   Duration: {(() => {
                     const checkInUTC = new Date(state.dates.checkIn.getFullYear(), state.dates.checkIn.getMonth(), state.dates.checkIn.getDate());
                     const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
                     return Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
                   })()} nights
                 </span>
-                <span className="text-base text-orange-600">
+                <span className="text-base text-gray-700">
                   {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
                 </span>
               </div>
@@ -779,9 +779,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 key={w.id}
                 data-testid="surf-week-row"
                 onClick={() => !isDisabled && handleOptionSelect(w.id)}
-                className={`w-full p-4 sm:p-6 rounded-xl border-2 bg-white text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50 relative
-                  ${isSelected ? 'border-orange-500 bg-orange-50 shadow-md ring-2 ring-orange-500/30' : 'border-gray-200'}
-                  ${isDisabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-lg hover:border-orange-300 hover:bg-orange-50/50'}`}
+                className={`w-full p-4 sm:p-6 rounded-[10px] border bg-white text-left motion-safe:transition-all motion-safe:duration-300 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/50 relative
+                  ${isSelected ? 'border-[#ec681c] bg-[#ec681c]/5 shadow-md ring-2 ring-[#ec681c]/30' : 'border-gray-200'}
+                  ${isDisabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-lg hover:border-[#ec681c]/30 hover:bg-[#ec681c]/5'}`}
                 style={{ animationDelay: `${index * 80}ms` }}
                 disabled={isDisabled}
               >
@@ -796,7 +796,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         className="w-full h-40 sm:w-32 sm:h-24"
                       />
                     ) : (
-                      <div className="w-full h-40 sm:w-32 sm:h-24 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                      <div className="w-full h-40 sm:w-32 sm:h-24 rounded-lg bg-gradient-to-br from-[#ec681c] to-[#d65d16] flex items-center justify-center">
                         <div className="text-white text-2xl font-bold">🏄‍♂️</div>
                       </div>
                     )}
@@ -814,7 +814,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         </p>
                       </div>
                       <div className="sm:text-right flex-shrink-0">
-                        <span className="text-2xl sm:text-3xl font-bold text-orange-600">
+                        <span className="text-2xl sm:text-3xl font-bold text-[#ec681c]">
                           {`from €${Math.round(from)}`}
                         </span>
                         <span className="text-sm text-gray-500 ml-1 sm:ml-0 sm:block">per person</span>
@@ -862,7 +862,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                             <div
                               className={`h-full rounded-full transition-all ${
                                 occupancyPercent >= 80 ? 'bg-red-500' :
-                                occupancyPercent >= 50 ? 'bg-orange-500' : 'bg-green-500'
+                                occupancyPercent >= 50 ? 'bg-[#ec681c]' : 'bg-green-500'
                               }`}
                               style={{ width: `${occupancyPercent}%` }}
                             />
@@ -876,7 +876,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                           <span className="text-sm text-red-600 font-medium">Fully booked</span>
                         )}
                         {isUnavailableForGroup && (
-                          <span className="text-sm text-orange-600 font-medium">
+                          <span className="text-sm text-[#ec681c] font-medium">
                             Not enough spots for {state.guests} {state.guests === 1 ? 'person' : 'people'}
                           </span>
                         )}
@@ -919,7 +919,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
                 {/* Selection Indicator */}
                 {isSelected && (
-                  <div className="mt-4 flex items-center gap-2 text-orange-600">
+                  <div className="mt-4 flex items-center gap-2 text-[#ec681c]">
                     <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                     <span className="text-base font-medium">Selected</span>
                   </div>
