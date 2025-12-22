@@ -133,7 +133,7 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
 
               {/* Selection Checkmark with bounce animation */}
               {isSelected && (
-                <div className="absolute top-4 right-4 z-20 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-xl border-2 border-accent animate-bounce-in">
+                <div className="absolute top-4 right-4 z-20 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-xl border border-accent animate-bounce-in">
                   <Check size={20} className="text-accent" />
                 </div>
               )}

@@ -83,7 +83,7 @@ export function ImageWithFallback({
     <>
       {loadState === 'loading' && (
         <div className={`absolute inset-0 flex items-center justify-center bg-gray-100 animate-pulse ${className}`}>
-          <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+          <div className="w-8 h-8 border border-gray-300 border-t-gray-600 rounded-full animate-spin" />
         </div>
       )}
       <img
@@ -192,7 +192,7 @@ export function RoomImageGallery({
                 <button
                   key={`${roomName}-thumb-${index}`}
                   onClick={() => goToImage(index)}
-                  className={`relative flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border-2 transition-all duration-200 ${
+                  className={`relative flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none ${
                     index === currentImageIndex
                       ? 'border-blue-400 opacity-100'
                       : 'border-transparent opacity-60 hover:opacity-80'
@@ -318,7 +318,7 @@ export function RoomThumbnail({ image, roomName, onClick, className = '' }: Room
       {/* Loading state */}
       {loadState === 'loading' && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100 animate-pulse z-10">
-          <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+          <div className="w-6 h-6 border border-gray-300 border-t-gray-600 rounded-full animate-spin" />
         </div>
       )}
       
@@ -401,7 +401,7 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
       {/* Loading state */}
       {loadState === 'loading' && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100 animate-pulse z-10">
-          <div className="w-10 h-10 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+          <div className="w-10 h-10 border border-gray-300 border-t-gray-600 rounded-full animate-spin" />
         </div>
       )}
       

@@ -852,7 +852,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
       {/* Booking Success Message for Bank Transfer */}
       {bookingCompleted && state.paymentMethod === 'bank_wire' && (
-        <div className="p-6 bg-green-50 border-2 border-green-200 rounded-xl">
+        <div className="p-6 bg-green-50 border border-green-200 rounded-[10px]">
           <div className="flex items-start gap-3">
             <CheckCircle size={24} className="text-green-600 flex-shrink-0 mt-0.5" />
             <div className="flex-1">

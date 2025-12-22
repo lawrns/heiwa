@@ -1016,7 +1016,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                 />
                                 {/* Checkbox indicator - positioned on image */}
                                 <div
-                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 shadow-md ${
+                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border flex items-center justify-center motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none shadow-md ${
                                     isSelected
                                       ? 'bg-accent border-accent'
                                       : 'bg-white/90 backdrop-blur-sm border-gray-300'
@@ -1034,7 +1034,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                 </div>
                                 {/* Checkbox indicator - positioned on placeholder */}
                                 <div
-                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all duration-200 shadow-md ${
+                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border flex items-center justify-center motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none shadow-md ${
                                     isSelected
                                       ? 'bg-accent border-accent'
                                       : 'bg-white/90 backdrop-blur-sm border-gray-300'

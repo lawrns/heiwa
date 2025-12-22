@@ -150,7 +150,7 @@ export function ProgressIndicator({
                       ],
                       // Upcoming state
                       isUpcoming && [
-                        "bg-white border-2 border-gray-300 text-gray-400"
+                        "bg-white border border-gray-300 text-gray-400"
                       ],
                       // Disabled opacity
                       !clickable && !isCurrent && "opacity-60"
