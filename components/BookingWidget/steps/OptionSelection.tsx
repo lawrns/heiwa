@@ -513,8 +513,8 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             </h4>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="check-in" className="block text-base font-medium text-gray-700">
+              <div className="space-y-1.5">
+                <label htmlFor="check-in" className="block text-xs font-medium text-gray-700">
                   Check-in
                 </label>
                 <input
@@ -523,7 +523,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   value={checkInDate}
                   min={new Date().toISOString().split('T')[0]}
                   onChange={(e) => handleCheckInChange(e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
+                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-colors duration-200 text-[14px] ${
                     checkInDate && isDateSoldOut(checkInDate)
                       ? 'border-red-300 bg-red-50 text-red-700'
                       : 'border-gray-300'
@@ -538,8 +538,8 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="check-out" className="block text-base font-medium text-gray-700">
+              <div className="space-y-1.5">
+                <label htmlFor="check-out" className="block text-xs font-medium text-gray-700">
                   Check-out
                 </label>
                 <input
@@ -548,7 +548,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   value={checkOutDate}
                   min={checkInDate || new Date().toISOString().split('T')[0]}
                   onChange={(e) => handleCheckOutChange(e.target.value)}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
+                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-colors duration-200 text-[14px] ${
                     checkOutDate && isDateSoldOut(checkOutDate)
                       ? 'border-red-300 bg-red-50 text-red-700'
                       : 'border-gray-300'
@@ -590,20 +590,20 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <button
                   onClick={() => adjustGuests(-1)}
                   disabled={state.guests <= 1}
-                  className="w-11 h-11 rounded-full border-2 border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px] min-w-[44px]"
+                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2"
                   aria-label="Decrease guest count"
                 >
                   <Minus size={18} />
                 </button>
 
-                <span className="w-12 text-center text-xl font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
+                <span className="w-12 text-center text-xl font-semibold text-gray-900 h-[44px] flex items-center justify-center">
                   {state.guests}
                 </span>
 
                 <button
                   onClick={() => adjustGuests(1)}
                   disabled={state.guests >= 12}
-                  className="w-11 h-11 rounded-full border-2 border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px] min-w-[44px]"
+                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2"
                   aria-label="Increase guest count"
                 >
                   <Plus size={18} />
@@ -613,8 +613,8 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
             {/* Participant Name Inputs */}
             {state.guests > 0 && (
-              <div className="space-y-3 pt-2">
-                <div className="text-base font-medium text-gray-700">
+              <div className="space-y-2 pt-2">
+                <div className="text-xs font-medium text-gray-700">
                   Enter guest names (required for room assignment)
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -625,7 +625,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         value={name}
                         onChange={(e) => handleParticipantNameChange(index, e.target.value)}
                         placeholder={`Guest ${index + 1} first name`}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-colors duration-200 text-[14px]"
                         aria-label={`Guest ${index + 1} first name`}
                       />
                       {name && (
@@ -666,20 +666,20 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               <button
                 onClick={() => adjustGuests(-1)}
                 disabled={state.guests <= 1}
-                className="w-11 h-11 rounded-full border-2 border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px] min-w-[44px]"
+                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2"
                 aria-label="Decrease participant count"
               >
                 <Minus size={18} />
               </button>
 
-              <span className="w-12 text-center text-xl font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
+              <span className="w-12 text-center text-xl font-semibold text-gray-900 h-[44px] flex items-center justify-center">
                 {state.guests}
               </span>
 
               <button
                 onClick={() => adjustGuests(1)}
                 disabled={state.guests >= 12}
-                className="w-11 h-11 rounded-full border-2 border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2 min-h-[44px] min-w-[44px]"
+                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2"
                 aria-label="Increase participant count"
               >
                 <Plus size={18} />
@@ -689,8 +689,8 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
           {/* Participant Name Inputs */}
           {state.guests > 0 && (
-            <div className="space-y-3 pt-2">
-              <div className="text-base font-medium text-gray-700">
+            <div className="space-y-2 pt-2">
+              <div className="text-xs font-medium text-gray-700">
                 Enter participant names (required for room assignment)
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

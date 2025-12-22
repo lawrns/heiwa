@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { User, Mail, Phone, Utensils, AlertCircle, Edit3, ChevronDown, CheckCircle } from 'lucide-react';
 import { BookingState, GuestInfo } from '../types';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface GuestDetailsProps {
   state: BookingState;
@@ -336,129 +337,98 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             {/* Form Fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* First Name */}
-              <div className="space-y-2">
-                <label htmlFor={`firstName-${index}`} className="block text-base font-medium text-gray-700">
+              <div className="space-y-1.5">
+                <label htmlFor={`firstName-${index}`} className="block text-xs font-medium text-gray-700">
                   First Name *
                 </label>
-                <div className="relative">
-                  <User size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    id={`firstName-${index}`}
-                    type="text"
-                    value={guestForm.firstName}
-                    onChange={(e) => handleInputChange(index, 'firstName', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
-                    placeholder="Enter first name"
-                    aria-invalid={errors[`guest-${index}`] ? 'true' : 'false'}
-                    aria-describedby={errors[`guest-${index}`] ? `guest-${index}-error` : undefined}
-                  />
-                </div>
+                <Input
+                  id={`firstName-${index}`}
+                  type="text"
+                  value={guestForm.firstName}
+                  onChange={(e) => handleInputChange(index, 'firstName', e.target.value)}
+                  placeholder="Enter first name"
+                  isError={errors[`guest-${index}`] ? true : false}
+                  aria-invalid={errors[`guest-${index}`] ? 'true' : 'false'}
+                  aria-describedby={errors[`guest-${index}`] ? `guest-${index}-error` : undefined}
+                />
               </div>
 
               {/* Last Name */}
-              <div className="space-y-2">
-                <label htmlFor={`lastName-${index}`} className="block text-base font-medium text-gray-700">
+              <div className="space-y-1.5">
+                <label htmlFor={`lastName-${index}`} className="block text-xs font-medium text-gray-700">
                   Last Name *
                 </label>
-                <div className="relative">
-                  <User size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    id={`lastName-${index}`}
-                    type="text"
-                    value={guestForm.lastName}
-                    onChange={(e) => handleInputChange(index, 'lastName', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
-                    placeholder="Enter last name"
-                    aria-invalid={errors[`guest-${index}`] ? 'true' : 'false'}
-                    aria-describedby={errors[`guest-${index}`] ? `guest-${index}-error` : undefined}
-                  />
-                </div>
+                <Input
+                  id={`lastName-${index}`}
+                  type="text"
+                  value={guestForm.lastName}
+                  onChange={(e) => handleInputChange(index, 'lastName', e.target.value)}
+                  placeholder="Enter last name"
+                  isError={errors[`guest-${index}`] ? true : false}
+                  aria-invalid={errors[`guest-${index}`] ? 'true' : 'false'}
+                  aria-describedby={errors[`guest-${index}`] ? `guest-${index}-error` : undefined}
+                />
               </div>
 
               {/* Email */}
-              <div className="space-y-2">
-                <label htmlFor={`email-${index}`} className="block text-base font-medium text-gray-700">
+              <div className="space-y-1.5">
+                <label htmlFor={`email-${index}`} className="block text-xs font-medium text-gray-700">
                   Email Address *
                 </label>
-                <div className="relative">
-                  <Mail size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    id={`email-${index}`}
-                    type="email"
-                    value={guestForm.email}
-                    onChange={(e) => handleInputChange(index, 'email', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px] ${
-                      guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email)
-                        ? 'border-red-300 bg-red-50'
-                        : 'border-gray-300'
-                    }`}
-                    placeholder="Enter email address"
-                    aria-invalid={guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) ? 'true' : 'false'}
-                    aria-describedby={
-                      guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email)
-                        ? `email-${index}-validation`
-                        : errors[`guest-${index}`] ? `guest-${index}-error` : undefined
-                    }
-                  />
-                  {/* Real-time email validation indicator */}
-                  {guestForm.email && (
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) ? (
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      ) : (
-                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                {/* Real-time email validation message */}
-                {guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) && (
-                  <p id={`email-${index}-validation`} className="text-sm text-red-600 mt-1" role="alert">Please enter a valid email address</p>
-                )}
+                <Input
+                  id={`email-${index}`}
+                  type="email"
+                  value={guestForm.email}
+                  onChange={(e) => handleInputChange(index, 'email', e.target.value)}
+                  placeholder="Enter email address"
+                  isError={guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) ? true : false}
+                  isSuccess={guestForm.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) ? true : false}
+                  errorMessage={guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) ? 'Please enter a valid email address' : undefined}
+                  aria-invalid={guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email) ? 'true' : 'false'}
+                  aria-describedby={
+                    guestForm.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestForm.email)
+                      ? `email-${index}-validation`
+                      : errors[`guest-${index}`] ? `guest-${index}-error` : undefined
+                  }
+                />
               </div>
 
               {/* Phone */}
-              <div className="space-y-2">
-                <label htmlFor={`phone-${index}`} className="block text-base font-medium text-gray-700">
+              <div className="space-y-1.5">
+                <label htmlFor={`phone-${index}`} className="block text-xs font-medium text-gray-700">
                   Phone Number *
                 </label>
-                <div className="relative">
-                  <Phone size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    id={`phone-${index}`}
-                    type="tel"
-                    value={guestForm.phone}
-                    onChange={(e) => handleInputChange(index, 'phone', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 min-h-[44px]"
-                    placeholder="Enter phone number"
-                    aria-invalid={errors[`guest-${index}`] ? 'true' : 'false'}
-                    aria-describedby={errors[`guest-${index}`] ? `guest-${index}-error` : undefined}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Dietary Requirements */}
-            <div className="mt-4 space-y-2">
-              <label htmlFor={`dietary-${index}`} className="block text-base font-medium text-gray-700">
-                Dietary Requirements
-              </label>
-              <div className="relative">
-                <Utensils size={16} className="absolute left-3 top-3 text-gray-400" />
-                <textarea
-                  id={`dietary-${index}`}
-                  value={guestForm.dietaryRequirements}
-                  onChange={(e) => handleInputChange(index, 'dietaryRequirements', e.target.value)}
-                  rows={2}
-                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 resize-none min-h-[44px]"
-                  placeholder="Any dietary restrictions or preferences?"
+                <Input
+                  id={`phone-${index}`}
+                  type="tel"
+                  value={guestForm.phone}
+                  onChange={(e) => handleInputChange(index, 'phone', e.target.value)}
+                  placeholder="Enter phone number"
+                  isError={errors[`guest-${index}`] ? true : false}
+                  aria-invalid={errors[`guest-${index}`] ? 'true' : 'false'}
+                  aria-describedby={errors[`guest-${index}`] ? `guest-${index}-error` : undefined}
                 />
               </div>
             </div>
 
+            {/* Dietary Requirements */}
+            <div className="mt-4 space-y-1.5">
+              <label htmlFor={`dietary-${index}`} className="block text-xs font-medium text-gray-700">
+                Dietary Requirements
+              </label>
+              <textarea
+                id={`dietary-${index}`}
+                value={guestForm.dietaryRequirements}
+                onChange={(e) => handleInputChange(index, 'dietaryRequirements', e.target.value)}
+                rows={2}
+                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-all duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
+                placeholder="Any dietary restrictions or preferences?"
+              />
+            </div>
+
             {/* Special Requests */}
-            <div className="mt-4 space-y-2">
-              <label htmlFor={`requests-${index}`} className="block text-base font-medium text-gray-700">
+            <div className="mt-4 space-y-1.5">
+              <label htmlFor={`requests-${index}`} className="block text-xs font-medium text-gray-700">
                 Special Requests
               </label>
               <textarea
@@ -466,7 +436,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 value={guestForm.specialRequests}
                 onChange={(e) => handleInputChange(index, 'specialRequests', e.target.value)}
                 rows={2}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-colors duration-200 resize-none min-h-[44px]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-all duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
                 placeholder="Any special requests or notes?"
               />
             </div>

@@ -17,17 +17,16 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 
 /**
  * TOON-compliant Input Component with Airbnb-quality enhancements
+ * Uses design tokens for consistent sizing and styling
  * 
  * Styling specifications:
  * - Height: 40px (min-h-[40px])
  * - Border-radius: 10px (rounded-[10px])
- * - Padding: 12px horizontal, 8px vertical (px-3 py-2)
- * - Font-size: 14px (text-sm)
+ * - Padding: 12px horizontal, 8px vertical
+ * - Font-size: 14px
  * - Focus: animated border transition with accent color
  * - Success: green border with checkmark indicator
  * - Error: red border with shake animation
- * 
- * Requirements: 6.1, 6.2, 6.3, 8.4
  */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ 
@@ -52,7 +51,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             // Border and background
             "border bg-white",
             // TOON-compliant padding: 12px horizontal, 8px vertical
-            // Add extra padding on right for success/error icons
             "px-3 py-2",
             (isSuccess || isError) && "pr-10",
             // TOON-compliant typography: 14px font-size
@@ -65,22 +63,22 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             !isSuccess && !isError && "border-gray-300",
             // Focus state with animated border transition
             "focus:outline-none focus:ring-2 focus:ring-offset-0",
-            !isSuccess && !isError && "focus:ring-accent/20 focus:border-accent",
+            !isSuccess && !isError && "focus:ring-[#ec681c]/20 focus:border-[#ec681c]",
             // Success state
             isSuccess && [
-              "border-success",
-              "focus:ring-success/20 focus:border-success",
-              "bg-success-light/30"
+              "border-green-600",
+              "focus:ring-green-600/20 focus:border-green-600",
+              "bg-green-50"
             ],
             // Error state with shake animation
             isError && [
-              "border-error",
-              "focus:ring-error/20 focus:border-error",
-              "bg-error-light/30",
+              "border-red-600",
+              "focus:ring-red-600/20 focus:border-red-600",
+              "bg-red-50",
               "animate-shake"
             ],
             // Transition for smooth interactions
-            "transition-all duration-micro ease-out",
+            "motion-safe:transition-all motion-safe:duration-300 motion-reduce:transition-none",
             // Disabled state
             "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-50",
             className
@@ -93,14 +91,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         
         {/* Success indicator */}
         {isSuccess && !isLoading && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-success animate-scale-in">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-600 animate-scale-in">
             <Check size={18} />
           </div>
         )}
         
         {/* Error indicator */}
         {isError && !isLoading && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-error animate-scale-in">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-600 animate-scale-in">
             <AlertCircle size={18} />
           </div>
         )}
@@ -108,7 +106,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {/* Loading indicator */}
         {isLoading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-gray-300 border-t-accent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-gray-300 border-t-[#ec681c] rounded-full animate-spin" />
           </div>
         )}
         
@@ -116,7 +114,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {isError && errorMessage && (
           <p 
             id={props.id ? `${props.id}-error` : undefined}
-            className="mt-1.5 text-xs text-error animate-slide-in-up"
+            className="mt-1.5 text-xs text-red-600 animate-slide-in-up"
           >
             {errorMessage}
           </p>
