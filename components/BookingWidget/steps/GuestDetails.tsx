@@ -259,38 +259,21 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 </p>
               </div>
             </div>
-            <button
+            <Button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 setUserManuallyExpanded(true);
                 setIsCollapsed(false);
               }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '10px 20px',
-                backgroundColor: 'white',
-                border: '1px solid #86efac',
-                color: '#15803d',
-                borderRadius: '10px',
-                fontSize: '14px',
-                fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'all 150ms ease-out',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f0fdf4';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'white';
-              }}
+              variant="outline"
+              size="default"
+              className="text-green-700 border-green-300 hover:bg-green-50 gap-2"
             >
               <Edit3 size={16} />
               <span>Edit</span>
               <ChevronDown size={16} />
-            </button>
+            </Button>
           </div>
         </div>
       )}
