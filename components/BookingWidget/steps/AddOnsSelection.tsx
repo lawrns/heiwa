@@ -139,10 +139,10 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
               <div
                 key={addOn.id}
                 className={`
-                  p-4 rounded-xl border-2 transition-all duration-300
+                  p-4 rounded-[10px] border transition-all duration-300
                   ${isSelected
-                    ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/20'
-                    : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50/50'
+                    ? 'border-[#ec681c] bg-orange-50 shadow-md shadow-[#ec681c]/20'
+                    : 'border-gray-200 bg-white hover:border-[#ec681c]/30 hover:bg-orange-50/30'
                   }
                   animate-in fade-in-0 slide-in-from-bottom-4
                 `}
@@ -157,11 +157,11 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                       <h4 className="text-lg sm:text-xl font-semibold text-gray-900 flex-1 min-w-0">
                         {addOn.name}
                       </h4>
-                      <span className="px-2 py-1 text-sm font-medium bg-gray-100 text-gray-600 rounded-full capitalize shrink-0">
+                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full capitalize shrink-0">
                         {addOn.category}
                       </span>
                     </div>
-                    <p className="text-base text-gray-600 mb-2">
+                    <p className="text-sm text-gray-600 mb-2">
                       {addOn.description}
                     </p>
                   </div>
@@ -169,11 +169,11 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                   {/* Price and Controls Row */}
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1">
-                      <div className="text-xl font-bold text-orange-600">
+                      <div className="text-xl font-bold text-[#ec681c]">
                         {formatPrice(addOn.price)}
                       </div>
                       {quantity > 0 && (
-                        <div className="text-base text-gray-500">
+                        <div className="text-xs text-gray-500">
                           × {quantity} = {formatPrice(addOn.price * quantity)}
                         </div>
                       )}
@@ -185,19 +185,18 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                         onClick={() => updateAddOnQuantity(addOn.id, quantity - 1)}
                         disabled={quantity === 0}
                         className="
-                          w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 border-gray-300
+                          w-[44px] h-[44px] rounded-full border border-gray-300
                           flex items-center justify-center
                           hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed
-                          transition-colors duration-200
-                          focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2
-                          touch-action: manipulation min-h-[44px] min-w-[44px]
+                          motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none
+                          focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2
                         "
                         aria-label={`Decrease ${addOn.name} quantity`}
                       >
                         <Minus size={16} />
                       </button>
 
-                      <span className="w-10 sm:w-12 text-center text-lg sm:text-xl font-semibold text-gray-900 min-h-[44px] flex items-center justify-center">
+                      <span className="w-10 sm:w-12 text-center text-lg sm:text-xl font-semibold text-gray-900 h-[44px] flex items-center justify-center">
                         {quantity}
                       </span>
 
@@ -205,12 +204,11 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                         onClick={() => updateAddOnQuantity(addOn.id, quantity + 1)}
                         disabled={addOn.maxQuantity ? quantity >= addOn.maxQuantity : false}
                         className="
-                          w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 border-gray-300
+                          w-[44px] h-[44px] rounded-full border border-gray-300
                           flex items-center justify-center
                           hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed
-                          transition-colors duration-200
-                          focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2
-                          touch-action: manipulation min-h-[44px] min-w-[44px]
+                          motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none
+                          focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2
                         "
                         aria-label={`Increase ${addOn.name} quantity`}
                       >
