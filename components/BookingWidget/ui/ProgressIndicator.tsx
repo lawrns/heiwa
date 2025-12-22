@@ -1,5 +1,6 @@
 import React from 'react';
 import { Check } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ProgressIndicatorProps {
   currentStep: number;
@@ -35,11 +36,17 @@ export function ProgressIndicator({
   // Filter out skipped steps from display
   const visibleSteps = currentStepFlow.filter(step => !skippedSteps.includes(step));
 
+  // Track clicked step for animation
+  const [clickedStep, setClickedStep] = React.useState<number | null>(null);
+
   const handleStepClick = (stepIndex: number) => {
     // Convert 0-based index to 1-based step number
     // Only allow clicking on completed steps or current step
     const stepNumber = stepIndex + 1;
     if (onStepClick && (stepNumber < currentStep || stepNumber === currentStep)) {
+      // Trigger click animation
+      setClickedStep(stepIndex);
+      setTimeout(() => setClickedStep(null), 200);
       onStepClick(stepNumber);
     }
   };
@@ -63,10 +70,10 @@ export function ProgressIndicator({
   };
 
   return (
-    <div className="w-full px-4">
+    <div className="w-full px-2 sm:px-4">
       {/* Mobile-optimized stepper with horizontal scroll */}
-      <div className="overflow-x-auto py-4">
-        <div className="flex items-center justify-center relative min-w-max px-4">
+      <div className="overflow-x-auto py-3 sm:py-4">
+        <div className="flex items-center justify-center relative min-w-max px-2 sm:px-4">
           {visibleSteps.map((stepType, index) => {
             // When steps are skipped, the stepFlow is already filtered, so we use the index directly
             // The currentStep refers to the position in the filtered flow
@@ -77,38 +84,31 @@ export function ProgressIndicator({
             const stepInfo = stepLabels[stepType as keyof typeof stepLabels];
             const clickable = isStepClickable(index);
             const ariaLabel = getStepAriaLabel(stepType, stepNumber, isCompleted, isCurrent, clickable);
+            const isClicked = clickedStep === index;
 
             return (
               <div key={stepType} className="flex flex-col items-center relative">
-                {/* Connector Line with Wave Pattern */}
+                {/* Connector Line with animated fill */}
                 {index < visibleSteps.length - 1 && (
-                  <div className="absolute top-4 left-1/2 w-8 sm:w-12 md:w-16 h-0.5 -translate-y-1/2 z-0">
-                    <div className={`
-                      h-full transition-all duration-500 ease-out relative overflow-hidden
-                      ${isCompleted
-                        ? 'bg-gradient-to-r from-orange-500 to-orange-600'
-                        : 'bg-gray-200'
-                      }
-                    `}>
-                      {/* Wave pattern overlay for completed steps */}
-                      {isCompleted && (
-                        <div
-                          className="absolute inset-0 opacity-30"
-                          style={{
-                            backgroundImage: `url("data:image/svg+xml,%3csvg width='40' height='4' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,2 C10,0 20,4 30,2 C35,1 40,3 40,2' stroke='rgba(255,255,255,0.5)' stroke-width='0.5' fill='none'/%3e%3c/svg%3e")`,
-                            backgroundRepeat: 'repeat-x',
-                            animation: 'gentle-wave-flow 4s linear infinite'
-                          }}
-                        />
+                  <div className="absolute top-5 left-1/2 w-6 sm:w-10 md:w-14 h-0.5 z-0">
+                    {/* Background track */}
+                    <div className="absolute inset-0 bg-gray-200 rounded-full" />
+                    {/* Animated fill */}
+                    <div 
+                      className={cn(
+                        "absolute inset-y-0 left-0 rounded-full transition-all duration-500 ease-out",
+                        isCompleted 
+                          ? "w-full bg-gradient-to-r from-accent to-accent-dark" 
+                          : "w-0 bg-accent"
                       )}
-                    </div>
+                    />
                   </div>
                 )}
 
                 {/* Step Container with responsive spacing */}
-                <div className="flex flex-col items-center px-1 sm:px-2 md:px-4 min-w-[50px] sm:min-w-[70px] md:min-w-[80px]">
+                <div className="flex flex-col items-center px-1 sm:px-2 md:px-3 min-w-[48px] sm:min-w-[60px] md:min-w-[72px]">
 
-                  {/* Step Circle - Now Clickable */}
+                  {/* Step Circle - Now Clickable with enhanced animations */}
                   <button
                     onClick={() => handleStepClick(index)}
                     disabled={!clickable}
@@ -122,67 +122,65 @@ export function ProgressIndicator({
                         handleStepClick(index);
                       }
                     }}
-                    className={`
-                      relative z-10 w-11 h-11 rounded-full flex items-center justify-center overflow-hidden
-                      transition-all duration-500 ease-out
-                      ${clickable
-                        ? 'cursor-pointer hover:scale-110 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2'
-                        : 'cursor-default'
-                      }
-                      ${isCompleted
-                        ? clickable
-                          ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/30 hover:from-orange-600 hover:to-orange-700 animate-in zoom-in-50 duration-300'
-                          : 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/30 animate-in zoom-in-50 duration-300'
-                        : isCurrent
-                          ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/40 scale-110'
-                          : 'bg-white border-2 border-gray-300 text-gray-500'
-                      }
-                      ${!clickable && !isCurrent ? 'opacity-60' : ''}
-                    `}>
-                    {/* Surf pattern for current step */}
-                    {isCurrent && (
-                      <div
-                        className="absolute inset-0 opacity-20 pointer-events-none"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,10 C5,5 10,15 15,10 C17.5,7.5 20,12.5 20,10' stroke='rgba(255,255,255,0.3)' stroke-width='1' fill='none'/%3e%3c/svg%3e")`,
-                          backgroundRepeat: 'repeat',
-                          animation: 'surf-texture-rotate 8s linear infinite'
-                        }}
-                      />
+                    className={cn(
+                      // Base styles
+                      "relative z-10 w-10 h-10 rounded-full flex items-center justify-center",
+                      "transition-all duration-micro ease-out",
+                      // Clickable states
+                      clickable && [
+                        "cursor-pointer",
+                        "hover:scale-110",
+                        "focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2",
+                        "active:scale-95"
+                      ],
+                      !clickable && "cursor-default",
+                      // Click animation
+                      isClicked && "scale-90",
+                      // Completed state
+                      isCompleted && [
+                        "bg-gradient-to-br from-accent to-accent-dark text-white",
+                        "shadow-lg shadow-accent/30",
+                        clickable && "hover:from-accent-dark hover:to-accent-dark"
+                      ],
+                      // Current state with pulsing ring
+                      isCurrent && [
+                        "bg-gradient-to-br from-accent to-accent-dark text-white",
+                        "shadow-lg shadow-accent/40",
+                        "ring-4 ring-accent/20 animate-pulse-ring"
+                      ],
+                      // Upcoming state
+                      isUpcoming && [
+                        "bg-white border-2 border-gray-300 text-gray-400"
+                      ],
+                      // Disabled opacity
+                      !clickable && !isCurrent && "opacity-60"
                     )}
-
-                    {/* Completion sparkle effect */}
-                    {isCompleted && (
-                      <div
-                        className="absolute inset-0 opacity-10 pointer-events-none"
-                        style={{
-                          backgroundImage: `url("data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='5' cy='5' r='0.5' fill='rgba(255,255,255,0.8)'/%3e%3ccircle cx='15' cy='8' r='0.3' fill='rgba(255,255,255,0.6)'/%3e%3ccircle cx='8' cy='15' r='0.4' fill='rgba(255,255,255,0.7)'/%3e%3c/svg%3e")`,
-                          backgroundRepeat: 'repeat',
-                          animation: 'gentle-wave-flow 6s linear infinite'
-                        }}
-                      />
-                    )}
+                  >
                     {isCompleted ? (
-                      <Check size={16} className="drop-shadow-sm" />
+                      <Check 
+                        size={18} 
+                        className={cn(
+                          "drop-shadow-sm",
+                          // Checkmark animation on completion
+                          "animate-scale-in"
+                        )} 
+                      />
                     ) : (
-                      <span className="text-base font-bold">{stepNumber}</span>
+                      <span className="text-sm font-bold">{stepNumber}</span>
                     )}
                   </button>
 
-                  {/* Step Label - fully responsive */}
-                  <div className="mt-1 sm:mt-2 text-center">
-                    <div className={`
-                      text-sm font-medium transition-colors duration-200 whitespace-nowrap
-                      ${isCurrent
-                        ? 'text-orange-600'
-                        : isCompleted
-                          ? 'text-orange-600'
-                          : 'text-gray-500'
-                      }
-                    `}>
-                      {/* Hide all text on mobile (< 640px), show short labels on small tablets, full labels on larger screens */}
-                      <span className="hidden sm:inline md:hidden">{stepInfo?.shortLabel}</span>
-                      <span className="hidden md:inline">{stepInfo?.label}</span>
+                  {/* Step Label - Always visible with abbreviated labels on mobile */}
+                  <div className="mt-1.5 sm:mt-2 text-center">
+                    <div className={cn(
+                      "text-[10px] sm:text-xs font-medium transition-colors duration-micro whitespace-nowrap",
+                      isCurrent && "text-accent font-semibold",
+                      isCompleted && "text-accent",
+                      isUpcoming && "text-gray-400"
+                    )}>
+                      {/* Show abbreviated labels on mobile, full labels on larger screens */}
+                      <span className="sm:hidden">{stepInfo?.shortLabel}</span>
+                      <span className="hidden sm:inline">{stepInfo?.label}</span>
                     </div>
                   </div>
                 </div>
@@ -191,7 +189,6 @@ export function ProgressIndicator({
           })}
         </div>
       </div>
-
     </div>
   );
 }

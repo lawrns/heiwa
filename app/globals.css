@@ -62,6 +62,40 @@
     --color-text-muted: #5A5A5A;
     --color-text-light: #757575;
 
+    /* ============================================
+     * Airbnb-Quality Design Tokens
+     * ============================================ */
+    
+    /* Shadow Tokens */
+    --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    /* Transition Tokens */
+    --transition-micro: 150ms ease-out;
+    --transition-standard: 300ms ease-out;
+    --transition-slow: 500ms ease-out;
+    --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Radius Tokens */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+    
+    /* Spacing Tokens */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+    --space-3xl: 64px;
+    --space-section: 80px;
+    --space-section-lg: 120px;
+
     /* Z-Index Layers - Use CSS variables for consistent layering */
     --z-base: 0;
     --z-dropdown: 1000;
@@ -72,6 +106,25 @@
     --z-popover: 1060;
     --z-tooltip: 1070;
     --z-mobile-nav: 10000; /* Mobile nav must be above everything */
+  }
+  
+  /* Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --transition-micro: 0ms;
+      --transition-standard: 0ms;
+      --transition-slow: 0ms;
+      --transition-bounce: 0ms;
+    }
+    
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -391,5 +444,66 @@
     background-color: white;
     background-image:
       url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+}
+
+/* ============================================
+ * Airbnb-Quality Animation Utilities
+ * ============================================ */
+@layer utilities {
+  /* Shimmer effect for skeleton loaders */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #f0f0f0 25%,
+      #e0e0e0 50%,
+      #f0f0f0 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  /* Interactive card hover effect */
+  .card-interactive {
+    transition: transform var(--transition-micro), box-shadow var(--transition-micro);
+  }
+  
+  .card-interactive:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  /* Touch feedback for mobile */
+  .touch-feedback {
+    transition: transform var(--transition-micro);
+  }
+  
+  .touch-feedback:active {
+    transform: scale(0.98);
+  }
+  
+  /* Focus ring for accessibility */
+  .focus-ring {
+    outline: none;
+  }
+  
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  
+  /* Smooth image loading */
+  .image-fade-in {
+    opacity: 0;
+    transition: opacity var(--transition-standard);
+  }
+  
+  .image-fade-in.loaded {
+    opacity: 1;
+  }
+  
+  /* Price update pulse */
+  .price-pulse {
+    animation: pulse-ring 0.3s ease-out;
   }
 }

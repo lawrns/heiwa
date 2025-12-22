@@ -36,10 +36,11 @@ const VARIANT_FONT_SIZES: Record<string, string> = {
 const EXPECTED_FONT_WEIGHT_CLASS = 'font-medium';
 
 // TOON-compliant dimension classes for Property 2
+// Updated to match Airbnb-quality UX implementation
 const SIZE_DIMENSION_CLASSES: Record<string, { minHeight: string; paddingX: string; paddingY: string }> = {
-  default: { minHeight: 'min-h-[40px]', paddingX: 'px-4', paddingY: 'py-2.5' },
-  sm: { minHeight: 'min-h-[36px]', paddingX: 'px-3', paddingY: 'py-2' },
-  lg: { minHeight: 'min-h-[44px]', paddingX: 'px-5', paddingY: 'py-3' },
+  default: { minHeight: 'min-h-[40px]', paddingX: 'px-5', paddingY: 'py-2.5' },
+  sm: { minHeight: 'min-h-[36px]', paddingX: 'px-4', paddingY: 'py-2' },
+  lg: { minHeight: 'min-h-[44px]', paddingX: 'px-6', paddingY: 'py-3' },
   icon: { minHeight: 'min-h-[40px]', paddingX: '', paddingY: '' }, // icon uses w-10 instead
 };
 
@@ -326,6 +327,7 @@ describe('Button Dimensions Properties', () => {
  */
 
 // Expected interaction state classes
+// Updated to use duration-micro (150ms) from Airbnb-quality design tokens
 const INTERACTION_STATE_CLASSES = {
   // Hover state: translateY -1px with shadow (Requirement 8.1)
   hoverTranslateY: 'hover:-translate-y-px',
@@ -333,8 +335,8 @@ const INTERACTION_STATE_CLASSES = {
   // Active state: translateY 0px with scale 0.98 (Requirement 8.2)
   activeTranslateY: 'active:translate-y-0',
   activeScale: 'active:scale-[0.98]',
-  // Transition: 150ms ease-out (Requirement 8.3)
-  transitionDuration: 'duration-150',
+  // Transition: duration-micro (150ms) ease-out (Requirement 8.3)
+  transitionDuration: 'duration-micro',
   transitionEasing: 'ease-out',
   transitionAll: 'transition-all',
 };
@@ -454,9 +456,9 @@ describe('Button Interaction State Properties', () => {
 
   /**
    * Property 10: Transition Duration
-   * For any button variant and size, transitions SHALL use duration of 150ms.
+   * For any button variant and size, transitions SHALL use duration-micro (150ms).
    */
-  it('Property 10: For any button, transitions SHALL use duration of 150ms', () => {
+  it('Property 10: For any button, transitions SHALL use duration-micro (150ms)', () => {
     fc.assert(
       fc.property(buttonVariantArb, buttonSizeArb, (variant, size) => {
         const { container } = render(

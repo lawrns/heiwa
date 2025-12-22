@@ -121,9 +121,15 @@ module.exports = {
         image: '4px',
       },
       boxShadow: {
-        card: '0 2px 12px rgba(0, 0, 0, 0.08)',
-        'card-hover': '0 4px 20px rgba(0, 0, 0, 0.12)',
-        subtle: '0 1px 3px rgba(0, 0, 0, 0.06)',
+        // Airbnb-quality shadow tokens
+        subtle: '0 1px 2px rgba(0, 0, 0, 0.05)',
+        card: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        elevated: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        modal: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        // Glow effects for premium feel
+        'glow-accent': '0 0 20px rgba(236, 104, 28, 0.3)',
+        'glow-success': '0 0 20px rgba(22, 163, 74, 0.3)',
       },
       maxWidth: {
         container: '1400px',
@@ -134,6 +140,17 @@ module.exports = {
         'slide-up': 'slide-up 0.6s ease-out forwards',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        // Airbnb-quality animations
+        'shimmer': 'shimmer 1.5s infinite',
+        'scale-in': 'scale-in 0.3s ease-out',
+        'bounce-in': 'bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        'pulse-ring': 'pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'shake': 'shake 0.5s ease-in-out',
+        'confetti': 'confetti 3s ease-out forwards',
+        'check-mark': 'check-mark 0.3s ease-out forwards',
+        'slide-in-right': 'slide-in-right 0.3s ease-out',
+        'slide-in-up': 'slide-in-up 0.3s ease-out',
+        'fade-in-up': 'fade-in-up 0.4s ease-out',
       },
       keyframes: {
         'fade-in': {
@@ -152,9 +169,64 @@ module.exports = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        // Airbnb-quality keyframes
+        'shimmer': {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'scale-in': {
+          '0%': { transform: 'scale(0.9)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'bounce-in': {
+          '0%': { transform: 'scale(0.3)', opacity: '0' },
+          '50%': { transform: 'scale(1.05)' },
+          '70%': { transform: 'scale(0.9)' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'pulse-ring': {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.5', transform: 'scale(1.05)' },
+        },
+        'shake': {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-4px)' },
+          '20%, 40%, 60%, 80%': { transform: 'translateX(4px)' },
+        },
+        'confetti': {
+          '0%': { transform: 'translateY(0) rotate(0deg)', opacity: '1' },
+          '100%': { transform: 'translateY(100vh) rotate(720deg)', opacity: '0' },
+        },
+        'check-mark': {
+          '0%': { transform: 'scale(0) rotate(-45deg)', opacity: '0' },
+          '50%': { transform: 'scale(1.2) rotate(-45deg)' },
+          '100%': { transform: 'scale(1) rotate(-45deg)', opacity: '1' },
+        },
+        'slide-in-right': {
+          '0%': { transform: 'translateX(20px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        'slide-in-up': {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        'fade-in-up': {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
       },
       transitionDuration: {
         '400': '400ms',
+        // Airbnb-quality transition durations
+        'micro': '150ms',
+        'standard': '300ms',
+        'slow': '500ms',
+      },
+      transitionTimingFunction: {
+        // Airbnb-quality easing functions
+        'out': 'cubic-bezier(0, 0, 0.2, 1)',
+        'in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
     },
   },

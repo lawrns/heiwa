@@ -1,6 +1,7 @@
 import { Home, Waves, Check } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { BookingState } from '../types';
+import { cn } from '@/lib/utils';
 
 interface ExperienceSelectionProps {
   state: BookingState;
@@ -20,7 +21,7 @@ const experiences = [
     gradient: 'from-blue-500 to-cyan-500',
     features: ['Flexible dates', 'Choose your room', 'Self-guided experience'],
     priceFrom: 45,
-    backgroundImage: '', // Remove broken image reference
+    backgroundImage: '',
     surfPattern: 'gentle-waves',
   },
   {
@@ -32,7 +33,7 @@ const experiences = [
     gradient: 'from-orange-500 to-red-500',
     features: ['Professional coaching', 'All meals included', 'Structured program'],
     priceFrom: 599,
-    backgroundImage: '', // Remove broken image reference
+    backgroundImage: '',
     surfPattern: 'dynamic-waves',
   },
 ];
@@ -82,7 +83,7 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
       </div>
 
       {/* Experience Options */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {experiences.map((experience, index) => {
           const Icon = experience.icon;
           const isSelected = state.experienceType === experience.type;
@@ -91,52 +92,63 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
             <button
               key={experience.id}
               onClick={() => handleSelection(experience.type)}
-              className={`
-                relative w-full rounded-xl text-left overflow-hidden
-                transition-all duration-300 ease-out
-                hover:shadow-xl hover:-translate-y-1
-                focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:ring-offset-2
-                animate-in fade-in-0 slide-in-from-bottom-4 duration-500
-                ${isSelected
-                  ? 'ring-4 ring-orange-500 shadow-xl shadow-orange-500/30'
-                  : 'ring-2 ring-gray-200 hover:ring-orange-300'
-                }
-              `}
+              className={cn(
+                // Base styles
+                "relative w-full rounded-xl text-left overflow-hidden",
+                "transition-all duration-standard ease-out",
+                "focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2",
+                // Animation on mount
+                "animate-fade-in-up",
+                // Hover effects - lift with glow
+                "hover:-translate-y-1",
+                experience.type === 'surf-week' 
+                  ? "hover:shadow-[0_20px_40px_-10px_rgba(236,104,28,0.4)]"
+                  : "hover:shadow-[0_20px_40px_-10px_rgba(59,130,246,0.4)]",
+                // Selected state
+                isSelected && [
+                  "ring-4 ring-accent shadow-xl",
+                  experience.type === 'surf-week'
+                    ? "shadow-accent/30"
+                    : "shadow-blue-500/30"
+                ],
+                // Unselected state
+                !isSelected && "ring-2 ring-gray-200 hover:ring-accent/50"
+              )}
               style={{
                 animationDelay: `${index * 100}ms`,
               }}
             >
               {/* Background with gradient */}
               <div 
-                className={`
-                  absolute inset-0
-                  ${experience.type === 'surf-week'
-                    ? 'bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700'
+                className={cn(
+                  "absolute inset-0",
+                  experience.type === 'surf-week'
+                    ? 'bg-gradient-to-br from-accent via-accent-dark to-orange-700'
                     : 'bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-600'
-                  }
-                `}
+                )}
               />
               
               {/* Overlay for better text readability */}
               <div className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-black/20" />
 
-              {/* Selection Checkmark */}
+              {/* Selection Checkmark with bounce animation */}
               {isSelected && (
-                <div className="absolute top-4 right-4 z-20 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-xl border-2 border-orange-500 animate-in zoom-in-95 duration-200">
-                  <Check size={20} className="text-orange-600" />
+                <div className="absolute top-4 right-4 z-20 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-xl border-2 border-accent animate-bounce-in">
+                  <Check size={20} className="text-accent" />
                 </div>
               )}
 
               {/* Card Content */}
               <div className="relative z-10 p-5 sm:p-6">
-                {/* TOON-compliant icon-text gap (8px) */}
-                <div className="flex items-start gap-2 mb-3">
-                  {/* Icon */}
-                  <div className={`
-                    p-3 rounded-lg bg-white/20 backdrop-blur-md
-                    border border-white/30 flex-shrink-0
-                    shadow-lg
-                  `}>
+                {/* Icon and Title Row */}
+                <div className="flex items-start gap-3 mb-3">
+                  {/* Icon with glow effect on hover */}
+                  <div className={cn(
+                    "p-3 rounded-lg bg-white/20 backdrop-blur-md",
+                    "border border-white/30 flex-shrink-0",
+                    "shadow-lg transition-all duration-micro",
+                    "group-hover:bg-white/30 group-hover:scale-105"
+                  )}>
                     <Icon size={24} className="text-white" />
                   </div>
 
@@ -145,8 +157,9 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                     <h4 className="text-xl sm:text-2xl font-bold text-white leading-tight drop-shadow-lg">
                       {experience.title}
                     </h4>
+                    {/* Price badge with prominent styling */}
                     <div className="text-right flex-shrink-0 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/30">
-                      <div className="text-sm text-white/90 font-medium mb-0.5">From</div>
+                      <div className="text-xs text-white/90 font-medium uppercase tracking-wide">From</div>
                       <div className="text-2xl sm:text-3xl font-bold text-white">
                         €{experience.priceFrom}
                       </div>
@@ -158,6 +171,18 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                 <p className="text-white/95 text-base sm:text-lg leading-relaxed drop-shadow-md">
                   {experience.description}
                 </p>
+
+                {/* Features list - subtle on hover */}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {experience.features.map((feature, i) => (
+                    <span 
+                      key={i}
+                      className="text-xs text-white/80 bg-white/10 px-2 py-1 rounded-full"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
               </div>
             </button>
           );
