@@ -96,7 +96,7 @@ export function ProgressIndicator({
                     {/* Animated fill */}
                     <div 
                       className={cn(
-                        "absolute inset-y-0 left-0 rounded-full transition-all duration-500 ease-out",
+                        "absolute inset-y-0 left-0 rounded-full transition-all duration-700 ease-in-out",
                         isCompleted 
                           ? "w-full bg-gradient-to-r from-accent to-accent-dark" 
                           : "w-0 bg-accent"
@@ -125,7 +125,7 @@ export function ProgressIndicator({
                     className={cn(
                       // Base styles
                       "relative z-10 w-10 h-10 rounded-full flex items-center justify-center",
-                      "transition-all duration-micro ease-out",
+                      "transition-all duration-300 ease-in-out",
                       // Clickable states
                       clickable && [
                         "cursor-pointer",
@@ -142,11 +142,11 @@ export function ProgressIndicator({
                         "shadow-lg shadow-accent/30",
                         clickable && "hover:from-accent-dark hover:to-accent-dark"
                       ],
-                      // Current state with pulsing ring
+                      // Current state with subtle glow
                       isCurrent && [
                         "bg-gradient-to-br from-accent to-accent-dark text-white",
                         "shadow-lg shadow-accent/40",
-                        "ring-4 ring-accent/20 animate-pulse-ring"
+                        "ring-4 ring-accent/20"
                       ],
                       // Upcoming state
                       isUpcoming && [
@@ -173,7 +173,7 @@ export function ProgressIndicator({
                   {/* Step Label - Always visible with abbreviated labels on mobile */}
                   <div className="mt-1.5 sm:mt-2 text-center">
                     <div className={cn(
-                      "text-[10px] sm:text-xs font-medium transition-colors duration-micro whitespace-nowrap",
+                      "text-[10px] sm:text-xs font-medium transition-colors duration-300 ease-in-out whitespace-nowrap",
                       isCurrent && "text-accent font-semibold",
                       isCompleted && "text-accent",
                       isUpcoming && "text-gray-400"

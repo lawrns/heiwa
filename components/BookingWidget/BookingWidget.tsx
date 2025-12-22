@@ -247,7 +247,7 @@ export function BookingWidget({
     return (
       <div
         key={`${state.currentStep}-${currentStepType}`}
-        className="animate-in fade-in-0 slide-in-from-right-4 duration-500 ease-out"
+        className="animate-in fade-in-0 duration-300 ease-out"
       >
         {renderStepComponent()}
       </div>
