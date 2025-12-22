@@ -74,7 +74,7 @@ export function BankWireInstructions({ totalAmount, currency, bookingReference }
             </div>
             <button
               onClick={() => copyToClipboard(bankDetails.accountName, 'accountName')}
-              className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+              className="p-2 text-gray-500 hover:text-gray-700 motion-safe:transition-colors motion-reduce:transition-none"
               title="Copy account name"
             >
               {copiedField === 'accountName' ? (
@@ -93,7 +93,7 @@ export function BankWireInstructions({ totalAmount, currency, bookingReference }
             </div>
             <button
               onClick={() => copyToClipboard(bankDetails.iban, 'iban')}
-              className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+              className="p-2 text-gray-500 hover:text-gray-700 motion-safe:transition-colors motion-reduce:transition-none"
               title="Copy IBAN"
             >
               {copiedField === 'iban' ? (
@@ -112,7 +112,7 @@ export function BankWireInstructions({ totalAmount, currency, bookingReference }
             </div>
             <button
               onClick={() => copyToClipboard(bankDetails.swift, 'swift')}
-              className="p-2 text-gray-500 hover:text-gray-700 transition-colors"
+              className="p-2 text-gray-500 hover:text-gray-700 motion-safe:transition-colors motion-reduce:transition-none"
               title="Copy SWIFT code"
             >
               {copiedField === 'swift' ? (
@@ -141,7 +141,7 @@ export function BankWireInstructions({ totalAmount, currency, bookingReference }
             </div>
             <button
               onClick={() => copyToClipboard(reference, 'reference')}
-              className="p-2 text-yellow-600 hover:text-yellow-800 transition-colors"
+              className="p-2 text-yellow-600 hover:text-yellow-800 motion-safe:transition-colors motion-reduce:transition-none"
               title="Copy reference"
             >
               {copiedField === 'reference' ? (

@@ -100,7 +100,7 @@ function TaxBreakdownSection({ taxes, basePrice, roomUpgrade, addOnsSubtotal }: 
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex justify-between items-center text-gray-700 hover:text-gray-900 transition-colors"
+        className="w-full flex justify-between items-center text-gray-700 hover:text-gray-900 motion-safe:transition-colors motion-reduce:transition-none"
         aria-expanded={isExpanded}
         aria-label={isExpanded ? 'Collapse tax details' : 'Expand tax details'}
       >

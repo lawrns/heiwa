@@ -144,7 +144,7 @@ export function RoomImageGallery({
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 p-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white transition-all duration-200"
+            className="absolute top-4 right-4 z-10 p-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none"
           >
             <X size={24} />
           </button>
@@ -171,13 +171,13 @@ export function RoomImageGallery({
               <>
                 <button
                   onClick={prevImage}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white transition-all duration-200"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none"
                 >
                   <ChevronLeft size={24} />
                 </button>
                 <button
                   onClick={nextImage}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white transition-all duration-200"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none"
                 >
                   <ChevronRight size={24} />
                 </button>
@@ -313,7 +313,7 @@ export function RoomThumbnail({ image, roomName, onClick, className = '' }: Room
   return (
     <button
       onClick={onClick}
-      className={`relative group overflow-hidden rounded-lg transition-all duration-200 hover:scale-105 hover:shadow-lg ${className}`}
+      className={`relative group overflow-hidden rounded-lg motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none hover:scale-105 hover:shadow-lg ${className}`}
     >
       {/* Loading state */}
       {loadState === 'loading' && (
@@ -338,8 +338,8 @@ export function RoomThumbnail({ image, roomName, onClick, className = '' }: Room
       )}
       
       {/* Hover overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
-        <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-all duration-200" size={20} />
+      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none flex items-center justify-center">
+        <ZoomIn className="text-white opacity-0 group-hover:opacity-100 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none" size={20} />
       </div>
     </button>
   );

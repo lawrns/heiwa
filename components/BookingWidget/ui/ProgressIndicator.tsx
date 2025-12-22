@@ -173,7 +173,7 @@ export function ProgressIndicator({
                   {/* Step Label - Always visible with abbreviated labels on mobile */}
                   <div className="mt-1.5 sm:mt-2 text-center">
                     <div className={cn(
-                      "text-[10px] sm:text-xs font-medium transition-colors duration-300 ease-in-out whitespace-nowrap",
+                      "text-[10px] sm:text-xs font-medium motion-safe:transition-colors motion-safe:duration-300 motion-reduce:transition-none ease-in-out whitespace-nowrap",
                       isCurrent && "text-accent font-semibold",
                       isCompleted && "text-accent",
                       isUpcoming && "text-gray-400"

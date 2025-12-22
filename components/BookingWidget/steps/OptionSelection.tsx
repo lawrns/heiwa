@@ -523,7 +523,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   value={checkInDate}
                   min={new Date().toISOString().split('T')[0]}
                   onChange={(e) => handleCheckInChange(e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-colors duration-200 text-[14px] ${
+                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
                     checkInDate && isDateSoldOut(checkInDate)
                       ? 'border-red-300 bg-red-50 text-red-700'
                       : 'border-gray-300'
@@ -548,7 +548,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   value={checkOutDate}
                   min={checkInDate || new Date().toISOString().split('T')[0]}
                   onChange={(e) => handleCheckOutChange(e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-colors duration-200 text-[14px] ${
+                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
                     checkOutDate && isDateSoldOut(checkOutDate)
                       ? 'border-red-300 bg-red-50 text-red-700'
                       : 'border-gray-300'
@@ -625,7 +625,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         value={name}
                         onChange={(e) => handleParticipantNameChange(index, e.target.value)}
                         placeholder={`Guest ${index + 1} first name`}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-colors duration-200 text-[14px]"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px]"
                         aria-label={`Guest ${index + 1} first name`}
                       />
                       {name && (
