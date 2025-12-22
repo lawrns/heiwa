@@ -30,7 +30,7 @@ const experiences = [
     title: 'All-Inclusive Surf Week',
     description: 'Join our structured surf camp programs with coaching and community.',
     icon: Waves,
-    gradient: 'from-orange-500 to-red-500',
+    gradient: 'from-[#ec681c] to-red-500',
     features: ['Professional coaching', 'All meals included', 'Structured program'],
     priceFrom: 599,
     backgroundImage: '',
@@ -123,7 +123,7 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                 className={cn(
                   "absolute inset-0",
                   experience.type === 'surf-week'
-                    ? 'bg-gradient-to-br from-accent via-accent-dark to-orange-700'
+                    ? 'bg-gradient-to-br from-[#ec681c] via-[#d65d16] to-red-700'
                     : 'bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-600'
                 )}
               />

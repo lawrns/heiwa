@@ -294,7 +294,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 isSaved 
                   ? 'border-green-500 bg-green-50/30' 
                   : showSuccessMessage === index + 1 || (index === 0 && showSuccessMessage === null && savedGuests.has(1))
-                  ? 'border-orange-300 ring-2 ring-orange-200'
+                  ? 'border-[#ec681c]/30 ring-2 ring-[#ec681c]/20'
                   : 'border-gray-200'
               }`}
             >
@@ -303,7 +303,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm transition-all duration-300 ${
                 isSaved 
                   ? 'bg-gradient-to-br from-green-500 to-green-600' 
-                  : 'bg-gradient-to-br from-orange-500 to-orange-600'
+                  : 'bg-gradient-to-br from-[#ec681c] to-[#d65d16]'
               }`}>
                 {isSaved ? <CheckCircle size={20} /> : index + 1}
               </div>
@@ -469,11 +469,11 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
       {/* Summary - Only show when not collapsed */}
       {!isCollapsed && (
-        <div className="bg-orange-50 rounded-xl p-4 border border-orange-200">
+        <div className="bg-[#ec681c]/5 rounded-[10px] p-4 border border-[#ec681c]/20">
           <div className="flex items-center justify-between">
             <div>
-              <h5 className="font-semibold text-orange-900">Guest Information Status</h5>
-              <p className="text-base text-orange-700" data-testid="guest-completion-status">
+              <h5 className="font-semibold text-gray-900">Guest Information Status</h5>
+              <p className="text-base text-gray-700" data-testid="guest-completion-status">
                 {completedGuestsCount} of {state.guests} guests completed
               </p>
             </div>
@@ -484,7 +484,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                   <span className="text-base font-medium">All guests ready</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 text-orange-600">
+                <div className="flex items-center gap-2 text-[#ec681c]">
                   <div className="w-2 h-2 bg-accent rounded-full"></div>
                   <span className="text-base font-medium">Complete all fields</span>
                 </div>

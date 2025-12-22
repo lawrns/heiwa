@@ -238,7 +238,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
     return (
       <div className="space-y-6">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ec681c] mx-auto"></div>
           <p className="mt-2 text-gray-600">Loading room options...</p>
         </div>
       </div>
@@ -312,7 +312,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                       className="w-20 h-16"
                     />
                   ) : (
-                    <div className="w-20 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                    <div className="w-20 h-16 bg-gradient-to-br from-[#ec681c] to-[#d65d16] rounded-lg flex items-center justify-center">
                       <span className="text-white text-lg">🏠</span>
                     </div>
                   )}
@@ -341,7 +341,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                 </div>
                 <div className="flex items-center gap-2 text-base">
                   <Users size={16} />
-                  <span className={occupancy > 0 ? 'text-orange-600 font-medium' : 'text-gray-600'}>
+                  <span className={occupancy > 0 ? 'text-[#ec681c] font-medium' : 'text-gray-600'}>
                     {occupancy}/{room.maxOccupancy} assigned
                   </span>
                 </div>

@@ -576,15 +576,15 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-2.5 h-2.5 bg-orange-500 rounded-full animate-pulse"></div>
-                <span className="text-xs font-bold text-orange-700 uppercase tracking-wide">Selected Surf Week</span>
+                <div className="w-2.5 h-2.5 bg-[#ec681c] rounded-full animate-pulse"></div>
+                <span className="text-xs font-bold text-[#d65d16] uppercase tracking-wide">Selected Surf Week</span>
               </div>
               <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight">
                 {selectedSurfWeekData?.name || 'Surf Week'}
               </h4>
               {dateRange && (
                 <div className="flex items-center gap-2 text-sm md:text-base text-gray-700 font-medium">
-                  <Calendar className="w-4 h-4 text-orange-600 flex-shrink-0" />
+                  <Calendar className="w-4 h-4 text-[#ec681c] flex-shrink-0" />
                   <span>{dateRange}</span>
                 </div>
               )}
@@ -592,7 +592,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
             {selectedSurfWeekData?.price && (
               <div className="text-left sm:text-right flex-shrink-0">
                 <div className="text-xs text-gray-600 mb-1 font-medium">Starting from</div>
-                <div className="text-2xl md:text-3xl font-bold text-orange-600 leading-tight">
+                <div className="text-2xl md:text-3xl font-bold text-[#ec681c] leading-tight">
                   {formatPrice(selectedSurfWeekData.price)}
                 </div>
               </div>
@@ -685,7 +685,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                       className="w-20 h-16"
                     />
                   ) : (
-                    <div className="w-20 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                    <div className="w-20 h-16 bg-gradient-to-br from-[#ec681c] to-[#d65d16] rounded-lg flex items-center justify-center">
                       <span className="text-white text-lg">🏠</span>
                     </div>
                   )}
@@ -719,7 +719,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                     </div>
                   ) : (
                     <div className="flex flex-col items-end">
-                      <div className="text-2xl font-bold text-orange-600 leading-tight mb-1">
+                      <div className="text-2xl font-bold text-[#ec681c] leading-tight mb-1">
                         from {formatPrice(displayPrice)}
                       </div>
                       <div className="text-sm text-gray-500">
@@ -736,8 +736,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                   <div className="text-sm font-semibold text-orange-800 mb-2">Pricing per person (based on room occupancy):</div>
                   <div className="flex flex-wrap gap-2">
                     {occupancyPrices.map(({ occupancy: occ, price }) => (
-                      <div key={occ} className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-orange-200">
-                        <span className="text-sm font-bold text-orange-600">{formatPrice(price)}</span>
+                      <div key={occ} className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-[#ec681c]/20">
+                        <span className="text-sm font-bold text-[#ec681c]">{formatPrice(price)}</span>
                         <span className="text-sm text-gray-600">
                           ({occ} {occ === 1 ? 'person' : 'people'})
                         </span>
@@ -770,7 +770,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                   <span>{availableBeds} of {transformedRoom.maxOccupancy} beds available</span>
                 </div>
                 {existingAssignments > 0 && (
-                  <div className="flex items-center gap-2 text-base text-orange-600">
+                  <div className="flex items-center gap-2 text-base text-[#ec681c]">
                     <Users size={16} />
                     <span className="font-medium">
                       {existingAssignments} already booked

@@ -570,7 +570,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         <div className="space-y-4">
           {/* Experience Type */}
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-[#ec681c] to-[#d65d16] rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-bold">
                 {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
               </span>
@@ -647,7 +647,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                   {guest.email} • {guest.phone}
                 </div>
                 {guest.dietaryRequirements && (
-                  <div className="text-sm text-orange-600 mt-1">
+                  <div className="text-sm text-[#ec681c] mt-1">
                     Dietary: {guest.dietaryRequirements}
                   </div>
                 )}
@@ -757,8 +757,8 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
           </div>
           <div className="border-t border-orange-300 pt-3">
             <div className="flex justify-between items-center">
-              <span className="text-xl font-semibold text-orange-900">Total</span>
-              <span className="text-3xl font-bold text-orange-600">{formatPrice(pricing.total)}</span>
+              <span className="text-xl font-semibold text-gray-900">Total</span>
+              <span className="text-3xl font-bold text-[#ec681c]">{formatPrice(pricing.total)}</span>
             </div>
           </div>
         </div>
@@ -788,16 +788,16 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             id="terms"
             checked={termsAccepted}
             onChange={(e) => setTermsAccepted(e.target.checked)}
-            className="mt-1 w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+            className="mt-1 w-4 h-4 text-[#ec681c] border-gray-300 rounded focus:ring-[#ec681c]"
             required
           />
           <label htmlFor="terms" className="text-base text-gray-700">
             I agree to the{' '}
-            <a href="/terms" className="text-orange-600 hover:text-orange-700 underline">
+            <a href="/terms" className="text-[#ec681c] hover:text-[#d65d16] underline">
               Terms and Conditions
             </a>{' '}
             and{' '}
-            <a href="/privacy" className="text-orange-600 hover:text-orange-700 underline">
+            <a href="/privacy" className="text-[#ec681c] hover:text-[#d65d16] underline">
               Privacy Policy
             </a>
             . I understand that this booking is subject to our cancellation policy.

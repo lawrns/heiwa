@@ -230,7 +230,7 @@ export function RoomImageGallery({
                     </span>
                   )}
                   {pricePerNight && (
-                    <span className="font-semibold text-orange-600">
+                    <span className="font-semibold text-[#ec681c]">
                       €{pricePerNight}/night
                     </span>
                   )}

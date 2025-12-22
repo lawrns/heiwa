@@ -435,7 +435,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
           </h3>
           <div className="flex items-center justify-center gap-2">
-            <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-4 h-4 border-2 border-[#ec681c] border-t-transparent rounded-full animate-spin"></div>
             <p className="text-gray-600">
               Loading available {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}...
             </p>
@@ -567,7 +567,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             {/* Date Availability Loading Indicator - Only show when dates are selected */}
             {dateAvailabilityLoading && checkInDate && checkOutDate && (
               <div className="flex items-center gap-2 text-base text-gray-600">
-                <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-[#ec681c] border-t-transparent rounded-full animate-spin"></div>
                 Checking availability for selected dates...
               </div>
             )}
