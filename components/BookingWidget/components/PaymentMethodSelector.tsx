@@ -39,13 +39,13 @@ export function PaymentMethodSelector({ selectedMethod, onMethodChange }: Paymen
               key={method.id}
               onClick={() => onMethodChange(method.id)}
               className={`
-                w-full p-4 rounded-lg border-2 text-left
-                transition-all duration-200
+                w-full p-4 rounded-[10px] border text-left
+                motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none
                 hover:scale-[1.01] hover:shadow-md
-                focus:outline-none focus:ring-2 focus:ring-orange-500/30
+                focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30
                 ${isSelected
-                  ? 'border-orange-500 bg-orange-50 shadow-md'
-                  : 'border-gray-200 bg-white hover:border-orange-300'
+                  ? 'border-[#ec681c] bg-orange-50 shadow-md'
+                  : 'border-gray-200 bg-white hover:border-[#ec681c]/30'
                 }
               `}
             >
