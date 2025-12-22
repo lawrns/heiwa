@@ -516,7 +516,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
       <div className="space-y-6">
         <div className="text-center space-y-4">
           <h3 className="text-2xl font-bold text-gray-900">Choose Your Accommodation</h3>
-          <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-red-800 font-medium mb-2">Error loading rooms: {error}</p>
             <button
               onClick={() => window.location.reload()}
@@ -572,7 +572,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
       {/* Selected Surf Week Summary - Optimized for conversion */}
       {(selectedSurfWeekData || state.selectedSurfWeek) && (
-        <div className="bg-orange-50 rounded-xl p-5 md:p-6 border-2 border-orange-200 shadow-sm">
+        <div className="bg-orange-50 rounded-[10px] p-5 md:p-6 border border-orange-200 shadow-sm">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
@@ -667,9 +667,9 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           return (
             <div
               key={transformedRoom.id}
-              className={`border-2 rounded-xl p-5 md:p-6 transition-all duration-300 ${
+              className={`border rounded-[10px] p-5 md:p-6 transition-all duration-300 ${
                 assignment && assignment.guestIds.length > 0
-                  ? 'border-orange-500 bg-orange-50'
+                  ? 'border-[#ec681c] bg-orange-50'
                   : 'border-gray-200 bg-white'
               }`}
             >

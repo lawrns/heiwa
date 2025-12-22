@@ -297,8 +297,8 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
           return (
             <div
               key={room.id}
-              className={`border-2 rounded-xl p-6 transition-all duration-300 ${
-                assignment ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'
+              className={`border rounded-[10px] p-6 transition-all duration-300 ${
+                assignment ? 'border-[#ec681c] bg-orange-50' : 'border-gray-200 bg-white'
               }`}
             >
               <div className="flex items-start gap-4 mb-4">

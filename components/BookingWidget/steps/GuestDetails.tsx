@@ -290,9 +290,9 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             <div 
               key={`guest-${index}`} 
               id={`guest-form-${index}`}
-              className={`bg-gray-50 rounded-xl p-6 border-2 transition-all duration-300 ${
+              className={`bg-gray-50 rounded-[10px] p-6 border transition-all duration-300 ${
                 isSaved 
-                  ? 'border-green-300 bg-green-50/30' 
+                  ? 'border-green-500 bg-green-50/30' 
                   : showSuccessMessage === index + 1 || (index === 0 && showSuccessMessage === null && savedGuests.has(1))
                   ? 'border-orange-300 ring-2 ring-orange-200'
                   : 'border-gray-200'
