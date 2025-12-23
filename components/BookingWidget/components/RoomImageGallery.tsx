@@ -375,8 +375,8 @@ export function RoomThumbnail({ image, roomName, onClick, className = '' }: Room
         />
       )}
       
-      {/* Hover overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none flex items-center justify-center">
+      {/* Hover overlay - pointer-events-none to not block image */}
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none flex items-center justify-center pointer-events-none">
         <ZoomIn className="text-white opacity-0 group-hover:opacity-100 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none" size={20} />
       </div>
     </button>
