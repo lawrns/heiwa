@@ -351,7 +351,7 @@ export function RoomThumbnail({ image, roomName, onClick, className = '' }: Room
   return (
     <button
       onClick={onClick}
-      className={`relative group overflow-hidden rounded-lg motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none hover:scale-105 hover:shadow-lg ${className}`}
+      className={`relative group overflow-hidden rounded-lg motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none hover:scale-105 hover:shadow-lg flex items-center justify-center ${className}`}
     >
       {/* Loading state */}
       {loadState === 'loading' && (
