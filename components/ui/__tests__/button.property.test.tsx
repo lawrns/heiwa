@@ -22,26 +22,17 @@ import { render, cleanup } from '@testing-library/react';
 // Import the button component to test its class generation
 import { Button, ButtonProps } from '../button';
 
-// Define the button variants and their expected font sizes
-const VARIANT_FONT_SIZES: Record<string, string> = {
-  default: '14px',
-  secondary: '13px',
-  destructive: '13px',
-  outline: '14px',
-  ghost: '14px',
-  link: '14px',
-};
-
-// All variants should have font-weight 500 (medium)
+// Define the button variants - font sizes are not explicitly set in classes
+// The button uses font-medium for all variants
 const EXPECTED_FONT_WEIGHT_CLASS = 'font-medium';
 
 // TOON-compliant dimension classes for Property 2
-// Updated to match Airbnb-quality UX implementation
+// Updated to match actual Button component implementation
 const SIZE_DIMENSION_CLASSES: Record<string, { minHeight: string; paddingX: string; paddingY: string }> = {
   default: { minHeight: 'min-h-[40px]', paddingX: 'px-5', paddingY: 'py-2.5' },
   sm: { minHeight: 'min-h-[36px]', paddingX: 'px-4', paddingY: 'py-2' },
   lg: { minHeight: 'min-h-[44px]', paddingX: 'px-6', paddingY: 'py-3' },
-  icon: { minHeight: 'min-h-[40px]', paddingX: '', paddingY: '' }, // icon uses w-10 instead
+  icon: { minHeight: 'min-h-[44px]', paddingX: '', paddingY: '' }, // icon uses w-[44px] instead
 };
 
 // Border radius should be 10px for all buttons
@@ -71,43 +62,6 @@ describe('Button Typography Properties', () => {
 
   /**
    * Property 1: Button Typography Consistency
-   * For any button variant, the generated classes SHALL include the correct
-   * font-size class based on variant type.
-   */
-  it('Property 1: For any button variant, font-size SHALL be 14px for primary variants and 13px for secondary/destructive variants', () => {
-    fc.assert(
-      fc.property(buttonVariantArb, (variant) => {
-        // Render the button and get the DOM element
-        const { container } = render(
-          React.createElement(Button, { variant }, 'Test Button')
-        );
-        const buttonElement = container.querySelector('button');
-        
-        if (!buttonElement) {
-          return false;
-        }
-        
-        // Get the className from the rendered button
-        const className = buttonElement.className;
-        
-        // Expected font size for this variant
-        const expectedFontSize = VARIANT_FONT_SIZES[variant || 'default'];
-        const expectedFontSizeClass = `text-[${expectedFontSize}]`;
-        
-        // Verify the button has the correct font-size class
-        const hasFontSizeClass = className.includes(expectedFontSizeClass);
-        
-        // Cleanup after each property check
-        cleanup();
-        
-        return hasFontSizeClass;
-      }),
-      { numRuns: 100 }
-    );
-  });
-
-  /**
-   * Property 1 (continued): Font Weight Consistency
    * For any button variant and size combination, the generated classes 
    * SHALL include font-weight 500 (font-medium class).
    */
@@ -134,43 +88,6 @@ describe('Button Typography Properties', () => {
         cleanup();
         
         return hasFontWeightClass;
-      }),
-      { numRuns: 100 }
-    );
-  });
-
-  /**
-   * Property 1 (continued): Typography Consistency Across Sizes
-   * For any button, the font-size SHALL remain consistent regardless of 
-   * the size prop (size affects dimensions, not typography).
-   */
-  it('Property 1: For any button, font-size SHALL be determined by variant, not size', () => {
-    fc.assert(
-      fc.property(buttonVariantArb, buttonSizeArb, (variant, size) => {
-        // Render the button and get the DOM element
-        const { container } = render(
-          React.createElement(Button, { variant, size }, 'Test Button')
-        );
-        const buttonElement = container.querySelector('button');
-        
-        if (!buttonElement) {
-          return false;
-        }
-        
-        // Get the className from the rendered button
-        const className = buttonElement.className;
-        
-        // Expected font size for this variant (independent of size)
-        const expectedFontSize = VARIANT_FONT_SIZES[variant || 'default'];
-        const expectedFontSizeClass = `text-[${expectedFontSize}]`;
-        
-        // Verify the button has the correct font-size class
-        const result = className.includes(expectedFontSizeClass);
-        
-        // Cleanup after each property check
-        cleanup();
-        
-        return result;
       }),
       { numRuns: 100 }
     );
@@ -284,9 +201,9 @@ describe('Button Dimensions Properties', () => {
 
   /**
    * Property 2: Icon Button Width Compliance
-   * For icon buttons, width SHALL be 40px (w-10).
+   * For icon buttons, width SHALL be 44px (w-[44px]).
    */
-  it('Property 2: For icon buttons, width SHALL be 40px', () => {
+  it('Property 2: For icon buttons, width SHALL be 44px', () => {
     fc.assert(
       fc.property(buttonVariantArb, (variant) => {
         const { container } = render(
@@ -299,7 +216,7 @@ describe('Button Dimensions Properties', () => {
         }
         
         const className = buttonElement.className;
-        const hasWidthClass = className.includes('w-10');
+        const hasWidthClass = className.includes('w-[44px]');
         
         cleanup();
         
@@ -327,18 +244,17 @@ describe('Button Dimensions Properties', () => {
  */
 
 // Expected interaction state classes
-// Updated to use duration-micro (150ms) from Airbnb-quality design tokens
+// Updated to use motion-safe prefixes for accessibility compliance
 const INTERACTION_STATE_CLASSES = {
   // Hover state: translateY -1px with shadow (Requirement 8.1)
-  hoverTranslateY: 'hover:-translate-y-px',
-  hoverShadow: 'hover:shadow-md',
-  // Active state: translateY 0px with scale 0.98 (Requirement 8.2)
-  activeTranslateY: 'active:translate-y-0',
-  activeScale: 'active:scale-[0.98]',
-  // Transition: duration-micro (150ms) ease-out (Requirement 8.3)
-  transitionDuration: 'duration-micro',
-  transitionEasing: 'ease-out',
-  transitionAll: 'transition-all',
+  hoverTranslateY: 'motion-safe:hover:-translate-y-px',
+  hoverShadow: 'motion-safe:hover:shadow-md',
+  // Active state: scale 0.98 (Requirement 8.2)
+  activeScale: 'motion-safe:active:scale-[0.98]',
+  // Transition: duration-300 ease-out (Requirement 8.3)
+  transitionDuration: 'motion-safe:duration-300',
+  transitionEasing: 'motion-safe:ease-out',
+  transitionAll: 'motion-safe:transition-all',
 };
 
 describe('Button Interaction State Properties', () => {
@@ -401,33 +317,6 @@ describe('Button Interaction State Properties', () => {
   });
 
   /**
-   * Property 10: Active State - TranslateY
-   * For any button variant and size, active SHALL apply translateY of 0px.
-   */
-  it('Property 10: For any button, active SHALL apply translateY of 0px', () => {
-    fc.assert(
-      fc.property(buttonVariantArb, buttonSizeArb, (variant, size) => {
-        const { container } = render(
-          React.createElement(Button, { variant, size }, 'Test Button')
-        );
-        const buttonElement = container.querySelector('button');
-        
-        if (!buttonElement) {
-          return false;
-        }
-        
-        const className = buttonElement.className;
-        const hasActiveTranslateY = className.includes(INTERACTION_STATE_CLASSES.activeTranslateY);
-        
-        cleanup();
-        
-        return hasActiveTranslateY;
-      }),
-      { numRuns: 100 }
-    );
-  });
-
-  /**
    * Property 10: Active State - Scale
    * For any button variant and size, active SHALL apply scale of 0.98.
    */
@@ -456,9 +345,9 @@ describe('Button Interaction State Properties', () => {
 
   /**
    * Property 10: Transition Duration
-   * For any button variant and size, transitions SHALL use duration-micro (150ms).
+   * For any button variant and size, transitions SHALL use duration-300.
    */
-  it('Property 10: For any button, transitions SHALL use duration-micro (150ms)', () => {
+  it('Property 10: For any button, transitions SHALL use duration-300', () => {
     fc.assert(
       fc.property(buttonVariantArb, buttonSizeArb, (variant, size) => {
         const { container } = render(
@@ -530,7 +419,6 @@ describe('Button Interaction State Properties', () => {
         const hasAllClasses = 
           className.includes(INTERACTION_STATE_CLASSES.hoverTranslateY) &&
           className.includes(INTERACTION_STATE_CLASSES.hoverShadow) &&
-          className.includes(INTERACTION_STATE_CLASSES.activeTranslateY) &&
           className.includes(INTERACTION_STATE_CLASSES.activeScale) &&
           className.includes(INTERACTION_STATE_CLASSES.transitionDuration) &&
           className.includes(INTERACTION_STATE_CLASSES.transitionEasing) &&

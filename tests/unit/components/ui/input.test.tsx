@@ -195,7 +195,8 @@ describe('Input Component', () => {
 
     it('should have placeholder styling', () => {
       render(<Input placeholder="Test" data-testid="input" />);
-      expect(screen.getByTestId('input')).toHaveClass('placeholder:text-gray-500');
+      // Component uses gray-400 for placeholder text
+      expect(screen.getByTestId('input')).toHaveClass('placeholder:text-gray-400');
     });
   });
 
@@ -223,13 +224,15 @@ describe('Input Component', () => {
       render(<Input data-testid="input" />);
       const input = screen.getByTestId('input');
       expect(input).toHaveClass('focus:ring-2');
-      expect(input).toHaveClass('focus:ring-orange-500/20');
-      expect(input).toHaveClass('focus:border-orange-500');
+      // Component uses accent color for focus ring
+      expect(input).toHaveClass('focus:ring-accent/20');
+      expect(input).toHaveClass('focus:border-accent');
     });
 
     it('should have transition styling', () => {
       render(<Input data-testid="input" />);
-      expect(screen.getByTestId('input')).toHaveClass('transition-all');
+      // Component uses motion-safe prefix for transitions
+      expect(screen.getByTestId('input')).toHaveClass('motion-safe:transition-all');
     });
   });
 

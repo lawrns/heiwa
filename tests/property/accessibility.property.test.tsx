@@ -47,10 +47,14 @@ describe('Accessibility Properties', () => {
       });
 
       it('should have accessible name for any variant', () => {
+        // Use alphanumeric strings to ensure non-whitespace content
+        const nonWhitespaceTextArb = fc.string({ minLength: 1, maxLength: 50 })
+          .filter(s => s.trim().length > 0);
+        
         fc.assert(
           fc.property(
             buttonVariantArb,
-            fc.string({ minLength: 1, maxLength: 50 }),
+            nonWhitespaceTextArb,
             (variant, text) => {
               const { container } = render(
                 <Button variant={variant as any}>{text}</Button>

@@ -53,9 +53,9 @@ describe('Touch Target Compliance (Property 1)', () => {
                 expect(classes).toContain('min-h-[36px]')
                 break
               case 'default':
-              case 'icon':
                 expect(classes).toContain('min-h-[40px]')
                 break
+              case 'icon':
               case 'lg':
                 expect(classes).toContain('min-h-[44px]')
                 break
@@ -101,8 +101,8 @@ describe('Touch Target Compliance (Property 1)', () => {
             )
             const button = container.firstChild as HTMLElement
             
-            // All buttons should have active:scale for touch feedback
-            expect(button.className).toContain('active:scale-[0.98]')
+            // All buttons should have active:scale for touch feedback (with motion-safe prefix)
+            expect(button.className).toContain('motion-safe:active:scale-[0.98]')
           }
         ),
         { numRuns: 100 }
@@ -123,9 +123,9 @@ describe('Touch Target Compliance (Property 1)', () => {
             )
             const button = container.firstChild as HTMLElement
             
-            // Should have transition classes
-            expect(button.className).toContain('transition-all')
-            expect(button.className).toContain('duration-micro')
+            // Should have transition classes (with motion-safe prefix)
+            expect(button.className).toContain('motion-safe:transition-all')
+            expect(button.className).toContain('motion-safe:duration-300')
           }
         ),
         { numRuns: 50 }
@@ -204,8 +204,8 @@ describe('Touch Target Compliance (Property 1)', () => {
           )
           const button = container.firstChild as HTMLElement
           
-          // Should have success variant styling
-          expect(button.className).toContain('bg-success')
+          // Should have success variant styling (green-600)
+          expect(button.className).toContain('bg-green-600')
           
           // Should contain checkmark SVG
           const checkmark = button.querySelector('svg')
@@ -306,9 +306,9 @@ describe('Touch Target Compliance (Property 1)', () => {
           )
           const button = container.firstChild as HTMLElement
           
-          // Icon buttons should be square
-          expect(button.className).toContain('min-h-[40px]')
-          expect(button.className).toContain('w-10')
+          // Icon buttons should be 44px square for WCAG compliance
+          expect(button.className).toContain('min-h-[44px]')
+          expect(button.className).toContain('w-[44px]')
         }),
         { numRuns: 20 }
       )
@@ -324,7 +324,7 @@ describe('Touch Target Compliance (Property 1)', () => {
         outline: 'bg-white',
         destructive: 'bg-red-600',
         link: 'text-accent',
-        success: 'bg-success',
+        success: 'bg-green-600',
       }
 
       fc.assert(

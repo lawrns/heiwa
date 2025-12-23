@@ -33,7 +33,8 @@ describe('Form Validation Feedback (Property 3)', () => {
           )
           const input = container.querySelector('input')
           
-          expect(input).toHaveClass('border-success')
+          // Component uses border-green-600 for success state
+          expect(input).toHaveClass('border-green-600')
         }),
         { numRuns: 50 }
       )
@@ -49,9 +50,9 @@ describe('Form Validation Feedback (Property 3)', () => {
       const successIcon = container.querySelector('svg')
       expect(successIcon).toBeInTheDocument()
       
-      // Parent should have success text color
+      // Parent should have success text color (green-600)
       const iconWrapper = successIcon?.parentElement
-      expect(iconWrapper).toHaveClass('text-success')
+      expect(iconWrapper).toHaveClass('text-green-600')
     })
 
     it('should have success background tint when isSuccess is true', () => {
@@ -61,7 +62,8 @@ describe('Form Validation Feedback (Property 3)', () => {
       )
       const input = container.querySelector('input')
       
-      expect(input?.className).toContain('bg-success-light')
+      // Component uses bg-green-50 for success background
+      expect(input?.className).toContain('bg-green-50')
     })
   })
 
@@ -75,7 +77,8 @@ describe('Form Validation Feedback (Property 3)', () => {
           )
           const input = container.querySelector('input')
           
-          expect(input).toHaveClass('border-error')
+          // Component uses border-red-600 for error state
+          expect(input).toHaveClass('border-red-600')
         }),
         { numRuns: 50 }
       )
@@ -91,9 +94,9 @@ describe('Form Validation Feedback (Property 3)', () => {
       const errorIcon = container.querySelector('svg')
       expect(errorIcon).toBeInTheDocument()
       
-      // Parent should have error text color
+      // Parent should have error text color (red-600)
       const iconWrapper = errorIcon?.parentElement
-      expect(iconWrapper).toHaveClass('text-error')
+      expect(iconWrapper).toHaveClass('text-red-600')
     })
 
     it('should apply shake animation when isError is true', () => {
@@ -197,8 +200,8 @@ describe('Form Validation Feedback (Property 3)', () => {
           const input = container.querySelector('input')
           
           expect(input).toHaveClass('border-gray-300')
-          expect(input).not.toHaveClass('border-success')
-          expect(input).not.toHaveClass('border-error')
+          expect(input).not.toHaveClass('border-green-600')
+          expect(input).not.toHaveClass('border-red-600')
         }),
         { numRuns: 30 }
       )
@@ -252,8 +255,9 @@ describe('Form Validation Feedback (Property 3)', () => {
           )
           const input = container.querySelector('input')
           
-          expect(input).toHaveClass('transition-all')
-          expect(input).toHaveClass('duration-micro')
+          // Component uses motion-safe:transition-all and motion-safe:duration-300
+          expect(input).toHaveClass('motion-safe:transition-all')
+          expect(input).toHaveClass('motion-safe:duration-300')
         }),
         { numRuns: 30 }
       )

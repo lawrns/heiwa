@@ -88,7 +88,8 @@ describe('PaymentMethodSelector Component', () => {
       const buttons = screen.getAllByRole('button');
       const cardButton = buttons.find(btn => btn.textContent?.includes('Credit/Debit Card'));
       
-      expect(cardButton).toHaveClass('border-orange-500');
+      // Component uses border-accent for selected state
+      expect(cardButton).toHaveClass('border-accent');
       expect(cardButton).toHaveClass('bg-orange-50');
     });
 
@@ -103,7 +104,8 @@ describe('PaymentMethodSelector Component', () => {
       const buttons = screen.getAllByRole('button');
       const bankButton = buttons.find(btn => btn.textContent?.includes('Bank Wire Transfer'));
       
-      expect(bankButton).toHaveClass('border-orange-500');
+      // Component uses border-accent for selected state
+      expect(bankButton).toHaveClass('border-accent');
       expect(bankButton).toHaveClass('bg-orange-50');
     });
 

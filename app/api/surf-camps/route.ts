@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { executeWithTimeout } from '@/lib/supabase-timeout'
 import { requireAdminAuth } from '@/lib/admin-auth'
 
 /**
@@ -47,7 +46,7 @@ export async function GET(request: NextRequest) {
       if (authError) return authError
     }
     
-    // Build query with timeout protection
+    // Build query - simplified without timeout wrapper (matching rooms API pattern)
     let query = supabaseAdmin
       .from('surf_camps')
       .select('*')
@@ -68,43 +67,20 @@ export async function GET(request: NextRequest) {
       query = query.limit(limit)
     }
     
-    // Execute with timeout to prevent long waits
-    const queryPromise = query as unknown as Promise<{ data: SurfCamp[] | null; error: any }>
-    const { data: surfCamps, error: surfCampsError } = await executeWithTimeout<SurfCamp[]>(
-      queryPromise,
-      3000 // 3 second timeout for fast failure
-    )
+    // Execute query directly (matching rooms API pattern for reliability)
+    const { data: surfCamps, error: surfCampsError } = await query
 
     if (surfCampsError) {
       console.error('Error fetching surf camps:', surfCampsError)
-      
-      // Check if it's a timeout/network error - return empty array gracefully
-      const errorMessage = surfCampsError?.message || String(surfCampsError)
-      const isNetworkError = errorMessage.includes('timeout') ||
-                            errorMessage.includes('NETWORK_ERROR') ||
-                            errorMessage.includes('TIMEOUT') ||
-                            errorMessage.includes('Supabase may be unreachable')
-      
-      // Return empty array instead of error to prevent site breakage
-      if (isNetworkError) {
-        console.warn('⚠️ Supabase unreachable - returning empty surf camps list')
-        return NextResponse.json({
-          success: true,
-          data: {
-            surf_camps: []
-          }
-        }, {
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        })
-      }
+      console.error('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL || 'NOT SET')
+      console.error('🔍 Service Role Key:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET')
       
       return NextResponse.json({
         success: false,
-        error: 'Failed to fetch surf camps'
+        error: 'Failed to fetch surf camps',
+        message: process.env.NODE_ENV === 'development' 
+          ? `Database error: ${surfCampsError.message}` 
+          : 'Unable to load surf camps. Please try again later.'
       }, { 
         status: 500,
         headers: {
@@ -131,6 +107,8 @@ export async function GET(request: NextRequest) {
         }
       })
     }
+    
+    console.log('✅ Surf camps fetched successfully:', surfCamps.length)
 
     // Fetch all active rooms to calculate dynamic bed availability
     const { data: allRooms } = await supabaseAdmin
@@ -141,22 +119,15 @@ export async function GET(request: NextRequest) {
     // Calculate total bed capacity across all rooms
     const totalBedCapacity = (allRooms || []).reduce((sum, room) => sum + (room.capacity || 0), 0)
 
-    // Get enrollment counts for each surf camp (with timeout protection)
+    // Get enrollment counts for each surf camp
     const surfCampsWithAvailability = await Promise.all(
       (surfCamps || []).map(async (camp: SurfCamp) => {
         // Count both confirmed and pending enrollments (pending = booked but not yet paid)
-        const enrollmentQuery = supabaseAdmin
+        const { count: enrolledCount, error: enrollmentError } = await supabaseAdmin
           .from('surf_camp_enrollments')
           .select('*', { count: 'exact', head: true })
           .eq('surf_camp_id', camp.id)
           .in('status', ['confirmed', 'pending'])
-        
-        const enrollmentResult = await executeWithTimeout(
-          enrollmentQuery as any,
-          500 // 500ms timeout for enrollment count
-        )
-        const { error: enrollmentError } = enrollmentResult
-        const enrolledCount = (enrollmentResult as any).count || 0
         
         if (enrollmentError) {
           console.warn(`Error fetching enrollment count for camp ${camp.id}:`, enrollmentError)
