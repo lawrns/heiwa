@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface ImageCarouselProps {
   images: string[]
@@ -29,7 +29,6 @@ export function ImageCarousel({
   const validImages = images.filter(img => img && img.trim() !== '')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const goToPrevious = () => {
@@ -50,9 +49,9 @@ export function ImageCarousel({
     }
   }
 
-  // Auto-advance carousel every N seconds when not hovered and not paused
+  // Auto-advance carousel every N seconds when not hovered (hover pauses automatically)
   useEffect(() => {
-    if (autoAdvance && validImages.length > 1 && !isHovered && !isPaused) {
+    if (autoAdvance && validImages.length > 1 && !isHovered) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex((prevIndex) =>
           prevIndex === validImages.length - 1 ? 0 : prevIndex + 1
@@ -65,7 +64,7 @@ export function ImageCarousel({
         }
       }
     }
-  }, [autoAdvance, validImages.length, isHovered, isPaused, autoAdvanceInterval])
+  }, [autoAdvance, validImages.length, isHovered, autoAdvanceInterval])
 
   // Reset currentIndex if it's out of bounds
   useEffect(() => {
@@ -128,17 +127,6 @@ export function ImageCarousel({
               <ChevronRight className="w-5 h-5" />
             </button>
           </>
-        )}
-        
-        {/* Pause/Play Button */}
-        {autoAdvance && validImages.length > 1 && (
-          <button
-            onClick={() => setIsPaused(!isPaused)}
-            className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 min-h-[44px] min-w-[44px] flex items-center justify-center"
-            aria-label={isPaused ? 'Resume slideshow' : 'Pause slideshow'}
-          >
-            {isPaused ? <Play className="w-5 h-5" /> : <Pause className="w-5 h-5" />}
-          </button>
         )}
       </div>
 
