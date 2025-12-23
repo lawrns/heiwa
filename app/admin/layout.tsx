@@ -266,10 +266,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             fixed inset-y-0 left-0 z-40
             bg-gray-800 shadow-lg md:shadow-none
             transform transition-transform duration-300 ease-in-out
-            ${sidebarOpen || (isAuthenticated && typeof window !== 'undefined' && window.innerWidth >= 768) ? 'translate-x-0' : '-translate-x-full'}
-            md:translate-x-0 md:!translate-x-0
+            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            md:translate-x-0
             ${sidebarCollapsed ? 'md:w-16' : 'md:w-64'}
-            w-64 md:block
+            w-64
             flex flex-col
             border-r border-gray-700 md:border-r-0
             h-screen overflow-hidden
@@ -300,14 +300,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   </div>
                   <button
                     onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    className="absolute top-2 right-2 hidden md:block text-white hover:text-gray-200 p-1 rounded transition-colors"
+                    className="absolute top-2 right-2 hidden md:flex text-white hover:text-gray-200 p-1 rounded transition-colors items-center justify-center z-10"
                     title="Collapse sidebar"
+                    aria-label="Collapse sidebar"
                   >
                     <Menu className="h-5 w-5 transition-transform duration-200" />
                   </button>
                   <button
                     onClick={() => setSidebarOpen(false)}
-                    className="absolute top-2 right-2 md:hidden text-white hover:text-gray-200 p-1 rounded transition-colors"
+                    className="absolute top-2 right-2 md:hidden text-white hover:text-gray-200 p-1 rounded transition-colors z-10 flex items-center justify-center min-w-[44px] min-h-[44px]"
+                    aria-label="Close sidebar"
                   >
                     <X className="h-6 w-6" />
                   </button>
@@ -340,28 +342,37 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </aside>
 
           {/* Main content area - offset for fixed sidebar on desktop */}
-          <main className={`flex-1 flex flex-col min-w-0 bg-gray-50 ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'} transition-all duration-300`}>
+          <main className={`flex-1 flex flex-col min-w-0 bg-gray-50 w-full ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'} transition-all duration-300`}>
             {/* User/Logout header */}
-            <header className="bg-white border-b border-gray-200 shadow-sm px-6 h-16 flex items-center justify-end">
-              <div className="flex items-center gap-4">
-                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+            <header className="bg-white border-b border-gray-200 shadow-sm px-4 sm:px-6 h-16 flex items-center justify-between md:justify-end">
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="md:hidden text-gray-600 hover:text-gray-900 p-2 rounded-lg transition-colors"
+                aria-label="Open sidebar"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+              
+              <div className="flex items-center gap-2 sm:gap-4">
+                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-gray-600 font-medium text-sm">
                     {userEmail?.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <span className="text-gray-700 font-medium text-sm">{userEmail}</span>
+                <span className="hidden sm:inline text-gray-700 font-medium text-sm">{userEmail}</span>
                 <button
                   onClick={handleLogout}
-                  className="ml-2 flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                   aria-label="Sign out"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
+                  <span className="hidden sm:inline">Logout</span>
                 </button>
               </div>
             </header>
             
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
               {children}
             </div>
           </main>
