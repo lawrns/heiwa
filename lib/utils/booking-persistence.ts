@@ -70,10 +70,6 @@ export function loadBookingProgress(): Partial<BookingState> | null {
 
     const parsed: StoredBookingState = JSON.parse(stored)
 
-    // #region agent log
-    fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'lib/utils/booking-persistence.ts:loadBookingProgress',message:'Loaded booking progress raw types',data:{hasDates:!!parsed?.state?.dates,checkInType:typeof (parsed as any)?.state?.dates?.checkIn,checkOutType:typeof (parsed as any)?.state?.dates?.checkOut,hasPricing:!!parsed?.state?.pricing,version:parsed?.version},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2'})}).catch(()=>{});
-    // #endregion
-
     // Check version compatibility
     if (parsed.version !== STORAGE_VERSION) {
       console.log('Booking progress version mismatch, clearing old data')

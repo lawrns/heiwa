@@ -140,11 +140,6 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     const guestIds = Array.from({ length: state.guests }, (_, i) => `guest-${i + 1}`);
     const assignedGuestIds = state.roomAssignments.flatMap(a => a.guestIds);
     const unassigned = guestIds.filter(id => !assignedGuestIds.includes(id));
-    // #region agent log
-    if (typeof window !== 'undefined') {
-      fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/steps/SurfWeekRoomSelection.tsx:unassignedGuestsEffect',message:'Computed unassigned guest ids',data:{guests:state.guests,assignmentsCount:state.roomAssignments.length,assignedCount:assignedGuestIds.length,unassignedCount:unassigned.length},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2'})}).catch(()=>{});
-    }
-    // #endregion
     setUnassignedGuests(unassigned);
   }, [state.guests, state.roomAssignments]);
 
@@ -186,12 +181,6 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     const addOnsChanged = prevAddOnsSubtotalRef.current !== addOnsSubtotal;
     const guestsChanged = prevGuestsRef.current !== state.guests;
 
-    // #region agent log
-    if (typeof window !== 'undefined') {
-      fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/steps/SurfWeekRoomSelection.tsx:pricingEffect',message:'Pricing effect tick (deps + key values)',data:{roomsCount:rooms.length,assignmentsCount:state.roomAssignments.length,guests:state.guests,basePriceValue:state.pricing.basePrice,basePriceType:typeof (state.pricing as any).basePrice,addOnsSubtotalValue:state.pricing.addOnsSubtotal,addOnsSubtotalType:typeof (state.pricing as any).addOnsSubtotal,currentRoomUpgrade:state.pricing.roomUpgrade,currentTaxes:state.pricing.taxes,currentTotal:state.pricing.total,roomsKeyLen:roomsKey.length,roomAssignmentsKeyLen:roomAssignmentsKey.length,assignmentsChanged,roomsChanged,basePriceChanged,addOnsChanged,guestsChanged},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
-    }
-    // #endregion
-
     // Only proceed if something relevant changed
     if (!assignmentsChanged && !roomsChanged && !basePriceChanged && !addOnsChanged && !guestsChanged) {
       return;
@@ -221,11 +210,6 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
       // Only update if pricing actually changed
       if (state.pricing.roomUpgrade !== 0 || state.pricing.taxes !== taxes || state.pricing.total !== subtotal) {
-        // #region agent log
-        if (typeof window !== 'undefined') {
-          fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/steps/SurfWeekRoomSelection.tsx:pricingEffect:noAssignments',message:'Dispatching updatePricing (no assignments branch)',data:{subtotal,taxes,fees,roomUpgrade:0,subtotalIsNaN:Number.isNaN(subtotal),taxesIsNaN:Number.isNaN(taxes),basePriceValue:state.pricing.basePrice,addOnsSubtotalValue:state.pricing.addOnsSubtotal},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'H3'})}).catch(()=>{});
-        }
-        // #endregion
         isUpdatingPricingRef.current = true;
         actions.updatePricing(newPricing);
       }
@@ -272,11 +256,6 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
       state.pricing.taxes !== taxes ||
       state.pricing.total !== subtotal
     ) {
-      // #region agent log
-      if (typeof window !== 'undefined') {
-        fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/steps/SurfWeekRoomSelection.tsx:pricingEffect:withAssignments',message:'Dispatching updatePricing (with assignments branch)',data:{subtotal,taxes,fees,roomUpgrade:totalRoomUpgrade,subtotalIsNaN:Number.isNaN(subtotal),taxesIsNaN:Number.isNaN(taxes),roomUpgradeIsNaN:Number.isNaN(totalRoomUpgrade),basePricePerPerson},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'H3'})}).catch(()=>{});
-      }
-      // #endregion
       isUpdatingPricingRef.current = true;
       actions.updatePricing(newPricing);
     }

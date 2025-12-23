@@ -201,8 +201,8 @@ class ScheduledEmailService {
           daysUntilTrip: daysBefore,
           // Default packing list and tips can be customized per booking type
           packingList: this.getDefaultPackingList(isSurfCamp),
-          travelTips: this.getDefaultTravelTips(),
-          affiliateLinks: this.getDefaultAffiliateLinks()
+          travelTips: this.getDefaultTravelTips()
+          // Affiliate links removed - placeholder URLs not suitable for production
         }
 
         const result = await emailService.sendPreTripEmail(preTripData)
@@ -345,11 +345,8 @@ class ScheduledEmailService {
           bookingType: isSurfCamp ? 'surfCamp' : 'room',
           surfCampName,
           roomName,
-          feedbackFormUrl: `https://heiwahouse.com/feedback?booking=${booking.id}`,
-          reviewLinks: [
-            { platform: 'Google', url: 'https://g.page/r/YOUR_GOOGLE_REVIEW_LINK' },
-            { platform: 'TripAdvisor', url: 'https://www.tripadvisor.com/ReviewYourReview' }
-          ],
+          // Feedback form removed - route not implemented
+          // reviewLinks removed - placeholder URLs replaced with contact email
           returnOffer: {
             discount: 10,
             validUntil: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString() // 90 days from now
@@ -421,28 +418,6 @@ class ScheduledEmailService {
     ]
   }
 
-  /**
-   * Get default affiliate links (can be customized)
-   */
-  private getDefaultAffiliateLinks(): Array<{ title: string; url: string; description?: string }> {
-    return [
-      {
-        title: 'Premium Wetsuit',
-        url: 'https://example.com/wetsuit',
-        description: 'Stay warm in the water with our recommended wetsuit'
-      },
-      {
-        title: 'Surfboard Leash',
-        url: 'https://example.com/leash',
-        description: 'Essential safety equipment for surfing'
-      },
-      {
-        title: 'Waterproof Camera',
-        url: 'https://example.com/camera',
-        description: 'Capture your surfing moments'
-      }
-    ]
-  }
 }
 
 // Export singleton instance

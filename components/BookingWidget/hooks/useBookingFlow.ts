@@ -110,11 +110,6 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
       return { ...state, guestDetails: updatedDetails };
     
     case 'UPDATE_PRICING':
-      // #region agent log
-      if (typeof window !== 'undefined') {
-        fetch('http://127.0.0.1:7245/ingest/fe02e7da-7d16-415a-909d-0c03ba9353e3',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'components/BookingWidget/hooks/useBookingFlow.ts:bookingReducer:UPDATE_PRICING',message:'Reducer handling UPDATE_PRICING',data:{prevTotal:(state as any)?.pricing?.total,prevTaxes:(state as any)?.pricing?.taxes,prevRoomUpgrade:(state as any)?.pricing?.roomUpgrade,nextTotal:(action as any)?.payload?.total,nextTaxes:(action as any)?.payload?.taxes,nextRoomUpgrade:(action as any)?.payload?.roomUpgrade,nextBasePrice:(action as any)?.payload?.basePrice,nextAddOnsSubtotal:(action as any)?.payload?.addOnsSubtotal,nextTotalIsNaN:Number.isNaN((action as any)?.payload?.total),nextTaxesIsNaN:Number.isNaN((action as any)?.payload?.taxes),nextRoomUpgradeIsNaN:Number.isNaN((action as any)?.payload?.roomUpgrade),nextTotalType:typeof (action as any)?.payload?.total,nextTaxesType:typeof (action as any)?.payload?.taxes,nextRoomUpgradeType:typeof (action as any)?.payload?.roomUpgrade},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1'})}).catch(()=>{});
-      }
-      // #endregion
       return { ...state, pricing: action.payload };
     
     case 'SET_LOADING':
