@@ -103,7 +103,7 @@ export async function HomeHero() {
             <Link
               href={primaryLinkUrl}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] text-white"
-              style={{ backgroundColor: '#ec681c' }}
+              
             >
               <Waves className="w-5 h-5" />
               {primaryLinkText}
@@ -379,7 +379,7 @@ export async function HomeRooms() {
           <Link
             href="/rooms"
             className="inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
-            style={{ backgroundColor: '#ec681c' }}
+            
           >
             Explore All Rooms
           </Link>

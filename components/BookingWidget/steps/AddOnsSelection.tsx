@@ -141,8 +141,8 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                 className={`
                   p-4 rounded-[10px] border transition-all duration-300
                   ${isSelected
-                    ? 'border-[#ec681c] bg-[#ec681c]/5 shadow-md shadow-[#ec681c]/20'
-                    : 'border-gray-200 bg-white hover:border-[#ec681c]/30 hover:bg-[#ec681c]/5'
+                    ? 'border-accent bg-accent/5 shadow-md shadow-accent/20'
+                    : 'border-gray-200 bg-white hover:border-accent/30 hover:bg-accent/5'
                   }
                   animate-in fade-in-0 slide-in-from-bottom-4
                 `}
@@ -169,7 +169,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                   {/* Price and Controls Row */}
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex-1">
-                      <div className="text-xl font-bold text-[#ec681c]">
+                      <div className="text-xl font-bold text-accent">
                         {formatPrice(addOn.price)}
                       </div>
                       {quantity > 0 && (
@@ -189,7 +189,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                           flex items-center justify-center
                           hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed
                           motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none
-                          focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2
+                          focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2
                         "
                         aria-label={`Decrease ${addOn.name} quantity`}
                       >
@@ -208,7 +208,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                           flex items-center justify-center
                           hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed
                           motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none
-                          focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2
+                          focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2
                         "
                         aria-label={`Increase ${addOn.name} quantity`}
                       >
@@ -232,7 +232,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
 
       {/* Summary */}
       {selectedAddOns.length > 0 && (
-        <div className="bg-[#ec681c]/5 rounded-[10px] p-4 border border-[#ec681c]/20">
+        <div className="bg-accent/5 rounded-[10px] p-4 border border-accent/20">
           <h5 className="font-semibold text-gray-900 mb-3">Selected Add-ons</h5>
           <div className="space-y-2">
             {selectedAddOns.map((addOn) => (
@@ -245,10 +245,10 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                 </span>
               </div>
             ))}
-            <div className="border-t border-[#ec681c]/20 pt-2 mt-3">
+            <div className="border-t border-accent/20 pt-2 mt-3">
               <div className="flex justify-between font-semibold">
                 <span className="text-gray-900">Add-ons Subtotal</span>
-                <span className="text-[#ec681c]">{formatPrice(getAddOnSubtotal())}</span>
+                <span className="text-accent">{formatPrice(getAddOnSubtotal())}</span>
               </div>
             </div>
           </div>

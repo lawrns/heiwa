@@ -294,7 +294,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 isSaved 
                   ? 'border-green-500 bg-green-50/30' 
                   : showSuccessMessage === index + 1 || (index === 0 && showSuccessMessage === null && savedGuests.has(1))
-                  ? 'border-[#ec681c]/30 ring-2 ring-[#ec681c]/20'
+                  ? 'border-accent/30 ring-2 ring-accent/20'
                   : 'border-gray-200'
               }`}
             >
@@ -303,7 +303,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm transition-all duration-300 ${
                 isSaved 
                   ? 'bg-gradient-to-br from-green-500 to-green-600' 
-                  : 'bg-gradient-to-br from-[#ec681c] to-[#d65d16]'
+                  : 'bg-gradient-to-br from-accent to-accent-dark'
               }`}>
                 {isSaved ? <CheckCircle size={20} /> : index + 1}
               </div>
@@ -421,7 +421,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 value={guestForm.dietaryRequirements}
                 onChange={(e) => handleInputChange(index, 'dietaryRequirements', e.target.value)}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-all duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
+                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
                 placeholder="Any dietary restrictions or preferences?"
               />
             </div>
@@ -436,7 +436,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 value={guestForm.specialRequests}
                 onChange={(e) => handleInputChange(index, 'specialRequests', e.target.value)}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] transition-all duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
+                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
                 placeholder="Any special requests or notes?"
               />
             </div>
@@ -469,7 +469,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
       {/* Summary - Only show when not collapsed */}
       {!isCollapsed && (
-        <div className="bg-[#ec681c]/5 rounded-[10px] p-4 border border-[#ec681c]/20">
+        <div className="bg-accent/5 rounded-[10px] p-4 border border-accent/20">
           <div className="flex items-center justify-between">
             <div>
               <h5 className="font-semibold text-gray-900">Guest Information Status</h5>
@@ -484,7 +484,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                   <span className="text-base font-medium">All guests ready</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 text-[#ec681c]">
+                <div className="flex items-center gap-2 text-accent">
                   <div className="w-2 h-2 bg-accent rounded-full"></div>
                   <span className="text-base font-medium">Complete all fields</span>
                 </div>

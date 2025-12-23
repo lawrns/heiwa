@@ -48,8 +48,7 @@ export function BookingTable({ surfWeeks, onBook, onShowAll }: BookingTableProps
                 <div className="flex justify-end">
                   <button
                     onClick={() => onBook(surfWeek)}
-                    className="px-6 py-2 bg-accent hover:bg-accent-hover text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent/50"
-                    style={{ backgroundColor: '#ec681c' }}
+                    className="px-6 py-2 bg-accent hover:bg-accent-dark text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent/50"
                   >
                     Book
                   </button>

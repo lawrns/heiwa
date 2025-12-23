@@ -80,12 +80,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     // Variant classes
     const variantClasses = {
-      default: "bg-[#ec681c] text-white shadow-sm hover:bg-[#d65d16] focus:ring-[#ec681c]/30",
+      default: "bg-accent text-white shadow-sm hover:bg-accent-dark focus:ring-accent/30",
       secondary: "bg-gray-800 text-white shadow-sm hover:bg-gray-900 focus:ring-gray-500/30",
       ghost: "text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:ring-gray-500/30",
       outline: "bg-white border border-gray-300 text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500/30",
       destructive: "bg-red-600 text-white shadow-sm hover:bg-red-700 focus:ring-red-500/30",
-      link: "text-[#ec681c] underline-offset-4 hover:underline focus:ring-[#ec681c]/30",
+      link: "text-accent underline-offset-4 hover:underline focus:ring-accent/30",
       success: "bg-green-600 text-white shadow-sm hover:bg-green-700 focus:ring-green-500/30",
     }
 

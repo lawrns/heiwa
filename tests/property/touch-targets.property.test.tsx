@@ -318,12 +318,12 @@ describe('Touch Target Compliance (Property 1)', () => {
   describe('Button variant styling', () => {
     it('should apply correct background colors for each variant', () => {
       const variantBackgrounds: Record<ButtonVariant, string> = {
-        default: 'bg-[#ec681c]',
+        default: 'bg-accent',
         secondary: 'bg-gray-800',
         ghost: 'text-gray-600',
         outline: 'bg-white',
         destructive: 'bg-red-600',
-        link: 'text-[#ec681c]',
+        link: 'text-accent',
         success: 'bg-success',
       }
 

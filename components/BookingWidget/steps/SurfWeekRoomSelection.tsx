@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
-import { Bed, Users, Star, ArrowRight, Calendar, CheckCircle, Check } from 'lucide-react';
+import { Bed, Users, Star, ArrowRight, Calendar, CheckCircle, Check, Camera } from 'lucide-react';
 import { BookingState, Room, PricingBreakdown, RoomAssignment as RoomAssignmentType, SurfCampPricing } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 import { RoomImageGallery, RoomThumbnail } from '../components/RoomImageGallery';
+import { Button } from '@/components/ui/button';
 
 interface TransformedRoom {
   id: string;
@@ -498,13 +499,40 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     setGalleryOpen(true);
   };
 
-  // Show loading state
+  // Show loading state with skeleton
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="text-center space-y-2">
           <h3 className="text-2xl font-bold text-gray-900">Choose Your Accommodation</h3>
           <p className="text-gray-600">Loading room options...</p>
+        </div>
+        {/* Skeleton loaders for room cards */}
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="border border-gray-200 rounded-[10px] p-5 md:p-6 animate-pulse">
+              <div className="flex items-start gap-4 mb-4">
+                {/* Thumbnail skeleton */}
+                <div className="w-20 h-16 bg-gray-200 rounded-lg flex-shrink-0" />
+                <div className="flex-1">
+                  <div className="h-5 bg-gray-200 rounded w-3/4 mb-2" />
+                  <div className="h-4 bg-gray-200 rounded w-1/2" />
+                </div>
+                <div className="text-right">
+                  <div className="h-6 bg-gray-200 rounded w-20 mb-1" />
+                  <div className="h-4 bg-gray-200 rounded w-16" />
+                </div>
+              </div>
+              <div className="flex gap-2 mb-4">
+                <div className="h-8 bg-gray-200 rounded-full w-24" />
+                <div className="h-8 bg-gray-200 rounded-full w-32" />
+              </div>
+              <div className="flex gap-4">
+                <div className="h-4 bg-gray-200 rounded w-32" />
+                <div className="h-4 bg-gray-200 rounded w-24" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -518,31 +546,13 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           <h3 className="text-2xl font-bold text-gray-900">Choose Your Accommodation</h3>
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-red-800 font-medium mb-2">Error loading rooms: {error}</p>
-            <button
+            <Button
               onClick={() => window.location.reload()}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '10px 20px',
-                backgroundColor: '#ea580c',
-                color: 'white',
-                borderRadius: '10px',
-                fontSize: '14px',
-                fontWeight: 500,
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'all 150ms ease-out',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#c2410c';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#ea580c';
-              }}
+              variant="default"
+              size="default"
             >
               Try Again
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -572,19 +582,19 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
       {/* Selected Surf Week Summary - Optimized for conversion */}
       {(selectedSurfWeekData || state.selectedSurfWeek) && (
-        <div className="bg-[#ec681c]/5 rounded-[10px] p-5 md:p-6 border border-[#ec681c]/20 shadow-sm">
+        <div className="bg-accent/5 rounded-[10px] p-5 md:p-6 border border-accent/20 shadow-sm">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-2.5 h-2.5 bg-[#ec681c] rounded-full animate-pulse"></div>
-                <span className="text-xs font-bold text-[#d65d16] uppercase tracking-wide">Selected Surf Week</span>
+                <div className="w-2.5 h-2.5 bg-accent rounded-full animate-pulse"></div>
+                <span className="text-xs font-bold text-accent-dark uppercase tracking-wide">Selected Surf Week</span>
               </div>
               <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight">
                 {selectedSurfWeekData?.name || 'Surf Week'}
               </h4>
               {dateRange && (
                 <div className="flex items-center gap-2 text-sm md:text-base text-gray-700 font-medium">
-                  <Calendar className="w-4 h-4 text-[#ec681c] flex-shrink-0" />
+                  <Calendar className="w-4 h-4 text-accent flex-shrink-0" />
                   <span>{dateRange}</span>
                 </div>
               )}
@@ -592,7 +602,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
             {selectedSurfWeekData?.price && (
               <div className="text-left sm:text-right flex-shrink-0">
                 <div className="text-xs text-gray-600 mb-1 font-medium">Starting from</div>
-                <div className="text-2xl md:text-3xl font-bold text-[#ec681c] leading-tight">
+                <div className="text-2xl md:text-3xl font-bold text-accent leading-tight">
                   {formatPrice(selectedSurfWeekData.price)}
                 </div>
               </div>
@@ -603,7 +613,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
       {/* Unassigned Guests */}
       {unassignedGuests.length > 0 && (
-        <div className="bg-[#ec681c]/5 border border-[#ec681c]/20 rounded-lg p-4">
+        <div className="bg-accent/5 border border-accent/20 rounded-lg p-4">
           <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
             <Users size={18} />
             Unassigned Guests ({unassignedGuests.length})
@@ -612,7 +622,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
             {unassignedGuests.map(guestId => (
               <span
                 key={guestId}
-                className="px-3 py-1 bg-[#ec681c]/10 text-[#ec681c] rounded-full text-sm font-medium"
+                className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
               >
                 {getGuestName(guestId)}
               </span>
@@ -667,25 +677,25 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           return (
             <div
               key={transformedRoom.id}
-              className={`border rounded-[10px] p-5 md:p-6 transition-all duration-300 ${
+              className={`border rounded-[10px] p-5 md:p-6 transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 ${
                 assignment && assignment.guestIds.length > 0
-                  ? 'border-[#ec681c] bg-[#ec681c]/5'
-                  : 'border-gray-200 bg-white'
+                  ? 'border-accent bg-accent/5 shadow-card'
+                  : 'border-gray-200 bg-white shadow-subtle hover:border-gray-300'
               }`}
             >
               {/* Room Header with Thumbnail */}
               <div className="flex items-start gap-4 mb-4">
-                {/* Room Thumbnail */}
+                {/* Room Thumbnail - Using same pattern as RoomAssignment for consistency */}
                 <div className="flex-shrink-0">
-                  {(originalRoom?.images && originalRoom.images.length > 0) || transformedRoom.image ? (
+                  {originalRoom.images && originalRoom.images.length > 0 ? (
                     <RoomThumbnail
-                      image={originalRoom?.images?.[0] || transformedRoom.image || '/images/room-placeholder.jpg'}
-                      roomName={transformedRoom.name}
+                      image={originalRoom.images[0]}
+                      roomName={originalRoom.name}
                       onClick={() => openGallery(originalRoom)}
                       className="w-20 h-16"
                     />
                   ) : (
-                    <div className="w-20 h-16 bg-gradient-to-br from-[#ec681c] to-[#d65d16] rounded-lg flex items-center justify-center">
+                    <div className="w-20 h-16 bg-gradient-to-br from-accent to-accent-dark rounded-lg flex items-center justify-center">
                       <span className="text-white text-lg">🏠</span>
                     </div>
                   )}
@@ -719,7 +729,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                     </div>
                   ) : (
                     <div className="flex flex-col items-end">
-                      <div className="text-2xl font-bold text-[#ec681c] leading-tight mb-1">
+                      <div className="text-2xl font-bold text-accent leading-tight mb-1">
                         from {formatPrice(displayPrice)}
                       </div>
                       <div className="text-sm text-gray-500">
@@ -732,12 +742,12 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
               {/* Detailed Occupancy Pricing for Private Rooms */}
               {isPrivateRoom && occupancyPrices.length > 1 && !transformedRoom.isIncluded && (
-                <div className="mb-4 p-3 bg-[#ec681c]/5 rounded-lg border border-[#ec681c]/20">
+                <div className="mb-4 p-3 bg-accent/5 rounded-lg border border-accent/20">
                   <div className="text-sm font-semibold text-gray-900 mb-2">Pricing per person (based on room occupancy):</div>
                   <div className="flex flex-wrap gap-2">
                     {occupancyPrices.map(({ occupancy: occ, price }) => (
-                      <div key={occ} className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-[#ec681c]/20">
-                        <span className="text-sm font-bold text-[#ec681c]">{formatPrice(price)}</span>
+                      <div key={occ} className="flex items-center gap-1 px-2 py-1 bg-white rounded border border-accent/20">
+                        <span className="text-sm font-bold text-accent">{formatPrice(price)}</span>
                         <span className="text-sm text-gray-600">
                           ({occ} {occ === 1 ? 'person' : 'people'})
                         </span>
@@ -770,7 +780,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                   <span>{availableBeds} of {transformedRoom.maxOccupancy} beds available</span>
                 </div>
                 {existingAssignments > 0 && (
-                  <div className="flex items-center gap-2 text-base text-[#ec681c]">
+                  <div className="flex items-center gap-2 text-base text-accent">
                     <Users size={16} />
                     <span className="font-medium">
                       {existingAssignments} already booked
@@ -820,7 +830,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
               {/* Assignment Actions */}
               {!isFull && unassignedGuests.length > 0 && (
                 <div className="border-t pt-4">
-                  <h5 className="text-base font-medium text-gray-700 mb-2">Assign Guest to this Room:</h5>
+                  <h5 className="text-sm font-medium text-gray-700 mb-2">Assign Guest to this Room:</h5>
                   <div className="flex flex-wrap gap-2">
                     {unassignedGuests.map(guestId => {
                       // Check if guest is already assigned to another room
@@ -837,28 +847,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                         <button
                           key={guestId}
                           onClick={() => handleAssignGuestToRoom(transformedRoom.id, guestId)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            padding: '10px 20px',
-                            backgroundColor: '#fed7aa',
-                            color: '#9a3412',
-                            borderRadius: '10px',
-                            fontSize: '14px',
-                            fontWeight: 500,
-                            border: '2px solid transparent',
-                            cursor: 'pointer',
-                            transition: 'all 150ms ease-out',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#fdba74';
-                            e.currentTarget.style.borderColor = '#fb923c';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#fed7aa';
-                            e.currentTarget.style.borderColor = 'transparent';
-                          }}
+                          className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-orange-100 text-orange-800 rounded-[10px] text-sm font-medium border-2 border-transparent cursor-pointer transition-all duration-150 ease-out hover:bg-orange-200 hover:border-orange-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2"
                         >
                           <ArrowRight size={14} />
                           {getGuestName(guestId)}
@@ -878,35 +867,16 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
               {/* View Photos Button */}
               {originalRoom.images && originalRoom.images.length > 0 && (
                 <div className="border-t pt-4 mt-4">
-                  <button
+                  <Button
                     onClick={() => openGallery(originalRoom)}
+                    variant="ghost"
+                    size="default"
                     aria-label={`View ${originalRoom.images.length} photo${originalRoom.images.length > 1 ? 's' : ''} of ${transformedRoom.name}`}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      padding: '10px 20px',
-                      backgroundColor: '#fff7ed',
-                      color: '#ea580c',
-                      borderRadius: '10px',
-                      fontSize: '14px',
-                      fontWeight: 500,
-                      border: 'none',
-                      cursor: 'pointer',
-                      transition: 'all 150ms ease-out',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#ffedd5';
-                      e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#fff7ed';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
+                    className="bg-orange-50 text-accent hover:bg-orange-100 hover:text-accent-dark"
                   >
-                    <span>📸</span>
+                    <Camera size={16} />
                     <span>View {originalRoom.images.length} Photo{originalRoom.images.length > 1 ? 's' : ''}</span>
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>

@@ -234,10 +234,7 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
             {/* Footer CTA */}
             <div className="sticky bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-gray-900">
               <button
-                className="w-full px-4 py-3 text-white font-semibold rounded-lg transition-colors uppercase text-base flex items-center justify-center gap-2"
-                style={{ backgroundColor: '#ec681c' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
+                className="w-full px-4 py-3 bg-accent hover:bg-accent-dark text-white font-semibold rounded-lg transition-colors uppercase text-base flex items-center justify-center gap-2"
                 onClick={() => {
                   openBooking()
                   onClose()

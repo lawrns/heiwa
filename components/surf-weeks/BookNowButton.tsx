@@ -26,9 +26,6 @@ export function BookNowButton({ className, fullWidth = false }: BookNowButtonPro
     <Button 
       size="lg"
       className={buttonClassName}
-      style={{ backgroundColor: '#ec681c' }}
-      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
-      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
       onClick={() => {
         // This will be handled by client-side component
         window.dispatchEvent(new CustomEvent('openBooking'))

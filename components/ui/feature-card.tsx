@@ -31,8 +31,7 @@ export function FeatureCard({ title, description, image, href, className = '' }:
         <div className="absolute inset-0 flex items-center justify-center">
           <Link
             href={href}
-            className="px-4 sm:px-6 py-2 sm:py-3 bg-accent hover:bg-accent-hover active:bg-accent-dark text-white font-semibold rounded-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent opacity-0 group-hover:opacity-100 group-active:opacity-100 transform translate-y-4 group-hover:translate-y-0 group-active:translate-y-0 min-h-[44px] flex items-center justify-center text-sm sm:text-base"
-            style={{ backgroundColor: '#ec681c' }}
+            className="px-4 sm:px-6 py-2 sm:py-3 bg-accent hover:bg-accent-dark active:bg-accent-dark text-white font-semibold rounded-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent opacity-0 group-hover:opacity-100 group-active:opacity-100 transform translate-y-4 group-hover:translate-y-0 group-active:translate-y-0 min-h-[44px] flex items-center justify-center text-sm sm:text-base"
           >
             Learn More
           </Link>

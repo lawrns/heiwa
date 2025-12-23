@@ -435,7 +435,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
           </h3>
           <div className="flex items-center justify-center gap-2">
-            <div className="w-4 h-4 border-2 border-[#ec681c] border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
             <p className="text-gray-600">
               Loading available {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}...
             </p>
@@ -523,7 +523,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   value={checkInDate}
                   min={new Date().toISOString().split('T')[0]}
                   onChange={(e) => handleCheckInChange(e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
+                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
                     checkInDate && isDateSoldOut(checkInDate)
                       ? 'border-red-300 bg-red-50 text-red-700'
                       : 'border-gray-300'
@@ -548,7 +548,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   value={checkOutDate}
                   min={checkInDate || new Date().toISOString().split('T')[0]}
                   onChange={(e) => handleCheckOutChange(e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
+                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
                     checkOutDate && isDateSoldOut(checkOutDate)
                       ? 'border-red-300 bg-red-50 text-red-700'
                       : 'border-gray-300'
@@ -567,7 +567,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             {/* Date Availability Loading Indicator - Only show when dates are selected */}
             {dateAvailabilityLoading && checkInDate && checkOutDate && (
               <div className="flex items-center gap-2 text-base text-gray-600">
-                <div className="w-4 h-4 border-2 border-[#ec681c] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
                 Checking availability for selected dates...
               </div>
             )}
@@ -590,7 +590,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <button
                   onClick={() => adjustGuests(-1)}
                   disabled={state.guests <= 1}
-                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2"
+                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2"
                   aria-label="Decrease guest count"
                 >
                   <Minus size={18} />
@@ -603,7 +603,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <button
                   onClick={() => adjustGuests(1)}
                   disabled={state.guests >= 12}
-                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2"
+                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2"
                   aria-label="Increase guest count"
                 >
                   <Plus size={18} />
@@ -625,7 +625,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         value={name}
                         onChange={(e) => handleParticipantNameChange(index, e.target.value)}
                         placeholder={`Guest ${index + 1} first name`}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/20 focus:border-[#ec681c] motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px]"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px]"
                         aria-label={`Guest ${index + 1} first name`}
                       />
                       {name && (
@@ -666,7 +666,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               <button
                 onClick={() => adjustGuests(-1)}
                 disabled={state.guests <= 1}
-                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2"
+                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2"
                 aria-label="Decrease participant count"
               >
                 <Minus size={18} />
@@ -679,7 +679,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               <button
                 onClick={() => adjustGuests(1)}
                 disabled={state.guests >= 12}
-                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30 focus:ring-offset-2"
+                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2"
                 aria-label="Increase participant count"
               >
                 <Plus size={18} />
@@ -701,7 +701,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                       value={name}
                       onChange={(e) => handleParticipantNameChange(index, e.target.value)}
                       placeholder={`Participant ${index + 1} first name`}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-[#ec681c]/30 focus:border-[#ec681c] motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px]"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-accent/30 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px]"
                       aria-label={`Participant ${index + 1} first name`}
                     />
                     {name && (
@@ -723,7 +723,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
           {/* Date Summary */}
           {state.dates.checkIn && state.dates.checkOut && (
-            <div className="p-4 bg-[#ec681c]/5 rounded-lg border border-[#ec681c]/20">
+            <div className="p-4 bg-accent/5 rounded-lg border border-accent/20">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-900">
                   Duration: {(() => {
@@ -779,9 +779,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 key={w.id}
                 data-testid="surf-week-row"
                 onClick={() => !isDisabled && handleOptionSelect(w.id)}
-                className={`w-full p-4 sm:p-6 rounded-[10px] border bg-white text-left motion-safe:transition-all motion-safe:duration-300 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-[#ec681c]/50 relative
-                  ${isSelected ? 'border-[#ec681c] bg-[#ec681c]/5 shadow-md ring-2 ring-[#ec681c]/30' : 'border-gray-200'}
-                  ${isDisabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-lg hover:border-[#ec681c]/30 hover:bg-[#ec681c]/5'}`}
+                className={`w-full p-4 sm:p-6 rounded-[10px] border bg-white text-left motion-safe:transition-all motion-safe:duration-300 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/50 relative
+                  ${isSelected ? 'border-accent bg-accent/5 shadow-md ring-2 ring-accent/30' : 'border-gray-200'}
+                  ${isDisabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-lg hover:border-accent/30 hover:bg-accent/5'}`}
                 style={{ animationDelay: `${index * 80}ms` }}
                 disabled={isDisabled}
               >
@@ -796,7 +796,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         className="w-full h-40 sm:w-32 sm:h-24"
                       />
                     ) : (
-                      <div className="w-full h-40 sm:w-32 sm:h-24 rounded-lg bg-gradient-to-br from-[#ec681c] to-[#d65d16] flex items-center justify-center">
+                      <div className="w-full h-40 sm:w-32 sm:h-24 rounded-lg bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center">
                         <div className="text-white text-2xl font-bold">🏄‍♂️</div>
                       </div>
                     )}
@@ -814,7 +814,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         </p>
                       </div>
                       <div className="sm:text-right flex-shrink-0">
-                        <span className="text-2xl sm:text-3xl font-bold text-[#ec681c]">
+                        <span className="text-2xl sm:text-3xl font-bold text-accent">
                           {`from €${Math.round(from)}`}
                         </span>
                         <span className="text-sm text-gray-500 ml-1 sm:ml-0 sm:block">per person</span>
@@ -862,7 +862,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                             <div
                               className={`h-full rounded-full transition-all ${
                                 occupancyPercent >= 80 ? 'bg-red-500' :
-                                occupancyPercent >= 50 ? 'bg-[#ec681c]' : 'bg-green-500'
+                                occupancyPercent >= 50 ? 'bg-accent' : 'bg-green-500'
                               }`}
                               style={{ width: `${occupancyPercent}%` }}
                             />
@@ -876,7 +876,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                           <span className="text-sm text-red-600 font-medium">Fully booked</span>
                         )}
                         {isUnavailableForGroup && (
-                          <span className="text-sm text-[#ec681c] font-medium">
+                          <span className="text-sm text-accent font-medium">
                             Not enough spots for {state.guests} {state.guests === 1 ? 'person' : 'people'}
                           </span>
                         )}
@@ -889,26 +889,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                             e.stopPropagation();
                             openGallery(w);
                           }}
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            padding: '8px 16px',
-                            backgroundColor: '#fff7ed',
-                            color: '#ea580c',
-                            borderRadius: '10px',
-                            fontSize: '14px',
-                            fontWeight: 500,
-                            cursor: 'pointer',
-                            userSelect: 'none',
-                            transition: 'all 150ms ease-out',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#ffedd5';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#fff7ed';
-                          }}
+                          className="inline-flex items-center gap-1 px-4 py-2 bg-orange-50 text-accent rounded-[10px] text-sm font-medium cursor-pointer select-none transition-all duration-150 ease-out hover:bg-orange-100"
                         >
                           📸 View {w.images.length} Photo{w.images.length > 1 ? 's' : ''}
                         </span>
@@ -919,7 +900,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
                 {/* Selection Indicator */}
                 {isSelected && (
-                  <div className="mt-4 flex items-center gap-2 text-[#ec681c]">
+                  <div className="mt-4 flex items-center gap-2 text-accent">
                     <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                     <span className="text-base font-medium">Selected</span>
                   </div>

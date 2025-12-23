@@ -199,10 +199,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               {/* Book Now Button */}
               <button
                 onClick={() => openBooking()}
-                className="px-4 py-2 text-sm font-medium tracking-wide transition-colors flex items-center gap-1 uppercase rounded text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-                style={{ backgroundColor: '#ec681c' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d65d16'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ec681c'}
+                className="px-4 py-2 text-sm font-medium tracking-wide transition-colors flex items-center gap-1 uppercase rounded text-white bg-accent hover:bg-accent-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
               >
                 <Bed className="w-4 h-4" />
                 BOOK

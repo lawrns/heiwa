@@ -108,7 +108,6 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
           <button
             onClick={() => setShowAllSurfWeeks(!showAllSurfWeeks)}
             className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-accent text-accent hover:bg-accent hover:text-white font-semibold rounded-lg transition-colors"
-            style={{ borderColor: '#ec681c', color: '#ec681c' }}
           >
             {showAllSurfWeeks ? 'Show Less' : `Show More (${surfWeeks.length - 4} more)`}
             <svg
@@ -128,8 +127,7 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
         <div className="mt-4 text-center">
           <Link
             href="/surf-weeks"
-            className="text-sm text-gray-600 hover:text-accent transition-colors"
-            style={{ color: '#ec681c' }}
+            className="text-sm text-accent hover:text-accent-dark transition-colors"
           >
             View all surf weeks →
           </Link>

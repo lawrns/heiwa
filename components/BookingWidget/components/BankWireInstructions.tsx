@@ -55,7 +55,7 @@ export function BankWireInstructions({ totalAmount, currency, bookingReference }
       <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
         <div className="flex justify-between items-center">
           <span className="text-lg font-medium text-gray-900">Transfer Amount:</span>
-          <span className="text-2xl font-bold text-[#ec681c]">
+          <span className="text-2xl font-bold text-accent">
             {formatAmount(totalAmount)}
           </span>
         </div>
@@ -175,7 +175,7 @@ export function BankWireInstructions({ totalAmount, currency, bookingReference }
       <div className="text-center p-4 bg-gray-50 rounded-lg">
         <p className="text-sm text-gray-600">
           Questions about your transfer?{' '}
-          <a href="mailto:bookings@heiwahouse.com" className="text-[#ec681c] hover:text-[#d65d16] underline">
+          <a href="mailto:bookings@heiwahouse.com" className="text-accent hover:text-accent-dark underline">
             Contact our booking team
           </a>
         </p>

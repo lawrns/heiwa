@@ -224,8 +224,7 @@ export default function PlayPage() {
           </p>
           <a
             href={ctaContent?.buttonUrl || "mailto:info@heiwahouse.com"}
-            className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
-            style={{ backgroundColor: '#ec681c' }}
+            className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
           >
             <Mail className="w-5 h-5" />
             {ctaContent?.buttonText || "Book Your Adventure"}

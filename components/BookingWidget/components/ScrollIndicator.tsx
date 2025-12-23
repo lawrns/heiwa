@@ -97,22 +97,22 @@ export function ScrollIndicator({
       }}
       aria-label="Scroll down to see more content"
     >
-      <span className="text-sm text-[#ec681c] font-medium mb-2 group-hover:text-[#d65d16] motion-safe:transition-colors motion-reduce:transition-none">
+      <span className="text-sm text-accent font-medium mb-2 group-hover:text-accent-dark motion-safe:transition-colors motion-reduce:transition-none">
         {text}
       </span>
       
       <div className="relative">
         <ChevronDown 
           size={20} 
-          className="text-[#ec681c] animate-bounce group-hover:text-[#d65d16] motion-safe:transition-colors motion-reduce:transition-none" 
+          className="text-accent animate-bounce group-hover:text-accent-dark motion-safe:transition-colors motion-reduce:transition-none" 
         />
         
         {/* Subtle glow effect */}
-        <div className="absolute inset-0 bg-[#ec681c]/20 rounded-full blur-md animate-pulse" />
+        <div className="absolute inset-0 bg-accent/20 rounded-full blur-md animate-pulse" />
       </div>
 
       {/* Hint text */}
-      <span className="text-xs text-[#ec681c]/70 mt-2 group-hover:text-[#ec681c] motion-safe:transition-colors motion-reduce:transition-none">
+      <span className="text-xs text-accent/70 mt-2 group-hover:text-accent motion-safe:transition-colors motion-reduce:transition-none">
         Click to scroll ↓
       </span>
     </div>

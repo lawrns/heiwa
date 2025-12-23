@@ -116,7 +116,7 @@ function TaxBreakdownSection({ taxes, basePrice, roomUpgrade, addOnsSubtotal }: 
       </button>
       
       {isExpanded && (
-        <div className="mt-2 pl-4 border-l-2 border-[#ec681c]/20 space-y-2 animate-in slide-in-from-top-2 duration-200">
+        <div className="mt-2 pl-4 border-l-2 border-accent/20 space-y-2 animate-in slide-in-from-top-2 duration-200">
           <div className="text-xs text-gray-600 mb-2">
             All prices include VAT. Tax breakdown shown below:
           </div>
@@ -138,7 +138,7 @@ function TaxBreakdownSection({ taxes, basePrice, roomUpgrade, addOnsSubtotal }: 
               <span className="font-medium text-gray-700">{formatPrice(addOnsTax)}</span>
             </div>
           )}
-          <div className="pt-2 border-t border-[#ec681c]/20 mt-2">
+          <div className="pt-2 border-t border-accent/20 mt-2">
             <div className="flex justify-between items-center text-sm font-semibold text-gray-900">
               <span>Total VAT</span>
               <span>{formatPrice(taxes)}</span>
@@ -570,7 +570,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         <div className="space-y-4">
           {/* Experience Type */}
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#ec681c] to-[#d65d16] rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-accent to-accent-dark rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-bold">
                 {state.experienceType === 'room' ? '🏠' : '🏄‍♂️'}
               </span>
@@ -647,7 +647,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                   {guest.email} • {guest.phone}
                 </div>
                 {guest.dietaryRequirements && (
-                  <div className="text-sm text-[#ec681c] mt-1">
+                  <div className="text-sm text-accent mt-1">
                     Dietary: {guest.dietaryRequirements}
                   </div>
                 )}
@@ -722,7 +722,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       )}
 
       {/* Pricing Breakdown */}
-      <div className="bg-[#ec681c]/5 rounded-[10px] p-6 border border-[#ec681c]/20">
+      <div className="bg-accent/5 rounded-[10px] p-6 border border-accent/20">
         <h4 className="text-xl font-semibold text-gray-900 mb-4" data-testid="pricing-breakdown-title">Pricing Breakdown</h4>
 
         <div className="space-y-3">
@@ -755,10 +755,10 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             <span className="text-gray-700">Service Fee (5%)</span>
             <span className="font-medium">{formatPrice(pricing.fees)}</span>
           </div>
-          <div className="border-t border-[#ec681c]/20 pt-3">
+          <div className="border-t border-accent/20 pt-3">
             <div className="flex justify-between items-center">
               <span className="text-xl font-semibold text-gray-900">Total</span>
-              <span className="text-3xl font-bold text-[#ec681c]">{formatPrice(pricing.total)}</span>
+              <span className="text-3xl font-bold text-accent">{formatPrice(pricing.total)}</span>
             </div>
           </div>
         </div>
@@ -788,16 +788,16 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
             id="terms"
             checked={termsAccepted}
             onChange={(e) => setTermsAccepted(e.target.checked)}
-            className="mt-1 w-4 h-4 text-[#ec681c] border-gray-300 rounded focus:ring-[#ec681c]"
+            className="mt-1 w-4 h-4 text-accent border-gray-300 rounded focus:ring-accent"
             required
           />
           <label htmlFor="terms" className="text-base text-gray-700">
             I agree to the{' '}
-            <a href="/terms" className="text-[#ec681c] hover:text-[#d65d16] underline">
+            <a href="/terms" className="text-accent hover:text-accent-dark underline">
               Terms and Conditions
             </a>{' '}
             and{' '}
-            <a href="/privacy" className="text-[#ec681c] hover:text-[#d65d16] underline">
+            <a href="/privacy" className="text-accent hover:text-accent-dark underline">
               Privacy Policy
             </a>
             . I understand that this booking is subject to our cancellation policy.
@@ -818,31 +818,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         <div className="flex justify-center">
           <button
             onClick={scrollToInstructions}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              padding: '10px 20px',
-              backgroundColor: '#ffedd5',
-              color: '#c2410c',
-              border: '1px solid #fed7aa',
-              borderRadius: '10px',
-              fontSize: '14px',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'all 150ms ease-out',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#fed7aa';
-              e.currentTarget.style.borderColor = '#fdba74';
-              e.currentTarget.style.color = '#9a3412';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#ffedd5';
-              e.currentTarget.style.borderColor = '#fed7aa';
-              e.currentTarget.style.color = '#c2410c';
-            }}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-orange-100 text-orange-700 border border-orange-200 rounded-[10px] text-sm font-medium cursor-pointer transition-all duration-150 ease-out hover:bg-orange-200 hover:border-orange-300 hover:text-orange-800"
           >
             <ChevronDown size={16} className="animate-bounce" />
             View Bank Transfer Instructions
@@ -890,60 +866,29 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       {/* Payment Button */}
       {state.paymentMethod && (
         <div className="space-y-4">
-          <button
+          <Button
             onClick={handlePayment}
             disabled={isProcessing || !termsAccepted}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              width: '100%',
-              minHeight: '48px',
-              padding: '14px 24px',
-              backgroundColor: (isProcessing || !termsAccepted) ? '#f5a97a' : '#ec681c',
-              color: 'white',
-              border: 'none',
-              borderRadius: '10px',
-              fontSize: '16px',
-              fontWeight: 500,
-              cursor: (isProcessing || !termsAccepted) ? 'not-allowed' : 'pointer',
-              opacity: (isProcessing || !termsAccepted) ? 0.6 : 1,
-              transition: 'all 150ms ease-out',
-              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            }}
-            onMouseEnter={(e) => {
-              if (!isProcessing && termsAccepted) {
-                e.currentTarget.style.backgroundColor = '#d65d16';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isProcessing && termsAccepted) {
-                e.currentTarget.style.backgroundColor = '#ec681c';
-              }
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
-            }}
+            variant="default"
+            size="lg"
+            isLoading={isProcessing}
+            loadingText="Processing..."
+            className="w-full min-h-[48px] text-base"
           >
-            {isProcessing ? (
-              <>
-                <Loader2 size={20} className="animate-spin" />
-                Processing...
-              </>
-            ) : state.paymentMethod === 'card_stripe' ? (
-              <>
-                <CreditCard size={20} />
-                Pay {formatPrice(pricing.total)} Now
-              </>
-            ) : (
-              <>
-                <CheckCircle size={20} />
-                Complete Booking
-              </>
+            {!isProcessing && (
+              state.paymentMethod === 'card_stripe' ? (
+                <>
+                  <CreditCard size={20} />
+                  Pay {formatPrice(pricing.total)} Now
+                </>
+              ) : (
+                <>
+                  <CheckCircle size={20} />
+                  Complete Booking
+                </>
+              )
             )}
-          </button>
+          </Button>
 
           {!bookingCompleted && (
             <div className="text-center">

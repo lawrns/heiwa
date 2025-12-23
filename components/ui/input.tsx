@@ -63,7 +63,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             !isSuccess && !isError && "border-gray-300",
             // Focus state with animated border transition
             "focus:outline-none focus:ring-2 focus:ring-offset-0",
-            !isSuccess && !isError && "focus:ring-[#ec681c]/20 focus:border-[#ec681c]",
+            !isSuccess && !isError && "focus:ring-accent/20 focus:border-accent",
             // Success state
             isSuccess && [
               "border-green-600",
@@ -106,7 +106,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {/* Loading indicator */}
         {isLoading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-gray-300 border-t-[#ec681c] rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-gray-300 border-t-accent rounded-full animate-spin" />
           </div>
         )}
         

@@ -3,6 +3,7 @@ import { Users, Bed, ArrowRight, Check } from 'lucide-react';
 import { BookingState, RoomAssignment as RoomAssignmentType, Room, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { RoomImageGallery, RoomThumbnail } from '../components/RoomImageGallery';
+import { Button } from '@/components/ui/button';
 
 interface RoomAssignmentProps {
   state: BookingState;
@@ -238,7 +239,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
     return (
       <div className="space-y-6">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ec681c] mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent mx-auto"></div>
           <p className="mt-2 text-gray-600">Loading room options...</p>
         </div>
       </div>
@@ -278,7 +279,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
             {unassignedGuests.map(guestId => (
               <span
                 key={guestId}
-                className="px-3 py-1 bg-[#ec681c]/10 text-[#ec681c] rounded-full text-sm font-medium"
+                className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
               >
                 {getGuestName(guestId)}
               </span>
@@ -297,8 +298,8 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
           return (
             <div
               key={room.id}
-              className={`border rounded-[10px] p-6 transition-all duration-300 ${
-                assignment ? 'border-[#ec681c] bg-orange-50' : 'border-gray-200 bg-white'
+              className={`border rounded-[10px] p-6 transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 ${
+                assignment ? 'border-accent bg-orange-50 shadow-card' : 'border-gray-200 bg-white shadow-subtle hover:border-gray-300'
               }`}
             >
               <div className="flex items-start gap-4 mb-4">
@@ -312,7 +313,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                       className="w-20 h-16"
                     />
                   ) : (
-                    <div className="w-20 h-16 bg-gradient-to-br from-[#ec681c] to-[#d65d16] rounded-lg flex items-center justify-center">
+                    <div className="w-20 h-16 bg-gradient-to-br from-accent to-accent-dark rounded-lg flex items-center justify-center">
                       <span className="text-white text-lg">🏠</span>
                     </div>
                   )}
@@ -339,9 +340,9 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                   <Bed size={16} />
                   <span>Up to {room.maxOccupancy} guests</span>
                 </div>
-                <div className="flex items-center gap-2 text-base">
+                <div className="flex items-center gap-2 text-sm">
                   <Users size={16} />
-                  <span className={occupancy > 0 ? 'text-[#ec681c] font-medium' : 'text-gray-600'}>
+                  <span className={occupancy > 0 ? 'text-accent font-medium' : 'text-gray-600'}>
                     {occupancy}/{room.maxOccupancy} assigned
                   </span>
                 </div>
@@ -374,7 +375,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
               {/* Assignment Actions */}
               {!isFull && unassignedGuests.length > 0 && (
                 <div className="border-t pt-4">
-                  <h5 className="text-base font-medium text-gray-700 mb-2">Assign Guest to this Room:</h5>
+                  <h5 className="text-sm font-medium text-gray-700 mb-2">Assign Guest to this Room:</h5>
                   <div className="flex flex-wrap gap-2">
                     {unassignedGuests.map(guestId => {
                       // Check if guest is already assigned to another room
@@ -391,28 +392,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                         <button
                           key={guestId}
                           onClick={() => handleAssignGuestToRoom(room.id, guestId)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            padding: '10px 20px',
-                            backgroundColor: '#fed7aa',
-                            color: '#9a3412',
-                            borderRadius: '10px',
-                            fontSize: '14px',
-                            fontWeight: 500,
-                            border: '2px solid transparent',
-                            cursor: 'pointer',
-                            transition: 'all 150ms ease-out',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = '#fdba74';
-                            e.currentTarget.style.borderColor = '#fb923c';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#fed7aa';
-                            e.currentTarget.style.borderColor = 'transparent';
-                          }}
+                          className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-orange-100 text-orange-800 rounded-[10px] text-sm font-medium border-2 border-transparent cursor-pointer transition-all duration-150 ease-out hover:bg-orange-200 hover:border-orange-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2"
                         >
                           <ArrowRight size={14} />
                           {getGuestName(guestId)}

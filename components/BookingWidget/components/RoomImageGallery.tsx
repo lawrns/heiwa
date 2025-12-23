@@ -122,6 +122,28 @@ export function RoomImageGallery({
 }: RoomImageGalleryProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'ArrowLeft':
+          setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+          break;
+        case 'ArrowRight':
+          setCurrentImageIndex((prev) => (prev + 1) % images.length);
+          break;
+        case 'Escape':
+          onClose();
+          break;
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, images.length, onClose]);
+
   if (!isOpen || images.length === 0) return null;
 
   const nextImage = () => {
@@ -137,14 +159,20 @@ export function RoomImageGallery({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Image gallery for ${roomName}`}
+    >
       <div className="relative w-full h-full max-w-6xl max-h-screen p-4 flex flex-col">
         {/* Main image area - full width */}
         <div className="relative flex-1 min-h-0">
-          {/* Close button */}
+          {/* Close button - improved touch target */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 p-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none"
+            aria-label="Close gallery"
+            className="absolute top-4 right-4 z-10 p-3 min-w-[44px] min-h-[44px] bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-white/50"
           >
             <X size={24} />
           </button>
@@ -166,18 +194,20 @@ export function RoomImageGallery({
               className="max-w-full max-h-full object-contain rounded-lg"
             />
 
-            {/* Navigation arrows */}
+            {/* Navigation arrows - improved touch targets (min 44px) */}
             {images.length > 1 && (
               <>
                 <button
                   onClick={prevImage}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none"
+                  aria-label="Previous image"
+                  className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 p-3 min-w-[44px] min-h-[44px] bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-white/50"
                 >
                   <ChevronLeft size={24} />
                 </button>
                 <button
                   onClick={nextImage}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none"
+                  aria-label="Next image"
+                  className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 p-3 min-w-[44px] min-h-[44px] bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-white/50"
                 >
                   <ChevronRight size={24} />
                 </button>
@@ -185,17 +215,25 @@ export function RoomImageGallery({
             )}
           </div>
 
-          {/* Thumbnail navigation */}
+          {/* Thumbnail navigation - improved touch targets (min 44px) */}
           {images.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 bg-black bg-opacity-50 p-3 rounded-lg max-w-full overflow-x-auto">
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 bg-black bg-opacity-50 p-3 rounded-lg max-w-[90%] overflow-x-auto scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
+              {/* Scroll indicator for mobile */}
+              {images.length > 4 && (
+                <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-white/60 text-xs">
+                  Swipe to see more →
+                </div>
+              )}
               {images.map((image, index) => (
                 <button
                   key={`${roomName}-thumb-${index}`}
                   onClick={() => goToImage(index)}
-                  className={`relative flex-shrink-0 w-16 h-12 rounded-md overflow-hidden border motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none ${
+                  aria-label={`View image ${index + 1} of ${images.length}`}
+                  aria-current={index === currentImageIndex ? 'true' : undefined}
+                  className={`relative flex-shrink-0 w-16 h-11 min-h-[44px] rounded-md overflow-hidden border-2 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-white/50 ${
                     index === currentImageIndex
-                      ? 'border-blue-400 opacity-100'
-                      : 'border-transparent opacity-60 hover:opacity-80'
+                      ? 'border-white opacity-100 ring-2 ring-white/30'
+                      : 'border-transparent opacity-60 hover:opacity-90 hover:border-white/50'
                   }`}
                 >
                   <ImageWithFallback
@@ -230,7 +268,7 @@ export function RoomImageGallery({
                     </span>
                   )}
                   {pricePerNight && (
-                    <span className="font-semibold text-[#ec681c]">
+                    <span className="font-semibold text-accent">
                       €{pricePerNight}/night
                     </span>
                   )}

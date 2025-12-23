@@ -75,11 +75,11 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
               </div>
               <Button
                 disabled={week.is_full}
-                className="w-full px-6 py-2.5 text-sm font-semibold rounded-lg transition-colors"
-                style={{ 
-                  backgroundColor: week.is_full ? '#e5e7eb' : '#ec681c',
-                  color: week.is_full ? '#9ca3af' : 'white'
-                }}
+                className={`w-full px-6 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
+                  week.is_full 
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                    : 'bg-accent hover:bg-accent-dark text-white'
+                }`}
                 onClick={() => {
                   window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: week.id }))
                 }}
@@ -104,11 +104,11 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
               <div className="flex justify-end">
                 <Button
                   disabled={week.is_full}
-                  className="px-6 py-2 text-sm font-semibold rounded-lg transition-colors"
-                  style={{ 
-                    backgroundColor: week.is_full ? '#e5e7eb' : '#ec681c',
-                    color: week.is_full ? '#9ca3af' : 'white'
-                  }}
+                  className={`px-6 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                    week.is_full 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                      : 'bg-accent hover:bg-accent-dark text-white'
+                  }`}
                   onClick={() => {
                     window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: week.id }))
                   }}

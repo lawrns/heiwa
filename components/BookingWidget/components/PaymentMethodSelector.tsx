@@ -42,10 +42,10 @@ export function PaymentMethodSelector({ selectedMethod, onMethodChange }: Paymen
                 w-full p-4 rounded-[10px] border text-left
                 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none
                 hover:scale-[1.01] hover:shadow-md
-                focus:outline-none focus:ring-2 focus:ring-[#ec681c]/30
+                focus:outline-none focus:ring-2 focus:ring-accent/30
                 ${isSelected
-                  ? 'border-[#ec681c] bg-orange-50 shadow-md'
-                  : 'border-gray-200 bg-white hover:border-[#ec681c]/30'
+                  ? 'border-accent bg-orange-50 shadow-md'
+                  : 'border-gray-200 bg-white hover:border-accent/30'
                 }
               `}
             >

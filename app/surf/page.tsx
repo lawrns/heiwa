@@ -276,8 +276,7 @@ export default function SurfPage() {
                   </ul>
                   <Link
                     href="/surf-weeks"
-                    className="w-full lg:w-auto px-8 py-4 bg-accent hover:bg-accent-hover text-white font-bold text-xl rounded-lg transition-colors mb-6 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-                    style={{ backgroundColor: '#ec681c' }}
+                    className="w-full lg:w-auto px-8 py-4 bg-accent hover:bg-accent-dark text-white font-bold text-xl rounded-lg transition-colors mb-6 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                   >
                     Book Now
                   </Link>
@@ -393,8 +392,7 @@ export default function SurfPage() {
               <div className="pt-4">
                 <Link
                   href="/surf-weeks"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 text-white"
-                  style={{ backgroundColor: '#ec681c' }}
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 text-white bg-accent hover:bg-accent-dark"
                 >
                   <Waves className="w-5 h-5" />
                   Book a Surf Lesson

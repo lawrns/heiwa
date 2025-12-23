@@ -171,8 +171,7 @@ export function VideoHero({
           >
             <Link
               href={ctaHref}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
-              style={{ backgroundColor: '#ec681c' }}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-dark rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
             >
               <Bed className="w-5 h-5" />
               {ctaText}
