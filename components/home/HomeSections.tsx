@@ -81,25 +81,25 @@ export async function HomeHero() {
 
       <div className="absolute inset-0 bg-black/30"></div>
 
-      <div className="relative h-full flex items-center justify-center text-center px-4">
+      <div className="relative h-full flex items-center justify-center text-center px-4 pt-20 md:pt-24">
         <div className="max-w-4xl">
           <AnimatedHeroHeading
             text={heroTitle}
-            className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6 drop-shadow-lg"
             style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 700, letterSpacing: '-0.02em' }}
           />
 
-          <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-md">
+          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 md:mb-8 drop-shadow-md">
             {heroSubtitle}
           </p>
 
           {heroDescription && (
-            <p className="text-lg md:text-xl text-white/80 mb-8 drop-shadow-md max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-white/80 mb-6 md:mb-8 drop-shadow-md max-w-2xl mx-auto">
               {heroDescription}
             </p>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 md:mb-8">
             <Link
               href={primaryLinkUrl}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] text-white bg-accent hover:bg-accent-dark"
@@ -256,11 +256,31 @@ export async function HomeAbout() {
             { title: 'Surf', description: 'Discover the best surfing spots and conditions', image: '/images/surf4.jpg', link: '/surf' },
             { title: 'Flow', description: 'Wellness, yoga, and mindfulness experiences', image: '/images/yoga_dome1.jpg', link: '/flow' }
           ]).map((card: any, idx: number) => {
-            const imageUrl = card.image?.startsWith('http')
-              ? card.image
-              : card.image?.startsWith('/images/')
-                ? card.image
-                : '/images/placeholder.webp'
+            // Handle image URL - check for empty strings and provide fallbacks
+            let imageUrl: string
+            
+            if (card.image && card.image.trim() !== '') {
+              // Use provided image if it exists and is not empty
+              if (card.image.startsWith('http')) {
+                imageUrl = card.image
+              } else if (card.image.startsWith('/images/') || card.image.startsWith('/optimized/')) {
+                imageUrl = card.image
+              } else {
+                // Invalid format, use fallback
+                imageUrl = '/images/yoga_dome1.jpg'
+              }
+            } else {
+              // No image provided, use fallback based on card title
+              if (card.title === 'Play') {
+                imageUrl = '/images/skatepark-1.jpg'
+              } else if (card.title === 'Surf') {
+                imageUrl = '/images/surf4.jpg'
+              } else if (card.title === 'Flow') {
+                imageUrl = '/images/yoga_dome1.jpg'
+              } else {
+                imageUrl = '/images/yoga_dome1.jpg' // Default fallback
+              }
+            }
 
             return (
               <Link key={idx} href={card.link || '#'} className="group">
@@ -271,6 +291,7 @@ export async function HomeAbout() {
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500" 
                     sizes="(max-width: 768px) 100vw, 33vw"
+                    unoptimized={imageUrl.startsWith('http')}
                   />
                   <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors"></div>
                   <div className="absolute inset-0 flex items-end">
@@ -378,8 +399,7 @@ export async function HomeRooms() {
         <div className="text-center">
           <Link
             href="/rooms"
-            className="inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white"
-            
+            className="inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white bg-accent hover:bg-accent-dark"
           >
             Explore All Rooms
           </Link>
