@@ -16,7 +16,8 @@ export const SECTION_TYPES = [
   'hero', 'intro', 'faq', 'features', 'seo', 'cta',
   'activity_highlight', 'activity_grid',
   'text_block', 'image_gallery', 'video_embed',
-  'testimonials', 'custom'
+  'testimonials', 'custom',
+  'local_break', 'surf_lessons'
 ] as const
 
 export type SectionType = typeof SECTION_TYPES[number]
@@ -149,6 +150,32 @@ export const CustomContentSchema = z.record(z.unknown())
 
 export type CustomContent = z.infer<typeof CustomContentSchema>
 
+// Local Break Section (for Surf page)
+export const LocalBreakContentSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+  features: z.array(z.object({
+    icon: z.enum(['Clock', 'Car', 'Waves']),
+    title: z.string().min(1, 'Feature title is required'),
+    description: z.string().min(1, 'Feature description is required')
+  })).min(1, 'At least one feature is required'),
+  disclaimer: z.string().optional(),
+  imageUrl: z.string().optional()
+})
+
+export type LocalBreakContent = z.infer<typeof LocalBreakContentSchema>
+
+// Surf Lessons Section (for Surf page)
+export const SurfLessonsContentSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  paragraphs: z.array(z.string()).min(1, 'At least one paragraph is required'),
+  carouselImages: z.array(z.string()).optional(),
+  buttonText: z.string().optional(),
+  buttonUrl: z.string().optional()
+})
+
+export type SurfLessonsContent = z.infer<typeof SurfLessonsContentSchema>
+
 // Map section types to their schemas
 export const SECTION_SCHEMAS: Record<SectionType, z.ZodSchema> = {
   hero: HeroContentSchema,
@@ -163,7 +190,9 @@ export const SECTION_SCHEMAS: Record<SectionType, z.ZodSchema> = {
   image_gallery: ImageGalleryContentSchema,
   video_embed: VideoEmbedContentSchema,
   testimonials: CustomContentSchema,
-  custom: CustomContentSchema
+  custom: CustomContentSchema,
+  local_break: LocalBreakContentSchema,
+  surf_lessons: SurfLessonsContentSchema
 }
 
 // Page Section (database row)
@@ -263,7 +292,28 @@ export const DEFAULT_SECTION_CONTENT: Record<SectionType, Record<string, unknown
     loop: false
   },
   testimonials: {},
-  custom: {}
+  custom: {},
+  local_break: {
+    title: 'Your Local Break',
+    description: 'Just a short walk or quick drive from Heiwa House, you\'ll find beautiful sandy beaches with consistent waves.',
+    features: [
+      { icon: 'Clock', title: '15-20 minute walk', description: 'Enjoy a beautiful coastal walk down to the beach.' },
+      { icon: 'Car', title: '5 minute drive', description: 'Quick and easy access by car.' },
+      { icon: 'Waves', title: 'Long sandy beaches', description: 'Miles of coastline to explore.' }
+    ],
+    disclaimer: '',
+    imageUrl: '/images/thehouse.webp'
+  },
+  surf_lessons: {
+    title: 'Surf Lessons',
+    paragraphs: [
+      'We offer high quality surf lessons in Santa Cruz and Peniche.',
+      'Surf lessons starting from 40€ per session, with all equipment included.'
+    ],
+    carouselImages: ['/images/surf4.jpg', '/images/surf3.jpg'],
+    buttonText: 'Book a Surf Lesson',
+    buttonUrl: '/surf-weeks'
+  }
 }
 
 // Human-readable section type names
@@ -280,5 +330,7 @@ export const SECTION_TYPE_LABELS: Record<SectionType, string> = {
   image_gallery: 'Image Gallery',
   video_embed: 'Video Embed',
   testimonials: 'Testimonials',
-  custom: 'Custom Section'
+  custom: 'Custom Section',
+  local_break: 'Local Break Info',
+  surf_lessons: 'Surf Lessons'
 }
