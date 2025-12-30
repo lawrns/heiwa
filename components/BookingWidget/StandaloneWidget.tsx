@@ -173,7 +173,7 @@ API Key: ${nextConfig.settings.apiKey}`}
         /* Override any conflicting styles */
         .heiwa-react-widget-container button {
           border: none;
-          padding: 0;
+          padding: unset;
           font: inherit;
           cursor: pointer;
           outline: inherit;
@@ -232,15 +232,6 @@ API Key: ${nextConfig.settings.apiKey}`}
           box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1) !important;
           transform: none !important;
           cursor: not-allowed !important;
-        }
-
-        /* Restore proper padding for card components */
-        .heiwa-react-widget-container button.p-4 {
-          padding: 1rem !important;
-        }
-
-        .heiwa-react-widget-container button.p-6 {
-          padding: 1.5rem !important;
         }
         
         /* Ensure proper z-index stacking and modal behavior */
