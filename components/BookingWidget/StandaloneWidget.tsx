@@ -170,10 +170,9 @@ API Key: ${nextConfig.settings.apiKey}`}
           box-sizing: border-box;
         }
 
-        /* Override any conflicting styles */
+        /* Override any conflicting styles - padding handled by Tailwind */
         .heiwa-react-widget-container button {
           border: none;
-          padding: unset;
           font: inherit;
           cursor: pointer;
           outline: inherit;
