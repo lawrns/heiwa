@@ -52,12 +52,65 @@ export async function GET(request: NextRequest) {
       dateRange.push(d.toISOString().split('T')[0])
     }
 
+    // Check for calendar events that block availability
+    interface CalendarEvent {
+      id: string
+      start_date: string
+      end_date: string
+      event_type: string
+      blocks_bookings: boolean
+    }
+    let blockingEvents: CalendarEvent[] = []
+
+    try {
+      const { data: events, error: eventsError } = await supabaseAdmin
+        .from('calendar_events')
+        .select('id, start_date, end_date, event_type, blocks_bookings')
+        .gte('end_date', startDate)
+        .lte('start_date', endDate)
+        .eq('blocks_bookings', true)
+
+      if (eventsError) {
+        console.warn('Calendar events table error:', eventsError.message)
+      } else if (events) {
+        blockingEvents = events
+        if (events.length > 0) {
+          console.log(`📅 Found ${events.length} blocking calendar event(s)`)
+        }
+      }
+    } catch (error) {
+      console.warn('Error checking calendar events:', error)
+    }
+
+    // Helper function to check if a date falls within any blocking event
+    const isDateBlockedByEvent = (date: string): boolean => {
+      return blockingEvents.some(event => {
+        const eventStart = new Date(event.start_date)
+        const eventEnd = new Date(event.end_date)
+        const checkDate = new Date(date)
+        return checkDate >= eventStart && checkDate <= eventEnd
+      })
+    }
+
     // Check existing bookings for each date
     // Note: Room bookings and surf camp enrollments are SEPARATE systems
     // Room availability should only consider room bookings against room capacity
     // Surf camp availability should only consider surf camp enrollments against surf camp capacity
     const dateAvailability = await Promise.all(
       dateRange.map(async (date) => {
+        // First check if date is blocked by a calendar event
+        const blockedByEvent = isDateBlockedByEvent(date)
+        if (blockedByEvent) {
+          return {
+            date,
+            available: false,
+            capacity: 0,
+            booked: 0,
+            remaining: 0,
+            blocked_by_event: true
+          }
+        }
+
         // Check room bookings for this date
         const { data: roomBookings, error: roomError } = await supabaseAdmin
           .from('bookings')
@@ -77,7 +130,7 @@ export async function GET(request: NextRequest) {
           .eq('is_active', true) as { data: { capacity: number }[] | null; error: unknown }
 
         const totalCapacity = rooms?.reduce((sum, room) => sum + (room.capacity || 0), 0) || 10
-        
+
         // Count booked guests from room bookings only
         // (Surf camp enrollments are a separate system with separate capacity)
         const bookedGuests = roomBookings?.reduce((sum, booking) => sum + (booking.guests || 1), 0) || 0
@@ -88,7 +141,8 @@ export async function GET(request: NextRequest) {
           available: remaining >= participants,
           capacity: totalCapacity,
           booked: bookedGuests,
-          remaining
+          remaining,
+          blocked_by_event: false
         }
       })
     )

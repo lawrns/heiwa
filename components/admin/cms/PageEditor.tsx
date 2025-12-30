@@ -649,10 +649,41 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
       >
         <PageMetadataEditor
           pageData={pageData}
-          onSave={(metadata: PageData['metadata']) => {
-            setPageData({ ...pageData, metadata })
-            setHasChanges(true)
-            setShowPageSettings(false)
+          onSave={async (metadata: PageData['metadata']) => {
+            try {
+              // Save metadata to API
+              const response = await fetch(`/api/cms/pages/${pageSlug}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  title: metadata.seoTitle,
+                  meta_description: metadata.seoDescription,
+                  meta_keywords: '',
+                  og_image: metadata.featuredImage || '',
+                  is_published: true
+                })
+              })
+
+              if (!response.ok) {
+                const result = await response.json().catch(() => null)
+                throw new Error(result?.error || `Failed to save SEO settings (${response.status})`)
+              }
+
+              const result = await response.json()
+              if (!result.success) {
+                throw new Error(result.error || 'Failed to save SEO settings')
+              }
+
+              // Update local state on success
+              setPageData({ ...pageData, metadata })
+              setSuccess('Page settings saved successfully')
+              setTimeout(() => setSuccess(null), 3000)
+              setShowPageSettings(false)
+            } catch (err) {
+              const errorMessage = err instanceof Error ? err.message : 'Failed to save page settings'
+              console.error('Error saving page metadata:', err)
+              setError(errorMessage)
+            }
           }}
           onCancel={() => setShowPageSettings(false)}
         />

@@ -137,6 +137,38 @@ export async function GET(request: NextRequest) {
       console.warn('Error checking room assignments:', error)
     }
 
+    // Check for active surf weeks that overlap with requested dates
+    // Room-only bookings should be blocked during surf weeks
+    interface SurfWeek {
+      id: string
+      start_date: string
+      end_date: string
+    }
+    let activeSurfWeeks: SurfWeek[] = []
+
+    try {
+      const { data: surfWeeks, error: surfWeeksError } = await supabaseAdmin
+        .from('surf_camps')
+        .select('id, start_date, end_date')
+        .gte('end_date', startDate)
+        .lte('start_date', endDate)
+        .eq('is_active', true)
+
+      if (surfWeeksError) {
+        console.warn('Surf weeks table error:', surfWeeksError.message)
+      } else if (surfWeeks) {
+        activeSurfWeeks = surfWeeks
+        if (surfWeeks.length > 0) {
+          console.log(`🏄 Found ${surfWeeks.length} active surf week(s) overlapping with requested dates`)
+        }
+      }
+    } catch (error) {
+      console.warn('Error checking surf weeks:', error)
+    }
+
+    // If dates overlap with surf weeks, block room-only bookings
+    const hasSurfWeekConflict = activeSurfWeeks.length > 0
+
     // Create a map of room names to IDs for matching
     const roomNameToId = new Map<string, string>()
     ;(allRooms || []).forEach((room: { id?: string; name?: string; [key: string]: unknown }) => {
@@ -264,6 +296,38 @@ export async function GET(request: NextRequest) {
       featured_image: r.featured_image
     })))
 
+    // If surf week conflict exists, return empty rooms with blocking info
+    // This prevents room-only bookings during surf camp periods
+    if (hasSurfWeekConflict) {
+      console.log('🚫 Blocking room-only bookings due to active surf week(s)')
+      return NextResponse.json({
+        success: true,
+        data: {
+          available_rooms: [],
+          total_rooms: allRooms?.length || 0,
+          requested_dates: {
+            start_date: startDate,
+            end_date: endDate,
+            guests: guests
+          },
+          surf_week_conflict: true,
+          surf_weeks: activeSurfWeeks.map(sw => ({
+            id: sw.id,
+            start_date: sw.start_date,
+            end_date: sw.end_date
+          })),
+          message: 'Room-only bookings are not available during surf camp weeks. Please book a surf camp package instead.'
+        }
+      }, {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'X-Content-Version': Date.now().toString()
+        }
+      })
+    }
+
     return NextResponse.json({
       success: true,
       data: {
@@ -273,7 +337,8 @@ export async function GET(request: NextRequest) {
           start_date: startDate,
           end_date: endDate,
           guests: guests
-        }
+        },
+        surf_week_conflict: false
       }
     }, {
       headers: {
