@@ -72,10 +72,14 @@ export default function SurfCampDetailPage({ params }: { params: { id: string } 
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-GB', {
+    // Parse date string as UTC to avoid timezone offset issues
+    const [year, month, day] = dateString.split('-').map(Number)
+    const date = new Date(Date.UTC(year, month - 1, day))
+    return date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: 'short',
-      year: 'numeric'
+      year: 'numeric',
+      timeZone: 'UTC'
     })
   }
 

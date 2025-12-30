@@ -455,7 +455,7 @@ export function BookingWidget({
 
             {/* Footer Navigation */}
             {!bookingSuccess && computed.currentStepType !== 'review-pay' && (
-              <div className="flex items-center justify-between p-3 sm:p-4 md:p-5 lg:p-6 border-t border-gray-200 bg-white">
+              <div className="flex items-center justify-between px-4 sm:px-5 md:px-6 py-3 sm:py-4 border-t border-gray-200 bg-white">
                 <div className="relative group">
                   {/* Back Button - Tailwind styled */}
                   <Button

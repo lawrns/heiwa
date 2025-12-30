@@ -89,7 +89,7 @@ export async function HomeHero() {
             style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 700, letterSpacing: '-0.02em' }}
           />
 
-          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 md:mb-8 drop-shadow-md">
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-6 md:mb-8 drop-shadow-md">
             {heroSubtitle}
           </p>
 
@@ -175,7 +175,9 @@ export async function HomeSurfWeeks() {
   const surfWeeksSubtitle = (content.subtitle as string) || 'All-inclusive weeks with surf, yoga, great food, and coastal adventures.'
   const surfWeeksBullets = Array.isArray(content.bullets)
     ? (content.bullets as string[]).filter(b => typeof b === 'string' && b.trim().length > 0)
-    : []
+    : Array.isArray(content.features)
+      ? (content.features as string[]).filter(b => typeof b === 'string' && b.trim().length > 0)
+      : []
   const surfWeeksVideoId = (content.videoId as string) || (content.video_id as string) || '9nhQiKGsgHg'
   const defaultBullets = [
     'Professional surf instruction for all levels',
@@ -211,8 +213,8 @@ export async function HomeSurfWeeks() {
               </h3>
               <ul className="space-y-4 text-gray-600">
                 {displayBullets.map((text, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <span className="text-accent font-bold mt-1">•</span>
+                  <li key={idx} className="flex items-center gap-3">
+                    <span className="text-accent font-bold flex-shrink-0">•</span>
                     <span>{text}</span>
                   </li>
                 ))}

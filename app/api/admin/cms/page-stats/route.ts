@@ -14,55 +14,50 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Fetch page_content stats
-    const { data: pageData, error: pageError } = await supabaseAdmin
+    // Fetch page_sections stats (the unified CMS table)
+    const { data: pageSectionsData, error: pageSectionsError } = await supabaseAdmin
+      .from('page_sections')
+      .select('page_slug, updated_at')
+      .eq('is_active', true)
+
+    if (pageSectionsError) {
+      console.error('Error fetching page_sections:', pageSectionsError)
+      // Continue with empty data if table doesn't exist
+    }
+
+    // Also fetch legacy page_content for backwards compatibility
+    const { data: pageData } = await supabaseAdmin
       .from('page_content')
       .select('page_slug, updated_at')
       .eq('is_active', true)
 
-    if (pageError) {
-      console.error('Error fetching page_content:', pageError)
-      return NextResponse.json(
-        { error: 'Failed to fetch page content statistics' },
-        { status: 500 }
-      )
-    }
-
-    // Fetch homepage_sections stats (the actual table name)
-    const { data: homepageData, error: homepageError } = await supabaseAdmin
+    // Fetch homepage_sections stats (legacy table)
+    const { data: homepageData } = await supabaseAdmin
       .from('homepage_sections')
       .select('section_type, updated_at')
       .eq('is_active', true)
 
-    if (homepageError) {
-      console.error('Error fetching homepage_sections:', homepageError)
-      // Don't fail completely if homepage_sections doesn't exist
-    }
-
     // Calculate stats for each page
-    const stats: Record<string, { count: number; lastModified: string }> = {}
-    
-    const pages = ['homepage', 'flow', 'play', 'surf', 'about', 'contact']
-    
+    const stats: Record<string, { count: number; lastModified: string | null }> = {}
+
+    const pages = ['homepage', 'flow', 'play', 'surf', 'surf-weeks', 'about', 'contact']
+
     pages.forEach(pageSlug => {
-      if (pageSlug === 'homepage') {
-        // Special handling for homepage
-        const homepageSections = (homepageData as any[]) || []
-        stats[pageSlug] = {
-          count: homepageSections.length,
-          lastModified: homepageSections.length > 0 
-            ? new Date(Math.max(...homepageSections.map((s: any) => new Date(s.updated_at).getTime()))).toISOString()
-            : null
-        }
-      } else {
-        // Regular pages
-        const pageSections = (pageData as any[])?.filter((section: any) => section.page_slug === pageSlug) || []
-        stats[pageSlug] = {
-          count: pageSections.length,
-          lastModified: pageSections.length > 0 
-            ? new Date(Math.max(...pageSections.map((s: any) => new Date(s.updated_at).getTime()))).toISOString()
-            : null
-        }
+      // Count from page_sections (primary source)
+      const pageSections = (pageSectionsData as any[])?.filter((s: any) => s.page_slug === pageSlug) || []
+
+      // Also count from legacy tables
+      const legacyPageSections = (pageData as any[])?.filter((s: any) => s.page_slug === pageSlug) || []
+      const homepageSections = pageSlug === 'homepage' ? ((homepageData as any[]) || []) : []
+
+      // Combine all sections for this page
+      const allSections = [...pageSections, ...legacyPageSections, ...homepageSections]
+
+      stats[pageSlug] = {
+        count: allSections.length,
+        lastModified: allSections.length > 0
+          ? new Date(Math.max(...allSections.map((s: any) => new Date(s.updated_at).getTime()))).toISOString()
+          : null
       }
     })
 

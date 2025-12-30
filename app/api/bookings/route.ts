@@ -98,6 +98,7 @@ export async function POST(request: NextRequest) {
             error: result.error,
             errorCode: result.errorCode,
             duplicateBookingId: result.duplicateBookingId,
+            details: result.details,
           },
           { status: statusCode }
         );

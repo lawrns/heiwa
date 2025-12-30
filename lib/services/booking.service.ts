@@ -119,6 +119,7 @@ export interface BookingResult {
   error?: string;
   errorCode?: string;
   duplicateBookingId?: string;
+  details?: string;
 }
 
 // ============================================================================
@@ -478,27 +479,17 @@ export const bookingService = {
       const pName = participant.name || `${participant.firstName} ${participant.lastName}`.trim();
       const pEmail = participant.email;
 
-      // Check if client exists with SAME name AND email (not just email)
-      // This allows multiple participants with different names but same email
-      const { data: existingClients, error: findError } = await supabaseAdmin
+      // Check if client exists by email (email is UNIQUE in database)
+      const { data: existingClient, error: findError } = await supabaseAdmin
         .from('clients')
-        .select('id, name')
-        .eq('email', pEmail);
+        .select('id')
+        .eq('email', pEmail)
+        .single();
 
       let pClientId: string;
 
-      // Find exact match by name AND email
-      const exactMatch = existingClients?.find(
-        (c: { id: string; name: string }) => c.name?.toLowerCase() === pName.toLowerCase()
-      );
-
-      if (exactMatch) {
-        // Use existing client with same name and email
-        pClientId = exactMatch.id;
-      } else if (findError) {
-        return { success: false, error: `Failed to verify client for ${pName}` };
-      } else {
-        // Create new client (either no clients with this email, or none with matching name)
+      if (findError && findError.code === 'PGRST116') {
+        // No client found with this email - create new client
         const { data: newClient, error: createError } = await supabaseAdmin
           .from('clients')
           .insert({
@@ -513,9 +504,26 @@ export const bookingService = {
           .single();
 
         if (createError) {
-          return { success: false, error: `Failed to create client record for ${pName}` };
+          const hasServiceKey = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+          console.error('Failed to create client:', {
+            error: createError,
+            hasServiceKey,
+            email: pEmail,
+            name: pName
+          });
+          return {
+            success: false,
+            error: `Failed to create client record for ${pName}`,
+            errorCode: createError.code,
+            details: `${createError.message} (service_key: ${hasServiceKey ? 'yes' : 'NO'})`
+          };
         }
         pClientId = newClient.id;
+      } else if (findError) {
+        return { success: false, error: `Failed to verify client for ${pName}` };
+      } else {
+        // Use existing client (email is unique, so this is the same person)
+        pClientId = existingClient.id;
       }
 
       allClientIds.push(pClientId);

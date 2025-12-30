@@ -467,7 +467,8 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
 
       const data = await res.json();
       if (!data?.success) {
-        const errorMessage = data?.error || `Request failed`;
+        const errorDetails = data?.details ? ` [${data.details}]` : '';
+        const errorMessage = (data?.error || `Request failed`) + errorDetails;
         console.error('❌ Booking API error:', {
           status: res.status,
           error: data?.error,

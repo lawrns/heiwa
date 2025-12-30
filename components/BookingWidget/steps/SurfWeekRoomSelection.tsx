@@ -647,11 +647,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
             }
           }
           
-          // Fallback to pricePerNight × 7 if no surf camp pricing
-          if (!displayPrice && transformedRoom.pricePerNight > 0) {
-            displayPrice = transformedRoom.pricePerNight * 7;
-            priceLabel = '/week';
-          }
+          // Note: For surf camp bookings, we don't fall back to nightly rates
+          // Only show pricing when surf camp specific pricing is configured
 
           return (
             <div

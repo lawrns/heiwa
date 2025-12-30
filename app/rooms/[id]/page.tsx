@@ -258,21 +258,6 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
               </p>
             </div>
 
-            {/* Room Facilities */}
-            <div className="mb-8 bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Room Facilities</h2>
-              <div className="grid grid-cols-2 gap-3">
-                {['Towels', 'Wifi Access'].map((facility, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
-                    <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-accent font-bold">✓</span>
-                    </div>
-                    <span className="text-gray-700 font-medium text-sm">{facility}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             {/* Features */}
             <div className="mb-8 bg-white rounded-lg p-6 shadow-sm">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Room Features</h2>
@@ -293,11 +278,10 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
               <h3 className="text-lg font-bold text-gray-900 mb-4">Book Your Room</h3>
               
               <div className="mb-6 pb-6 border-b border-gray-200">
-                <div className="flex items-baseline gap-2 mb-2">
+                <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-bold text-gray-900">{enhancedRoom.price}€</span>
                   <span className="text-gray-500">/ night</span>
                 </div>
-                <p className="text-sm text-gray-500">Best price guarantee</p>
               </div>
 
               <BookingButton

@@ -15,8 +15,13 @@ interface FacilitiesEditorProps {
 }
 
 export function FacilitiesEditor({ content, onChange }: FacilitiesEditorProps) {
-  const facilities = (content.facilities as Facility[]) || (content.items as Facility[]) || []
-  const fieldName = content.facilities ? 'facilities' : 'items'
+  // Prefer the field that has actual data, fall back to items for consistency
+  const facilities = (Array.isArray(content.items) && content.items.length > 0)
+    ? (content.items as Facility[])
+    : (Array.isArray(content.facilities) && content.facilities.length > 0)
+      ? (content.facilities as Facility[])
+      : []
+  const fieldName = 'items' // Always use 'items' for consistency
 
   const updateField = (field: string, value: string) => {
     onChange({ ...content, [field]: value })
