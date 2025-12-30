@@ -823,7 +823,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                         <button
                           key={guestId}
                           onClick={() => handleAssignGuestToRoom(transformedRoom.id, guestId)}
-                          className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-orange-100 text-orange-800 rounded-[10px] text-sm font-medium border-2 border-transparent cursor-pointer transition-all duration-150 ease-out hover:bg-orange-200 hover:border-orange-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2"
+                          className="inline-flex items-center gap-2 pl-4 pr-5 py-2.5 min-h-[44px] bg-orange-100 text-orange-800 rounded-[10px] text-sm font-medium border-2 border-transparent cursor-pointer transition-all duration-150 ease-out hover:bg-orange-200 hover:border-orange-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2"
                         >
                           <ArrowRight size={14} />
                           {getGuestName(guestId)}

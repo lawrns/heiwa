@@ -152,7 +152,7 @@ export function ActivityDetail({
         >
           <Link
             href={ctaHref}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 text-white bg-orange-500 hover:bg-orange-600"
+            className="inline-flex items-center gap-2 pl-10 pr-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 text-white bg-orange-500 hover:bg-orange-600"
           >
             {ctaText}
             <ArrowRight className="w-5 h-5" />

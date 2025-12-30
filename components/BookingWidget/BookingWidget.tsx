@@ -506,7 +506,7 @@ export function BookingWidget({
                     isLoading={state.isLoading}
                     loadingText="Loading..."
                     aria-label={computed.isLastStep ? 'Complete booking' : 'Continue to next step'}
-                    className="gap-2"
+                    className={computed.isLastStep ? '' : 'pl-8 pr-6'}
                   >
                     {computed.isLastStep ? (
                       'Complete Booking'

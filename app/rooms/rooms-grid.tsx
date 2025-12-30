@@ -88,9 +88,9 @@ export function RoomsGrid({ rooms, loading = false }: RoomsGridProps) {
                     </p>
 
                     {/* CTA */}
-                    <div className="inline-flex items-center gap-1 text-accent group-hover:text-accent-hover font-medium text-xs group-hover:gap-2 transition-all">
+                    <div className="inline-flex items-center gap-1.5 text-accent group-hover:text-accent-hover font-medium text-xs transition-all">
                       Room Detail
-                      <span>→</span>
+                      <span className="group-hover:translate-x-0.5 transition-transform">→</span>
                     </div>
                   </div>
                   </Link>
