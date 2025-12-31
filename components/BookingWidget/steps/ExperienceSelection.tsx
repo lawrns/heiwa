@@ -1,5 +1,5 @@
 import { Home, Waves, Check } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BookingState } from '../types';
 import { cn } from '@/lib/utils';
 
@@ -11,35 +11,73 @@ interface ExperienceSelectionProps {
   };
 }
 
-const experiences = [
-  {
-    id: 'room',
-    type: 'room' as const,
-    title: 'Book a Room',
-    description: 'Choose your dates and accommodation. Perfect for flexible stays.',
-    icon: Home,
-    gradient: 'from-blue-500 to-cyan-500',
-    features: ['Flexible dates', 'Choose your room', 'Self-guided experience'],
-    priceFrom: 45,
-    backgroundImage: '',
-    surfPattern: 'gentle-waves',
-  },
-  {
-    id: 'surf-week',
-    type: 'surf-week' as const,
-    title: 'All-Inclusive Surf Week',
-    description: 'Join our structured surf camp programs with coaching and community.',
-    icon: Waves,
-    gradient: 'from-accent to-red-500',
-    features: ['Professional coaching', 'All meals included', 'Structured program'],
-    priceFrom: 599,
-    backgroundImage: '',
-    surfPattern: 'dynamic-waves',
-  },
-];
+interface BookingWidgetPrices {
+  room: number;
+  surfWeek: number;
+}
+
+const defaultPrices: BookingWidgetPrices = {
+  room: 45,
+  surfWeek: 599,
+};
 
 export function ExperienceSelection({ state, actions }: ExperienceSelectionProps) {
   const pendingTypeRef = useRef<'room' | 'surf-week' | null>(null);
+  const [prices, setPrices] = useState<BookingWidgetPrices>(defaultPrices);
+  const [pricesLoading, setPricesLoading] = useState(true);
+
+  // Fetch prices from API
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        const response = await fetch('/api/booking-widget-settings', {
+          cache: 'no-store',
+        });
+        const data = await response.json();
+
+        if (data.success && data.data) {
+          setPrices({
+            room: data.data.room || defaultPrices.room,
+            surfWeek: data.data.surfWeek || defaultPrices.surfWeek,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching booking widget prices:', error);
+        // Use default prices on error
+      } finally {
+        setPricesLoading(false);
+      }
+    };
+
+    fetchPrices();
+  }, []);
+
+  const experiences = [
+    {
+      id: 'room',
+      type: 'room' as const,
+      title: 'Book a Room',
+      description: 'Choose your dates and accommodation. Perfect for flexible stays.',
+      icon: Home,
+      gradient: 'from-blue-500 to-cyan-500',
+      features: ['Flexible dates', 'Choose your room', 'Self-guided experience'],
+      priceFrom: prices.room,
+      backgroundImage: '',
+      surfPattern: 'gentle-waves',
+    },
+    {
+      id: 'surf-week',
+      type: 'surf-week' as const,
+      title: 'All-Inclusive Surf Week',
+      description: 'Join our structured surf camp programs with coaching and community.',
+      icon: Waves,
+      gradient: 'from-accent to-red-500',
+      features: ['Professional coaching', 'All meals included', 'Structured program'],
+      priceFrom: prices.surfWeek,
+      backgroundImage: '',
+      surfPattern: 'dynamic-waves',
+    },
+  ];
 
   const handleSelection = (type: 'room' | 'surf-week') => {
     // Debug: selection handler

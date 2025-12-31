@@ -21,7 +21,8 @@ import {
   BookOpen,
   AlertCircle,
   Package,
-  Percent
+  Percent,
+  Settings
 } from 'lucide-react'
 
 interface ErrorBoundaryState {
@@ -116,6 +117,7 @@ const navigationItems = [
   { name: 'CMS', href: '/admin/cms', icon: FileText },
   { name: 'Blog', href: '/admin/blog', icon: BookOpen },
   { name: 'Tax Categories', href: '/admin/settings/tax-categories', icon: Percent },
+  { name: 'Booking Widget', href: '/admin/settings/booking-widget', icon: Settings },
 ]
 
 // Admin Logo component

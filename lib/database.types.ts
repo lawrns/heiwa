@@ -508,6 +508,32 @@ export interface Database {
           updated_at?: string | null;
         };
       };
+      booking_widget_settings: {
+        Row: {
+          id: string;
+          experience_type: string;
+          price_from: number;
+          is_active: boolean | null;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          experience_type: string;
+          price_from: number;
+          is_active?: boolean | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          experience_type?: string;
+          price_from?: number;
+          is_active?: boolean | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+      };
       contact_submissions: {
         Row: {
           id: string;
@@ -1497,6 +1523,7 @@ export type BlogPostTranslation = Tables<'blog_post_translations'>;
 export type BlogPost = Tables<'blog_posts'>;
 export type BlogTag = Tables<'blog_tags'>;
 export type Booking = Tables<'bookings'>;
+export type BookingWidgetSettings = Tables<'booking_widget_settings'>;
 export type CalendarEvent = Tables<'calendar_events'>;
 export type Client = Tables<'clients'>;
 export type CmsSettings = Tables<'cms_settings'>;
@@ -1533,6 +1560,7 @@ export type InsertBlogPostTranslation = InsertTables<'blog_post_translations'>;
 export type InsertBlogPost = InsertTables<'blog_posts'>;
 export type InsertBlogTag = InsertTables<'blog_tags'>;
 export type InsertBooking = InsertTables<'bookings'>;
+export type InsertBookingWidgetSettings = InsertTables<'booking_widget_settings'>;
 export type InsertCalendarEvent = InsertTables<'calendar_events'>;
 export type InsertClient = InsertTables<'clients'>;
 export type InsertCmsSettings = InsertTables<'cms_settings'>;
@@ -1569,6 +1597,7 @@ export type UpdateBlogPostTranslation = UpdateTables<'blog_post_translations'>;
 export type UpdateBlogPost = UpdateTables<'blog_posts'>;
 export type UpdateBlogTag = UpdateTables<'blog_tags'>;
 export type UpdateBooking = UpdateTables<'bookings'>;
+export type UpdateBookingWidgetSettings = UpdateTables<'booking_widget_settings'>;
 export type UpdateCalendarEvent = UpdateTables<'calendar_events'>;
 export type UpdateClient = UpdateTables<'clients'>;
 export type UpdateCmsSettings = UpdateTables<'cms_settings'>;
