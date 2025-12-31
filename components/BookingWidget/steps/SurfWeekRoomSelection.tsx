@@ -117,6 +117,13 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     }
   };
   
+  // CRITICAL FIX: Use state.dates as PRIMARY source (these are set from backend when surf week is selected)
+  // The dates displayed come from state.dates, so we MUST use the same dates for fetching rooms
+  // Fallback to surf week data only if state.dates are missing
+  const primaryStartDate = state.dates.checkIn || parseDate(selectedSurfWeekData?.startDate);
+  const primaryEndDate = state.dates.checkOut || parseDate(selectedSurfWeekData?.endDate);
+  
+  // Also parse from surf week data for display/debugging
   const surfCampStartDate = parseDate(selectedSurfWeekData?.startDate);
   const surfCampEndDate = parseDate(selectedSurfWeekData?.endDate);
   
@@ -131,18 +138,28 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
         startDate: selectedSurfWeekData.startDate,
         endDate: selectedSurfWeekData.endDate,
       } : null,
-      surfCampStartDate: surfCampStartDate?.toISOString(),
-      surfCampEndDate: surfCampEndDate?.toISOString(),
-      hasValidDates: !!(surfCampStartDate && surfCampEndDate && surfCampStartDate < surfCampEndDate),
+      stateDates: {
+        checkIn: state.dates.checkIn?.toISOString(),
+        checkOut: state.dates.checkOut?.toISOString(),
+      },
+      surfCampDates: {
+        startDate: surfCampStartDate?.toISOString(),
+        endDate: surfCampEndDate?.toISOString(),
+      },
+      primaryDates: {
+        startDate: primaryStartDate?.toISOString(),
+        endDate: primaryEndDate?.toISOString(),
+      },
+      hasValidDates: !!(primaryStartDate && primaryEndDate && primaryStartDate < primaryEndDate),
       campsLoading,
     });
-  }, [state.selectedSurfWeek, selectedSurfWeekData, surfCampStartDate, surfCampEndDate, surfCamps.length, campsLoading]);
+  }, [state.selectedSurfWeek, state.dates.checkIn, state.dates.checkOut, selectedSurfWeekData, primaryStartDate, primaryEndDate, surfCampStartDate, surfCampEndDate, surfCamps.length, campsLoading]);
   
-  // Fetch rooms - use dates if available, otherwise fetch all rooms
-  // This ensures rooms are always displayed even if dates are missing
+  // Fetch rooms - use primary dates (from state.dates first, then surf week data)
+  // This ensures rooms are fetched with the same dates that are displayed
   const { rooms, loading: roomsLoading, error: roomsError } = useRooms({
-    checkIn: (surfCampStartDate && surfCampEndDate && surfCampStartDate < surfCampEndDate) ? surfCampStartDate : null,
-    checkOut: (surfCampStartDate && surfCampEndDate && surfCampStartDate < surfCampEndDate) ? surfCampEndDate : null,
+    checkIn: (primaryStartDate && primaryEndDate && primaryStartDate < primaryEndDate) ? primaryStartDate : null,
+    checkOut: (primaryStartDate && primaryEndDate && primaryStartDate < primaryEndDate) ? primaryEndDate : null,
     guests: state.guests || 1
   });
   
