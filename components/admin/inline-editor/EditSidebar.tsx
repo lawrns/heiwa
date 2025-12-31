@@ -200,18 +200,43 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
 
     try {
       setIsSavingSeo(true)
+      setError(null)
+      
+      // Send only the fields the API expects (excluding slug which is in the URL)
       const res = await fetch(`/api/cms/pages/${pageSlug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pageMeta),
+        credentials: 'include', // Include credentials for admin auth
+        body: JSON.stringify({
+          title: pageMeta.title || '',
+          meta_description: pageMeta.meta_description || '',
+          meta_keywords: pageMeta.meta_keywords || '',
+          og_image: pageMeta.og_image || '',
+          is_published: pageMeta.is_published ?? false,
+        }),
       })
 
-      if (!res.ok) throw new Error('Failed to save SEO settings')
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Failed to save SEO settings' }))
+        throw new Error(errorData.error || `Failed to save SEO settings (${res.status})`)
+      }
+
+      const result = await res.json()
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to save SEO settings')
+      }
+
+      // Update local state with the response data
+      if (result.data) {
+        setPageMeta(result.data)
+      }
 
       // Close panel after save
       setShowSeoPanel(false)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save SEO settings')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to save SEO settings'
+      setError(errorMessage)
+      console.error('Error saving SEO settings:', err)
     } finally {
       setIsSavingSeo(false)
     }

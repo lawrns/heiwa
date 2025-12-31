@@ -71,6 +71,20 @@ export function MediaLibraryModal({
     setUploading(true)
     try {
       const file = files[0]
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file')
+        return
+      }
+
+      // Validate file size (50MB max)
+      const maxSize = 50 * 1024 * 1024
+      if (file.size > maxSize) {
+        alert('File size must be less than 50MB')
+        return
+      }
+
       const form = new FormData()
       form.set('file', file)
       form.set('alt_text', '')
@@ -84,13 +98,25 @@ export function MediaLibraryModal({
       })
 
       const result = await response.json()
-      if (response.ok && result?.data?.public_url) {
+      
+      if (!response.ok) {
+        const errorMessage = result?.message || result?.error || `Upload failed (${response.status})`
+        alert(errorMessage)
+        console.error('Upload failed:', result)
+        return
+      }
+
+      if (result?.data?.public_url) {
         // Auto-select the newly uploaded image
         setSelectedUrl(result.data.public_url)
         loadMedia()
+      } else {
+        console.error('Unexpected response format:', result)
+        alert('Upload succeeded but received unexpected response format')
       }
     } catch (error) {
       console.error('Upload failed:', error)
+      alert('Failed to upload image. Please try again.')
     } finally {
       setUploading(false)
     }
