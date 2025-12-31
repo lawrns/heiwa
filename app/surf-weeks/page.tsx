@@ -51,6 +51,12 @@ async function getSurfWeeks() {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     
+    // Add cache-busting timestamp to ensure fresh data
+    // This ensures Netlify doesn't cache stale surf camp data
+    const cacheBuster = Date.now()
+    
+    console.log(`[Surf Weeks Page] Fetching surf camps at ${new Date().toISOString()} (cache-bust: ${cacheBuster})`)
+    
     const { data: surfCamps, error: surfCampsError } = await supabaseAdmin
       .from('surf_camps')
       .select('*')
@@ -143,8 +149,14 @@ function getPriceDisplay(price: number) {
 }
 
 export default async function SurfWeeksPage() {
+  // Force fresh data fetch on every request (no caching)
   const surfWeeks = await getSurfWeeks()
   const sections = await getSurfWeeksSections()
+  
+  // Log for debugging in production
+  if (process.env.NODE_ENV === 'production') {
+    console.log(`[Surf Weeks Page] Rendering with ${surfWeeks.length} surf weeks at ${new Date().toISOString()}`)
+  }
   
   // Helper to get section by type from unified page_sections
   const getSection = (type: string) => sections.find((s: any) => s.section_type === type)
