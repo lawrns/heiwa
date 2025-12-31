@@ -130,14 +130,21 @@ async function getSurfWeeks() {
 }
 
 // Format date range (European format DD/MM/YYYY)
+// Use UTC to ensure consistent formatting between server and client (prevents hydration mismatches)
 function formatDateRange(startDate: string, endDate: string) {
-  const start = new Date(startDate)
-  const end = new Date(endDate)
+  // Parse dates as UTC to avoid timezone issues
+  const startParts = startDate.split('-').map(Number)
+  const endParts = endDate.split('-').map(Number)
   
+  const start = new Date(Date.UTC(startParts[0], startParts[1] - 1, startParts[2]))
+  const end = new Date(Date.UTC(endParts[0], endParts[1] - 1, endParts[2]))
+  
+  // Use UTC timezone explicitly to ensure consistent formatting
   const options: Intl.DateTimeFormatOptions = { 
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
+    timeZone: 'UTC'
   }
   
   return `${start.toLocaleDateString('en-GB', options)} – ${end.toLocaleDateString('en-GB', options)}`
