@@ -95,7 +95,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   const [galleryRoom, setGalleryRoom] = useState<Room | null>(null);
 
   // Fetch surf week details to get dates for availability check
-  const { surfCamps } = useSurfCamps();
+  const { surfCamps, loading: campsLoading } = useSurfCamps();
   const selectedSurfWeekData = surfCamps.find(camp => camp.id === state.selectedSurfWeek);
   
   // Fetch real room data WITH date filtering for surf weeks
@@ -120,20 +120,34 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   const surfCampStartDate = parseDate(selectedSurfWeekData?.startDate);
   const surfCampEndDate = parseDate(selectedSurfWeekData?.endDate);
   
-  // Only fetch rooms if we have valid dates and a selected surf week
-  const shouldFetchRooms = !!(
-    state.selectedSurfWeek &&
-    selectedSurfWeekData &&
-    surfCampStartDate &&
-    surfCampEndDate &&
-    surfCampStartDate < surfCampEndDate
-  );
+  // Debug logging to help diagnose issues
+  useEffect(() => {
+    console.log('🔍 SurfWeekRoomSelection Debug:', {
+      selectedSurfWeek: state.selectedSurfWeek,
+      surfCampsCount: surfCamps.length,
+      selectedSurfWeekData: selectedSurfWeekData ? {
+        id: selectedSurfWeekData.id,
+        name: selectedSurfWeekData.name,
+        startDate: selectedSurfWeekData.startDate,
+        endDate: selectedSurfWeekData.endDate,
+      } : null,
+      surfCampStartDate: surfCampStartDate?.toISOString(),
+      surfCampEndDate: surfCampEndDate?.toISOString(),
+      hasValidDates: !!(surfCampStartDate && surfCampEndDate && surfCampStartDate < surfCampEndDate),
+      campsLoading,
+    });
+  }, [state.selectedSurfWeek, selectedSurfWeekData, surfCampStartDate, surfCampEndDate, surfCamps.length, campsLoading]);
   
-  const { rooms, loading, error } = useRooms({
-    checkIn: shouldFetchRooms ? surfCampStartDate : null,
-    checkOut: shouldFetchRooms ? surfCampEndDate : null,
+  // Fetch rooms - use dates if available, otherwise fetch all rooms
+  // This ensures rooms are always displayed even if dates are missing
+  const { rooms, loading: roomsLoading, error: roomsError } = useRooms({
+    checkIn: (surfCampStartDate && surfCampEndDate && surfCampStartDate < surfCampEndDate) ? surfCampStartDate : null,
+    checkOut: (surfCampStartDate && surfCampEndDate && surfCampStartDate < surfCampEndDate) ? surfCampEndDate : null,
     guests: state.guests || 1
   });
+  
+  const loading = roomsLoading || campsLoading;
+  const error = roomsError;
   
   // Initialize guest IDs
   useEffect(() => {
@@ -612,9 +626,53 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
 
       {/* Room Assignment Cards */}
       <div className="space-y-4 md:space-y-5">
-        {surfWeekRooms.map((transformedRoom) => {
-          const originalRoom = rooms.find(r => r.id === transformedRoom.id);
-          if (!originalRoom) return null;
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading available rooms...</p>
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-800 font-medium mb-2">Error loading rooms</p>
+            <p className="text-red-600 text-sm">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Reload Page
+            </button>
+          </div>
+        ) : surfWeekRooms.length === 0 ? (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+            <p className="text-yellow-800 font-medium mb-2">No rooms available</p>
+            <p className="text-yellow-600 text-sm mb-4">
+              {!selectedSurfWeekData 
+                ? 'Surf week data not found. Please try selecting a different surf week.'
+                : !surfCampStartDate || !surfCampEndDate
+                ? 'Surf week dates are missing. Please contact support.'
+                : rooms.length === 0
+                ? 'No rooms are currently available for this surf week. Please try a different week or contact us for assistance.'
+                : 'No rooms match the current filters. Please try adjusting your selection.'
+              }
+            </p>
+            {process.env.NODE_ENV === 'development' && (
+              <div className="mt-4 p-3 bg-gray-100 rounded text-left text-xs font-mono">
+                <p className="font-semibold mb-2">Debug Info:</p>
+                <p>Selected Surf Week: {state.selectedSurfWeek || 'none'}</p>
+                <p>Surf Week Data: {selectedSurfWeekData ? `found (${selectedSurfWeekData.name})` : 'not found'}</p>
+                <p>Start Date: {surfCampStartDate?.toISOString() || 'invalid'}</p>
+                <p>End Date: {surfCampEndDate?.toISOString() || 'invalid'}</p>
+                <p>Rooms Count: {rooms.length}</p>
+                <p>Surf Week Rooms Count: {surfWeekRooms.length}</p>
+                <p>Loading: {loading ? 'yes' : 'no'}</p>
+                <p>Error: {error || 'none'}</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          surfWeekRooms.map((transformedRoom) => {
+            const originalRoom = rooms.find(r => r.id === transformedRoom.id);
+            if (!originalRoom) return null;
 
           const occupancy = getRoomOccupancy(transformedRoom.id);
           const availableBeds = getAvailableBeds(transformedRoom.id);
@@ -857,7 +915,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
               )}
             </div>
           );
-        })}
+          })
+        )}
       </div>
 
       {/* Assignment Summary */}
