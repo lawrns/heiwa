@@ -53,12 +53,12 @@ export function formatPrice(price: number): string {
 }
 
 /**
- * Format date for display
+ * Format date for display (European format DD/MM/YYYY)
  * Accepts both Date object and date string
  */
 export function formatDate(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-GB', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

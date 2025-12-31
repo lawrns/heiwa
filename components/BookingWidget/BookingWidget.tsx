@@ -359,12 +359,13 @@ export function BookingWidget({
                             <div className="flex justify-between items-center py-2 border-b border-gray-100">
                               <span className="text-sm text-gray-500">Dates</span>
                               <span className="font-medium text-gray-900 text-right">
-                                {state.dates.checkIn.toLocaleDateString('en-US', {
-                                  month: 'short',
-                                  day: 'numeric'
-                                })} - {state.dates.checkOut.toLocaleDateString('en-US', {
-                                  month: 'short',
-                                  day: 'numeric',
+                                {state.dates.checkIn.toLocaleDateString('en-GB', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric'
+                                })} - {state.dates.checkOut.toLocaleDateString('en-GB', {
+                                  day: '2-digit',
+                                  month: '2-digit',
                                   year: 'numeric'
                                 })}
                               </span>

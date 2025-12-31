@@ -231,10 +231,14 @@ export function useBookingFlow() {
   const maxStep = totalSteps;
 
   const nextStep = useCallback(() => {
-    if (state.currentStep < maxStep) {
+    // Recalculate step flow to ensure we have the latest flow
+    const currentStepFlow = getStepFlow();
+    const currentMaxStep = currentStepFlow.length;
+    
+    if (state.currentStep < currentMaxStep) {
       dispatch({ type: 'SET_STEP', payload: state.currentStep + 1 });
     }
-  }, [state.currentStep, maxStep]);
+  }, [state.currentStep, getStepFlow]);
 
   const prevStep = useCallback(() => {
     // Don't allow going back to skipped steps or from the first effective step

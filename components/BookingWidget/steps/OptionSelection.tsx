@@ -173,19 +173,22 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       actions.selectOption(optionId);
       lastSelectedOptionRef.current = optionId;
 
-      // Auto-advance for surf week selection
-      timeoutRef.current = setTimeout(() => {
-        // Use ref to check selection since state might not be updated yet
-        if (lastSelectedOptionRef.current === optionId) {
-          actions.nextStep();
-        }
-        timeoutRef.current = null;
-      }, 300);
-
-      // Also set the surf week state
+      // Also set the surf week state BEFORE auto-advancing
       if (state.experienceType === 'surf-week') {
         actions.setSurfWeek(optionId);
       }
+
+      // Auto-advance for surf week selection
+      // Note: The step flow should include 'surf-week-room-selection' after 'options'
+      // We add a small delay to ensure state updates are processed before advancing
+      timeoutRef.current = setTimeout(() => {
+        // Use ref to check selection since state might not be updated yet
+        if (lastSelectedOptionRef.current === optionId) {
+          // Advance to next step - should be 'surf-week-room-selection' for surf weeks
+          actions.nextStep();
+        }
+        timeoutRef.current = null;
+      }, 500); // Increased delay to ensure state updates are processed
     }
   };
 
@@ -928,7 +931,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
                     const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
                     return nights !== 1 ? 's' : '';
-                  })()} • {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
+                  })()} • {state.dates.checkIn.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })} - {state.dates.checkOut.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                 </p>
               </div>
 

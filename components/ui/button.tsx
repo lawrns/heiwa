@@ -90,10 +90,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     // Size classes - using static Tailwind values matching design tokens
+    // Note: Use explicit pl/pr instead of px to allow tailwind-merge to properly override
     const sizeClasses = {
-      default: "min-h-[40px] px-5 py-2.5",
-      sm: "min-h-[36px] px-4 py-2",
-      lg: "min-h-[44px] px-6 py-3",
+      default: "min-h-[40px] pl-5 pr-5 py-2.5",
+      sm: "min-h-[36px] pl-4 pr-4 py-2",
+      lg: "min-h-[44px] pl-6 pr-6 py-3",
       icon: "min-h-[44px] w-[44px]",
     }
 

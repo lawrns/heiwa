@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { SurfWeeksClient } from '@/components/surf-weeks/SurfWeeksClient'
 import { SurfWeeksTable } from '@/components/surf-weeks/SurfWeeksTable'
 import { BookNowButton } from '@/components/surf-weeks/BookNowButton'
-import { GoogleReviews } from '@/components/ui/google-reviews'
+import { GoogleReviews, GoogleRatingSummary } from '@/components/ui/google-reviews'
 
 // Disable caching to ensure surf camp active status changes are reflected immediately
 export const dynamic = 'force-dynamic'
@@ -123,18 +123,18 @@ async function getSurfWeeks() {
   }
 }
 
-// Format date range
+// Format date range (European format DD/MM/YYYY)
 function formatDateRange(startDate: string, endDate: string) {
   const start = new Date(startDate)
   const end = new Date(endDate)
   
   const options: Intl.DateTimeFormatOptions = { 
-    month: 'short', 
-    day: 'numeric',
+    day: '2-digit',
+    month: '2-digit',
     year: 'numeric'
   }
   
-  return `${start.toLocaleDateString('en-US', options)} – ${end.toLocaleDateString('en-US', options)}`
+  return `${start.toLocaleDateString('en-GB', options)} – ${end.toLocaleDateString('en-GB', options)}`
 }
 
 // Get price display
@@ -387,17 +387,7 @@ export default async function SurfWeeksPage() {
                 </div>
                 <span className="text-3xl font-bold ml-3">5.0</span>
               </div>
-              <div>
-                <p className="text-lg font-semibold text-gray-900">Based on 73 reviews</p>
-                <a 
-                  href="https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  Read our Google reviews →
-                </a>
-              </div>
+              <GoogleRatingSummary className="text-gray-900" />
             </div>
             
             {/* Book Now Button */}

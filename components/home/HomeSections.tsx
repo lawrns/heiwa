@@ -85,7 +85,7 @@ export async function HomeHero() {
         <div className="max-w-4xl">
           <AnimatedHeroHeading
             text={heroTitle}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6 drop-shadow-lg"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6 drop-shadow-lg"
             style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 700, letterSpacing: '-0.02em' }}
           />
 
@@ -150,8 +150,8 @@ export async function HomeSurfWeeks() {
       surfWeeks = surfCampsData.map((week: any) => {
         const startDate = new Date(week.start_date)
         const endDate = new Date(week.end_date)
-        const dateOptions: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' }
-        const dates = `${startDate.toLocaleDateString('en-US', dateOptions)} - ${endDate.toLocaleDateString('en-US', dateOptions)}`
+        const dateOptions: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' }
+        const dates = `${startDate.toLocaleDateString('en-GB', dateOptions)} – ${endDate.toLocaleDateString('en-GB', dateOptions)}`
 
         const totalSpots = week.total_spots || week.max_participants || 18
         const availableSpots = week.available_spots !== undefined ? week.available_spots : totalSpots

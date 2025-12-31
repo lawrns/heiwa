@@ -23,12 +23,12 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
     const end = new Date(endDate)
     
     const options: Intl.DateTimeFormatOptions = { 
-      month: 'short', 
-      day: 'numeric',
+      day: '2-digit',
+      month: '2-digit',
       year: 'numeric'
     }
     
-    return `${start.toLocaleDateString('en-US', options)} – ${end.toLocaleDateString('en-US', options)}`
+    return `${start.toLocaleDateString('en-GB', options)} – ${end.toLocaleDateString('en-GB', options)}`
   }
 
   const getPriceDisplay = (price: number) => {

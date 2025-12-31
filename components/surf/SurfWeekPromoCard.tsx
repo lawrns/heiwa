@@ -19,21 +19,11 @@ export function SurfWeekPromoCard({ surfWeek }: SurfWeekPromoCardProps) {
     const start = new Date(startDate)
     const end = new Date(endDate)
     
-    const getOrdinal = (day: number) => {
-      if (day > 3 && day < 21) return 'th'
-      switch (day % 10) {
-        case 1: return 'st'
-        case 2: return 'nd'
-        case 3: return 'rd'
-        default: return 'th'
-      }
-    }
+    // European format DD/MM/YYYY
+    const startFormatted = start.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    const endFormatted = end.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
     
-    const startFormatted = start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
-    const endFormatted = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
-    const year = end.getFullYear()
-    
-    return `${startFormatted}${getOrdinal(start.getDate())} to ${endFormatted}${getOrdinal(end.getDate())}, ${year}!`
+    return `${startFormatted} – ${endFormatted}`
   }
 
   const handleBookNow = () => {

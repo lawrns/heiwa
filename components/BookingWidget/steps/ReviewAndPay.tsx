@@ -261,11 +261,11 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
       dateObj.getUTCDate()
     ));
     
-    return utcDate.toLocaleDateString('en-US', {
-      weekday: 'short',
+    // European format DD/MM/YYYY
+    return utcDate.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
       year: 'numeric',
-      month: 'short',
-      day: 'numeric',
       timeZone: 'UTC'
     });
   };
