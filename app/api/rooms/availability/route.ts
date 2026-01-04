@@ -25,6 +25,8 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('start_date')
     const endDate = searchParams.get('end_date')
     const guests = parseInt(searchParams.get('guests') || '1')
+    // When true, this is a surf week room selection request - skip surf week blocking
+    const forSurfWeek = searchParams.get('for_surf_week') === 'true'
 
     console.log('🏠 Room availability check:', { startDate, endDate, guests })
 
@@ -167,7 +169,8 @@ export async function GET(request: NextRequest) {
     }
 
     // If dates overlap with surf weeks, block room-only bookings
-    const hasSurfWeekConflict = activeSurfWeeks.length > 0
+    // But allow room selection for surf week bookings (forSurfWeek=true)
+    const hasSurfWeekConflict = activeSurfWeeks.length > 0 && !forSurfWeek
 
     // Create a map of room names to IDs for matching
     const roomNameToId = new Map<string, string>()

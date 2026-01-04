@@ -157,10 +157,12 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
   
   // Fetch rooms - use primary dates (from state.dates first, then surf week data)
   // This ensures rooms are fetched with the same dates that are displayed
+  // forSurfWeek=true tells the API this is surf week room selection, not a room-only booking
   const { rooms, loading: roomsLoading, error: roomsError } = useRooms({
     checkIn: (primaryStartDate && primaryEndDate && primaryStartDate < primaryEndDate) ? primaryStartDate : null,
     checkOut: (primaryStartDate && primaryEndDate && primaryStartDate < primaryEndDate) ? primaryEndDate : null,
-    guests: state.guests || 1
+    guests: state.guests || 1,
+    forSurfWeek: true,
   });
   
   const loading = roomsLoading || campsLoading;

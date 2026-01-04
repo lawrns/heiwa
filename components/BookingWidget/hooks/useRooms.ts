@@ -7,6 +7,8 @@ interface UseRoomsParams {
   checkIn: Date | null;
   checkOut: Date | null;
   guests: number;
+  /** When true, skips surf week blocking logic in API (for surf week room selection) */
+  forSurfWeek?: boolean;
 }
 
 interface UseRoomsResult {
@@ -17,7 +19,7 @@ interface UseRoomsResult {
   retryCount: number;
 }
 
-export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoomsResult {
+export function useRooms({ checkIn, checkOut, guests, forSurfWeek = false }: UseRoomsParams): UseRoomsResult {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,6 +62,11 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
           end_date: endDate,
           participants: guests.toString(),
         });
+
+        // When fetching rooms for surf week room selection, skip the surf week blocking logic
+        if (forSurfWeek) {
+          params.set('for_surf_week', 'true');
+        }
       }
 
       // Create AbortController for timeout handling
@@ -150,7 +157,7 @@ export function useRooms({ checkIn, checkOut, guests }: UseRoomsParams): UseRoom
     } finally {
       setLoading(false);
     }
-  }, [checkInTime, checkOutTime, guests]);
+  }, [checkInTime, checkOutTime, guests, forSurfWeek]);
 
   useEffect(() => {
     // Log version to verify deployment
