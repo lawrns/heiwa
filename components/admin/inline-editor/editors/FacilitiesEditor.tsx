@@ -15,13 +15,13 @@ interface FacilitiesEditorProps {
 }
 
 export function FacilitiesEditor({ content, onChange }: FacilitiesEditorProps) {
-  // Prefer the field that has actual data, fall back to items for consistency
-  const facilities = (Array.isArray(content.items) && content.items.length > 0)
-    ? (content.items as Facility[])
-    : (Array.isArray(content.facilities) && content.facilities.length > 0)
-      ? (content.facilities as Facility[])
+  // Prefer 'facilities' field (matches database seed), fall back to 'items' for legacy data
+  const facilities = (Array.isArray(content.facilities) && content.facilities.length > 0)
+    ? (content.facilities as Facility[])
+    : (Array.isArray(content.items) && content.items.length > 0)
+      ? (content.items as Facility[])
       : []
-  const fieldName = 'items' // Always use 'items' for consistency
+  const fieldName = 'facilities' // Use 'facilities' to match database seed data
 
   const updateField = (field: string, value: string) => {
     onChange({ ...content, [field]: value })

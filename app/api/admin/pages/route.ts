@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdminAuth } from '@/lib/admin-auth'
+import { CMS_EDITABLE_SLUGS, VALID_SECTION_TYPES } from '@/lib/page-slugs'
 
 export async function GET(request: NextRequest) {
   try {
@@ -72,19 +73,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate page_slug
-    const validPages = ['flow', 'play', 'surf', 'surf-weeks', 'the-spot', 'about', 'contact']
-    if (!validPages.includes(page_slug)) {
+    if (!CMS_EDITABLE_SLUGS.includes(page_slug)) {
       return NextResponse.json(
-        { success: false, error: 'Invalid page_slug' },
+        { success: false, error: `Invalid page_slug. Must be one of: ${CMS_EDITABLE_SLUGS.join(', ')}` },
         { status: 400 }
       )
     }
 
     // Validate section_type - must match database CHECK constraint
-    const validSectionTypes = ['hero', 'intro', 'faq']
-    if (!validSectionTypes.includes(section_type)) {
+    if (!VALID_SECTION_TYPES.includes(section_type)) {
       return NextResponse.json(
-        { success: false, error: `Invalid section_type. Must be one of: ${validSectionTypes.join(', ')}` },
+        { success: false, error: `Invalid section_type. Must be one of: ${VALID_SECTION_TYPES.join(', ')}` },
         { status: 400 }
       )
     }

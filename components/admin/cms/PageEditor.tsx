@@ -72,17 +72,41 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
       setLoading(true)
       setError(null)
 
-      const response = await fetch(`/api/admin/pages?page_slug=${encodeURIComponent(pageSlug)}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      })
+      // Fetch sections and metadata in parallel
+      const [sectionsResponse, metadataResponse] = await Promise.all([
+        fetch(`/api/admin/pages?page_slug=${encodeURIComponent(pageSlug)}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        }),
+        fetch(`/api/cms/pages/${encodeURIComponent(pageSlug)}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        })
+      ])
 
-      const result = await response.json().catch(() => null)
-      if (!response.ok || !result?.success) {
-        throw new Error(result?.error || `Failed to load page data (${response.status})`)
+      const sectionsResult = await sectionsResponse.json().catch(() => null)
+      if (!sectionsResponse.ok || !sectionsResult?.success) {
+        throw new Error(sectionsResult?.error || `Failed to load page data (${sectionsResponse.status})`)
       }
 
-      const sections = (result.data || []) as any[]
+      const sections = (sectionsResult.data || []) as any[]
+
+      // Parse metadata response - may not exist for new pages
+      let seoTitle = pageTitles[pageSlug] || ''
+      let seoDescription = pageDescriptions[pageSlug] || ''
+      let featuredImage = ''
+      let lastModified = new Date().toISOString()
+
+      if (metadataResponse.ok) {
+        const metadataResult = await metadataResponse.json().catch(() => null)
+        if (metadataResult?.success && metadataResult?.data) {
+          const meta = metadataResult.data
+          seoTitle = meta.title || seoTitle
+          seoDescription = meta.meta_description || seoDescription
+          featuredImage = meta.og_image || ''
+          lastModified = meta.updated_at || lastModified
+        }
+      }
 
       setPageData({
         slug: pageSlug,
@@ -90,10 +114,10 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
         description: pageDescriptions[pageSlug] || '',
         sections: sections || [],
         metadata: {
-          seoTitle: pageTitles[pageSlug] || '',
-          seoDescription: pageDescriptions[pageSlug] || '',
-          featuredImage: '',
-          lastModified: new Date().toISOString()
+          seoTitle,
+          seoDescription,
+          featuredImage,
+          lastModified
         }
       })
     } catch (err) {

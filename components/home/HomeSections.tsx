@@ -15,7 +15,7 @@ async function getPageSection(type: string) {
     const { data, error } = await supabaseAdmin
       .from('page_sections')
       .select('*')
-      .eq('page_slug', 'home')
+      .eq('page_slug', 'homepage')
       .eq('section_type', type)
       .eq('is_active', true)
       .single()

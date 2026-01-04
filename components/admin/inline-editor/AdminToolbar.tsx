@@ -12,7 +12,7 @@ function getPageSlug(pathname: string): string | null {
   if (pathname.startsWith('/admin')) return null
 
   // Map paths to slugs
-  if (pathname === '/') return 'home'
+  if (pathname === '/') return 'homepage'
   if (pathname === '/flow') return 'flow'
   if (pathname === '/play') return 'play'
   if (pathname === '/surf') return 'surf'

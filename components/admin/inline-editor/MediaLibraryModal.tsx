@@ -98,9 +98,17 @@ export function MediaLibraryModal({
       })
 
       const result = await response.json()
-      
+
       if (!response.ok) {
-        const errorMessage = result?.message || result?.error || `Upload failed (${response.status})`
+        let errorMessage = result?.message || result?.error || `Upload failed (${response.status})`
+
+        // Provide helpful message for authentication errors
+        if (response.status === 401) {
+          errorMessage = 'Session expired. Please refresh the page and log in again to upload images.'
+        } else if (response.status === 403) {
+          errorMessage = 'You do not have permission to upload images. Please contact an administrator.'
+        }
+
         alert(errorMessage)
         console.error('Upload failed:', result)
         return
