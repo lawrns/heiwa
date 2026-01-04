@@ -116,11 +116,13 @@ export async function GET(request: NextRequest) {
     let roomAssignmentCounts: RoomAssignmentCount[] = []
 
     try {
+      // Find overlapping assignments: check_out > startDate (not >=) because
+      // guests checking out on startDate don't conflict with guests checking in
       const { data: assignments, error: assignmentsError } = await supabaseAdmin
         .from('room_assignments')
         .select('room_id')
-        .gte('check_out_date', startDate)
-        .lte('check_in_date', endDate)
+        .gt('check_out_date', startDate)
+        .lt('check_in_date', endDate)
 
       if (assignmentsError) {
         console.warn('Room assignments table error:', assignmentsError.message)
