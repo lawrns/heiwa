@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Archivo, Archivo_Narrow } from 'next/font/google'
 import NavigationWrapper from '@/components/navigation-wrapper'
 import { Footer } from '@/components/footer'
 import { BookingProvider } from '@/lib/booking-context'
@@ -11,10 +11,18 @@ import { WhatsAppButton } from '@/components/ui/whatsapp-button'
 import { AdminToolbar } from '@/components/admin/inline-editor/AdminToolbar'
 import './globals.css'
 
-const inter = Inter({
+const archivo = Archivo({
   subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap'
+  variable: '--font-archivo',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
+})
+
+const archivoNarrow = Archivo_Narrow({
+  subsets: ['latin'],
+  variable: '--font-archivo-narrow',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
 })
 
 export const metadata: Metadata = {
@@ -83,14 +91,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable}`} data-scroll-behavior="smooth">
+    <html lang="en" className={`${archivo.variable} ${archivoNarrow.variable}`} data-scroll-behavior="smooth">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
         <link rel="dns-prefetch" href="//pguipwhrxdzzrndbluxb.supabase.co" />
         <meta name="theme-color" content="#ec681c" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

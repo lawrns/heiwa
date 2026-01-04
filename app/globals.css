@@ -1,8 +1,8 @@
 @config "../tailwind.config.js";
 @import "tailwindcss";
 
-/* Premium typography from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&display=swap');
+/* Fonts are loaded via Next.js font optimization in layout.tsx */
+/* This eliminates FOUT by self-hosting and inlining font CSS */
 
 @layer base {
   :root {
@@ -312,14 +312,14 @@
   body {
     background-color: #FFFFFF;
     color: #1a1a1a;
-    font-family: 'Archivo', sans-serif;
+    font-family: var(--font-archivo), 'Archivo', sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Archivo Narrow', sans-serif;
+    font-family: var(--font-archivo-narrow), 'Archivo Narrow', sans-serif;
     font-weight: 700;
     color: #1a1a1a;
     letter-spacing: 0.02em;
