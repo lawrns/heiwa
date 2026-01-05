@@ -22,7 +22,8 @@ import {
   AlertCircle,
   Package,
   Percent,
-  Settings
+  Settings,
+  Globe
 } from 'lucide-react'
 
 interface ErrorBoundaryState {
@@ -115,6 +116,7 @@ const navigationItems = [
   { name: 'Calendar', href: '/admin/calendar', icon: Calendar },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
   { name: 'CMS', href: '/admin/cms', icon: FileText },
+  { name: 'Site Settings', href: '/admin/cms/site-settings', icon: Globe },
   { name: 'Blog', href: '/admin/blog', icon: BookOpen },
   { name: 'Tax Categories', href: '/admin/settings/tax-categories', icon: Percent },
   { name: 'Booking Widget', href: '/admin/settings/booking-widget', icon: Settings },

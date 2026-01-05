@@ -1,21 +1,34 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { MessageCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useBooking } from '@/lib/booking-context'
 
 interface WhatsAppButtonProps {
-  phoneNumber?: string
   message?: string
   className?: string
 }
 
-export function WhatsAppButton({ 
-  phoneNumber = '+351912193785', 
+export function WhatsAppButton({
   message = 'Hi! I\'m interested in booking at Heiwa House. Can you help me?',
   className = ''
 }: WhatsAppButtonProps) {
   const { hasActiveBooking, isBookingOpen } = useBooking()
+  const [phoneNumber, setPhoneNumber] = useState('+351912193785')
+
+  useEffect(() => {
+    fetch('/api/cms/settings?key=whatsapp_number')
+      .then(res => res.json())
+      .then(result => {
+        if (result.success && result.data.whatsapp_number) {
+          // Remove quotes and spaces from the number
+          const num = String(result.data.whatsapp_number).replace(/["\s]/g, '')
+          setPhoneNumber(num)
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   const handleClick = () => {
     const encodedMessage = encodeURIComponent(message)

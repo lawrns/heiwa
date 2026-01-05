@@ -15,10 +15,20 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   const [fetchedItems, setFetchedItems] = useState<NavigationItem[]>([])
   const [activitiesOpen, setActivitiesOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const [siteSettings, setSiteSettings] = useState<Record<string, string>>({})
   const { openBooking } = useBooking()
 
   useEffect(() => {
     setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/cms/settings')
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) setSiteSettings(result.data)
+      })
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -34,7 +44,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   // Filter out activity items that should be in dropdown (including SURF) and THE SPOT
   const items = useMemo(() => {
     const allItems = initialItems || fetchedItems
-    return allItems.filter(item => 
+    return allItems.filter(item =>
       !['/play', '/flow', '/surf', '/the-spot'].includes(item.path)
     )
   }, [initialItems, fetchedItems])
@@ -63,17 +73,21 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   // Check if we're on the homepage to apply special layout
   // Initialize from currentPath immediately to prevent flash of wrong layout
   const [isHomepage, setIsHomepage] = useState(() => currentPath === '/')
-  
+
   useEffect(() => {
     setIsHomepage(currentPath === '/')
   }, [currentPath])
+
+  // Dynamic site settings with fallbacks
+  const logoUrl = siteSettings.logo_url || 'https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909543_heiwalogo.webp'
+  const phoneNumber = siteSettings.contact_phone || '+351 912 193 785'
 
   return (
     <nav
       className={cn(
         'fixed top-0 left-0 right-0 transition-all duration-300',
-        isHomepage 
-          ? 'bg-black/20 backdrop-blur-md' 
+        isHomepage
+          ? 'bg-black/20 backdrop-blur-md'
           : 'bg-gray-800 backdrop-blur-sm',
         className
       )}
@@ -116,7 +130,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 onClick={closeMenu}
               >
                 <Image
-                  src="https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/general/1763932909543_heiwalogo.webp"
+                  src={logoUrl}
                   alt="Heiwa House"
                   width={134}
                   height={45}
@@ -131,7 +145,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             {/* Right Side - Activities Dropdown, Location, Phone & Book Button */}
             <div className="hidden lg:flex items-center space-x-6 flex-1 justify-end">
               {/* Activities Dropdown */}
-              <div 
+              <div
                 className="relative"
                 onMouseEnter={() => setActivitiesOpen(true)}
                 onMouseLeave={() => setActivitiesOpen(false)}
@@ -193,7 +207,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
               {/* Phone Number */}
               <div className="flex items-center text-sm text-white">
-                <span className="tracking-wide">+351 912 193 785</span>
+                <span className="tracking-wide">{phoneNumber}</span>
               </div>
 
               {/* Book Now Button */}
@@ -226,9 +240,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
       </div>
 
       {/* Mobile Navigation Overlay */}
-      <MobileNavOverlay 
-        isOpen={isOpen} 
-        onClose={closeMenu} 
+      <MobileNavOverlay
+        isOpen={isOpen}
+        onClose={closeMenu}
         items={[
           { path: '/', name: 'HOME' },
           { path: '/rooms', name: 'ROOM RENTALS' },

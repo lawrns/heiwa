@@ -28,6 +28,8 @@ import { ActivityGridEditor } from './editors/ActivityGridEditor'
 import { GalleryEditor } from './editors/GalleryEditor'
 import { IntroEditor } from './editors/IntroEditor'
 import { CTAEditor } from './editors/CTAEditor'
+import { StepsEditor } from './editors/StepsEditor'
+import { AddonsEditor } from './editors/AddonsEditor'
 import { cn } from '@/lib/utils'
 
 interface Section {
@@ -107,6 +109,14 @@ const SECTION_TEMPLATES: Record<string, { name: string; defaultContent: Record<s
     name: 'Text Block',
     defaultContent: { title: '', content: '' },
   },
+  steps: {
+    name: 'Steps',
+    defaultContent: { title: 'How It Works', subtitle: '', steps: [] },
+  },
+  addons: {
+    name: 'Add-ons',
+    defaultContent: { title: 'Add-ons', subtitle: '', addons: [] },
+  },
 }
 
 // Determine editor type based on section type
@@ -124,6 +134,8 @@ function getEditorType(sectionType: string): string {
   if (sectionType === 'intro') return 'intro'
   if (sectionType === 'cta') return 'cta'
   if (sectionType === 'facilities') return 'facilities'
+  if (sectionType === 'steps') return 'steps'
+  if (sectionType === 'addons') return 'addons'
   return 'text'
 }
 
@@ -452,6 +464,10 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
         return <IntroEditor {...props} />
       case 'cta':
         return <CTAEditor {...props} />
+      case 'steps':
+        return <StepsEditor {...props} />
+      case 'addons':
+        return <AddonsEditor {...props} />
       default:
         return <TextEditor {...props} />
     }
