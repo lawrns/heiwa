@@ -3,12 +3,48 @@ import { Mail, Phone, MapPin, ArrowLeft } from 'lucide-react'
 import { Navigation } from '@/components/navigation'
 import { ContactForm } from '@/components/contact-form'
 import { getSiteSettings, DEFAULT_SETTINGS } from '@/lib/site-settings'
+import { supabaseAdmin } from '@/lib/supabase'
+import { PageSection } from '@/lib/cms-schemas'
 
-// Revalidate every 60 seconds to pick up settings changes
+// Revalidate every 60 seconds to pick up settings/CMS changes
 export const revalidate = 60
+
+// Fetch CMS content for contact page
+async function getContactSections(): Promise<PageSection[]> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('page_sections')
+      .select('*')
+      .eq('page_slug', 'contact')
+      .eq('is_active', true)
+      .order('order_index', { ascending: true })
+
+    if (error || !data) {
+      console.warn('CMS sections not available for contact, using defaults')
+      return []
+    }
+
+    return data as PageSection[]
+  } catch (error) {
+    console.warn('Error fetching CMS sections:', error)
+    return []
+  }
+}
 
 export default async function ContactPage() {
   const settings = await getSiteSettings()
+  const sections = await getContactSections()
+
+  // Helper to get section by type
+  const getSection = (type: string) => sections.find(s => s.section_type === type)
+
+  // Extract CMS sections
+  const heroSection = getSection('hero')
+
+  // Type-safe content accessors with fallbacks
+  const heroContent = heroSection?.content as { title?: string; subtitle?: string; imageUrl?: string } | undefined
+  const heroTitle = heroContent?.title || 'Get in Touch'
+  const heroSubtitle = heroContent?.subtitle || "Have questions about our surf camps, rooms, or want to plan your perfect Portuguese adventure? We'd love to hear from you!"
 
   const phone = settings.contact_phone || DEFAULT_SETTINGS.contact_phone
   const email = settings.contact_email || DEFAULT_SETTINGS.contact_email
@@ -39,10 +75,10 @@ export default async function ContactPage() {
               Back to Home
             </Link>
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Get in Touch
+              {heroTitle}
             </h1>
             <p className="text-xl text-white/90 max-w-2xl">
-              Have questions about our surf camps, rooms, or want to plan your perfect Portuguese adventure? We&apos;d love to hear from you!
+              {heroSubtitle}
             </p>
           </div>
         </section>

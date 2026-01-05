@@ -30,6 +30,7 @@ import { IntroEditor } from './editors/IntroEditor'
 import { CTAEditor } from './editors/CTAEditor'
 import { StepsEditor } from './editors/StepsEditor'
 import { AddonsEditor } from './editors/AddonsEditor'
+import { LegalContentEditor } from './editors/LegalContentEditor'
 import { cn } from '@/lib/utils'
 
 interface Section {
@@ -117,6 +118,10 @@ const SECTION_TEMPLATES: Record<string, { name: string; defaultContent: Record<s
     name: 'Add-ons',
     defaultContent: { title: 'Add-ons', subtitle: '', addons: [] },
   },
+  legal_content: {
+    name: 'Legal Content',
+    defaultContent: { title: '', lastUpdated: '', content: '' },
+  },
 }
 
 // Determine editor type based on section type
@@ -136,6 +141,7 @@ function getEditorType(sectionType: string): string {
   if (sectionType === 'facilities') return 'facilities'
   if (sectionType === 'steps') return 'steps'
   if (sectionType === 'addons') return 'addons'
+  if (sectionType === 'legal_content') return 'legalContent'
   return 'text'
 }
 
@@ -468,6 +474,8 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
         return <StepsEditor {...props} />
       case 'addons':
         return <AddonsEditor {...props} />
+      case 'legalContent':
+        return <LegalContentEditor {...props} />
       default:
         return <TextEditor {...props} />
     }

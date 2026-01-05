@@ -134,7 +134,7 @@ export async function GET(request: NextRequest) {
     // Fetch calendar events from calendar_events table
     const { data: calendarEvents, error: calendarEventsError } = await supabaseAdmin
       .from('calendar_events')
-      .select('id, title, description, start_date, end_date, event_type, location, color, created_at')
+      .select('id, title, description, start_date, end_date, event_type, location, color, blocks_bookings, created_at')
       .order('created_at', { ascending: false })
 
     if (!calendarEventsError && calendarEvents) {
@@ -148,6 +148,7 @@ export async function GET(request: NextRequest) {
           event_type: event.event_type || 'general',
           location: event.location || 'Heiwa House',
           color: event.color || '#3B82F6',
+          blocks_bookings: event.blocks_bookings || false,
           created_at: event.created_at
         })
       })
@@ -185,7 +186,7 @@ export async function POST(request: NextRequest) {
     if (authError) return authError
 
     const body = await request.json()
-    const { title, description, start_date, end_date, event_type, location, color } = body
+    const { title, description, start_date, end_date, event_type, location, color, blocks_bookings } = body
 
     if (!title || !start_date) {
       return NextResponse.json(
@@ -204,6 +205,7 @@ export async function POST(request: NextRequest) {
       event_type: event_type || 'general',
       location: location || 'Heiwa House',
       color: color || '#3B82F6',
+      blocks_bookings: blocks_bookings || false,
     }
 
     try {

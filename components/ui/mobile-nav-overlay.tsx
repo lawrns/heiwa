@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { X, Bed, ChevronDown } from 'lucide-react'
+import { X, Bed, ChevronDown, Phone } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createPortal } from 'react-dom'
 import { useBooking } from '@/lib/booking-context'
@@ -12,9 +12,10 @@ interface MobileNavOverlayProps {
   onClose: () => void
   items: Array<{ name: string; path: string }>
   currentPath: string
+  phoneNumber?: string
 }
 
-export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: MobileNavOverlayProps) {
+export function MobileNavOverlay({ isOpen, onClose, items, currentPath, phoneNumber }: MobileNavOverlayProps) {
   const { openBooking } = useBooking()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const [mounted, setMounted] = useState(false)
@@ -232,7 +233,17 @@ export function MobileNavOverlay({ isOpen, onClose, items, currentPath }: Mobile
             </nav>
 
             {/* Footer CTA */}
-            <div className="sticky bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-gray-900">
+            <div className="sticky bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-gray-900 space-y-3">
+              {/* Phone Number */}
+              {phoneNumber && (
+                <a
+                  href={`tel:${phoneNumber.replace(/\s/g, '')}`}
+                  className="flex items-center justify-center gap-2 text-white py-2 hover:text-orange-400 transition-colors"
+                >
+                  <Phone className="w-4 h-4" />
+                  <span>{phoneNumber}</span>
+                </a>
+              )}
               <button
                 className="w-full px-4 py-3 bg-accent hover:bg-accent-dark text-white font-semibold rounded-lg transition-colors uppercase text-base flex items-center justify-center gap-2"
                 onClick={() => {

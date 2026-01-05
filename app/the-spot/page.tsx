@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { supabaseAdmin } from '@/lib/supabase'
-import { PageSection } from '@/lib/cms-schemas'
+import { PageSection, FacilityGalleryContent } from '@/lib/cms-schemas'
 
 export const metadata: Metadata = {
   title: 'The Spot - Heiwa House Facilities & Activities',
@@ -41,6 +41,16 @@ export default async function TheSpotPage() {
   // Helper to get section by type
   const getSection = (type: string) => sections.find(s => s.section_type === type)
 
+  // Helper to get facility gallery by galleryId
+  const getGallery = (galleryId: string): FacilityGalleryContent | undefined => {
+    const gallerySections = sections.filter(s => s.section_type === 'facility_gallery')
+    const gallery = gallerySections.find(s => {
+      const content = s.content as FacilityGalleryContent
+      return content.galleryId === galleryId
+    })
+    return gallery?.content as FacilityGalleryContent | undefined
+  }
+
   // Extract CMS sections
   const heroSection = getSection('hero')
   const introSection = getSection('intro')
@@ -50,8 +60,16 @@ export default async function TheSpotPage() {
   const heroContent = heroSection?.content as { title?: string; description?: string; imageUrl?: string } | undefined
   const introContent = introSection?.content as { title?: string; content?: string } | undefined
   const ctaContent = ctaSection?.content as { title?: string; description?: string; buttonText?: string; buttonUrl?: string } | undefined
-  // Venue images (property overview)
-  const venueImages = [
+
+  // Get CMS galleries with fallbacks
+  const propertyGallery = getGallery('property-overview')
+  const yogaGallery = getGallery('yoga-dome')
+  const skateparkGallery = getGallery('skatepark')
+  const poolGallery = getGallery('pool')
+  const gamesGallery = getGallery('games')
+
+  // Fallback images (used if CMS gallery not available)
+  const defaultVenueImages = [
     '/images/dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.jpg',
     '/images/DSC03491.jpg',
     '/images/Freedomroutes-rooms-50.jpg',
@@ -64,16 +82,14 @@ export default async function TheSpotPage() {
     '/images/DSC04163.jpg',
   ]
 
-  // Yoga dome images
-  const yogaImages = [
+  const defaultYogaImages = [
     '/images/DSC02767-scaled.jpg',
     '/images/DSC03081-scaled.jpg',
     '/images/DSC03521-scaled.jpg',
     '/images/DSC03530-scaled.jpg',
   ]
 
-  // Skatepark & activities images
-  const skateparkImages = [
+  const defaultSkateparkImages = [
     '/images/DSC04325.jpg',
     '/images/DSF7498.jpg',
     '/images/DSC01794.jpg',
@@ -81,17 +97,22 @@ export default async function TheSpotPage() {
     '/images/DSF8322-scaled.jpg',
   ]
 
-  // Pool images
-  const poolImages = [
+  const defaultPoolImages = [
     '/images/DSC08054-scaled.jpg',
     '/images/DSC08600-scaled.jpg',
   ]
 
-  // Games & recreation images
-  const gamesImages = [
+  const defaultGamesImages = [
     '/images/DSC08736-scaled.jpg',
     '/images/DSF8298-scaled.jpg',
   ]
+
+  // Use CMS images if available, otherwise fallback to defaults
+  const venueImages = propertyGallery?.images ?? defaultVenueImages
+  const yogaImages = yogaGallery?.images ?? defaultYogaImages
+  const skateparkImages = skateparkGallery?.images ?? defaultSkateparkImages
+  const poolImages = poolGallery?.images ?? defaultPoolImages
+  const gamesImages = gamesGallery?.images ?? defaultGamesImages
 
   return (
     <div className="min-h-screen pt-20 bg-white">
@@ -148,12 +169,16 @@ export default async function TheSpotPage() {
       {/* Property Overview Carousel */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4 text-center">Explore the Property</h2>
-          <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">Discover every corner of Heiwa House, from our beachfront location to our state-of-the-art facilities</p>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4 text-center">
+            {propertyGallery?.title || "Explore the Property"}
+          </h2>
+          <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+            {propertyGallery?.description || "Discover every corner of Heiwa House, from our beachfront location to our state-of-the-art facilities"}
+          </p>
           <div className="max-w-5xl mx-auto">
             <ImageCarousel
               images={venueImages}
-              alt="Heiwa House Property Overview"
+              alt={propertyGallery?.title || "Heiwa House Property Overview"}
               aspectRatio="aspect-video"
             />
           </div>
@@ -165,9 +190,11 @@ export default async function TheSpotPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Heiwa Flow - Yoga Dome</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                {yogaGallery?.title || "Heiwa Flow - Yoga Dome"}
+              </h2>
               <p className="text-lg text-gray-600 leading-relaxed mb-4">
-                Our stunning yoga dome overlooks the Portuguese countryside with ocean breezes and natural light. A sacred space designed for yoga, meditation, and spiritual practice.
+                {yogaGallery?.description || "Our stunning yoga dome overlooks the Portuguese countryside with ocean breezes and natural light. A sacred space designed for yoga, meditation, and spiritual practice."}
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-3">
@@ -191,7 +218,7 @@ export default async function TheSpotPage() {
             <div>
               <ImageCarousel
                 images={yogaImages}
-                alt="Yoga Dome"
+                alt={yogaGallery?.title || "Yoga Dome"}
                 aspectRatio="aspect-video"
               />
             </div>
@@ -206,14 +233,16 @@ export default async function TheSpotPage() {
             <div className="order-2 lg:order-1">
               <ImageCarousel
                 images={skateparkImages}
-                alt="Skatepark and Ramps"
+                alt={skateparkGallery?.title || "Skatepark and Ramps"}
                 aspectRatio="aspect-video"
               />
             </div>
             <div className="order-1 lg:order-2">
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Heiwa Play - Skatepark</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                {skateparkGallery?.title || "Heiwa Play - Skatepark"}
+              </h2>
               <p className="text-lg text-gray-600 leading-relaxed mb-4">
-                Our professional-grade skatepark features custom-built ramps, bowls, and obstacles for all skill levels. Whether you&apos;re a beginner or pro, there&apos;s something for everyone.
+                {skateparkGallery?.description || "Our professional-grade skatepark features custom-built ramps, bowls, and obstacles for all skill levels. Whether you're a beginner or pro, there's something for everyone."}
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-3">
@@ -243,9 +272,11 @@ export default async function TheSpotPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Swimming Pool</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                {poolGallery?.title || "Swimming Pool"}
+              </h2>
               <p className="text-lg text-gray-600 leading-relaxed mb-4">
-                Relax by our crystal-clear swimming pool, perfect for cooling off after an intense surf session or yoga class. Sunbathing, swimming, and socializing in a beautiful setting.
+                {poolGallery?.description || "Relax by our crystal-clear swimming pool, perfect for cooling off after an intense surf session or yoga class. Sunbathing, swimming, and socializing in a beautiful setting."}
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-3">
@@ -269,7 +300,7 @@ export default async function TheSpotPage() {
             <div>
               <ImageCarousel
                 images={poolImages}
-                alt="Swimming Pool"
+                alt={poolGallery?.title || "Swimming Pool"}
                 aspectRatio="aspect-video"
               />
             </div>
@@ -284,14 +315,16 @@ export default async function TheSpotPage() {
             <div className="order-2 lg:order-1">
               <ImageCarousel
                 images={gamesImages}
-                alt="Games and Recreation"
+                alt={gamesGallery?.title || "Games and Recreation"}
                 aspectRatio="aspect-video"
               />
             </div>
             <div className="order-1 lg:order-2">
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Games & Recreation</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                {gamesGallery?.title || "Games & Recreation"}
+              </h2>
               <p className="text-lg text-gray-600 leading-relaxed mb-4">
-                Beyond the water and slopes, we offer plenty of entertainment options. Board games, volleyball, ping pong, and more to keep the fun going.
+                {gamesGallery?.description || "Beyond the water and slopes, we offer plenty of entertainment options. Board games, volleyball, ping pong, and more to keep the fun going."}
               </p>
               <ul className="space-y-3 text-gray-600">
                 <li className="flex items-start gap-3">

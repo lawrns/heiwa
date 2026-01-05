@@ -1069,14 +1069,43 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                               <>
                                 <div className="flex items-center gap-1">
                                   <Users size={14} />
-                                  <span>Up to {option.maxOccupancy} guests</span>
+                                  <span>Up to {option.maxOccupancy || option.capacity} guests</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <MapPin size={14} />
-                                  <span className="capitalize">{option.type} room</span>
+                                  <span className="capitalize">{option.type || option.booking_type} room</span>
                                 </div>
                               </>
                             </div>
+
+                            {/* Occupancy display for per-bed rooms (dorms) */}
+                            {(option.booking_type === 'perBed' || option.bookingType === 'per_bed') && option.capacity > 0 && (
+                              <div className="flex items-center gap-2">
+                                {(() => {
+                                  const capacity = option.capacity || option.maxOccupancy || 0;
+                                  const availableBeds = option.available_beds ?? option.availableBeds ?? capacity;
+                                  const occupiedBeds = capacity - availableBeds;
+                                  const occupancyPercent = capacity > 0 ? Math.round((occupiedBeds / capacity) * 100) : 0;
+
+                                  return (
+                                    <>
+                                      <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                        <div
+                                          className={`h-full rounded-full transition-all ${
+                                            occupancyPercent >= 80 ? 'bg-red-500' :
+                                            occupancyPercent >= 50 ? 'bg-accent' : 'bg-green-500'
+                                          }`}
+                                          style={{ width: `${occupancyPercent}%` }}
+                                        />
+                                      </div>
+                                      <span className="text-sm text-gray-600">
+                                        {occupancyPercent}% booked {availableBeds > 0 && `• ${availableBeds} bed${availableBeds !== 1 ? 's' : ''} left`}
+                                      </span>
+                                    </>
+                                  );
+                                })()}
+                              </div>
+                            )}
 
                             {/* Amenities/Includes */}
                             {amenities && amenities.length > 0 && (

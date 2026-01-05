@@ -10,7 +10,8 @@ import type { NavigationItem } from '@/lib/types'
 export function Footer() {
   const pathname = usePathname()
   const [navigationItems, setNavigationItems] = useState<NavigationItem[]>([])
-  const [settings, setSettings] = useState<Record<string, any>>({})
+  const [settings, setSettings] = useState<Record<string, string>>({})
+  const [isSettingsLoading, setIsSettingsLoading] = useState(true)
   const isAdminRoute = pathname.startsWith('/admin')
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export function Footer() {
         if (result.success) setSettings(result.data)
       })
       .catch(() => {})
+      .finally(() => setIsSettingsLoading(false))
   }, [isAdminRoute])
 
   const email = settings.contact_email || 'info@heiwahouse.com'
@@ -114,22 +116,35 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">About Us</h3>
             <div className="space-y-3 text-gray-300 text-sm">
-              <p>
-                <a
-                  href={`mailto:${email}`}
-                  className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
-                >
-                  E. {email}
-                </a>
-              </p>
-              <p>
-                <a
-                  href={`tel:${phone.replace(/\s/g, '')}`}
-                  className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
-                >
-                  T. {phone}
-                </a>
-              </p>
+              {isSettingsLoading ? (
+                <>
+                  <p>
+                    <span className="inline-block w-40 h-4 bg-white/10 rounded animate-pulse" />
+                  </p>
+                  <p>
+                    <span className="inline-block w-32 h-4 bg-white/10 rounded animate-pulse" />
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    <a
+                      href={`mailto:${email}`}
+                      className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                    >
+                      E. {email}
+                    </a>
+                  </p>
+                  <p>
+                    <a
+                      href={`tel:${phone.replace(/\s/g, '')}`}
+                      className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                    >
+                      T. {phone}
+                    </a>
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -16,6 +16,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   const [activitiesOpen, setActivitiesOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const [siteSettings, setSiteSettings] = useState<Record<string, string>>({})
+  const [isSettingsLoading, setIsSettingsLoading] = useState(true)
   const { openBooking } = useBooking()
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
         if (result.success) setSiteSettings(result.data)
       })
       .catch(() => {})
+      .finally(() => setIsSettingsLoading(false))
   }, [])
 
   useEffect(() => {
@@ -207,7 +209,11 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
 
               {/* Phone Number */}
               <div className="flex items-center text-sm text-white">
-                <span className="tracking-wide">{phoneNumber}</span>
+                {isSettingsLoading ? (
+                  <span className="inline-block w-32 h-4 bg-white/20 rounded animate-pulse" />
+                ) : (
+                  <span className="tracking-wide">{phoneNumber}</span>
+                )}
               </div>
 
               {/* Book Now Button */}
@@ -250,6 +256,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
           { path: '#', name: 'ACTIVITIES' }, // This will trigger the dropdown
         ]}
         currentPath={currentPath || '/'}
+        phoneNumber={phoneNumber}
       />
     </nav>
   )

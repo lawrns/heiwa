@@ -18,7 +18,8 @@ export const SECTION_TYPES = [
   'text_block', 'image_gallery', 'video_embed',
   'testimonials', 'custom',
   'local_break', 'surf_lessons',
-  'surf_conditions', 'world_class_surfing'
+  'surf_conditions', 'world_class_surfing',
+  'legal_content', 'facility_gallery'
 ] as const
 
 export type SectionType = typeof SECTION_TYPES[number]
@@ -206,6 +207,25 @@ export const WorldClassSurfingContentSchema = z.object({
 
 export type WorldClassSurfingContent = z.infer<typeof WorldClassSurfingContentSchema>
 
+// Legal Content Section (for Privacy/Terms pages)
+export const LegalContentSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  content: z.string().min(1, 'Content is required'),
+  lastUpdated: z.string().optional()
+})
+
+export type LegalContent = z.infer<typeof LegalContentSchema>
+
+// Facility Gallery Section (for The Spot page - simple image carousel)
+export const FacilityGalleryContentSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().optional(),
+  images: z.array(z.string()).min(1, 'At least one image URL is required'),
+  galleryId: z.string().min(1, 'Gallery ID is required')
+})
+
+export type FacilityGalleryContent = z.infer<typeof FacilityGalleryContentSchema>
+
 // Map section types to their schemas
 export const SECTION_SCHEMAS: Record<SectionType, z.ZodSchema> = {
   hero: HeroContentSchema,
@@ -224,7 +244,9 @@ export const SECTION_SCHEMAS: Record<SectionType, z.ZodSchema> = {
   local_break: LocalBreakContentSchema,
   surf_lessons: SurfLessonsContentSchema,
   surf_conditions: SurfConditionsContentSchema,
-  world_class_surfing: WorldClassSurfingContentSchema
+  world_class_surfing: WorldClassSurfingContentSchema,
+  legal_content: LegalContentSchema,
+  facility_gallery: FacilityGalleryContentSchema
 }
 
 // Page Section (database row)
@@ -385,6 +407,17 @@ export const DEFAULT_SECTION_CONTENT: Record<SectionType, Record<string, unknown
     ],
     mapImageUrl: '/images/heiwalocation.webp',
     footerText: 'The perfect location: With Ericeira to the south and Peniche to the north, you\'ll always find clean waves, no matter the swell direction or wind conditions. Our daily surf trips take you to the best spots based on the day\'s forecast.'
+  },
+  legal_content: {
+    title: 'Legal Content',
+    content: '<p>Add your legal content here...</p>',
+    lastUpdated: ''
+  },
+  facility_gallery: {
+    title: 'Gallery',
+    description: '',
+    images: [],
+    galleryId: ''
   }
 }
 
@@ -406,5 +439,7 @@ export const SECTION_TYPE_LABELS: Record<SectionType, string> = {
   local_break: 'Local Break Info',
   surf_lessons: 'Surf Lessons',
   surf_conditions: 'Surf Conditions',
-  world_class_surfing: 'World-Class Surfing'
+  world_class_surfing: 'World-Class Surfing',
+  legal_content: 'Legal Content',
+  facility_gallery: 'Facility Gallery'
 }
