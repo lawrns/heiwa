@@ -118,6 +118,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
 
         const response = await fetch('/api/cms/media', {
           method: 'POST',
+          credentials: 'include',
           body: form,
         })
 

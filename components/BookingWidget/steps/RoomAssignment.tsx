@@ -325,12 +325,19 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                       <h4 className="text-xl font-semibold text-gray-900">{room.name}</h4>
                       <p className="text-gray-600 text-base">{room.description}</p>
                     </div>
-                    <div className="text-right">
-                      <div className="text-xl font-bold text-gray-900">
-                        €{room.pricePerNight}
+                    {state.experienceType !== 'surf-week' && (
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-gray-900">
+                          €{room.pricePerNight}
+                        </div>
+                        <div className="text-base text-gray-600">per night</div>
                       </div>
-                      <div className="text-base text-gray-600">per night</div>
-                    </div>
+                    )}
+                    {state.experienceType === 'surf-week' && (
+                      <div className="text-right">
+                        <div className="text-base text-accent font-medium">Included in package</div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

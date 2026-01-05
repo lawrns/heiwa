@@ -8,6 +8,7 @@ import AdminInput from '@/components/admin/ui/AdminInput'
 import AdminTextarea from '@/components/admin/ui/AdminTextarea'
 import AdminSelect from '@/components/admin/ui/AdminSelect'
 import RichTextEditor from './RichTextEditor'
+import { ImagePicker } from '@/components/admin/inline-editor/ImagePicker'
 import { PageSection } from '@/lib/cms-types'
 
 interface SectionEditModalProps {
@@ -177,12 +178,11 @@ export default function SectionEditModal({
               placeholder="/contact"
               maxLength={200}
             />
-            <AdminInput
-              label="Background Image URL"
+            <ImagePicker
+              label="Background Image"
               value={formData.image_url}
               onChange={(value) => handleInputChange('image_url', value)}
-              placeholder="/images/hero-bg.jpg"
-              maxLength={200}
+              placeholder="Select background image..."
             />
           </div>
         )
@@ -210,12 +210,11 @@ export default function SectionEditModal({
                 height={200}
               />
             </div>
-            <AdminInput
-              label="Image URL"
+            <ImagePicker
+              label="Image"
               value={formData.image_url}
               onChange={(value) => handleInputChange('image_url', value)}
-              placeholder="/images/intro-image.jpg"
-              maxLength={200}
+              placeholder="Select image..."
             />
           </div>
         )
@@ -353,12 +352,11 @@ export default function SectionEditModal({
                 height={200}
               />
             </div>
-            <AdminInput
-              label="Image URL"
+            <ImagePicker
+              label="Image"
               value={formData.image_url}
               onChange={(value) => handleInputChange('image_url', value)}
-              placeholder="/images/content-image.jpg"
-              maxLength={200}
+              placeholder="Select image..."
             />
             <AdminSelect
               label="Image Position"

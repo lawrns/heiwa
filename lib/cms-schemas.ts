@@ -17,7 +17,8 @@ export const SECTION_TYPES = [
   'activity_highlight', 'activity_grid',
   'text_block', 'image_gallery', 'video_embed',
   'testimonials', 'custom',
-  'local_break', 'surf_lessons'
+  'local_break', 'surf_lessons',
+  'surf_conditions', 'world_class_surfing'
 ] as const
 
 export type SectionType = typeof SECTION_TYPES[number]
@@ -176,6 +177,35 @@ export const SurfLessonsContentSchema = z.object({
 
 export type SurfLessonsContent = z.infer<typeof SurfLessonsContentSchema>
 
+// Surf Conditions Section (What People Can Surf Near Heiwa)
+export const SurfConditionsContentSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  subtitle: z.string().optional(),
+  epicImageUrl: z.string().optional(),
+  epicImageCaption: z.string().optional(),
+  videoUrl: z.string().optional(),
+  videoCaption: z.string().optional()
+})
+
+export type SurfConditionsContent = z.infer<typeof SurfConditionsContentSchema>
+
+// World Class Surfing Section (Ericeira & Peniche)
+export const WorldClassSurfingContentSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  subtitle: z.string().optional(),
+  locations: z.array(z.object({
+    name: z.string().min(1, 'Location name is required'),
+    distance: z.string().optional(),
+    imageUrl: z.string().optional(),
+    description: z.string().min(1, 'Description is required'),
+    highlights: z.array(z.string()).optional()
+  })).optional(),
+  mapImageUrl: z.string().optional(),
+  footerText: z.string().optional()
+})
+
+export type WorldClassSurfingContent = z.infer<typeof WorldClassSurfingContentSchema>
+
 // Map section types to their schemas
 export const SECTION_SCHEMAS: Record<SectionType, z.ZodSchema> = {
   hero: HeroContentSchema,
@@ -192,7 +222,9 @@ export const SECTION_SCHEMAS: Record<SectionType, z.ZodSchema> = {
   testimonials: CustomContentSchema,
   custom: CustomContentSchema,
   local_break: LocalBreakContentSchema,
-  surf_lessons: SurfLessonsContentSchema
+  surf_lessons: SurfLessonsContentSchema,
+  surf_conditions: SurfConditionsContentSchema,
+  world_class_surfing: WorldClassSurfingContentSchema
 }
 
 // Page Section (database row)
@@ -313,6 +345,46 @@ export const DEFAULT_SECTION_CONTENT: Record<SectionType, Record<string, unknown
     carouselImages: ['/images/surf4.jpg', '/images/surf3.jpg'],
     buttonText: 'Book a Surf Lesson',
     buttonUrl: '/surf-weeks'
+  },
+  surf_conditions: {
+    title: 'What People Can Surf Near Heiwa',
+    subtitle: 'Experience the softer side of Santa Cruz waves - perfect for learning and progression',
+    epicImageUrl: '/images/surf4.jpg',
+    epicImageCaption: 'once in a blue moon it is like this',
+    videoUrl: 'https://www.youtube.com/embed/9nhQiKGsgHg?si=WWXSAJs0SAnR0wHY&controls=0',
+    videoCaption: 'Small and mid surf in Santa Cruz - realistic conditions for most visitors'
+  },
+  world_class_surfing: {
+    title: 'World-Class Surfing Nearby',
+    subtitle: 'Heiwa House sits in the sweet spot between Ericeira and Peniche - two of Europe\'s premier surf destinations. Both are just 30 minutes away, giving you access to dozens of world-class breaks.',
+    locations: [
+      {
+        name: 'Ericeira',
+        distance: '~30 min drive',
+        imageUrl: '/images/surf3.jpg',
+        description: 'Europe\'s first World Surfing Reserve and home to legendary breaks like Ribeira d\'Ilhas, Coxos, and Pedra Branca. From mellow beach breaks to powerful reef breaks, Ericeira has it all.',
+        highlights: [
+          'Multiple world-class point breaks and reef breaks',
+          'Beginner-friendly beaches like Foz do Lizandro',
+          'Consistent year-round swell',
+          'Charming Portuguese fishing village atmosphere'
+        ]
+      },
+      {
+        name: 'Peniche',
+        distance: '~30 min drive',
+        imageUrl: '/images/surf4.jpg',
+        description: 'Home to Supertubos, one of the world\'s best beach breaks and regular host of the World Surf League. The peninsula geography means there\'s always a sheltered spot with good waves.',
+        highlights: [
+          'Famous for powerful, hollow waves at Supertubos',
+          'Sheltered spots for all swell directions and winds',
+          'Spots for every skill level around the peninsula',
+          'WSL Championship Tour venue'
+        ]
+      }
+    ],
+    mapImageUrl: '/images/heiwalocation.webp',
+    footerText: 'The perfect location: With Ericeira to the south and Peniche to the north, you\'ll always find clean waves, no matter the swell direction or wind conditions. Our daily surf trips take you to the best spots based on the day\'s forecast.'
   }
 }
 
@@ -332,5 +404,7 @@ export const SECTION_TYPE_LABELS: Record<SectionType, string> = {
   testimonials: 'Testimonials',
   custom: 'Custom Section',
   local_break: 'Local Break Info',
-  surf_lessons: 'Surf Lessons'
+  surf_lessons: 'Surf Lessons',
+  surf_conditions: 'Surf Conditions',
+  world_class_surfing: 'World-Class Surfing'
 }

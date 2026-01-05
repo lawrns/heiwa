@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Loader2, ExternalLink } from 'lucide-react'
+import { Loader2, ExternalLink, Info, Settings } from 'lucide-react'
 
 interface Activity {
   id: string
@@ -69,6 +69,31 @@ export function ActivityGridEditor({ content, onChange }: ActivityGridEditorProp
 
   return (
     <div className="space-y-4">
+      {/* Info Box - Activities are managed separately */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm text-blue-800 font-medium mb-1">
+              Activities are managed separately
+            </p>
+            <p className="text-xs text-blue-700 mb-3">
+              This section displays activities from the database. Use the filters below to choose which category and tier to show. To add, edit, or remove activities, go to the Activities admin.
+            </p>
+            <a
+              href="/admin/activities"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+            >
+              <Settings className="w-4 h-4" />
+              Manage Activities
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
         <input
@@ -102,7 +127,7 @@ export function ActivityGridEditor({ content, onChange }: ActivityGridEditorProp
           <option value="flow">Flow</option>
           <option value="surf">Surf</option>
         </select>
-        <p className="text-xs text-gray-500 mt-1">Activities are pulled from the database filtered by this category.</p>
+        <p className="text-xs text-gray-500 mt-1">Filter: Only show activities with this category.</p>
       </div>
 
       <div>
@@ -152,8 +177,16 @@ export function ActivityGridEditor({ content, onChange }: ActivityGridEditorProp
         ) : error ? (
           <div className="text-sm text-red-500 py-2">{error}</div>
         ) : activities.length === 0 ? (
-          <div className="text-sm text-gray-500 py-2 bg-gray-50 rounded-lg px-3">
-            No activities found for this category and tier combination.
+          <div className="text-sm text-gray-500 py-3 bg-gray-50 rounded-lg px-3">
+            <p className="mb-2">No activities found for this category and tier combination.</p>
+            <a
+              href="/admin/activities"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-orange-600 hover:text-orange-700 underline"
+            >
+              Add activities in the Activities admin
+            </a>
           </div>
         ) : (
           <div className="space-y-2 max-h-48 overflow-y-auto">

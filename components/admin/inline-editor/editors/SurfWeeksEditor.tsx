@@ -53,11 +53,18 @@ export function SurfWeeksEditor({ content, onChange }: SurfWeeksEditorProps) {
         <textarea
           value={bullets.join('\n')}
           onChange={e => {
-            const next = e.target.value
+            // Split by newlines but preserve text as-is during editing
+            // Only filter out completely empty lines, not lines with spaces
+            const next = e.target.value.split('\n')
+            updateField('bullets', next)
+          }}
+          onBlur={e => {
+            // Trim whitespace and filter empty lines only on blur (when user finishes editing)
+            const cleaned = e.target.value
               .split('\n')
               .map(s => s.trim())
               .filter(Boolean)
-            updateField('bullets', next)
+            updateField('bullets', cleaned)
           }}
           rows={7}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"

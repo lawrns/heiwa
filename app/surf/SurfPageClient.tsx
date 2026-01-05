@@ -74,6 +74,8 @@ export default function SurfPageClient() {
   const faqSection = getSection('faq')
   const localBreakSection = getSection('local_break')
   const surfLessonsSection = getSection('surf_lessons')
+  const surfConditionsSection = getSection('surf_conditions')
+  const worldClassSurfingSection = getSection('world_class_surfing')
 
   // Type-safe content accessors
   const heroContent = heroSection?.content as { title?: string; description?: string; videoUrl?: string; imageUrl?: string } | undefined
@@ -92,6 +94,27 @@ export default function SurfPageClient() {
     carouselImages?: string[]
     buttonText?: string
     buttonUrl?: string
+  } | undefined
+  const surfConditionsContent = surfConditionsSection?.content as {
+    title?: string
+    subtitle?: string
+    epicImageUrl?: string
+    epicImageCaption?: string
+    videoUrl?: string
+    videoCaption?: string
+  } | undefined
+  const worldClassSurfingContent = worldClassSurfingSection?.content as {
+    title?: string
+    subtitle?: string
+    locations?: Array<{
+      name: string
+      distance?: string
+      imageUrl?: string
+      description: string
+      highlights?: string[]
+    }>
+    mapImageUrl?: string
+    footerText?: string
   } | undefined
 
   // FAQ items - Use CMS if available, otherwise fallback to defaults
@@ -162,6 +185,50 @@ export default function SurfPageClient() {
     '/images/DSC03081-scaled.jpg',
     '/images/DSC02099-scaled.jpg',
   ]
+
+  // Default surf conditions content
+  const defaultSurfConditions = {
+    title: 'What People Can Surf Near Heiwa',
+    subtitle: 'Experience the softer side of Santa Cruz waves - perfect for learning and progression',
+    epicImageUrl: '/images/surf4.jpg',
+    epicImageCaption: 'once in a blue moon it is like this',
+    videoUrl: 'https://www.youtube.com/embed/9nhQiKGsgHg?si=WWXSAJs0SAnR0wHY&controls=0',
+    videoCaption: 'Small and mid surf in Santa Cruz - realistic conditions for most visitors'
+  }
+
+  // Default world-class surfing content
+  const defaultWorldClassSurfing = {
+    title: 'World-Class Surfing Nearby',
+    subtitle: 'Heiwa House sits in the sweet spot between Ericeira and Peniche - two of Europe\'s premier surf destinations. Both are just 30 minutes away, giving you access to dozens of world-class breaks.',
+    locations: [
+      {
+        name: 'Ericeira',
+        distance: '~30 min drive',
+        imageUrl: '/images/surf3.jpg',
+        description: 'Europe\'s first World Surfing Reserve and home to legendary breaks like Ribeira d\'Ilhas, Coxos, and Pedra Branca. From mellow beach breaks to powerful reef breaks, Ericeira has it all.',
+        highlights: [
+          'Multiple world-class point breaks and reef breaks',
+          'Beginner-friendly beaches like Foz do Lizandro',
+          'Consistent year-round swell',
+          'Charming Portuguese fishing village atmosphere'
+        ]
+      },
+      {
+        name: 'Peniche',
+        distance: '~30 min drive',
+        imageUrl: '/images/surf4.jpg',
+        description: 'Home to Supertubos, one of the world\'s best beach breaks and regular host of the World Surf League. The peninsula geography means there\'s always a sheltered spot with good waves.',
+        highlights: [
+          'Famous for powerful, hollow waves at Supertubos',
+          'Sheltered spots for all swell directions and winds',
+          'Spots for every skill level around the peninsula',
+          'WSL Championship Tour venue'
+        ]
+      }
+    ],
+    mapImageUrl: '/images/heiwalocation.webp',
+    footerText: 'The perfect location: With Ericeira to the south and Peniche to the north, you\'ll always find clean waves, no matter the swell direction or wind conditions. Our daily surf trips take you to the best spots based on the day\'s forecast.'
+  }
 
   return (
     <div className="min-h-screen pt-20 bg-white">
@@ -322,15 +389,15 @@ export default function SurfPageClient() {
         </div>
       </section>
 
-      {/* What People Can Surf Near Heiwa */}
-      <section className="py-20 bg-gray-50">
+      {/* What People Can Surf Near Heiwa - CMS Editable */}
+      <section id="section-surf_conditions" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              What People Can Surf Near Heiwa
+              {surfConditionsContent?.title || defaultSurfConditions.title}
             </h2>
             <p className="text-lg text-gray-600">
-              Experience the softer side of Santa Cruz waves - perfect for learning and progression
+              {surfConditionsContent?.subtitle || defaultSurfConditions.subtitle}
             </p>
           </div>
 
@@ -339,7 +406,7 @@ export default function SurfPageClient() {
             <div className="space-y-4">
               <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
                 <Image
-                  src="/images/surf4.jpg"
+                  src={surfConditionsContent?.epicImageUrl || defaultSurfConditions.epicImageUrl}
                   alt="Epic Santa Cruz surf day"
                   fill
                   className="object-cover"
@@ -347,7 +414,7 @@ export default function SurfPageClient() {
                 />
               </div>
               <p className="text-sm italic text-gray-600 text-center">
-                once in a blue moon it is like this
+                {surfConditionsContent?.epicImageCaption || defaultSurfConditions.epicImageCaption}
               </p>
             </div>
 
@@ -356,7 +423,7 @@ export default function SurfPageClient() {
               <iframe
                 width="560"
                 height="315"
-                src="https://www.youtube.com/embed/9nhQiKGsgHg?si=WWXSAJs0SAnR0wHY&controls=0"
+                src={surfConditionsContent?.videoUrl || defaultSurfConditions.videoUrl}
                 title="YouTube video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"
@@ -365,7 +432,7 @@ export default function SurfPageClient() {
                 className="absolute inset-0 w-full h-full"
               />
               <p className="absolute bottom-4 left-4 right-4 text-white text-sm bg-black/50 px-3 py-2 rounded backdrop-blur-sm">
-                Small and mid surf in Santa Cruz - realistic conditions for most visitors
+                {surfConditionsContent?.videoCaption || defaultSurfConditions.videoCaption}
               </p>
             </div>
           </div>
@@ -413,109 +480,61 @@ export default function SurfPageClient() {
       </section>
 
 
-      {/* World-Class Surfing Section */}
-      <section className="py-20 bg-gray-50">
+      {/* World-Class Surfing Section - CMS Editable */}
+      <section id="section-world_class_surfing" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              World-Class Surfing Nearby
+              {worldClassSurfingContent?.title || defaultWorldClassSurfing.title}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Heiwa House sits in the sweet spot between Ericeira and Peniche - two of Europe&apos;s premier surf destinations.
-              Both are just 30 minutes away, giving you access to dozens of world-class breaks.
+              {worldClassSurfingContent?.subtitle || defaultWorldClassSurfing.subtitle}
             </p>
           </div>
 
-          {/* Ericeira & Peniche Cards */}
+          {/* Location Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {/* Ericeira Card */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="relative aspect-video">
-                <Image
-                  src="/images/surf3.jpg"
-                  alt="Ericeira Surfing"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <MapPin className="w-5 h-5 text-accent" />
-                  <h3 className="text-2xl font-bold text-gray-900">Ericeira</h3>
-                  <span className="ml-auto text-sm text-gray-500">~30 min drive</span>
+            {(worldClassSurfingContent?.locations || defaultWorldClassSurfing.locations).map((location, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div className="relative aspect-video">
+                  <Image
+                    src={location.imageUrl || '/images/surf3.jpg'}
+                    alt={`${location.name} Surfing`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
                 </div>
-                <p className="text-gray-600 mb-4">
-                  Europe&apos;s first World Surfing Reserve and home to legendary breaks like Ribeira d&apos;Ilhas,
-                  Coxos, and Pedra Branca. From mellow beach breaks to powerful reef breaks, Ericeira has it all.
-                </p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-0.5">•</span>
-                    <span>Multiple world-class point breaks and reef breaks</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-0.5">•</span>
-                    <span>Beginner-friendly beaches like Foz do Lizandro</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-0.5">•</span>
-                    <span>Consistent year-round swell</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-0.5">•</span>
-                    <span>Charming Portuguese fishing village atmosphere</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Peniche Card */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="relative aspect-video">
-                <Image
-                  src="/images/surf4.jpg"
-                  alt="Peniche Surfing"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-              <div className="p-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <MapPin className="w-5 h-5 text-accent" />
-                  <h3 className="text-2xl font-bold text-gray-900">Peniche</h3>
-                  <span className="ml-auto text-sm text-gray-500">~30 min drive</span>
+                <div className="p-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <MapPin className="w-5 h-5 text-accent" />
+                    <h3 className="text-2xl font-bold text-gray-900">{location.name}</h3>
+                    {location.distance && (
+                      <span className="ml-auto text-sm text-gray-500">{location.distance}</span>
+                    )}
+                  </div>
+                  <p className="text-gray-600 mb-4">
+                    {location.description}
+                  </p>
+                  {location.highlights && location.highlights.length > 0 && (
+                    <ul className="space-y-2 text-sm text-gray-600">
+                      {location.highlights.map((highlight, hIndex) => (
+                        <li key={hIndex} className="flex items-start gap-2">
+                          <span className="text-accent mt-0.5">•</span>
+                          <span>{highlight}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-                <p className="text-gray-600 mb-4">
-                  Home to Supertubos, one of the world&apos;s best beach breaks and regular host of the World Surf League.
-                  The peninsula geography means there&apos;s always a sheltered spot with good waves.
-                </p>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-0.5">•</span>
-                    <span>Famous for powerful, hollow waves at Supertubos</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-0.5">•</span>
-                    <span>Sheltered spots for all swell directions and winds</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-0.5">•</span>
-                    <span>Spots for every skill level around the peninsula</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-0.5">•</span>
-                    <span>WSL Championship Tour venue</span>
-                  </li>
-                </ul>
               </div>
-            </div>
+            ))}
           </div>
 
           {/* Interactive Map - replaced with custom image */}
           <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
             <Image
-              src="/images/heiwalocation.webp"
+              src={worldClassSurfingContent?.mapImageUrl || defaultWorldClassSurfing.mapImageUrl}
               alt="Surf spots map - Ericeira to Peniche"
               fill
               className="object-cover"
@@ -525,9 +544,7 @@ export default function SurfPageClient() {
 
           <div className="mt-8 text-center">
             <p className="text-gray-600 max-w-2xl mx-auto">
-              <strong>The perfect location:</strong> With Ericeira to the south and Peniche to the north,
-              you&apos;ll always find clean waves, no matter the swell direction or wind conditions.
-              Our daily surf trips take you to the best spots based on the day&apos;s forecast.
+              <strong>The perfect location:</strong> {worldClassSurfingContent?.footerText || defaultWorldClassSurfing.footerText}
             </p>
           </div>
         </div>

@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   description: 'Discover Heiwa House - a premium surf destination with yoga dome, skatepark, beach access, and world-class facilities in Santa Cruz, Portugal.',
 }
 
-// Revalidate every 60 seconds to pick up CMS changes quickly
-export const revalidate = 60
+// Revalidate every 10 seconds to pick up CMS/SEO changes quickly
+export const revalidate = 10
 
 // Fetch CMS content for the-spot page using new page_sections table
 async function getTheSpotSections(): Promise<PageSection[]> {

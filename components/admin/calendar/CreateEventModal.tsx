@@ -28,6 +28,7 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
     event_type: 'general',
     location: '',
     color: '#3B82F6',
+    blocks_bookings: false,
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,6 +72,7 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
         event_type: 'general',
         location: '',
         color: '#3B82F6',
+        blocks_bookings: false,
       })
     } catch (error: any) {
       console.error('Error creating event:', error)
@@ -200,6 +202,19 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
                 onChange={(color) => setFormData(prev => ({ ...prev, color }))}
                 label="Event Color"
               />
+            </div>
+
+            <div className="flex items-center space-x-2 pt-2">
+              <input
+                type="checkbox"
+                id="blocks_bookings"
+                checked={formData.blocks_bookings}
+                onChange={(e) => setFormData(prev => ({ ...prev, blocks_bookings: e.target.checked }))}
+                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <Label htmlFor="blocks_bookings" className="text-sm font-normal cursor-pointer">
+                Block bookings during this event
+              </Label>
             </div>
           </div>
 

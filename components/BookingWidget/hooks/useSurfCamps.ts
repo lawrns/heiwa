@@ -57,7 +57,9 @@ export function useSurfCamps(): UseSurfCampsResult {
           isActive: camp.is_active !== false,
           // Enhanced fields
           priceFrom: camp.price || 0,
-          confirmedBooked: camp.enrolled_count || 0,
+          // Use booked_count (accounts for enrollments + blocked beds) for accurate display
+          // Fall back to enrolled_count for backwards compatibility
+          confirmedBooked: camp.booked_count ?? camp.enrolled_count ?? 0,
           availableSpots: camp.available_spots ?? camp.max_participants ?? 0
         }));
 

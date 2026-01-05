@@ -80,19 +80,23 @@ export async function GET(request: NextRequest) {
 
     // Check for existing bookings that overlap with requested dates
     // Bookings table uses room_type (text/room name) instead of room_id
+    // Include guests count for perBed room types to calculate bed usage
     interface RoomBooking {
       room_type: string
       check_in: string
       check_out: string
+      guests: number
     }
     let existingBookings: RoomBooking[] = []
 
     try {
+      // Overlap logic: check_out > startDate AND check_in < endDate
+      // Use gt (not gte) for check_out because checkout day = checkin day is not a conflict
       const { data, error: bookingsError } = await supabaseAdmin
         .from('bookings')
-        .select('room_type, check_in, check_out')
-        .gte('check_out', startDate)
-        .lte('check_in', endDate)
+        .select('room_type, check_in, check_out, guests')
+        .gt('check_out', startDate)
+        .lt('check_in', endDate)
         .in('status', ['pending', 'confirmed'])
 
       if (bookingsError) {
@@ -100,7 +104,10 @@ export async function GET(request: NextRequest) {
         console.warn('Bookings table error:', bookingsError.message)
         existingBookings = []
       } else {
-        existingBookings = data || []
+        existingBookings = (data || []).map((b: { room_type: string; check_in: string; check_out: string; guests?: number }) => ({
+          ...b,
+          guests: b.guests || 1 // Default to 1 guest if not specified
+        }))
       }
     } catch (error) {
       console.warn('Error checking bookings, assuming no bookings exist:', error)
@@ -182,6 +189,13 @@ export async function GET(request: NextRequest) {
       }
     })
 
+    // Calculate beds used by bookings per room (for perBed rooms)
+    const bedsUsedByBookings = new Map<string, number>()
+    existingBookings.forEach(booking => {
+      const current = bedsUsedByBookings.get(booking.room_type) || 0
+      bedsUsedByBookings.set(booking.room_type, current + booking.guests)
+    })
+
     // Filter available rooms - check both date availability AND capacity
     const availableRooms = (allRooms || []).filter((room: { capacity?: number; id?: string; name?: string; booking_type?: string; bookingType?: string; [key: string]: unknown }) => {
       const roomCapacity = room.capacity || 0
@@ -211,10 +225,13 @@ export async function GET(request: NextRequest) {
       }
 
       // For "perBed" room types (dorms), check if there's remaining capacity
+      // Must account for BOTH room_assignments AND bookings table
       if (roomBookingType === 'perBed') {
-        const remainingBeds = roomCapacity - assignmentCount
+        const bedsFromBookings = bedsUsedByBookings.get(room.name || '') || 0
+        const totalBedsUsed = assignmentCount + bedsFromBookings
+        const remainingBeds = roomCapacity - totalBedsUsed
         if (remainingBeds < guests) {
-          console.log(`🚫 Room ${room.name} (perBed) insufficient: ${remainingBeds} beds available, ${guests} requested`)
+          console.log(`🚫 Room ${room.name} (perBed) insufficient: ${remainingBeds} beds available (${assignmentCount} assignments + ${bedsFromBookings} bookings), ${guests} requested`)
           return false
         }
       }
@@ -270,10 +287,13 @@ export async function GET(request: NextRequest) {
 
       // Calculate available beds/spots for this room
       const roomBookingType = r.booking_type || r.bookingType || 'whole'
-      const assignedCount = roomAssignmentCounts.find(a => a.room_id === r.id)?.assignment_count || 0
-      // Always calculate available beds based on capacity minus assignments
+      const assignmentsCount = roomAssignmentCounts.find(a => a.room_id === r.id)?.assignment_count || 0
+      const bookingsCount = bedsUsedByBookings.get(r.name) || 0
+      // Total assigned count includes BOTH room_assignments AND bookings
+      const totalAssignedCount = assignmentsCount + bookingsCount
+      // Calculate available beds based on capacity minus ALL assignments (assignments + bookings)
       // This works for both perBed (dorms) and whole/private rooms
-      const availableBeds = Math.max(0, r.capacity - assignedCount)
+      const availableBeds = Math.max(0, r.capacity - totalAssignedCount)
 
       return {
         id: r.id,
@@ -281,8 +301,8 @@ export async function GET(request: NextRequest) {
         description: r.description || `Comfortable accommodation with capacity for ${r.capacity} guests`,
         capacity: r.capacity,
         booking_type: roomBookingType,
-        available_beds: availableBeds, // NEW: remaining spots for this room
-        assigned_count: assignedCount, // NEW: how many already assigned
+        available_beds: availableBeds, // remaining spots for this room
+        assigned_count: totalAssignedCount, // total already assigned (room_assignments + bookings)
         price_per_night: pricePerNight,
         price_per_night_standard: r.pricing?.standard || null,
         price_per_night_off_season: r.pricing?.offSeason || null,

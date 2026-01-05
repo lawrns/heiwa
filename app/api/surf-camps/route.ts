@@ -184,6 +184,11 @@ export async function GET(request: NextRequest) {
         const spotsBasedOnEnrollment = totalSpots - (enrolledCount || 0)
         const availableSpots = Math.max(0, Math.min(spotsBasedOnEnrollment, dynamicAvailableBeds))
         
+        // Calculate the effective "booked" count for UI display
+        // This accounts for BOTH enrollments AND beds blocked by room assignments
+        // booked_count = total_spots - available_spots (reflects true unavailability)
+        const bookedCount = totalSpots - availableSpots
+
         return {
           id: camp.id,
           name: camp.name,
@@ -194,8 +199,9 @@ export async function GET(request: NextRequest) {
           max_participants: totalSpots,
           total_spots: totalSpots,
           available_spots: availableSpots,
-          available_beds: dynamicAvailableBeds, // NEW: actual bed availability
-          enrolled_count: enrolledCount || 0,
+          available_beds: dynamicAvailableBeds, // actual bed availability
+          enrolled_count: enrolledCount || 0, // kept for backwards compatibility
+          booked_count: bookedCount, // NEW: effective booked count for UI (enrollments + blocked beds)
           is_full: availableSpots <= 0,
           level: camp.level || 'all',
           category: camp.category,
