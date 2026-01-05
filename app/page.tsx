@@ -1,20 +1,26 @@
 import { Suspense } from 'react'
-import { 
-  HomeHero, 
-  HomeSurfWeeks, 
-  HomeAbout, 
-  HomeRooms, 
-  HomeHosts, 
-  HomeReviews, 
-  HomeFacilities 
+import {
+  HomeHero,
+  HomeSurfWeeks,
+  HomeAbout,
+  HomeRooms,
+  HomeHosts,
+  HomeReviews,
+  HomeFacilities
 } from '@/components/home/HomeSections'
-import { 
-  SectionSkeleton, 
-  CardGridSkeleton, 
-  VideoSectionSkeleton, 
-  RoomsGridSkeleton, 
-  SurfWeeksTableSkeleton 
+import {
+  SectionSkeleton,
+  CardGridSkeleton,
+  VideoSectionSkeleton,
+  RoomsGridSkeleton,
+  SurfWeeksTableSkeleton
 } from '@/components/ui/cms-section-skeleton'
+import { generatePageMetadata } from '@/lib/page-metadata'
+
+// Generate SEO metadata from database
+export async function generateMetadata() {
+  return generatePageMetadata('homepage')
+}
 
 // Revalidate every 60 seconds to pick up CMS changes quickly
 export const revalidate = 60

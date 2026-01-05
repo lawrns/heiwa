@@ -5,6 +5,12 @@ import { ContactForm } from '@/components/contact-form'
 import { getSiteSettings, DEFAULT_SETTINGS } from '@/lib/site-settings'
 import { supabaseAdmin } from '@/lib/supabase'
 import { PageSection } from '@/lib/cms-schemas'
+import { generatePageMetadata } from '@/lib/page-metadata'
+
+// Generate SEO metadata from database
+export async function generateMetadata() {
+  return generatePageMetadata('contact')
+}
 
 // Revalidate every 60 seconds to pick up settings/CMS changes
 export const revalidate = 60

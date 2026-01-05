@@ -1,13 +1,13 @@
-import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ImageCarousel } from '@/components/ui/image-carousel'
 import { supabaseAdmin } from '@/lib/supabase'
 import { PageSection, FacilityGalleryContent } from '@/lib/cms-schemas'
+import { generatePageMetadata } from '@/lib/page-metadata'
 
-export const metadata: Metadata = {
-  title: 'The Spot - Heiwa House Facilities & Activities',
-  description: 'Discover Heiwa House - a premium surf destination with yoga dome, skatepark, beach access, and world-class facilities in Santa Cruz, Portugal.',
+// Generate SEO metadata from database
+export async function generateMetadata() {
+  return generatePageMetadata('the-spot')
 }
 
 // Revalidate every 10 seconds to pick up CMS/SEO changes quickly

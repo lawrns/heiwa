@@ -1,10 +1,10 @@
-import { Metadata } from 'next'
 import { supabase } from '@/lib/supabase'
 import { LegalContent } from '@/lib/cms-schemas'
+import { generatePageMetadata } from '@/lib/page-metadata'
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy - Heiwa House',
-  description: 'Privacy Policy for Heiwa House - How we collect, use, and protect your personal information',
+// Generate SEO metadata from database
+export async function generateMetadata() {
+  return generatePageMetadata('privacy')
 }
 
 // Default fallback content

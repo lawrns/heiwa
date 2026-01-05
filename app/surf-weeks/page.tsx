@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Image from 'next/image'
 import { Play, Bed, UtensilsCrossed, Activity, MapPin, Waves, Star, Mail, Calendar, Users, CheckCircle } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
@@ -7,14 +6,15 @@ import { SurfWeeksClient } from '@/components/surf-weeks/SurfWeeksClient'
 import { SurfWeeksTable } from '@/components/surf-weeks/SurfWeeksTable'
 import { BookNowButton } from '@/components/surf-weeks/BookNowButton'
 import { GoogleReviews, GoogleRatingSummary } from '@/components/ui/google-reviews'
+import { generatePageMetadata } from '@/lib/page-metadata'
 
 // Disable caching to ensure surf camp active status changes are reflected immediately
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-export const metadata: Metadata = {
-  title: 'Surf Weeks in Santa Cruz, Portugal - Learn Surfing With Heiwa',
-  description: 'We strive to deliver an unforgettable surf week experience both in and out of the water. Join us for surf, yoga, amazing food, skateboarding, and more.',
+// Generate SEO metadata from database
+export async function generateMetadata() {
+  return generatePageMetadata('surf-weeks')
 }
 
 // Fetch CMS content for surf-weeks page from unified page_sections table

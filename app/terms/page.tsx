@@ -1,8 +1,8 @@
-import { Metadata } from 'next'
+import { generatePageMetadata } from '@/lib/page-metadata'
 
-export const metadata: Metadata = {
-  title: 'Terms and Conditions - Heiwa House',
-  description: 'Terms and Conditions for booking and staying at Heiwa House, Santa Cruz, Portugal',
+// Generate SEO metadata from database
+export async function generateMetadata() {
+  return generatePageMetadata('terms')
 }
 
 interface LegalContent {
