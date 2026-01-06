@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { FAQ_PAGE_SLUGS } from '@/lib/page-slugs'
 
+interface FAQUpdateData {
+  question?: string
+  answer?: string
+  category?: string
+  page_slug?: string
+  order_index?: number
+  is_active?: boolean
+  updated_by?: string
+  updated_at: string
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -84,7 +95,7 @@ export async function PUT(
         is_active,
         updated_by,
         updated_at: new Date().toISOString()
-      } as any)
+      } as FAQUpdateData)
       .eq('id', id)
       .select()
       .single()

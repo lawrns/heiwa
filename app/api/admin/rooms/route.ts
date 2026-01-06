@@ -2,6 +2,44 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
 
+interface BedType {
+  type?: string
+  size?: string
+  count?: number
+}
+
+interface Room {
+  id: string
+  name: string
+  description?: string
+  capacity: number
+  pricing?: {
+    standard?: number
+    offSeason?: number
+    surfCamp?: number
+  }
+  images?: string[]
+  is_active?: boolean
+  amenities?: string[]
+  booking_type?: string
+  bed_types?: BedType[]
+}
+
+interface TransformedRoom {
+  id: string
+  name: string
+  description: string
+  capacity: number
+  price_per_night: number | null
+  featured_image: string | null
+  images: string[]
+  is_active: boolean
+  amenities: string[]
+  booking_type: string
+  pricing: Room['pricing']
+  bed_types: BedType[]
+}
+
 // Admin API endpoint for getting all rooms (including inactive)
 export async function GET() {
   try {
@@ -27,7 +65,7 @@ export async function GET() {
     console.log('✅ Admin: Rooms fetched successfully:', allRooms.length)
 
     // Transform rooms to match admin UI expected format
-    const transformedRooms = allRooms.map((room: any) => {
+    const transformedRooms = allRooms.map((room: Room): TransformedRoom => {
       // Pricing: Include both standard and offSeason rates
       const defaultPricePerNight = room.pricing?.standard || room.pricing?.offSeason || null
 
@@ -52,7 +90,7 @@ export async function GET() {
       }
     })
 
-    console.log('✅ Admin: Transformed rooms:', transformedRooms.map((r: any) => ({
+    console.log('✅ Admin: Transformed rooms:', transformedRooms.map((r: TransformedRoom) => ({
       id: r.id,
       name: r.name,
       has_image: !!r.featured_image,

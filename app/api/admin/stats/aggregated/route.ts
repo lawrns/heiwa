@@ -2,6 +2,32 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdminAuth } from '@/lib/admin-auth'
 
+interface BookingRevenue {
+  total_amount: number
+}
+
+interface BookingClientInfo {
+  id: string
+  name: string
+}
+
+interface BookingRecord {
+  id: string
+  client_ids: string[]
+  room_type: string
+  check_in: string
+  status: string
+  created_at: string
+}
+
+interface RecentBooking {
+  id: string
+  guest: string
+  room: string
+  checkIn: string
+  status: string
+}
+
 /**
  * Aggregated Booking Statistics Endpoint
  * 
@@ -24,10 +50,6 @@ export async function GET(request: NextRequest) {
     // Calculate first day of last month
     const firstDayOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
     const firstDayOfLastMonthStr = firstDayOfLastMonth.toISOString().split('T')[0]
-    
-    // Calculate last day of last month
-    const lastDayOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0)
-    const lastDayOfLastMonthStr = lastDayOfLastMonth.toISOString().split('T')[0]
 
     // Use manual aggregation (RPC function doesn't exist yet)
     // This is still much more efficient than fetching all bookings
@@ -95,7 +117,7 @@ export async function GET(request: NextRequest) {
       
       // Calculate revenue
       const totalRevenue = (totalRevenueResult.data || []).reduce(
-        (sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0),
+        (sum: number, b: BookingRevenue) => sum + (parseFloat(String(b.total_amount)) || 0),
         0
       )
       
@@ -108,11 +130,11 @@ export async function GET(request: NextRequest) {
       
       // Calculate revenue growth
       const thisMonthRevenue = (thisMonthRevenueResult.data || []).reduce(
-        (sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0),
+        (sum: number, b: BookingRevenue) => sum + (parseFloat(String(b.total_amount)) || 0),
         0
       )
       const lastMonthRevenue = (lastMonthRevenueResult.data || []).reduce(
-        (sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0),
+        (sum: number, b: BookingRevenue) => sum + (parseFloat(String(b.total_amount)) || 0),
         0
       )
       const revenueGrowth = lastMonthRevenue > 0
@@ -122,14 +144,14 @@ export async function GET(request: NextRequest) {
       // Transform recent bookings - fetch client names
       const recentBookingsData = recentBookingsResult.data || []
       const recentBookingClientIds = new Set<string>()
-      recentBookingsData.forEach((b: any) => {
+      recentBookingsData.forEach((b: BookingRecord) => {
         if (b.client_ids && Array.isArray(b.client_ids)) {
           b.client_ids.forEach((id: string) => recentBookingClientIds.add(id))
         }
       })
       
       // Fetch clients for recent bookings
-      let clientMap = new Map<string, { name: string }>()
+      const clientMap = new Map<string, { name: string }>()
       if (recentBookingClientIds.size > 0) {
         const { data: clients } = await supabaseAdmin
           .from('clients')
@@ -137,14 +159,14 @@ export async function GET(request: NextRequest) {
           .in('id', Array.from(recentBookingClientIds))
         
         if (clients) {
-          clients.forEach((c: any) => {
+          clients.forEach((c: BookingClientInfo) => {
             clientMap.set(c.id, { name: c.name || 'Unknown' })
           })
         }
       }
       
       // Transform recent bookings
-      const recentBookings = recentBookingsData.map((b: any) => {
+      const recentBookings = recentBookingsData.map((b: BookingRecord): RecentBooking => {
         const clientId = b.client_ids && Array.isArray(b.client_ids) && b.client_ids.length > 0 
           ? b.client_ids[0] 
           : null
@@ -183,12 +205,13 @@ export async function GET(request: NextRequest) {
           }
         }
       })
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Error fetching aggregated stats:', error)
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Internal server error'
+        error: errorMessage
       },
       { status: 500 }
     )

@@ -1,6 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+interface TestimonialDB {
+  id: string
+  author_name?: string
+  guest_name?: string
+  author_email?: string
+  guest_email?: string
+  author_image?: string
+  guest_image_url?: string
+  image_url?: string
+  content?: string
+  text?: string
+  rating?: number
+  is_featured?: boolean
+  is_active?: boolean
+  created_by?: string
+  updated_by?: string
+  created_at?: string
+  updated_at?: string
+}
+
+interface TestimonialCreateData {
+  author_name: string
+  author_email?: string | null
+  image_url?: string | null
+  author_image?: string | null
+  rating: number
+  text: string
+  content: string
+  is_featured: boolean
+  is_active: boolean
+  created_by?: string
+  updated_by?: string
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -39,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     // Transform database fields to frontend format
     // Database uses author_name, frontend expects guest_name
-    const transformedData = (data || []).map((testimonial: any) => ({
+    const transformedData = (data || []).map((testimonial: TestimonialDB) => ({
       ...testimonial,
       guest_name: testimonial.author_name || testimonial.guest_name || 'Unknown',
       guest_email: testimonial.author_email || testimonial.guest_email || '',
@@ -104,7 +138,7 @@ export async function POST(request: NextRequest) {
         is_active: true,
         created_by,
         updated_by: created_by
-      } as any)
+      } as TestimonialCreateData)
       .select()
       .single()
 

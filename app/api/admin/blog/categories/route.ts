@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 // GET /api/admin/blog/categories - List all categories
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     const { data, error } = await supabaseAdmin
       .from('blog_categories')
@@ -20,10 +20,11 @@ export async function GET(_request: NextRequest) {
       success: true,
       data: data || []
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Error fetching categories:', error)
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }
@@ -61,10 +62,11 @@ export async function POST(request: NextRequest) {
       success: true,
       data
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Error creating category:', error)
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

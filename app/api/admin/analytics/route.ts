@@ -1,12 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import type {
+  AnalyticsOverviewData,
+  AnalyticsContentData,
+  AnalyticsTestimonialsData,
+  AnalyticsDashboardData,
+  PageContentItem,
+  TestimonialItem,
+  FAQItem,
+  BookingRevenueItem,
+  BookingListItem
+} from '@/lib/types/admin-api'
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type') || 'overview'
 
-    let data: any = {}
+    let data: AnalyticsOverviewData | AnalyticsContentData | AnalyticsTestimonialsData | AnalyticsDashboardData = {} as AnalyticsOverviewData
 
     switch (type) {
       case 'overview':
@@ -31,7 +42,7 @@ export async function GET(request: NextRequest) {
           .select('page_slug')
           .order('page_slug')
 
-        const pageStats = pageContentByPage?.reduce((acc: any, item: any) => {
+        const pageStats = pageContentByPage?.reduce((acc: Record<string, number>, item: { page_slug: string }) => {
           acc[item.page_slug] = (acc[item.page_slug] || 0) + 1
           return acc
         }, {})
@@ -41,7 +52,7 @@ export async function GET(request: NextRequest) {
           .from('testimonials')
           .select('rating')
 
-        const ratingStats = (testimonialsByRating as any[])?.reduce((acc: any, item: any) => {
+        const ratingStats = (testimonialsByRating as TestimonialItem[])?.reduce((acc: Record<number, number>, item: TestimonialItem) => {
           acc[item.rating] = (acc[item.rating] || 0) + 1
           return acc
         }, {})
@@ -51,7 +62,7 @@ export async function GET(request: NextRequest) {
           .from('faq_items')
           .select('category')
 
-        const faqStats = (faqByCategory as any[])?.reduce((acc: any, item: any) => {
+        const faqStats = (faqByCategory as FAQItem[])?.reduce((acc: Record<string, number>, item: FAQItem) => {
           acc[item.category] = (acc[item.category] || 0) + 1
           return acc
         }, {})
@@ -83,13 +94,13 @@ export async function GET(request: NextRequest) {
           .from('page_content')
           .select('section_type')
 
-        const typeStats = (contentByType as any[])?.reduce((acc: any, item: any) => {
+        const typeStats = (contentByType as PageContentItem[])?.reduce((acc: Record<string, number>, item: PageContentItem) => {
           acc[item.section_type] = (acc[item.section_type] || 0) + 1
           return acc
         }, {})
 
         data = {
-          recentActivity,
+          recentActivity: recentActivity || [],
           typeStats
         }
         break
@@ -100,12 +111,12 @@ export async function GET(request: NextRequest) {
           .from('testimonials')
           .select('rating, is_featured, created_at')
 
-        const totalTestimonials = (testimonialStats as any[])?.length || 0
-        const featuredTestimonials = (testimonialStats as any[])?.filter((t: any) => t.is_featured).length || 0
-        const averageRating = (testimonialStats as any[])?.reduce((sum: number, t: any) => sum + t.rating, 0) / totalTestimonials || 0
+        const totalTestimonials = (testimonialStats as TestimonialItem[])?.length || 0
+        const featuredTestimonials = (testimonialStats as TestimonialItem[])?.filter((t: TestimonialItem) => t.is_featured).length || 0
+        const averageRating = (testimonialStats as TestimonialItem[])?.reduce((sum: number, t: TestimonialItem) => sum + t.rating, 0) / totalTestimonials || 0
 
         // Recent testimonials
-        const recentTestimonials = (testimonialStats as any[])?.filter((t: any) => {
+        const recentTestimonials = (testimonialStats as TestimonialItem[])?.filter((t: TestimonialItem) => {
           const createdAt = new Date(t.created_at)
           const thirtyDaysAgo = new Date()
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
@@ -141,10 +152,10 @@ export async function GET(request: NextRequest) {
         ])
 
         // Calculate total revenue
-        const totalRevenue = (revenueData as any[])?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0
+        const totalRevenue = (revenueData as BookingRevenueItem[])?.reduce((sum, booking) => sum + (booking.total_amount || 0), 0) || 0
 
         // Format recent bookings
-        const formattedBookings = (recentBookingsData as any[])?.map(booking => ({
+        const formattedBookings = (recentBookingsData as BookingListItem[])?.map(booking => ({
           id: booking.id,
           guest: 'Unknown', // Client info would need separate query
           room: booking.room_type || 'Unknown',
@@ -174,10 +185,11 @@ export async function GET(request: NextRequest) {
       success: true,
       data
     })
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Error fetching analytics:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

@@ -34,10 +34,11 @@ export async function GET(request: NextRequest) {
         totalPages: Math.ceil(count / filters.limit)
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Error fetching blog posts:', error)
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }
@@ -104,10 +105,11 @@ export async function POST(request: NextRequest) {
       success: true,
       data: post
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Error creating blog post:', error)
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

@@ -3,80 +3,33 @@ import { revalidatePath } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase'
 import { executeWithTimeout } from '@/lib/supabase-timeout'
 import { requireAdminAuth } from '@/lib/admin-auth'
-import { withErrorHandler, ErrorResponses } from '@/lib/error-handler'
-import { withCSRFProtection, validateCSRFToken } from '@/lib/csrf'
+import { withErrorHandler } from '@/lib/error-handler'
+import { validateCSRFToken } from '@/lib/csrf'
+import type {
+  HomepageSection
+} from '@/lib/types/admin-api'
 
-export interface HomepageSection {
+// Database row type for homepage_content table
+interface HomepageContentRow {
   id: string
   section: string
   title: string
   subtitle?: string
   description?: string
   content?: string
-  imageUrl?: string
-  videoUrl?: string
-  videoId?: string
-  linkUrl?: string
-  linkText?: string
-  isActive: boolean
-  order: number
-  
-  // Complex content fields for different section types
-  cards?: CardData[]
-  bookingData?: BookingData[]
-  testimonials?: TestimonialData[]
-  facilities?: FacilityData[]
-  googleRating?: GoogleRatingData
-  blogConfig?: BlogConfigData
-}
-
-export interface BlogConfigData {
-  limit?: number
-  showCategory?: boolean
-  showDate?: boolean
-  showReadingTime?: boolean
-}
-
-export interface CardData {
-  id?: string
-  title: string
-  description: string
-  image?: string
-  images?: string[]
-  link?: string
-  mediaType?: 'image' | 'video'
-  mediaUrl?: string
-}
-
-export interface BookingData {
-  id?: string
-  dates: string
-  price: string
-  availableSpots: string
-  totalSpots?: number
-}
-
-export interface TestimonialData {
-  id?: string
-  name: string
-  rating: number
-  text: string
-  timeAgo: string
-  verified: boolean
-}
-
-export interface FacilityData {
-  id?: string
-  title: string
-  description: string
-  mediaType: 'image' | 'video'
-  mediaUrl: string
-}
-
-export interface GoogleRatingData {
-  rating: number
-  totalReviews: number
-  url: string
+  image_url?: string
+  video_url?: string
+  video_id?: string
+  link_url?: string
+  link_text?: string
+  is_active: boolean
+  order_index: number
+  cards?: string | null
+  booking_data?: string | null
+  testimonials?: string | null
+  facilities?: string | null
+  google_rating?: string | null
+  blog_config?: string | null
 }
 
 // GET - Fetch all homepage sections
@@ -91,12 +44,12 @@ export async function GET(request: NextRequest) {
     console.log('🔗 Fetching homepage content...')
     
     const homepageQuery = supabaseAdmin
-      .from('homepage_content' as any)
+      .from('homepage_content')
       .select('*')
       .order('order_index', { ascending: true })
     
-    const { data, error } = await executeWithTimeout<any[]>(
-      homepageQuery as any,
+    const { data, error } = await executeWithTimeout<HomepageContentRow[]>(
+      homepageQuery,
       1000 // 1 second timeout for fast failure
     )
     
@@ -150,21 +103,39 @@ export async function GET(request: NextRequest) {
     console.log(`✅ Successfully fetched ${data?.length || 0} homepage sections`)
 
     // Parse JSON fields for complex data types
-    const parsedData = (data || []).map((item: any) => {
+    const parsedData = (data || []).map((item: HomepageContentRow): HomepageSection => {
       try {
         return {
-          ...item,
+          id: item.id,
+          section: item.section,
+          title: item.title,
+          subtitle: item.subtitle,
+          description: item.description,
+          content: item.content,
+          imageUrl: item.image_url,
+          videoUrl: item.video_url,
+          videoId: item.video_id,
+          linkUrl: item.link_url,
+          linkText: item.link_text,
+          isActive: item.is_active,
+          order: item.order_index,
           cards: item.cards ? JSON.parse(item.cards) : undefined,
           bookingData: item.booking_data ? JSON.parse(item.booking_data) : undefined,
           testimonials: item.testimonials ? JSON.parse(item.testimonials) : undefined,
           facilities: item.facilities ? JSON.parse(item.facilities) : undefined,
           googleRating: item.google_rating ? JSON.parse(item.google_rating) : undefined,
-          blogConfig: item.blog_config ? JSON.parse(item.blog_config) : undefined,
-          videoId: item.video_id || undefined
+          blogConfig: item.blog_config ? JSON.parse(item.blog_config) : undefined
         }
       } catch (parseError) {
         console.error(`❌ JSON parse error for item ${item.id}:`, parseError)
-        return item // Return original item if parsing fails
+        // Return minimal valid HomepageSection if parsing fails
+        return {
+          id: item.id,
+          section: item.section,
+          title: item.title,
+          isActive: item.is_active,
+          order: item.order_index
+        }
       }
     })
 
@@ -254,7 +225,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { data, error } = await supabaseAdmin
-      .from('homepage_content' as any)
+      .from('homepage_content')
       .insert({
         section,
         title,
@@ -274,7 +245,7 @@ export async function POST(request: NextRequest) {
         blog_config: blogConfig ? JSON.stringify(blogConfig) : null,
         is_active: isActive ?? true,
         order_index: order ?? 0
-      } as any)
+      })
       .select()
 
     if (error) throw error
@@ -334,7 +305,7 @@ export async function PUT(request: NextRequest) {
       }, { status: 400 })
     }
 
-    const updateData: Record<string, any> = {}
+    const updateData: Record<string, unknown> = {}
     if (section !== undefined) updateData.section = section
     if (title !== undefined) updateData.title = title
     if (subtitle !== undefined) updateData.subtitle = subtitle
@@ -355,8 +326,8 @@ export async function PUT(request: NextRequest) {
     if (blogConfig !== undefined) updateData.blog_config = blogConfig ? JSON.stringify(blogConfig) : null
 
     const { data, error } = await supabaseAdmin
-      .from('homepage_content' as any)
-      .update(updateData as any)
+      .from('homepage_content')
+      .update(updateData)
       .eq('id', id)
       .select()
 
@@ -398,7 +369,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const { error } = await supabaseAdmin
-      .from('homepage_content' as any)
+      .from('homepage_content')
       .delete()
       .eq('id', id)
 

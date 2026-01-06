@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { FAQ_PAGE_SLUGS } from '@/lib/page-slugs'
 
+interface FAQCreateData {
+  question: string
+  answer: string
+  category?: string
+  page_slug?: string
+  order_index?: number
+  is_active?: boolean
+  created_by?: string
+  updated_by?: string
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -104,7 +115,7 @@ export async function POST(request: NextRequest) {
         is_active,
         created_by,
         updated_by: created_by
-      } as any)
+      } as FAQCreateData)
       .select()
       .single()
 

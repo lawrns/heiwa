@@ -24,10 +24,11 @@ export async function GET(
       success: true,
       data: post
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Error fetching blog post:', error)
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }
@@ -79,10 +80,11 @@ export async function PUT(
       success: true,
       data: post
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Error updating blog post:', error)
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }
@@ -104,10 +106,11 @@ export async function DELETE(
       success: true,
       message: 'Post deleted successfully'
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Error deleting blog post:', error)
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

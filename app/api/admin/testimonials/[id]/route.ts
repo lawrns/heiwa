@@ -1,6 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+interface TestimonialDB {
+  id: string
+  author_name?: string
+  guest_name?: string
+  author_email?: string
+  guest_email?: string
+  author_image?: string
+  guest_image_url?: string
+  content?: string
+  text?: string
+  rating?: number
+  is_featured?: boolean
+  updated_by?: string
+  updated_at?: string
+}
+
+interface TestimonialUpdateData {
+  rating?: number
+  is_featured?: boolean
+  updated_by?: string
+  updated_at: string
+  author_name?: string
+  author_email?: string
+  author_image?: string
+  content?: string
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -22,12 +49,13 @@ export async function GET(
     }
 
     // Transform database fields to frontend format
+    const dbData = data as TestimonialDB
     const transformedData = {
       ...data,
-      guest_name: (data as any).author_name || (data as any).guest_name || 'Unknown',
-      guest_email: (data as any).author_email || (data as any).guest_email || '',
-      guest_image_url: (data as any).author_image || (data as any).guest_image_url || null,
-      text: (data as any).content || (data as any).text || ''
+      guest_name: dbData.author_name || dbData.guest_name || 'Unknown',
+      guest_email: dbData.author_email || dbData.guest_email || '',
+      guest_image_url: dbData.author_image || dbData.guest_image_url || null,
+      text: dbData.content || dbData.text || ''
     }
 
     return NextResponse.json({
@@ -69,7 +97,7 @@ export async function PUT(
     }
 
     // Map frontend fields to database fields
-    const updateData: any = {
+    const updateData: TestimonialUpdateData = {
       rating,
       is_featured,
       updated_by,

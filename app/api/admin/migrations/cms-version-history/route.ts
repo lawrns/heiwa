@@ -1,10 +1,10 @@
 // Migration: Add CMS version history and defaults tables
 // Run once via POST /api/admin/migrations/cms-version-history
 
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Create page_section_versions table for version history
     const { error: versionsError } = await supabaseAdmin.rpc('exec_sql', {

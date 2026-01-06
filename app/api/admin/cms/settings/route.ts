@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 // GET CMS settings
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     const { data: settings, error } = await supabaseAdmin
       .from('cms_settings')
@@ -41,10 +41,11 @@ export async function GET(_request: NextRequest) {
           cache_duration: settings.cache_duration,
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     console.error('Error in CMS settings GET API:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error', details: error.message },
+      { success: false, error: 'Internal server error', details: errorMessage },
       { status: 500 }
     )
   }
@@ -86,10 +87,11 @@ export async function POST(request: NextRequest) {
       success: true,
       settings: data
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     console.error('Error in CMS settings POST API:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error', details: error.message },
+      { success: false, error: 'Internal server error', details: errorMessage },
       { status: 500 }
     )
   }

@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
           is_active,
           updated_by: created_by,
           updated_at: new Date().toISOString()
-        } as any)
+        } as Record<string, unknown>)
         .eq('id', existing.id)
         .select()
         .single()
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
           updated_by: created_by,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
-        } as any)
+        } as Record<string, unknown>)
         .select()
         .single()
       

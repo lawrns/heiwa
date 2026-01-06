@@ -1,6 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+interface PageSection {
+  page_slug: string
+  updated_at: string
+}
+
+interface PageContent {
+  page_slug: string
+  updated_at: string
+}
+
+interface HomepageSection {
+  section_type: string
+  updated_at: string
+}
+
 export async function GET(request: NextRequest) {
   try {
     // Check authentication
@@ -44,11 +59,11 @@ export async function GET(request: NextRequest) {
 
     pages.forEach(pageSlug => {
       // Count from page_sections (primary source)
-      const pageSections = (pageSectionsData as any[])?.filter((s: any) => s.page_slug === pageSlug) || []
+      const pageSections = (pageSectionsData as PageSection[])?.filter((s: PageSection) => s.page_slug === pageSlug) || []
 
       // Also count from legacy tables
-      const legacyPageSections = (pageData as any[])?.filter((s: any) => s.page_slug === pageSlug) || []
-      const homepageSections = pageSlug === 'homepage' ? ((homepageData as any[]) || []) : []
+      const legacyPageSections = (pageData as PageContent[])?.filter((s: PageContent) => s.page_slug === pageSlug) || []
+      const homepageSections = pageSlug === 'homepage' ? ((homepageData as HomepageSection[]) || []) : []
 
       // Combine all sections for this page
       const allSections = [...pageSections, ...legacyPageSections, ...homepageSections]
@@ -56,7 +71,7 @@ export async function GET(request: NextRequest) {
       stats[pageSlug] = {
         count: allSections.length,
         lastModified: allSections.length > 0
-          ? new Date(Math.max(...allSections.map((s: any) => new Date(s.updated_at).getTime()))).toISOString()
+          ? new Date(Math.max(...allSections.map((s: PageSection | HomepageSection) => new Date(s.updated_at).getTime()))).toISOString()
           : null
       }
     })
@@ -65,10 +80,11 @@ export async function GET(request: NextRequest) {
       success: true,
       stats
     })
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     console.error('Unexpected error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: errorMessage },
       { status: 500 }
     )
   }
