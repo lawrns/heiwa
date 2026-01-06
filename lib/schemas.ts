@@ -247,3 +247,145 @@ export const RefundPaymentSchema = z.object({
   reason: z.string().optional(),
   notes: z.string().optional(),
 });
+
+// ============================================
+// ADDITIONAL VALIDATION SCHEMAS
+// ============================================
+
+// Pagination schema
+export const PaginationSchema = z.object({
+  page: z.coerce.number().min(1).default(1),
+  limit: z.coerce.number().min(1).max(100).default(10),
+  search: z.string().optional(),
+  sortBy: z.string().optional(),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
+});
+
+export type PaginationParams = z.infer<typeof PaginationSchema>;
+
+// Participant schema for bookings
+export const ParticipantSchema = z.object({
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().min(10, 'Phone number must be at least 10 characters'),
+  dateOfBirth: z.string().optional(),
+  dietaryRequirements: z.string().optional(),
+  emergencyContact: z.object({
+    name: z.string().min(1),
+    phone: z.string().min(10),
+  }).optional(),
+});
+
+export type Participant = z.infer<typeof ParticipantSchema>;
+
+// Room assignment schema
+export const RoomAssignmentSchema = z.object({
+  roomId: z.string().uuid('Invalid room ID'),
+  bedType: z.enum(['single', 'double', 'bunk', 'sofa']).optional(),
+  checkInDate: z.string().datetime(),
+  checkOutDate: z.string().datetime(),
+  numberOfGuests: z.number().min(1).max(10),
+});
+
+export type RoomAssignment = z.infer<typeof RoomAssignmentSchema>;
+
+// CMS Homepage section schema
+export const CMSHomepageSectionSchema = z.object({
+  section: z.enum(['hero', 'features', 'activities', 'testimonials', 'cta']),
+  title: z.string().min(1, 'Title is required'),
+  subtitle: z.string().optional(),
+  description: z.string().optional(),
+  content: z.string().optional(),
+  imageUrl: z.string().url('Invalid image URL').optional(),
+  videoUrl: z.string().url('Invalid video URL').optional(),
+  videoId: z.string().optional(),
+  linkUrl: z.string().url('Invalid link URL').optional(),
+  linkText: z.string().optional(),
+  isActive: z.boolean().default(true),
+  order: z.number().min(0).default(0),
+  cards: z.array(z.object({
+    id: z.string().optional(),
+    title: z.string().min(1),
+    description: z.string().min(1),
+    image: z.string().url().optional(),
+    link: z.string().url().optional(),
+  })).optional(),
+  testimonials: z.array(z.object({
+    id: z.string().optional(),
+    name: z.string().min(1),
+    text: z.string().min(10),
+    rating: z.number().min(1).max(5),
+    date: z.string().optional(),
+  })).optional(),
+});
+
+export type CMSHomepageSection = z.infer<typeof CMSHomepageSectionSchema>;
+
+// Payment webhook schema (Stripe)
+export const PaymentWebhookSchema = z.object({
+  id: z.string(),
+  object: z.literal('event'),
+  api_version: z.string(),
+  created: z.number(),
+  data: z.object({
+    object: z.object({
+      id: z.string(),
+      amount: z.number(),
+      currency: z.string(),
+      status: z.string(),
+      metadata: z.record(z.string()).optional(),
+    }),
+  }),
+  livemode: z.boolean(),
+  pending_webhooks: z.number().optional(),
+  request: z.object({
+    id: z.string().optional(),
+    idempotency_key: z.string().optional(),
+  }).optional(),
+  type: z.string(),
+});
+
+export type PaymentWebhook = z.infer<typeof PaymentWebhookSchema>;
+
+// ============================================
+// VALIDATION HELPERS
+// ============================================
+
+/**
+ * Validate request body against schema
+ */
+export function validateRequestBody<T>(schema: z.ZodSchema<T>, body: unknown): T {
+  const result = schema.safeParse(body);
+  if (!result.success) {
+    const errors = result.error.errors.map(err => ({
+      field: err.path.join('.'),
+      message: err.message,
+    }));
+    throw new Error(`Validation failed: ${JSON.stringify(errors)}`);
+  }
+  return result.data;
+}
+
+/**
+ * Validate query parameters against schema
+ */
+export function validateQueryParams<T>(schema: z.ZodSchema<T>, searchParams: URLSearchParams): T {
+  const params: Record<string, string> = {};
+  searchParams.forEach((value, key) => {
+    params[key] = value;
+  });
+  return validateRequestBody(schema, params);
+}
+
+/**
+ * Create validation error response
+ */
+export function createValidationError(errors: Array<{ field: string; message: string }>) {
+  return {
+    success: false,
+    error: 'Validation failed',
+    code: 'VALIDATION_ERROR',
+    details: errors,
+  };
+}

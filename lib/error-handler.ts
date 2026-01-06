@@ -1,3 +1,269 @@
+/**
+ * Centralized Error Handler
+ * Provides consistent error handling across all API routes
+ */
+
+import { NextRequest, NextResponse } from 'next/server'
+
+/**
+ * Custom API Error class with status code and error code
+ */
+export class APIError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number,
+    public code: string,
+    public endpoint: string,
+    public context?: Record<string, any>
+  ) {
+    super(message)
+    this.name = 'APIError'
+  }
+}
+
+/**
+ * Standard API Response interface
+ */
+export interface APIResponse<T = any> {
+  success: boolean
+  data?: T
+  error?: string
+  code?: string
+  details?: any
+  timestamp: string
+  requestId: string
+}
+
+/**
+ * Error codes for different types of errors
+ */
+export enum ErrorCode {
+  // Authentication & Authorization
+  UNAUTHORIZED = 'UNAUTHORIZED',
+  FORBIDDEN = 'FORBIDDEN',
+  INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
+
+  // Validation
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  INVALID_INPUT = 'INVALID_INPUT',
+  MISSING_REQUIRED_FIELD = 'MISSING_REQUIRED_FIELD',
+
+  // Not Found
+  NOT_FOUND = 'NOT_FOUND',
+  RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND',
+
+  // Conflict
+  CONFLICT = 'CONFLICT',
+  DUPLICATE_RESOURCE = 'DUPLICATE_RESOURCE',
+  ALREADY_BOOKED = 'ALREADY_BOOKED',
+
+  // Rate Limiting
+  RATE_LIMITED = 'RATE_LIMITED',
+  TOO_MANY_REQUESTS = 'TOO_MANY_REQUESTS',
+
+  // Server Errors
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
+  DATABASE_ERROR = 'DATABASE_ERROR',
+  EXTERNAL_SERVICE_ERROR = 'EXTERNAL_SERVICE_ERROR',
+  TIMEOUT = 'TIMEOUT',
+}
+
+/**
+ * Create a standardized error response
+ */
+export function createErrorResponse(
+  statusCode: number,
+  code: string,
+  message: string,
+  details?: any,
+  requestId?: string
+): NextResponse {
+  const response: APIResponse = {
+    success: false,
+    error: message,
+    code,
+    details,
+    timestamp: new Date().toISOString(),
+    requestId: requestId || 'unknown',
+  }
+
+  const nextResponse = NextResponse.json(response, { status: statusCode })
+  if (requestId) {
+    nextResponse.headers.set('x-request-id', requestId)
+  }
+  return nextResponse
+}
+
+/**
+ * Create a standardized success response
+ */
+export function createSuccessResponse<T>(
+  data: T,
+  requestId?: string,
+  statusCode: number = 200
+): NextResponse {
+  const response: APIResponse<T> = {
+    success: true,
+    data,
+    timestamp: new Date().toISOString(),
+    requestId: requestId || 'unknown',
+  }
+
+  const nextResponse = NextResponse.json(response, { status: statusCode })
+  if (requestId) {
+    nextResponse.headers.set('x-request-id', requestId)
+  }
+  return nextResponse
+}
+
+/**
+ * Wrap API handler with error handling
+ */
+export type APIHandler = (request: NextRequest, context?: any) => Promise<NextResponse>
+
+export function withErrorHandler(handler: APIHandler): APIHandler {
+  return async (request: NextRequest, context?: any) => {
+    const requestId = request.headers.get('x-request-id') || crypto.randomUUID()
+
+    try {
+      const response = await handler(request, context)
+
+      // Add request ID to response headers if not already present
+      if (!response.headers.get('x-request-id')) {
+        response.headers.set('x-request-id', requestId)
+      }
+
+      return response
+    } catch (error) {
+      // Log the error
+      await logError(error as Error, {
+        ...context,
+        url: request.url,
+        method: request.method,
+        requestId,
+      })
+
+      // Handle APIError instances
+      if (error instanceof APIError) {
+        return createErrorResponse(
+          error.statusCode,
+          error.code,
+          error.message,
+          error.context,
+          requestId
+        )
+      }
+
+      // Handle Supabase errors
+      if (error && typeof error === 'object' && 'code' in error) {
+        const supabaseError = error as { code: string; message: string; details?: any }
+
+        // Map common Supabase error codes
+        switch (supabaseError.code) {
+          case 'PGRST116':
+            return createErrorResponse(
+              404,
+              ErrorCode.NOT_FOUND,
+              'Resource not found',
+              supabaseError.details,
+              requestId
+            )
+          case '23505':
+            return createErrorResponse(
+              409,
+              ErrorCode.DUPLICATE_RESOURCE,
+              'Resource already exists',
+              supabaseError.details,
+              requestId
+            )
+          case '23503':
+            return createErrorResponse(
+              400,
+              ErrorCode.VALIDATION_ERROR,
+              'Referenced resource does not exist',
+              supabaseError.details,
+              requestId
+            )
+          default:
+            return createErrorResponse(
+              500,
+              ErrorCode.DATABASE_ERROR,
+              'Database error occurred',
+              process.env.NODE_ENV === 'development' ? supabaseError.details : undefined,
+              requestId
+            )
+        }
+      }
+
+      // Handle validation errors (Zod)
+      if (error && typeof error === 'object' && 'issues' in error) {
+        return createErrorResponse(
+          400,
+          ErrorCode.VALIDATION_ERROR,
+          'Validation failed',
+          (error as { issues: any[] }).issues,
+          requestId
+        )
+      }
+
+      // Handle generic errors
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+
+      // Don't expose internal errors in production
+      const userMessage =
+        process.env.NODE_ENV === 'production'
+          ? 'An internal server error occurred'
+          : errorMessage
+
+      return createErrorResponse(
+        500,
+        ErrorCode.INTERNAL_ERROR,
+        userMessage,
+        process.env.NODE_ENV === 'development' ? { originalError: errorMessage } : undefined,
+        requestId
+      )
+    }
+  }
+}
+
+/**
+ * Helper functions for common error responses
+ */
+export const ErrorResponses = {
+  unauthorized: (requestId?: string) =>
+    createErrorResponse(401, ErrorCode.UNAUTHORIZED, 'Unauthorized', undefined, requestId),
+
+  forbidden: (requestId?: string) =>
+    createErrorResponse(403, ErrorCode.FORBIDDEN, 'Forbidden', undefined, requestId),
+
+  notFound: (resource: string = 'Resource', requestId?: string) =>
+    createErrorResponse(404, ErrorCode.NOT_FOUND, `${resource} not found`, undefined, requestId),
+
+  validation: (message: string = 'Validation failed', details?: any, requestId?: string) =>
+    createErrorResponse(400, ErrorCode.VALIDATION_ERROR, message, details, requestId),
+
+  conflict: (message: string = 'Conflict', details?: any, requestId?: string) =>
+    createErrorResponse(409, ErrorCode.CONFLICT, message, details, requestId),
+
+  rateLimited: (retryAfter?: number, requestId?: string) =>
+    createErrorResponse(
+      429,
+      ErrorCode.RATE_LIMITED,
+      'Too many requests',
+      { retryAfter },
+      requestId
+    ),
+
+  internal: (message?: string, requestId?: string) =>
+    createErrorResponse(
+      500,
+      ErrorCode.INTERNAL_ERROR,
+      message || 'Internal server error',
+      undefined,
+      requestId
+    ),
+}
+
 // Error logging utility
 // Falls back to console if logger is not available
 const logger = {
@@ -63,18 +329,6 @@ export function logError(error: Error, context?: {
  * Custom error classes for different error types
  */
 
-export class APIError extends Error {
-  constructor(
-    message: string,
-    public statusCode: number,
-    public endpoint: string,
-    public context?: Record<string, any>
-  ) {
-    super(message)
-    this.name = 'APIError'
-  }
-}
-
 export class ValidationError extends Error {
   constructor(
     message: string,
@@ -104,13 +358,14 @@ export class BookingError extends Error {
 export function handleAPIError(error: any, endpoint: string): APIError {
   const message = error?.message || 'An API error occurred'
   const statusCode = error?.response?.status || 500
-  
+  const code = error?.code || 'API_ERROR'
+
   logger.apiError(endpoint, error, {
     statusCode,
     response: error?.response?.data,
   })
 
-  return new APIError(message, statusCode, endpoint, {
+  return new APIError(message, statusCode, code, endpoint, {
     originalError: error,
   })
 }

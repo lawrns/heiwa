@@ -20,7 +20,10 @@ async function getPageSection(type: string) {
       .eq('is_active', true)
       .single()
 
-    if (error) return null
+    if (error) {
+      console.warn(`CMS section '${type}' not found or inactive, using fallback`)
+      return null
+    }
     return data
   } catch (error) {
     console.error(`Error fetching ${type} section:`, error)

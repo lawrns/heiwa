@@ -4,13 +4,6 @@ const nextConfig = {
   generateBuildId: async () => {
     return `build-${Date.now()}`
   },
-  // Disable ESLint and TypeScript errors during build
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 
   // Image optimization
   images: {
@@ -48,19 +41,19 @@ const nextConfig = {
       },
     ],
   },
-  
+
   // Performance optimizations
   experimental: {
     // optimizePackageImports: ['lucide-react', 'framer-motion'], // Disabled due to malloc errors on macOS
     optimizeCss: false,
     scrollRestoration: true,
   },
-  
+
   // Compiler optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  
+
   // Bundle optimization
   webpack: (config, { dev, isServer }) => {
     if (!dev && !isServer) {
@@ -83,7 +76,7 @@ const nextConfig = {
     }
     return config
   },
-  
+
   // Optimized headers for faster deployments
   async headers() {
     return [

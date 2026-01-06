@@ -3,6 +3,8 @@ import { revalidatePath } from 'next/cache'
 import { supabaseAdmin } from '@/lib/supabase'
 import { executeWithTimeout } from '@/lib/supabase-timeout'
 import { requireAdminAuth } from '@/lib/admin-auth'
+import { withErrorHandler, ErrorResponses } from '@/lib/error-handler'
+import { withCSRFProtection, validateCSRFToken } from '@/lib/csrf'
 
 export interface HomepageSection {
   id: string
@@ -210,23 +212,31 @@ export async function GET(request: NextRequest) {
 
 // POST - Create new homepage section
 export async function POST(request: NextRequest) {
-  try {
+  // CSRF validation for state-changing operations
+  if (!validateCSRFToken(request)) {
+    return NextResponse.json(
+      { success: false, error: 'Invalid CSRF token', code: 'CSRF_TOKEN_INVALID' },
+      { status: 403 }
+    )
+  }
+
+  return withErrorHandler(async () => {
     const authError = requireAdminAuth(request)
     if (authError) return authError
 
     const body = await request.json()
-    const { 
-      section, 
-      title, 
-      subtitle, 
-      description, 
-      content, 
-      imageUrl, 
-      videoUrl, 
+    const {
+      section,
+      title,
+      subtitle,
+      description,
+      content,
+      imageUrl,
+      videoUrl,
       videoId,
-      linkUrl, 
-      linkText, 
-      isActive, 
+      linkUrl,
+      linkText,
+      isActive,
       order,
       cards,
       bookingData,
@@ -277,35 +287,37 @@ export async function POST(request: NextRequest) {
       success: true,
       data: data?.[0]
     })
-  } catch (err) {
-    console.error('Error creating homepage section:', err)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to create homepage section'
-    }, { status: 500 })
-  }
+  })(request)
 }
 
 // PUT - Update homepage section
 export async function PUT(request: NextRequest) {
-  try {
+  // CSRF validation for state-changing operations
+  if (!validateCSRFToken(request)) {
+    return NextResponse.json(
+      { success: false, error: 'Invalid CSRF token', code: 'CSRF_TOKEN_INVALID' },
+      { status: 403 }
+    )
+  }
+
+  return withErrorHandler(async () => {
     const authError = requireAdminAuth(request)
     if (authError) return authError
 
     const body = await request.json()
-    const { 
-      id, 
-      section, 
-      title, 
-      subtitle, 
-      description, 
-      content, 
-      imageUrl, 
-      videoUrl, 
+    const {
+      id,
+      section,
+      title,
+      subtitle,
+      description,
+      content,
+      imageUrl,
+      videoUrl,
       videoId,
-      linkUrl, 
-      linkText, 
-      isActive, 
+      linkUrl,
+      linkText,
+      isActive,
       order,
       cards,
       bookingData,
@@ -318,45 +330,29 @@ export async function PUT(request: NextRequest) {
     if (!id) {
       return NextResponse.json({
         success: false,
-        error: 'ID is required'
+        error: 'Section ID is required'
       }, { status: 400 })
     }
 
-    const updateData: any = {
-      section,
-      title,
-      subtitle,
-      description,
-      content,
-      image_url: imageUrl,
-      video_url: videoUrl,
-      video_id: videoId,
-      link_url: linkUrl,
-      link_text: linkText,
-      is_active: isActive,
-      order_index: order,
-      updated_at: new Date().toISOString()
-    }
-
-    // Only include JSON fields if they're provided
-    if (cards !== undefined) {
-      updateData.cards = cards ? JSON.stringify(cards) : null
-    }
-    if (bookingData !== undefined) {
-      updateData.booking_data = bookingData ? JSON.stringify(bookingData) : null
-    }
-    if (testimonials !== undefined) {
-      updateData.testimonials = testimonials ? JSON.stringify(testimonials) : null
-    }
-    if (facilities !== undefined) {
-      updateData.facilities = facilities ? JSON.stringify(facilities) : null
-    }
-    if (googleRating !== undefined) {
-      updateData.google_rating = googleRating ? JSON.stringify(googleRating) : null
-    }
-    if (blogConfig !== undefined) {
-      updateData.blog_config = blogConfig ? JSON.stringify(blogConfig) : null
-    }
+    const updateData: Record<string, any> = {}
+    if (section !== undefined) updateData.section = section
+    if (title !== undefined) updateData.title = title
+    if (subtitle !== undefined) updateData.subtitle = subtitle
+    if (description !== undefined) updateData.description = description
+    if (content !== undefined) updateData.content = content
+    if (imageUrl !== undefined) updateData.image_url = imageUrl
+    if (videoUrl !== undefined) updateData.video_url = videoUrl
+    if (videoId !== undefined) updateData.video_id = videoId
+    if (linkUrl !== undefined) updateData.link_url = linkUrl
+    if (linkText !== undefined) updateData.link_text = linkText
+    if (isActive !== undefined) updateData.is_active = isActive
+    if (order !== undefined) updateData.order_index = order
+    if (cards !== undefined) updateData.cards = cards ? JSON.stringify(cards) : null
+    if (bookingData !== undefined) updateData.booking_data = bookingData ? JSON.stringify(bookingData) : null
+    if (testimonials !== undefined) updateData.testimonials = testimonials ? JSON.stringify(testimonials) : null
+    if (facilities !== undefined) updateData.facilities = facilities ? JSON.stringify(facilities) : null
+    if (googleRating !== undefined) updateData.google_rating = googleRating ? JSON.stringify(googleRating) : null
+    if (blogConfig !== undefined) updateData.blog_config = blogConfig ? JSON.stringify(blogConfig) : null
 
     const { data, error } = await supabaseAdmin
       .from('homepage_content' as any)
@@ -374,24 +370,20 @@ export async function PUT(request: NextRequest) {
       success: true,
       data: data?.[0]
     })
-  } catch (err) {
-    console.error('Error updating homepage section:', err)
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-    console.error('Detailed error:', {
-      error: err,
-      message: errorMessage,
-      stack: err instanceof Error ? err.stack : undefined
-    })
-    return NextResponse.json({
-      success: false,
-      error: `Failed to update homepage section: ${errorMessage}`
-    }, { status: 500 })
-  }
+  })(request)
 }
 
 // DELETE - Delete homepage section
 export async function DELETE(request: NextRequest) {
-  try {
+  // CSRF validation for state-changing operations
+  if (!validateCSRFToken(request)) {
+    return NextResponse.json(
+      { success: false, error: 'Invalid CSRF token', code: 'CSRF_TOKEN_INVALID' },
+      { status: 403 }
+    )
+  }
+
+  return withErrorHandler(async () => {
     const authError = requireAdminAuth(request)
     if (authError) return authError
 
@@ -401,7 +393,7 @@ export async function DELETE(request: NextRequest) {
     if (!id) {
       return NextResponse.json({
         success: false,
-        error: 'ID is required'
+        error: 'Section ID is required'
       }, { status: 400 })
     }
 
@@ -420,11 +412,5 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'Section deleted successfully'
     })
-  } catch (err) {
-    console.error('Error deleting homepage section:', err)
-    return NextResponse.json({
-      success: false,
-      error: 'Failed to delete homepage section'
-    }, { status: 500 })
-  }
+  })(request)
 }
