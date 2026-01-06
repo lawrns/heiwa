@@ -10,29 +10,37 @@ import { YouTubeVideo } from '@/components/ui/youtube-video'
 import { SurfWeeksTable } from '@/components/ui/surf-weeks-table'
 import { Bed, Waves } from 'lucide-react'
 
-async function getPageSection(type: string) {
+// Fetch all homepage sections in a single query for better performance
+async function getAllHomepageSections() {
   try {
     const { data, error } = await supabaseAdmin
       .from('page_sections')
       .select('*')
       .eq('page_slug', 'homepage')
-      .eq('section_type', type)
       .eq('is_active', true)
-      .single()
+      .order('order_index', { ascending: true })
 
     if (error) {
-      console.warn(`CMS section '${type}' not found or inactive, using fallback`)
+      console.warn('Error fetching homepage sections:', error)
       return null
     }
-    return data
+
+    // Convert array to Map for O(1) lookups
+    return new Map((data || []).map((s: any) => [s.section_type, s]))
   } catch (error) {
-    console.error(`Error fetching ${type} section:`, error)
+    console.error('Error fetching homepage sections:', error)
     return null
   }
 }
 
+async function getPageSection(type: string, sectionsMap: Map<string, any> | null) {
+  if (!sectionsMap) return null
+  return sectionsMap.get(type) || null
+}
+
 export async function HomeHero() {
-  const section = await getPageSection('hero')
+  const sectionsMap = await getAllHomepageSections()
+  const section = await getPageSection('hero', sectionsMap)
   const content = section?.content || {}
   
   const defaultVideoUrl = "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932934179_Timeline-1.mp4"
@@ -132,7 +140,8 @@ export async function HomeHero() {
 }
 
 export async function HomeSurfWeeks() {
-  const section = await getPageSection('surf-weeks')
+  const sectionsMap = await getAllHomepageSections()
+  const section = await getPageSection('surf-weeks', sectionsMap)
   const content = section?.content || {}
   
   // Fetch surf weeks
@@ -240,7 +249,8 @@ export async function HomeSurfWeeks() {
 }
 
 export async function HomeAbout() {
-  const section = await getPageSection('about')
+  const sectionsMap = await getAllHomepageSections()
+  const section = await getPageSection('about', sectionsMap)
   const content = section?.content || {}
 
   return (
@@ -316,7 +326,8 @@ export async function HomeAbout() {
 }
 
 export async function HomeRooms() {
-  const section = await getPageSection('rooms')
+  const sectionsMap = await getAllHomepageSections()
+  const section = await getPageSection('rooms', sectionsMap)
   const content = section?.content || {}
   
   const roomIds: string[] = Array.isArray(content?.roomIds)
@@ -415,7 +426,8 @@ export async function HomeRooms() {
 }
 
 export async function HomeHosts() {
-  const section = await getPageSection('hosts')
+  const sectionsMap = await getAllHomepageSections()
+  const section = await getPageSection('hosts', sectionsMap)
   const content = section?.content || {}
 
   if (!((content.paragraphs as string[])?.length > 0 || content.imageUrl)) {
@@ -470,7 +482,8 @@ export async function HomeHosts() {
 }
 
 export async function HomeReviews() {
-  const section = await getPageSection('reviews')
+  const sectionsMap = await getAllHomepageSections()
+  const section = await getPageSection('reviews', sectionsMap)
   const content = section?.content || {}
 
   return (
@@ -492,7 +505,8 @@ export async function HomeReviews() {
 }
 
 export async function HomeFacilities() {
-  const section = await getPageSection('facilities')
+  const sectionsMap = await getAllHomepageSections()
+  const section = await getPageSection('facilities', sectionsMap)
   const content = section?.content || {}
 
   const cmsActivities = (content?.facilities as any[]) || (content?.items as any[])

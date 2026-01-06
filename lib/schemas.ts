@@ -179,7 +179,7 @@ export const CreateAddOnSchema = z.object({
 });
 export const UpdateAddOnSchema = CreateAddOnSchema.partial();
 
-export const CreateBookingSchema = BookingSchema.omit({ id: true, createdAt: true, updatedAt: true });
+export const CreateBookingSchema = BookingSchema.omit({ id: true, created_at: true, updated_at: true });
 export const UpdateBookingSchema = CreateBookingSchema.partial();
 
 // Form schema for booking creation with proper defaults
