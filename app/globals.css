@@ -356,6 +356,36 @@
   .prose p {
     margin-bottom: 1.5em;
   }
+  
+  /* Blog content text overflow handling */
+  .prose {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  .prose * {
+    max-width: 100%;
+  }
+  
+  .prose pre {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  
+  .prose code {
+    word-break: break-word;
+  }
+  
+  .prose img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .prose a {
+    word-break: break-word;
+  }
 }
 
 /* ============================================
