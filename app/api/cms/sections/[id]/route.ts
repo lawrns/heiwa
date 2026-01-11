@@ -73,6 +73,7 @@ export async function PUT(
     // Save current content as version before updating (if content is changing)
     if (content !== undefined && !skipVersioning) {
       try {
+    const { id } = await params
         const { data: currentSection } = await supabaseAdmin
           .from('page_sections')
           .select('content')

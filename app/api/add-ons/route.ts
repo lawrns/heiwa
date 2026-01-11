@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+interface AddOn {
+  id: string
+  name: string
+  description?: string
+  price: number
+  category?: string
+  images?: string[]
+  is_active: boolean
+  max_quantity?: number | null
+}
+
 /**
  * Fix Supabase storage bucket URLs if needed
  * Ensures CMS images use correct bucket names
@@ -52,7 +63,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Ensure CMS images are prioritized and correctly formatted
-    const addOnsWithFixedImages = (addOns || []).map((addOn: any) => ({
+    const addOnsWithFixedImages = (addOns || []).map((addOn: AddOn) => ({
       ...addOn,
       images: fixImageUrls(addOn.images || [])
     }))

@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+interface Assignment {
+  room_id: string
+}
+
+interface Room {
+  id: string
+  name: string
+  capacity: number
+  booking_type: string
+  amenities: string[]
+  is_active: boolean
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -33,7 +46,7 @@ export async function GET(request: NextRequest) {
         .eq('status', 'confirmed')
       
       if (!assignmentsError && assignments) {
-        assignments.forEach((a: any) => {
+        assignments.forEach((a: Assignment) => {
           const count = occupancyMap.get(a.room_id) || 0
           occupancyMap.set(a.room_id, count + 1)
         })
@@ -49,7 +62,7 @@ export async function GET(request: NextRequest) {
         .eq('status', 'confirmed')
       
       if (!assignmentsError && assignments) {
-        assignments.forEach((a: any) => {
+        assignments.forEach((a: Assignment) => {
           const count = occupancyMap.get(a.room_id) || 0
           occupancyMap.set(a.room_id, count + 1)
         })
@@ -57,7 +70,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform rooms to assignment format with actual occupancy
-    const transformedRooms = (rooms || []).map((room: any) => ({
+    const transformedRooms = (rooms || []).map((room: Room) => ({
       id: room.id,
       name: room.name,
       capacity: room.capacity || 1,

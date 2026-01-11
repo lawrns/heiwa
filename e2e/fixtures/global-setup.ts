@@ -3,8 +3,8 @@ import * as path from 'path'
 import * as fs from 'fs'
 
 async function globalSetup(config: FullConfig) {
-  const baseURL = config.projects?.[0]?.use?.baseURL || process.env.BASE_URL || 'https://heiwahauz.netlify.app'
-  const adminPassword = process.env.ADMIN_PASSWORD || 'heiwa_admin_2024'
+  const baseURL = config.projects?.[0]?.use?.baseURL || process.env.BASE_URL || 'http://localhost:3003'
+  const adminPassword = process.env.ADMIN_PASSWORD || 'testpassword123'
   
   // Create auth directory if it doesn't exist
   const authDir = path.join(process.cwd(), 'e2e', '.auth')

@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdminAuth } from '@/lib/admin-auth'
 
+interface Booking {
+  id: string
+  total_amount: string
+  payment_status: string
+  created_at: string
+}
+
 // GET single client
 export async function GET(
   request: NextRequest,
@@ -37,8 +44,8 @@ export async function GET(
     const totalBookings = bookings?.length || 0
     const totalSpent =
       bookings
-        ?.filter((b: any) => b.payment_status === 'paid')
-        .reduce((sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
+        ?.filter((b: Booking) => b.payment_status === 'paid')
+        .reduce((sum: number, b: Booking) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
 
     return NextResponse.json({
       success: true,

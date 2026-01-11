@@ -175,6 +175,7 @@ export async function PUT(
 
     // Save current content as version before restoring
     try {
+    const { id } = await params
       await supabaseAdmin
         .from('page_section_versions')
         .insert({

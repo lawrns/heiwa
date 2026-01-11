@@ -8,7 +8,7 @@ import AdminModal from '@/components/admin/ui/AdminModal'
 interface VersionEntry {
   id: string
   page_slug: string
-  content: any
+  content: Record<string, unknown>
   version: number
   created_by: string
   created_at: string

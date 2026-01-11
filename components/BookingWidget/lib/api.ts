@@ -11,7 +11,7 @@ interface HeiwaApiGlobal {
   settings?: ApiSettings;
 }
 
-function safeWindow(): any {
+function safeWindow(): (Window & { heiwaApiConfig?: HeiwaApiGlobal }) | undefined {
   try {
     return typeof window !== 'undefined' ? window : undefined;
   } catch {
@@ -46,8 +46,8 @@ export async function apiFetch(inputPath: string, init: RequestInit = {}): Promi
   if (!headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
   if (!headers.has('X-Heiwa-API-Key')) headers.set('X-Heiwa-API-Key', apiKey || '');
 
-  const controller = (init as any).signal ? undefined : new AbortController();
-  const signal = (init as any).signal || controller?.signal;
+  const controller = (init as RequestInit & { signal?: AbortSignal }).signal ? undefined : new AbortController();
+  const signal = (init as RequestInit & { signal?: AbortSignal }).signal || controller?.signal;
   const timeout = setTimeout(() => controller?.abort(), 15000);
 
   try {

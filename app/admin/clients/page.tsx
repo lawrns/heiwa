@@ -8,6 +8,7 @@ import { EditClientModal } from '@/components/admin/clients/EditClientModal'
 import { BulkActions } from '@/components/admin/BulkActions'
 import { CheckboxCell } from '@/components/admin/CheckboxCell'
 import { toast } from 'react-toastify'
+import { formatDateCompact } from '@/lib/utils'
 
 interface Client {
   id: string
@@ -206,9 +207,10 @@ export default function ClientsPage() {
           <h1 className="text-3xl font-bold text-gray-900">Clients</h1>
           <p className="text-gray-600 mt-2">Manage and view all client information</p>
         </div>
-        <button 
+        <button
           onClick={() => setShowCreateModal(true)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium"
+          data-testid="create-client-btn"
         >
           <Plus className="h-4 w-4" />
           Add Client
@@ -248,6 +250,7 @@ export default function ClientsPage() {
                 setCurrentPage(1)
               }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+              data-testid="search-input"
             />
           </div>
           <button className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
@@ -285,7 +288,7 @@ export default function ClientsPage() {
       {/* Clients Table */}
       <div className="bg-white shadow rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-200" data-testid="clients-table">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
@@ -310,7 +313,7 @@ export default function ClientsPage() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {paginatedClients.map((client, index) => (
-                <tr key={client.id} className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
+                <tr key={client.id} className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`} data-testid="client-row">
                   <td className="px-6 py-3 whitespace-nowrap">
                     <CheckboxCell
                       checked={selectedClients.has(client.id)}
@@ -342,26 +345,28 @@ export default function ClientsPage() {
                   </td>
                   <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-900">{client.totalBookings}</td>
                   <td className="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900">€{client.totalSpent.toLocaleString()}</td>
-                  <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">{new Date(client.joinDate).toLocaleDateString()}</td>
+                  <td className="px-6 py-3 whitespace-nowrap text-sm text-gray-500">{formatDateCompact(client.joinDate)}</td>
                   <td className="px-6 py-3 whitespace-nowrap text-sm font-medium">
                     <div className="flex gap-2">
-                      <button 
+                      <button
                         onClick={() => {
                           setSelectedClient(client)
                           setShowViewModal(true)
                         }}
                         className="text-blue-600 hover:text-blue-900 transition-colors"
                         title="View client details"
+                        data-testid="view-client-btn"
                       >
                         <Eye className="h-4 w-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => {
                           setSelectedClient(client)
                           setShowEditModal(true)
                         }}
                         className="text-gray-600 hover:text-gray-900 transition-colors"
                         title="Edit client"
+                        data-testid="edit-client-btn"
                       >
                         <Edit className="h-4 w-4" />
                       </button>
@@ -369,6 +374,7 @@ export default function ClientsPage() {
                         onClick={() => handleDelete(client.id)}
                         className="text-red-600 hover:text-red-900 transition-colors"
                         title="Delete client"
+                        data-testid="delete-client-btn"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

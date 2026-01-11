@@ -1,13 +1,13 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { 
-  Upload, 
-  Search, 
-  Grid, 
-  List, 
-  Copy, 
-  Trash2, 
+import {
+  Upload,
+  Search,
+  Grid,
+  List,
+  Copy,
+  Trash2,
   Check,
   Image as ImageIcon,
   Link,
@@ -16,6 +16,7 @@ import {
   X,
   Loader2
 } from 'lucide-react'
+import { formatDateCompact } from '@/lib/utils'
 
 interface MediaItem {
   id: string
@@ -369,7 +370,7 @@ export default function MediaLibraryPage() {
                     {formatSize(item.size)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(item.created_at).toLocaleDateString()}
+                    {formatDateCompact(item.created_at)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end gap-2">

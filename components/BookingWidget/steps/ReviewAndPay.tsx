@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, Loader2, ShoppingBag, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, Users, MapPin, CreditCard, CheckCircle, AlertCircle, ShoppingBag, ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
 import { BookingState, PricingBreakdown } from '../types';
 import { PaymentMethodSelector } from '../components/PaymentMethodSelector';
 import { BankWireInstructions } from '../components/BankWireInstructions';
@@ -22,7 +22,11 @@ interface BookingData {
 }
 
 interface RoomBookingPayload {
-  room_id: string;
+  room_id?: string;
+  room_assignments?: Array<{
+    room_id: string;
+    guest_ids: string[];
+  }>;
   start_date: string;
   end_date: string;
   participants: unknown[];
@@ -38,16 +42,16 @@ interface RoomBookingPayload {
 }
 
 interface SurfWeekBookingPayload {
-  surf_week_id: string;
-  camp_id: string;
+  surf_week_id?: string;
+  camp_id?: string;
   participants: unknown[];
-  add_ons: Array<{
+  add_ons?: Array<{
     id: string;
     quantity: number;
     price: number;
   }>;
   pricing: PricingBreakdown;
-  guests: number;
+  guests?: number;
   source_url?: string;
   widget_version: string;
   room_assignments?: Array<{
@@ -63,6 +67,7 @@ interface ReviewAndPayProps {
   actions: {
     updatePricing: (pricing: PricingBreakdown) => void;
     setPaymentMethod: (method: 'card_stripe' | 'bank_wire') => void;
+    prevStep: () => void;
   };
   onComplete: (bookingData?: BookingData) => void;
 }
@@ -385,7 +390,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
                 })),
               }
             : {
-                room_id: state.selectedOption,
+                room_id: state.selectedOption ?? undefined,
               }),
           start_date: ensureDate(state.dates.checkIn)?.toISOString().split('T')[0] || '',
           end_date: ensureDate(state.dates.checkOut)?.toISOString().split('T')[0] || '',
@@ -864,43 +869,63 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         </div>
       )}
 
-      {/* Payment Button */}
-      {state.paymentMethod && (
-        <div className="space-y-4">
+      {/* Navigation Footer with Back and Pay buttons */}
+      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+        {/* Back Button */}
+        {!bookingCompleted && (
           <Button
-            onClick={handlePayment}
-            disabled={isProcessing || !termsAccepted}
-            variant="default"
+            variant="outline"
             size="lg"
-            isLoading={isProcessing}
-            loadingText="Processing..."
-            className="w-full min-h-[48px] text-base"
+            onClick={actions.prevStep}
+            disabled={isProcessing}
+            aria-label="Go back to previous step"
+            className="gap-2"
           >
-            {!isProcessing && (
-              state.paymentMethod === 'card_stripe' ? (
-                <>
-                  <CreditCard size={20} />
-                  Pay {formatPrice(pricing.total)} Now
-                </>
-              ) : (
-                <>
-                  <CheckCircle size={20} />
-                  Complete Booking
-                </>
-              )
-            )}
+            <ArrowLeft size={16} className="flex-shrink-0" />
+            <span>Back</span>
           </Button>
+        )}
+        {bookingCompleted && <div />}
 
-          {!bookingCompleted && (
-            <div className="text-center">
-              <p className="text-sm text-gray-500">
-                {state.paymentMethod === 'card_stripe'
-                  ? 'Secure payment powered by Stripe • Your payment information is encrypted and secure'
-                  : 'Your booking will be confirmed. Complete the bank transfer below to secure your reservation.'
-                }
-              </p>
-            </div>
-          )}
+        {/* Payment Button */}
+        {state.paymentMethod && (
+          <div className="flex flex-col items-end gap-2">
+            <Button
+              onClick={handlePayment}
+              disabled={isProcessing || !termsAccepted}
+              variant="default"
+              size="lg"
+              isLoading={isProcessing}
+              loadingText="Processing..."
+              className="min-h-[48px] text-base"
+            >
+              {!isProcessing && (
+                state.paymentMethod === 'card_stripe' ? (
+                  <>
+                    <CreditCard size={20} />
+                    Pay {formatPrice(pricing.total)} Now
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle size={20} />
+                    Complete Booking
+                  </>
+                )
+              )}
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Payment security note */}
+      {state.paymentMethod && !bookingCompleted && (
+        <div className="text-center">
+          <p className="text-sm text-gray-500">
+            {state.paymentMethod === 'card_stripe'
+              ? 'Secure payment powered by Stripe • Your payment information is encrypted and secure'
+              : 'Your booking will be confirmed. Complete the bank transfer below to secure your reservation.'
+            }
+          </p>
         </div>
       )}
     </div>

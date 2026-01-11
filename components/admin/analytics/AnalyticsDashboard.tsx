@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { BarChart3, TrendingUp, FileText, MessageSquare, HelpCircle, Image, Users, Star, Calendar, Layout } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminAlert from '@/components/admin/ui/AdminAlert'
+import { formatDateCompact } from '@/lib/utils'
 
 interface AnalyticsData {
   contentCounts: {
@@ -19,7 +20,7 @@ interface AnalyticsData {
 }
 
 interface ContentAnalytics {
-  recentActivity: any[]
+  recentActivity: Record<string, unknown>[]
   typeStats: Record<string, number>
 }
 
@@ -72,7 +73,13 @@ export function AnalyticsDashboard() {
     }
   }
 
-  const StatCard = ({ title, value, icon: Icon, color, trend }: any) => (
+  const StatCard = ({ title, value, icon: Icon, color, trend }: {
+    title: string
+    value: string | number
+    icon: React.ElementType
+    color: string
+    trend?: string
+  }) => (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex items-center justify-between">
         <div>
@@ -323,18 +330,18 @@ export function AnalyticsDashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
             <div className="space-y-3">
-              {contentData.recentActivity?.slice(0, 10).map((activity: any, index: number) => (
+              {contentData.recentActivity?.slice(0, 10).map((activity: Record<string, unknown>, index: number) => (
                 <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                   <div>
                     <p className="text-sm font-medium text-gray-900">
-                      {activity.action || 'Content updated'}
+                      {(activity.action as string) || 'Content updated'}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {new Date(activity.created_at).toLocaleDateString()} at {new Date(activity.created_at).toLocaleTimeString()}
+                      {formatDateCompact(activity.created_at as string)} at {new Date(activity.created_at as string).toLocaleTimeString()}
                     </p>
                   </div>
                   <span className="text-xs text-gray-400">
-                    {activity.entity_type || 'Unknown'}
+                    {(activity.entity_type as string) || 'Unknown'}
                   </span>
                 </div>
               )) || (

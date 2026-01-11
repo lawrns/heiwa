@@ -134,9 +134,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 <Image
                   src={logoUrl}
                   alt="Heiwa House"
-                  width={134}
-                  height={45}
-                  className="h-11 w-auto"
+                  width={100}
+                  height={34}
+                  className="h-8 w-auto"
                   priority
                   style={{ height: 'auto' }}
                   suppressHydrationWarning

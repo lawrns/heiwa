@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, Clock, User, ArrowLeft } from 'lucide-react'
-import { TipTapRenderer } from '@/components/blog/TipTapRenderer'
+import { TipTapRenderer, TipTapDocument } from '@/components/blog/TipTapRenderer'
 import { getRelatedPosts } from '@/lib/blog/related-posts'
 import { getPostBySlug } from '@/lib/blog/db'
 
@@ -24,12 +24,23 @@ interface FAQ {
   answer: string
 }
 
-interface RelatedPost {
-  id: string
-  slug: string
+interface RelatedPostTranslation {
+  slug_localized: string
   title: string
   excerpt?: string
   cover_image_url?: string
+  cover_alt_text?: string
+}
+
+interface RelatedPost {
+  id: string
+  slug?: string
+  title?: string
+  excerpt?: string
+  cover_image_url?: string
+  translations?: RelatedPostTranslation[]
+  translation?: RelatedPostTranslation
+  category?: { name: string }
 }
 
 async function getPost(slug: string) {
@@ -167,7 +178,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </span>
           )}
           
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 break-words hyphens-auto">
             {post.title}
           </h1>
 
@@ -235,7 +246,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             ...(post.tags && post.tags.length > 0 && {
               keywords: post.tags.map((t: Tag) => t.name).join(', ')
             }),
-            ...(post.faq_json && Array.isArray(post.faq_json) && post.faq_json.length > 0 && {
+            ...(post.faq_json && Array.isArray(post.faq_json) && post.faq_json.length > 0 ? {
               mainEntity: {
                 '@type': 'FAQPage',
                 mainEntity: post.faq_json.map((faq: FAQ) => ({
@@ -247,7 +258,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   }
                 }))
               }
-            })
+            } : {})
           })
         }}
       />
@@ -270,7 +281,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Content */}
       <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow p-8 md:p-12">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-8 md:p-12">
           {/* Excerpt */}
           {post.excerpt && (
             <p className="text-xl text-gray-600 mb-8 font-medium">
@@ -279,7 +290,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           )}
 
           {/* Body Content */}
-          <TipTapRenderer content={post.body_rich} />
+          <TipTapRenderer content={post.body_rich as TipTapDocument | null | undefined} />
 
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (
@@ -329,6 +340,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedPosts.map((relatedPost: RelatedPost) => {
               const translation = relatedPost.translations?.[0] || relatedPost.translation
+              if (!translation) return null
               return (
                 <Link
                   key={relatedPost.id}

@@ -164,7 +164,7 @@ export default function AdminDashboard() {
   const recentBookings = data?.recentBookings || []
   const counts = data?.counts
   
-  const iconMap: { [key: string]: any } = {
+  const iconMap: { [key: string]: LucideIcon } = {
     'Bed': Bed,
     'Calendar': Calendar,
     'Users': Users,
@@ -176,9 +176,9 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" data-testid="admin-dashboard">
       {/* Dashboard Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between" data-testid="dashboard-header">
         <div>
           <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
           <p className="text-gray-600 mt-2">Manage your bookings, rooms, and surf camps from one central location</p>
@@ -192,7 +192,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="stats-grid">
         {stats.map((stat, idx) => {
           const Icon = stat.icon
           const colors = ['orange', 'green', 'blue', 'purple'] as const
@@ -226,13 +226,14 @@ export default function AdminDashboard() {
                 value: parseInt(stat.change),
                 direction: stat.changeType === 'positive' ? 'up' : 'down'
               }}
+              data-testid={`stat-${stat.name.toLowerCase().replace(/\s+/g, '-')}`}
             />
           )
         })}
       </div>
 
       {/* Action Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="quick-actions">
         <ActionCard
           title="Bookings Management"
           description="View and manage all bookings for rooms and surf camps."
@@ -308,12 +309,12 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Bookings */}
-      <div className="bg-white shadow rounded-lg">
+      <div className="bg-white shadow rounded-lg" data-testid="recent-bookings">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">Recent Bookings</h3>
         </div>
         <div className="overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-200" data-testid="recent-bookings-table">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

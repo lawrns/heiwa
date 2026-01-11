@@ -10,10 +10,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authError = requireAdminAuth(request)
     if (authError) return authError
-
-    const { id } = await params
 
     const { data, error } = await supabaseAdmin
       .from('payments')
@@ -64,10 +63,10 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authError = requireAdminAuth(request)
     if (authError) return authError
 
-    const { id } = await params
     const body = await request.json()
 
     const { data, error } = await supabaseAdmin
@@ -107,10 +106,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authError = requireAdminAuth(request)
     if (authError) return authError
-
-    const { id } = await params
 
     const { error } = await supabaseAdmin
       .from('payments')

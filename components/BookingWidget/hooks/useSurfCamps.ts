@@ -9,6 +9,24 @@ interface UseSurfCampsResult {
   refetch: () => void;
 }
 
+interface SurfCampApiResponse {
+  id: string;
+  name: string;
+  description?: string;
+  start_date: string;
+  end_date: string;
+  max_participants?: number;
+  price?: number;
+  level?: string;
+  includes?: string[];
+  images?: string[];
+  is_active?: boolean;
+  price_from?: number;
+  booked_count?: number;
+  confirmed_booked?: number;
+  available_spots?: number;
+}
+
 export function useSurfCamps(): UseSurfCampsResult {
   const [surfCamps, setSurfCamps] = useState<SurfWeek[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +61,7 @@ export function useSurfCamps(): UseSurfCampsResult {
       
       if (data.success && surfCampsArray && Array.isArray(surfCampsArray)) {
         // Transform API response to our SurfWeek interface
-        const transformedCamps: SurfWeek[] = surfCampsArray.map((camp: any) => ({
+        const transformedCamps: SurfWeek[] = surfCampsArray.map((camp: SurfCampApiResponse) => ({
           id: camp.id,
           name: camp.name,
           description: camp.description || '',
@@ -59,7 +77,7 @@ export function useSurfCamps(): UseSurfCampsResult {
           priceFrom: camp.price || 0,
           // Use booked_count (accounts for enrollments + blocked beds) for accurate display
           // Fall back to enrolled_count for backwards compatibility
-          confirmedBooked: camp.booked_count ?? camp.enrolled_count ?? 0,
+          confirmedBooked: camp.booked_count ?? 0,
           availableSpots: camp.available_spots ?? camp.max_participants ?? 0
         }));
 

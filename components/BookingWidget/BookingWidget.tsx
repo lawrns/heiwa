@@ -167,10 +167,10 @@ export function BookingWidget({
     actions.reset();
   };
 
-  const handleBookingComplete = (bookingData?: any) => {
+  const handleBookingComplete = (bookingData?: unknown) => {
     if (bookingData) {
       // Show success message with booking data
-      setBookingSuccess(bookingData);
+      setBookingSuccess(bookingData as BookingSuccessData);
       // Set booking success in context to hide WhatsApp button
       setBookingSuccessInContext(true);
     } else {

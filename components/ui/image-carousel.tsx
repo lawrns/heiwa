@@ -92,7 +92,7 @@ export function ImageCarousel({
       <div className={`relative ${aspectRatio} overflow-hidden rounded-lg`}>
         <Image
           src={validImages[currentIndex]}
-          alt={validImages.length > 1 
+          alt={validImages.length > 1
             ? `${alt} - Image ${currentIndex + 1} of ${validImages.length}`
             : alt}
           fill
@@ -108,7 +108,7 @@ export function ImageCarousel({
             }
           }}
         />
-        
+
         {/* Navigation Arrows */}
         {showArrows && validImages.length > 1 && (
           <>
@@ -128,32 +128,32 @@ export function ImageCarousel({
             </button>
           </>
         )}
+
+        {/* Image Counter - inside image container */}
+        {validImages.length > 1 && (
+          <div className="absolute top-4 right-4 bg-black/50 text-white text-sm px-2 py-1 rounded">
+            {currentIndex + 1}/{validImages.length}
+          </div>
+        )}
+
+        {/* Dots Indicator - positioned inside image at bottom */}
+        {showDots && validImages.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+            {validImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 ${
+                  index === currentIndex
+                    ? 'bg-white w-6'
+                    : 'bg-white/50 hover:bg-white/70'
+                }`}
+                aria-label={`Go to image ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
-
-      {/* Image Counter */}
-      {validImages.length > 1 && (
-        <div className="absolute top-4 right-4 bg-black/50 text-white text-sm px-2 py-1 rounded">
-          {currentIndex + 1}/{validImages.length}
-        </div>
-      )}
-
-      {/* Dots Indicator */}
-      {showDots && validImages.length > 1 && (
-        <div className="flex justify-center mt-4 space-x-2">
-          {validImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`w-2 h-2 rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-800 focus-visible:ring-offset-2 ${
-                index === currentIndex
-                  ? 'bg-gray-800'
-                  : 'bg-gray-300 hover:bg-gray-500'
-              }`}
-              aria-label={`Go to image ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
     </div>
   )
 }

@@ -2,6 +2,7 @@
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Mail, Phone, Building2, Calendar, Euro, CalendarDays, Star } from 'lucide-react'
+import { formatDateCompact } from '@/lib/utils'
 
 interface Client {
   id: string
@@ -117,12 +118,12 @@ export function ViewClientModal({ open, onClose, client }: ViewClientModalProps)
                   <Calendar className="h-4 w-4" />
                   Joined
                 </p>
-                <p className="text-sm text-gray-900">{new Date(client.joinDate).toLocaleDateString()}</p>
+                <p className="text-sm text-gray-900">{formatDateCompact(client.joinDate)}</p>
               </div>
               {client.lastBooking && (
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Last Booking</p>
-                  <p className="text-sm text-gray-900">{new Date(client.lastBooking).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-900">{formatDateCompact(client.lastBooking)}</p>
                 </div>
               )}
             </div>

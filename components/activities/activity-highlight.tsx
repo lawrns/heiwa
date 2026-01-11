@@ -21,8 +21,8 @@ export function ActivityHighlight({
 }: ActivityHighlightProps) {
   return (
     <div className="space-y-8">
-      <div className="text-center max-w-3xl mx-auto">
-        <h2 className="text-4xl font-bold text-gray-900 mb-4">{title}</h2>
+      <div className="text-center max-w-3xl mx-auto px-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 break-words hyphens-auto">{title}</h2>
         <p className="text-lg text-gray-600">{description}</p>
       </div>
       <div className="grid md:grid-cols-2 gap-8 items-center">

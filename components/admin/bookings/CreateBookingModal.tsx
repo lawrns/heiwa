@@ -140,7 +140,7 @@ export function CreateBookingModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" data-testid="create-booking-modal">
         {/* Header */}
         <div className="sticky top-0 px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-white">
           <h3 className="text-lg font-semibold text-gray-900">Create New Booking</h3>
@@ -176,6 +176,7 @@ export function CreateBookingModal({
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="John Doe"
+                  data-testid="booking-guest-name"
                 />
               </div>
               <div>
@@ -189,6 +190,7 @@ export function CreateBookingModal({
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="john@example.com"
+                  data-testid="booking-email"
                 />
               </div>
               <div>
@@ -202,6 +204,7 @@ export function CreateBookingModal({
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="+1 (555) 123-4567"
+                  data-testid="booking-phone"
                 />
               </div>
               <div>
@@ -215,6 +218,7 @@ export function CreateBookingModal({
                   onChange={handleChange}
                   min="1"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  data-testid="booking-guests"
                 />
               </div>
             </div>
@@ -233,9 +237,10 @@ export function CreateBookingModal({
                   value={formData.type}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  data-testid="booking-experience-select"
                 >
-                  <option value="room">Room</option>
-                  <option value="surf_camp">Surf Camp</option>
+                  <option value="room" data-testid="option-room">Room</option>
+                  <option value="surf_camp" data-testid="option-surf-week">Surf Camp</option>
                 </select>
               </div>
               <div>
@@ -249,6 +254,7 @@ export function CreateBookingModal({
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Deluxe Room / Beginner Surf Week"
+                  data-testid="booking-room-select"
                 />
               </div>
               <div>
@@ -261,6 +267,7 @@ export function CreateBookingModal({
                   value={formData.check_in}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  data-testid="booking-date-picker"
                 />
               </div>
               <div>
@@ -273,6 +280,7 @@ export function CreateBookingModal({
                   value={formData.check_out}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  data-testid="booking-checkout-date"
                 />
               </div>
             </div>
@@ -306,11 +314,12 @@ export function CreateBookingModal({
                   value={formData.status}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  data-testid="booking-status-select"
                 >
-                  <option value="pending">Pending</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="cancelled">Cancelled</option>
-                  <option value="completed">Completed</option>
+                  <option value="pending" data-testid="status-pending">Pending</option>
+                  <option value="confirmed" data-testid="status-confirmed">Confirmed</option>
+                  <option value="cancelled" data-testid="status-cancelled">Cancelled</option>
+                  <option value="completed" data-testid="status-completed">Completed</option>
                 </select>
               </div>
               <div>
@@ -343,6 +352,7 @@ export function CreateBookingModal({
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Any special requests or notes..."
+              data-testid="booking-notes"
             />
           </div>
 
@@ -359,6 +369,7 @@ export function CreateBookingModal({
               type="submit"
               disabled={isLoading}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              data-testid="save-booking"
             >
               {isLoading ? 'Creating...' : 'Create Booking'}
             </button>

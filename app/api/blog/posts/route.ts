@@ -4,6 +4,40 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+interface BlogPostTranslation {
+  id: string
+  post_id: string
+  locale: string
+  slug_localized: string
+  title: string
+  excerpt?: string
+  cover_image_url?: string
+  cover_alt_text?: string
+}
+
+interface BlogPostTag {
+  id: string
+  slug: string
+  name: string
+}
+
+interface BlogPostTagJoin {
+  tag: BlogPostTag
+}
+
+interface BlogPost {
+  id: string
+  translations: BlogPostTranslation[]
+  tags?: BlogPostTagJoin[]
+  category?: unknown
+  author?: unknown
+  featured: boolean
+  views: number
+  reading_minutes?: number
+  published_at?: string
+  created_at: string
+}
+
 // GET /api/blog/posts - List published posts
 export async function GET(request: NextRequest) {
   try {
@@ -59,8 +93,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data
-    const posts = (data || []).map((post: any) => {
-      const translation = post.translations?.find((t: any) => t.locale === locale) || post.translations?.[0]
+    const posts = (data || []).map((post: BlogPost) => {
+      const translation = post.translations?.find((t: BlogPostTranslation) => t.locale === locale) || post.translations?.[0]
       
       return {
         id: post.id,
@@ -71,7 +105,7 @@ export async function GET(request: NextRequest) {
         cover_alt_text: translation?.cover_alt_text,
         category: post.category,
         author: post.author,
-        tags: post.tags?.map((pt: any) => pt.tag) || [],
+        tags: post.tags?.map((pt: BlogPostTagJoin) => pt.tag) || [],
         featured: post.featured,
         views: post.views,
         reading_minutes: post.reading_minutes,
@@ -83,8 +117,8 @@ export async function GET(request: NextRequest) {
     // Filter by tag if specified
     let filteredPosts = posts
     if (tag) {
-      filteredPosts = posts.filter((post: any) =>
-        post.tags.some((t: any) => t.id === tag || t.slug === tag)
+      filteredPosts = posts.filter((post: { tags: BlogPostTag[] }) =>
+        post.tags.some((t: BlogPostTag) => t.id === tag || t.slug === tag)
       )
     }
 
@@ -98,10 +132,11 @@ export async function GET(request: NextRequest) {
         totalPages: Math.ceil((count || 0) / limit)
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching blog posts:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

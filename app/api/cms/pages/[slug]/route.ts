@@ -57,10 +57,9 @@ export async function PUT(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params
     const authError = requireAdminAuth(request)
     if (authError) return authError
-
-    const { slug } = await params
     const body = await request.json()
     const { title, meta_description, meta_keywords, og_image, is_published } = body
 

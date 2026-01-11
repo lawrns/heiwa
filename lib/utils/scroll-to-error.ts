@@ -55,18 +55,18 @@ export function scrollToFirstError(container?: HTMLElement | null): boolean {
  */
 export function scrollToField(fieldIdOrName: string, container?: HTMLElement | null): boolean {
   const searchContainer = container || document
-  
-  // Try ID first
-  let field = searchContainer.getElementById(fieldIdOrName)
-  
+
+  // Try ID first - use querySelector for both Document and HTMLElement compatibility
+  let field = searchContainer.querySelector(`#${CSS.escape(fieldIdOrName)}`) as HTMLElement | null
+
   // Try name attribute if ID didn't work
   if (!field) {
-    field = searchContainer.querySelector(`[name="${fieldIdOrName}"]`) as HTMLElement
+    field = searchContainer.querySelector(`[name="${fieldIdOrName}"]`) as HTMLElement | null
   }
-  
+
   // Try data-testid
   if (!field) {
-    field = searchContainer.querySelector(`[data-testid="${fieldIdOrName}"]`) as HTMLElement
+    field = searchContainer.querySelector(`[data-testid="${fieldIdOrName}"]`) as HTMLElement | null
   }
   
   if (field) {
@@ -118,6 +118,10 @@ export function scrollToFirstErrorMessage(container?: HTMLElement | null): boole
   
   return false
 }
+
+
+
+
 
 
 

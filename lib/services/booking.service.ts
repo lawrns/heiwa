@@ -79,6 +79,11 @@ export interface SurfWeekBookingInput {
   source_url?: string;
   widget_version?: string;
   room_assignments?: RoomAssignmentInput[];
+  // Admin-specific optional overrides
+  status?: string;
+  payment_status?: string;
+  special_requests?: string;
+  internal_notes?: string;
 }
 
 export interface ParticipantInput {
@@ -108,6 +113,12 @@ export interface RoomBookingInput {
   email: string;
   phone?: string;
   message?: string;
+  // Admin-specific optional overrides
+  total_amount?: number;
+  status?: string;
+  payment_status?: string;
+  special_requests?: string;
+  internal_notes?: string;
 }
 
 export interface BookingResult {
@@ -335,8 +346,8 @@ export const bookingService = {
         .in('id', Array.from(allClientIds));
 
       if (clients) {
-        clients.forEach((client: Client) => {
-          clientMap.set(client.id, client);
+        clients.forEach((client) => {
+          clientMap.set(client.id, client as Client);
         });
       }
     }
@@ -363,21 +374,25 @@ export const bookingService = {
         .in('booking_id', bookingIds);
 
       if (roomAssignments) {
-        roomAssignments.forEach((ra: RoomAssignment & { rooms?: Room; clients?: Client }) => {
-          if (!roomAssignmentsMap.has(ra.booking_id || '')) {
-            roomAssignmentsMap.set(ra.booking_id || '', []);
+        roomAssignments.forEach((ra) => {
+          const bookingId = ra.booking_id || '';
+          if (!roomAssignmentsMap.has(bookingId)) {
+            roomAssignmentsMap.set(bookingId, []);
           }
-          roomAssignmentsMap.get(ra.booking_id || '')!.push({
+          // Handle joined data - rooms and clients come back as arrays from Supabase
+          const room = Array.isArray(ra.rooms) ? ra.rooms[0] : ra.rooms;
+          const client = Array.isArray(ra.clients) ? ra.clients[0] : ra.clients;
+          roomAssignmentsMap.get(bookingId)!.push({
             roomId: ra.room_id,
-            roomName: (ra.rooms as Room | undefined)?.name || 'Unknown Room',
-            roomType: (ra.rooms as Room | undefined)?.booking_type === 'perBed' ? 'dorm' : 'private',
-            capacity: (ra.rooms as Room | undefined)?.capacity || 0,
+            roomName: room?.name || 'Unknown Room',
+            roomType: room?.booking_type === 'perBed' ? 'dorm' : 'private',
+            capacity: room?.capacity || 0,
             bedNumber: ra.bed_number,
             checkInDate: ra.check_in_date,
             checkOutDate: ra.check_out_date,
             clientId: ra.client_id,
-            clientName: (ra.clients as Client | undefined)?.name || 'Unknown',
-            clientEmail: (ra.clients as Client | undefined)?.email || '',
+            clientName: client?.name || 'Unknown',
+            clientEmail: client?.email || '',
             enrollmentId: ra.enrollment_id,
           });
         });
@@ -454,7 +469,7 @@ export const bookingService = {
    * Create a surf week booking
    */
   async createSurfWeekBooking(input: SurfWeekBookingInput): Promise<BookingResult> {
-    const { camp_id, participants, pricing, source_url, widget_version, room_assignments } = input;
+    const { camp_id, participants, pricing, source_url, widget_version, room_assignments, status: adminStatus, payment_status: adminPaymentStatus, special_requests: adminSpecialRequests, internal_notes: adminInternalNotes } = input;
 
     // Validate required fields
     if (!camp_id || !participants.length) {
@@ -577,7 +592,7 @@ export const bookingService = {
       .limit(10);
 
     if (existingBookings && existingBookings.length > 0) {
-      const matchingBookings = existingBookings.filter((booking: Booking) => {
+      const matchingBookings = existingBookings.filter((booking) => {
         const bookingAge = new Date().getTime() - new Date(booking.created_at || '').getTime();
         return bookingAge < 5 * 60 * 1000; // Within 5 minutes
       });
@@ -600,19 +615,46 @@ export const bookingService = {
       room_assignments: room_assignments || undefined,
     });
 
+    // Extract special requests and dietary requirements from all participants
+    const allSpecialRequests = participantDetails
+      .map((p, i) => p.specialRequests ? `Guest ${i + 1} (${p.name}): ${p.specialRequests}` : null)
+      .filter(Boolean)
+      .join('\n');
+
+    const allDietaryRequirements = participantDetails
+      .map((p, i) => p.dietaryRequirements ? `Guest ${i + 1} (${p.name}): ${p.dietaryRequirements}` : null)
+      .filter(Boolean)
+      .join('\n');
+
+    // Combine admin special requests with participant special requests
+    const combinedSpecialRequests = adminSpecialRequests 
+      ? (allSpecialRequests ? `${adminSpecialRequests}\n\n${allSpecialRequests}` : adminSpecialRequests)
+      : allSpecialRequests;
+
+    // Include internal notes in the notes JSON if provided
+    const notesObj = {
+      widget_version: widget_version || 'unknown',
+      source_url: source_url || undefined,
+      participants: participantDetails,
+      room_assignments: room_assignments || undefined,
+      internal_notes: adminInternalNotes || undefined,
+    };
+
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('bookings')
       .insert({
         client_ids: allClientIds,
         total_amount: pricing.total || 0,
-        status: 'pending',
-        payment_status: 'pending',
+        status: adminStatus || 'pending',
+        payment_status: adminPaymentStatus || 'pending',
         guests: participants.length,
         check_in: checkInDate,
         check_out: checkOutDate,
         room_type: null,
-        notes: bookingNotes,
-        source: 'widget',
+        notes: JSON.stringify(notesObj),
+        source: adminStatus ? 'admin' : 'widget',
+        special_requests: combinedSpecialRequests || null,
+        dietary_requirements: allDietaryRequirements || null,
       })
       .select('id')
       .single();
@@ -696,7 +738,7 @@ export const bookingService = {
    * Create a room booking
    */
   async createRoomBooking(input: RoomBookingInput): Promise<BookingResult> {
-    const { room_id, start_date, end_date, participants = [], guests, clientName, email, phone, message } = input;
+    const { room_id, start_date, end_date, participants = [], guests, clientName, email, phone, message, total_amount: adminTotalAmount, status: adminStatus, payment_status: adminPaymentStatus, special_requests: adminSpecialRequests, internal_notes: adminInternalNotes } = input;
 
     // Validate required fields
     if (!room_id || !start_date || !end_date || !clientName || !email) {
@@ -789,22 +831,32 @@ export const bookingService = {
       }
     }
 
+    // Build notes with internal notes if provided
+    const notesContent = adminInternalNotes 
+      ? (message ? `${message}\n\n[Internal Notes]: ${adminInternalNotes}` : `[Internal Notes]: ${adminInternalNotes}`)
+      : (message || '');
+
+    // Combine admin special requests with participant special requests
+    const combinedSpecialRequests = adminSpecialRequests 
+      ? (participant.specialRequests ? `${adminSpecialRequests}\n\n${participant.specialRequests}` : adminSpecialRequests)
+      : (participant.specialRequests || null);
+
     // Create booking
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('bookings')
       .insert({
         client_ids: [clientData.id],
-        total_amount: 0,
-        status: 'pending',
-        payment_status: 'pending',
+        total_amount: adminTotalAmount || 0,
+        status: adminStatus || 'pending',
+        payment_status: adminPaymentStatus || 'pending',
         guests: requestedGuests,
         check_in: start_date,
         check_out: end_date,
         room_type: room.name,
-        notes: message || '',
-        source: 'api',
+        notes: notesContent,
+        source: adminStatus ? 'admin' : 'api',
         dietary_requirements: participant.dietaryRequirements || null,
-        special_requests: participant.specialRequests || null,
+        special_requests: combinedSpecialRequests,
       })
       .select()
       .single();

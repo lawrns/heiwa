@@ -148,6 +148,35 @@ export async function GET(request: NextRequest) {
       console.warn('Error checking room assignments:', error)
     }
 
+    // Check for calendar events that block bookings
+    interface BlockingEvent {
+      id: string
+      start_date: string
+      end_date: string
+      title: string
+    }
+    let blockingEvents: BlockingEvent[] = []
+
+    try {
+      const { data: events, error: eventsError } = await supabaseAdmin
+        .from('calendar_events')
+        .select('id, start_date, end_date, title')
+        .gte('end_date', startDate)
+        .lte('start_date', endDate)
+        .eq('blocks_bookings', true)
+
+      if (eventsError) {
+        console.warn('Calendar events table error:', eventsError.message)
+      } else if (events) {
+        blockingEvents = events
+        if (events.length > 0) {
+          console.log(`🚫 Found ${events.length} blocking calendar event(s) overlapping with requested dates`)
+        }
+      }
+    } catch (error) {
+      console.warn('Error checking calendar events:', error)
+    }
+
     // Check for active surf weeks that overlap with requested dates
     // Room-only bookings should be blocked during surf weeks
     interface SurfWeek {
@@ -180,6 +209,9 @@ export async function GET(request: NextRequest) {
     // If dates overlap with surf weeks, block room-only bookings
     // But allow room selection for surf week bookings (forSurfWeek=true)
     const hasSurfWeekConflict = activeSurfWeeks.length > 0 && !forSurfWeek
+
+    // Check if dates are blocked by calendar events
+    const hasBlockingEventConflict = blockingEvents.length > 0
 
     // Create a map of room names to IDs for matching
     const roomNameToId = new Map<string, string>()
@@ -315,11 +347,49 @@ export async function GET(request: NextRequest) {
     })
 
     // Log room images for debugging
-    console.log('🖼️ Room images in availability API:', transformedRooms.map((r: any) => ({
+    console.log('🖼️ Room images in availability API:', transformedRooms.map((r: {
+      id: string
+      name: string
+      images: string[]
+      featured_image: string | null
+    }) => ({
       name: r.name,
       images: r.images,
       featured_image: r.featured_image
     })))
+
+    // If blocking calendar events exist, return empty rooms with blocking info
+    // This prevents bookings during maintenance periods, holidays, etc.
+    if (hasBlockingEventConflict) {
+      console.log('🚫 Blocking bookings due to calendar event(s)')
+      return NextResponse.json({
+        success: true,
+        data: {
+          available_rooms: [],
+          total_rooms: allRooms?.length || 0,
+          requested_dates: {
+            start_date: startDate,
+            end_date: endDate,
+            guests: guests
+          },
+          blocked_by_event: true,
+          blocking_events: blockingEvents.map(event => ({
+            id: event.id,
+            title: event.title,
+            start_date: event.start_date,
+            end_date: event.end_date
+          })),
+          message: 'Bookings are not available during these dates due to a scheduled event or maintenance.'
+        }
+      }, {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+          'X-Content-Version': Date.now().toString()
+        }
+      })
+    }
 
     // If surf week conflict exists, return empty rooms with blocking info
     // This prevents room-only bookings during surf camp periods
@@ -363,7 +433,8 @@ export async function GET(request: NextRequest) {
           end_date: endDate,
           guests: guests
         },
-        surf_week_conflict: false
+        surf_week_conflict: false,
+        blocked_by_event: false
       }
     }, {
       headers: {

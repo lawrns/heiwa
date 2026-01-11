@@ -8,7 +8,7 @@ interface PageSection {
   id: string
   page_slug: string
   section_type: string
-  content: Record<string, any>
+  content: Record<string, unknown>
   order_index: number
   is_active: boolean
   created_at: string
@@ -148,7 +148,7 @@ export default function HomepageCMSPage() {
     }
   }
 
-  const updateContent = (id: string, field: keyof HomepageContent, value: any) => {
+  const updateContent = (id: string, field: keyof HomepageContent, value: unknown) => {
     setContent(prev => prev.map(item =>
       item.id === id ? { ...item, [field]: value } : item
     ))

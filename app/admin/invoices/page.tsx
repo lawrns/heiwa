@@ -10,6 +10,7 @@ import { CheckboxCell } from '@/components/admin/CheckboxCell'
 import { DateRangeFilter } from '@/components/admin/DateRangeFilter'
 import { AmountRangeFilter } from '@/components/admin/AmountRangeFilter'
 import { toast } from 'react-toastify'
+import { formatDateCompact } from '@/lib/utils'
 
 interface Invoice {
   id: string
@@ -103,14 +104,15 @@ export default function InvoicesPage() {
       } else {
         throw new Error(data.error || 'Failed to delete invoice')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting invoice:', error)
-      toast.error(error.message || 'Failed to delete invoice')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete invoice'
+      toast.error(errorMessage)
     }
   }
 
   const handleCreateFromBooking = (bookingId: string) => {
-    setSelectedInvoice({ bookingId } as Invoice)
+    setSelectedInvoice({ bookingId } as Partial<Invoice> as Invoice)
     setShowCreateModal(true)
   }
 
@@ -160,9 +162,10 @@ export default function InvoicesPage() {
       } else {
         throw new Error(data.error || 'Failed to update invoices')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating invoices:', error)
-      toast.error(error.message || 'Failed to update invoices')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update invoices'
+      toast.error(errorMessage)
     }
   }
 
@@ -190,9 +193,10 @@ export default function InvoicesPage() {
       } else {
         throw new Error(data.error || 'Failed to send invoices')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error sending invoices:', error)
-      toast.error(error.message || 'Failed to send invoices')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send invoices'
+      toast.error(errorMessage)
     }
   }
 
@@ -220,9 +224,10 @@ export default function InvoicesPage() {
       } else {
         throw new Error(data.error || 'Failed to delete invoices')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting invoices:', error)
-      toast.error(error.message || 'Failed to delete invoices')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete invoices'
+      toast.error(errorMessage)
     }
   }
 
@@ -544,10 +549,10 @@ export default function InvoicesPage() {
                     </span>
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
-                    {invoice.due_date ? new Date(invoice.due_date).toLocaleDateString() : 'N/A'}
+                    {formatDateCompact(invoice.due_date)}
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
-                    {new Date(invoice.created_at).toLocaleDateString()}
+                    {formatDateCompact(invoice.created_at)}
                   </td>
                   <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex gap-1 sm:gap-2">

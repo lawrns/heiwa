@@ -14,7 +14,7 @@ export class APIError extends Error {
     public statusCode: number,
     public code: string,
     public endpoint: string,
-    public context?: Record<string, any>
+    public context?: Record<string, unknown>
   ) {
     super(message)
     this.name = 'APIError'
@@ -24,12 +24,12 @@ export class APIError extends Error {
 /**
  * Standard API Response interface
  */
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   success: boolean
   data?: T
   error?: string
   code?: string
-  details?: any
+  details?: unknown
   timestamp: string
   requestId: string
 }
@@ -75,7 +75,7 @@ export function createErrorResponse(
   statusCode: number,
   code: string,
   message: string,
-  details?: any,
+  details?: unknown,
   requestId?: string
 ): NextResponse {
   const response: APIResponse = {
@@ -119,10 +119,10 @@ export function createSuccessResponse<T>(
 /**
  * Wrap API handler with error handling
  */
-export type APIHandler = (request: NextRequest, context?: any) => Promise<NextResponse>
+export type APIHandler = (request: NextRequest, context?: unknown) => Promise<NextResponse>
 
 export function withErrorHandler(handler: APIHandler): APIHandler {
-  return async (request: NextRequest, context?: any) => {
+  return async (request: NextRequest, context?: unknown) => {
     const requestId = request.headers.get('x-request-id') || crypto.randomUUID()
 
     try {
@@ -136,8 +136,9 @@ export function withErrorHandler(handler: APIHandler): APIHandler {
       return response
     } catch (error) {
       // Log the error
+      const logContext = context && typeof context === 'object' ? { ...context } : {}
       await logError(error as Error, {
-        ...context,
+        ...logContext,
         url: request.url,
         method: request.method,
         requestId,
@@ -156,7 +157,7 @@ export function withErrorHandler(handler: APIHandler): APIHandler {
 
       // Handle Supabase errors
       if (error && typeof error === 'object' && 'code' in error) {
-        const supabaseError = error as { code: string; message: string; details?: any }
+        const supabaseError = error as { code: string; message: string; details?: unknown }
 
         // Map common Supabase error codes
         switch (supabaseError.code) {
@@ -201,7 +202,7 @@ export function withErrorHandler(handler: APIHandler): APIHandler {
           400,
           ErrorCode.VALIDATION_ERROR,
           'Validation failed',
-          (error as { issues: any[] }).issues,
+          (error as { issues: unknown[] }).issues,
           requestId
         )
       }
@@ -239,10 +240,10 @@ export const ErrorResponses = {
   notFound: (resource: string = 'Resource', requestId?: string) =>
     createErrorResponse(404, ErrorCode.NOT_FOUND, `${resource} not found`, undefined, requestId),
 
-  validation: (message: string = 'Validation failed', details?: any, requestId?: string) =>
+  validation: (message: string = 'Validation failed', details?: unknown, requestId?: string) =>
     createErrorResponse(400, ErrorCode.VALIDATION_ERROR, message, details, requestId),
 
-  conflict: (message: string = 'Conflict', details?: any, requestId?: string) =>
+  conflict: (message: string = 'Conflict', details?: unknown, requestId?: string) =>
     createErrorResponse(409, ErrorCode.CONFLICT, message, details, requestId),
 
   rateLimited: (retryAfter?: number, requestId?: string) =>
@@ -267,19 +268,19 @@ export const ErrorResponses = {
 // Error logging utility
 // Falls back to console if logger is not available
 const logger = {
-  error: (message: string, error?: any, context?: Record<string, any>) => {
+  error: (message: string, error?: unknown, context?: Record<string, unknown>) => {
     console.error(`[ERROR] ${message}`, error, context)
   },
-  warn: (message: string, context?: Record<string, any>) => {
+  warn: (message: string, context?: Record<string, unknown>) => {
     console.warn(`[WARN] ${message}`, context)
   },
-  apiError: (endpoint: string, error: any, context?: Record<string, any>) => {
+  apiError: (endpoint: string, error: unknown, context?: Record<string, unknown>) => {
     console.error(`[API ERROR] ${endpoint}`, error, context)
   },
-  validationError: (field: string, message: string, context?: Record<string, any>) => {
+  validationError: (field: string, message: string, context?: Record<string, unknown>) => {
     console.error(`[VALIDATION ERROR] ${field}: ${message}`, context)
   },
-  bookingError: (step: string, error: any, context?: Record<string, any>) => {
+  bookingError: (step: string, error: unknown, context?: Record<string, unknown>) => {
     console.error(`[BOOKING ERROR] ${step}`, error, context)
   },
 }
@@ -292,7 +293,7 @@ export function logError(error: Error, context?: {
   action?: string
   userId?: string
   bookingId?: string
-  [key: string]: any
+  [key: string]: unknown
 }) {
   const errorInfo = {
     message: error.message,
@@ -333,7 +334,7 @@ export class ValidationError extends Error {
   constructor(
     message: string,
     public field: string,
-    public value?: any
+    public value?: unknown
   ) {
     super(message)
     this.name = 'ValidationError'
@@ -344,7 +345,7 @@ export class BookingError extends Error {
   constructor(
     message: string,
     public step: string,
-    public context?: Record<string, any>
+    public context?: Record<string, unknown>
   ) {
     super(message)
     this.name = 'BookingError'
@@ -355,14 +356,14 @@ export class BookingError extends Error {
  * Error handler utilities
  */
 
-export function handleAPIError(error: any, endpoint: string): APIError {
-  const message = error?.message || 'An API error occurred'
-  const statusCode = error?.response?.status || 500
-  const code = error?.code || 'API_ERROR'
+export function handleAPIError(error: unknown, endpoint: string): APIError {
+  const message = (error as { message?: string })?.message || 'An API error occurred'
+  const statusCode = (error as { response?: { status?: number } })?.response?.status || 500
+  const code = (error as { code?: string })?.code || 'API_ERROR'
 
   logger.apiError(endpoint, error, {
     statusCode,
-    response: error?.response?.data,
+    response: (error as { response?: { data?: unknown } })?.response?.data,
   })
 
   return new APIError(message, statusCode, code, endpoint, {
@@ -370,7 +371,7 @@ export function handleAPIError(error: any, endpoint: string): APIError {
   })
 }
 
-export function handleValidationError(field: string, value: any, message?: string): ValidationError {
+export function handleValidationError(field: string, value: unknown, message?: string): ValidationError {
   const errorMessage = message || `Invalid value for ${field}`
   
   logger.validationError(field, errorMessage, {
@@ -380,8 +381,8 @@ export function handleValidationError(field: string, value: any, message?: strin
   return new ValidationError(errorMessage, field, value)
 }
 
-export function handleBookingError(step: string, error: any): BookingError {
-  const message = error?.message || `Error in booking step: ${step}`
+export function handleBookingError(step: string, error: unknown): BookingError {
+  const message = (error as { message?: string })?.message || `Error in booking step: ${step}`
   
   logger.bookingError(step, error, {
     originalError: error,

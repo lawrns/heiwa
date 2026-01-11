@@ -37,6 +37,7 @@ describe('GuestDetails Step Component', () => {
     addOns: [],
     pricing: {
       basePrice: 400,
+      addOnsSubtotal: 0,
       taxes: 40,
       fees: 0,
       total: 440,

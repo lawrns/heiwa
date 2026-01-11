@@ -40,7 +40,7 @@ export function BulkActions({
   }
 
   return (
-    <div className={`bg-blue-50 border border-blue-200 rounded-lg p-4 ${className}`}>
+    <div data-testid="bulk-actions" className={`bg-blue-50 border border-blue-200 rounded-lg p-4 ${className}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <span className="text-sm font-medium text-blue-900">
@@ -64,19 +64,33 @@ export function BulkActions({
         </div>
 
         <div className="flex items-center gap-2">
-          {actions.map((action, index) => (
-            <Button
-              key={index}
-              variant={action.variant || 'default'}
-              size="sm"
-              onClick={action.onClick}
-              disabled={action.disabled}
-              className="flex items-center gap-2"
-            >
-              {action.icon}
-              {action.label}
-            </Button>
-          ))}
+          {actions.map((action, index) => {
+            // Determine data-testid based on action label
+            const labelLower = action.label.toLowerCase()
+            let testId: string | undefined
+            if (labelLower.includes('delete')) {
+              testId = 'bulk-delete'
+            } else if (labelLower === 'mark confirmed' || labelLower.includes('confirmed')) {
+              testId = 'bulk-status-confirmed'
+            } else if (labelLower.includes('status') || labelLower.includes('update status')) {
+              testId = 'bulk-status-update'
+            }
+
+            return (
+              <Button
+                key={index}
+                variant={action.variant || 'default'}
+                size="sm"
+                onClick={action.onClick}
+                disabled={action.disabled}
+                className="flex items-center gap-2"
+                data-testid={testId}
+              >
+                {action.icon}
+                {action.label}
+              </Button>
+            )
+          })}
         </div>
       </div>
     </div>

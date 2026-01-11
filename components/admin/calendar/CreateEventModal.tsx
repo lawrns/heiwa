@@ -74,9 +74,10 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
         color: '#3B82F6',
         blocks_bookings: false,
       })
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating event:', error)
-      toast.error(error.message || 'Failed to create event')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create event'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -174,8 +175,7 @@ export function CreateEventModal({ open, onClose, onCreated, defaultDate }: Crea
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="booking">Booking</SelectItem>
-                    <SelectItem value="surf_camp">Surf Camp</SelectItem>
+                    <SelectItem value="block">Block (No Bookings)</SelectItem>
                     <SelectItem value="maintenance">Maintenance</SelectItem>
                     <SelectItem value="event">Event</SelectItem>
                     <SelectItem value="other">Other</SelectItem>

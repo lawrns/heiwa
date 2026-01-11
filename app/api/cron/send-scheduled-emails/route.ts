@@ -39,10 +39,11 @@ export async function GET(request: NextRequest) {
         timestamp: new Date().toISOString()
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in scheduled email cron job:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }
@@ -79,10 +80,11 @@ export async function POST(request: NextRequest) {
         timestamp: new Date().toISOString()
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in scheduled email cron job:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

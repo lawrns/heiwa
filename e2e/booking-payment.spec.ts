@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Booking Payment Flow', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
   })
 
   test('should handle credit card payment flow', async ({ page }) => {

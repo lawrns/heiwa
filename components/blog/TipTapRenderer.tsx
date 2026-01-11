@@ -4,8 +4,36 @@ import { useMemo } from 'react'
 import React from 'react'
 import Image from 'next/image'
 
+interface TipTapMark {
+  type: 'bold' | 'italic' | 'underline' | 'strike' | 'code' | 'link'
+  attrs?: {
+    href?: string
+    target?: string
+    rel?: string
+  }
+}
+
+interface TipTapTextNode {
+  type: 'text'
+  text: string
+  marks?: TipTapMark[]
+}
+
+interface TipTapNode {
+  type: string
+  attrs?: Record<string, unknown>
+  content?: TipTapNode[]
+  text?: string
+  marks?: TipTapMark[]
+}
+
+export interface TipTapDocument {
+  type: 'doc'
+  content: TipTapNode[]
+}
+
 interface TipTapRendererProps {
-  content: any
+  content: TipTapDocument | null | undefined
   className?: string
 }
 
@@ -15,64 +43,79 @@ export function TipTapRenderer({ content, className = '' }: TipTapRendererProps)
       return <p className="text-gray-500 italic">No content</p>
     }
 
-    const renderNode = (node: any, key?: number | string): React.ReactNode => {
+    const renderNode = (node: TipTapNode, key?: number | string): React.ReactNode => {
       if (!node) return null
 
       switch (node.type) {
         case 'paragraph':
           return (
             <p className="mb-4 text-gray-700 leading-relaxed">
-              {node.content?.map((child: any, idx: number) => (
+              {node.content?.map((child: TipTapNode, idx: number) => (
                 <React.Fragment key={idx}>{renderNode(child)}</React.Fragment>
               ))}
             </p>
           )
 
         case 'heading':
-          const level = node.attrs?.level || 1
-          const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements
-          const headingClasses = {
+          const level = (node.attrs?.level as number) || 1
+          const headingClasses: Record<number, string> = {
             1: 'text-4xl font-bold mb-6 mt-8',
             2: 'text-3xl font-bold mb-4 mt-6',
             3: 'text-2xl font-bold mb-3 mt-4',
-          }[level] || 'text-xl font-bold mb-2 mt-3'
+          }
+          const className = headingClasses[level] || 'text-xl font-bold mb-2 mt-3'
           
-          return (
-            <HeadingTag className={headingClasses}>
-              {node.content?.map((child: any, idx: number) => (
-                <React.Fragment key={idx}>{renderNode(child)}</React.Fragment>
-              ))}
-            </HeadingTag>
-          )
+          if (level === 1) {
+            return (
+              <h1 className={className}>
+                {node.content?.map((child: TipTapNode, idx: number) => (
+                  <React.Fragment key={idx}>{renderNode(child)}</React.Fragment>
+                ))}
+              </h1>
+            )
+          } else if (level === 2) {
+            return (
+              <h2 className={className}>
+                {node.content?.map((child: TipTapNode, idx: number) => (
+                  <React.Fragment key={idx}>{renderNode(child)}</React.Fragment>
+                ))}
+              </h2>
+            )
+          } else if (level === 3) {
+            return (
+              <h3 className={className}>
+                {node.content?.map((child: TipTapNode, idx: number) => (
+                  <React.Fragment key={idx}>{renderNode(child)}</React.Fragment>
+                ))}
+              </h3>
+            )
+          }
+          return null
 
         case 'bulletList':
           return (
             <ul className="list-disc list-inside mb-4 space-y-2 text-gray-700">
-              {node.content?.map((child: any, idx: number) => renderNode(child, idx))}
+              {node.content?.map((child: TipTapNode, idx: number) => renderNode(child, idx))}
             </ul>
           )
 
         case 'orderedList':
           return (
             <ol className="list-decimal list-inside mb-4 space-y-2 text-gray-700">
-              {node.content?.map((child: any, idx: number) => renderNode(child, idx))}
+              {node.content?.map((child: TipTapNode, idx: number) => renderNode(child, idx))}
             </ol>
           )
 
         case 'listItem':
-          const listItemProps: any = { className: 'mb-1' }
-          if (key !== undefined) {
-            listItemProps.key = key
-          }
           return (
-            <li {...listItemProps}>
-              {node.content?.map((child: any, idx: number) => renderNode(child))}
+            <li className="mb-1" key={String(key)}>
+              {node.content?.map((child: TipTapNode, idx: number) => renderNode(child))}
             </li>
           )
 
         case 'image':
-          const src = node.attrs?.src || ''
-          const alt = node.attrs?.alt || ''
+          const src = (node.attrs?.src as string) || ''
+          const alt = (node.attrs?.alt as string) || ''
           return (
             <div className="my-6">
               <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden">
@@ -90,11 +133,11 @@ export function TipTapRenderer({ content, className = '' }: TipTapRendererProps)
           return <br />
 
         case 'text':
-          let text = node.text || ''
+          let text: React.ReactNode = node.text || ''
           
           // Apply marks
           if (node.marks) {
-            node.marks.forEach((mark: any) => {
+            node.marks.forEach((mark: TipTapMark) => {
               switch (mark.type) {
                 case 'bold':
                   text = <strong key={Math.random()}>{text}</strong>
@@ -123,7 +166,7 @@ export function TipTapRenderer({ content, className = '' }: TipTapRendererProps)
         default:
           // Recursively render children
           if (node.content) {
-            return node.content.map((child: any, idx: number) => (
+            return node.content.map((child: TipTapNode, idx: number) => (
               <span key={idx}>{renderNode(child)}</span>
             ))
           }
@@ -131,7 +174,7 @@ export function TipTapRenderer({ content, className = '' }: TipTapRendererProps)
       }
     }
 
-    return content.content.map((node: any, idx: number) => (
+    return content.content.map((node: TipTapNode, idx: number) => (
       <div key={idx}>{renderNode(node)}</div>
     ))
   }, [content])

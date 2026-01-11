@@ -121,8 +121,8 @@ export async function POST(request: NextRequest) {
     })
 
     const invoiceResponse = {
-      id: (invoice as any).id,
-      invoice_number: (invoice as any).invoice_number,
+      id: (invoice as { id: string }).id,
+      invoice_number: (invoice as { invoice_number: string }).invoice_number,
       booking_id,
       amount,
       currency: currency || 'EUR',
@@ -143,33 +143,36 @@ export async function POST(request: NextRequest) {
         )
       `)
       .eq('id', booking_id)
-      .single() as any
+      .single()
 
-    if (booking?.clients) {
-      const client = (booking as any).clients
-      const invoiceData = invoice as any
+    if (booking) {
+      const clients = (booking as { clients: { email: string; first_name: string; last_name: string }[] }).clients
+      const client = clients[0]
+      const invoiceData = (invoice as unknown) as { invoice_number: string; amount: number; currency: string; due_date: string; status: string; booking_id: string }
 
-      // Send invoice email
-      try {
-        await fetch('/api/email/invoice', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: client.email,
-            clientName: `${client.first_name} ${client.last_name}`,
-            invoiceNumber: invoiceData.invoice_number,
-            amount: invoiceData.amount,
-            currency: invoiceData.currency,
-            dueDate: invoiceData.due_date,
-            status: invoiceData.status,
-            bookingId: invoiceData.booking_id,
-          }),
-        })
-      } catch (emailError) {
-        console.error('Failed to send invoice email:', emailError)
-        // Don't fail the request if email fails
+      if (client) {
+        // Send invoice email
+        try {
+          await fetch('/api/email/invoice', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              to: client.email,
+              clientName: `${client.first_name} ${client.last_name}`,
+              invoiceNumber: invoiceData.invoice_number,
+              amount: invoiceData.amount,
+              currency: invoiceData.currency,
+              dueDate: invoiceData.due_date,
+              status: invoiceData.status,
+              bookingId: invoiceData.booking_id,
+            }),
+          })
+        } catch (emailError) {
+          console.error('Failed to send invoice email:', emailError)
+          // Don't fail the request if email fails
+        }
       }
     }
 
@@ -177,10 +180,11 @@ export async function POST(request: NextRequest) {
       success: true,
       data: { invoice: invoiceResponse }
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating invoice:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create invoice'
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to create invoice' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test'
 import { loginAsAdmin, setAdminCookie } from '../fixtures/admin-auth'
 
-const BASE_URL = process.env.BASE_URL || 'https://heiwahauz.netlify.app'
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3003'
 
 /**
  * Navigate to admin page

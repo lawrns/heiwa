@@ -75,7 +75,7 @@ export async function GET(
           images: fixImageUrls(surfCamp.images || []), // Ensure CMS images are used correctly
           includes: surfCamp.includes || [],
           is_active: surfCamp.is_active,
-          tax_category_id: (surfCamp as any).tax_category_id || null,
+          tax_category_id: (surfCamp as { tax_category_id?: string | null }).tax_category_id || null,
           location: surfCamp.location || null,
         },
       },
@@ -167,7 +167,7 @@ export async function PUT(
 
     const { data, error } = await supabaseAdmin
       .from('surf_camps')
-      .update(updateData as any)
+      .update(updateData)
       .eq('id', id)
       .select()
       .single()

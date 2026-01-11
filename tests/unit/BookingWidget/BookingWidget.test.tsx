@@ -16,8 +16,74 @@ import { BookingProvider } from '@/lib/booking-context';
 // Mock CSS imports
 jest.mock('@/components/BookingWidget/styles/surf-enhancements.css', () => ({}));
 
+// Type for mock flow state overrides
+interface MockFlowStateOverrides {
+  state?: Partial<{
+    currentStep: number;
+    experienceType: 'room' | 'surf-week' | null;
+    dates: { checkIn: Date | null; checkOut: Date | null };
+    guests: number;
+    participantNames: Array<{ firstName: string; lastName?: string }>;
+    selectedOption: string | null;
+    selectedSurfWeek: string | null;
+    selectedSurfWeekRoom: string | null;
+    roomAssignments: Array<{ id: string; guestIds: string[] }>;
+    selectedAddOns: Array<{ id: string; quantity: number }>;
+    paymentMethod: 'card_stripe' | 'bank_wire' | null;
+    guestDetails: Array<{ id: string; firstName: string; lastName: string; email: string }>;
+    pricing: {
+      basePrice: number;
+      addOnsSubtotal: number;
+      taxes: number;
+      fees: number;
+      total: number;
+      currency: string;
+    };
+    isLoading: boolean;
+    errors: Record<string, string>;
+    skippedSteps: string[];
+  }>;
+  actions?: Partial<{
+    nextStep: jest.Mock;
+    prevStep: jest.Mock;
+    jumpToStep: jest.Mock;
+    setExperienceType: jest.Mock;
+    setDates: jest.Mock;
+    setGuests: jest.Mock;
+    setParticipantNames: jest.Mock;
+    selectOption: jest.Mock;
+    setSurfWeek: jest.Mock;
+    setSurfWeekRoom: jest.Mock;
+    setRoomAssignments: jest.Mock;
+    addRoomAssignment: jest.Mock;
+    removeRoomAssignment: jest.Mock;
+    setAddOns: jest.Mock;
+    setPaymentMethod: jest.Mock;
+    setBankWireDetails: jest.Mock;
+    updateGuestDetails: jest.Mock;
+    updatePricing: jest.Mock;
+    setLoading: jest.Mock;
+    setError: jest.Mock;
+    clearError: jest.Mock;
+    reset: jest.Mock;
+    setSkippedSteps: jest.Mock;
+    checkAvailability: jest.Mock;
+    submitBooking: jest.Mock;
+  }>;
+  computed?: Partial<{
+    currentStep: number;
+    canProceedToNextStep: boolean;
+    isFirstStep: boolean;
+    isLastStep: boolean;
+    hasErrors: boolean;
+    stepFlow: string[];
+    totalSteps: number;
+    currentStepType: string;
+  }>;
+}
+
 // Create base mock flow state
-const createMockFlowState = (overrides = {}) => ({
+const createMockFlowState = (overrides: MockFlowStateOverrides = {}) => ({
   state: {
     currentStep: 1,
     experienceType: null,

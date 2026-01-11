@@ -5,6 +5,40 @@
 
 import crypto from 'crypto'
 
+interface StripeWebhookEvent {
+  id: string
+  type: string
+  data: {
+    object: StripeEventObject
+  }
+}
+
+interface StripeEventObject {
+  id: string
+  metadata?: Record<string, string>
+  amount?: number
+  currency?: string
+  last_payment_error?: {
+    message?: string
+  }
+  customer_details?: {
+    email?: string
+  }
+  amount_paid?: number
+  attempt_count?: number
+  amount_refunded?: number
+}
+
+interface WebhookHandlerResponse {
+  event: string
+  bookingId?: string
+  amount?: number
+  currency?: string
+  error?: string
+  customerEmail?: string
+  attemptCount?: number
+}
+
 /**
  * Verify Stripe webhook signature
  * @param payload Raw request body as string
@@ -77,7 +111,7 @@ export function verifyStripeWebhookSignature(
  * @param request Next.js request object
  * @returns Parsed webhook event or null if invalid
  */
-export async function extractWebhookEvent(request: Request): Promise<any | null> {
+export async function extractWebhookEvent(request: Request): Promise<StripeWebhookEvent | null> {
   try {
     const signature = request.headers.get('stripe-signature')
     const secret = process.env.STRIPE_WEBHOOK_SECRET
@@ -119,7 +153,7 @@ export async function extractWebhookEvent(request: Request): Promise<any | null>
  * @param event Stripe webhook event
  * @returns Response object or null if unhandled
  */
-export async function handleWebhookEvent(event: any): Promise<any | null> {
+export async function handleWebhookEvent(event: StripeWebhookEvent): Promise<WebhookHandlerResponse | null> {
   const eventType = event.type
 
   switch (eventType) {
@@ -146,7 +180,7 @@ export async function handleWebhookEvent(event: any): Promise<any | null> {
 /**
  * Handle payment succeeded event
  */
-async function handlePaymentSucceeded(paymentIntent: any): Promise<any> {
+async function handlePaymentSucceeded(paymentIntent: StripeEventObject): Promise<WebhookHandlerResponse> {
   console.log('Payment succeeded:', paymentIntent.id)
 
   // Update booking status in database
@@ -168,7 +202,7 @@ async function handlePaymentSucceeded(paymentIntent: any): Promise<any> {
 /**
  * Handle payment failed event
  */
-async function handlePaymentFailed(paymentIntent: any): Promise<any> {
+async function handlePaymentFailed(paymentIntent: StripeEventObject): Promise<WebhookHandlerResponse> {
   console.log('Payment failed:', paymentIntent.id)
 
   const bookingId = paymentIntent.metadata?.booking_id
@@ -188,7 +222,7 @@ async function handlePaymentFailed(paymentIntent: any): Promise<any> {
 /**
  * Handle payment canceled event
  */
-async function handlePaymentCanceled(paymentIntent: any): Promise<any> {
+async function handlePaymentCanceled(paymentIntent: StripeEventObject): Promise<WebhookHandlerResponse> {
   console.log('Payment canceled:', paymentIntent.id)
 
   const bookingId = paymentIntent.metadata?.booking_id
@@ -207,7 +241,7 @@ async function handlePaymentCanceled(paymentIntent: any): Promise<any> {
 /**
  * Handle checkout session completed event
  */
-async function handleCheckoutCompleted(session: any): Promise<any> {
+async function handleCheckoutCompleted(session: StripeEventObject): Promise<WebhookHandlerResponse> {
   console.log('Checkout session completed:', session.id)
 
   const bookingId = session.metadata?.booking_id
@@ -227,7 +261,7 @@ async function handleCheckoutCompleted(session: any): Promise<any> {
 /**
  * Handle invoice payment succeeded event
  */
-async function handleInvoicePaymentSucceeded(invoice: any): Promise<any> {
+async function handleInvoicePaymentSucceeded(invoice: StripeEventObject): Promise<WebhookHandlerResponse> {
   console.log('Invoice payment succeeded:', invoice.id)
 
   const bookingId = invoice.metadata?.booking_id
@@ -247,7 +281,7 @@ async function handleInvoicePaymentSucceeded(invoice: any): Promise<any> {
 /**
  * Handle invoice payment failed event
  */
-async function handleInvoicePaymentFailed(invoice: any): Promise<any> {
+async function handleInvoicePaymentFailed(invoice: StripeEventObject): Promise<WebhookHandlerResponse> {
   console.log('Invoice payment failed:', invoice.id)
 
   const bookingId = invoice.metadata?.booking_id
@@ -267,7 +301,7 @@ async function handleInvoicePaymentFailed(invoice: any): Promise<any> {
 /**
  * Handle charge refunded event
  */
-async function handleChargeRefunded(charge: any): Promise<any> {
+async function handleChargeRefunded(charge: StripeEventObject): Promise<WebhookHandlerResponse> {
   console.log('Charge refunded:', charge.id)
 
   const bookingId = charge.metadata?.booking_id

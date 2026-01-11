@@ -12,6 +12,12 @@ interface GanttEventBarProps {
   onClick: (event: CalendarEvent, anchorEl: HTMLElement) => void
 }
 
+// Helper to determine if a color is a valid hex color
+const isHexColor = (color?: string): boolean => {
+  if (!color) return false
+  return /^#([0-9A-Fa-f]{3}){1,2}$/.test(color)
+}
+
 export function GanttEventBar({
   event,
   startDay,
@@ -25,6 +31,9 @@ export function GanttEventBar({
   const isPending = event.status === 'pending'
   const isCancelled = event.status === 'cancelled'
 
+  // Use custom color from event if it's a valid hex, otherwise use config color
+  const effectiveColor = isHexColor(event.color) ? event.color! : config.color
+
   const displayTitle = event.guest_name
     ? `${event.guest_name}${event.room_name ? ` - ${event.room_name}` : ''}`
     : event.title
@@ -32,6 +41,9 @@ export function GanttEventBar({
   // Calculate position and width in pixels
   const leftPx = (startDay - 1) * dayWidth
   const widthPx = (endDay - startDay + 1) * dayWidth
+
+  // Show blocking indicator
+  const blockIndicator = event.blocks_bookings ? ' (blocks bookings)' : ''
 
   return (
     <button
@@ -48,11 +60,11 @@ export function GanttEventBar({
         left: `${leftPx}px`,
         width: `${widthPx}px`,
         top: `${row * 28 + 4}px`,
-        backgroundColor: config.color,
+        backgroundColor: effectiveColor,
         color: 'white',
         minWidth: '20px',
       }}
-      title={`${displayTitle} (${startDay}-${endDay})`}
+      title={`${displayTitle} (${startDay}-${endDay})${blockIndicator}`}
     >
       <span className="truncate">{displayTitle}</span>
     </button>

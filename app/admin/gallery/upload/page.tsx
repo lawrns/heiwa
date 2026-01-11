@@ -65,7 +65,7 @@ export default function UploadMediaPage() {
     })
   }
 
-  const updateFile = (index: number, field: keyof UploadFile, value: any) => {
+  const updateFile = (index: number, field: keyof UploadFile, value: unknown) => {
     setUploadFiles(prev => prev.map((file, i) => 
       i === index ? { ...file, [field]: value } : file
     ))
@@ -145,9 +145,10 @@ export default function UploadMediaPage() {
       
       console.log('All uploads completed successfully')
       router.push('/admin/gallery')
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload failed:', error)
-      alert(`Upload failed: ${error.message}`)
+      const errorMessage = error instanceof Error ? error.message : 'Upload failed'
+      alert(`Upload failed: ${errorMessage}`)
     } finally {
       setIsUploading(false)
     }

@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test'
-import { ensureAdminAuth, navigateToAdminPage, waitForAdminPageLoad } from './helpers/admin-helpers'
+import { loginAsAdmin } from './fixtures/admin-auth'
+import { navigateToAdminPage, waitForAdminPageLoad } from './helpers/admin-helpers'
 
 test.describe('Admin Performance Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureAdminAuth(page)
+    await loginAsAdmin(page)
   })
 
   test('should load dashboard in under 3 seconds', async ({ page }) => {

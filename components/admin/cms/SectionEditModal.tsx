@@ -35,14 +35,25 @@ export default function SectionEditModal({
     button_text: '',
     button_link: '',
     background_color: '',
-    text_color: ''
+    text_color: '',
+    // Surf page specific fields
+    disclaimer: '',
+    imageUrl: '',
+    mapImageUrl: '',
+    footerText: '',
+    epicImageUrl: '',
+    epicImageCaption: '',
+    videoUrl: '',
+    videoCaption: '',
+    buttonText: '',
+    buttonUrl: ''
   })
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     if (section) {
       // Handle both object content (JSONB) and string content
-      const content = typeof section.content === 'string' 
+      const content = typeof section.content === 'string'
         ? (() => {
             try {
               return JSON.parse(section.content)
@@ -51,7 +62,7 @@ export default function SectionEditModal({
             }
           })()
         : (section.content || {})
-      
+
       setFormData({
         section_name: section.section_name || '',
         title: content.title || '',
@@ -63,7 +74,18 @@ export default function SectionEditModal({
         button_text: content.button_text || '',
         button_link: content.button_link || '',
         background_color: content.background_color || '',
-        text_color: content.text_color || ''
+        text_color: content.text_color || '',
+        // Surf page specific fields
+        disclaimer: content.disclaimer || '',
+        imageUrl: content.imageUrl || '',
+        mapImageUrl: content.mapImageUrl || '',
+        footerText: content.footerText || '',
+        epicImageUrl: content.epicImageUrl || '',
+        epicImageCaption: content.epicImageCaption || '',
+        videoUrl: content.videoUrl || '',
+        videoCaption: content.videoCaption || '',
+        buttonText: content.buttonText || '',
+        buttonUrl: content.buttonUrl || ''
       })
     } else {
       // Reset form when section is null
@@ -78,7 +100,18 @@ export default function SectionEditModal({
         button_text: '',
         button_link: '',
         background_color: '',
-        text_color: ''
+        text_color: '',
+        // Surf page specific fields
+        disclaimer: '',
+        imageUrl: '',
+        mapImageUrl: '',
+        footerText: '',
+        epicImageUrl: '',
+        epicImageCaption: '',
+        videoUrl: '',
+        videoCaption: '',
+        buttonText: '',
+        buttonUrl: ''
       })
     }
   }, [section])
@@ -94,23 +127,60 @@ export default function SectionEditModal({
       const existingContent = typeof section.content === 'object' && section.content !== null
         ? section.content
         : {}
-      
+
+      // Build content based on section type
+      let updatedContent: Record<string, unknown> = {
+        ...existingContent,
+        title: formData.title,
+        subtitle: formData.subtitle,
+        description: formData.description,
+        content: formData.content,
+        image_url: formData.image_url,
+        video_url: formData.video_url,
+        button_text: formData.button_text,
+        button_link: formData.button_link,
+        background_color: formData.background_color,
+        text_color: formData.text_color
+      }
+
+      // Add surf-specific fields based on section type
+      if (section.section_type === 'local_break') {
+        updatedContent = {
+          ...updatedContent,
+          disclaimer: formData.disclaimer,
+          imageUrl: formData.imageUrl || formData.image_url
+        }
+      } else if (section.section_type === 'surf_lessons') {
+        // Convert content paragraphs from newline-separated text to array
+        const paragraphs = formData.content
+          ? formData.content.split(/\n\n+/).filter(p => p.trim())
+          : []
+        updatedContent = {
+          ...updatedContent,
+          paragraphs: paragraphs.length > 0 ? paragraphs : existingContent.paragraphs,
+          buttonText: formData.buttonText || formData.button_text,
+          buttonUrl: formData.buttonUrl || formData.button_link
+        }
+      } else if (section.section_type === 'surf_conditions') {
+        updatedContent = {
+          ...updatedContent,
+          epicImageUrl: formData.epicImageUrl,
+          epicImageCaption: formData.epicImageCaption,
+          videoUrl: formData.videoUrl || formData.video_url,
+          videoCaption: formData.videoCaption
+        }
+      } else if (section.section_type === 'world_class_surfing') {
+        updatedContent = {
+          ...updatedContent,
+          mapImageUrl: formData.mapImageUrl,
+          footerText: formData.footerText
+        }
+      }
+
       const updatedSection: PageSection = {
         ...section,
         section_name: formData.section_name,
-        content: {
-          ...existingContent,
-          title: formData.title,
-          subtitle: formData.subtitle,
-          description: formData.description,
-          content: formData.content,
-          image_url: formData.image_url,
-          video_url: formData.video_url,
-          button_text: formData.button_text,
-          button_link: formData.button_link,
-          background_color: formData.background_color,
-          text_color: formData.text_color
-        },
+        content: updatedContent,
         updated_at: new Date().toISOString()
       }
 
@@ -361,7 +431,7 @@ export default function SectionEditModal({
             <AdminSelect
               label="Image Position"
               value={(section.content?.image_position as string) || 'left'}
-              onChange={(value) => handleInputChange('image_position', value)}
+              onChange={(value) => handleInputChange('image_position', String(value))}
               options={[
                 { value: 'left', label: 'Left' },
                 { value: 'right', label: 'Right' }
@@ -428,6 +498,183 @@ export default function SectionEditModal({
                 maxLength={2000}
                 height={300}
               />
+            </div>
+          </div>
+        )
+
+      // Surf Page Sections
+      case 'local_break':
+        return (
+          <div className="space-y-4">
+            <AdminInput
+              label="Section Title"
+              value={formData.title}
+              onChange={(value) => handleInputChange('title', value)}
+              placeholder="e.g., Your Local Break"
+              maxLength={100}
+              required
+            />
+            <AdminTextarea
+              label="Description"
+              value={formData.description}
+              onChange={(value) => handleInputChange('description', value)}
+              placeholder="Describe the local surf area"
+              maxLength={500}
+              rows={4}
+            />
+            <AdminTextarea
+              label="Disclaimer"
+              value={formData.disclaimer}
+              onChange={(value) => handleInputChange('disclaimer', value)}
+              placeholder="e.g., We don't name specific spots..."
+              maxLength={300}
+              rows={2}
+            />
+            <ImagePicker
+              label="Map/Location Image"
+              value={formData.imageUrl || formData.image_url}
+              onChange={(value) => handleInputChange('imageUrl', value)}
+              placeholder="Select location map image..."
+            />
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-700">
+                <strong>Note:</strong> Feature icons (Clock, Car, Waves) and their descriptions
+                can be edited in the advanced JSON editor if needed. The map image above
+                will be displayed next to the local break information.
+              </p>
+            </div>
+          </div>
+        )
+
+      case 'surf_lessons':
+        return (
+          <div className="space-y-4">
+            <AdminInput
+              label="Section Title"
+              value={formData.title}
+              onChange={(value) => handleInputChange('title', value)}
+              placeholder="e.g., Surf Lessons"
+              maxLength={100}
+              required
+            />
+            <AdminTextarea
+              label="Content (separate paragraphs with blank lines)"
+              value={formData.content}
+              onChange={(value) => handleInputChange('content', value)}
+              placeholder="Enter lesson description paragraphs..."
+              maxLength={2000}
+              rows={6}
+            />
+            <AdminInput
+              label="Button Text"
+              value={formData.buttonText || formData.button_text}
+              onChange={(value) => handleInputChange('buttonText', value)}
+              placeholder="e.g., Book a Surf Lesson"
+              maxLength={50}
+            />
+            <AdminInput
+              label="Button Link"
+              value={formData.buttonUrl || formData.button_link}
+              onChange={(value) => handleInputChange('buttonUrl', value)}
+              placeholder="/surf-weeks"
+              maxLength={200}
+            />
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-700">
+                <strong>Note:</strong> Carousel images for this section can be managed
+                through the media library. Separate each paragraph with a blank line.
+              </p>
+            </div>
+          </div>
+        )
+
+      case 'surf_conditions':
+        return (
+          <div className="space-y-4">
+            <AdminInput
+              label="Section Title"
+              value={formData.title}
+              onChange={(value) => handleInputChange('title', value)}
+              placeholder="e.g., What People Can Surf Near Heiwa"
+              maxLength={100}
+              required
+            />
+            <AdminInput
+              label="Subtitle"
+              value={formData.subtitle}
+              onChange={(value) => handleInputChange('subtitle', value)}
+              placeholder="e.g., Experience the softer side of Santa Cruz waves..."
+              maxLength={200}
+            />
+            <ImagePicker
+              label="Epic Surf Image"
+              value={formData.epicImageUrl}
+              onChange={(value) => handleInputChange('epicImageUrl', value)}
+              placeholder="Select epic surf image..."
+            />
+            <AdminInput
+              label="Epic Image Caption"
+              value={formData.epicImageCaption}
+              onChange={(value) => handleInputChange('epicImageCaption', value)}
+              placeholder="e.g., once in a blue moon it is like this"
+              maxLength={100}
+            />
+            <AdminInput
+              label="Video URL (YouTube embed)"
+              value={formData.videoUrl || formData.video_url}
+              onChange={(value) => handleInputChange('videoUrl', value)}
+              placeholder="https://www.youtube.com/embed/..."
+              maxLength={300}
+            />
+            <AdminInput
+              label="Video Caption"
+              value={formData.videoCaption}
+              onChange={(value) => handleInputChange('videoCaption', value)}
+              placeholder="e.g., Small and mid surf in Santa Cruz..."
+              maxLength={200}
+            />
+          </div>
+        )
+
+      case 'world_class_surfing':
+        return (
+          <div className="space-y-4">
+            <AdminInput
+              label="Section Title"
+              value={formData.title}
+              onChange={(value) => handleInputChange('title', value)}
+              placeholder="e.g., World-Class Surfing Nearby"
+              maxLength={100}
+              required
+            />
+            <AdminTextarea
+              label="Subtitle"
+              value={formData.subtitle}
+              onChange={(value) => handleInputChange('subtitle', value)}
+              placeholder="e.g., Heiwa House sits in the sweet spot between Ericeira and Peniche..."
+              maxLength={500}
+              rows={3}
+            />
+            <ImagePicker
+              label="Surf Map Image"
+              value={formData.mapImageUrl}
+              onChange={(value) => handleInputChange('mapImageUrl', value)}
+              placeholder="Select surf map image..."
+            />
+            <AdminTextarea
+              label="Footer Text"
+              value={formData.footerText}
+              onChange={(value) => handleInputChange('footerText', value)}
+              placeholder="e.g., The perfect location: With Ericeira to the south..."
+              maxLength={500}
+              rows={3}
+            />
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-700">
+                <strong>Note:</strong> Individual location cards (Ericeira, Peniche) with
+                their images, descriptions, and highlights can be managed in the advanced
+                JSON editor. The surf map image appears below the location cards.
+              </p>
             </div>
           </div>
         )

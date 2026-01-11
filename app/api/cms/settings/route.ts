@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform to key-value object for easy consumption
-    const settings: Record<string, any> = {}
+    const settings: Record<string, unknown> = {}
     data?.forEach(item => {
       settings[item.key] = item.value
     })

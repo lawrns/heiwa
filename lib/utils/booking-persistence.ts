@@ -36,7 +36,8 @@ export function saveBookingProgress(state: BookingState): void {
       state: {
         currentStep: state.currentStep,
         experienceType: state.experienceType,
-        dates: datesToSave,
+        // Dates are serialized to strings for localStorage - they're converted back when loaded
+        dates: datesToSave as unknown as { checkIn: Date | null; checkOut: Date | null },
         guests: state.guests,
         participantNames: state.participantNames,
         selectedOption: state.selectedOption,

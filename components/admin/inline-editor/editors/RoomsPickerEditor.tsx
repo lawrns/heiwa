@@ -36,8 +36,8 @@ export function RoomsPickerEditor({ content, onChange }: RoomsPickerEditorProps)
         if (data?.success && Array.isArray(roomsArray)) {
           setRooms(
             roomsArray
-              .filter((r: any) => r?.id && r?.name)
-              .map((r: any) => ({ id: r.id as string, name: r.name as string }))
+              .filter((r) => r?.id && r?.name)
+              .map((r) => ({ id: (r as { id: string }).id, name: (r as { name: string }).name }))
           )
         } else {
           setRooms([])

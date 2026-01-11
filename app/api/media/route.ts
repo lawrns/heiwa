@@ -15,8 +15,35 @@ const ALL_BUCKETS = [
   'cms-images'
 ]
 
+interface StorageFile {
+  name: string
+  id: string
+  updated_at: string
+  created_at: string
+  metadata?: {
+    size?: number
+    mimetype?: string
+  }
+}
+
+interface MediaFile extends StorageFile {
+  fullPath: string
+  bucket: string
+}
+
+interface TransformedMediaItem {
+  id: string
+  name: string
+  url: string
+  size: number
+  type: string
+  created_at: string
+  bucket: string
+  folder: string | undefined
+}
+
 // Recursively list all files in a bucket (including subfolders)
-async function listAllFiles(bucket: string, path: string = ''): Promise<any[]> {
+async function listAllFiles(bucket: string, path: string = ''): Promise<MediaFile[]> {
   const { data: items, error } = await supabaseAdmin
     .storage
     .from(bucket)
@@ -27,7 +54,7 @@ async function listAllFiles(bucket: string, path: string = ''): Promise<any[]> {
 
   if (error || !items) return []
 
-  const files: any[] = []
+  const files: MediaFile[] = []
   
   for (const item of items) {
     // Skip placeholder files
@@ -55,7 +82,7 @@ async function listAllFiles(bucket: string, path: string = ''): Promise<any[]> {
 // GET /api/media - List all media files from ALL buckets
 export async function GET() {
   try {
-    const allMediaItems: any[] = []
+    const allMediaItems: TransformedMediaItem[] = []
 
     // Fetch from all buckets in parallel
     const bucketPromises = ALL_BUCKETS.map(async (bucket) => {

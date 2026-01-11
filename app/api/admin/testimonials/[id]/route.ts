@@ -75,8 +75,8 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-    const { id } = await params
   try {
+    const { id } = await params
     const body = await request.json()
     const {
       guest_name,
@@ -142,8 +142,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-    const { id } = await params
   try {
+    const { id } = await params
     const { error } = await supabaseAdmin
       .from('testimonials')
       .delete()

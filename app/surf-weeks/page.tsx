@@ -129,6 +129,30 @@ async function getSurfWeeks() {
   }
 }
 
+// Fetch add-ons from database
+async function getAddOns() {
+  try {
+    const { supabaseAdmin } = await import('@/lib/supabase')
+
+    const { data: addOns, error } = await supabaseAdmin
+      .from('add_ons')
+      .select('*')
+      .eq('is_active', true)
+      .order('category', { ascending: true })
+      .order('name', { ascending: true })
+
+    if (error || !addOns) {
+      console.warn('Add-ons not available, using defaults')
+      return []
+    }
+
+    return addOns
+  } catch (error) {
+    console.warn('Error fetching add-ons:', error)
+    return []
+  }
+}
+
 // Format date range (European format DD/MM/YYYY)
 // Use UTC to ensure consistent formatting between server and client (prevents hydration mismatches)
 function formatDateRange(startDate: string, endDate: string) {
@@ -157,31 +181,41 @@ function getPriceDisplay(price: number) {
 
 export default async function SurfWeeksPage() {
   // Force fresh data fetch on every request (no caching)
-  const surfWeeks = await getSurfWeeks()
-  const sections = await getSurfWeeksSections()
-  
+  const [surfWeeks, sections, dbAddOns] = await Promise.all([
+    getSurfWeeks(),
+    getSurfWeeksSections(),
+    getAddOns()
+  ])
+
   // Log for debugging in production
   if (process.env.NODE_ENV === 'production') {
     console.log(`[Surf Weeks Page] Rendering with ${surfWeeks.length} surf weeks at ${new Date().toISOString()}`)
   }
-  
+
   // Helper to get section by type from unified page_sections
   const getSection = (type: string) => sections.find((s: any) => s.section_type === type)
-  
+
   // Extract CMS sections (unified page_sections table uses section_type + content)
   const heroSection = getSection('hero')
   const introSection = getSection('intro')
   const faqSection = getSection('faq')
   const includedSection = getSection('features') || getSection('included')
   const stepsSection = getSection('steps') || getSection('process')
+  const gallerySection = getSection('facility_gallery') || getSection('image_gallery') || getSection('gallery')
   
   // Type-safe content accessors
   const heroContent = heroSection?.content as { title?: string; description?: string; imageUrl?: string; videoUrl?: string } | undefined
   const introContent = introSection?.content as { title?: string; content?: string } | undefined
   const faqContent = faqSection?.content as { title?: string; items?: Array<{ question: string; answer: string }> } | undefined
+  const galleryContent = gallerySection?.content as { title?: string; description?: string; images?: string[]; galleryId?: string } | undefined
+  const stepsContent = stepsSection?.content as {
+    title?: string
+    subtitle?: string
+    steps?: Array<{ title: string; description: string; image?: string }>
+  } | undefined
   
-  // Gallery images - Use CMS if available
-  const galleryImages = [
+  // Gallery images - Use CMS if available, otherwise fall back to defaults
+  const defaultGalleryImages = [
     '/images/DSC03081-scaled.jpg',
     '/images/DSF8322-scaled.jpg',
     '/images/DSC03521-scaled.jpg',
@@ -195,6 +229,9 @@ export default async function SurfWeeksPage() {
     '/images/DSC08054-scaled.jpg',
     '/images/DSF8018-2-scaled.jpg',
   ]
+  const galleryImages = (galleryContent?.images && galleryContent.images.length > 0)
+    ? galleryContent.images
+    : defaultGalleryImages
 
   // Included features
   const includedFeatures = [
@@ -305,7 +342,8 @@ export default async function SurfWeeksPage() {
     }
   ]
 
-  const addOns = [
+  // Default add-ons (fallback when database is empty)
+  const defaultAddOns = [
     {
       title: '5 Surf Lessons',
       price: '€200',
@@ -343,6 +381,16 @@ export default async function SurfWeeksPage() {
       features: ['Healthy relaxation', 'Ice bath included', 'Social experience']
     }
   ]
+
+  // Use database add-ons if available, otherwise fall back to defaults
+  const addOns = dbAddOns.length > 0
+    ? dbAddOns.map((addon: { name: string; price: number; description?: string }) => ({
+        title: addon.name,
+        price: `€${addon.price}`,
+        description: addon.description || '',
+        features: [] as string[]
+      }))
+    : defaultAddOns
 
   // Google reviews will be fetched client-side via GoogleReviews component
 
@@ -396,19 +444,9 @@ export default async function SurfWeeksPage() {
       <section className="py-8 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            {/* Google Reviews */}
-            <div className="flex items-center gap-4">
-              <div className="flex items-center">
-                <div className="flex">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Star key={i} className="w-6 h-6 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <span className="text-3xl font-bold ml-3">5.0</span>
-              </div>
-              <GoogleRatingSummary className="text-gray-900" />
-            </div>
-            
+            {/* Google Reviews - Single component with stars and rating text */}
+            <GoogleRatingSummary className="text-gray-900" />
+
             {/* Book Now Button */}
             <BookNowButton />
           </div>
@@ -438,25 +476,28 @@ export default async function SurfWeeksPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              How a surf week works
+              {stepsContent?.title || 'How a surf week works'}
             </h2>
             <p className="text-lg text-gray-600">
-              Your journey from booking to catching waves
+              {stepsContent?.subtitle || 'Your journey from booking to catching waves'}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {surfWeekSteps.map((step, index) => (
+            {/* Use CMS steps if available and non-empty, otherwise use default surfWeekSteps */}
+            {(stepsContent?.steps && stepsContent.steps.length > 0 ? stepsContent.steps : surfWeekSteps).map((step, index) => (
               <div key={index} className="flex flex-col gap-4">
-                <div className="relative aspect-video rounded-lg overflow-hidden">
-                  <Image
-                    src={step.image}
-                    alt={step.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                </div>
+                {step.image && (
+                  <div className="relative aspect-video rounded-lg overflow-hidden">
+                    <Image
+                      src={step.image}
+                      alt={step.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  </div>
+                )}
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                     {index + 1}
@@ -475,6 +516,17 @@ export default async function SurfWeeksPage() {
       {/* Photo Gallery - 2 Rows, Horizontal Scroll */}
       <section id="section-gallery" className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Gallery Title and Description from CMS */}
+          {(galleryContent?.title || galleryContent?.description) && (
+            <div className="text-center mb-8">
+              {galleryContent?.title && (
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">{galleryContent.title}</h2>
+              )}
+              {galleryContent?.description && (
+                <p className="text-lg text-gray-600 max-w-3xl mx-auto">{galleryContent.description}</p>
+              )}
+            </div>
+          )}
           <div className="space-y-4">
             {/* First Row */}
             <div className="overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">

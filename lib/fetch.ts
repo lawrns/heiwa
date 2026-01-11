@@ -12,7 +12,7 @@ export interface FetchOptions extends RequestInit {
   skipRetryFor?: number[]
 }
 
-export interface FetchResult<T = any> {
+export interface FetchResult<T = unknown> {
   success: boolean
   data?: T
   error?: string
@@ -23,7 +23,7 @@ export interface FetchResult<T = any> {
 /**
  * Fetch with timeout and retry logic
  */
-export async function fetchWithTimeout<T = any>(
+export async function fetchWithTimeout<T = unknown>(
   url: string,
   options: FetchOptions = {}
 ): Promise<FetchResult<T>> {
@@ -70,7 +70,7 @@ export async function fetchWithTimeout<T = any>(
         }
 
         // Try to get error details from response
-        let errorDetails: any
+        let errorDetails: unknown
         try {
           errorDetails = await response.json()
         } catch {
@@ -163,7 +163,7 @@ export async function fetchWithTimeout<T = any>(
 /**
  * GET request with timeout
  */
-export async function get<T = any>(
+export async function get<T = unknown>(
   url: string,
   options: FetchOptions = {}
 ): Promise<FetchResult<T>> {
@@ -176,9 +176,9 @@ export async function get<T = any>(
 /**
  * POST request with timeout
  */
-export async function post<T = any>(
+export async function post<T = unknown>(
   url: string,
-  data?: any,
+  data?: unknown,
   options: FetchOptions = {}
 ): Promise<FetchResult<T>> {
   return fetchWithTimeout<T>(url, {
@@ -195,9 +195,9 @@ export async function post<T = any>(
 /**
  * PUT request with timeout
  */
-export async function put<T = any>(
+export async function put<T = unknown>(
   url: string,
-  data?: any,
+  data?: unknown,
   options: FetchOptions = {}
 ): Promise<FetchResult<T>> {
   return fetchWithTimeout<T>(url, {
@@ -214,7 +214,7 @@ export async function put<T = any>(
 /**
  * DELETE request with timeout
  */
-export async function del<T = any>(
+export async function del<T = unknown>(
   url: string,
   options: FetchOptions = {}
 ): Promise<FetchResult<T>> {
@@ -227,9 +227,9 @@ export async function del<T = any>(
 /**
  * PATCH request with timeout
  */
-export async function patch<T = any>(
+export async function patch<T = unknown>(
   url: string,
-  data?: any,
+  data?: unknown,
   options: FetchOptions = {}
 ): Promise<FetchResult<T>> {
   return fetchWithTimeout<T>(url, {
@@ -246,7 +246,7 @@ export async function patch<T = any>(
 /**
  * Upload file with timeout
  */
-export async function uploadFile<T = any>(
+export async function uploadFile<T = unknown>(
   url: string,
   file: File,
   options: Omit<FetchOptions, 'body' | 'headers'> = {}
@@ -265,7 +265,7 @@ export async function uploadFile<T = any>(
 /**
  * Fetch multiple URLs in parallel
  */
-export async function fetchAll<T = any>(
+export async function fetchAll<T = unknown>(
   urls: string[],
   options: FetchOptions = {}
 ): Promise<FetchResult<T>[]> {
@@ -279,7 +279,7 @@ export async function fetchAll<T = any>(
 /**
  * Fetch URLs sequentially (one after another)
  */
-export async function fetchSequential<T = any>(
+export async function fetchSequential<T = unknown>(
   urls: string[],
   options: FetchOptions = {}
 ): Promise<FetchResult<T>[]> {

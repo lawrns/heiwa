@@ -4,14 +4,15 @@
 // Comprehensive editor for managing homepage sections with drag-and-drop
 
 import React, { useState, useEffect } from 'react'
-import { 
-  AdminButton, 
-  AdminInput, 
-  AdminTextarea, 
-  AdminSelect, 
-  AdminModal, 
+import {
+  AdminButton,
+  AdminInput,
+  AdminTextarea,
+  AdminSelect,
+  AdminModal,
   AdminAlert,
-  AdminTable
+  AdminTable,
+  type AdminTableColumn
 } from '../ui'
 import { HomepageSection } from '@/lib/cms-validators'
 import { 
@@ -378,7 +379,7 @@ const HomepageSectionForm: React.FC<{
     <form onSubmit={handleSubmit} className="space-y-4">
       <AdminSelect
         label="Section Type"
-        options={SECTION_TYPES}
+        options={[...SECTION_TYPES]}
         value={formData.section_type}
         onChange={(value) => setFormData({ ...formData, section_type: value as HomepageSection['section_type'] })}
         required

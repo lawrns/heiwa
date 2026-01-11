@@ -142,9 +142,10 @@ export function EnrollmentModal({ open, onClose, surfCampId, onEnrolled }: Enrol
       toast.success('Client enrolled successfully!')
       onEnrolled()
       handleClose()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error enrolling client:', error)
-      setError(error.message || 'Failed to enroll client. Please check the console for details.')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to enroll client. Please check the console for details.'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

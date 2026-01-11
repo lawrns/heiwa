@@ -53,6 +53,7 @@ export function RefundModal({ open, onClose, payment, onRefunded }: RefundModalP
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           amount,
           reason: reason || undefined,
@@ -72,9 +73,10 @@ export function RefundModal({ open, onClose, payment, onRefunded }: RefundModalP
       setRefundAmount('')
       setReason('')
       setNotes('')
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error processing refund:', error)
-      toast.error(error.message || 'Failed to process refund')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to process refund'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }

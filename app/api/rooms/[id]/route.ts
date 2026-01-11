@@ -84,7 +84,7 @@ export async function PUT(
 
     const { data, error } = await supabaseAdmin
       .from('rooms')
-      .update(updateData as any)
+      .update(updateData)
       .eq('id', id)
       .select()
       .single()

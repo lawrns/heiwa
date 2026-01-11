@@ -24,6 +24,8 @@ import AdminButton from '@/components/admin/ui/AdminButton'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { PageSection } from '@/lib/cms-types'
+import { formatDateCompact } from '@/lib/utils'
+import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
 
 interface SectionCardProps {
   section: PageSection
@@ -32,7 +34,7 @@ interface SectionCardProps {
   onDelete: () => void
   onDuplicate: () => void
   onToggleActive: (isActive: boolean) => void
-  dragHandleProps?: any
+  dragHandleProps?: DraggableProvidedDragHandleProps | null
 }
 
 export default function SectionCard({
@@ -62,15 +64,15 @@ export default function SectionCard({
     return icons[sectionType] || File
   }
 
-  const getSectionPreview = (section: PageSection) => {
+  const getSectionPreview = (section: PageSection): string => {
     if (!section.section_type) {
       return section.section_name || 'Unknown Section'
     }
     switch (section.section_type) {
       case 'hero':
-        return section.content?.title || 'Hero Section'
+        return (typeof section.content?.title === 'string' ? section.content.title : null) || 'Hero Section'
       case 'text':
-        return section.content?.title || 'Text Section'
+        return (typeof section.content?.title === 'string' ? section.content.title : null) || 'Text Section'
       case 'intro':
         return 'Introduction'
       default:
@@ -132,18 +134,18 @@ export default function SectionCard({
             </div>
             
             <p className="text-xs sm:text-sm text-gray-500 mb-2">
-              Order: {section.order_index} • Last updated: {new Date(section.updated_at).toLocaleDateString()}
+              Order: {section.order_index} • Last updated: {formatDateCompact(section.updated_at)}
             </p>
 
             {/* Section Preview */}
             <div className="text-xs sm:text-sm text-gray-600 mb-3">
-              {section.content?.title && (
+              {typeof section.content?.title === 'string' && (
                 <p className="font-medium mb-1 truncate">Title: {section.content.title}</p>
               )}
-              {section.content?.subtitle && (
+              {typeof section.content?.subtitle === 'string' && (
                 <p className="text-gray-500 truncate">Subtitle: {section.content.subtitle}</p>
               )}
-              {section.content?.description && (
+              {typeof section.content?.description === 'string' && (
                 <p className="text-gray-500 line-clamp-2">
                   {section.content.description.substring(0, 100)}...
                 </p>

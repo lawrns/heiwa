@@ -13,6 +13,49 @@ type WidgetParticipant = {
   emergencyContact?: unknown
 }
 
+interface Client {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  notes?: string
+  brand?: string
+}
+
+interface Booking {
+  id: string
+  client_ids: string[]
+  total_amount: number
+  payment_status: string
+  guests: number
+  check_in: string
+  check_out: string
+  room_type?: string
+  notes?: string
+  source?: string
+  status?: string
+}
+
+interface SurfCamp {
+  id: string
+  name: string
+  is_active: boolean
+}
+
+interface Enrollment {
+  id: string
+}
+
+interface RoomAssignment {
+  id: string
+}
+
+interface AddOn {
+  id?: string
+  name?: string
+  quantity?: number
+}
+
 function getParticipantName(participant: WidgetParticipant): string {
   const computed = `${participant.firstName || ''} ${participant.lastName || ''}`.trim()
   return (participant.name || computed || 'Guest').trim()
@@ -83,8 +126,17 @@ export async function POST(request: NextRequest) {
 
     // Step 1: Create or find clients for ALL participants
     const allClientIds: string[] = []
-    const participantDetails = []
-    let primaryClientData: any = null
+    const participantDetails: Array<{
+      name: string
+      firstName?: string
+      lastName?: string
+      email: string
+      phone: string
+      dietaryRequirements: string
+      specialRequests: string
+      clientId: string
+    }> = []
+    let primaryClientData: Client | null = null
 
     try {
       for (const participant of participants as WidgetParticipant[]) {
@@ -105,7 +157,7 @@ export async function POST(request: NextRequest) {
           )
         }
 
-        let clientData: any = existingClient as any
+        let clientData: Client | null = existingClient as Client | null
         if (!clientData) {
           const newClient = {
             name: pName,
@@ -117,7 +169,7 @@ export async function POST(request: NextRequest) {
 
           const { data: newClientData, error: createClientError } = await supabaseAdmin
             .from('clients')
-            .insert([newClient] as any)
+            .insert([newClient])
             .select()
             .single()
 
@@ -129,11 +181,11 @@ export async function POST(request: NextRequest) {
             )
           }
 
-          clientData = newClientData as any
+          clientData = newClientData as Client
         }
 
         if (!primaryClientData) primaryClientData = clientData
-        allClientIds.push(clientData.id)
+        allClientIds.push(clientData!.id)
         participantDetails.push({
           name: pName,
           firstName: participant.firstName,
@@ -165,9 +217,20 @@ export async function POST(request: NextRequest) {
 
       // Note: Database schema does NOT have 'items' field - removed to match actual schema
       // Add-ons information can be stored in notes if needed
-      const addOnsNote = add_ons && add_ons.length > 0 
-        ? ` Add-ons: ${add_ons.map((a: any) => `${a.name || a.id} (x${a.quantity || 1})`).join(', ')}.`
+      const addOnsNote = add_ons && add_ons.length > 0
+        ? ` Add-ons: ${add_ons.map((a: AddOn) => `${a.name || a.id} (x${a.quantity || 1})`).join(', ')}.`
         : ''
+
+      // Extract special requests and dietary requirements from all participants
+      const allSpecialRequests = participantDetails
+        .map((p, i) => p.specialRequests ? `Guest ${i + 1} (${p.name}): ${p.specialRequests}` : null)
+        .filter(Boolean)
+        .join('\n');
+
+      const allDietaryRequirements = participantDetails
+        .map((p, i) => p.dietaryRequirements ? `Guest ${i + 1} (${p.name}): ${p.dietaryRequirements}` : null)
+        .filter(Boolean)
+        .join('\n');
 
       const booking = {
         client_ids: allClientIds,
@@ -187,12 +250,14 @@ export async function POST(request: NextRequest) {
           legacy_note: `Widget booking - ${guests || participants.length} guest(s).${addOnsNote}`.trim(),
         }),
         source: 'api', // Widget bookings are API submissions
-        status: 'pending'
+        status: 'pending',
+        special_requests: allSpecialRequests || null,
+        dietary_requirements: allDietaryRequirements || null,
       }
 
       const { data: newBooking, error: bookingError } = await supabaseAdmin
         .from('bookings')
-        .insert([booking] as any)
+        .insert([booking])
         .select()
         .single()
 
@@ -204,8 +269,8 @@ export async function POST(request: NextRequest) {
         }, { status: 500 })
       }
 
-      bookingData = newBooking as any
-      console.log('✅ Created booking:', (bookingData as any).id, 'with total:', pricing.total)
+      bookingData = newBooking as Booking
+      console.log('✅ Created booking:', bookingData.id, 'with total:', pricing.total)
     } catch (bookingError) {
       console.error('Booking creation error:', bookingError)
       return NextResponse.json({
@@ -226,7 +291,7 @@ export async function POST(request: NextRequest) {
         .limit(2)
 
       if (!matchError && matchingCamps && matchingCamps.length > 0) {
-        const surfCamp = matchingCamps[0] as any
+        const surfCamp = matchingCamps[0] as SurfCamp
         matchedSurfCampId = surfCamp.id
         console.log('🏄‍♂️ Booking dates match surf camp:', surfCamp.id)
 
@@ -241,7 +306,7 @@ export async function POST(request: NextRequest) {
               .insert({
                 surf_camp_id: surfCamp.id,
                 client_id: clientId,
-                booking_id: (bookingData as any).id,
+                booking_id: bookingData.id,
                 participant_name: pName,
                 participant_email: pEmail,
                 participant_phone: participant.phone || null,
@@ -250,7 +315,7 @@ export async function POST(request: NextRequest) {
                 dietary_restrictions: participant.dietaryRequirements || null,
                 emergency_contact: participant.emergencyContact || null,
                 notes: participant.specialRequests || null,
-              } as any)
+              })
               .select('id')
               .single()
 
@@ -259,7 +324,7 @@ export async function POST(request: NextRequest) {
               return null
             }
 
-            return enrollment as any
+            return enrollment as Enrollment | null
           })
         )
 
@@ -271,10 +336,14 @@ export async function POST(request: NextRequest) {
 
     // Step 3: Create room assignment
     try {
+      if (!primaryClientData || !bookingData) {
+        throw new Error('Missing required data for room assignment')
+      }
+
       const roomAssignment = {
         room_id,
-        booking_id: (bookingData as any).id,
-        client_id: (primaryClientData as any).id,
+        booking_id: bookingData.id,
+        client_id: primaryClientData!.id,
         surf_camp_id: matchedSurfCampId,
         enrollment_id: primaryEnrollmentId,
         check_in_date: start_date,
@@ -284,7 +353,7 @@ export async function POST(request: NextRequest) {
 
       const { data: assignmentData, error: assignmentError } = await supabaseAdmin
         .from('room_assignments')
-        .insert([roomAssignment] as any)
+        .insert([roomAssignment])
         .select()
         .single()
 
@@ -292,7 +361,7 @@ export async function POST(request: NextRequest) {
         console.error('Error creating room assignment:', assignmentError)
         console.log('⚠️ Booking created but room assignment failed')
       } else {
-        console.log('✅ Created room assignment:', (assignmentData as any).id)
+        console.log('✅ Created room assignment:', assignmentData.id)
       }
     } catch (assignmentError) {
       console.error('Room assignment error:', assignmentError)
@@ -305,11 +374,11 @@ export async function POST(request: NextRequest) {
       success: true,
       data: {
         booking: {
-          id: (bookingData as any).id,
-          booking_number: `HW-${(bookingData as any).id.slice(-8).toUpperCase()}`
+          id: bookingData.id,
+          booking_number: `HW-${bookingData.id.slice(-8).toUpperCase()}`
         },
         client: {
-          id: (primaryClientData as any).id,
+          id: primaryClientData!.id,
           name: clientName,
           email
         },

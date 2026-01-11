@@ -307,7 +307,7 @@ API Key: ${nextConfig.settings.apiKey}`}
 
 // Global export for Next.js
 if (typeof window !== 'undefined') {
-  (window as any).HeiwaStandaloneWidget = StandaloneWidget;
+  (window as Window & { HeiwaStandaloneWidget?: typeof StandaloneWidget }).HeiwaStandaloneWidget = StandaloneWidget;
 }
 
 export default StandaloneWidget;

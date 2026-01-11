@@ -35,7 +35,7 @@ export default function NewPostPage() {
         slug_localized: '',
         title: '',
         excerpt: '',
-        body_rich: {},
+        body_rich: {} as Record<string, unknown>,
         cover_image_url: '',
         cover_alt_text: '',
         seo_title: '',
@@ -199,14 +199,14 @@ export default function NewPostPage() {
             Content (EN)
           </label>
           <TipTapEditor
-            content={formData.translations[0].body_rich}
+            content={formData.translations[0].body_rich as unknown as string | null || null}
             onChange={(content) =>
               setFormData({
                 ...formData,
                 translations: [
                   {
                     ...formData.translations[0],
-                    body_rich: content
+                    body_rich: content as unknown as Record<string, unknown>
                   }
                 ]
               })

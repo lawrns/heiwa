@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { formatDateCompact } from '@/lib/utils'
 
 interface BlogPost {
   id: string
@@ -263,7 +264,7 @@ export default function BlogPostsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {post.published_at
-                        ? new Date(post.published_at).toLocaleDateString()
+                        ? formatDateCompact(post.published_at)
                         : '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

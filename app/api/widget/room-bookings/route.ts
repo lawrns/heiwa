@@ -13,6 +13,45 @@ type WidgetParticipant = {
   emergencyContact?: unknown
 }
 
+interface Client {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  brand?: string
+  status?: string
+  notes?: string
+}
+
+interface Booking {
+  id: string
+  client_ids: string[]
+  total_amount: number
+  payment_status: string
+  guests: number
+  check_in: string
+  check_out: string
+  room_type?: string
+  notes?: string
+  source?: string
+  status?: string
+}
+
+interface SurfCamp {
+  id: string
+  name: string
+  is_active: boolean
+}
+
+interface Enrollment {
+  id: string
+  client_id: string
+}
+
+interface RoomAssignment {
+  id: string
+}
+
 function getParticipantName(participant: WidgetParticipant): string {
   const computed = `${participant.firstName || ''} ${participant.lastName || ''}`.trim()
   return (participant.name || computed || 'Guest').trim()
@@ -110,6 +149,27 @@ export async function POST(req: NextRequest) {
       }, { status: 400 })
     }
 
+    // Validate that dates are not blocked by calendar events
+    const { data: blockingEvents, error: blockingError } = await supabaseAdmin
+      .from('calendar_events')
+      .select('id, title, start_date, end_date')
+      .gte('end_date', start_date)
+      .lte('start_date', end_date)
+      .eq('blocks_bookings', true)
+
+    if (!blockingError && blockingEvents && blockingEvents.length > 0) {
+      console.log('🚫 Booking blocked by calendar event(s):', blockingEvents)
+      return NextResponse.json({
+        success: false,
+        error: 'Bookings are not available during these dates due to a scheduled event or maintenance.',
+        blocking_events: blockingEvents.map(e => ({
+          title: e.title,
+          start_date: e.start_date,
+          end_date: e.end_date
+        }))
+      }, { status: 400 })
+    }
+
     const primaryParticipant = participants[0]
     const clientName = getParticipantName(primaryParticipant)
     const email = primaryParticipant.email
@@ -156,7 +216,7 @@ export async function POST(req: NextRequest) {
             brand: 'Heiwa House',
             status: 'active',
             notes: 'Created via room booking widget',
-          } as any)
+          })
           .select('id')
           .single()
 
@@ -165,12 +225,12 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({ success: false, error: `Failed to create client record for ${pName}` }, { status: 500 })
         }
 
-        clientId = (newClient as any).id
+        clientId = (newClient as Client).id
       } else if (findError) {
         console.error('Failed to check client:', findError)
         return NextResponse.json({ success: false, error: `Failed to verify client for ${pName}` }, { status: 500 })
       } else {
-        clientId = (existingClient as any).id
+        clientId = (existingClient as Client).id
       }
 
       allClientIds.push(clientId)
@@ -225,7 +285,7 @@ export async function POST(req: NextRequest) {
 
     const bookingResult = await supabaseAdmin
       .from('bookings')
-      .insert(bookingData as any)
+      .insert(bookingData)
       .select('id')
       .single()
 
@@ -242,7 +302,7 @@ export async function POST(req: NextRequest) {
       }, { status: 500 })
     }
 
-    const bookingId = (bookingResult.data as any).id
+    const bookingId = (bookingResult.data as { id: string }).id
     console.log('✅ Booking created:', bookingId)
 
     // If dates match a surf camp week, create enrollments for ALL participants
@@ -257,7 +317,7 @@ export async function POST(req: NextRequest) {
         .limit(2)
 
       if (!matchError && matchingCamps && matchingCamps.length > 0) {
-        const surfCamp = matchingCamps[0] as any
+        const surfCamp = matchingCamps[0] as SurfCamp
         matchedSurfCampId = surfCamp.id
         console.log('🏄‍♂️ Booking dates match surf camp:', surfCamp.id)
 
@@ -281,7 +341,7 @@ export async function POST(req: NextRequest) {
                 dietary_restrictions: participant.dietaryRequirements || null,
                 emergency_contact: participant.emergencyContact || null,
                 notes: participant.specialRequests || null,
-              } as any)
+              })
               .select('id, client_id')
               .single()
 
@@ -290,7 +350,7 @@ export async function POST(req: NextRequest) {
               return null
             }
 
-            return enrollment as any
+            return enrollment as Enrollment | null
           })
         )
 
@@ -303,9 +363,23 @@ export async function POST(req: NextRequest) {
     // Process room assignments if provided (new format)
     if (hasRoomAssignments) {
       console.log('📦 Processing room assignments...')
-      const assignmentsToInsert: any[] = []
+      const assignmentsToInsert: Array<{
+        booking_id: string
+        room_id: string
+        client_id: string
+        surf_camp_id: string | null
+        enrollment_id: string | null
+        check_in_date: string
+        check_out_date: string
+        status: string
+      }> = []
 
-      for (const assignment of room_assignments as any[]) {
+      for (const assignment of room_assignments as Array<{
+        roomId?: string
+        room_id?: string
+        guestIds?: unknown[]
+        guest_ids?: unknown[]
+      }>) {
         const roomId = assignment.roomId || assignment.room_id
         const guestIds: unknown[] = assignment.guestIds || assignment.guest_ids || []
 
@@ -332,14 +406,14 @@ export async function POST(req: NextRequest) {
       }
 
       const { error: insertError } = assignmentsToInsert.length
-        ? await supabaseAdmin.from('room_assignments').insert(assignmentsToInsert as any)
+        ? await supabaseAdmin.from('room_assignments').insert(assignmentsToInsert)
         : { error: null }
 
       const failedAssignments = insertError ? [insertError] : []
 
       if (failedAssignments.length > 0) {
         console.warn(`⚠️ ${failedAssignments.length} room assignment(s) failed to create`)
-        failedAssignments.forEach((err: any) => console.error('Assignment error:', err))
+        failedAssignments.forEach((err: Error) => console.error('Assignment error:', err))
       } else {
         console.log('✅ All room assignments created successfully')
       }
@@ -395,11 +469,12 @@ export async function POST(req: NextRequest) {
       }
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Room booking error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json({
       success: false,
-      error: error.message || 'Internal server error'
+      error: errorMessage
     }, { status: 500 })
   }
 }

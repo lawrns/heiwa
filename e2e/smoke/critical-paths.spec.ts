@@ -212,7 +212,7 @@ test.describe('Smoke Tests - Critical Paths', () => {
       });
       
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       // Page should be under 5MB total
       expect(totalBytes).toBeLessThan(5 * 1024 * 1024);

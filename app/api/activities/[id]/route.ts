@@ -42,9 +42,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     
     const activityData = {
@@ -55,7 +56,7 @@ export async function PUT(
     const { data, error } = await supabaseAdmin
       .from('experiences')
       .update(activityData)
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
 
@@ -88,13 +89,14 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { error } = await supabaseAdmin
       .from('experiences')
       .delete()
-      .eq('id', params.id)
+      .eq('id', id)
 
     if (error) {
       if (error.code === 'PGRST116') {

@@ -149,6 +149,11 @@ export default function NewBookingPage() {
               },
               source_url: '/admin/bookings/new',
               widget_version: 'admin-manual',
+              // Admin-specific fields
+              status: formData.status,
+              payment_status: formData.payment_status,
+              special_requests: formData.special_requests || undefined,
+              internal_notes: formData.notes || undefined,
             }
           : {
               room_id: formData.item_id,
@@ -161,6 +166,12 @@ export default function NewBookingPage() {
               phone: formData.guest_phone || undefined,
               message: formData.special_requests || undefined,
               source_url: '/admin/bookings/new',
+              // Admin-specific fields
+              total_amount: formData.total_price,
+              status: formData.status,
+              payment_status: formData.payment_status,
+              special_requests: formData.special_requests || undefined,
+              internal_notes: formData.notes || undefined,
             }
 
       const response = await fetch('/api/bookings', {
@@ -201,11 +212,11 @@ export default function NewBookingPage() {
         <p className="text-gray-600 mt-2">Manually create a booking for a guest</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8" data-testid="create-booking-modal">
         {/* Booking Type */}
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Booking Type</h2>
-          <div className="flex gap-4">
+          <div className="flex gap-4" data-testid="booking-experience-select">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="radio"
@@ -214,6 +225,7 @@ export default function NewBookingPage() {
                 checked={formData.type === 'room'}
                 onChange={() => setFormData(prev => ({ ...prev, type: 'room', item_id: '' }))}
                 className="text-heiwaOrange-600 focus:ring-heiwaOrange-500"
+                data-testid="option-room"
               />
               <Home className="h-5 w-5 text-gray-600" />
               <span className="font-medium">Room Booking</span>
@@ -226,6 +238,7 @@ export default function NewBookingPage() {
                 checked={formData.type === 'surf_camp'}
                 onChange={() => setFormData(prev => ({ ...prev, type: 'surf_camp', item_id: '' }))}
                 className="text-heiwaOrange-600 focus:ring-heiwaOrange-500"
+                data-testid="option-surf-week"
               />
               <Calendar className="h-5 w-5 text-gray-600" />
               <span className="font-medium">Surf Week Booking</span>
@@ -246,6 +259,7 @@ export default function NewBookingPage() {
               onChange={(e) => setFormData(prev => ({ ...prev, item_id: e.target.value }))}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+              data-testid="booking-room-select"
             >
               <option value="">Select {formData.type === 'room' ? 'a room' : 'a surf week'}...</option>
               {formData.type === 'room' ? (
@@ -281,6 +295,7 @@ export default function NewBookingPage() {
                 onChange={(e) => setFormData(prev => ({ ...prev, guest_name: e.target.value }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
                 placeholder="John Doe"
+                data-testid="booking-guest-name"
               />
             </div>
             <div>
@@ -295,6 +310,7 @@ export default function NewBookingPage() {
                 onChange={(e) => setFormData(prev => ({ ...prev, guest_email: e.target.value }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
                 placeholder="john@example.com"
+                data-testid="booking-email"
               />
             </div>
             <div>
@@ -308,6 +324,7 @@ export default function NewBookingPage() {
                 onChange={(e) => setFormData(prev => ({ ...prev, guest_phone: e.target.value }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
                 placeholder="+1 234 567 8900"
+                data-testid="booking-phone"
               />
             </div>
             <div>
@@ -322,6 +339,7 @@ export default function NewBookingPage() {
                 value={formData.guests}
                 onChange={(e) => setFormData(prev => ({ ...prev, guests: parseInt(e.target.value) || 1 }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                data-testid="booking-guests"
               />
             </div>
           </div>
@@ -342,6 +360,7 @@ export default function NewBookingPage() {
                   value={formData.check_in}
                   onChange={(e) => setFormData(prev => ({ ...prev, check_in: e.target.value }))}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                  data-testid="booking-date-picker"
                 />
               </div>
               <div>
@@ -355,6 +374,7 @@ export default function NewBookingPage() {
                   min={formData.check_in}
                   onChange={(e) => setFormData(prev => ({ ...prev, check_out: e.target.value }))}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                  data-testid="booking-checkout-date"
                 />
               </div>
             </div>
@@ -421,6 +441,7 @@ export default function NewBookingPage() {
                 onChange={(e) => setFormData(prev => ({ ...prev, special_requests: e.target.value }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
                 placeholder="Any special requests from the guest..."
+                data-testid="booking-notes"
               />
             </div>
             <div>
@@ -457,6 +478,7 @@ export default function NewBookingPage() {
             type="submit"
             disabled={loading || !formData.item_id}
             className="inline-flex items-center gap-2 px-6 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            data-testid="save-booking"
           >
             <Save className="h-4 w-4" />
             {loading ? 'Creating...' : 'Create Booking'}

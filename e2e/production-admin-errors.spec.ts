@@ -72,7 +72,7 @@ test.describe('Admin Error Handling', () => {
     
     // Try to access invalid admin route
     await page.goto('/admin/invalid-route-xyz123')
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
     
     // Should show 404 or redirect
     const currentUrl = page.url()
@@ -89,7 +89,7 @@ test.describe('Admin Error Handling', () => {
     
     // Try to access admin route
     await page.goto('/admin/bookings')
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
     
     // Should redirect to login
     await expect(page).toHaveURL(/.*\/admin\/login/)
@@ -123,7 +123,7 @@ test.describe('Admin Error Handling', () => {
     
     // Reload page
     await page.reload()
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
     
     // Should show error message or handle gracefully
     const errorMessage = page.locator('[role="alert"], .error, text=/error/i')

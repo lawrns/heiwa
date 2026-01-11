@@ -138,7 +138,7 @@ export function CalendarGrid({
               key={index}
               onClick={() => onDateSelect(date)}
               className={cn(
-                'min-h-[100px] p-1 border-b border-r border-gray-100 cursor-pointer transition-colors',
+                'min-h-[120px] p-1.5 border-b border-r border-gray-100 cursor-pointer transition-colors',
                 'hover:bg-gray-50',
                 !isCurrentMonth(date) && 'bg-gray-50/50',
                 isSelected(date) && 'bg-blue-50 ring-2 ring-inset ring-blue-500'
@@ -165,7 +165,7 @@ export function CalendarGrid({
                     key={event.id}
                     event={event}
                     onClick={(e) => {
-                      e.stopPropagation?.()
+                      e.stopPropagation()
                       onEventClick(event)
                     }}
                   />

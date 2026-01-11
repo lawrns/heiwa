@@ -173,6 +173,7 @@ export default function RoomsPage() {
         </div>
         <Link
           href="/admin/rooms/new"
+          data-testid="create-room-btn"
           className="inline-flex items-center gap-2 px-6 py-3 bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white rounded-lg transition-colors font-semibold shadow-md hover:shadow-lg whitespace-nowrap"
         >
           <Plus className="h-5 w-5" />
@@ -191,6 +192,7 @@ export default function RoomsPage() {
                 placeholder="Search rooms by name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                data-testid="rooms-search-input"
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
               />
             </div>
@@ -212,9 +214,9 @@ export default function RoomsPage() {
       </div>
 
       {/* Rooms Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div data-testid="rooms-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredRooms.map((room) => (
-          <div key={room.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div key={room.id} data-testid="room-card" className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="relative">
               {room.featured_image ? (
                 <img
@@ -244,12 +246,12 @@ export default function RoomsPage() {
             </div>
             
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{room.name}</h3>
+              <h3 data-testid="room-name" className="text-xl font-semibold text-gray-900 mb-2">{room.name}</h3>
               <div className="space-y-2 mb-4">
-                <p className="text-sm text-gray-600">
+                <p data-testid="room-capacity" className="text-sm text-gray-600">
                   <span className="font-medium">Capacity:</span> {room.capacity} guests
                 </p>
-                <p className="text-sm text-gray-600">
+                <p data-testid="room-price" className="text-sm text-gray-600">
                   <span className="font-medium">Price:</span> €{room.price_per_night}/night
                 </p>
                 <p className="text-sm text-gray-600">
@@ -267,6 +269,7 @@ export default function RoomsPage() {
                 </Link>
                 <Link
                   href={`/admin/rooms/${room.id}/edit`}
+                  data-testid="edit-room-btn"
                   className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white rounded-lg transition-colors shadow-sm hover:shadow-md"
                 >
                   <Edit className="h-4 w-4" />
@@ -274,6 +277,7 @@ export default function RoomsPage() {
                 </Link>
                 <button
                   onClick={() => handleDelete(room.id)}
+                  data-testid="delete-room-btn"
                   className="inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
                 >
                   <Trash2 className="h-4 w-4" />

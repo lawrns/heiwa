@@ -6,7 +6,7 @@ test.describe('Booking Widget Flow', () => {
     await page.goto('/')
     
     // Wait for page to load
-    await page.waitForLoadState('networkidle')
+    await page.waitForLoadState('domcontentloaded')
   })
 
   test('should complete full booking flow with add-ons', async ({ page }) => {

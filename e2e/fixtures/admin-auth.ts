@@ -1,28 +1,62 @@
 import { Page } from '@playwright/test'
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'heiwa_admin_2024'
-const BASE_URL = process.env.BASE_URL || 'https://heiwahauz.netlify.app'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'testpassword123'
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3003'
+
+// Extract domain from BASE_URL for cookie setting
+function getCookieDomain(): string {
+  try {
+    const url = new URL(BASE_URL)
+    return url.hostname
+  } catch {
+    return 'localhost'
+  }
+}
 
 /**
- * Login as admin user
+ * Login as admin user by setting the auth cookie directly.
+ * This bypasses the login form and rate limiting.
  */
 export async function loginAsAdmin(page: Page, password: string = ADMIN_PASSWORD): Promise<void> {
-  await page.goto(`${BASE_URL}/admin/login`, { waitUntil: 'domcontentloaded', timeout: 60000 })
+  const domain = getCookieDomain()
+  const isSecure = BASE_URL.startsWith('https')
+
+  // Set the admin_auth cookie directly to bypass rate limiting
+  await page.context().addCookies([
+    {
+      name: 'admin_auth',
+      value: password,
+      domain: domain,
+      path: '/',
+      httpOnly: false,
+      secure: isSecure,
+      sameSite: 'Lax',
+    }
+  ])
+
+  // Navigate to admin to verify auth works
+  await page.goto(`${BASE_URL}/admin`, { waitUntil: 'domcontentloaded', timeout: 60000 })
+
+  // Wait for page to load and verify we're not redirected to login
   await page.waitForTimeout(2000)
-  
-  // Fill password input
-  const passwordInput = page.locator('input[type="password"]')
-  await passwordInput.waitFor({ timeout: 30000 })
-  await passwordInput.fill(password)
-  
-  // Submit form
-  const submitButton = page.locator('button[type="submit"]')
-  await submitButton.waitFor({ timeout: 30000 })
-  await submitButton.click()
-  
-  // Wait for redirect to dashboard
-  await page.waitForURL('**/admin', { timeout: 30000 })
-  await page.waitForTimeout(2000)
+
+  // If we're still on login page, the cookie didn't work - try form login as fallback
+  if (page.url().includes('/login')) {
+    // Wait for form to appear
+    const passwordInput = page.locator('input[type="password"]')
+    await passwordInput.waitFor({ state: 'visible', timeout: 10000 })
+    await passwordInput.fill(password)
+
+    const submitButton = page.locator('button[type="submit"]')
+    await submitButton.click()
+
+    // Wait for redirect
+    await page.waitForFunction(
+      () => !window.location.pathname.includes('/login'),
+      { timeout: 30000 }
+    )
+    await page.waitForTimeout(1000)
+  }
 }
 
 /**
@@ -61,14 +95,17 @@ export async function isAuthenticated(page: Page): Promise<boolean> {
  * Set admin auth cookie directly
  */
 export async function setAdminCookie(page: Page, password: string = ADMIN_PASSWORD): Promise<void> {
+  const domain = getCookieDomain()
+  const isSecure = BASE_URL.startsWith('https')
+
   await page.context().addCookies([
     {
       name: 'admin_auth',
       value: password,
-      domain: '.netlify.app',
+      domain: domain,
       path: '/',
       httpOnly: false,
-      secure: true,
+      secure: isSecure,
       sameSite: 'Lax',
     }
   ])

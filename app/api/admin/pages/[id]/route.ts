@@ -40,11 +40,11 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     // Require admin authentication
     const authError = requireAdminAuth(request)
     if (authError) return authError
 
-    const { id } = await params
     const body = await request.json()
     const {
       page_slug,
@@ -111,11 +111,11 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     // Require admin authentication
     const authError = requireAdminAuth(request)
     if (authError) return authError
 
-    const { id } = await params
     const { error } = await supabaseAdmin
       .from('page_content')
       .delete()

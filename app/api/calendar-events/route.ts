@@ -2,6 +2,48 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdminAuth } from '@/lib/admin-auth'
 
+interface CalendarEvent {
+  id: string
+  title: string
+  description?: string
+  start_date: string
+  end_date: string
+  event_type: string
+  location: string
+  color: string
+  blocks_bookings?: boolean
+  created_at: string
+}
+
+interface Booking {
+  id: string
+  items?: Array<{
+    type: string
+    itemId?: string
+    dates?: {
+      checkIn: string
+      checkOut: string
+    }
+  }>
+  status: string
+  payment_status: string
+  client_ids?: string[]
+  created_at: string
+}
+
+interface Client {
+  id: string
+  name: string
+}
+
+interface SurfCamp {
+  id: string
+  name: string
+  start_date: string
+  end_date: string
+  is_active?: boolean
+}
+
 export async function GET(request: NextRequest) {
   try {
     const authError = requireAdminAuth(request)
@@ -11,7 +53,7 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('start_date')
     const endDate = searchParams.get('end_date')
 
-    const events: any[] = []
+    const events: CalendarEvent[] = []
 
     // Fetch bookings and convert to calendar events
     const { data: bookings, error: bookingsError } = await supabaseAdmin
@@ -22,13 +64,13 @@ export async function GET(request: NextRequest) {
     if (!bookingsError && bookings) {
       // Fetch clients for guest names
       const allClientIds = new Set<string>()
-      bookings.forEach((booking: any) => {
+      bookings.forEach((booking: Booking) => {
         if (booking.client_ids && Array.isArray(booking.client_ids)) {
           booking.client_ids.forEach((id: string) => allClientIds.add(id))
         }
       })
 
-      let clientMap = new Map()
+      let clientMap = new Map<string, string>()
       if (allClientIds.size > 0) {
         const { data: clients } = await supabaseAdmin
           .from('clients')
@@ -36,7 +78,7 @@ export async function GET(request: NextRequest) {
           .in('id', Array.from(allClientIds))
 
         if (clients) {
-          clients.forEach((client: any) => {
+          clients.forEach((client: Client) => {
             clientMap.set(client.id, client.name || 'Unknown')
           })
         }
@@ -44,7 +86,7 @@ export async function GET(request: NextRequest) {
 
       // Collect surf camp IDs to fetch in batch
       const surfCampIds = new Set<string>()
-      bookings.forEach((booking: any) => {
+      bookings.forEach((booking: Booking) => {
         const firstItem = booking.items?.[0]
         if (firstItem?.type === 'surfCamp' && firstItem.itemId) {
           surfCampIds.add(firstItem.itemId)
@@ -52,7 +94,7 @@ export async function GET(request: NextRequest) {
       })
 
       // Fetch all surf camps in one query
-      let surfCampMap = new Map()
+      let surfCampMap = new Map<string, SurfCamp>()
       if (surfCampIds.size > 0) {
         const { data: camps } = await supabaseAdmin
           .from('surf_camps')
@@ -60,14 +102,14 @@ export async function GET(request: NextRequest) {
           .in('id', Array.from(surfCampIds))
 
         if (camps) {
-          camps.forEach((camp: any) => {
+          camps.forEach((camp: SurfCamp) => {
             surfCampMap.set(camp.id, camp)
           })
         }
       }
 
       // Convert bookings to calendar events
-      bookings.forEach((booking: any) => {
+      bookings.forEach((booking: Booking) => {
         const firstItem = booking.items?.[0]
         if (!firstItem) return
 
@@ -89,19 +131,21 @@ export async function GET(request: NextRequest) {
           })
         } else if (firstItem.type === 'surfCamp') {
           // Use pre-fetched surf camp data
-          const camp = surfCampMap.get(firstItem.itemId)
-          if (camp && camp.start_date) {
-            events.push({
-              id: `booking-surf-${booking.id}`,
-              title: `Surf Camp Booking: ${camp.name}`,
-              description: `Surf camp booking - ${guestName}`,
-              start_date: camp.start_date,
-              end_date: camp.end_date || camp.start_date,
-              event_type: 'surf_camp_booking',
-              location: 'Heiwa House',
-              color: 'green',
-              created_at: booking.created_at
-            })
+          if (firstItem.itemId) {
+            const camp = surfCampMap.get(firstItem.itemId)
+            if (camp && camp.start_date) {
+              events.push({
+                id: `booking-surf-${booking.id}`,
+                title: `Surf Camp Booking: ${camp.name}`,
+                description: `Surf camp booking - ${guestName}`,
+                start_date: camp.start_date,
+                end_date: camp.end_date || camp.start_date,
+                event_type: 'surf_camp_booking',
+                location: 'Heiwa House',
+                color: 'green',
+                created_at: booking.created_at
+              })
+            }
           }
         }
       })
@@ -114,7 +158,7 @@ export async function GET(request: NextRequest) {
       .eq('is_active', true)
 
     if (!surfCampsError && surfCamps) {
-      surfCamps.forEach((camp: any) => {
+      surfCamps.forEach((camp: SurfCamp) => {
         if (camp.start_date) {
           events.push({
             id: `camp-${camp.id}`,
@@ -138,7 +182,7 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
 
     if (!calendarEventsError && calendarEvents) {
-      calendarEvents.forEach((event: any) => {
+      calendarEvents.forEach((event: CalendarEvent) => {
         events.push({
           id: event.id,
           title: event.title,
@@ -171,7 +215,7 @@ export async function GET(request: NextRequest) {
         events: filteredEvents
       }
     })
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error fetching calendar events:', error)
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
@@ -195,6 +239,34 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // If this event blocks bookings, check for overlapping blocking events
+    if (blocks_bookings) {
+      const eventEndDate = end_date || start_date
+      const { data: existingBlockingEvents, error: checkError } = await supabaseAdmin
+        .from('calendar_events')
+        .select('id, title, start_date, end_date')
+        .gte('end_date', start_date)
+        .lte('start_date', eventEndDate)
+        .eq('blocks_bookings', true)
+
+      if (!checkError && existingBlockingEvents && existingBlockingEvents.length > 0) {
+        console.log('⚠️ Overlapping blocking events found:', existingBlockingEvents)
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Cannot create overlapping blocking events. There are already blocking events during these dates.',
+            overlapping_events: existingBlockingEvents.map(e => ({
+              id: e.id,
+              title: e.title,
+              start_date: e.start_date,
+              end_date: e.end_date
+            }))
+          },
+          { status: 400 }
+        )
+      }
+    }
+
     // Try to insert into calendar_events table if it exists
     // If table doesn't exist, return success with mock ID (events are generated from bookings/surf camps)
     const eventData = {
@@ -211,7 +283,7 @@ export async function POST(request: NextRequest) {
     try {
       const { data, error } = await supabaseAdmin
         .from('calendar_events')
-        .insert(eventData as any)
+        .insert(eventData)
         .select()
         .single()
 
@@ -235,9 +307,10 @@ export async function POST(request: NextRequest) {
         success: true,
         data: { event: data }
       }, { status: 201 })
-    } catch (dbError: any) {
+    } catch (dbError: unknown) {
       // If table doesn't exist, return success with mock ID
-      console.warn('Error inserting calendar event (table may not exist):', dbError.message)
+      const errorMessage = dbError instanceof Error ? dbError.message : 'Unknown error'
+      console.warn('Error inserting calendar event (table may not exist):', errorMessage)
       return NextResponse.json({
         success: true,
         data: {
@@ -249,10 +322,11 @@ export async function POST(request: NextRequest) {
         }
       }, { status: 201 })
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating calendar event:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create calendar event'
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to create calendar event' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

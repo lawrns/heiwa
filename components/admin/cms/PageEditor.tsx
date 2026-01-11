@@ -89,7 +89,7 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
         throw new Error(sectionsResult?.error || `Failed to load page data (${sectionsResponse.status})`)
       }
 
-      const sections = (sectionsResult.data || []) as any[]
+      const sections = (sectionsResult.data || []) as PageSection[]
 
       // Parse metadata response - may not exist for new pages
       let seoTitle = pageTitles[pageSlug] || ''
@@ -150,7 +150,7 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
     }
   }
 
-  const handleDragEnd = async (result: any) => {
+  const handleDragEnd = async (result: { source: { index: number }; destination: { index: number } | null }) => {
     if (!result.destination || !pageData) return
 
     const items = Array.from(pageData.sections)
@@ -249,8 +249,8 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
       setShowAddSection(false)
       setSuccess('Section added successfully')
       setTimeout(() => setSuccess(null), 3000)
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to add section. Please check the console for details.'
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to add section. Please check the console for details.'
       console.error('Error adding section:', err)
       setError(errorMessage)
     }
@@ -334,10 +334,10 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
     }
   }
 
-  const handleRestoreVersion = async (version: any) => {
+  const handleRestoreVersion = async (version: { content: Record<string, unknown> }) => {
     try {
       // Restore the content
-      setPageData(version.content)
+      setPageData(version.content as unknown as PageData)
       setHasChanges(true)
       setSuccess('Version restored successfully')
       setTimeout(() => setSuccess(null), 3000)

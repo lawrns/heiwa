@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test'
-import { ensureAdminAuth, navigateToAdminPage, waitForAdminPageLoad, verifyBookingInAdmin, getBookingDetails } from './helpers/admin-helpers'
+import { loginAsAdmin } from './fixtures/admin-auth'
+import { navigateToAdminPage, waitForAdminPageLoad, verifyBookingInAdmin, getBookingDetails } from './helpers/admin-helpers'
 
 test.describe('Admin Bookings Management', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureAdminAuth(page)
+    await loginAsAdmin(page)
     await navigateToAdminPage(page, '/bookings')
     await waitForAdminPageLoad(page)
   })

@@ -81,10 +81,11 @@ export async function POST(request: NextRequest) {
       data: result,
       message: `Successfully processed ${updatedCount} payment(s)`
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Unexpected error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

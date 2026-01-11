@@ -11,6 +11,7 @@ import { CheckboxCell } from '@/components/admin/CheckboxCell'
 import { DateRangeFilter } from '@/components/admin/DateRangeFilter'
 import { AmountRangeFilter } from '@/components/admin/AmountRangeFilter'
 import { toast } from 'react-toastify'
+import { formatDateCompact } from '@/lib/utils'
 
 interface Payment {
   id: string
@@ -66,7 +67,9 @@ export default function PaymentsPage() {
       params.set('page', currentPage.toString())
       params.set('limit', itemsPerPage.toString())
 
-      const response = await fetch(`/api/payments?${params.toString()}`)
+      const response = await fetch(`/api/payments?${params.toString()}`, {
+        credentials: 'include'
+      })
       const data = await response.json()
 
       if (data.success) {
@@ -102,7 +105,8 @@ export default function PaymentsPage() {
 
     try {
       const response = await fetch(`/api/payments/${paymentId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include'
       })
 
       const data = await response.json()
@@ -113,9 +117,10 @@ export default function PaymentsPage() {
       } else {
         throw new Error(data.error || 'Failed to delete payment')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting payment:', error)
-      toast.error(error.message || 'Failed to delete payment')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete payment'
+      toast.error(errorMessage)
     }
   }
 
@@ -188,6 +193,7 @@ export default function PaymentsPage() {
       const response = await fetch('/api/payments/bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           action: 'update_status',
           paymentIds: Array.from(selectedPayments),
@@ -220,6 +226,7 @@ export default function PaymentsPage() {
       const response = await fetch('/api/payments/bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           action: 'delete',
           paymentIds: Array.from(selectedPayments),
@@ -582,7 +589,7 @@ export default function PaymentsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {payment.payment_date ? new Date(payment.payment_date).toLocaleDateString() : 'N/A'}
+                      {formatDateCompact(payment.payment_date)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex gap-2">

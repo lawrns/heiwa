@@ -7,7 +7,7 @@ export interface HomepageSection {
   title?: string
   subtitle?: string
   description?: string
-  content: Record<string, any>
+  content: Record<string, unknown>
   video_url?: string
   background_image?: string
   link_url?: string
@@ -26,7 +26,7 @@ export interface PageContent {
   content?: string
   video_url?: string
   image_url?: string
-  json_content: Record<string, any>
+  json_content: Record<string, unknown>
   is_active: boolean
   order_index: number
   created_at: string
@@ -36,9 +36,9 @@ export interface PageContent {
 export interface PageSection {
   id: string
   page_slug: string
-  section_type: 'hero' | 'intro' | 'features' | 'gallery' | 'pricing' | 'text' | 'image_text' | 'video' | 'custom'
+  section_type: 'hero' | 'intro' | 'features' | 'gallery' | 'pricing' | 'text' | 'image_text' | 'video' | 'custom' | 'local_break' | 'surf_lessons' | 'surf_conditions' | 'world_class_surfing'
   section_name: string
-  content: Record<string, any>
+  content: Record<string, unknown>
   order_index: number
   is_active: boolean
   created_at: string
@@ -117,8 +117,8 @@ export interface ActivityLog {
   table_name: string
   record_id: string
   action: 'create' | 'update' | 'delete'
-  old_values?: Record<string, any>
-  new_values?: Record<string, any>
+  old_values?: Record<string, unknown>
+  new_values?: Record<string, unknown>
   user_id?: string
   ip_address?: string
   created_at: string
@@ -130,7 +130,7 @@ export interface CreateHomepageSectionInput {
   title?: string
   subtitle?: string
   description?: string
-  content?: Record<string, any>
+  content?: Record<string, unknown>
   video_url?: string
   background_image?: string
   link_url?: string
@@ -143,7 +143,7 @@ export interface UpdateHomepageSectionInput {
   title?: string
   subtitle?: string
   description?: string
-  content?: Record<string, any>
+  content?: Record<string, unknown>
   video_url?: string
   background_image?: string
   link_url?: string
@@ -159,7 +159,7 @@ export interface CreatePageContentInput {
   content?: string
   video_url?: string
   image_url?: string
-  json_content?: Record<string, any>
+  json_content?: Record<string, unknown>
   is_active?: boolean
   order_index?: number
 }
@@ -169,7 +169,7 @@ export interface UpdatePageContentInput {
   content?: string
   video_url?: string
   image_url?: string
-  json_content?: Record<string, any>
+  json_content?: Record<string, unknown>
   is_active?: boolean
   order_index?: number
 }

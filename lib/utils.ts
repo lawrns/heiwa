@@ -53,14 +53,46 @@ export function formatPrice(price: number): string {
 }
 
 /**
- * Format date for display (European format DD/MM/YYYY)
+ * Format date for display (European format - "6 January 2025")
  * Accepts both Date object and date string
  */
-export function formatDate(date: Date | string): string {
+export function formatDate(date: Date | string | null | undefined): string {
+  if (!date) return 'N/A'
   const dateObj = typeof date === 'string' ? new Date(date) : date
+  if (isNaN(dateObj.getTime())) return 'N/A'
   return new Intl.DateTimeFormat('en-GB', {
     year: 'numeric',
     month: 'long',
+    day: 'numeric',
+  }).format(dateObj)
+}
+
+/**
+ * Format date in short format (European format - DD/MM/YYYY)
+ * Accepts both Date object and date string
+ */
+export function formatDateShort(date: Date | string | null | undefined): string {
+  if (!date) return 'N/A'
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  if (isNaN(dateObj.getTime())) return 'N/A'
+  return new Intl.DateTimeFormat('en-GB', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(dateObj)
+}
+
+/**
+ * Format date for table display (European format - "6 Jan 2025")
+ * More compact than formatDate, ideal for tables and lists
+ */
+export function formatDateCompact(date: Date | string | null | undefined): string {
+  if (!date) return 'N/A'
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  if (isNaN(dateObj.getTime())) return 'N/A'
+  return new Intl.DateTimeFormat('en-GB', {
+    year: 'numeric',
+    month: 'short',
     day: 'numeric',
   }).format(dateObj)
 }

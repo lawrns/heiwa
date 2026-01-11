@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Edit, Trash2, Calendar as CalendarIcon, MapPin, Tag } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { formatDateCompact } from '@/lib/utils'
 
 interface CalendarEvent {
   id: string
@@ -19,6 +20,7 @@ interface CalendarEvent {
   event_type?: string
   location?: string
   color?: string
+  blocks_bookings?: boolean
   created_at: string
   updated_at?: string
 }
@@ -46,14 +48,23 @@ export function EventDetailsModal({ open, onClose, event, onEdit, onDelete }: Ev
         event_type: event.event_type || 'general',
         location: event.location || '',
         color: event.color || '#3B82F6',
+        blocks_bookings: event.blocks_bookings || false,
       })
       setIsEditing(false)
     }
   }, [event, open])
 
+  // Check if this event is editable (not a derived booking/camp event)
+  const isEditableEvent = event && !event.id.startsWith('booking-') && !event.id.startsWith('camp-')
+
   const handleSave = async () => {
     if (!event || !formData.title || !formData.start_date) {
       toast.error('Please fill in all required fields')
+      return
+    }
+
+    if (!isEditableEvent) {
+      toast.error('This event cannot be edited directly. Use the bookings page instead.')
       return
     }
 
@@ -68,6 +79,7 @@ export function EventDetailsModal({ open, onClose, event, onEdit, onDelete }: Ev
           ...formData,
           start_date: formData.start_date ? new Date(formData.start_date).toISOString() : null,
           end_date: formData.end_date ? new Date(formData.end_date).toISOString() : formData.start_date ? new Date(formData.start_date).toISOString() : null,
+          blocks_bookings: formData.blocks_bookings || false,
         })
       })
 
@@ -82,9 +94,10 @@ export function EventDetailsModal({ open, onClose, event, onEdit, onDelete }: Ev
       if (onEdit) {
         onEdit(data.data.event)
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating event:', error)
-      toast.error(error.message || 'Failed to update event')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update event'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -112,9 +125,10 @@ export function EventDetailsModal({ open, onClose, event, onEdit, onDelete }: Ev
         onDelete(event.id)
       }
       onClose()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting event:', error)
-      toast.error(error.message || 'Failed to delete event')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete event'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -192,8 +206,7 @@ export function EventDetailsModal({ open, onClose, event, onEdit, onDelete }: Ev
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="booking">Booking</SelectItem>
-                    <SelectItem value="surf_camp">Surf Camp</SelectItem>
+                    <SelectItem value="block">Block (No Bookings)</SelectItem>
                     <SelectItem value="maintenance">Maintenance</SelectItem>
                     <SelectItem value="event">Event</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
@@ -223,6 +236,19 @@ export function EventDetailsModal({ open, onClose, event, onEdit, onDelete }: Ev
               />
             </div>
 
+            <div className="flex items-center space-x-2 pt-2">
+              <input
+                type="checkbox"
+                id="blocks_bookings"
+                checked={formData.blocks_bookings || false}
+                onChange={(e) => setFormData(prev => ({ ...prev, blocks_bookings: e.target.checked }))}
+                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <Label htmlFor="blocks_bookings" className="text-sm font-normal cursor-pointer">
+                Block bookings during this event
+              </Label>
+            </div>
+
             <div className="flex justify-end gap-2 pt-4">
               <Button variant="outline" onClick={() => setIsEditing(false)} disabled={loading}>
                 Cancel
@@ -247,7 +273,7 @@ export function EventDetailsModal({ open, onClose, event, onEdit, onDelete }: Ev
                 <div>
                   <p className="text-gray-500">Start Date</p>
                   <p className="font-medium">
-                    {event.start_date ? new Date(event.start_date).toLocaleDateString() : 'N/A'}
+                    {formatDateCompact(event.start_date)}
                   </p>
                 </div>
               </div>
@@ -257,7 +283,7 @@ export function EventDetailsModal({ open, onClose, event, onEdit, onDelete }: Ev
                 <div>
                   <p className="text-gray-500">End Date</p>
                   <p className="font-medium">
-                    {event.end_date ? new Date(event.end_date).toLocaleDateString() : 'N/A'}
+                    {formatDateCompact(event.end_date)}
                   </p>
                 </div>
               </div>
@@ -283,15 +309,40 @@ export function EventDetailsModal({ open, onClose, event, onEdit, onDelete }: Ev
               )}
             </div>
 
+            {event.blocks_bookings && (
+              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                <p className="text-sm text-amber-800 font-medium">
+                  This event blocks new bookings during its duration
+                </p>
+              </div>
+            )}
+
+            {!isEditableEvent && (
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  This event is synced from {event.event_type === 'booking' || event.event_type === 'surf_camp_booking' ? 'bookings' : 'surf camps'}.
+                  To modify it, please use the {event.event_type === 'booking' || event.event_type === 'surf_camp_booking' ? 'Bookings' : 'Surf Camps'} page.
+                </p>
+              </div>
+            )}
+
             <div className="flex justify-end gap-2 pt-4 border-t">
-              <Button variant="outline" onClick={() => setIsEditing(true)}>
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Event
-              </Button>
-              <Button variant="destructive" onClick={handleDelete} disabled={loading}>
-                <Trash2 className="h-4 w-4 mr-2" />
-                {loading ? 'Deleting...' : 'Delete Event'}
-              </Button>
+              {isEditableEvent ? (
+                <>
+                  <Button variant="outline" onClick={() => setIsEditing(true)}>
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit Event
+                  </Button>
+                  <Button variant="destructive" onClick={handleDelete} disabled={loading}>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    {loading ? 'Deleting...' : 'Delete Event'}
+                  </Button>
+                </>
+              ) : (
+                <Button variant="outline" onClick={onClose}>
+                  Close
+                </Button>
+              )}
             </div>
           </div>
         )}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAdminAuth } from '@/lib/admin-auth'
+import { formatDateCompact } from '@/lib/utils'
 
 interface BookingRevenue {
   total_amount: number
@@ -176,7 +177,7 @@ export async function GET(request: NextRequest) {
           id: b.id.substring(0, 8) + '...',
           guest: client?.name || 'Unknown',
           room: b.room_type || 'Surf Camp',
-          checkIn: b.check_in ? new Date(b.check_in).toLocaleDateString() : 'N/A',
+          checkIn: formatDateCompact(b.check_in),
           status: b.status || 'pending'
         }
       })

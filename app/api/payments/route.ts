@@ -100,6 +100,29 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Validate that the booking_id is a valid UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(booking_id)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid booking ID format. Please enter a valid booking ID.' },
+        { status: 400 }
+      )
+    }
+
+    // Verify that the booking exists
+    const { data: existingBooking, error: bookingCheckError } = await supabaseAdmin
+      .from('bookings')
+      .select('id, total_amount, client_ids')
+      .eq('id', booking_id)
+      .single()
+
+    if (bookingCheckError || !existingBooking) {
+      return NextResponse.json(
+        { success: false, error: 'Booking not found. Please verify the booking ID and try again.' },
+        { status: 404 }
+      )
+    }
+
     const payment = {
       booking_id,
       amount,
@@ -108,21 +131,22 @@ export async function POST(request: NextRequest) {
       payment_status: payment_status || 'completed',
       transaction_id: transaction_id || null,
       payment_date: payment_date || new Date().toISOString(),
-      refund_amount: null,
+      refund_amount: 0, // Use 0 instead of null to satisfy CHECK constraint (refund_amount >= 0)
       refund_reason: null,
       notes: notes || null,
     }
 
     const { data, error } = await supabaseAdmin
       .from('payments')
-      .insert(payment as any)
+      .insert(payment)
       .select()
       .single()
 
     if (error) {
       console.error('Error creating payment:', error)
+      // Return detailed error for better debugging
       return NextResponse.json(
-        { success: false, error: 'Failed to create payment' },
+        { success: false, error: 'Failed to create payment', details: error.message, code: error.code },
         { status: 500 }
       )
     }
@@ -131,7 +155,7 @@ export async function POST(request: NextRequest) {
     if (payment_status === 'completed') {
       await supabaseAdmin
         .from('bookings')
-        .update({ payment_status: 'paid' } as any)
+        .update({ payment_status: 'paid' })
         .eq('id', booking_id)
     }
 
@@ -155,7 +179,16 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (client) {
-        const paymentData = data as any
+        const paymentData = data as {
+          id: string
+          amount: number
+          currency: string
+          payment_status: string
+          payment_date: string
+          payment_method?: string
+          transaction_id?: string | null
+          booking_id?: string
+        }
 
         // Send confirmation email
         try {
@@ -186,10 +219,11 @@ export async function POST(request: NextRequest) {
       success: true,
       data: { payment: data }
     }, { status: 201 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating payment:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create payment'
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to create payment' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

@@ -5,25 +5,25 @@ import { Save, Clock, RotateCcw, RotateCw } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminAlert from '@/components/admin/ui/AdminAlert'
 
-interface AutoSaveState {
-  data: any
+interface AutoSaveState<T> {
+  data: T
   timestamp: number
   action: string
 }
 
-interface AutoSaveManagerProps {
-  data: any
-  onSave: (data: any) => Promise<void>
+interface AutoSaveManagerProps<T> {
+  data: T
+  onSave: (data: T) => Promise<void>
   debounceMs?: number
   maxHistory?: number
 }
 
-export default function AutoSaveManager({
+export default function AutoSaveManager<T extends object>({
   data,
   onSave,
   debounceMs = 3000,
   maxHistory = 20
-}: AutoSaveManagerProps) {
+}: AutoSaveManagerProps<T>) {
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
@@ -31,17 +31,17 @@ export default function AutoSaveManager({
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   
   // Undo/Redo state
-  const [history, setHistory] = useState<AutoSaveState[]>([])
+  const [history, setHistory] = useState<AutoSaveState<T>[]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
   
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const lastDataRef = useRef(data)
+  const lastDataRef = useRef<T>(data)
 
   // Add state to history
-  const addToHistory = useCallback((newData: any, action: string = 'Edit') => {
-    const newState: AutoSaveState = {
+  const addToHistory = useCallback((newData: T, action: string = 'Edit') => {
+    const newState: AutoSaveState<T> = {
       data: JSON.parse(JSON.stringify(newData)),
       timestamp: Date.now(),
       action
@@ -69,7 +69,7 @@ export default function AutoSaveManager({
   }, [historyIndex, history.length])
 
   // Handle data changes
-  const handleChange = useCallback((newData: any, action: string = 'Edit') => {
+  const handleChange = useCallback((newData: T, action: string = 'Edit') => {
     // Clear existing save timeout
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current)
@@ -283,6 +283,6 @@ export default function AutoSaveManager({
 // Global callback for data changes
 declare global {
   interface Window {
-    onDataChange?: (data: any, action: string) => void
+    onDataChange?: (data: unknown, action: string) => void
   }
 }

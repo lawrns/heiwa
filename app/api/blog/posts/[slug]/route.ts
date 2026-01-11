@@ -3,30 +3,26 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getPostBySlug, incrementViews } from '@/lib/blog/db'
-
 // GET /api/blog/posts/[slug] - Get single post by slug
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params
     const { searchParams } = new URL(request.url)
     const locale = (searchParams.get('locale') || 'en') as 'en' | 'fr'
-
-    const post = await getPostBySlug(params.slug, locale)
-
+    const post = await getPostBySlug(slug, locale)
     if (!post) {
       return NextResponse.json(
         { success: false, error: 'Post not found' },
         { status: 404 }
       )
     }
-
     // Increment views (async, don't wait)
     incrementViews(post.id).catch(err => {
       console.error('Failed to increment views:', err)
     })
-
     // Return formatted post data
     return NextResponse.json({
       success: true,
@@ -54,12 +50,12 @@ export async function GET(
         locale: post.translation.locale
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching blog post:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }
 }
-

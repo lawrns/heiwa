@@ -16,9 +16,9 @@ const shimmerVariants = {
     transition: {
       x: {
         repeat: Infinity,
-        repeatType: 'loop',
+        repeatType: 'loop' as const,
         duration: 1.5,
-        ease: 'linear',
+        ease: 'linear' as const,
       },
     },
   },

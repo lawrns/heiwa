@@ -59,14 +59,14 @@ export interface BlogPostTranslation {
   slug_localized: string
   title: string
   excerpt?: string
-  body_rich: any // JSONB TipTap content
+  body_rich: unknown // JSONB TipTap content
   cover_image_url?: string
   cover_alt_text?: string
   seo_title?: string
   seo_description?: string
   canonical_url?: string
   noindex: boolean
-  faq_json?: any
+  faq_json?: unknown
   created_at: string
   updated_at: string
 }
@@ -156,17 +156,17 @@ export async function getPosts(filters: {
   }
 
   // Transform nested data
-  const transformedData = (data || []).map((post: any) => ({
+  const transformedData = (data || []).map((post: BlogPost & { tags?: Array<{ tag: BlogTag }> }) => ({
     ...post,
-    tags: post.tags?.map((pt: any) => pt.tag) || []
+    tags: post.tags?.map((pt: { tag: BlogTag }) => pt.tag) || []
   }))
 
   // Filter by locale if specified
-  let filteredData = transformedData
+  let filteredData: BlogPost[] = transformedData
   if (locale) {
-    filteredData = transformedData.map((post: any) => ({
+    filteredData = transformedData.map((post: BlogPost) => ({
       ...post,
-      translations: post.translations?.filter((t: any) => t.locale === locale) || []
+      translations: post.translations?.filter((t: BlogPostTranslation) => t.locale === locale) || []
     }))
   }
 
@@ -201,7 +201,7 @@ export async function getPostById(id: string): Promise<BlogPost | null> {
 
   return {
     ...data,
-    tags: data.tags?.map((pt: any) => pt.tag) || []
+    tags: (data as BlogPost & { tags?: Array<{ tag: BlogTag }> }).tags?.map((pt: { tag: BlogTag }) => pt.tag) || []
   } as BlogPost
 }
 
@@ -243,7 +243,7 @@ export async function getPostBySlug(
 
   return {
     ...post,
-    tags: post.tags?.map((pt: any) => pt.tag) || [],
+    tags: (post as BlogPost & { tags?: Array<{ tag: BlogTag }> }).tags?.map((pt: { tag: BlogTag }) => pt.tag) || [],
     translation
   } as BlogPostWithTranslation
 }

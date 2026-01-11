@@ -4,21 +4,23 @@
 // Comprehensive media management with drag-and-drop upload
 
 import React, { useState, useEffect, useRef } from 'react'
-import { 
-  AdminButton, 
-  AdminInput, 
-  AdminSelect, 
-  AdminModal, 
+import {
+  AdminButton,
+  AdminInput,
+  AdminSelect,
+  AdminModal,
   AdminAlert,
-  AdminTable
+  AdminTable,
+  type AdminTableColumn
 } from '../ui'
 import { MediaItem } from '@/lib/cms-validators'
-import { 
-  Upload, 
+import {
+  Upload,
   Image as ImageIcon,
   Video,
   FileText
 } from 'lucide-react'
+import { formatDateCompact } from '@/lib/utils'
 
 interface MediaLibraryProps {
   className?: string
@@ -220,7 +222,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
     {
       key: 'created_at',
       title: 'Uploaded',
-      render: (value: unknown) => new Date(String(value)).toLocaleDateString()
+      render: (value: unknown) => formatDateCompact(String(value))
     }
   ]
 
@@ -267,7 +269,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
           placeholder="File type"
           options={[{ value: '', label: 'All Types' }, ...FILE_TYPES]}
           value={filters.file_type}
-          onChange={(value) => setFilters({ ...filters, file_type: value as any })}
+          onChange={(value) => setFilters({ ...filters, file_type: value as '' | 'image' | 'video' | 'document' })}
           className="min-w-[150px]"
         />
         
@@ -275,7 +277,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
           placeholder="Category"
           options={[{ value: '', label: 'All Categories' }, ...CATEGORIES]}
           value={filters.category}
-          onChange={(value) => setFilters({ ...filters, category: value as any })}
+          onChange={(value) => setFilters({ ...filters, category: value as '' | 'general' | 'hero' | 'activities' | 'testimonials' | 'blog' })}
           className="min-w-[150px]"
         />
       </div>

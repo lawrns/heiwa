@@ -140,9 +140,10 @@ export function ImageUpload({
       onChange(newImages.map(img => img.url))
 
       toast.success(`${uploadedImages.length} image(s) uploaded successfully`)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error)
-      toast.error(error.message || 'Failed to upload images')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload images'
+      toast.error(errorMessage)
     } finally {
       setUploading(false)
       setUploadProgress(0)

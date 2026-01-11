@@ -1,4 +1,4 @@
-import { Bed, Waves, User, Wrench, Calendar, MapPin, LucideIcon } from 'lucide-react'
+import { Bed, Waves, User, Wrench, Calendar, MapPin, Ban, LucideIcon } from 'lucide-react'
 
 export interface CalendarEvent {
   id: string
@@ -9,6 +9,7 @@ export interface CalendarEvent {
   event_type?: string
   location?: string
   color?: string
+  blocks_bookings?: boolean
   status?: 'confirmed' | 'pending' | 'cancelled'
   created_at: string
   updated_at?: string
@@ -54,6 +55,13 @@ export const EVENT_TYPES: Record<string, EventTypeConfig> = {
     bgColor: 'bg-orange-100',
     borderColor: 'border-orange-300',
     icon: Wrench,
+  },
+  block: {
+    label: 'Blocked',
+    color: '#EF4444',
+    bgColor: 'bg-red-100',
+    borderColor: 'border-red-300',
+    icon: Ban,
   },
   general: {
     label: 'General',

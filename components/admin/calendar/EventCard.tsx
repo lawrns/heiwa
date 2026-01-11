@@ -15,6 +15,21 @@ interface EventCardProps {
   onViewFull: (event: CalendarEvent) => void
 }
 
+// Helper to determine if a color is a valid hex color
+const isHexColor = (color?: string): boolean => {
+  if (!color) return false
+  return /^#([0-9A-Fa-f]{3}){1,2}$/.test(color)
+}
+
+// Helper to create a lighter shade of a hex color for background
+const getLighterShade = (hexColor: string, opacity: number = 0.15): string => {
+  const hex = hexColor.replace('#', '')
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`
+}
+
 export function EventCard({ event, onUpdate, onViewFull }: EventCardProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedTitle, setEditedTitle] = useState(event.title)
@@ -23,6 +38,10 @@ export function EventCard({ event, onUpdate, onViewFull }: EventCardProps) {
 
   const config = getEventTypeConfig(event.event_type)
   const Icon = config.icon
+
+  // Use custom color from event if it's a valid hex, otherwise use config color
+  const hasCustomColor = isHexColor(event.color)
+  const effectiveColor = hasCustomColor ? event.color! : config.color
 
   const displayTitle = event.guest_name
     ? `${event.guest_name}${event.room_name ? ` - ${event.room_name}` : ''}`
@@ -104,17 +123,21 @@ export function EventCard({ event, onUpdate, onViewFull }: EventCardProps) {
     <div
       className={cn(
         'rounded-lg border p-3 transition-all',
-        config.bgColor,
-        config.borderColor,
+        !hasCustomColor && config.bgColor,
+        !hasCustomColor && config.borderColor,
         event.status === 'cancelled' && 'opacity-60'
       )}
+      style={hasCustomColor ? {
+        backgroundColor: getLighterShade(effectiveColor),
+        borderColor: effectiveColor,
+      } : undefined}
     >
       {/* Header with type label */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5">
-          <Icon className="h-4 w-4" style={{ color: config.color }} />
-          <span className="text-xs font-medium uppercase tracking-wide" style={{ color: config.color }}>
-            {config.label}
+          <Icon className="h-4 w-4" style={{ color: effectiveColor }} />
+          <span className="text-xs font-medium uppercase tracking-wide" style={{ color: effectiveColor }}>
+            {config.label}{event.blocks_bookings ? ' (Blocks Bookings)' : ''}
           </span>
         </div>
         <button
@@ -135,7 +158,7 @@ export function EventCard({ event, onUpdate, onViewFull }: EventCardProps) {
             className="text-sm font-medium bg-white"
             autoFocus
           />
-          <Select value={editedStatus} onValueChange={setEditedStatus}>
+          <Select value={editedStatus} onValueChange={(v) => setEditedStatus(v as 'confirmed' | 'pending' | 'cancelled')}>
             <SelectTrigger className="bg-white text-sm">
               <SelectValue />
             </SelectTrigger>

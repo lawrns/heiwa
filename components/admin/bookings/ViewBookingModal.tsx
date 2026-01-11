@@ -46,12 +46,18 @@ interface ViewBookingModalProps {
   isOpen: boolean
   booking: Booking | null
   onClose: () => void
+  onEdit?: (booking: Booking) => void
+  onDelete?: (bookingId: string) => void
+  onSendEmail?: (booking: Booking) => void
 }
 
 export function ViewBookingModal({
   isOpen,
   booking,
   onClose,
+  onEdit,
+  onDelete,
+  onSendEmail,
 }: ViewBookingModalProps) {
   if (!isOpen || !booking) return null
 
@@ -199,7 +205,7 @@ export function ViewBookingModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" data-testid="view-booking-modal">
         {/* Header */}
         <div className="sticky top-0 px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-white">
           <h3 className="text-lg font-semibold text-gray-900">Booking Details</h3>
@@ -215,13 +221,13 @@ export function ViewBookingModal({
         {/* Content */}
         <div className="px-6 py-4 space-y-6">
           {/* Booking ID and Status */}
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start" data-testid="booking-id-display">
             <div>
               <p className="text-sm text-gray-500">Booking ID</p>
               <p className="text-lg font-semibold text-gray-900">{booking.id}</p>
             </div>
-            <div className="flex gap-2">
-              <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`}>
+            <div className="flex gap-2" data-testid="payment-status-display">
+              <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`} data-testid={`status-${booking.status}`}>
                 {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
               </span>
               <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(booking.payment_status)}`}>
@@ -231,7 +237,7 @@ export function ViewBookingModal({
           </div>
 
           {/* Guest Information */}
-          <div className="border-t pt-4">
+          <div className="border-t pt-4" data-testid="guest-details-display">
             <h4 className="font-medium text-gray-900 mb-3">
               {hasMultipleParticipants ? `Participants (${participants.length || booking.guests})` : 'Guest Information'}
             </h4>
@@ -315,7 +321,7 @@ export function ViewBookingModal({
           )}
 
           {/* Booking Details */}
-          <div className="border-t pt-4">
+          <div className="border-t pt-4" data-testid="booking-details-display">
             <h4 className="font-medium text-gray-900 mb-3">Booking Details</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -380,15 +386,49 @@ export function ViewBookingModal({
             </div>
           )}
 
-          {/* Raw Notes - Hide when participants are displayed or notes are JSON */}
+          {/* Internal Notes - Extract from JSON notes if present */}
+          {(() => {
+            try {
+              if (booking.notes && booking.notes.trim().startsWith('{')) {
+                const notesData = JSON.parse(booking.notes)
+                if (notesData.internal_notes) {
+                  return (
+                    <div className="border-t pt-4">
+                      <h4 className="font-medium text-gray-900 mb-3">Internal Notes</h4>
+                      <p className="text-sm text-gray-600 bg-yellow-50 rounded-lg p-3 whitespace-pre-wrap border border-yellow-200">
+                        {notesData.internal_notes}
+                      </p>
+                    </div>
+                  )
+                }
+              }
+              return null
+            } catch {
+              return null
+            }
+          })()}
+
+          {/* Raw Notes - Only show for non-JSON notes that aren't special requests */}
           {booking.notes && 
            booking.notes !== booking.special_requests && 
            participants.length === 0 &&
-           !booking.notes.trim().startsWith('{') && (
+           !booking.notes.trim().startsWith('{') &&
+           !booking.notes.includes('[Internal Notes]:') && (
             <div className="border-t pt-4">
               <h4 className="font-medium text-gray-900 mb-3">Additional Notes</h4>
               <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 whitespace-pre-wrap">
                 {booking.notes}
+              </p>
+            </div>
+          )}
+
+          {/* Internal Notes from text format */}
+          {booking.notes && 
+           booking.notes.includes('[Internal Notes]:') && (
+            <div className="border-t pt-4">
+              <h4 className="font-medium text-gray-900 mb-3">Internal Notes</h4>
+              <p className="text-sm text-gray-600 bg-yellow-50 rounded-lg p-3 whitespace-pre-wrap border border-yellow-200">
+                {booking.notes.split('[Internal Notes]:')[1]?.trim() || ''}
               </p>
             </div>
           )}
@@ -400,8 +440,37 @@ export function ViewBookingModal({
             </p>
           </div>
 
-          {/* Close Button */}
-          <div className="border-t pt-4 flex justify-end">
+          {/* Action Buttons */}
+          <div className="border-t pt-4 flex justify-between">
+            <div className="flex gap-2">
+              {onEdit && (
+                <button
+                  onClick={() => onEdit(booking)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  data-testid="edit-booking-btn"
+                >
+                  Edit
+                </button>
+              )}
+              {onSendEmail && (
+                <button
+                  onClick={() => onSendEmail(booking)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  data-testid="send-email-btn"
+                >
+                  Send Email
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  onClick={() => onDelete(booking.id)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  data-testid="delete-booking-btn"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
             <button
               onClick={onClose}
               className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"

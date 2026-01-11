@@ -5,6 +5,7 @@ import { Plus, Edit, Trash2, Star, User, Mail, MessageSquare, Eye, EyeOff, Downl
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminModal from '@/components/admin/ui/AdminModal'
 import AdminAlert from '@/components/admin/ui/AdminAlert'
+import { formatDateCompact } from '@/lib/utils'
 
 interface Testimonial {
   id: string
@@ -121,7 +122,7 @@ export function TestimonialsManager() {
       t.rating,
       `"${t.text.replace(/"/g, '""')}"`,
       t.is_featured ? 'Yes' : 'No',
-      new Date(t.created_at).toLocaleDateString()
+      formatDateCompact(t.created_at)
     ])
     
     const csv = [headers, ...rows].map(row => row.join(',')).join('\n')
@@ -290,7 +291,7 @@ export function TestimonialsManager() {
                     </p>
                     
                     <div className="mt-4 text-xs text-gray-500">
-                      Added on {new Date(testimonial.created_at).toLocaleDateString()}
+                      Added on {formatDateCompact(testimonial.created_at)}
                     </div>
                   </div>
                 </div>

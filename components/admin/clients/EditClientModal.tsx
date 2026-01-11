@@ -78,9 +78,10 @@ export function EditClientModal({ open, onClose, client, onUpdated }: EditClient
       toast.success('Client updated successfully')
       onUpdated()
       onClose()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating client:', error)
-      toast.error(error.message || 'Failed to update client')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update client'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }

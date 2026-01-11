@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test'
+import { loginAsAdmin } from './fixtures/admin-auth'
 
-const BASE_URL = 'https://heiwahauz.netlify.app'
-const ADMIN_PASSWORD = 'heiwa_admin_2024'
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3003'
 
 interface AuditResult {
   page: string
@@ -13,61 +13,18 @@ interface AuditResult {
 const auditResults: AuditResult[] = []
 const consoleErrors: string[] = []
 
-// Helper to ensure we're logged in
-async function ensureLoggedIn(page: Page): Promise<boolean> {
-  // Check if already on admin page (not login)
-  const currentUrl = page.url()
-  if (currentUrl.includes('/admin') && !currentUrl.includes('/login')) {
-    console.log('Already authenticated')
-    return true
-  }
-  
-  // Go to login page
-  await page.goto(`${BASE_URL}/admin/login`, { waitUntil: 'domcontentloaded', timeout: 30000 })
-  
-  // Wait for page to load
-  await page.waitForTimeout(2000)
-  
-  // Check if we got redirected to admin (already authenticated)
-  if (page.url().includes('/admin') && !page.url().includes('/login')) {
-    console.log('Already authenticated')
-    return true
-  }
-  
-  // Check for password input
-  const passwordInput = page.locator('input[type="password"]')
-  const isPasswordVisible = await passwordInput.isVisible({ timeout: 5000 }).catch(() => false)
-  
-  if (isPasswordVisible) {
-    await passwordInput.fill(ADMIN_PASSWORD)
-    await page.locator('button[type="submit"]').click()
-    
-    // Wait for navigation to complete
-    await page.waitForURL('**/admin', { timeout: 15000 }).catch(() => {})
-    
-    // Extra wait for client-side hydration
-    await page.waitForTimeout(2000)
-    
-    // Force refresh to ensure cookies are applied
-    await page.reload({ waitUntil: 'domcontentloaded' })
-    await page.waitForTimeout(1000)
-  }
-  
-  return page.url().includes('/admin') && !page.url().includes('/login')
-}
-
 // Helper to navigate to admin page with auth
 async function goToAdminPage(page: Page, path: string): Promise<void> {
   const fullPath = path.startsWith('/admin') ? path : `/admin${path}`
   await page.goto(`${BASE_URL}${fullPath}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
-  
+
   // Check if redirected to login
   if (page.url().includes('/login')) {
-    await ensureLoggedIn(page)
+    await loginAsAdmin(page)
     // Navigate again after login
     await page.goto(`${BASE_URL}${fullPath}`, { waitUntil: 'domcontentloaded', timeout: 30000 })
   }
-  
+
   // Wait for page content to load
   await page.waitForTimeout(2000)
 }
@@ -86,8 +43,8 @@ test.describe('Admin Panel Full Audit', () => {
     })
 
     // Ensure logged in
-    const loggedIn = await ensureLoggedIn(page)
-    console.log('Login status:', loggedIn ? '✅ Logged in' : '❌ Not logged in')
+    await loginAsAdmin(page)
+    console.log('Login status: ✅ Logged in')
   })
 
   test('1. Audit Dashboard', async ({ page }) => {

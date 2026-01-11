@@ -89,7 +89,7 @@ export function getEnv(): Env {
         REPLY_TO_EMAIL: 'info@heiwahouse.com',
         ...rawEnv as any,
       };
-      return validatedEnv;
+      return validatedEnv!;
     }
   }
 

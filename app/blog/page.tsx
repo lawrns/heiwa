@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Calendar, Clock, User } from 'lucide-react'
 import { getPosts } from '@/lib/blog/db'
 import { BlogImage } from '@/components/blog/blog-image'
+import { formatDateCompact } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Blog - Heiwa House',
@@ -154,7 +155,7 @@ export default async function BlogPage() {
                       {featuredPost.category.name}
                     </span>
                   )}
-                  <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 break-words hyphens-auto">
                     {featuredPost.title}
                   </h2>
                   {featuredPost.excerpt && (
@@ -172,7 +173,7 @@ export default async function BlogPage() {
                     {featuredPost.published_at && (
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        <span>{new Date(featuredPost.published_at).toLocaleDateString()}</span>
+                        <span>{formatDateCompact(featuredPost.published_at)}</span>
                       </div>
                     )}
                     {featuredPost.reading_minutes && (
@@ -213,7 +214,7 @@ export default async function BlogPage() {
                       {post.category.name}
                     </span>
                   )}
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors break-words hyphens-auto line-clamp-3">
                     {post.title}
                   </h3>
                   {post.excerpt && (
@@ -226,7 +227,7 @@ export default async function BlogPage() {
                       <span>{post.author.name}</span>
                     )}
                     {post.published_at && (
-                      <span>{new Date(post.published_at).toLocaleDateString()}</span>
+                      <span>{formatDateCompact(post.published_at)}</span>
                     )}
                     {post.reading_minutes && (
                       <span>{post.reading_minutes} min</span>

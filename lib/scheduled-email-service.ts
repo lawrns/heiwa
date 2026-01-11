@@ -107,6 +107,7 @@ class ScheduledEmailService {
           check_in,
           check_out,
           pre_trip_email_sent_at,
+          post_trip_email_sent_at,
           pre_trip_email_days_before,
           status,
           payment_status
@@ -255,7 +256,9 @@ class ScheduledEmailService {
           items,
           check_in,
           check_out,
+          pre_trip_email_sent_at,
           post_trip_email_sent_at,
+          pre_trip_email_days_before,
           status
         `)
         .in('status', ['completed', 'confirmed'])

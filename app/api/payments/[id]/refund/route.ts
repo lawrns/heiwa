@@ -11,10 +11,10 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authError = requireAdminAuth(request)
     if (authError) return authError
 
-    const { id } = await params
     const body = await request.json()
     const { amount, reason, notes } = body
 
@@ -123,10 +123,11 @@ export async function POST(
       data: { payment: updatedPayment },
       message: `Refund of €${amount.toFixed(2)} processed successfully`
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Unexpected error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

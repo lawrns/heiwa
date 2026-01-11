@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { FileText, Edit, Plus, Eye, Wand2 } from 'lucide-react'
 import { CMSLayout } from '@/components/admin/cms/CMSLayout'
 import { CMSCard } from '@/components/admin/cms/CMSCard'
+import { formatDateCompact } from '@/lib/utils'
 // CMSHeader import removed - not currently used
 
 interface PageData {
@@ -129,8 +130,8 @@ export default function CMSPagesPage() {
           const stat = result.stats[pageSlug]
           formattedStats[pageSlug] = {
             count: stat.count,
-            lastModified: stat.lastModified 
-              ? new Date(stat.lastModified).toLocaleDateString()
+            lastModified: stat.lastModified
+              ? formatDateCompact(stat.lastModified)
               : 'Never'
           }
         })

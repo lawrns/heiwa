@@ -12,6 +12,7 @@ import { BulkActions } from '@/components/admin/BulkActions'
 import { CheckboxCell } from '@/components/admin/CheckboxCell'
 import { DateRangeFilter } from '@/components/admin/DateRangeFilter'
 import { toast } from 'react-toastify'
+import { formatDateCompact, formatDateShort } from '@/lib/utils'
 
 interface Participant {
   name?: string
@@ -79,6 +80,9 @@ export default function BookingsPage() {
   const [showViewModal, setShowViewModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [selectedBookings, setSelectedBookings] = useState<Set<string>>(new Set())
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [bookingToDelete, setBookingToDelete] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<{ type: 'created' | 'updated' | 'deleted'; show: boolean }>({ type: 'created', show: false })
 
   // Memoize callbacks to prevent re-subscription loops
   const handleInsert = useCallback((newBooking: Booking) => {
@@ -238,12 +242,14 @@ export default function BookingsPage() {
       }
 
       toast.success('Booking updated successfully')
-      
+      setSuccessMessage({ type: 'updated', show: true })
+      setTimeout(() => setSuccessMessage(prev => ({ ...prev, show: false })), 3000)
+
       // Update local state
-      setBookings(bookings.map(booking => 
+      setBookings(bookings.map(booking =>
         booking.id === updatedBooking.id ? updatedBooking : booking
       ))
-      
+
       setShowEditModal(false)
       setSelectedBooking(null)
     } catch (error: unknown) {
@@ -280,11 +286,16 @@ export default function BookingsPage() {
     }
   }
 
-  const handleDeleteBooking = async (bookingId: string) => {
-    if (!confirm('Are you sure you want to delete this booking?')) return
-    
+  const handleDeleteBooking = (bookingId: string) => {
+    setBookingToDelete(bookingId)
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteBooking = async () => {
+    if (!bookingToDelete) return
+
     try {
-      const response = await fetch(`/api/bookings/${bookingId}`, {
+      const response = await fetch(`/api/bookings/${bookingToDelete}`, {
         method: 'DELETE'
       })
 
@@ -295,7 +306,12 @@ export default function BookingsPage() {
       }
 
       toast.success('Booking deleted successfully')
-      setBookings(bookings.filter(booking => booking.id !== bookingId))
+      setSuccessMessage({ type: 'deleted', show: true })
+      setTimeout(() => setSuccessMessage(prev => ({ ...prev, show: false })), 3000)
+      setBookings(bookings.filter(booking => booking.id !== bookingToDelete))
+      setShowDeleteModal(false)
+      setBookingToDelete(null)
+      setShowViewModal(false)
     } catch (error: unknown) {
       console.error('Error deleting booking:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete booking'
@@ -349,9 +365,10 @@ export default function BookingsPage() {
       } else {
         throw new Error(data.error || 'Failed to update bookings')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating bookings:', error)
-      toast.error(error.message || 'Failed to update bookings')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update bookings'
+      toast.error(errorMessage)
     }
   }
 
@@ -380,9 +397,10 @@ export default function BookingsPage() {
       } else {
         throw new Error(data.error || 'Failed to update bookings')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating bookings:', error)
-      toast.error(error.message || 'Failed to update bookings')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update bookings'
+      toast.error(errorMessage)
     }
   }
 
@@ -410,9 +428,10 @@ export default function BookingsPage() {
       } else {
         throw new Error(data.error || 'Failed to delete bookings')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting bookings:', error)
-      toast.error(error.message || 'Failed to delete bookings')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete bookings'
+      toast.error(errorMessage)
     }
   }
 
@@ -433,7 +452,7 @@ export default function BookingsPage() {
       const bookingsToExport = data.success ? (data.data.bookings || []) : bookings
       
       // Escape CSV values properly
-      const escapeCsvValue = (value: any): string => {
+      const escapeCsvValue = (value: unknown): string => {
         if (value === null || value === undefined) return ''
         const stringValue = String(value)
         // If contains comma, quote, or newline, wrap in quotes and escape quotes
@@ -445,7 +464,7 @@ export default function BookingsPage() {
 
       const csvContent = [
         ['ID', 'Guest Name', 'Email', 'Phone', 'Type', 'Item', 'Check-in', 'Check-out', 'Guests', 'Total Price', 'Status', 'Payment Status', 'Created'],
-        ...bookingsToExport.map(booking => [
+        ...bookingsToExport.map((booking: Booking) => [
           escapeCsvValue(booking.id),
           escapeCsvValue(booking.guest_name),
           escapeCsvValue(booking.guest_email),
@@ -458,7 +477,7 @@ export default function BookingsPage() {
           escapeCsvValue(`€${booking.total_price}`),
           escapeCsvValue(booking.status),
           escapeCsvValue(booking.payment_status),
-          escapeCsvValue(new Date(booking.created_at).toLocaleDateString())
+          escapeCsvValue(formatDateShort(booking.created_at))
         ])
       ].map(row => row.join(',')).join('\n')
 
@@ -591,6 +610,7 @@ export default function BookingsPage() {
           </button>
           <Link
             href="/admin/bookings/new"
+            data-testid="create-booking-btn"
             className="inline-flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors text-sm sm:text-base flex-1 sm:flex-none font-medium"
           >
             <Plus className="h-4 w-4" />
@@ -648,18 +668,35 @@ export default function BookingsPage() {
         {/* Search Input */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
-          <input
-            type="text"
-            placeholder="Search by booking ID, guest name, email, phone, or item..."
-            value={searchTerm}
-            onChange={(e) => {
-              const newSearch = e.target.value
-              setSearchTerm(newSearch)
-              setCurrentPage(1) // Reset to first page when searching
-              updateUrlParams(1, newSearch, filters.status, filters.type, filters.payment_status)
-            }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
+          <div className="relative">
+            <input
+              type="text"
+              data-testid="search-input"
+              placeholder="Search by booking ID, guest name, email, phone, or item..."
+              value={searchTerm}
+              onChange={(e) => {
+                const newSearch = e.target.value
+                setSearchTerm(newSearch)
+                setCurrentPage(1) // Reset to first page when searching
+                updateUrlParams(1, newSearch, filters.status, filters.type, filters.payment_status)
+              }}
+              className="w-full px-4 py-2 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            {searchTerm && (
+              <button
+                data-testid="clear-search"
+                onClick={() => {
+                  setSearchTerm('')
+                  setCurrentPage(1)
+                  updateUrlParams(1, '', filters.status, filters.type, filters.payment_status)
+                }}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                type="button"
+              >
+                ×
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Filters */}
@@ -667,6 +704,7 @@ export default function BookingsPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
+              data-testid="status-filter"
               value={filters.status}
               onChange={(e) => {
                 const newStatus = e.target.value
@@ -677,7 +715,7 @@ export default function BookingsPage() {
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="all">All Statuses</option>
-              <option value="pending">Pending</option>
+              <option value="pending" data-testid="filter-pending">Pending</option>
               <option value="confirmed">Confirmed</option>
               <option value="cancelled">Cancelled</option>
               <option value="completed">Completed</option>
@@ -687,6 +725,7 @@ export default function BookingsPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
             <select
+              data-testid="experience-filter"
               value={filters.type}
               onChange={(e) => {
                 const newType = e.target.value
@@ -698,7 +737,7 @@ export default function BookingsPage() {
             >
               <option value="all">All Types</option>
               <option value="room">Rooms</option>
-              <option value="surf_camp">Surf Camps</option>
+              <option value="surf_camp" data-testid="filter-surf-week">Surf Camps</option>
             </select>
           </div>
           
@@ -800,7 +839,7 @@ export default function BookingsPage() {
             </div>
             
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-gray-200" data-testid="bookings-table">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
@@ -840,11 +879,12 @@ export default function BookingsPage() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {paginatedBookings.map((booking, index) => (
-                  <tr key={booking.id} className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
+                  <tr key={booking.id} data-testid="booking-row" className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
                     <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
                       <CheckboxCell
                         checked={selectedBookings.has(booking.id)}
                         onCheckedChange={(checked) => handleSelectBooking(booking.id, checked)}
+                        data-testid="booking-checkbox"
                       />
                     </td>
                     <td className="px-3 sm:px-6 py-3 whitespace-nowrap hidden sm:table-cell">
@@ -870,15 +910,18 @@ export default function BookingsPage() {
                       </div>
                     </td>
                     <td className="px-3 sm:px-6 py-3 whitespace-nowrap hidden md:table-cell">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        booking.type === 'room' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
-                      }`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          booking.type === 'room' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                        }`}
+                        data-testid={booking.type === 'surf_camp' ? 'experience-surf-week' : undefined}
+                      >
                         {booking.type === 'room' ? 'Room' : 'Surf Camp'}
                       </span>
                     </td>
                     <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden lg:table-cell">
-                      <div>{booking.check_in ? new Date(booking.check_in).toLocaleDateString() : 'N/A'}</div>
-                      <div>{booking.check_out ? new Date(booking.check_out).toLocaleDateString() : 'N/A'}</div>
+                      <div>{formatDateCompact(booking.check_in)}</div>
+                      <div>{formatDateCompact(booking.check_out)}</div>
                     </td>
                     <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">
                       €{booking.total_price.toFixed(2)}
@@ -887,17 +930,16 @@ export default function BookingsPage() {
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-1 sm:gap-2">
                           {getStatusIcon(booking.status)}
-                          <span className={`inline-flex px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`}>
+                          <span className={`inline-flex px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`} data-testid={`status-${booking.status}`}>
                             <span className="hidden sm:inline">{booking.status}</span>
                             <span className="sm:hidden">{booking.status.substring(0, 3)}</span>
                           </span>
                         </div>
-                        {booking.payment_status && booking.payment_status !== booking.status && (
-                          <span className={`inline-flex px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(booking.payment_status)}`}>
-                            <span className="hidden sm:inline">Payment: {booking.payment_status}</span>
-                            <span className="sm:hidden">{booking.payment_status.substring(0, 3)}</span>
-                          </span>
-                        )}
+                        {/* Always show payment status with clear label */}
+                        <span className={`inline-flex px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(booking.payment_status)}`}>
+                          <span className="hidden sm:inline">💰 {booking.payment_status}</span>
+                          <span className="sm:hidden">💰 {booking.payment_status.substring(0, 3)}</span>
+                        </span>
                       </div>
                     </td>
                     <td className="px-3 sm:px-6 py-3 whitespace-nowrap">
@@ -906,6 +948,7 @@ export default function BookingsPage() {
                           onClick={() => handleViewBooking(booking)}
                           className="text-blue-600 hover:text-blue-900 transition-colors p-1 rounded hover:bg-blue-50"
                           title="View booking details"
+                          data-testid="view-booking-btn"
                         >
                           <Eye className="h-4 w-4" />
                         </button>
@@ -913,6 +956,7 @@ export default function BookingsPage() {
                           onClick={() => handleEditBooking(booking)}
                           className="text-gray-600 hover:text-gray-900 transition-colors p-1 rounded hover:bg-gray-50"
                           title="Edit booking"
+                          data-testid="edit-booking-btn"
                         >
                           <Edit className="h-4 w-4" />
                         </button>
@@ -920,6 +964,7 @@ export default function BookingsPage() {
                           onClick={() => handleDeleteBooking(booking.id)}
                           className="text-red-600 hover:text-red-900 transition-colors p-1 rounded hover:bg-red-50"
                           title="Delete booking"
+                          data-testid="delete-booking-btn"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -990,11 +1035,39 @@ export default function BookingsPage() {
         </div>
       )}
 
+      {/* Success Messages */}
+      {successMessage.show && successMessage.type === 'created' && (
+        <div className="fixed top-4 right-4 z-50 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded" data-testid="booking-created-success">
+          Booking created successfully!
+        </div>
+      )}
+      {successMessage.show && successMessage.type === 'updated' && (
+        <div className="fixed top-4 right-4 z-50 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded" data-testid="booking-updated-success">
+          Booking updated successfully!
+        </div>
+      )}
+      {successMessage.show && successMessage.type === 'deleted' && (
+        <div className="fixed top-4 right-4 z-50 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded" data-testid="booking-deleted-success">
+          Booking deleted successfully!
+        </div>
+      )}
+
       {/* View Booking Modal */}
       <ViewBookingModal
         isOpen={showViewModal}
         booking={selectedBooking}
         onClose={() => setShowViewModal(false)}
+        onEdit={(booking) => {
+          setShowViewModal(false)
+          handleEditBooking(booking)
+        }}
+        onDelete={(bookingId) => {
+          handleDeleteBooking(bookingId)
+        }}
+        onSendEmail={(booking) => {
+          // TODO: Implement send email functionality
+          toast.info(`Send email to ${booking.guest_email}`)
+        }}
       />
 
       {/* Edit Booking Modal */}
@@ -1008,6 +1081,36 @@ export default function BookingsPage() {
           }}
           onSubmit={handleUpdateBooking}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" data-testid="delete-confirmation-modal">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Delete Booking</h3>
+            <p className="text-gray-600 mb-6" data-testid="delete-warning-message">
+              Are you sure you want to delete this booking? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false)
+                  setBookingToDelete(null)
+                }}
+                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteBooking}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                data-testid="confirm-delete"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

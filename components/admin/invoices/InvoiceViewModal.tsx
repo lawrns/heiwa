@@ -3,6 +3,15 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { FileText, Download, Mail, Calendar, Euro } from 'lucide-react'
+import { formatDate } from '@/lib/utils'
+
+interface InvoiceItem {
+  id: string
+  name: string
+  quantity: number
+  price: number
+  total: number
+}
 
 interface Invoice {
   id: string
@@ -20,7 +29,7 @@ interface Invoice {
     total_amount: number
     payment_status: string
     client_ids?: string[]
-    items?: any[]
+    items?: InvoiceItem[]
   }
 }
 
@@ -52,15 +61,6 @@ export function InvoiceViewModal({ open, onClose, invoice, onEdit }: InvoiceView
       default:
         return 'bg-yellow-100 text-yellow-800'
     }
-  }
-
-  const formatDate = (date?: string) => {
-    if (!date) return 'N/A'
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
   }
 
   return (

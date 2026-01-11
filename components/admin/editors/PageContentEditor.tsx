@@ -5,13 +5,14 @@ import { Plus, Edit, Trash2, Eye, EyeOff, GripVertical, FileText, Image, Video, 
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminModal from '@/components/admin/ui/AdminModal'
 import AdminAlert from '@/components/admin/ui/AdminAlert'
+import { formatDateCompact } from '@/lib/utils'
 
 interface PageContent {
   id: string
   page_slug: string
   section_type: string
   section_name: string
-  content: any
+  content: Record<string, unknown>
   order_index: number
   is_active: boolean
   created_at: string
@@ -242,8 +243,8 @@ export function PageContentEditor() {
                         {getSectionTypeLabel(section.section_type)}
                       </p>
                       <div className="mt-2 text-xs text-gray-500">
-                        Order: {section.order_index} • 
-                        Created: {new Date(section.created_at).toLocaleDateString()}
+                        Order: {section.order_index} •
+                        Created: {formatDateCompact(section.created_at)}
                       </div>
                     </div>
                   </div>

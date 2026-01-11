@@ -176,7 +176,7 @@ export async function GET(request: NextRequest) {
         }
         
         // Use max_participants as the primary source, fall back to total_spots for legacy data
-        const totalSpots = camp.max_participants || (camp as any).total_spots || 18
+        const totalSpots = camp.max_participants || (camp as { total_spots?: number }).total_spots || 18
         
         // Available spots is the MINIMUM of:
         // 1. max_participants - enrolled (admin-set limit minus people already signed up)

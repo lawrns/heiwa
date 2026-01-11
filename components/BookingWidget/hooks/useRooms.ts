@@ -89,7 +89,15 @@ export function useRooms({ checkIn, checkOut, guests, forSurfWeek = false }: Use
         const data = await response.json();
 
         if (data.success) {
-          // Check for surf week conflict FIRST
+          // Check for blocked by calendar event FIRST
+          if (data.data?.blocked_by_event) {
+            setError(data.data.message || 'Bookings are not available during these dates due to a scheduled event or maintenance.');
+            setRooms([]);
+            setLoading(false);
+            return;
+          }
+
+          // Check for surf week conflict
           if (data.data?.surf_week_conflict) {
             setError(data.data.message || 'Room-only bookings are not available during surf camp weeks. Please book a surf camp package instead.');
             setRooms([]);

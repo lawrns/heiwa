@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { MapPin, Users, Star, Check, Clock, Wifi, Car, Utensils, Calendar, Minus, Plus } from 'lucide-react';
-import { BookingState, PricingBreakdown, ParticipantName } from '../types';
+import { BookingState, PricingBreakdown, ParticipantName, Room, SurfWeek } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 import { useDateAvailability } from '../hooks/useDateAvailability';
@@ -49,7 +49,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryRoomName, setGalleryRoomName] = useState('');
-  const [galleryRoom, setGalleryRoom] = useState<any>(null);
+  const [galleryRoom, setGalleryRoom] = useState<Room | SurfWeek | null>(null);
 
   // Local state for room booking dates
   // Helper to safely convert date to string
@@ -258,7 +258,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
 
         const roomId = selectedOptions[0];
-        const room: any = (options as any[]).find((o) => o.id === roomId);
+        const room = (options as (Room | SurfWeek)[]).find((o) => o.id === roomId) as Room | undefined;
 
         if (room) {
           // Determine if dates fall in peak season (May-September)
@@ -276,7 +276,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               ? (isPeakSeason
                   ? (room.pricing.standard || room.pricing.offSeason || room.pricePerNight || 0)
                   : (room.pricing.offSeason || room.pricing.standard || room.pricePerNight || 0))
-              : (room.pricePerNight || room.price || 0);
+              : (room.pricePerNight || 0);
 
           const bookingType = room.bookingType || 'entire_room';
           basePrice =
@@ -306,7 +306,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     } else if (state.experienceType === 'surf-week') {
       // For surf weeks: single selection
       if (!state.selectedOption) return;
-      const opt: any = (options as any[]).find((o) => o.id === state.selectedOption);
+      const opt = (options as (Room | SurfWeek)[]).find((o) => o.id === state.selectedOption) as SurfWeek | undefined;
       if (!opt) return;
 
       const unit = typeof opt.price === 'number' ? opt.price : (opt.priceFrom ?? 0);
@@ -335,8 +335,8 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   // Set capacity error if insufficient capacity
   useEffect(() => {
     const selectedRoomId = selectedOptions[0];
-    const room: any = selectedRoomId ? (options as any[]).find((o) => o.id === selectedRoomId) : null;
-    const capacity = room?.maxOccupancy || room?.capacity || 0;
+    const room = selectedRoomId ? (options as (Room | SurfWeek)[]).find((o) => o.id === selectedRoomId) as Room | undefined : null;
+    const capacity = room?.maxOccupancy || 0;
     const isInsufficient = !!selectedRoomId && capacity > 0 && capacity < state.guests;
 
     if (state.experienceType === 'room' && selectedRoomId && isInsufficient) {
@@ -352,7 +352,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   };
 
   // Open image gallery
-  const openGallery = (room: any) => {
+  const openGallery = (room: Room | SurfWeek) => {
     setGalleryImages(room.images || []);
     setGalleryRoomName(room.name);
     setGalleryRoom(room);
@@ -375,7 +375,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     }).format(price);
   };
 
-  const calculateTotalPrice = (option: any) => {
+  const calculateTotalPrice = (option: Room) => {
     if (state.experienceType === 'room') {
       // Use local state dates if available, otherwise fall back to state dates
       const checkIn = checkInDate ? new Date(checkInDate + 'T00:00:00.000Z') : state.dates.checkIn;
@@ -401,11 +401,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             
             // Use seasonal rate based on dates
             pricePerNight = isPeakSeason
-              ? (option.pricing.standard || option.pricing.offSeason || option.price_per_night || 0)
-              : (option.pricing.offSeason || option.pricing.standard || option.price_per_night || 0)
+              ? (option.pricing.standard || option.pricing.offSeason || option.pricePerNight || 0)
+              : (option.pricing.offSeason || option.pricing.standard || option.pricePerNight || 0)
           } else {
             // Fallback to pricePerNight if pricing object not available
-            pricePerNight = option.pricePerNight || option.price || 0
+            pricePerNight = option.pricePerNight || 0
           }
           const total = pricePerNight * nights;
           return total;
@@ -413,14 +413,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       }
       return undefined; // Wait for dates to avoid NaN
     }
-    return option.price ?? undefined;
+    return option.pricePerNight ?? undefined;
   };
 
   // Calculate total capacity of selected rooms
   const getTotalCapacity = () => {
     const selectedRoomId = selectedOptions[0];
-    const room = selectedRoomId ? (options as any[]).find((o) => o.id === selectedRoomId) : null;
-    return room?.maxOccupancy || room?.capacity || 0;
+    const room = selectedRoomId ? (options as (Room | SurfWeek)[]).find((o) => o.id === selectedRoomId) as Room | undefined : null;
+    return room?.maxOccupancy || 0;
   };
 
   const totalCapacity = getTotalCapacity();
@@ -749,7 +749,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       {/* Options Grid */}
       {state.experienceType === 'surf-week' ? (
         <div className="space-y-4">
-          {options.map((w: any, index: number) => {
+          {(options as SurfWeek[]).map((w: SurfWeek, index: number) => {
             const isSelected = state.selectedSurfWeek === w.id;
             const from = typeof w.priceFrom === 'number' ? w.priceFrom : w.price;
             const start = new Date(w.startDate);
@@ -964,7 +964,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 </div>
               ) : options.length > 0 ? (
                 <div className="space-y-4">
-                  {(options as any[]).map((option: any, index: number) => {
+                  {(options as Room[]).map((option: Room, index: number) => {
                     const isSelected = selectedOptions.includes(option.id);
                     const totalPrice = calculateTotalPrice(option);
                     const amenities = option.amenities;
@@ -1048,7 +1048,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                 <span className="text-2xl sm:text-3xl font-bold text-orange-600">
                                   {typeof totalPrice === 'number' && !Number.isNaN(totalPrice)
                                     ? formatPrice(totalPrice)
-                                    : (state.experienceType === 'room' ? 'Select dates' : (option.price ? formatPrice(option.price) : '—'))}
+                                    : (state.experienceType === 'room' ? 'Select dates' : (option as unknown as SurfWeek).price ? formatPrice((option as unknown as SurfWeek).price) : '—')}
                                 </span>
                                 <span className="text-sm text-gray-500 ml-1 sm:ml-0 sm:block">
                                   {state.experienceType === 'room'
@@ -1069,21 +1069,21 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                               <>
                                 <div className="flex items-center gap-1">
                                   <Users size={14} />
-                                  <span>Up to {option.maxOccupancy || option.capacity} guests</span>
+                                  <span>Up to {option.maxOccupancy || String((option as unknown as Record<string, unknown>).capacity ?? '')} guests</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   <MapPin size={14} />
-                                  <span className="capitalize">{option.type || option.booking_type} room</span>
+                                  <span className="capitalize">{option.type || String((option as unknown as Record<string, unknown>).booking_type ?? '')} room</span>
                                 </div>
                               </>
                             </div>
 
                             {/* Occupancy display for per-bed rooms (dorms) */}
-                            {(option.booking_type === 'perBed' || option.bookingType === 'per_bed') && option.capacity > 0 && (
+                            {((option as unknown as Record<string, unknown>).booking_type === 'perBed' || option.bookingType === 'per_bed') && ((option as unknown as Record<string, unknown>).capacity as number) > 0 && (
                               <div className="flex items-center gap-2">
                                 {(() => {
-                                  const capacity = option.capacity || option.maxOccupancy || 0;
-                                  const availableBeds = option.available_beds ?? option.availableBeds ?? capacity;
+                                  const capacity = (option as unknown as Record<string, unknown>).capacity as number || option.maxOccupancy || 0;
+                                  const availableBeds = ((option as unknown as Record<string, unknown>).available_beds as number) ?? option.availableBeds ?? capacity;
                                   const occupiedBeds = capacity - availableBeds;
                                   const occupancyPercent = capacity > 0 ? Math.round((occupiedBeds / capacity) * 100) : 0;
 
@@ -1202,10 +1202,10 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         images={galleryImages}
         roomName={galleryRoomName}
         roomDescription={galleryRoom?.description}
-        roomAmenities={galleryRoom?.amenities}
-        roomType={galleryRoom?.type}
-        maxOccupancy={galleryRoom?.maxOccupancy}
-        pricePerNight={galleryRoom?.pricePerNight}
+        roomAmenities={'amenities' in (galleryRoom || {}) ? (galleryRoom as Room)?.amenities : undefined}
+        roomType={'type' in (galleryRoom || {}) ? (galleryRoom as Room)?.type : undefined}
+        maxOccupancy={'maxOccupancy' in (galleryRoom || {}) ? (galleryRoom as Room)?.maxOccupancy : undefined}
+        pricePerNight={'pricePerNight' in (galleryRoom || {}) ? (galleryRoom as Room)?.pricePerNight : undefined}
         isOpen={galleryOpen}
         onClose={() => setGalleryOpen(false)}
       />

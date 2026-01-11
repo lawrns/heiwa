@@ -84,7 +84,21 @@ export async function POST(request: NextRequest) {
         }
 
         // Update status to 'sent' and send emails
-        const sendPromises = (invoices || []).map(async (invoice: any) => {
+        const sendPromises = (invoices || []).map(async (invoice: {
+          id: string
+          invoice_number: string
+          amount: number
+          currency: string
+          due_date: string
+          booking_id: string
+          bookings?: Array<{
+            client_ids: string[]
+            clients: Array<{
+              name: string
+              email: string
+            }>
+          }>
+        }) => {
           // Update status
           await supabaseAdmin
             .from('invoices')
@@ -92,11 +106,12 @@ export async function POST(request: NextRequest) {
             .eq('id', invoice.id)
 
           // Send email if client email exists
-          if (invoice.bookings?.clients?.[0]?.email) {
+          const firstBooking = invoice.bookings?.[0]
+          if (firstBooking?.clients?.[0]?.email) {
             await emailService.sendInvoice({
               invoiceNumber: invoice.invoice_number,
-              clientName: invoice.bookings.clients[0].name || 'Guest',
-              clientEmail: invoice.bookings.clients[0].email,
+              clientName: firstBooking.clients[0].name || 'Guest',
+              clientEmail: firstBooking.clients[0].email,
               amount: invoice.amount,
               currency: invoice.currency,
               dueDate: invoice.due_date,
@@ -141,10 +156,11 @@ export async function POST(request: NextRequest) {
       data: result,
       message: `Successfully processed ${updatedCount} invoice(s)`
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Unexpected error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json(
-      { success: false, error: error.message || 'Internal server error' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

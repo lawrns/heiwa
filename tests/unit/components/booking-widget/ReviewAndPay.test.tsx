@@ -132,21 +132,22 @@ describe('ReviewAndPay Step Component', () => {
 
   const createMockState = (overrides: Partial<BookingState> = {}): BookingState => ({
     experienceType: 'room',
-    step: 5,
+    currentStep: 5,
     dates: {
       checkIn: new Date('2025-02-01'),
       checkOut: new Date('2025-02-05'),
     },
     selectedOption: 'room-1',
     selectedSurfWeek: null,
+    selectedSurfWeekRoom: null,
     guests: 1,
     guestDetails: createMockGuestDetails(),
     participantNames: [{ id: 'guest-1', firstName: 'John' }],
     roomAssignments: [],
-    addOns: [],
     selectedAddOns: [],
     pricing: createMockPricing(),
     paymentMethod: null,
+    isLoading: false,
     errors: {},
     ...overrides,
   });
@@ -154,6 +155,7 @@ describe('ReviewAndPay Step Component', () => {
   const createMockActions = () => ({
     updatePricing: jest.fn(),
     setPaymentMethod: jest.fn(),
+    prevStep: jest.fn(),
   });
 
   const mockOnComplete = jest.fn();

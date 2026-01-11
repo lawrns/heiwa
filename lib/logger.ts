@@ -14,7 +14,7 @@ interface LogEntry {
   level: LogLevel
   message: string
   timestamp: string
-  context?: Record<string, any>
+  context?: Record<string, unknown>
   error?: Error
 }
 
@@ -33,7 +33,7 @@ class Logger {
     return formatted
   }
 
-  private log(level: LogLevel, message: string, context?: Record<string, any>, error?: Error) {
+  private log(level: LogLevel, message: string, context?: Record<string, unknown>, error?: Error) {
     const entry: LogEntry = {
       level,
       message,
@@ -82,24 +82,24 @@ class Logger {
     // }
   }
 
-  debug(message: string, context?: Record<string, any>) {
+  debug(message: string, context?: Record<string, unknown>) {
     this.log(LogLevel.DEBUG, message, context)
   }
 
-  info(message: string, context?: Record<string, any>) {
+  info(message: string, context?: Record<string, unknown>) {
     this.log(LogLevel.INFO, message, context)
   }
 
-  warn(message: string, context?: Record<string, any>, error?: Error) {
+  warn(message: string, context?: Record<string, unknown>, error?: Error) {
     this.log(LogLevel.WARN, message, context, error)
   }
 
-  error(message: string, error?: Error, context?: Record<string, any>) {
+  error(message: string, error?: Error, context?: Record<string, unknown>) {
     this.log(LogLevel.ERROR, message, context, error)
   }
 
   // Specific helpers for common scenarios
-  apiError(endpoint: string, error: Error, context?: Record<string, any>) {
+  apiError(endpoint: string, error: Error, context?: Record<string, unknown>) {
     this.error(`API Error: ${endpoint}`, error, {
       ...context,
       endpoint,
@@ -107,22 +107,23 @@ class Logger {
     })
   }
 
-  bookingError(step: string, error: Error, context?: Record<string, any>) {
-    this.error(`Booking Flow Error: ${step}`, error, {
+  bookingError(step: string, error: Error, context?: Record<string, unknown>) {
+    this.error(`Booking Error: ${step}`, error, {
       ...context,
       step,
+      errorMessage: error.message,
     })
   }
 
-  dataFetchError(resource: string, error: Error, context?: Record<string, any>) {
+  dataFetchError(resource: string, error: Error, context?: Record<string, unknown>) {
     this.error(`Data Fetch Error: ${resource}`, error, {
       ...context,
       resource,
     })
   }
 
-  validationError(field: string, message: string, context?: Record<string, any>) {
-    this.warn(`Validation Error: ${field}`, {
+  validationError(field: string, message: string, context?: Record<string, unknown>) {
+    this.error(`Validation Error: ${field}`, undefined, {
       ...context,
       field,
       validationMessage: message,

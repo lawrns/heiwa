@@ -46,45 +46,68 @@ export async function GET(request: NextRequest) {
     }
 
     const clientsWithStats = minimal
-      ? (clients || []).map((client: any) => ({
-          id: client.id,
-          name: client.name,
-          email: client.email,
-          phone: client.phone,
-          created_at: client.created_at,
-          updated_at: client.updated_at,
-        }))
+      ? (clients || []).map((client: unknown) => {
+          const c = client as {
+            id: string
+            name: string
+            email: string
+            phone: string
+            created_at: string
+            updated_at: string
+          }
+          return {
+            id: c.id,
+            name: c.name,
+            email: c.email,
+            phone: c.phone,
+            created_at: c.created_at,
+            updated_at: c.updated_at,
+          }
+        })
       : await Promise.all(
-          (clients || []).map(async (client: any) => {
+          (clients || []).map(async (client: unknown) => {
+            const c = client as {
+              id: string
+              name: string
+              email: string
+              phone: string
+              brand?: string
+              registration_date?: string
+              created_at: string
+              last_booking_date?: string
+              notes?: string
+              vip?: boolean
+              updated_at: string
+            }
             const { count: totalBookings } = await supabaseAdmin
               .from('bookings')
               .select('*', { count: 'exact', head: true })
-              .contains('client_ids', [client.id])
+              .contains('client_ids', [c.id])
 
             const { data: paidBookings } = await supabaseAdmin
               .from('bookings')
               .select('total_amount')
-              .contains('client_ids', [client.id])
+              .contains('client_ids', [c.id])
               .eq('payment_status', 'paid')
 
             const totalSpent =
               paidBookings
-                ?.reduce((sum: number, b: any) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
+                ?.reduce((sum: number, b: { total_amount: string }) => sum + (parseFloat(b.total_amount) || 0), 0) || 0
 
             return {
-              id: client.id,
-              name: client.name,
-              email: client.email,
-              phone: client.phone,
-              company: client.brand || null,
+              id: c.id,
+              name: c.name,
+              email: c.email,
+              phone: c.phone,
+              company: c.brand || null,
               totalBookings,
               totalSpent,
-              joinDate: client.registration_date || client.created_at,
-              lastBooking: client.last_booking_date || null,
-              notes: client.notes || '',
-              vip: client.vip || false,
-              created_at: client.created_at,
-              updated_at: client.updated_at,
+              joinDate: c.registration_date || c.created_at,
+              lastBooking: c.last_booking_date || null,
+              notes: c.notes || '',
+              vip: c.vip || false,
+              created_at: c.created_at,
+              updated_at: c.updated_at,
             }
           })
         )

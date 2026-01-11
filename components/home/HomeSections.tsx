@@ -10,6 +10,12 @@ import { YouTubeVideo } from '@/components/ui/youtube-video'
 import { SurfWeeksTable } from '@/components/ui/surf-weeks-table'
 import { Bed, Waves } from 'lucide-react'
 
+interface PageSectionData {
+  section_type: string
+  content: Record<string, unknown>
+  [key: string]: unknown
+}
+
 // Fetch all homepage sections in a single query for better performance
 async function getAllHomepageSections() {
   try {
@@ -26,14 +32,14 @@ async function getAllHomepageSections() {
     }
 
     // Convert array to Map for O(1) lookups
-    return new Map((data || []).map((s: any) => [s.section_type, s]))
+    return new Map((data || []).map((s: PageSectionData) => [s.section_type, s]))
   } catch (error) {
     console.error('Error fetching homepage sections:', error)
     return null
   }
 }
 
-async function getPageSection(type: string, sectionsMap: Map<string, any> | null) {
+async function getPageSection(type: string, sectionsMap: Map<string, PageSectionData> | null) {
   if (!sectionsMap) return null
   return sectionsMap.get(type) || null
 }
@@ -139,13 +145,50 @@ export async function HomeHero() {
   )
 }
 
+interface CardData {
+  title: string
+  description: string
+  image: string
+  link: string
+}
+
+interface RoomData {
+  id?: string
+  name?: string
+  title?: string
+  description?: string
+  images?: string[]
+  image_url?: string
+  link?: string
+}
+
+interface SurfWeekData {
+  id: string
+  start_date: string
+  end_date: string
+  price?: number
+  total_spots?: number
+  max_participants?: number
+  available_spots?: number
+}
+
+interface SurfWeekDisplay {
+  id: string
+  dates: string
+  price: string
+  availableSpots: string
+  totalSpots: number
+  start_date: string
+  end_date: string
+}
+
 export async function HomeSurfWeeks() {
   const sectionsMap = await getAllHomepageSections()
   const section = await getPageSection('surf-weeks', sectionsMap)
   const content = section?.content || {}
   
   // Fetch surf weeks
-  let surfWeeks: any[] = []
+  let surfWeeks: SurfWeekDisplay[] = []
   try {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -159,7 +202,7 @@ export async function HomeSurfWeeks() {
       .limit(3)
 
     if (!surfCampsError && surfCampsData) {
-      surfWeeks = surfCampsData.map((week: any) => {
+      surfWeeks = surfCampsData.map((week: SurfWeekData) => {
         const startDate = new Date(week.start_date)
         const endDate = new Date(week.end_date)
         const dateOptions: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' }
@@ -259,18 +302,18 @@ export async function HomeAbout() {
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
           {(content?.title as string) || 'What we are about'}
         </h2>
-        {content?.subtitle && (
+        {typeof content?.subtitle === 'string' && content.subtitle && (
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            {content.subtitle as string}
+            {content.subtitle}
           </p>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {((content?.cards as any[]) || [
+          {((content?.cards as CardData[]) || [
             { title: 'Play', description: 'Explore activities and experiences around our location', image: '/images/skatepark-1.jpg', link: '/play' },
             { title: 'Surf', description: 'Discover the best surfing spots and conditions', image: '/images/surf4.jpg', link: '/surf' },
             { title: 'Flow', description: 'Wellness, yoga, and mindfulness experiences', image: '/images/yoga_dome1.jpg', link: '/flow' }
-          ]).map((card: any, idx: number) => {
+          ]).map((card: CardData, idx: number) => {
             // Handle image URL - check for empty strings and provide fallbacks
             let imageUrl: string
             
@@ -334,7 +377,7 @@ export async function HomeRooms() {
     ? (content.roomIds as string[]).filter((id: unknown) => typeof id === 'string')
     : []
 
-  let featuredRooms: any[] = []
+  let featuredRooms: RoomData[] = []
   if (roomIds.length > 0) {
     try {
       const { data: roomsData, error: roomsError } = await supabaseAdmin
@@ -344,8 +387,8 @@ export async function HomeRooms() {
         .eq('is_active', true)
 
       if (!roomsError && roomsData) {
-        const byId = new Map(roomsData.map((r: any) => [r.id, r]))
-        featuredRooms = roomIds.map((id) => byId.get(id)).filter(Boolean)
+        const byId = new Map(roomsData.map((r: RoomData) => [r.id, r]))
+        featuredRooms = roomIds.map((id) => byId.get(id)).filter((r): r is RoomData => r !== undefined)
       }
     } catch (error) {
       console.error('Error fetching featured rooms:', error)
@@ -358,9 +401,9 @@ export async function HomeRooms() {
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
           {(content?.title as string) || 'Our Rooms'}
         </h2>
-        {content?.subtitle && (
+        {typeof content?.subtitle === 'string' && content.subtitle && (
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            {content.subtitle as string}
+            {content.subtitle}
           </p>
         )}
 
@@ -381,7 +424,7 @@ export async function HomeRooms() {
                   link: '/rooms/shared'
                 }
               ]
-          ).map((room: any, idx: number) => {
+          ).map((room: RoomData, idx: number) => {
             const title = room.name || room.title || ''
             const description = room.description || ''
             const images = Array.isArray(room.images) && room.images.length > 0
@@ -442,13 +485,13 @@ export async function HomeHosts() {
         </h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
-          {content.imageUrl && (
+          {typeof content.imageUrl === 'string' && content.imageUrl && (
             <div className="lg:col-span-1 flex justify-center">
               <div className="relative">
                 <div className="bg-white p-4 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-300">
                   <div className="bg-gray-100 p-2 relative w-[300px] h-[400px]">
                     <Image
-                      src={content.imageUrl as string}
+                      src={content.imageUrl}
                       alt="Heiwa House Hosts"
                       fill
                       className="object-cover rounded"
@@ -467,10 +510,10 @@ export async function HomeHosts() {
               ))}
             </div>
 
-            {content.signature && (
+            {typeof content.signature === 'string' && content.signature && (
               <div className="pt-6">
                 <p className="text-2xl font-handwriting text-gray-800 italic">
-                  {content.signature as string}
+                  {content.signature}
                 </p>
               </div>
             )}
@@ -492,9 +535,9 @@ export async function HomeReviews() {
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
           {(content?.title as string) || 'What Our Customers Say'}
         </h2>
-        {content?.subtitle && (
+        {typeof content?.subtitle === 'string' && content.subtitle && (
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            {content.subtitle as string}
+            {content.subtitle}
           </p>
         )}
 
@@ -504,14 +547,30 @@ export async function HomeReviews() {
   )
 }
 
+interface FacilityData {
+  title?: string
+  name?: string
+  description?: string
+  desc?: string
+  image?: string
+  imageUrl?: string
+  img?: string
+}
+
+interface ActivityDisplay {
+  title: string
+  desc: string
+  img: string
+}
+
 export async function HomeFacilities() {
   const sectionsMap = await getAllHomepageSections()
   const section = await getPageSection('facilities', sectionsMap)
   const content = section?.content || {}
 
-  const cmsActivities = (content?.facilities as any[]) || (content?.items as any[])
+  const cmsActivities = (content?.facilities as FacilityData[]) || (content?.items as FacilityData[])
   const activities = (Array.isArray(cmsActivities) && cmsActivities.length > 0)
-    ? cmsActivities.map((activity: any) => ({
+    ? cmsActivities.map((activity: FacilityData) => ({
         title: activity.title || activity.name || '',
         desc: activity.description || activity.desc || '',
         img: activity.image || activity.imageUrl || activity.img || '/images/placeholder.webp'
@@ -533,9 +592,9 @@ export async function HomeFacilities() {
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
           {(content?.title as string) || 'Activities Around'}
         </h2>
-        {content?.subtitle && (
+        {typeof content?.subtitle === 'string' && content.subtitle && (
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            {content.subtitle as string}
+            {content.subtitle}
           </p>
         )}
 

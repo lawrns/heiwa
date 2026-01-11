@@ -19,6 +19,22 @@ function fixSupabaseBucketUrl(url: string): string {
   return url;
 }
 
+interface RoomDatabase {
+  id: string
+  name: string
+  description?: string
+  capacity: number
+  booking_type?: string
+  is_active: boolean
+  pricing?: {
+    standard?: number
+    offSeason?: number
+  }
+  amenities?: string[]
+  images?: string[]
+  bed_types?: string[]
+}
+
 // API endpoint for getting all rooms (compatible with booking widget)
 export async function GET() {
   return measurePerformance('api.rooms.get', async () => {
@@ -67,7 +83,7 @@ export async function GET() {
     console.log('🔍 RAW DATABASE DATA:', JSON.stringify(activeRooms, null, 2))
 
     // Transform rooms to match UI expected format with proper field mapping
-    const transformedRooms = activeRooms.map((room: any) => {
+    const transformedRooms = activeRooms.map((room: RoomDatabase) => {
       // Pricing: Include both standard and offSeason rates
       // Don't calculate price_per_night here - let frontend calculate based on dates
       // Default to standard rate if available, otherwise offSeason

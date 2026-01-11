@@ -45,7 +45,16 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
 
-    const updateData: any = {
+    const updateData: {
+      updated_at: string
+      name?: string
+      description?: string
+      price?: number
+      category?: string
+      is_active?: boolean
+      max_quantity?: number | null
+      images?: string[]
+    } = {
       updated_at: new Date().toISOString(),
     }
 

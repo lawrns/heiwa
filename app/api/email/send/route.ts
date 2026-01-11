@@ -64,10 +64,11 @@ export async function POST(request: NextRequest) {
       success: true,
       messageId: result.messageId,
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in email API:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to send email'
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to send email' },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }

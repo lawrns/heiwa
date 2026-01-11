@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Calendar } from 'lucide-react'
+import { Calendar, Search, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,9 +22,14 @@ interface Invoice {
   created_at: string
 }
 
-interface Booking {
+interface BookingOption {
   id: string
-  total_amount: number
+  guest_name: string
+  guest_email: string
+  total_price: number
+  check_in: string
+  check_out: string
+  item_name: string
   payment_status: string
 }
 
@@ -38,6 +43,10 @@ interface InvoiceModalProps {
 
 export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: InvoiceModalProps) {
   const [loading, setLoading] = useState(false)
+  const [bookings, setBookings] = useState<BookingOption[]>([])
+  const [bookingSearch, setBookingSearch] = useState('')
+  const [showBookingDropdown, setShowBookingDropdown] = useState(false)
+  const [loadingBookings, setLoadingBookings] = useState(false)
   
   // Helper function to format date for HTML input
   const formatDateForInput = (dateString: string | undefined): string => {
@@ -52,27 +61,74 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
     status: invoice?.status || 'draft',
     due_date: formatDateForInput(invoice?.due_date),
   })
-  const [booking, setBooking] = useState<Booking | null>(null)
+  const [selectedBooking, setSelectedBooking] = useState<BookingOption | null>(null)
 
+  // Fetch all bookings for dropdown
   useEffect(() => {
-    if (open && formData.booking_id) {
-      fetchBooking()
+    if (open && !invoice) {
+      fetchAllBookings()
+    }
+  }, [open, invoice])
+
+  // Fetch single booking if we have a booking_id
+  useEffect(() => {
+    if (open && formData.booking_id && !selectedBooking) {
+      fetchSingleBooking()
     }
   }, [open, formData.booking_id])
 
-  const fetchBooking = async () => {
+  const fetchAllBookings = async () => {
+    try {
+      setLoadingBookings(true)
+      const response = await fetch('/api/bookings?limit=100')
+      const data = await response.json()
+      if (data.success && data.data?.bookings) {
+        setBookings(data.data.bookings)
+      }
+    } catch (error) {
+      console.error('Error fetching bookings:', error)
+    } finally {
+      setLoadingBookings(false)
+    }
+  }
+
+  const fetchSingleBooking = async () => {
     try {
       const response = await fetch(`/api/bookings?id=${formData.booking_id}`)
       const data = await response.json()
       if (data.success && data.data?.bookings?.[0]) {
-        setBooking(data.data.bookings[0])
+        const booking = data.data.bookings[0]
+        setSelectedBooking(booking)
         if (!invoice && !formData.amount) {
-          setFormData(prev => ({ ...prev, amount: data.data.bookings[0].total_price || 0 }))
+          setFormData(prev => ({ ...prev, amount: booking.total_price || 0 }))
         }
       }
     } catch (error) {
       console.error('Error fetching booking:', error)
     }
+  }
+
+  // Filter bookings based on search
+  const filteredBookings = useMemo(() => {
+    if (!bookingSearch) return bookings
+    const search = bookingSearch.toLowerCase()
+    return bookings.filter(b => 
+      b.guest_name?.toLowerCase().includes(search) ||
+      b.guest_email?.toLowerCase().includes(search) ||
+      b.id.toLowerCase().includes(search) ||
+      b.item_name?.toLowerCase().includes(search)
+    )
+  }, [bookings, bookingSearch])
+
+  const handleSelectBooking = (booking: BookingOption) => {
+    setFormData(prev => ({
+      ...prev,
+      booking_id: booking.id,
+      amount: booking.total_price || 0,
+    }))
+    setSelectedBooking(booking)
+    setShowBookingDropdown(false)
+    setBookingSearch('')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -105,9 +161,10 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
       toast.success(invoice ? 'Invoice updated successfully' : 'Invoice created successfully')
       onSaved()
       onClose()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving invoice:', error)
-      toast.error(error.message || 'Failed to save invoice')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save invoice'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -128,23 +185,130 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
           <div className="border border-gray-200 rounded-lg p-6 space-y-4 bg-white">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Booking Details</h3>
             
-            <div>
-              <Label htmlFor="booking_id">Booking ID *</Label>
-              <Input
-                id="booking_id"
-                value={formData.booking_id}
-                onChange={(e) => setFormData(prev => ({ ...prev, booking_id: e.target.value }))}
-                disabled={!!invoice}
-                required
-                placeholder="Enter booking ID"
-                className="mt-1.5"
-              />
-              {booking && (
-                <p className="text-sm text-gray-500 mt-2">
-                  Booking total: €{booking.total_amount}
-                </p>
-              )}
-            </div>
+            {invoice ? (
+              // When editing, show read-only booking ID
+              <div>
+                <Label htmlFor="booking_id">Booking ID</Label>
+                <Input
+                  id="booking_id"
+                  value={formData.booking_id}
+                  disabled
+                  className="mt-1.5 bg-gray-50"
+                />
+              </div>
+            ) : (
+              // When creating, show searchable dropdown
+              <div className="relative">
+                <Label>Select Booking *</Label>
+                <div className="mt-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setShowBookingDropdown(!showBookingDropdown)}
+                    className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-white text-left hover:border-gray-400 focus:ring-2 focus:ring-blue-500"
+                  >
+                    {selectedBooking ? (
+                      <span className="text-gray-900">
+                        {selectedBooking.guest_name} - {selectedBooking.item_name} (€{selectedBooking.total_price})
+                      </span>
+                    ) : (
+                      <span className="text-gray-500">Select a booking...</span>
+                    )}
+                    <ChevronDown className="h-4 w-4 text-gray-400" />
+                  </button>
+                  
+                  {showBookingDropdown && (
+                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-72 overflow-hidden">
+                      <div className="p-2 border-b">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <input
+                            type="text"
+                            value={bookingSearch}
+                            onChange={(e) => setBookingSearch(e.target.value)}
+                            placeholder="Search by name, email, or ID..."
+                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
+                            autoFocus
+                          />
+                        </div>
+                      </div>
+                      <div className="max-h-52 overflow-y-auto">
+                        {loadingBookings ? (
+                          <div className="p-4 text-center text-gray-500">Loading bookings...</div>
+                        ) : filteredBookings.length === 0 ? (
+                          <div className="p-4 text-center text-gray-500">No bookings found</div>
+                        ) : (
+                          filteredBookings.map((booking) => (
+                            <button
+                              key={booking.id}
+                              type="button"
+                              onClick={() => handleSelectBooking(booking)}
+                              className="w-full px-3 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                            >
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <div className="font-medium text-gray-900">{booking.guest_name}</div>
+                                  <div className="text-sm text-gray-500">{booking.guest_email}</div>
+                                  <div className="text-xs text-gray-400">{booking.item_name}</div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="font-semibold text-gray-900">€{booking.total_price}</div>
+                                  <span className={`inline-flex px-1.5 py-0.5 text-xs rounded-full ${
+                                    booking.payment_status === 'paid' 
+                                      ? 'bg-green-100 text-green-800' 
+                                      : 'bg-yellow-100 text-yellow-800'
+                                  }`}>
+                                    {booking.payment_status}
+                                  </span>
+                                </div>
+                              </div>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Manual entry fallback */}
+                <div className="mt-2">
+                  <details className="text-sm">
+                    <summary className="text-gray-500 cursor-pointer hover:text-gray-700">
+                      Or enter booking ID manually
+                    </summary>
+                    <Input
+                      value={formData.booking_id}
+                      onChange={(e) => setFormData(prev => ({ ...prev, booking_id: e.target.value }))}
+                      placeholder="Enter booking ID"
+                      className="mt-2"
+                    />
+                  </details>
+                </div>
+              </div>
+            )}
+            
+            {selectedBooking && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
+                <h4 className="text-sm font-medium text-blue-900 mb-2">Selected Booking Details</h4>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span className="text-blue-700">Guest:</span>
+                    <span className="ml-1 text-blue-900">{selectedBooking.guest_name}</span>
+                  </div>
+                  <div>
+                    <span className="text-blue-700">Email:</span>
+                    <span className="ml-1 text-blue-900">{selectedBooking.guest_email}</span>
+                  </div>
+                  <div>
+                    <span className="text-blue-700">Item:</span>
+                    <span className="ml-1 text-blue-900">{selectedBooking.item_name}</span>
+                  </div>
+                  <div>
+                    <span className="text-blue-700">Total:</span>
+                    <span className="ml-1 text-blue-900 font-semibold">€{selectedBooking.total_price}</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Invoice Details Section */}
@@ -190,7 +354,7 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
                 <Label htmlFor="status">Status</Label>
                 <Select
                   value={formData.status}
-                  onValueChange={(value: any) => setFormData(prev => ({ ...prev, status: value }))}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, status: value as 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled' }))}
                 >
                   <SelectTrigger className="mt-1.5">
                     <SelectValue />

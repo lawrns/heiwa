@@ -138,7 +138,8 @@ export async function POST(request: NextRequest) {
     const randomString = Math.random().toString(36).substring(2, 15)
     const fileExtension = file.name.split('.').pop()
     const filename = `${timestamp}_${randomString}.${fileExtension}`
-    const supabasePath = `cms-media/${filename}`
+    // Path within the bucket - don't include bucket name as it's already specified in .from()
+    const supabasePath = filename
 
     // Upload file to Supabase Storage
     const { error: uploadError } = await supabaseAdmin.storage

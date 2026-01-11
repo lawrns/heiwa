@@ -11,8 +11,9 @@ export async function GET(
   try {
     const { id } = await params
 
+    // Use calendar_events table for consistency with the main route
     const { data, error } = await supabaseAdmin
-      .from('external_calendar_events')
+      .from('calendar_events')
       .select('*')
       .eq('id', id)
       .single()
@@ -53,8 +54,18 @@ export async function PUT(
     const { id } = await params
     const body = await request.json()
 
+    // Check if this is a generated event ID (booking-*, camp-*, booking-surf-*)
+    // These events are derived from bookings/surf camps and shouldn't be updated directly
+    if (id.startsWith('booking-') || id.startsWith('camp-')) {
+      return NextResponse.json(
+        { success: false, error: 'Cannot update booking/camp events directly. Use the bookings page instead.' },
+        { status: 400 }
+      )
+    }
+
+    // Use calendar_events table for consistency
     const { data, error } = await supabaseAdmin
-      .from('external_calendar_events')
+      .from('calendar_events')
       .update({
         ...body,
         updated_at: new Date().toISOString()
@@ -92,8 +103,18 @@ export async function DELETE(
   try {
     const { id } = await params
 
+    // Check if this is a generated event ID (booking-*, camp-*, booking-surf-*)
+    // These events are derived from bookings/surf camps and shouldn't be deleted directly
+    if (id.startsWith('booking-') || id.startsWith('camp-')) {
+      return NextResponse.json(
+        { success: false, error: 'Cannot delete booking/camp events directly. Use the bookings page instead.' },
+        { status: 400 }
+      )
+    }
+
+    // Use calendar_events table for consistency
     const { error } = await supabaseAdmin
-      .from('external_calendar_events')
+      .from('calendar_events')
       .delete()
       .eq('id', id)
 

@@ -19,7 +19,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match homepage snapshot on desktop', async ({ page }) => {
       await page.setViewportSize(viewports.desktop);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       // Wait for any animations to complete
       await page.waitForTimeout(500);
@@ -33,7 +33,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match homepage snapshot on tablet', async ({ page }) => {
       await page.setViewportSize(viewports.tablet);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
       
       await expect(page).toHaveScreenshot('homepage-tablet.png', {
@@ -45,7 +45,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match homepage snapshot on mobile', async ({ page }) => {
       await page.setViewportSize(viewports.mobile);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
       
       await expect(page).toHaveScreenshot('homepage-mobile.png', {
@@ -59,7 +59,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match booking widget initial state', async ({ page }) => {
       await page.setViewportSize(viewports.desktop);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       // Find and scroll to booking widget
       const bookingWidget = page.locator('[data-testid="booking-widget"]').first();
@@ -76,7 +76,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match booking widget on mobile', async ({ page }) => {
       await page.setViewportSize(viewports.mobile);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       const bookingWidget = page.locator('[data-testid="booking-widget"]').first();
       if (await bookingWidget.isVisible()) {
@@ -94,7 +94,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match navigation on desktop', async ({ page }) => {
       await page.setViewportSize(viewports.desktop);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       const nav = page.locator('nav').first();
       await expect(nav).toHaveScreenshot('navigation-desktop.png', {
@@ -105,7 +105,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match navigation on mobile', async ({ page }) => {
       await page.setViewportSize(viewports.mobile);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       const nav = page.locator('nav').first();
       await expect(nav).toHaveScreenshot('navigation-mobile.png', {
@@ -118,7 +118,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match rooms page on desktop', async ({ page }) => {
       await page.setViewportSize(viewports.desktop);
       await page.goto('/rooms');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
       
       await expect(page).toHaveScreenshot('rooms-desktop.png', {
@@ -130,7 +130,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match rooms page on mobile', async ({ page }) => {
       await page.setViewportSize(viewports.mobile);
       await page.goto('/rooms');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
       
       await expect(page).toHaveScreenshot('rooms-mobile.png', {
@@ -144,7 +144,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match surf weeks page on desktop', async ({ page }) => {
       await page.setViewportSize(viewports.desktop);
       await page.goto('/surf-weeks');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
       
       await expect(page).toHaveScreenshot('surf-weeks-desktop.png', {
@@ -156,7 +156,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match surf weeks page on mobile', async ({ page }) => {
       await page.setViewportSize(viewports.mobile);
       await page.goto('/surf-weeks');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
       
       await expect(page).toHaveScreenshot('surf-weeks-mobile.png', {
@@ -170,7 +170,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match button hover state', async ({ page }) => {
       await page.setViewportSize(viewports.desktop);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       const button = page.locator('button').first();
       if (await button.isVisible()) {
@@ -186,7 +186,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match button focus state', async ({ page }) => {
       await page.setViewportSize(viewports.desktop);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       const button = page.locator('button').first();
       if (await button.isVisible()) {
@@ -204,7 +204,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match input focus state', async ({ page }) => {
       await page.setViewportSize(viewports.desktop);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       const input = page.locator('input[type="text"], input[type="email"]').first();
       if (await input.isVisible()) {
@@ -222,7 +222,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match footer on desktop', async ({ page }) => {
       await page.setViewportSize(viewports.desktop);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       const footer = page.locator('footer').first();
       if (await footer.isVisible()) {
@@ -238,7 +238,7 @@ test.describe('Visual Regression Tests', () => {
     test('should match footer on mobile', async ({ page }) => {
       await page.setViewportSize(viewports.mobile);
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       
       const footer = page.locator('footer').first();
       if (await footer.isVisible()) {
@@ -266,7 +266,7 @@ test.describe('Visual Regression Tests', () => {
       test(`should render correctly at ${bp.name} (${bp.width}px)`, async ({ page }) => {
         await page.setViewportSize({ width: bp.width, height: 800 });
         await page.goto('/');
-        await page.waitForLoadState('networkidle');
+        await page.waitForLoadState('domcontentloaded');
         await page.waitForTimeout(500);
         
         await expect(page).toHaveScreenshot(`homepage-${bp.name}.png`, {

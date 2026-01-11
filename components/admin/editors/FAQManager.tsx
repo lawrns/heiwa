@@ -5,6 +5,7 @@ import { Plus, Edit, Trash2, HelpCircle, Search, Filter, GripVertical, Eye, EyeO
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminModal from '@/components/admin/ui/AdminModal'
 import AdminAlert from '@/components/admin/ui/AdminAlert'
+import { formatDateCompact } from '@/lib/utils'
 
 interface FAQItem {
   id: string
@@ -141,7 +142,7 @@ export function FAQManager() {
       f.page_slug,
       f.order_index,
       f.is_active ? 'Yes' : 'No',
-      new Date(f.created_at).toLocaleDateString()
+      formatDateCompact(f.created_at)
     ])
     
     const csv = [headers, ...rows].map(row => row.join(',')).join('\n')
@@ -305,7 +306,7 @@ export function FAQManager() {
                     
                     <div className="flex items-center text-xs text-gray-500 space-x-4">
                       <span>Order: {faq.order_index}</span>
-                      <span>Created: {new Date(faq.created_at).toLocaleDateString()}</span>
+                      <span>Created: {formatDateCompact(faq.created_at)}</span>
                     </div>
                   </div>
                 </div>

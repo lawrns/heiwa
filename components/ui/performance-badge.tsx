@@ -10,6 +10,16 @@ interface PerformanceMetrics {
   ttfb: number
 }
 
+interface FirstInputEntry {
+  processingStart: number
+  startTime: number
+}
+
+interface LayoutShiftEntry {
+  value: number
+  hadRecentInput: boolean
+}
+
 export function PerformanceBadge() {
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null)
   const [isVisible, setIsVisible] = useState(false)
@@ -29,10 +39,11 @@ export function PerformanceBadge() {
         // Measure FID
         new PerformanceObserver((list) => {
           const entries = list.getEntries()
-          entries.forEach((entry: any) => {
+          entries.forEach((entry) => {
+            const firstInput = entry as unknown as FirstInputEntry
             setMetrics((prev) => ({
               ...prev!,
-              fid: Math.round(entry.processingStart - entry.startTime),
+              fid: Math.round(firstInput.processingStart - firstInput.startTime),
             }))
           })
         }).observe({ entryTypes: ['first-input'] })
@@ -41,9 +52,10 @@ export function PerformanceBadge() {
         let clsValue = 0
         new PerformanceObserver((list) => {
           const entries = list.getEntries()
-          entries.forEach((entry: any) => {
-            if (!entry.hadRecentInput) {
-              clsValue += entry.value
+          entries.forEach((entry) => {
+            const layoutShift = entry as unknown as LayoutShiftEntry
+            if (!layoutShift.hadRecentInput) {
+              clsValue += layoutShift.value
               setMetrics((prev) => ({ ...prev!, cls: Math.round(clsValue * 1000) / 1000 }))
             }
           })

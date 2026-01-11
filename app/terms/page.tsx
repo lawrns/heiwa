@@ -1,5 +1,8 @@
 import { generatePageMetadata } from '@/lib/page-metadata'
 
+// Force dynamic rendering - content fetched at runtime
+export const dynamic = 'force-dynamic'
+
 // Generate SEO metadata from database
 export async function generateMetadata() {
   return generatePageMetadata('terms')

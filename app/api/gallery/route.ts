@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     if (search) {
       const searchLower = search.toLowerCase()
       filteredItems = filteredItems.filter(
-        (item: any) =>
+        (item: { filename?: string; original_name?: string; description?: string; alt_text?: string }) =>
           item.filename?.toLowerCase().includes(searchLower) ||
           item.original_name?.toLowerCase().includes(searchLower) ||
           item.description?.toLowerCase().includes(searchLower) ||
@@ -54,7 +54,20 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform to match expected format
-    const galleryItems = filteredItems.map((item: any) => ({
+    const galleryItems = filteredItems.map((item: {
+      id: string
+      filename: string
+      original_name: string
+      file_type: string
+      url: string
+      thumbnail_url: string
+      category: string
+      description: string
+      alt_text: string
+      is_public: boolean
+      created_at: string
+      file_size: number
+    }) => ({
       id: item.id,
       title: item.original_name || item.filename,
       type: item.file_type === 'video' ? 'video' : 'image',

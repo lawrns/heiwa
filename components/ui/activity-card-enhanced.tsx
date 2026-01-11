@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { LucideIcon, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { AvailabilityBadge } from './availability-badge'
 
 interface ActivityCardEnhancedProps {
@@ -16,6 +16,8 @@ interface ActivityCardEnhancedProps {
   availabilityTier?: 'always' | 'on-request'
 }
 
+const PLACEHOLDER_IMAGE = '/images/placeholder-activity.jpg'
+
 export function ActivityCardEnhanced({
   title,
   description,
@@ -25,6 +27,15 @@ export function ActivityCardEnhanced({
   availabilityTier,
 }: ActivityCardEnhancedProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [imageSrc, setImageSrc] = useState(image || PLACEHOLDER_IMAGE)
+  const [imageError, setImageError] = useState(false)
+
+  const handleImageError = () => {
+    if (!imageError) {
+      setImageError(true)
+      setImageSrc(PLACEHOLDER_IMAGE)
+    }
+  }
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -72,11 +83,13 @@ export function ActivityCardEnhanced({
         className="absolute inset-0"
       >
         <Image
-          src={image}
+          src={imageSrc}
           alt={title}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          onError={handleImageError}
+          unoptimized={imageError}
         />
       </motion.div>
 

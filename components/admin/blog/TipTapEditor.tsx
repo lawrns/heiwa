@@ -9,10 +9,15 @@ import { Bold, Italic, List, ListOrdered, Link as LinkIcon, Image as ImageIcon, 
 
 interface TipTapContent {
   type: string
-  content?: any[]
+  content?: TipTapContent[]
   attrs?: Record<string, unknown>
   text?: string
-  marks?: any[]
+  marks?: TipTapMark[]
+}
+
+interface TipTapMark {
+  type: string
+  attrs?: Record<string, unknown>
 }
 
 interface TipTapEditorProps {

@@ -80,6 +80,7 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           ...formData,
           payment_date: formData.payment_date ? new Date(formData.payment_date).toISOString() : new Date().toISOString(),
@@ -89,15 +90,20 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to save payment')
+        // Include detailed error if available
+        const errorMessage = data.details
+          ? `${data.error}: ${data.details}`
+          : (data.error || 'Failed to save payment')
+        throw new Error(errorMessage)
       }
 
       toast.success(payment ? 'Payment updated successfully' : 'Payment recorded successfully')
       onSaved()
       onClose()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving payment:', error)
-      toast.error(error.message || 'Failed to save payment')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save payment'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -175,7 +181,7 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
                 <Label htmlFor="payment_method">Payment Method *</Label>
                 <Select
                   value={formData.payment_method}
-                  onValueChange={(value: any) => setFormData(prev => ({ ...prev, payment_method: value }))}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, payment_method: value as 'stripe' | 'cash' | 'transfer' | 'paypal' | 'other' }))}
                 >
                   <SelectTrigger className="mt-1.5">
                     <SelectValue />
@@ -194,7 +200,7 @@ export function PaymentModal({ open, onClose, payment, bookingId, onSaved }: Pay
                 <Label htmlFor="payment_status">Status</Label>
                 <Select
                   value={formData.payment_status}
-                  onValueChange={(value: any) => setFormData(prev => ({ ...prev, payment_status: value }))}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, payment_status: value as 'pending' | 'completed' | 'failed' | 'refunded' | 'partially_refunded' }))}
                 >
                   <SelectTrigger className="mt-1.5">
                     <SelectValue />

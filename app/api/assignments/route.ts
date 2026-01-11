@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     // Group assignments by room_id
     const groupedAssignments: Record<string, string[]> = {} as Record<string, string[]>
     
-    (assignments || []).forEach((assignment: any) => {
+    (assignments || []).forEach((assignment: { enrollment_id?: string; room_id?: string }) => {
       const enrollmentId = assignment.enrollment_id
       if (enrollmentId && assignment.room_id) {
         if (!groupedAssignments[assignment.room_id]) {
@@ -154,7 +154,16 @@ export async function POST(request: NextRequest) {
       .eq('surf_camp_id', weekId)
 
     // Create new assignments
-    const roomAssignmentsToInsert: any[] = []
+    const roomAssignmentsToInsert: Array<{
+      room_id: string
+      client_id: string
+      surf_camp_id: string
+      enrollment_id: string
+      check_in_date: string
+      check_out_date: string
+      status: string
+      booking_id?: string
+    }> = []
 
     for (const assignment of assignments) {
       const { roomId, participantIds } = assignment
@@ -168,7 +177,16 @@ export async function POST(request: NextRequest) {
           .single()
 
         if (enrollment) {
-          const assignmentData: any = {
+          const assignmentData: {
+            room_id: string
+            client_id: string
+            surf_camp_id: string
+            enrollment_id: string
+            check_in_date: string
+            check_out_date: string
+            status: string
+            booking_id?: string
+          } = {
             room_id: roomId,
             client_id: enrollment.client_id,
             surf_camp_id: weekId,

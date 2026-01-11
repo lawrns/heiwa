@@ -1,6 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
+interface Enrollment {
+  id: string
+  client_id: string
+  status: string
+  skill_level: string
+  participant_name: string
+  participant_email: string
+  participant_phone: string
+}
+
+interface Client {
+  id: string
+  name: string
+  email: string
+  phone: string
+}
+
+interface RoomAssignment {
+  id: string
+  enrollment_id: string
+  room_id: string
+  bed_number: number
+  rooms?: Array<{
+    id: string
+    name: string
+    booking_type: string
+    capacity: number
+  }>
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -65,8 +95,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch clients separately to avoid foreign key join issues
-    const clientIds = enrollments.map((e: any) => e.client_id).filter(Boolean)
-    let clientMap = new Map()
+    const clientIds = enrollments.map((e: Enrollment) => e.client_id).filter(Boolean)
+    let clientMap = new Map<string, Client>()
     
     if (clientIds.length > 0) {
       const { data: clients, error: clientsError } = await supabaseAdmin
@@ -83,7 +113,7 @@ export async function GET(request: NextRequest) {
         })
         // Continue without client details rather than failing
       } else if (clients) {
-        clients.forEach((client: any) => {
+        clients.forEach((client: Client) => {
           clientMap.set(client.id, client)
         })
         console.log(`Successfully fetched ${clients.length} clients for ${clientIds.length} enrollments`)
@@ -91,8 +121,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch room assignments for these enrollments
-    const enrollmentIds = enrollments.map((e: any) => e.id)
-    let roomAssignmentMap = new Map()
+    const enrollmentIds = enrollments.map((e: Enrollment) => e.id)
+    let roomAssignmentMap = new Map<string, {
+      roomId: string
+      roomName: string
+      roomType: string
+      bedNumber: number
+    }>()
     
     if (enrollmentIds.length > 0) {
       const { data: roomAssignments, error: raError } = await supabaseAdmin
@@ -112,11 +147,11 @@ export async function GET(request: NextRequest) {
         .in('enrollment_id', enrollmentIds)
       
       if (!raError && roomAssignments) {
-        roomAssignments.forEach((ra: any) => {
+        roomAssignments.forEach((ra: RoomAssignment) => {
           roomAssignmentMap.set(ra.enrollment_id, {
             roomId: ra.room_id,
-            roomName: ra.rooms?.name || 'Unassigned',
-            roomType: ra.rooms?.booking_type === 'perBed' ? 'dorm' : 'private',
+            roomName: ra.rooms && ra.rooms[0] ? ra.rooms[0].name : 'Unassigned',
+            roomType: ra.rooms && ra.rooms[0] && ra.rooms[0].booking_type === 'perBed' ? 'dorm' : 'private',
             bedNumber: ra.bed_number
           })
         })
@@ -124,7 +159,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform enrollments to participants format
-    const participants = enrollments.map((enrollment: any) => {
+    const participants = enrollments.map((enrollment: Enrollment) => {
       const client = clientMap.get(enrollment.client_id)
       const roomAssignment = roomAssignmentMap.get(enrollment.id)
       
@@ -145,16 +180,16 @@ export async function GET(request: NextRequest) {
     })
 
     return NextResponse.json(participants)
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Unexpected error in participants API:', {
-      error: error?.message,
-      stack: error?.stack,
-      name: error?.name
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined
     })
     return NextResponse.json(
       { 
         error: 'Internal server error',
-        details: error?.message || 'Unknown error occurred'
+        details: error instanceof Error ? error.message : 'Unknown error occurred'
       },
       { status: 500 }
     )

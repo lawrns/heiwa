@@ -40,12 +40,13 @@ export async function POST(request: NextRequest) {
           customerId = customer.id;
           console.log('✅ Created new Stripe customer:', customerId);
         }
-      } catch (customerError: any) {
-        console.error('❌ Failed to create/retrieve Stripe customer:', customerError);
+      } catch (customerError: unknown) {
+        console.error('❌ Failed to create/retrieve Stripe customer:', customerError)
+        const errorMessage = customerError instanceof Error ? customerError.message : 'Unknown error'
         return NextResponse.json(
-          { success: false, error: 'Failed to create customer record: ' + customerError.message },
+          { success: false, error: 'Failed to create customer record: ' + errorMessage },
           { status: 500 }
-        );
+        )
       }
     }
 
@@ -71,12 +72,13 @@ export async function POST(request: NextRequest) {
       id: paymentIntent.id,
       customerId: customerId,
     });
-  } catch (error: any) {
-    console.error('❌ Error creating payment intent:', error);
+  } catch (error: unknown) {
+    console.error('❌ Error creating payment intent:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create payment intent'
     return NextResponse.json(
-      { success: false, error: error.message || 'Failed to create payment intent' },
+      { success: false, error: errorMessage },
       { status: 500 }
-    );
+    )
   }
 }
 

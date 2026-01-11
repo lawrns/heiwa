@@ -8,10 +8,11 @@ import { getPostById, updatePost, deletePost } from '@/lib/blog/db'
 // GET /api/admin/blog/posts/[id] - Get single post
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const post = await getPostById(params.id)
+    const { id } = await params
+    const post = await getPostById(id)
 
     if (!post) {
       return NextResponse.json(
@@ -37,9 +38,10 @@ export async function GET(
 // PUT /api/admin/blog/posts/[id] - Update post
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     
     const {
@@ -53,7 +55,7 @@ export async function PUT(
       tag_ids
     } = body
 
-    const post = await updatePost(params.id, {
+    const post = await updatePost(id, {
       category_id,
       author_id,
       status,
@@ -93,10 +95,11 @@ export async function PUT(
 // DELETE /api/admin/blog/posts/[id] - Delete post
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await deletePost(params.id)
+    const { id } = await params
+    await deletePost(id)
 
     // Revalidate blog pages to reflect deletion immediately
     revalidatePath('/blog')

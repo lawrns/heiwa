@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Users, MapPin } from 'lucide-react'
 import { toast } from 'react-toastify'
 import AssignmentBoard from '@/components/admin/assignments/AssignmentBoard'
+import { formatDateShort } from '@/lib/utils'
 
 interface Assignment {
   roomId: string
@@ -57,12 +58,13 @@ export default function AdminAssignmentsPage() {
       if (camps) {
         const formattedWeeks: WeekData[] = camps.map((camp: CampApiResponse) => ({
           id: camp.id,
-          name: `${camp.name} (${new Date(camp.start_date).toLocaleDateString()} - ${new Date(camp.end_date).toLocaleDateString()})`,
+          name: `${camp.name} (${formatDateShort(camp.start_date)} - ${formatDateShort(camp.end_date)})`,
           category: camp.name.toLowerCase().includes('frenchman') ? 'Freedom Routes' : 'Heiwa House',
           participants: camp.max_participants || 0,
           rooms: Math.ceil((camp.max_participants || 0) / 2),
           startDate: camp.start_date,
-          endDate: camp.end_date
+          endDate: camp.end_date,
+          assignments: []
         }))
 
         setWeeks(formattedWeeks)

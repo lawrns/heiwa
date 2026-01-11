@@ -17,6 +17,7 @@ export interface AdminButtonProps {
   onClick?: () => void
   type?: 'button' | 'submit' | 'reset'
   className?: string
+  title?: string
 }
 
 const AdminButton: React.FC<AdminButtonProps> = ({
@@ -28,7 +29,8 @@ const AdminButton: React.FC<AdminButtonProps> = ({
   children,
   onClick,
   type = 'button',
-  className
+  className,
+  title
 }) => {
   // Map variant to Tailwind classes
   const getVariantClasses = () => {
@@ -95,6 +97,7 @@ const AdminButton: React.FC<AdminButtonProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
+      title={title}
       className={cn(
         'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
         getVariantClasses(),

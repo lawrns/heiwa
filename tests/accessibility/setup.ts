@@ -1,11 +1,12 @@
 /**
  * Accessibility Test Setup
  * Feature: comprehensive-testing
- * 
+ *
  * Configuration and helpers for accessibility testing with jest-axe
  */
 
 import { configureAxe, toHaveNoViolations } from 'jest-axe';
+import type { Result } from 'axe-core';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);
@@ -63,7 +64,7 @@ export async function getViolations(container: Element) {
 /**
  * Format violations for readable output
  */
-export function formatViolations(violations: any[]): string {
+export function formatViolations(violations: Result[]): string {
   if (violations.length === 0) {
     return 'No accessibility violations found';
   }
@@ -71,7 +72,7 @@ export function formatViolations(violations: any[]): string {
   return violations
     .map((violation) => {
       const nodes = violation.nodes
-        .map((node: any) => `  - ${node.html}\n    ${node.failureSummary}`)
+        .map((node) => `  - ${node.html}\n    ${node.failureSummary}`)
         .join('\n');
       return `${violation.id}: ${violation.description}\n${nodes}`;
     })

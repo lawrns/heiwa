@@ -71,7 +71,7 @@ export interface SurfWeek {
   endDate: string;
   maxParticipants: number;
   price: number;
-  level: 'beginner' | 'intermediate' | 'advanced';
+  level: 'beginner' | 'intermediate' | 'advanced' | 'all';
   includes: string[];
   images: string[];
   isActive: boolean;

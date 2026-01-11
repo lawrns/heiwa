@@ -10,7 +10,7 @@ import { supabaseAdmin } from './supabase'
  * Uses Supabase's transaction support
  */
 export async function withTransaction<T>(
-  callback: (tx: any) => Promise<T>
+  callback: (tx: string | null) => Promise<T>
 ): Promise<T> {
   try {
     // Start transaction
@@ -54,8 +54,8 @@ export async function withTransaction<T>(
 export async function lockRow(
   table: string,
   id: string,
-  callback: () => Promise<any>
-): Promise<any> {
+  callback: () => Promise<unknown>
+): Promise<unknown> {
   try {
     // Use SELECT FOR UPDATE to lock the row
     const { data, error } = await supabaseAdmin
@@ -82,7 +82,7 @@ export async function lockRow(
 export async function withOptimisticLock<T>(
   table: string,
   id: string,
-  callback: (currentData: any) => Promise<{ update: any; result: T }>
+  callback: (currentData: unknown) => Promise<{ update: unknown; result: T }>
 ): Promise<T> {
   const maxRetries = 3
   let retryCount = 0
@@ -108,10 +108,11 @@ export async function withOptimisticLock<T>(
       const { update, result } = await callback(currentData)
 
       // Update with version check
+      const updateObj = update && typeof update === 'object' ? update : {}
       const { data: updatedData, error: updateError } = await supabaseAdmin
         .from(table)
         .update({
-          ...update,
+          ...updateObj,
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)

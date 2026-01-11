@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test'
 
-const BASE_URL = 'https://heiwahauz.netlify.app'
-const ADMIN_PASSWORD = 'heiwa_admin_2024'
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3003'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'testpassword123'
 
 async function loginToAdmin(page: Page): Promise<boolean> {
   await page.goto(`${BASE_URL}/admin/login`, { waitUntil: 'domcontentloaded', timeout: 30000 })

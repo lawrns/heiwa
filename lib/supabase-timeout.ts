@@ -25,11 +25,12 @@ export function withTimeout<T>(
  * Wraps Supabase query promises with timeout to prevent long waits
  */
 export async function executeWithTimeout<T>(
-  queryPromise: PromiseLike<{ data: T | null; error: any }>,
+  queryPromise: PromiseLike<{ data: T | null; error: { message?: string; code?: string } | null }>,
   timeoutMs: number = DEFAULT_TIMEOUT_MS
-): Promise<{ data: T | null; error: any }> {
+): Promise<{ data: T | null; error: { message?: string; code?: string; originalError?: unknown } | null }> {
   try {
-    return await withTimeout(queryPromise, timeoutMs)
+    const result = await withTimeout(queryPromise, timeoutMs)
+    return result
   } catch (error) {
     // Timeout or network error
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'

@@ -75,10 +75,11 @@ export async function POST(request: NextRequest) {
         type: file.type
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Unexpected error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json(
-      { success: false, error: 'Internal server error', details: error.message },
+      { success: false, error: errorMessage, details: errorMessage },
       { status: 500 }
     )
   }
@@ -114,12 +115,12 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: 'File deleted successfully'
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Unexpected error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error'
     return NextResponse.json(
-      { success: false, error: 'Internal server error', details: error.message },
+      { success: false, error: errorMessage },
       { status: 500 }
     )
   }
 }
-

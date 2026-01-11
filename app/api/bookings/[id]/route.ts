@@ -12,10 +12,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authError = requireAdminAuth(request)
     if (authError) return authError
-
-    const { id } = await params
 
     const { data, error } = await supabaseAdmin
       .from('bookings')
@@ -42,7 +41,7 @@ export async function GET(
     let guestEmail = ''
     let guestPhone = ''
     let clientNotes = ''
-    
+
     if (data.client_ids && data.client_ids.length > 0) {
       const firstClientId = data.client_ids[0]
       const { data: client } = await supabaseAdmin
@@ -50,7 +49,7 @@ export async function GET(
         .select('id, name, email, phone, notes')
         .eq('id', firstClientId)
         .single()
-      
+
       if (client) {
         guestName = client.name || 'Unknown'
         guestEmail = client.email || ''
@@ -58,11 +57,11 @@ export async function GET(
         clientNotes = client.notes || ''
       }
     }
-    
+
     // Parse notes to extract dietary preferences
     let dietaryPreferences = ''
     let specialRequests = data.notes || ''
-    
+
     try {
       const notesData = data.notes ? JSON.parse(data.notes) : null
       if (notesData && typeof notesData === 'object') {
@@ -77,7 +76,7 @@ export async function GET(
     } catch {
       specialRequests = data.notes || ''
     }
-    
+
     // Transform to admin UI format
     const transformedBooking = {
       id: data.id,
@@ -118,10 +117,10 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authError = requireAdminAuth(request)
     if (authError) return authError
 
-    const { id } = await params
     const body = await request.json()
 
     // Get the existing booking first
@@ -222,7 +221,7 @@ export async function PUT(
     let guestName = 'Unknown'
     let guestEmail = ''
     let guestPhone = ''
-    
+
     if (data.client_ids && data.client_ids.length > 0) {
       const firstClientId = data.client_ids[0]
       const { data: client } = await supabaseAdmin
@@ -230,7 +229,7 @@ export async function PUT(
         .select('id, name, email, phone')
         .eq('id', firstClientId)
         .single()
-      
+
       if (client) {
         guestName = client.name || 'Unknown'
         guestEmail = client.email || ''
@@ -292,10 +291,10 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authError = requireAdminAuth(request)
     if (authError) return authError
 
-    const { id } = await params
     const body = await request.json()
 
     // Get the existing booking first
@@ -362,10 +361,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const authError = requireAdminAuth(request)
     if (authError) return authError
-
-    const { id } = await params
 
     // Step 1: Delete room_assignments related to this booking
     const { error: roomAssignmentError } = await supabaseAdmin
@@ -415,4 +413,3 @@ export async function DELETE(
     )
   }
 }
-

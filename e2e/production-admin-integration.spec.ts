@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
-import { ensureAdminAuth, navigateToAdminPage, waitForAdminPageLoad, verifyBookingInAdmin, getBookingDetails } from './helpers/admin-helpers'
+import { loginAsAdmin } from './fixtures/admin-auth'
+import { navigateToAdminPage, waitForAdminPageLoad, verifyBookingInAdmin, getBookingDetails } from './helpers/admin-helpers'
 import { completeBankTransferBooking } from './helpers/booking-helpers'
 import { testBookingTemplates } from './fixtures/test-data'
 
@@ -13,7 +14,7 @@ test.describe('Admin Integration Tests', () => {
     expect(bookingResult.bookingId).toBeTruthy()
     
     // Step 2: View in admin
-    await ensureAdminAuth(page)
+    await loginAsAdmin(page)
     await navigateToAdminPage(page, '/bookings')
     await waitForAdminPageLoad(page)
     
@@ -55,7 +56,7 @@ test.describe('Admin Integration Tests', () => {
   })
 
   test('should navigate between all admin pages', async ({ page }) => {
-    await ensureAdminAuth(page)
+    await loginAsAdmin(page)
     
     const adminPages = [
       '',
@@ -95,8 +96,8 @@ test.describe('Admin Integration Tests', () => {
     expect(bookingResult.success).toBe(true)
     expect(bookingResult.bookingId).toBeTruthy()
     
-    await ensureAdminAuth(page)
-    
+    await loginAsAdmin(page)
+
     // Verify in bookings page
     await navigateToAdminPage(page, '/bookings')
     await waitForAdminPageLoad(page)
@@ -117,7 +118,7 @@ test.describe('Admin Integration Tests', () => {
   })
 
   test('should handle real-time updates across multiple pages', async ({ page, context }) => {
-    await ensureAdminAuth(page)
+    await loginAsAdmin(page)
     
     // Open bookings page
     await navigateToAdminPage(page, '/bookings')

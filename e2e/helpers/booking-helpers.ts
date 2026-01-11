@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test'
 import { TestBookingData } from '../fixtures/test-data'
 
-const BASE_URL = process.env.BASE_URL || 'https://heiwahauz.netlify.app'
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3003'
 
 /**
  * Fill booking widget form

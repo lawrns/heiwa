@@ -22,6 +22,11 @@ const config = {
         jsx: 'react-jsx',
         esModuleInterop: true,
         moduleResolution: 'node',
+        baseUrl: '.',
+        paths: {
+          '@/*': ['./*'],
+        },
+        typeRoots: ['./node_modules/@types', './types'],
       },
     }],
   },

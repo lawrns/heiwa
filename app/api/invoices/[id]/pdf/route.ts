@@ -2,6 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { formatDate } from '@/lib/utils'
 
 // GET /api/invoices/[id]/pdf - Generate PDF for an invoice
 export async function GET(
@@ -64,9 +65,32 @@ export async function GET(
   }
 }
 
-function generateInvoiceHTML(invoice: any): string {
-  const createdDate = new Date(invoice.created_at).toLocaleDateString()
-  const dueDate = invoice.due_date ? new Date(invoice.due_date).toLocaleDateString() : 'N/A'
+interface Invoice {
+  invoice_number: string
+  created_at: string
+  due_date: string | null
+  amount: number
+  currency: string
+  status: string
+  booking_id: string
+  bookings?: Array<{
+    total_amount?: number
+    payment_status?: string
+    guests?: number
+    check_in?: string
+    check_out?: string
+    notes?: string
+    client_ids: string[]
+    clients: Array<{
+      name: string
+      email: string
+    }>
+  }>
+}
+
+function generateInvoiceHTML(invoice: Invoice): string {
+  const createdDate = formatDate(invoice.created_at)
+  const dueDate = formatDate(invoice.due_date)
   
   return `
 <!DOCTYPE html>
@@ -113,20 +137,20 @@ function generateInvoiceHTML(invoice: any): string {
             <div class="detail-group">
                 <h3>Booking Information</h3>
                 <p><strong>Booking ID:</strong> ${invoice.booking_id}</p>
-                ${invoice.bookings ? `
-                <p><strong>Booking Total:</strong> €${invoice.bookings.total_amount || 0}</p>
-                <p><strong>Payment Status:</strong> ${invoice.bookings.payment_status}</p>
-                <p><strong>Guests:</strong> ${invoice.bookings.guests || 1}</p>
-                ${invoice.bookings.check_in ? `<p><strong>Check-in:</strong> ${new Date(invoice.bookings.check_in).toLocaleDateString()}</p>` : ''}
-                ${invoice.bookings.check_out ? `<p><strong>Check-out:</strong> ${new Date(invoice.bookings.check_out).toLocaleDateString()}</p>` : ''}
+                ${invoice.bookings && invoice.bookings[0] ? `
+                <p><strong>Booking Total:</strong> €${invoice.bookings[0].total_amount || 0}</p>
+                <p><strong>Payment Status:</strong> ${invoice.bookings[0].payment_status}</p>
+                <p><strong>Guests:</strong> ${invoice.bookings[0].guests || 1}</p>
+                ${invoice.bookings[0].check_in ? `<p><strong>Check-in:</strong> ${formatDate(invoice.bookings[0].check_in)}</p>` : ''}
+                ${invoice.bookings[0].check_out ? `<p><strong>Check-out:</strong> ${formatDate(invoice.bookings[0].check_out)}</p>` : ''}
                 ` : ''}
             </div>
         </div>
         
-        ${invoice.bookings?.notes ? `
+        ${invoice.bookings && invoice.bookings[0]?.notes ? `
         <div class="detail-group">
             <h3>Notes</h3>
-            <p>${invoice.bookings.notes}</p>
+            <p>${invoice.bookings[0].notes}</p>
         </div>
         ` : ''}
         

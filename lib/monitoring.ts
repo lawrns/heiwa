@@ -10,14 +10,14 @@ interface ErrorContext {
   method?: string
   userAgent?: string
   ip?: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface PerformanceMetric {
   name: string
   duration: number
   timestamp: number
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 class MonitoringService {
@@ -58,7 +58,7 @@ class MonitoringService {
   /**
    * Track performance metrics
    */
-  trackMetric(name: string, duration: number, metadata?: Record<string, any>) {
+  trackMetric(name: string, duration: number, metadata?: Record<string, unknown>) {
     const metric: PerformanceMetric = {
       name,
       duration,
