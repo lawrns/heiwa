@@ -124,69 +124,9 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
     }
   }
 
-  // Default local break features
-  const defaultLocalBreakFeatures = [
-    { icon: 'Clock', title: '15-20 minute walk', description: 'Enjoy a beautiful coastal walk down to the beach. Perfect for warming up before your session.' },
-    { icon: 'Car', title: '5 minute drive', description: 'Quick and easy access by car. We also offer bicycle rentals with board racks for 30€/week.' },
-    { icon: 'Waves', title: 'Long sandy beaches', description: 'Miles of coastline to explore. Find your own peak, avoid the crowds, and enjoy the Atlantic.' }
-  ]
-
-  // Default surf lessons content
-  const defaultSurfLessonsParagraphs = [
-    'We offer high quality surf lessons in Santa Cruz and Peniche. Professional instructors will help you to take the first steps or improve at whatever level you are.',
-    'Surf lessons starting from 40€ per session, with all equipment included. Whether you\'re a complete beginner catching your first wave or an experienced surfer looking to refine your technique, our certified instructors provide personalized coaching tailored to your skill level.',
-    'All lessons include professional instruction, surfboard and wetsuit rental, and video analysis to help you progress faster. We also offer package deals for multiple lessons and can organize trips to the best surf spots in Ericeira and Peniche based on current conditions.'
-  ]
-
-  const defaultSurfLessonsImages = [
-    '/images/surf4.jpg',
-    '/images/surf3.jpg',
-    '/images/DSC03081-scaled.jpg',
-    '/images/DSC02099-scaled.jpg',
-  ]
-
-  const defaultSurfConditions = {
-    title: 'What People Can Surf Near Heiwa',
-    subtitle: 'Experience the softer side of Santa Cruz waves - perfect for learning and progression',
-    epicImageUrl: '/images/surf4.jpg',
-    epicImageCaption: 'once in a blue moon it is like this',
-    videoUrl: null,
-    videoCaption: 'Small and mid surf in Santa Cruz - realistic conditions for most visitors'
-  }
-
-  // Default world-class surfing content
-  const defaultWorldClassSurfing = {
-    title: 'World-Class Surfing Nearby',
-    subtitle: 'Heiwa House sits in the sweet spot between Ericeira and Peniche - two of Europe\'s premier surf destinations. Both are just 30 minutes away, giving you access to dozens of world-class breaks.',
-    locations: [
-      {
-        name: 'Ericeira',
-        distance: '~30 min drive',
-        imageUrl: '/images/surf3.jpg',
-        description: 'Europe\'s first World Surfing Reserve and home to legendary breaks like Ribeira d\'Ilhas, Coxos, and Pedra Branca. From mellow beach breaks to powerful reef breaks, Ericeira has it all.',
-        highlights: [
-          'Multiple world-class point breaks and reef breaks',
-          'Beginner-friendly beaches like Foz do Lizandro',
-          'Consistent year-round swell',
-          'Charming Portuguese fishing village atmosphere'
-        ]
-      },
-      {
-        name: 'Peniche',
-        distance: '~30 min drive',
-        imageUrl: '/images/surf4.jpg',
-        description: 'Home to Supertubos, one of the world\'s best beach breaks and regular host of the World Surf League. The peninsula geography means there\'s always a sheltered spot with good waves.',
-        highlights: [
-          'Famous for powerful, hollow waves at Supertubos',
-          'Sheltered spots for all swell directions and winds',
-          'Spots for every skill level around the peninsula',
-          'WSL Championship Tour venue'
-        ]
-      }
-    ],
-    mapImageUrl: '/images/heiwalocation.webp',
-    footerText: 'The perfect location: With Ericeira to the south and Peniche to the north, you\'ll always find clean waves, no matter the swell direction or wind conditions. Our daily surf trips take you to the best spots based on the day\'s forecast.'
-  }
+  // TODO(cms-hardcoded): Remove all default fallbacks - code should ONLY use CMS data
+  // If CMS section missing, show empty state or error, not hardcoded defaults
+  // This masks CMS changes and makes it impossible to verify if CMS is working
 
   return (
     <div className="min-h-screen pt-20 bg-white">
@@ -234,15 +174,17 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Content */}
             <div className="space-y-6">
-              <h2 className="text-4xl font-bold text-gray-900">
-                {localBreakContent?.title || 'Your Local Break'}
-              </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                {localBreakContent?.description || 'Just a short walk or quick drive from Heiwa House, you\'ll find beautiful sandy beaches with consistent waves. These local spots are perfect for morning sessions, sunset surfs, or when you just want to grab your board and go.'}
-              </p>
+              {localBreakContent?.title ? (
+                <>
+                  <h2 className="text-4xl font-bold text-gray-900">
+                    {localBreakContent.title}
+                  </h2>
+                  <p className="text-lg text-gray-600 leading-relaxed">
+                    {localBreakContent.description}
+                  </p>
 
-              <div className="space-y-4">
-                {(localBreakContent?.features || defaultLocalBreakFeatures).map((feature, index) => (
+                  <div className="space-y-4">
+                    {localBreakContent.features && localBreakContent.features.length > 0 && localBreakContent.features.map((feature, index) => (
                   <div key={index} className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
                       <IconComponent iconName={feature.icon} />
@@ -255,23 +197,34 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
                 ))}
               </div>
 
-              <div className="pt-4">
-                <p className="text-sm text-gray-500 italic">
-                  {localBreakContent?.disclaimer || 'We don\'t name specific spots - part of the adventure is exploring and finding your own wave. But don\'t worry, we\'ll point you in the right direction 🙂'}
-                </p>
-              </div>
+                    {localBreakContent.disclaimer && (
+                      <div className="pt-4">
+                        <p className="text-sm text-gray-500 italic">
+                          {localBreakContent.disclaimer}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-12 bg-gray-50 rounded-lg">
+                  <p className="text-gray-500">Local Break section not configured in CMS</p>
+                </div>
+              )}
             </div>
 
             {/* Map */}
-            <div className="relative aspect-square rounded-lg overflow-hidden shadow-xl">
-              <Image
-                src={localBreakContent?.imageUrl || "/images/thehouse.webp"}
-                alt="Heiwa House location map"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-            </div>
+            {localBreakContent?.imageUrl && (
+              <div className="relative aspect-square rounded-lg overflow-hidden shadow-xl">
+                <Image
+                  src={localBreakContent.imageUrl}
+                  alt="Heiwa House location map"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -453,83 +406,109 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
           </div>
 
           {/* Location Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {(worldClassSurfingContent?.locations || defaultWorldClassSurfing.locations).map((location, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="relative aspect-video">
+          {worldClassSurfingContent?.locations && worldClassSurfingContent.locations.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                {worldClassSurfingContent.locations.map((location, index) => (
+                  <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    {location.imageUrl && (
+                      <div className="relative aspect-video">
+                        <Image
+                          src={location.imageUrl}
+                          alt={`${location.name} Surfing`}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 1024px) 100vw, 50vw"
+                        />
+                      </div>
+                    )}
+                    <div className="p-8">
+                      <div className="flex items-center gap-2 mb-4">
+                        <MapPin className="w-5 h-5 text-accent" />
+                        <h3 className="text-2xl font-bold text-gray-900">{location.name}</h3>
+                        {location.distance && (
+                          <span className="ml-auto text-sm text-gray-500">{location.distance}</span>
+                        )}
+                      </div>
+                      {location.description && (
+                        <p className="text-gray-600 mb-4">
+                          {location.description}
+                        </p>
+                      )}
+                      {location.highlights && location.highlights.length > 0 && (
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          {location.highlights.map((highlight, hIndex) => (
+                            <li key={hIndex} className="flex items-start gap-2">
+                              <span className="text-accent mt-0.5">•</span>
+                              <span>{highlight}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Interactive Map - replaced with custom image */}
+              {worldClassSurfingContent.mapImageUrl && (
+                <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
                   <Image
-                    src={location.imageUrl || '/images/surf3.jpg'}
-                    alt={`${location.name} Surfing`}
+                    src={worldClassSurfingContent.mapImageUrl}
+                    alt="Surf spots map - Ericeira to Peniche"
                     fill
                     className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 70vw"
                   />
                 </div>
-                <div className="p-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <MapPin className="w-5 h-5 text-accent" />
-                    <h3 className="text-2xl font-bold text-gray-900">{location.name}</h3>
-                    {location.distance && (
-                      <span className="ml-auto text-sm text-gray-500">{location.distance}</span>
-                    )}
-                  </div>
-                  <p className="text-gray-600 mb-4">
-                    {location.description}
+              )}
+
+              {worldClassSurfingContent.footerText && (
+                <div className="mt-8 text-center">
+                  <p className="text-gray-600 max-w-2xl mx-auto">
+                    <strong>The perfect location:</strong> {worldClassSurfingContent.footerText}
                   </p>
-                  {location.highlights && location.highlights.length > 0 && (
-                    <ul className="space-y-2 text-sm text-gray-600">
-                      {location.highlights.map((highlight, hIndex) => (
-                        <li key={hIndex} className="flex items-start gap-2">
-                          <span className="text-accent mt-0.5">•</span>
-                          <span>{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Interactive Map - replaced with custom image */}
-          <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
-            <Image
-              src={worldClassSurfingContent?.mapImageUrl || defaultWorldClassSurfing.mapImageUrl}
-              alt="Surf spots map - Ericeira to Peniche"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 70vw"
-            />
-          </div>
-
-          <div className="mt-8 text-center">
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              <strong>The perfect location:</strong> {worldClassSurfingContent?.footerText || defaultWorldClassSurfing.footerText}
-            </p>
-          </div>
+              )}
+            </>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <p className="text-gray-500">World-Class Surfing section not configured in CMS</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section id="section-faq" className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-            {faqContent?.title || 'Surfing FAQs'}
-          </h2>
-          <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm">
-            {faqItems.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border-b border-gray-200 last:border-0">
-                <AccordionTrigger className="px-6 py-4 text-left hover:no-underline hover:bg-gray-50">
-                  <span className="font-semibold text-gray-900">{item.question}</span>
-                </AccordionTrigger>
-                <AccordionContent className="px-6 pb-4">
-                  <p className="text-gray-600 leading-relaxed">{item.answer}</p>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
+      {faqContent?.items && faqContent.items.length > 0 ? (
+        <section id="section-faq" className="py-20 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
+              {faqContent.title || 'Frequently Asked Questions'}
+            </h2>
+            <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm">
+              {faqContent.items.map((item, index) => (
+                <AccordionItem key={index} value={`item-${index}`} className="border-b border-gray-200 last:border-0">
+                  <AccordionTrigger className="px-6 py-4 text-left hover:no-underline hover:bg-gray-50">
+                    <span className="font-semibold text-gray-900">{item.question}</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-6 pb-4">
+                    <p className="text-gray-600 leading-relaxed">{item.answer}</p>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </section>
+      ) : (
+        <section id="section-faq" className="py-20 bg-white">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <p className="text-gray-500">FAQ section not configured in CMS</p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section - Surf Weeks */}
       <section id="section-cta" className="py-20 bg-gray-50">
