@@ -141,8 +141,8 @@ export function BookingWidget({
           }
         }
         
-        // Skip experience and options steps when surf week is pre-selected
-        actions.setSkippedSteps(['experience', 'options']);
+        // Skip only experience step - keep options step to allow participant count selection
+        actions.setSkippedSteps(['experience']);
         
         prevSurfWeekRef.current = currentSurfWeekId;
       } else {

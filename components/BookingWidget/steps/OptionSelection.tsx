@@ -506,12 +506,19 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       {/* Header */}
       <div className="text-center space-y-2">
         <h3 className="text-3xl font-bold text-gray-900">
-          Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
+          {state.experienceType === 'room' 
+            ? 'Choose Your Room' 
+            : state.selectedSurfWeek 
+              ? 'How Many Participants?' 
+              : 'Choose Your Surf Week'
+          }
         </h3>
         <p className="text-lg text-gray-600">
           {state.experienceType === 'room'
             ? 'Select your dates and find the perfect room'
-            : 'Select your perfect surf adventure'
+            : state.selectedSurfWeek
+              ? 'Let us know how many people are joining the surf camp'
+              : 'Select your perfect surf adventure'
           }
         </p>
       </div>

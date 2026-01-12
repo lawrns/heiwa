@@ -129,7 +129,7 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
   // This masks CMS changes and makes it impossible to verify if CMS is working
 
   return (
-    <div className="min-h-screen pt-20 bg-white">
+    <div className="min-h-screen pt-20 pb-24 bg-white">
       {/* Hero Section with Video */}
       <HeroVideo
         title={heroContent?.title || "Heiwa Surf"}

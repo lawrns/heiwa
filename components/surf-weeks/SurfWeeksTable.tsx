@@ -81,19 +81,24 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
                   <div className="text-gray-900 font-semibold text-lg">{getPriceDisplay(week.price)}</div>
                 </div>
               </div>
-              <Button
-                disabled={week.is_full}
-                className={`w-full px-6 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
-                  week.is_full 
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                    : 'bg-accent hover:bg-accent-dark text-white'
-                }`}
-                onClick={() => {
-                  window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: week.id }))
-                }}
-              >
-                {week.is_full ? 'Fully Booked' : 'Book Now'}
-              </Button>
+              <div className="space-y-2">
+                <Button
+                  disabled={week.is_full}
+                  className={`w-full px-6 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
+                    week.is_full 
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                      : 'bg-accent hover:bg-accent-dark text-white'
+                  }`}
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: week.id }))
+                  }}
+                >
+                  {week.is_full ? 'Fully Booked' : 'Book Now'}
+                </Button>
+                {!week.is_full && (
+                  <p className="text-xs text-gray-500 text-center">You'll select your party size next</p>
+                )}
+              </div>
             </div>
 
             {/* Desktop Layout */}
@@ -109,7 +114,7 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
                   <span className="text-xs text-red-600 font-medium">Fully Booked</span>
                 )}
               </div>
-              <div className="flex justify-end">
+              <div className="flex flex-col items-end gap-1">
                 <Button
                   disabled={week.is_full}
                   className={`px-6 py-2 text-sm font-semibold rounded-lg transition-colors ${
@@ -123,6 +128,9 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
                 >
                   {week.is_full ? 'Fully Booked' : 'Book Now'}
                 </Button>
+                {!week.is_full && (
+                  <p className="text-xs text-gray-500">Select party size next</p>
+                )}
               </div>
             </div>
           </div>
