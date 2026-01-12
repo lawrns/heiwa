@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { Plus } from 'lucide-react'
 import { CalendarGrid } from '@/components/admin/calendar/CalendarGrid'
 import { CalendarSidebar } from '@/components/admin/calendar/CalendarSidebar'
