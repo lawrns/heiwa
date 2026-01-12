@@ -7,7 +7,7 @@
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import { Skeleton, SkeletonText, SkeletonButton, SkeletonInput } from '@/components/ui/skeleton'
+import { Skeleton, SkeletonButton, SkeletonInput } from '@/components/ui/skeleton'
 
 interface StepSkeletonProps {
   className?: string

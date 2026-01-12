@@ -36,7 +36,6 @@ export default function RichTextEditor({
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false)
   const [linkUrl, setLinkUrl] = useState('')
   const [linkText, setLinkText] = useState('')
-  const [selectedText, setSelectedText] = useState('')
 
   const execCommand = useCallback((command: string, value?: string) => {
     document.execCommand(command, false, value)
@@ -46,7 +45,6 @@ export default function RichTextEditor({
   const handleTextSelection = useCallback(() => {
     const selection = window.getSelection()
     if (selection && selection.toString()) {
-      setSelectedText(selection.toString())
       setLinkText(selection.toString())
     }
   }, [])

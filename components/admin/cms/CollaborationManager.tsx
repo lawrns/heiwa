@@ -52,7 +52,6 @@ export default function CollaborationManager({
   const [showComments, setShowComments] = useState(false)
   const [newComment, setNewComment] = useState('')
   const [selectedSection, setSelectedSection] = useState('')
-  const [isConnecting, setIsConnecting] = useState(true)
   const [connectionError, setConnectionError] = useState<string | null>(null)
 
   const wsRef = useRef<WebSocket | null>(null)
@@ -73,7 +72,6 @@ export default function CollaborationManager({
       try {
         // For demo purposes, we'll simulate WebSocket connection
         // In production, this would connect to your WebSocket server
-        setIsConnecting(false)
         setConnectionError(null)
         
         // Simulate active users
@@ -96,7 +94,6 @@ export default function CollaborationManager({
       } catch (error) {
         console.error('WebSocket connection failed:', error)
         setConnectionError('Failed to connect to collaboration server')
-        setIsConnecting(false)
       }
     }
 

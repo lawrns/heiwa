@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Users, Bed, ArrowRight, Check } from 'lucide-react';
+import { AlertCircle, Users, Bed, Check, X, ChevronDown } from 'lucide-react';
 import { BookingState, RoomAssignment as RoomAssignmentType, Room, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { RoomImageGallery, RoomThumbnail } from '../components/RoomImageGallery';
-import { Button } from '@/components/ui/button';
 
 interface RoomAssignmentProps {
   state: BookingState;

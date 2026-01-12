@@ -220,9 +220,10 @@ describe('Payments API', () => {
 
   describe('POST /api/payments', () => {
     it('should create a new payment', async () => {
+      const validBookingId = '550e8400-e29b-41d4-a716-446655440000';
       const mockPayment = {
         id: 'payment-new',
-        booking_id: 'booking-1',
+        booking_id: validBookingId,
         amount: 500,
         currency: 'EUR',
         payment_method: 'card_stripe',
@@ -251,7 +252,19 @@ describe('Payments API', () => {
             select: jest.fn().mockReturnValue({
               eq: jest.fn().mockReturnValue({
                 single: jest.fn().mockResolvedValue({
-                  data: { id: 'booking-1', client_ids: [] },
+                  data: { id: validBookingId, client_ids: [] },
+                  error: null,
+                }),
+              }),
+            }),
+          };
+        }
+        if (table === 'clients') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({
+                  data: null,
                   error: null,
                 }),
               }),
@@ -268,7 +281,7 @@ describe('Payments API', () => {
       const request = new NextRequest('http://localhost:3000/api/payments', {
         method: 'POST',
         body: JSON.stringify({
-          booking_id: 'booking-1',
+          booking_id: validBookingId,
           amount: 500,
           payment_method: 'card_stripe',
         }),
@@ -334,6 +347,7 @@ describe('Payments API', () => {
     });
 
     it('should use default currency EUR', async () => {
+      const validBookingId = '550e8400-e29b-41d4-a716-446655440001';
       const insertMock = jest.fn().mockReturnValue({
         select: jest.fn().mockReturnValue({
           single: jest.fn().mockResolvedValue({
@@ -343,38 +357,50 @@ describe('Payments API', () => {
         }),
       });
 
-      const mockFrom = jest.fn();
-      
-      // First call: insert payment
-      mockFrom.mockReturnValueOnce({
-        insert: insertMock,
-      });
-      
-      // Second call: update booking
-      mockFrom.mockReturnValueOnce({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({ data: null, error: null }),
-        }),
-      });
-      
-      // Third call: fetch booking for client
-      mockFrom.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({
-              data: { id: 'booking-1', client_ids: [] },
-              error: null,
+      (supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'payments') {
+          return {
+            insert: insertMock,
+          };
+        }
+        if (table === 'bookings') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({
+                  data: { id: validBookingId, total_amount: 500, client_ids: [] },
+                  error: null,
+                }),
+              }),
             }),
-          }),
-        }),
+            update: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ data: null, error: null }),
+            }),
+          };
+        }
+        if (table === 'clients') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({
+                  data: null,
+                  error: null,
+                }),
+              }),
+            }),
+          };
+        }
+        return {
+          select: jest.fn().mockReturnThis(),
+          eq: jest.fn().mockReturnThis(),
+          single: jest.fn().mockResolvedValue({ data: null, error: null }),
+        };
       });
-
-      (supabaseAdmin.from as jest.Mock) = mockFrom;
 
       const request = new NextRequest('http://localhost:3000/api/payments', {
         method: 'POST',
         body: JSON.stringify({
-          booking_id: 'booking-1',
+          booking_id: validBookingId,
           amount: 500,
           payment_method: 'card_stripe',
         }),
@@ -407,21 +433,44 @@ describe('Payments API', () => {
     });
 
     it('should handle database errors on insert', async () => {
-      const mockInsertQuery = {
-        insert: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        single: jest.fn().mockResolvedValue({
-          data: null,
-          error: { message: 'Insert failed' },
-        }),
-      };
+      const validBookingId = '550e8400-e29b-41d4-a716-446655440002';
 
-      (supabaseAdmin.from as jest.Mock).mockReturnValue(mockInsertQuery);
+      (supabaseAdmin.from as jest.Mock).mockImplementation((table: string) => {
+        if (table === 'payments') {
+          return {
+            insert: jest.fn().mockReturnValue({
+              select: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({
+                  data: null,
+                  error: { message: 'Insert failed', code: 'PGRST001' },
+                }),
+              }),
+            }),
+          };
+        }
+        if (table === 'bookings') {
+          return {
+            select: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                single: jest.fn().mockResolvedValue({
+                  data: { id: validBookingId, total_amount: 500, client_ids: [] },
+                  error: null,
+                }),
+              }),
+            }),
+          };
+        }
+        return {
+          select: jest.fn().mockReturnThis(),
+          eq: jest.fn().mockReturnThis(),
+          single: jest.fn().mockResolvedValue({ data: null, error: null }),
+        };
+      });
 
       const request = new NextRequest('http://localhost:3000/api/payments', {
         method: 'POST',
         body: JSON.stringify({
-          booking_id: 'booking-1',
+          booking_id: validBookingId,
           amount: 500,
           payment_method: 'card_stripe',
         }),

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { ChevronRight, Edit, Trash2, Eye } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 
 interface CMSCardProps {
   title: string

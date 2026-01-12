@@ -97,7 +97,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
 
   useEffect(() => {
     loadMedia()
-  }, [filters])
+  }, [loadMedia, filters])
 
   // Show alert
   const showAlert = (type: 'success' | 'error', message: string) => {

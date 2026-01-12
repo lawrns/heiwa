@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { MapPin, Users, Star, Check, Clock, Wifi, Car, Utensils, Calendar, Minus, Plus } from 'lucide-react';
+import { MapPin, Users, Star, Check, Wifi, Car, Utensils, Calendar, Minus, Plus } from 'lucide-react';
 import { BookingState, PricingBreakdown, ParticipantName, Room, SurfWeek } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
@@ -142,7 +142,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
         return () => clearTimeout(debounceTimer);
       }
     }
-  }, [checkInDate, checkOutDate, fetchDateAvailability]);
+  }, [checkInDate, checkOutDate, fetchDateAvailability, state.pricing]);
 
   // For surf weeks, if a surf week was already selected in step 2, auto-select it here
   useEffect(() => {

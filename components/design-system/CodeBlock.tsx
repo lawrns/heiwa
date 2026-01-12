@@ -6,11 +6,10 @@ import { cn } from "@/lib/utils";
 
 interface CodeBlockProps {
   code: string;
-  language?: string;
   className?: string;
 }
 
-export function CodeBlock({ code, language = 'tsx', className }: CodeBlockProps) {
+export function CodeBlock({ code, className }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {

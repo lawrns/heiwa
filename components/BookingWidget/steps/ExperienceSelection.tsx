@@ -24,7 +24,6 @@ const defaultPrices: BookingWidgetPrices = {
 export function ExperienceSelection({ state, actions }: ExperienceSelectionProps) {
   const pendingTypeRef = useRef<'room' | 'surf-week' | null>(null);
   const [prices, setPrices] = useState<BookingWidgetPrices>(defaultPrices);
-  const [pricesLoading, setPricesLoading] = useState(true);
 
   // Fetch prices from API
   useEffect(() => {
@@ -44,8 +43,6 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
       } catch (error) {
         console.error('Error fetching booking widget prices:', error);
         // Use default prices on error
-      } finally {
-        setPricesLoading(false);
       }
     };
 
@@ -92,10 +89,6 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
   useEffect(() => {
     if (pendingTypeRef.current && state.experienceType === pendingTypeRef.current) {
       // State has been updated, safe to advance
-      const type = pendingTypeRef.current;
-      pendingTypeRef.current = null;
-      
-      // Use a small delay to ensure React has finished rendering
       const timeoutId = setTimeout(() => {
         try {
           actions.nextStep();

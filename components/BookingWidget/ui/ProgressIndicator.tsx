@@ -26,12 +26,10 @@ export function ProgressIndicator({
   stepFlow, 
   totalSteps, 
   skippedSteps = [], 
-  onStepClick,
-  completedSteps = []
+  onStepClick
 }: ProgressIndicatorProps) {
   // Use provided stepFlow or default to basic 5-step flow
   const currentStepFlow = stepFlow || ['experience', 'options', 'add-ons', 'guest-details', 'review-pay'];
-  const maxSteps = totalSteps || currentStepFlow.length;
   
   // Filter out skipped steps from display
   const visibleSteps = currentStepFlow.filter(step => !skippedSteps.includes(step));

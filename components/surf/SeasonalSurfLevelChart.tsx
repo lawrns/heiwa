@@ -104,7 +104,7 @@ export function SeasonalSurfLevelChart() {
           {/* Header row with months */}
           <div className="grid grid-cols-[140px_repeat(12,1fr)] gap-2 mb-4">
             <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider"></div>
-            {months.map((month, index) => (
+            {months.map((month) => (
               <div
                 key={month}
                 className="text-center text-sm sm:text-base font-bold text-gray-700 py-2"
@@ -116,7 +116,7 @@ export function SeasonalSurfLevelChart() {
 
           {/* Level rows */}
           <div className="space-y-3">
-            {surfLevels.map((level, levelIndex) => {
+            {surfLevels.map((level) => {
               const conditions = waveConditionsByLevel[level.name]
               
               return (

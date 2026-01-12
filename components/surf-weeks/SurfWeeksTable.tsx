@@ -96,7 +96,7 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
                   {week.is_full ? 'Fully Booked' : 'Book Now'}
                 </Button>
                 {!week.is_full && (
-                  <p className="text-xs text-gray-500 text-center">You'll select your party size next</p>
+                  <p className="text-xs text-gray-500 text-center">You&apos;ll select your party size next</p>
                 )}
               </div>
             </div>

@@ -14,14 +14,9 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   const [isOpen, setIsOpen] = useState(false)
   const [fetchedItems, setFetchedItems] = useState<NavigationItem[]>([])
   const [activitiesOpen, setActivitiesOpen] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
   const [siteSettings, setSiteSettings] = useState<Record<string, string>>({})
   const [isSettingsLoading, setIsSettingsLoading] = useState(true)
   const { openBooking } = useBooking()
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   useEffect(() => {
     fetch('/api/cms/settings')
@@ -43,13 +38,6 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
     }
   }, [initialItems])
 
-  // Filter out activity items that should be in dropdown (including SURF) and THE SPOT
-  const items = useMemo(() => {
-    const allItems = initialItems || fetchedItems
-    return allItems.filter(item =>
-      !['/play', '/flow', '/surf', '/the-spot'].includes(item.path)
-    )
-  }, [initialItems, fetchedItems])
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => {

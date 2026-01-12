@@ -63,7 +63,7 @@ describe('FacilitiesEditor Component', () => {
       expect(screen.getByDisplayValue('Relaxation area')).toBeInTheDocument();
     });
 
-    it('should prefer content.items over content.facilities when both exist', () => {
+    it('should prefer content.facilities over content.items when both exist', () => {
       const content = {
         items: [
           { title: 'Pool', description: 'Swimming pool', image: '/pool.jpg' },
@@ -75,9 +75,9 @@ describe('FacilitiesEditor Component', () => {
 
       render(<FacilitiesEditor content={content} onChange={mockOnChange} />);
 
-      // Should show items, not facilities
-      expect(screen.getByDisplayValue('Pool')).toBeInTheDocument();
-      expect(screen.queryByDisplayValue('Spa')).not.toBeInTheDocument();
+      // Should show facilities, not items
+      expect(screen.getByDisplayValue('Spa')).toBeInTheDocument();
+      expect(screen.queryByDisplayValue('Pool')).not.toBeInTheDocument();
     });
 
     it('should show empty state when both items and facilities are empty', () => {
@@ -120,11 +120,11 @@ describe('FacilitiesEditor Component', () => {
       await user.click(addButton);
 
       expect(mockOnChange).toHaveBeenCalledWith({
-        items: [{ title: '', description: '', image: '' }],
+        facilities: [{ title: '', description: '', image: '' }],
       });
     });
 
-    it('should save new facility to items field even if data came from facilities', async () => {
+    it('should save new facility to facilities field when data came from facilities', async () => {
       const user = userEvent.setup();
       const content = {
         facilities: [
@@ -138,18 +138,17 @@ describe('FacilitiesEditor Component', () => {
       await user.click(addButton);
 
       expect(mockOnChange).toHaveBeenCalledWith({
-        ...content,
-        items: [
+        facilities: [
           { title: 'Spa', description: 'Relaxation area', image: '/spa.jpg' },
           { title: '', description: '', image: '' },
         ],
       });
     });
 
-    it('should append to existing items when adding new facility', async () => {
+    it('should append to existing facilities when adding new facility', async () => {
       const user = userEvent.setup();
       const content = {
-        items: [
+        facilities: [
           { title: 'Pool', description: 'Swimming pool', image: '/pool.jpg' },
         ],
       };
@@ -160,7 +159,7 @@ describe('FacilitiesEditor Component', () => {
       await user.click(addButton);
 
       expect(mockOnChange).toHaveBeenCalledWith({
-        items: [
+        facilities: [
           { title: 'Pool', description: 'Swimming pool', image: '/pool.jpg' },
           { title: '', description: '', image: '' },
         ],
@@ -172,7 +171,7 @@ describe('FacilitiesEditor Component', () => {
     it('should remove facility when trash button is clicked', async () => {
       const user = userEvent.setup();
       const content = {
-        items: [
+        facilities: [
           { title: 'Pool', description: 'Swimming pool', image: '/pool.jpg' },
           { title: 'Gym', description: 'Fitness center', image: '/gym.jpg' },
         ],
@@ -188,7 +187,7 @@ describe('FacilitiesEditor Component', () => {
       await user.click(deleteButtons[0]);
 
       expect(mockOnChange).toHaveBeenCalledWith({
-        items: [
+        facilities: [
           { title: 'Gym', description: 'Fitness center', image: '/gym.jpg' },
         ],
       });
@@ -197,7 +196,7 @@ describe('FacilitiesEditor Component', () => {
     it('should remove correct facility by index', async () => {
       const user = userEvent.setup();
       const content = {
-        items: [
+        facilities: [
           { title: 'Pool', description: 'Swimming pool', image: '/pool.jpg' },
           { title: 'Gym', description: 'Fitness center', image: '/gym.jpg' },
           { title: 'Spa', description: 'Relaxation area', image: '/spa.jpg' },
@@ -214,14 +213,14 @@ describe('FacilitiesEditor Component', () => {
       await user.click(deleteButtons[1]);
 
       expect(mockOnChange).toHaveBeenCalledWith({
-        items: [
+        facilities: [
           { title: 'Pool', description: 'Swimming pool', image: '/pool.jpg' },
           { title: 'Spa', description: 'Relaxation area', image: '/spa.jpg' },
         ],
       });
     });
 
-    it('should save removed facility changes to items field', async () => {
+    it('should save removed facility changes to facilities field', async () => {
       const user = userEvent.setup();
       const content = {
         facilities: [
@@ -239,8 +238,7 @@ describe('FacilitiesEditor Component', () => {
       await user.click(deleteButtons[0]);
 
       expect(mockOnChange).toHaveBeenCalledWith({
-        ...content,
-        items: [
+        facilities: [
           { title: 'Pool', description: 'Swimming pool', image: '/pool.jpg' },
         ],
       });
@@ -445,7 +443,7 @@ describe('FacilitiesEditor Component', () => {
       expect(deleteButtons.length).toBeGreaterThanOrEqual(2);
     });
 
-    it('should display "Items" label in header', () => {
+    it('should display "Facilities" label in header', () => {
       const content = {
         items: [
           { title: 'Pool', description: 'Swimming pool', image: '/pool.jpg' },
@@ -454,7 +452,7 @@ describe('FacilitiesEditor Component', () => {
 
       render(<FacilitiesEditor content={content} onChange={mockOnChange} />);
 
-      expect(screen.getByText('Items')).toBeInTheDocument();
+      expect(screen.getByText('Facilities')).toBeInTheDocument();
     });
   });
 
@@ -531,7 +529,7 @@ describe('FacilitiesEditor Component', () => {
   });
 
   describe('Data Migration Consistency', () => {
-    it('should always save to items field regardless of source', async () => {
+    it('should always save to facilities field regardless of source', async () => {
       const user = userEvent.setup();
 
       // Test 1: Starting from facilities
@@ -550,13 +548,13 @@ describe('FacilitiesEditor Component', () => {
 
       expect(mockOnChange).toHaveBeenCalledWith(
         expect.objectContaining({
-          items: expect.any(Array),
+          facilities: expect.any(Array),
         })
       );
 
       mockOnChange.mockClear();
 
-      // Test 2: Starting from items
+      // Test 2: Starting from items (legacy data)
       const contentFromItems = {
         items: [
           { title: 'Pool', description: 'Swimming pool', image: '/pool.jpg' },
@@ -570,7 +568,7 @@ describe('FacilitiesEditor Component', () => {
 
       expect(mockOnChange).toHaveBeenCalledWith(
         expect.objectContaining({
-          items: expect.any(Array),
+          facilities: expect.any(Array),
         })
       );
     });

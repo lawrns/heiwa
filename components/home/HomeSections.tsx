@@ -1,8 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { supabaseAdmin } from '@/lib/supabase'
-import { SectionSkeleton, CardGridSkeleton, VideoSectionSkeleton, RoomsGridSkeleton, SurfWeeksTableSkeleton } from '@/components/ui/cms-section-skeleton'
-import { ImageCarousel } from '@/components/ui/image-carousel'
 import { GoogleReviews, GoogleRatingSummary } from '@/components/ui/google-reviews'
 import { AnimatedHeroHeading } from '@/components/ui/animated-hero-heading'
 import { ScrollIndicator } from '@/components/ui/scroll-indicator'

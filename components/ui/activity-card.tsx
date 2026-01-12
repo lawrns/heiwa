@@ -28,7 +28,7 @@ export function ActivityCard({ activity, className = '' }: ActivityCardProps) {
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        
+        <p className="text-gray-600 text-sm">Don&apos;t miss out on this amazing experience!</p>
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 group-active:bg-black/50 transition-colors" />
         

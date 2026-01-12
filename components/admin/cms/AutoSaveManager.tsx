@@ -128,7 +128,7 @@ export default function AutoSaveManager<T extends object>({
       clearTimeout(saveTimeoutRef.current)
     }
     await handleAutoSave()
-  }, [handleAutoSave])
+  }, [handleAutoSave]);
 
   // Undo function
   const handleUndo = useCallback(() => {

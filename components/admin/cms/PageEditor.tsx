@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { Plus, Settings, Eye, Save, ArrowLeft, MoreVertical, Copy, Trash2, Edit, Clock, Users, MessageSquare } from 'lucide-react'
+import { Plus, Settings, Eye, Save, ArrowLeft, Trash2 } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminAlert from '@/components/admin/ui/AdminAlert'
 import AdminModal from '@/components/admin/ui/AdminModal'
@@ -49,8 +49,6 @@ export default function PageEditor({ pageSlug, onBack, initialData }: PageEditor
   const [pageData, setPageData] = useState<PageData | null>(null)
   const [showAddSection, setShowAddSection] = useState(false)
   const [showPageSettings, setShowPageSettings] = useState(false)
-  const [selectedSection, setSelectedSection] = useState<PageSection | null>(null)
-  const [showEditSection, setShowEditSection] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
   const [showVersionHistory, setShowVersionHistory] = useState(false)
   const [isPageLocked, setIsPageLocked] = useState(false)

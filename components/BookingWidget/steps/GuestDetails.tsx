@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, Utensils, AlertCircle, Edit3, ChevronDown, CheckCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
 import { BookingState, GuestInfo } from '../types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -90,7 +90,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     if (!allCompleted && userManuallyExpanded) {
       setUserManuallyExpanded(false);
     }
-  }, [guestForms, state.guestDetails, state.guests, isCollapsed, userManuallyExpanded]);
+  }, [guestForms, state.guestDetails, state.guests, isCollapsed, userManuallyExpanded, checkAllGuestsCompleted]);
 
   const validateForm = (formData: GuestFormData, index: number): string[] => {
     const formErrors: string[] = [];

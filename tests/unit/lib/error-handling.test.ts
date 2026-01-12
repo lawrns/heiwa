@@ -36,7 +36,7 @@ describe('Error Handler', () => {
   describe('Custom Error Classes', () => {
     describe('APIError', () => {
       it('should create APIError with correct properties', () => {
-        const error = new APIError('Not found', 404, '/api/bookings');
+        const error = new APIError('Not found', 404, 'NOT_FOUND', '/api/bookings');
 
         expect(error.message).toBe('Not found');
         expect(error.statusCode).toBe(404);
@@ -45,7 +45,7 @@ describe('Error Handler', () => {
       });
 
       it('should include context when provided', () => {
-        const error = new APIError('Error', 500, '/api/test', { userId: '123' });
+        const error = new APIError('Error', 500, 'INTERNAL_ERROR', '/api/test', { userId: '123' });
 
         expect(error.context).toEqual({ userId: '123' });
       });

@@ -28,11 +28,12 @@ const EXPECTED_FONT_WEIGHT_CLASS = 'font-medium';
 
 // TOON-compliant dimension classes for Property 2
 // Updated to match actual Button component implementation
-const SIZE_DIMENSION_CLASSES: Record<string, { minHeight: string; paddingX: string; paddingY: string }> = {
-  default: { minHeight: 'min-h-[40px]', paddingX: 'px-5', paddingY: 'py-2.5' },
-  sm: { minHeight: 'min-h-[36px]', paddingX: 'px-4', paddingY: 'py-2' },
-  lg: { minHeight: 'min-h-[44px]', paddingX: 'px-6', paddingY: 'py-3' },
-  icon: { minHeight: 'min-h-[44px]', paddingX: '', paddingY: '' }, // icon uses w-[44px] instead
+// Note: Component uses pl- and pr- instead of px- for left/right padding
+const SIZE_DIMENSION_CLASSES: Record<string, { minHeight: string; paddingLeft: string; paddingRight: string; paddingY: string }> = {
+  default: { minHeight: 'min-h-[40px]', paddingLeft: 'pl-5', paddingRight: 'pr-5', paddingY: 'py-2.5' },
+  sm: { minHeight: 'min-h-[36px]', paddingLeft: 'pl-4', paddingRight: 'pr-4', paddingY: 'py-2' },
+  lg: { minHeight: 'min-h-[44px]', paddingLeft: 'pl-6', paddingRight: 'pr-6', paddingY: 'py-3' },
+  icon: { minHeight: 'min-h-[44px]', paddingLeft: '', paddingRight: '', paddingY: '' }, // icon uses w-[44px] instead
 };
 
 // Border radius should be 10px for all buttons
@@ -167,33 +168,34 @@ describe('Button Dimensions Properties', () => {
 
   /**
    * Property 2: Padding Compliance
-   * For any non-icon button size, horizontal padding SHALL be at least 16px (px-4)
+   * For any non-icon button size, horizontal padding SHALL be at least 16px (pl-4 pr-4)
    * for default, and vertical padding SHALL be at least 10px (py-2.5) for default.
    */
   it('Property 2: For any non-icon button, padding SHALL match TOON specification', () => {
     // Filter out 'icon' size as it uses width instead of padding
     const nonIconSizeArb = fc.constantFrom('default', 'sm', 'lg') as fc.Arbitrary<ButtonProps['size']>;
-    
+
     fc.assert(
       fc.property(buttonVariantArb, nonIconSizeArb, (variant, size) => {
         const { container } = render(
           React.createElement(Button, { variant, size }, 'Test Button')
         );
         const buttonElement = container.querySelector('button');
-        
+
         if (!buttonElement) {
           return false;
         }
-        
+
         const className = buttonElement.className;
         const expectedDimensions = SIZE_DIMENSION_CLASSES[size || 'default'];
-        
-        const hasPaddingXClass = className.includes(expectedDimensions.paddingX);
+
+        const hasPaddingLeftClass = className.includes(expectedDimensions.paddingLeft);
+        const hasPaddingRightClass = className.includes(expectedDimensions.paddingRight);
         const hasPaddingYClass = className.includes(expectedDimensions.paddingY);
-        
+
         cleanup();
-        
-        return hasPaddingXClass && hasPaddingYClass;
+
+        return hasPaddingLeftClass && hasPaddingRightClass && hasPaddingYClass;
       }),
       { numRuns: 100 }
     );

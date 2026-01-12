@@ -114,7 +114,7 @@ export function GalleryEditor({ content, onChange }: GalleryEditorProps) {
                 <ImagePicker
                   value={img}
                   onChange={url => updateImage(index, url)}
-                  placeholder="Select gallery image..."
+                  placeholder={`Add image URL or &quot;Drag and drop&quot; an image...`}
                 />
               </div>
               <button

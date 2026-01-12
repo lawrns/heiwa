@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, Trash2, Mail, Phone, AlertCircle, Edit, Bed } from 'lucide-react'
+import { Users, Trash2, Mail, Phone, AlertCircle, Bed } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'react-toastify'
@@ -63,7 +63,7 @@ export function ParticipantsList({ surfCampId, onParticipantRemoved }: Participa
     if (surfCampId) {
       fetchParticipants()
     }
-  }, [surfCampId])
+  }, [fetchParticipants, surfCampId])
 
   const handleRemoveParticipant = async (participant: Participant) => {
     const confirmMessage = `Are you sure you want to remove ${participant.name} from this surf week?\n\nThis will:\n- Cancel their enrollment\n- Remove their room assignment (if any)\n\nThis action cannot be undone.`

@@ -152,7 +152,7 @@ describe('Admin API Integration Tests', () => {
         const data = await response.json();
 
         expect(response.status).toBe(401);
-        expect(data.message).toBe('Invalid password');
+        expect(data.error).toBe('Unauthorized');
       });
 
       it('should return 401 with empty password', async () => {
@@ -168,17 +168,10 @@ describe('Admin API Integration Tests', () => {
         const data = await response.json();
 
         expect(response.status).toBe(401);
-        expect(data.message).toBe('Invalid password');
+        expect(data.error).toBe('Unauthorized');
       });
 
       it('should handle rate limiting', async () => {
-        const { rateLimiters } = require('@/lib/rate-limiter');
-        rateLimiters.auth.mockReturnValueOnce({
-          allowed: false,
-          remaining: 0,
-          resetAt: Date.now() + 60000,
-        });
-
         const request = new NextRequest('http://localhost/api/admin/login', {
           method: 'POST',
           headers: {
@@ -187,11 +180,23 @@ describe('Admin API Integration Tests', () => {
           body: JSON.stringify({ password: 'test_admin_password' }),
         });
 
+        // Make 6 requests to exceed the limit (5 per 15 minutes)
+        for (let i = 0; i < 6; i++) {
+          const req = new NextRequest('http://localhost/api/admin/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ password: 'wrong' }),
+          });
+          await loginHandler.POST(req);
+        }
+
         const response = await loginHandler.POST(request);
         const data = await response.json();
 
         expect(response.status).toBe(429);
-        expect(data.message).toContain('Too many login attempts');
+        expect(data.error).toBe('Too many requests');
       });
     });
   });

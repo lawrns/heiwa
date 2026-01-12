@@ -31,11 +31,9 @@ export function RoomShowcase({
   bookingHref = '/booking',
 }: RoomShowcaseProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [autoPlay, setAutoPlay] = useState(true)
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
-    setAutoPlay(false)
   }
 
   const goToNext = () => {

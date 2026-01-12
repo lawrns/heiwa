@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Star, User, Mail, MessageSquare, Eye, EyeOff, Download } from 'lucide-react'
+import { Plus, Edit, Trash2, Star } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminModal from '@/components/admin/ui/AdminModal'
 import AdminAlert from '@/components/admin/ui/AdminAlert'

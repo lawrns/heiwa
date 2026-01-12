@@ -27,9 +27,7 @@ const validateFile = (file: File) => ({ valid: true, error: '' });
 const uploadFiles = async (
   files: File[],
   path: string,
-  bucket: string,
-  onProgress: (index: number, progress: UploadProgress) => void,
-  onFileComplete?: (index: number, result: UploadedFile) => void
+  onProgress: (index: number, progress: UploadProgress) => void
 ): Promise<UploadedFile[]> => {
   // Stub implementation - return empty array
   return [];
@@ -146,7 +144,7 @@ export function ImageUpload({
 
   const handleUploadClick = useCallback(() => {
     fileInputRef.current?.click();
-  }, []);
+  }, [bucketName]);
 
   return (
     <div className={`space-y-4 ${className}`}>

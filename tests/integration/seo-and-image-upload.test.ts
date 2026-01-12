@@ -84,7 +84,7 @@ describe('SEO Settings and Image Upload Integration Tests', () => {
         is_published: true,
       }
 
-      mockFrom
+      supabaseAdmin.from
         .mockReturnValueOnce({
           select: jest.fn().mockReturnValue({
             eq: jest.fn().mockReturnValue({
@@ -130,7 +130,7 @@ describe('SEO Settings and Image Upload Integration Tests', () => {
         is_published: false,
       }
 
-      mockFrom
+      supabaseAdmin.from
         .mockReturnValueOnce({
           select: jest.fn().mockReturnValue({
             eq: jest.fn().mockReturnValue({
@@ -164,7 +164,7 @@ describe('SEO Settings and Image Upload Integration Tests', () => {
     })
 
     it('should handle database errors', async () => {
-      mockFrom
+      supabaseAdmin.from
         .mockReturnValueOnce({
           select: jest.fn().mockReturnValue({
             eq: jest.fn().mockReturnValue({
@@ -214,7 +214,7 @@ describe('SEO Settings and Image Upload Integration Tests', () => {
 
       supabaseAdmin.storage.from = mockStorageFrom
 
-      mockFrom.mockReturnValue({
+      supabaseAdmin.from.mockReturnValue({
         insert: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnValue({
             single: jest.fn().mockResolvedValue({
@@ -332,7 +332,7 @@ describe('SEO Settings and Image Upload Integration Tests', () => {
 
       supabaseAdmin.storage.from = mockStorageFrom
 
-      mockFrom
+      supabaseAdmin.from
         .mockReturnValueOnce({
           insert: jest.fn().mockReturnValue({
             select: jest.fn().mockReturnValue({

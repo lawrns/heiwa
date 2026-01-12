@@ -270,7 +270,7 @@ export function FAQManager() {
             )}
           </div>
         ) : (
-          filteredItems.map((faq, index) => (
+          faqItems.map(faq => (
             <div
               key={faq.id}
               className={`bg-white rounded-lg shadow p-6 border-2 transition-all ${

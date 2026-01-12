@@ -3,7 +3,7 @@ import { BookingState, BookingAction, GuestInfo, PricingBreakdown, AddOnSelectio
 import { availabilityService } from '@/lib/availability';
 import { bookingService } from '@/lib/booking-service';
 import { validateBookingSubmission } from '@/lib/booking-utils';
-import { saveBookingProgress, loadBookingProgress, clearBookingProgress } from '@/lib/utils/booking-persistence';
+import { saveBookingProgress, loadBookingProgress } from '@/lib/utils/booking-persistence';
 import { dateToISOString } from '@/lib/utils/date-helpers';
 
 const initialState: BookingState = {
@@ -123,7 +123,7 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
       };
     
     case 'CLEAR_ERROR':
-      const { [action.payload]: removed, ...remainingErrors } = state.errors;
+      const { [action.payload]: _, ...remainingErrors } = state.errors;
       return { ...state, errors: remainingErrors };
     
     case 'SET_SKIPPED_STEPS':
@@ -435,7 +435,7 @@ export function useBookingFlow() {
       default:
         return false;
     }
-  }, [state, stepFlow]);
+  }, [state.currentStep, state.experienceType, state.dates, state.selectedOption, state.selectedSurfWeek, state.roomAssignments, state.guests, state.guestDetails, state.paymentMethod, stepFlow]);
 
   // API integration methods
   const checkAvailability = useCallback(async (roomId: string) => {

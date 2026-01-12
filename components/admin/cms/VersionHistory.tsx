@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Clock, User, Eye, RotateCcw, Trash2 } from 'lucide-react'
+import { Clock, Eye, RotateCcw, Trash2 } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminModal from '@/components/admin/ui/AdminModal'
 
@@ -39,7 +39,7 @@ export default function VersionHistory({
     if (isOpen && pageSlug) {
       fetchVersions()
     }
-  }, [isOpen, pageSlug])
+  }, [fetchVersions, isOpen, pageSlug])
 
   const fetchVersions = async () => {
     try {

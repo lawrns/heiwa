@@ -52,41 +52,26 @@ export function ActivityGrid({
 }: ActivityGridProps) {
   const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetchActivities()
-  }, [category, tier])
 
   const fetchActivities = async () => {
     try {
       setLoading(true)
       const params = new URLSearchParams({ category })
-      if (tier !== 'all') {
-        params.append('tier', tier)
-      }
-      
-      const response = await fetch(`/api/activities?${params.toString()}`)
-      const result = await response.json()
-      
-      if (result.success) {
-        // Remove duplicates by id
-        const uniqueActivities = result.data.filter((activity: Activity, index: number, self: Activity[]) =>
-          index === self.findIndex((a: Activity) => a.id === activity.id)
-        )
-        setActivities(uniqueActivities)
-      } else {
-        setError(result.error)
-      }
+      if (tier) params.append('tier', tier)
+      const response = await fetch(`/api/activities?${params}`)
+      const data = await response.json()
+      setActivities(data.data || [])
     } catch (err) {
-      console.error('Error fetching activities:', err)
-      // Don't show error, just show empty state gracefully
-      setError(null)
+      console.error('Failed to fetch activities:', err)
       setActivities([])
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    fetchActivities()
+  }, [category, tier, fetchActivities])
 
   if (loading) {
     return (

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { ChevronRight, Menu, X, ArrowLeft, AlertCircle } from 'lucide-react'
+import { Menu, X, ArrowLeft, AlertCircle } from 'lucide-react'
 import CMSNavigation from './CMSNavigation'
 import CMSBreadcrumb from './CMSBreadcrumb'
 

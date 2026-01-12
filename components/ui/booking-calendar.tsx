@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { ChevronLeft, ChevronRight, Calendar, Users, BedDouble, Waves } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar, BedDouble, Waves } from 'lucide-react'
 
 interface Booking {
   id: string
@@ -30,7 +30,6 @@ export function BookingCalendar({ bookings, onBookingClick }: BookingCalendarPro
     const month = currentDate.getMonth()
     
     const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(year, month + 1, 0)
     const startDate = new Date(firstDay)
     startDate.setDate(startDate.getDate() - firstDay.getDay())
     
@@ -47,7 +46,6 @@ export function BookingCalendar({ bookings, onBookingClick }: BookingCalendarPro
 
   // Get bookings for a specific date
   const getBookingsForDate = (date: Date) => {
-    const dateStr = date.toISOString().split('T')[0]
     return bookings.filter(booking => {
       const checkIn = new Date(booking.checkIn)
       const checkOut = new Date(booking.checkOut)

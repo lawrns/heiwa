@@ -216,7 +216,7 @@ export function PageContentEditor() {
             </AdminButton>
           </div>
         ) : (
-          pageContent.map((section, index) => {
+          pageContent.map(section => {
             const Icon = getSectionIcon(section.section_type)
             return (
               <div

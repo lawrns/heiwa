@@ -29,7 +29,6 @@ import type { DraggableProvidedDragHandleProps } from '@hello-pangea/dnd'
 
 interface SectionCardProps {
   section: PageSection
-  index: number
   onEdit: () => void
   onDelete: () => void
   onDuplicate: () => void

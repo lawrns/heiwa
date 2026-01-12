@@ -97,7 +97,8 @@ describe('HomeSections', () => {
 
   describe('HomeHero', () => {
     it('should render hero subtitle with correct font size classes', async () => {
-      const mockSection = {
+      const mockHeroSection = {
+        section_type: 'hero',
         content: {
           title: 'Test Title',
           subtitle: 'Test Subtitle',
@@ -108,9 +109,7 @@ describe('HomeSections', () => {
         select: jest.fn(() => ({
           eq: jest.fn(() => ({
             eq: jest.fn(() => ({
-              eq: jest.fn(() => ({
-                single: jest.fn(() => Promise.resolve({ data: mockSection, error: null })),
-              })),
+              order: jest.fn(() => Promise.resolve({ data: [mockHeroSection], error: null })),
             })),
           })),
         })),
@@ -132,9 +131,7 @@ describe('HomeSections', () => {
         select: jest.fn(() => ({
           eq: jest.fn(() => ({
             eq: jest.fn(() => ({
-              eq: jest.fn(() => ({
-                single: jest.fn(() => Promise.resolve({ data: null, error: null })),
-              })),
+              order: jest.fn(() => Promise.resolve({ data: [], error: null })),
             })),
           })),
         })),
@@ -151,6 +148,7 @@ describe('HomeSections', () => {
   describe('HomeSurfWeeks - Bullet Points', () => {
     it('should read bullets from content.bullets when present', async () => {
       const mockSection = {
+        section_type: 'surf-weeks',
         content: {
           title: 'Surf Weeks',
           subtitle: 'Join us for surf',
@@ -168,9 +166,7 @@ describe('HomeSections', () => {
             select: jest.fn(() => ({
               eq: jest.fn(() => ({
                 eq: jest.fn(() => ({
-                  eq: jest.fn(() => ({
-                    single: jest.fn(() => Promise.resolve({ data: mockSection, error: null })),
-                  })),
+                  order: jest.fn(() => Promise.resolve({ data: [mockSection], error: null })),
                 })),
               })),
             })),
@@ -262,9 +258,7 @@ describe('HomeSections', () => {
             select: jest.fn(() => ({
               eq: jest.fn(() => ({
                 eq: jest.fn(() => ({
-                  eq: jest.fn(() => ({
-                    single: jest.fn(() => Promise.resolve({ data: mockSection, error: null })),
-                  })),
+                  order: jest.fn(() => Promise.resolve({ data: [mockSection], error: null })),
                 })),
               })),
             })),
@@ -332,6 +326,7 @@ describe('HomeSections', () => {
 
     it('should render bullet list with correct CSS classes (items-center, flex-shrink-0)', async () => {
       const mockSection = {
+        section_type: 'surf-weeks',
         content: {
           title: 'Surf Weeks',
           bullets: ['Test bullet 1', 'Test bullet 2'],
@@ -344,9 +339,7 @@ describe('HomeSections', () => {
             select: jest.fn(() => ({
               eq: jest.fn(() => ({
                 eq: jest.fn(() => ({
-                  eq: jest.fn(() => ({
-                    single: jest.fn(() => Promise.resolve({ data: mockSection, error: null })),
-                  })),
+                  order: jest.fn(() => Promise.resolve({ data: [mockSection], error: null })),
                 })),
               })),
             })),
@@ -387,6 +380,7 @@ describe('HomeSections', () => {
 
     it('should filter out empty string bullets', async () => {
       const mockSection = {
+        section_type: 'surf-weeks',
         content: {
           title: 'Surf Weeks',
           bullets: ['Valid bullet', '', '   ', 'Another valid bullet'],
@@ -399,9 +393,7 @@ describe('HomeSections', () => {
             select: jest.fn(() => ({
               eq: jest.fn(() => ({
                 eq: jest.fn(() => ({
-                  eq: jest.fn(() => ({
-                    single: jest.fn(() => Promise.resolve({ data: mockSection, error: null })),
-                  })),
+                  order: jest.fn(() => Promise.resolve({ data: [mockSection], error: null })),
                 })),
               })),
             })),
@@ -445,9 +437,7 @@ describe('HomeSections', () => {
             select: jest.fn(() => ({
               eq: jest.fn(() => ({
                 eq: jest.fn(() => ({
-                  eq: jest.fn(() => ({
-                    single: jest.fn(() => Promise.resolve({ data: mockSection, error: null })),
-                  })),
+                  order: jest.fn(() => Promise.resolve({ data: [mockSection], error: null })),
                 })),
               })),
             })),
@@ -474,6 +464,7 @@ describe('HomeSections', () => {
 
     it('should prioritize bullets over features when both exist', async () => {
       const mockSection = {
+        section_type: 'surf-weeks',
         content: {
           title: 'Surf Weeks',
           bullets: ['Priority bullet 1', 'Priority bullet 2'],
@@ -487,9 +478,7 @@ describe('HomeSections', () => {
             select: jest.fn(() => ({
               eq: jest.fn(() => ({
                 eq: jest.fn(() => ({
-                  eq: jest.fn(() => ({
-                    single: jest.fn(() => Promise.resolve({ data: mockSection, error: null })),
-                  })),
+                  order: jest.fn(() => Promise.resolve({ data: [mockSection], error: null })),
                 })),
               })),
             })),
@@ -547,6 +536,7 @@ describe('HomeSections', () => {
 
     it('should render custom CMS content when provided', async () => {
       const mockSection = {
+        section_type: 'about',
         content: {
           title: 'Custom About Title',
           subtitle: 'Custom subtitle text',
@@ -565,9 +555,7 @@ describe('HomeSections', () => {
         select: jest.fn(() => ({
           eq: jest.fn(() => ({
             eq: jest.fn(() => ({
-              eq: jest.fn(() => ({
-                single: jest.fn(() => Promise.resolve({ data: mockSection, error: null })),
-              })),
+              order: jest.fn(() => Promise.resolve({ data: [mockSection], error: null })),
             })),
           })),
         })),
