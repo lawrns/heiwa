@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { CreditCard, Plus, Eye, Edit, Trash2, Search, RotateCcw, CheckCircle, XCircle, Clock } from 'lucide-react'
 import { PaymentModal } from '@/components/admin/payments/PaymentModal'
@@ -53,11 +53,7 @@ export default function PaymentsPage() {
   const [amountRange, setAmountRange] = useState({ minAmount: '', maxAmount: '' })
   const itemsPerPage = 20
 
-  useEffect(() => {
-    fetchPayments()
-  }, [statusFilter, methodFilter, currentPage])
-
-  const fetchPayments = async () => {
+  const fetchPayments = useCallback(async () => {
     try {
       setLoading(true)
       const params = new URLSearchParams()
@@ -83,7 +79,11 @@ export default function PaymentsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [statusFilter, methodFilter, currentPage, searchTerm])
+
+  useEffect(() => {
+    fetchPayments()
+  }, [fetchPayments])
 
   const handleViewPayment = (payment: Payment) => {
     setSelectedPayment(payment)

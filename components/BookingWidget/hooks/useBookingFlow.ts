@@ -479,26 +479,20 @@ export function useBookingFlow() {
     });
 
     if (!validation.isValid) {
-      const errorMessage = validation.errors[0] || 'Missing required booking information';
+      // Show all validation errors to the user, not just the first one
+      const errorMessage = validation.errors.length > 1
+        ? `Please complete the following:\n${validation.errors.map(e => `• ${e}`).join('\n')}`
+        : validation.errors[0] || 'Missing required booking information';
+
       setError('submission', errorMessage);
-      
-      // Log validation failure for debugging
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Booking validation failed:', {
-          errors: validation.errors,
-          missingFields: validation.missingFields,
-          state: {
-            experienceType: state.experienceType,
-            hasCheckIn: !!state.dates.checkIn,
-            hasCheckOut: !!state.dates.checkOut,
-            selectedOption: state.selectedOption,
-            selectedSurfWeek: state.selectedSurfWeek,
-            guests: state.guests,
-            guestDetailsCount: state.guestDetails.length,
-            paymentMethod: state.paymentMethod,
-          }
-        });
-      }
+
+      // Always log validation failures for debugging (both dev and production)
+      console.error('Booking validation failed:', {
+        errors: validation.errors,
+        missingFields: validation.missingFields,
+        timestamp: new Date().toISOString(),
+      });
+
       return null;
     }
 

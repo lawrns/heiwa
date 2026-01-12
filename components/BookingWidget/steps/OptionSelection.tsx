@@ -124,16 +124,22 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     actions.setParticipantNames(participantNameObjects);
   };
 
-  // Fetch date availability only when both dates are selected and valid
+  // Fetch date availability with debouncing to prevent excessive API calls
   useEffect(() => {
     if (checkInDate && checkOutDate) {
       // Validate that check-in is before check-out
       const checkIn = new Date(checkInDate);
       const checkOut = new Date(checkOutDate);
-      
+
       // Only fetch if dates are valid and in correct order
       if (!isNaN(checkIn.getTime()) && !isNaN(checkOut.getTime()) && checkIn < checkOut) {
-        fetchDateAvailability(checkInDate, checkOutDate);
+        // Debounce API calls by 300ms to prevent hitting API on every keystroke
+        const debounceTimer = setTimeout(() => {
+          fetchDateAvailability(checkInDate, checkOutDate);
+        }, 300);
+
+        // Cleanup: cancel pending API call if dates change again
+        return () => clearTimeout(debounceTimer);
       }
     }
   }, [checkInDate, checkOutDate, fetchDateAvailability]);

@@ -1,274 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="252" failures="0" errors="0" time="3.626">
-  <testsuite name="PaymentMethodSelector Component" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:22" time="0.724" tests="20">
-    <testcase classname="PaymentMethodSelector Component Rendering should render the payment method header" name="PaymentMethodSelector Component Rendering should render the payment method header" time="0.021">
+<testsuites name="jest tests" tests="252" failures="0" errors="0" time="3.198">
+  <testsuite name="Booking Validation Properties" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:24" time="0.502" tests="21">
+    <testcase classname="Booking Validation Properties Property 1: Booking Validation Completeness should return isValid: false for bookings with missing required fields" name="Booking Validation Properties Property 1: Booking Validation Completeness should return isValid: false for bookings with missing required fields" time="0.015">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Rendering should render credit card option" name="PaymentMethodSelector Component Rendering should render credit card option" time="0.003">
+    <testcase classname="Booking Validation Properties Property 1: Booking Validation Completeness should include specific error messages for each missing field" name="Booking Validation Properties Property 1: Booking Validation Completeness should include specific error messages for each missing field" time="0.002">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Rendering should render bank wire option" name="PaymentMethodSelector Component Rendering should render bank wire option" time="0.004">
+    <testcase classname="Booking Validation Properties Property 3: Email Validation Consistency should accept all valid email formats" name="Booking Validation Properties Property 3: Email Validation Consistency should accept all valid email formats" time="0.001">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Rendering should render instant badge for card payment" name="PaymentMethodSelector Component Rendering should render instant badge for card payment" time="0.002">
+    <testcase classname="Booking Validation Properties Property 3: Email Validation Consistency should reject all invalid email formats" name="Booking Validation Properties Property 3: Email Validation Consistency should reject all invalid email formats" time="0.002">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Rendering should render manual badge for bank wire" name="PaymentMethodSelector Component Rendering should render manual badge for bank wire" time="0.005">
+    <testcase classname="Booking Validation Properties Property 6: Validation Error Message Completeness should return non-empty message for any validation with errors" name="Booking Validation Properties Property 6: Validation Error Message Completeness should return non-empty message for any validation with errors" time="0.001">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Selection State should highlight card option when selected" name="PaymentMethodSelector Component Selection State should highlight card option when selected" time="0.029">
+    <testcase classname="Booking Validation Properties Property 6: Validation Error Message Completeness should return empty string for valid results" name="Booking Validation Properties Property 6: Validation Error Message Completeness should return empty string for valid results" time="0.001">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Selection State should highlight bank wire option when selected" name="PaymentMethodSelector Component Selection State should highlight bank wire option when selected" time="0.005">
+    <testcase classname="Booking Validation Properties Property 7: Guest Details Validation Consistency should pass validation when all guest details are complete" name="Booking Validation Properties Property 7: Guest Details Validation Consistency should pass validation when all guest details are complete" time="0">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Selection State should not highlight any option when none selected" name="PaymentMethodSelector Component Selection State should not highlight any option when none selected" time="0.003">
+    <testcase classname="Booking Validation Properties Property 7: Guest Details Validation Consistency should fail validation when guest details are incomplete" name="Booking Validation Properties Property 7: Guest Details Validation Consistency should fail validation when guest details are incomplete" time="0.001">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Selection Handling should call onMethodChange with card_stripe when card is clicked" name="PaymentMethodSelector Component Selection Handling should call onMethodChange with card_stripe when card is clicked" time="0.017">
+    <testcase classname="Booking Validation Properties Property 2: Date Range Validity should calculate positive nights for valid date ranges" name="Booking Validation Properties Property 2: Date Range Validity should calculate positive nights for valid date ranges" time="0">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Selection Handling should call onMethodChange with bank_wire when bank is clicked" name="PaymentMethodSelector Component Selection Handling should call onMethodChange with bank_wire when bank is clicked" time="0.014">
+    <testcase classname="Booking Validation Properties Property 2: Date Range Validity should calculate correct number of nights" name="Booking Validation Properties Property 2: Date Range Validity should calculate correct number of nights" time="0">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Selection Handling should allow switching from card to bank" name="PaymentMethodSelector Component Selection Handling should allow switching from card to bank" time="0.014">
+    <testcase classname="Booking Validation Properties Property 2: Date Range Validity should return consistent results for same date range" name="Booking Validation Properties Property 2: Date Range Validity should return consistent results for same date range" time="0.001">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Selection Handling should allow switching from bank to card" name="PaymentMethodSelector Component Selection Handling should allow switching from bank to card" time="0.011">
+    <testcase classname="Booking Validation Properties Property 2: Date Range Validity should return EUR as currency for all calculations" name="Booking Validation Properties Property 2: Date Range Validity should return EUR as currency for all calculations" time="0">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Visual Indicators should show pulse indicator for selected card option" name="PaymentMethodSelector Component Visual Indicators should show pulse indicator for selected card option" time="0.006">
+    <testcase classname="Booking Validation Properties Property 4: Price Formatting Round-Trip should preserve price value through format/parse cycle" name="Booking Validation Properties Property 4: Price Formatting Round-Trip should preserve price value through format/parse cycle" time="0.013">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Visual Indicators should show pulse indicator for selected bank option" name="PaymentMethodSelector Component Visual Indicators should show pulse indicator for selected bank option" time="0.002">
+    <testcase classname="Booking Validation Properties Property 4: Price Formatting Round-Trip should format all valid prices without throwing" name="Booking Validation Properties Property 4: Price Formatting Round-Trip should format all valid prices without throwing" time="0.002">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Visual Indicators should not show pulse indicator when nothing selected" name="PaymentMethodSelector Component Visual Indicators should not show pulse indicator when nothing selected" time="0.002">
+    <testcase classname="Booking Validation Properties Property 4: Price Formatting Round-Trip should produce non-negative parsed values for positive prices" name="Booking Validation Properties Property 4: Price Formatting Round-Trip should produce non-negative parsed values for positive prices" time="0.002">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Accessibility should have accessible buttons" name="PaymentMethodSelector Component Accessibility should have accessible buttons" time="0.006">
+    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should produce identical output when called multiple times" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should produce identical output when called multiple times" time="0.002">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Accessibility should be keyboard navigable" name="PaymentMethodSelector Component Accessibility should be keyboard navigable" time="0.022">
+    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should return array for any valid input" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should return array for any valid input" time="0">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Accessibility should have focus ring styles" name="PaymentMethodSelector Component Accessibility should have focus ring styles" time="0.005">
+    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should return non-empty array for valid images" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should return non-empty array for valid images" time="0.001">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Icon Display should render icons for both payment methods" name="PaymentMethodSelector Component Icon Display should render icons for both payment methods" time="0.002">
+    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should use featured image as fallback when images array is empty" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should use featured image as fallback when images array is empty" time="0">
     </testcase>
-    <testcase classname="PaymentMethodSelector Component Icon Display should style icon container differently when selected" name="PaymentMethodSelector Component Icon Display should style icon container differently when selected" time="0.011">
+    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should use default fallback when no images provided" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should use default fallback when no images provided" time="0">
     </testcase>
-  </testsuite>
-  <testsuite name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:22" time="0.077" tests="5">
-    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4: For any spacing key, the value matches TOON-compliant specification" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4: For any spacing key, the value matches TOON-compliant specification" time="0.002">
-    </testcase>
-    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4a: For any spacing value, it is a valid CSS pixel string" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4a: For any spacing value, it is a valid CSS pixel string" time="0.001">
-    </testcase>
-    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4b: Spacing scale is monotonically increasing" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4b: Spacing scale is monotonically increasing" time="0">
-    </testcase>
-    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4c: All required spacing keys exist in the scale" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4c: All required spacing keys exist in the scale" time="0">
-    </testcase>
-    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4d: Spacing scale contains exactly the required keys" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4d: Spacing scale contains exactly the required keys" time="0">
+    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should filter out invalid image URLs" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should filter out invalid image URLs" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="Bookings API" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:23" time="0.114" tests="15">
-    <testcase classname="Bookings API GET /api/bookings should return bookings list with success response" name="Bookings API GET /api/bookings should return bookings list with success response" time="0.001">
-    </testcase>
-    <testcase classname="Bookings API GET /api/bookings should pass filter parameters to service" name="Bookings API GET /api/bookings should pass filter parameters to service" time="0.001">
-    </testcase>
-    <testcase classname="Bookings API GET /api/bookings should require admin authentication" name="Bookings API GET /api/bookings should require admin authentication" time="0">
-    </testcase>
-    <testcase classname="Bookings API GET /api/bookings should handle service errors gracefully" name="Bookings API GET /api/bookings should handle service errors gracefully" time="0.036">
-    </testcase>
-    <testcase classname="Bookings API GET /api/bookings should include cache-busting headers" name="Bookings API GET /api/bookings should include cache-busting headers" time="0">
-    </testcase>
-    <testcase classname="Bookings API POST /api/bookings - Room Booking should create room booking with valid data" name="Bookings API POST /api/bookings - Room Booking should create room booking with valid data" time="0.001">
-    </testcase>
-    <testcase classname="Bookings API POST /api/bookings - Room Booking should return error for invalid room booking" name="Bookings API POST /api/bookings - Room Booking should return error for invalid room booking" time="0">
-    </testcase>
-    <testcase classname="Bookings API POST /api/bookings - Room Booking should return 409 for conflicting booking" name="Bookings API POST /api/bookings - Room Booking should return 409 for conflicting booking" time="0">
-    </testcase>
-    <testcase classname="Bookings API POST /api/bookings - Surf Week Booking should create surf week booking with valid data" name="Bookings API POST /api/bookings - Surf Week Booking should create surf week booking with valid data" time="0.001">
-    </testcase>
-    <testcase classname="Bookings API POST /api/bookings - Surf Week Booking should return error for duplicate surf week booking" name="Bookings API POST /api/bookings - Surf Week Booking should return error for duplicate surf week booking" time="0.004">
-    </testcase>
-    <testcase classname="Bookings API POST /api/bookings - Surf Week Booking should return 400 for invalid surf week booking" name="Bookings API POST /api/bookings - Surf Week Booking should return 400 for invalid surf week booking" time="0">
-    </testcase>
-    <testcase classname="Bookings API Error Handling should handle JSON parse errors" name="Bookings API Error Handling should handle JSON parse errors" time="0.007">
-    </testcase>
-    <testcase classname="Bookings API Error Handling should handle service exceptions" name="Bookings API Error Handling should handle service exceptions" time="0.001">
-    </testcase>
-    <testcase classname="Bookings API Response Shape should have consistent success response shape" name="Bookings API Response Shape should have consistent success response shape" time="0.001">
-    </testcase>
-    <testcase classname="Bookings API Response Shape should have consistent error response shape" name="Bookings API Response Shape should have consistent error response shape" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="SurfWeekRoomSelection - Surf Camp Pricing Display" errors="0" failures="0" skipped="8" timestamp="2026-01-12T03:37:22" time="1.092" tests="22">
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should display surf camp per-bed pricing when configured" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should display surf camp per-bed pricing when configured" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should display &quot;Included&quot; badge for dorm rooms with per-bed pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should display &quot;Included&quot; badge for dorm rooms with per-bed pricing" time="0.11">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should show per-bed upgrade pricing for private rooms" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should show per-bed upgrade pricing for private rooms" time="0.036">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should display tiered pricing for private rooms with occupancy-based pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should display tiered pricing for private rooms with occupancy-based pricing" time="0.016">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should display detailed occupancy pricing breakdown for private rooms" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should display detailed occupancy pricing breakdown for private rooms" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should show minimum price for rooms with multiple occupancy tiers" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should show minimum price for rooms with multiple occupancy tiers" time="0.023">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should NOT display nightly rate fallback when surf camp pricing is configured" name="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should NOT display nightly rate fallback when surf camp pricing is configured" time="0.027">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should NOT display calculated nightly rate (price × 7) for surf camp bookings" name="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should NOT display calculated nightly rate (price × 7) for surf camp bookings" time="0.016">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should only display surf camp pricing, never nightly rates" name="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should only display surf camp pricing, never nightly rates" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should handle rooms without surf camp pricing gracefully" name="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should handle rooms without surf camp pricing gracefully" time="0.018">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should update pricing when guest is assigned to upgraded room" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should update pricing when guest is assigned to upgraded room" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should calculate correct upgrade cost for per-bed pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should calculate correct upgrade cost for per-bed pricing" time="0.016">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should calculate correct upgrade cost for occupancy-based pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should calculate correct upgrade cost for occupancy-based pricing" time="0.056">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should format prices with Euro symbol and no decimal for whole numbers" name="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should format prices with Euro symbol and no decimal for whole numbers" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should show &quot;from&quot; prefix for rooms with multiple pricing tiers" name="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should show &quot;from&quot; prefix for rooms with multiple pricing tiers" time="0.04">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should display per-person label for all surf camp pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should display per-person label for all surf camp pricing" time="0.016">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should display guest names from participantNames" name="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should display guest names from participantNames" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should show unassigned guests count" name="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should show unassigned guests count" time="0.019">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should update unassigned count when guests are assigned" name="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should update unassigned count when guests are assigned" time="0">
-      <skipped/>
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should display room features" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should display room features" time="0.025">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should display available beds count" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should display available beds count" time="0.014">
-    </testcase>
-    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should show room thumbnail with click handler" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should show room thumbnail with click handler" time="0">
-      <skipped/>
-    </testcase>
-  </testsuite>
-  <testsuite name="BookingWidget Component" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:22" time="1.096" tests="22">
-    <testcase classname="BookingWidget Component Initial Render should render trigger button when not a web component" name="BookingWidget Component Initial Render should render trigger button when not a web component" time="0.059">
-    </testcase>
-    <testcase classname="BookingWidget Component Initial Render should render custom trigger text from config" name="BookingWidget Component Initial Render should render custom trigger text from config" time="0.005">
-    </testcase>
-    <testcase classname="BookingWidget Component Initial Render should not render trigger button when isWebComponent is true" name="BookingWidget Component Initial Render should not render trigger button when isWebComponent is true" time="0.014">
-    </testcase>
-    <testcase classname="BookingWidget Component Initial Render should render modal when isWebComponent is true" name="BookingWidget Component Initial Render should render modal when isWebComponent is true" time="0.005">
-    </testcase>
-    <testcase classname="BookingWidget Component Modal Open/Close should open modal when trigger button is clicked" name="BookingWidget Component Modal Open/Close should open modal when trigger button is clicked" time="0.029">
-    </testcase>
-    <testcase classname="BookingWidget Component Modal Open/Close should close modal when close button is clicked" name="BookingWidget Component Modal Open/Close should close modal when close button is clicked" time="0.03">
-    </testcase>
-    <testcase classname="BookingWidget Component Modal Open/Close should close modal when backdrop is clicked" name="BookingWidget Component Modal Open/Close should close modal when backdrop is clicked" time="0.02">
-    </testcase>
-    <testcase classname="BookingWidget Component Step Rendering should render experience selection step initially" name="BookingWidget Component Step Rendering should render experience selection step initially" time="0.008">
-    </testcase>
-    <testcase classname="BookingWidget Component Step Rendering should render progress indicator" name="BookingWidget Component Step Rendering should render progress indicator" time="0.01">
-    </testcase>
-    <testcase classname="BookingWidget Component Navigation should render back button" name="BookingWidget Component Navigation should render back button" time="0.016">
-    </testcase>
-    <testcase classname="BookingWidget Component Navigation should render next button" name="BookingWidget Component Navigation should render next button" time="0.013">
-    </testcase>
-    <testcase classname="BookingWidget Component Navigation should disable back button on first step" name="BookingWidget Component Navigation should disable back button on first step" time="0.025">
-    </testcase>
-    <testcase classname="BookingWidget Component Navigation should disable next button when cannot proceed" name="BookingWidget Component Navigation should disable next button when cannot proceed" time="0.006">
-    </testcase>
-    <testcase classname="BookingWidget Component Pricing Display should display total price" name="BookingWidget Component Pricing Display should display total price" time="0.003">
-    </testcase>
-    <testcase classname="BookingWidget Component Pricing Display should display total label" name="BookingWidget Component Pricing Display should display total label" time="0.009">
-    </testcase>
-    <testcase classname="BookingWidget Component Header should display booking title" name="BookingWidget Component Header should display booking title" time="0.009">
-    </testcase>
-    <testcase classname="BookingWidget Component Header should have close button with X icon" name="BookingWidget Component Header should have close button with X icon" time="0.008">
-    </testcase>
-    <testcase classname="BookingWidget Component Accessibility should have accessible trigger button" name="BookingWidget Component Accessibility should have accessible trigger button" time="0.037">
-    </testcase>
-    <testcase classname="BookingWidget Component Accessibility should have accessible close button" name="BookingWidget Component Accessibility should have accessible close button" time="0.006">
-    </testcase>
-    <testcase classname="BookingWidget Component Accessibility should have accessible navigation buttons" name="BookingWidget Component Accessibility should have accessible navigation buttons" time="0.023">
-    </testcase>
-    <testcase classname="BookingWidget Component Modal State Callback should call onModalStateChange when modal opens" name="BookingWidget Component Modal State Callback should call onModalStateChange when modal opens" time="0.041">
-    </testcase>
-    <testcase classname="BookingWidget Component Modal State Callback should call onModalStateChange when modal closes" name="BookingWidget Component Modal State Callback should call onModalStateChange when modal closes" time="0.051">
-    </testcase>
-  </testsuite>
-  <testsuite name="ReviewAndPay Step Component" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:22" time="1.146" tests="31">
-    <testcase classname="ReviewAndPay Step Component Rendering should render the review and pay header" name="ReviewAndPay Step Component Rendering should render the review and pay header" time="0.041">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Rendering should render booking summary section" name="ReviewAndPay Step Component Rendering should render booking summary section" time="0.012">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Rendering should display experience type for room booking" name="ReviewAndPay Step Component Rendering should display experience type for room booking" time="0.01">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Rendering should display experience type for surf week" name="ReviewAndPay Step Component Rendering should display experience type for surf week" time="0.006">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Rendering should display dates correctly" name="ReviewAndPay Step Component Rendering should display dates correctly" time="0.008">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Rendering should display guest count" name="ReviewAndPay Step Component Rendering should display guest count" time="0.011">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Rendering should display location" name="ReviewAndPay Step Component Rendering should display location" time="0.007">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Guest Details Summary should display guest information" name="ReviewAndPay Step Component Guest Details Summary should display guest information" time="0.008">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Guest Details Summary should show dietary requirements when present" name="ReviewAndPay Step Component Guest Details Summary should show dietary requirements when present" time="0.009">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Guest Details Summary should show completion status for guests" name="ReviewAndPay Step Component Guest Details Summary should show completion status for guests" time="0.011">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Pricing Breakdown should display pricing breakdown title" name="ReviewAndPay Step Component Pricing Breakdown should display pricing breakdown title" time="0.01">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Pricing Breakdown should display base price" name="ReviewAndPay Step Component Pricing Breakdown should display base price" time="0.008">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Pricing Breakdown should display total price" name="ReviewAndPay Step Component Pricing Breakdown should display total price" time="0.008">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Add-ons Summary should display add-ons when present" name="ReviewAndPay Step Component Add-ons Summary should display add-ons when present" time="0.014">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Add-ons Summary should not display add-ons section when empty" name="ReviewAndPay Step Component Add-ons Summary should not display add-ons section when empty" time="0.01">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Room Assignments should display room assignments when present" name="ReviewAndPay Step Component Room Assignments should display room assignments when present" time="0.009">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Room Assignments should not display room assignments when empty" name="ReviewAndPay Step Component Room Assignments should not display room assignments when empty" time="0.013">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Payment Method Selection should render payment method selector" name="ReviewAndPay Step Component Payment Method Selection should render payment method selector" time="0.022">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Payment Method Selection should call setPaymentMethod when card is selected" name="ReviewAndPay Step Component Payment Method Selection should call setPaymentMethod when card is selected" time="0.075">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Payment Method Selection should call setPaymentMethod when bank wire is selected" name="ReviewAndPay Step Component Payment Method Selection should call setPaymentMethod when bank wire is selected" time="0.021">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Terms and Conditions should render terms checkbox" name="ReviewAndPay Step Component Terms and Conditions should render terms checkbox" time="0.032">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Terms and Conditions should toggle terms acceptance" name="ReviewAndPay Step Component Terms and Conditions should toggle terms acceptance" time="0.04">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Bank Wire Instructions should show bank wire instructions when bank_wire is selected" name="ReviewAndPay Step Component Bank Wire Instructions should show bank wire instructions when bank_wire is selected" time="0.055">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Bank Wire Instructions should not show bank wire instructions when card is selected" name="ReviewAndPay Step Component Bank Wire Instructions should not show bank wire instructions when card is selected" time="0.013">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Payment Button should show payment button when payment method is selected" name="ReviewAndPay Step Component Payment Button should show payment button when payment method is selected" time="0.045">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Payment Button should show complete booking button for bank wire" name="ReviewAndPay Step Component Payment Button should show complete booking button for bank wire" time="0.015">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Payment Button should disable payment button when terms not accepted" name="ReviewAndPay Step Component Payment Button should disable payment button when terms not accepted" time="0.033">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Payment Button should not show payment button when no payment method selected" name="ReviewAndPay Step Component Payment Button should not show payment button when no payment method selected" time="0.035">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Multiple Guests should display all guests in summary" name="ReviewAndPay Step Component Multiple Guests should display all guests in summary" time="0.014">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Accessibility should have accessible terms checkbox" name="ReviewAndPay Step Component Accessibility should have accessible terms checkbox" time="0.019">
-    </testcase>
-    <testcase classname="ReviewAndPay Step Component Accessibility should have proper heading hierarchy" name="ReviewAndPay Step Component Accessibility should have proper heading hierarchy" time="0.012">
-    </testcase>
-  </testsuite>
-  <testsuite name="Booking Widget Settings API" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:23" time="0.071" tests="8">
-    <testcase classname="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return default prices when no settings found" name="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return default prices when no settings found" time="0.001">
-    </testcase>
-    <testcase classname="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return prices from database" name="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return prices from database" time="0.001">
-    </testcase>
-    <testcase classname="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return fallback prices on error" name="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return fallback prices on error" time="0.025">
-    </testcase>
-    <testcase classname="Booking Widget Settings API GET /api/booking-widget-settings (Public) should include cache headers" name="Booking Widget Settings API GET /api/booking-widget-settings (Public) should include cache headers" time="0">
-    </testcase>
-    <testcase classname="Booking Widget Settings API GET /api/admin/booking-widget-settings (Admin) should return all settings" name="Booking Widget Settings API GET /api/admin/booking-widget-settings (Admin) should return all settings" time="0">
-    </testcase>
-    <testcase classname="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should update settings successfully" name="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should update settings successfully" time="0">
-    </testcase>
-    <testcase classname="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should validate price_from is positive" name="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should validate price_from is positive" time="0.001">
-    </testcase>
-    <testcase classname="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should validate experience_type" name="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should validate experience_type" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="Booking Utils" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:23" time="0.242" tests="39">
+  <testsuite name="Booking Utils" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:25" time="0.042" tests="39">
     <testcase classname="Booking Utils determineRoomType should return &quot;dorm&quot; for perBed booking type" name="Booking Utils determineRoomType should return &quot;dorm&quot; for perBed booking type" time="0.001">
     </testcase>
     <testcase classname="Booking Utils determineRoomType should return &quot;private&quot; for capacity of 1" name="Booking Utils determineRoomType should return &quot;private&quot; for capacity of 1" time="0">
@@ -287,43 +63,43 @@
     </testcase>
     <testcase classname="Booking Utils isValidImageUrl should reject empty strings" name="Booking Utils isValidImageUrl should reject empty strings" time="0">
     </testcase>
-    <testcase classname="Booking Utils isValidImageUrl should reject invalid patterns" name="Booking Utils isValidImageUrl should reject invalid patterns" time="0.001">
+    <testcase classname="Booking Utils isValidImageUrl should reject invalid patterns" name="Booking Utils isValidImageUrl should reject invalid patterns" time="0">
     </testcase>
     <testcase classname="Booking Utils isValidImageUrl should reject invalid URL formats" name="Booking Utils isValidImageUrl should reject invalid URL formats" time="0">
     </testcase>
-    <testcase classname="Booking Utils processRoomImages should return CMS images when valid" name="Booking Utils processRoomImages should return CMS images when valid" time="0.005">
+    <testcase classname="Booking Utils processRoomImages should return CMS images when valid" name="Booking Utils processRoomImages should return CMS images when valid" time="0">
     </testcase>
-    <testcase classname="Booking Utils processRoomImages should filter out invalid images" name="Booking Utils processRoomImages should filter out invalid images" time="0.003">
+    <testcase classname="Booking Utils processRoomImages should filter out invalid images" name="Booking Utils processRoomImages should filter out invalid images" time="0.001">
     </testcase>
-    <testcase classname="Booking Utils processRoomImages should use featured image as fallback" name="Booking Utils processRoomImages should use featured image as fallback" time="0.001">
+    <testcase classname="Booking Utils processRoomImages should use featured image as fallback" name="Booking Utils processRoomImages should use featured image as fallback" time="0">
     </testcase>
-    <testcase classname="Booking Utils processRoomImages should use default fallback for private rooms" name="Booking Utils processRoomImages should use default fallback for private rooms" time="0.001">
+    <testcase classname="Booking Utils processRoomImages should use default fallback for private rooms" name="Booking Utils processRoomImages should use default fallback for private rooms" time="0">
     </testcase>
-    <testcase classname="Booking Utils processRoomImages should use default fallback for dorm rooms" name="Booking Utils processRoomImages should use default fallback for dorm rooms" time="0.002">
+    <testcase classname="Booking Utils processRoomImages should use default fallback for dorm rooms" name="Booking Utils processRoomImages should use default fallback for dorm rooms" time="0.001">
     </testcase>
-    <testcase classname="Booking Utils processRoomImages should handle undefined images array" name="Booking Utils processRoomImages should handle undefined images array" time="0.02">
+    <testcase classname="Booking Utils processRoomImages should handle undefined images array" name="Booking Utils processRoomImages should handle undefined images array" time="0">
     </testcase>
-    <testcase classname="Booking Utils processRoomImages should filter out yoga dome images" name="Booking Utils processRoomImages should filter out yoga dome images" time="0.002">
+    <testcase classname="Booking Utils processRoomImages should filter out yoga dome images" name="Booking Utils processRoomImages should filter out yoga dome images" time="0">
     </testcase>
     <testcase classname="Booking Utils transformApiRoomToRoom should transform API room data correctly" name="Booking Utils transformApiRoomToRoom should transform API room data correctly" time="0.001">
     </testcase>
-    <testcase classname="Booking Utils transformApiRoomToRoom should handle perBed booking type" name="Booking Utils transformApiRoomToRoom should handle perBed booking type" time="0.002">
+    <testcase classname="Booking Utils transformApiRoomToRoom should handle perBed booking type" name="Booking Utils transformApiRoomToRoom should handle perBed booking type" time="0">
     </testcase>
-    <testcase classname="Booking Utils transformApiRoomToRoom should handle missing optional fields" name="Booking Utils transformApiRoomToRoom should handle missing optional fields" time="0.001">
+    <testcase classname="Booking Utils transformApiRoomToRoom should handle missing optional fields" name="Booking Utils transformApiRoomToRoom should handle missing optional fields" time="0">
     </testcase>
-    <testcase classname="Booking Utils transformApiRoomToRoom should extract pricing data" name="Booking Utils transformApiRoomToRoom should extract pricing data" time="0.01">
+    <testcase classname="Booking Utils transformApiRoomToRoom should extract pricing data" name="Booking Utils transformApiRoomToRoom should extract pricing data" time="0">
     </testcase>
     <testcase classname="Booking Utils validateBookingSubmission should pass validation for valid room booking" name="Booking Utils validateBookingSubmission should pass validation for valid room booking" time="0">
     </testcase>
     <testcase classname="Booking Utils validateBookingSubmission should require experience type" name="Booking Utils validateBookingSubmission should require experience type" time="0">
     </testcase>
-    <testcase classname="Booking Utils validateBookingSubmission should require check-in date for room bookings" name="Booking Utils validateBookingSubmission should require check-in date for room bookings" time="0">
+    <testcase classname="Booking Utils validateBookingSubmission should require check-in date for room bookings" name="Booking Utils validateBookingSubmission should require check-in date for room bookings" time="0.001">
     </testcase>
-    <testcase classname="Booking Utils validateBookingSubmission should require check-out date for room bookings" name="Booking Utils validateBookingSubmission should require check-out date for room bookings" time="0">
+    <testcase classname="Booking Utils validateBookingSubmission should require check-out date for room bookings" name="Booking Utils validateBookingSubmission should require check-out date for room bookings" time="0.001">
     </testcase>
     <testcase classname="Booking Utils validateBookingSubmission should require room selection" name="Booking Utils validateBookingSubmission should require room selection" time="0">
     </testcase>
-    <testcase classname="Booking Utils validateBookingSubmission should require at least 1 guest" name="Booking Utils validateBookingSubmission should require at least 1 guest" time="0">
+    <testcase classname="Booking Utils validateBookingSubmission should require at least 1 guest" name="Booking Utils validateBookingSubmission should require at least 1 guest" time="0.001">
     </testcase>
     <testcase classname="Booking Utils validateBookingSubmission should reject more than 20 guests" name="Booking Utils validateBookingSubmission should reject more than 20 guests" time="0">
     </testcase>
@@ -335,39 +111,39 @@
     </testcase>
     <testcase classname="Booking Utils validateBookingSubmission should validate guest email format" name="Booking Utils validateBookingSubmission should validate guest email format" time="0">
     </testcase>
-    <testcase classname="Booking Utils validateBookingSubmission should validate surf week selection" name="Booking Utils validateBookingSubmission should validate surf week selection" time="0.001">
+    <testcase classname="Booking Utils validateBookingSubmission should validate surf week selection" name="Booking Utils validateBookingSubmission should validate surf week selection" time="0">
     </testcase>
     <testcase classname="Booking Utils validateBookingSubmission should accept room assignments as alternative to selectedOption" name="Booking Utils validateBookingSubmission should accept room assignments as alternative to selectedOption" time="0">
     </testcase>
     <testcase classname="Booking Utils getValidationErrorMessage should return empty string for valid result" name="Booking Utils getValidationErrorMessage should return empty string for valid result" time="0">
     </testcase>
-    <testcase classname="Booking Utils getValidationErrorMessage should return single error directly" name="Booking Utils getValidationErrorMessage should return single error directly" time="0">
+    <testcase classname="Booking Utils getValidationErrorMessage should return single error directly" name="Booking Utils getValidationErrorMessage should return single error directly" time="0.001">
     </testcase>
     <testcase classname="Booking Utils getValidationErrorMessage should join multiple errors with comma" name="Booking Utils getValidationErrorMessage should join multiple errors with comma" time="0">
     </testcase>
     <testcase classname="Booking Utils getValidationErrorMessage should summarize more than 3 errors" name="Booking Utils getValidationErrorMessage should summarize more than 3 errors" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="BookingService" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:23" time="0.118" tests="21">
-    <testcase classname="BookingService submitBooking should submit valid booking successfully" name="BookingService submitBooking should submit valid booking successfully" time="0.001">
+  <testsuite name="BookingService" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:25" time="0.035" tests="21">
+    <testcase classname="BookingService submitBooking should submit valid booking successfully" name="BookingService submitBooking should submit valid booking successfully" time="0.002">
     </testcase>
     <testcase classname="BookingService submitBooking should return validation errors for invalid booking" name="BookingService submitBooking should return validation errors for invalid booking" time="0">
     </testcase>
     <testcase classname="BookingService submitBooking should handle API error responses" name="BookingService submitBooking should handle API error responses" time="0">
     </testcase>
-    <testcase classname="BookingService submitBooking should handle network failures gracefully" name="BookingService submitBooking should handle network failures gracefully" time="0.012">
+    <testcase classname="BookingService submitBooking should handle network failures gracefully" name="BookingService submitBooking should handle network failures gracefully" time="0.001">
     </testcase>
     <testcase classname="BookingService submitBooking should include submission timestamp" name="BookingService submitBooking should include submission timestamp" time="0">
     </testcase>
-    <testcase classname="BookingService validateBooking should validate required fields" name="BookingService validateBooking should validate required fields" time="0.003">
+    <testcase classname="BookingService validateBooking should validate required fields" name="BookingService validateBooking should validate required fields" time="0">
     </testcase>
     <testcase classname="BookingService validateBooking should validate email format" name="BookingService validateBooking should validate email format" time="0">
     </testcase>
-    <testcase classname="BookingService validateBooking should accept valid email formats" name="BookingService validateBooking should accept valid email formats" time="0">
+    <testcase classname="BookingService validateBooking should accept valid email formats" name="BookingService validateBooking should accept valid email formats" time="0.001">
     </testcase>
-    <testcase classname="BookingService validateBooking should validate date ranges" name="BookingService validateBooking should validate date ranges" time="0.001">
+    <testcase classname="BookingService validateBooking should validate date ranges" name="BookingService validateBooking should validate date ranges" time="0">
     </testcase>
-    <testcase classname="BookingService validateBooking should reject past check-in dates" name="BookingService validateBooking should reject past check-in dates" time="0.006">
+    <testcase classname="BookingService validateBooking should reject past check-in dates" name="BookingService validateBooking should reject past check-in dates" time="0">
     </testcase>
     <testcase classname="BookingService validateBooking should validate minimum stay requirement (2 nights)" name="BookingService validateBooking should validate minimum stay requirement (2 nights)" time="0">
     </testcase>
@@ -375,165 +151,389 @@
     </testcase>
     <testcase classname="BookingService validateBooking should return warnings for late bookings" name="BookingService validateBooking should return warnings for late bookings" time="0">
     </testcase>
-    <testcase classname="BookingService validateBooking should pass validation for valid booking" name="BookingService validateBooking should pass validation for valid booking" time="0.001">
+    <testcase classname="BookingService validateBooking should pass validation for valid booking" name="BookingService validateBooking should pass validation for valid booking" time="0">
     </testcase>
     <testcase classname="BookingService calculateEstimatedCost should calculate correct number of nights" name="BookingService calculateEstimatedCost should calculate correct number of nights" time="0">
     </testcase>
-    <testcase classname="BookingService calculateEstimatedCost should return correct currency" name="BookingService calculateEstimatedCost should return correct currency" time="0">
+    <testcase classname="BookingService calculateEstimatedCost should return correct currency" name="BookingService calculateEstimatedCost should return correct currency" time="0.001">
     </testcase>
     <testcase classname="BookingService calculateEstimatedCost should include breakdown details" name="BookingService calculateEstimatedCost should include breakdown details" time="0">
     </testcase>
     <testcase classname="BookingService calculateEstimatedCost should calculate total correctly" name="BookingService calculateEstimatedCost should calculate total correctly" time="0">
     </testcase>
-    <testcase classname="BookingService getBookingPolicies should return booking policies" name="BookingService getBookingPolicies should return booking policies" time="0.001">
+    <testcase classname="BookingService getBookingPolicies should return booking policies" name="BookingService getBookingPolicies should return booking policies" time="0">
     </testcase>
     <testcase classname="BookingService checkBookingConflicts should return no conflicts by default" name="BookingService checkBookingConflicts should return no conflicts by default" time="0">
     </testcase>
     <testcase classname="BookingService sendConfirmationEmail should return true for valid booking ID" name="BookingService sendConfirmationEmail should return true for valid booking ID" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="BookingWidget - Footer Navigation Styling" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:22" time="1.257" tests="27">
-    <testcase classname="BookingWidget - Footer Navigation Styling Footer Container Padding should have correct padding classes on footer navigation container" name="BookingWidget - Footer Navigation Styling Footer Container Padding should have correct padding classes on footer navigation container" time="0.112">
+  <testsuite name="PaymentMethodSelector Component" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:24" time="0.626" tests="20">
+    <testcase classname="PaymentMethodSelector Component Rendering should render the payment method header" name="PaymentMethodSelector Component Rendering should render the payment method header" time="0.023">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Footer Container Padding should have border and background styling on footer" name="BookingWidget - Footer Navigation Styling Footer Container Padding should have border and background styling on footer" time="0.023">
+    <testcase classname="PaymentMethodSelector Component Rendering should render credit card option" name="PaymentMethodSelector Component Rendering should render credit card option" time="0.003">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should render back button with correct text" name="BookingWidget - Footer Navigation Styling Back Button should render back button with correct text" time="0.017">
+    <testcase classname="PaymentMethodSelector Component Rendering should render bank wire option" name="PaymentMethodSelector Component Rendering should render bank wire option" time="0.004">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should render back button with ArrowLeft icon" name="BookingWidget - Footer Navigation Styling Back Button should render back button with ArrowLeft icon" time="0.023">
+    <testcase classname="PaymentMethodSelector Component Rendering should render instant badge for card payment" name="PaymentMethodSelector Component Rendering should render instant badge for card payment" time="0.002">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should disable back button on first step" name="BookingWidget - Footer Navigation Styling Back Button should disable back button on first step" time="0.011">
+    <testcase classname="PaymentMethodSelector Component Rendering should render manual badge for bank wire" name="PaymentMethodSelector Component Rendering should render manual badge for bank wire" time="0.003">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Selection State should highlight card option when selected" name="PaymentMethodSelector Component Selection State should highlight card option when selected" time="0.029">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Selection State should highlight bank wire option when selected" name="PaymentMethodSelector Component Selection State should highlight bank wire option when selected" time="0.005">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Selection State should not highlight any option when none selected" name="PaymentMethodSelector Component Selection State should not highlight any option when none selected" time="0.004">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Selection Handling should call onMethodChange with card_stripe when card is clicked" name="PaymentMethodSelector Component Selection Handling should call onMethodChange with card_stripe when card is clicked" time="0.018">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Selection Handling should call onMethodChange with bank_wire when bank is clicked" name="PaymentMethodSelector Component Selection Handling should call onMethodChange with bank_wire when bank is clicked" time="0.011">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Selection Handling should allow switching from card to bank" name="PaymentMethodSelector Component Selection Handling should allow switching from card to bank" time="0.011">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Selection Handling should allow switching from bank to card" name="PaymentMethodSelector Component Selection Handling should allow switching from bank to card" time="0.013">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Visual Indicators should show pulse indicator for selected card option" name="PaymentMethodSelector Component Visual Indicators should show pulse indicator for selected card option" time="0.003">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Visual Indicators should show pulse indicator for selected bank option" name="PaymentMethodSelector Component Visual Indicators should show pulse indicator for selected bank option" time="0.002">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Visual Indicators should not show pulse indicator when nothing selected" name="PaymentMethodSelector Component Visual Indicators should not show pulse indicator when nothing selected" time="0.001">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Accessibility should have accessible buttons" name="PaymentMethodSelector Component Accessibility should have accessible buttons" time="0.003">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Accessibility should be keyboard navigable" name="PaymentMethodSelector Component Accessibility should be keyboard navigable" time="0.016">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Accessibility should have focus ring styles" name="PaymentMethodSelector Component Accessibility should have focus ring styles" time="0.004">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Icon Display should render icons for both payment methods" name="PaymentMethodSelector Component Icon Display should render icons for both payment methods" time="0.002">
+    </testcase>
+    <testcase classname="PaymentMethodSelector Component Icon Display should style icon container differently when selected" name="PaymentMethodSelector Component Icon Display should style icon container differently when selected" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="Bookings API" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:25" time="0.04" tests="15">
+    <testcase classname="Bookings API GET /api/bookings should return bookings list with success response" name="Bookings API GET /api/bookings should return bookings list with success response" time="0.002">
+    </testcase>
+    <testcase classname="Bookings API GET /api/bookings should pass filter parameters to service" name="Bookings API GET /api/bookings should pass filter parameters to service" time="0.001">
+    </testcase>
+    <testcase classname="Bookings API GET /api/bookings should require admin authentication" name="Bookings API GET /api/bookings should require admin authentication" time="0">
+    </testcase>
+    <testcase classname="Bookings API GET /api/bookings should handle service errors gracefully" name="Bookings API GET /api/bookings should handle service errors gracefully" time="0.002">
+    </testcase>
+    <testcase classname="Bookings API GET /api/bookings should include cache-busting headers" name="Bookings API GET /api/bookings should include cache-busting headers" time="0">
+    </testcase>
+    <testcase classname="Bookings API POST /api/bookings - Room Booking should create room booking with valid data" name="Bookings API POST /api/bookings - Room Booking should create room booking with valid data" time="0.001">
+    </testcase>
+    <testcase classname="Bookings API POST /api/bookings - Room Booking should return error for invalid room booking" name="Bookings API POST /api/bookings - Room Booking should return error for invalid room booking" time="0">
+    </testcase>
+    <testcase classname="Bookings API POST /api/bookings - Room Booking should return 409 for conflicting booking" name="Bookings API POST /api/bookings - Room Booking should return 409 for conflicting booking" time="0">
+    </testcase>
+    <testcase classname="Bookings API POST /api/bookings - Surf Week Booking should create surf week booking with valid data" name="Bookings API POST /api/bookings - Surf Week Booking should create surf week booking with valid data" time="0.001">
+    </testcase>
+    <testcase classname="Bookings API POST /api/bookings - Surf Week Booking should return error for duplicate surf week booking" name="Bookings API POST /api/bookings - Surf Week Booking should return error for duplicate surf week booking" time="0">
+    </testcase>
+    <testcase classname="Bookings API POST /api/bookings - Surf Week Booking should return 400 for invalid surf week booking" name="Bookings API POST /api/bookings - Surf Week Booking should return 400 for invalid surf week booking" time="0.001">
+    </testcase>
+    <testcase classname="Bookings API Error Handling should handle JSON parse errors" name="Bookings API Error Handling should handle JSON parse errors" time="0">
+    </testcase>
+    <testcase classname="Bookings API Error Handling should handle service exceptions" name="Bookings API Error Handling should handle service exceptions" time="0">
+    </testcase>
+    <testcase classname="Bookings API Response Shape should have consistent success response shape" name="Bookings API Response Shape should have consistent success response shape" time="0.003">
+    </testcase>
+    <testcase classname="Bookings API Response Shape should have consistent error response shape" name="Bookings API Response Shape should have consistent error response shape" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Booking Widget Settings API" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:25" time="0.046" tests="8">
+    <testcase classname="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return default prices when no settings found" name="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return default prices when no settings found" time="0.003">
+    </testcase>
+    <testcase classname="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return prices from database" name="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return prices from database" time="0.001">
+    </testcase>
+    <testcase classname="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return fallback prices on error" name="Booking Widget Settings API GET /api/booking-widget-settings (Public) should return fallback prices on error" time="0">
+    </testcase>
+    <testcase classname="Booking Widget Settings API GET /api/booking-widget-settings (Public) should include cache headers" name="Booking Widget Settings API GET /api/booking-widget-settings (Public) should include cache headers" time="0">
+    </testcase>
+    <testcase classname="Booking Widget Settings API GET /api/admin/booking-widget-settings (Admin) should return all settings" name="Booking Widget Settings API GET /api/admin/booking-widget-settings (Admin) should return all settings" time="0.001">
+    </testcase>
+    <testcase classname="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should update settings successfully" name="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should update settings successfully" time="0">
+    </testcase>
+    <testcase classname="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should validate price_from is positive" name="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should validate price_from is positive" time="0">
+    </testcase>
+    <testcase classname="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should validate experience_type" name="Booking Widget Settings API PUT /api/admin/booking-widget-settings (Admin) should validate experience_type" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:25" time="0.077" tests="5">
+    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4: For any spacing key, the value matches TOON-compliant specification" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4: For any spacing key, the value matches TOON-compliant specification" time="0.002">
+    </testcase>
+    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4a: For any spacing value, it is a valid CSS pixel string" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4a: For any spacing value, it is a valid CSS pixel string" time="0.001">
+    </testcase>
+    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4b: Spacing scale is monotonically increasing" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4b: Spacing scale is monotonically increasing" time="0">
+    </testcase>
+    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4c: All required spacing keys exist in the scale" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4c: All required spacing keys exist in the scale" time="0">
+    </testcase>
+    <testcase classname="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4d: Spacing scale contains exactly the required keys" name="Feature: ui-pixel-perfection, Property 4: Spacing Scale Definition Property 4d: Spacing scale contains exactly the required keys" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="SurfWeekRoomSelection - Surf Camp Pricing Display" errors="0" failures="0" skipped="8" timestamp="2026-01-12T03:51:24" time="0.782" tests="22">
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should display surf camp per-bed pricing when configured" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should display surf camp per-bed pricing when configured" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should display &quot;Included&quot; badge for dorm rooms with per-bed pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should display &quot;Included&quot; badge for dorm rooms with per-bed pricing" time="0.045">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should show per-bed upgrade pricing for private rooms" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Bed Pricing Strategy should show per-bed upgrade pricing for private rooms" time="0.015">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should display tiered pricing for private rooms with occupancy-based pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should display tiered pricing for private rooms with occupancy-based pricing" time="0.009">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should display detailed occupancy pricing breakdown for private rooms" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should display detailed occupancy pricing breakdown for private rooms" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should show minimum price for rooms with multiple occupancy tiers" name="SurfWeekRoomSelection - Surf Camp Pricing Display Per-Room-Occupancy Pricing Strategy should show minimum price for rooms with multiple occupancy tiers" time="0.012">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should NOT display nightly rate fallback when surf camp pricing is configured" name="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should NOT display nightly rate fallback when surf camp pricing is configured" time="0.009">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should NOT display calculated nightly rate (price × 7) for surf camp bookings" name="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should NOT display calculated nightly rate (price × 7) for surf camp bookings" time="0.01">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should only display surf camp pricing, never nightly rates" name="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should only display surf camp pricing, never nightly rates" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should handle rooms without surf camp pricing gracefully" name="SurfWeekRoomSelection - Surf Camp Pricing Display No Fallback to Nightly Rates for Surf Camp Bookings should handle rooms without surf camp pricing gracefully" time="0.009">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should update pricing when guest is assigned to upgraded room" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should update pricing when guest is assigned to upgraded room" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should calculate correct upgrade cost for per-bed pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should calculate correct upgrade cost for per-bed pricing" time="0.011">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should calculate correct upgrade cost for occupancy-based pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Assignment and Pricing should calculate correct upgrade cost for occupancy-based pricing" time="0.01">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should format prices with Euro symbol and no decimal for whole numbers" name="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should format prices with Euro symbol and no decimal for whole numbers" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should show &quot;from&quot; prefix for rooms with multiple pricing tiers" name="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should show &quot;from&quot; prefix for rooms with multiple pricing tiers" time="0.013">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should display per-person label for all surf camp pricing" name="SurfWeekRoomSelection - Surf Camp Pricing Display Pricing Display Formatting should display per-person label for all surf camp pricing" time="0.011">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should display guest names from participantNames" name="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should display guest names from participantNames" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should show unassigned guests count" name="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should show unassigned guests count" time="0.007">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should update unassigned count when guests are assigned" name="SurfWeekRoomSelection - Surf Camp Pricing Display Guest Assignment Display should update unassigned count when guests are assigned" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should display room features" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should display room features" time="0.006">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should display available beds count" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should display available beds count" time="0.007">
+    </testcase>
+    <testcase classname="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should show room thumbnail with click handler" name="SurfWeekRoomSelection - Surf Camp Pricing Display Room Information Display should show room thumbnail with click handler" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="ReviewAndPay Step Component" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:24" time="0.848" tests="31">
+    <testcase classname="ReviewAndPay Step Component Rendering should render the review and pay header" name="ReviewAndPay Step Component Rendering should render the review and pay header" time="0.048">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Rendering should render booking summary section" name="ReviewAndPay Step Component Rendering should render booking summary section" time="0.008">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Rendering should display experience type for room booking" name="ReviewAndPay Step Component Rendering should display experience type for room booking" time="0.017">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Rendering should display experience type for surf week" name="ReviewAndPay Step Component Rendering should display experience type for surf week" time="0.007">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Rendering should display dates correctly" name="ReviewAndPay Step Component Rendering should display dates correctly" time="0.009">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Rendering should display guest count" name="ReviewAndPay Step Component Rendering should display guest count" time="0.008">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Rendering should display location" name="ReviewAndPay Step Component Rendering should display location" time="0.01">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Guest Details Summary should display guest information" name="ReviewAndPay Step Component Guest Details Summary should display guest information" time="0.009">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Guest Details Summary should show dietary requirements when present" name="ReviewAndPay Step Component Guest Details Summary should show dietary requirements when present" time="0.008">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Guest Details Summary should show completion status for guests" name="ReviewAndPay Step Component Guest Details Summary should show completion status for guests" time="0.009">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Pricing Breakdown should display pricing breakdown title" name="ReviewAndPay Step Component Pricing Breakdown should display pricing breakdown title" time="0.012">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Pricing Breakdown should display base price" name="ReviewAndPay Step Component Pricing Breakdown should display base price" time="0.009">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Pricing Breakdown should display total price" name="ReviewAndPay Step Component Pricing Breakdown should display total price" time="0.015">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Add-ons Summary should display add-ons when present" name="ReviewAndPay Step Component Add-ons Summary should display add-ons when present" time="0.011">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Add-ons Summary should not display add-ons section when empty" name="ReviewAndPay Step Component Add-ons Summary should not display add-ons section when empty" time="0.01">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Room Assignments should display room assignments when present" name="ReviewAndPay Step Component Room Assignments should display room assignments when present" time="0.008">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Room Assignments should not display room assignments when empty" name="ReviewAndPay Step Component Room Assignments should not display room assignments when empty" time="0.006">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Payment Method Selection should render payment method selector" name="ReviewAndPay Step Component Payment Method Selection should render payment method selector" time="0.006">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Payment Method Selection should call setPaymentMethod when card is selected" name="ReviewAndPay Step Component Payment Method Selection should call setPaymentMethod when card is selected" time="0.039">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Payment Method Selection should call setPaymentMethod when bank wire is selected" name="ReviewAndPay Step Component Payment Method Selection should call setPaymentMethod when bank wire is selected" time="0.017">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Terms and Conditions should render terms checkbox" name="ReviewAndPay Step Component Terms and Conditions should render terms checkbox" time="0.008">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Terms and Conditions should toggle terms acceptance" name="ReviewAndPay Step Component Terms and Conditions should toggle terms acceptance" time="0.02">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Bank Wire Instructions should show bank wire instructions when bank_wire is selected" name="ReviewAndPay Step Component Bank Wire Instructions should show bank wire instructions when bank_wire is selected" time="0.009">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Bank Wire Instructions should not show bank wire instructions when card is selected" name="ReviewAndPay Step Component Bank Wire Instructions should not show bank wire instructions when card is selected" time="0.007">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Payment Button should show payment button when payment method is selected" name="ReviewAndPay Step Component Payment Button should show payment button when payment method is selected" time="0.012">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Payment Button should show complete booking button for bank wire" name="ReviewAndPay Step Component Payment Button should show complete booking button for bank wire" time="0.013">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Payment Button should disable payment button when terms not accepted" name="ReviewAndPay Step Component Payment Button should disable payment button when terms not accepted" time="0.011">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Payment Button should not show payment button when no payment method selected" name="ReviewAndPay Step Component Payment Button should not show payment button when no payment method selected" time="0.009">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Multiple Guests should display all guests in summary" name="ReviewAndPay Step Component Multiple Guests should display all guests in summary" time="0.01">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Accessibility should have accessible terms checkbox" name="ReviewAndPay Step Component Accessibility should have accessible terms checkbox" time="0.007">
+    </testcase>
+    <testcase classname="ReviewAndPay Step Component Accessibility should have proper heading hierarchy" name="ReviewAndPay Step Component Accessibility should have proper heading hierarchy" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="BookingWidget Component" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:24" time="0.871" tests="22">
+    <testcase classname="BookingWidget Component Initial Render should render trigger button when not a web component" name="BookingWidget Component Initial Render should render trigger button when not a web component" time="0.053">
+    </testcase>
+    <testcase classname="BookingWidget Component Initial Render should render custom trigger text from config" name="BookingWidget Component Initial Render should render custom trigger text from config" time="0.005">
+    </testcase>
+    <testcase classname="BookingWidget Component Initial Render should not render trigger button when isWebComponent is true" name="BookingWidget Component Initial Render should not render trigger button when isWebComponent is true" time="0.014">
+    </testcase>
+    <testcase classname="BookingWidget Component Initial Render should render modal when isWebComponent is true" name="BookingWidget Component Initial Render should render modal when isWebComponent is true" time="0.009">
+    </testcase>
+    <testcase classname="BookingWidget Component Modal Open/Close should open modal when trigger button is clicked" name="BookingWidget Component Modal Open/Close should open modal when trigger button is clicked" time="0.025">
+    </testcase>
+    <testcase classname="BookingWidget Component Modal Open/Close should close modal when close button is clicked" name="BookingWidget Component Modal Open/Close should close modal when close button is clicked" time="0.023">
+    </testcase>
+    <testcase classname="BookingWidget Component Modal Open/Close should close modal when backdrop is clicked" name="BookingWidget Component Modal Open/Close should close modal when backdrop is clicked" time="0.016">
+    </testcase>
+    <testcase classname="BookingWidget Component Step Rendering should render experience selection step initially" name="BookingWidget Component Step Rendering should render experience selection step initially" time="0.005">
+    </testcase>
+    <testcase classname="BookingWidget Component Step Rendering should render progress indicator" name="BookingWidget Component Step Rendering should render progress indicator" time="0.004">
+    </testcase>
+    <testcase classname="BookingWidget Component Navigation should render back button" name="BookingWidget Component Navigation should render back button" time="0.008">
+    </testcase>
+    <testcase classname="BookingWidget Component Navigation should render next button" name="BookingWidget Component Navigation should render next button" time="0.011">
+    </testcase>
+    <testcase classname="BookingWidget Component Navigation should disable back button on first step" name="BookingWidget Component Navigation should disable back button on first step" time="0.009">
+    </testcase>
+    <testcase classname="BookingWidget Component Navigation should disable next button when cannot proceed" name="BookingWidget Component Navigation should disable next button when cannot proceed" time="0.006">
+    </testcase>
+    <testcase classname="BookingWidget Component Pricing Display should display total price" name="BookingWidget Component Pricing Display should display total price" time="0.005">
+    </testcase>
+    <testcase classname="BookingWidget Component Pricing Display should display total label" name="BookingWidget Component Pricing Display should display total label" time="0.005">
+    </testcase>
+    <testcase classname="BookingWidget Component Header should display booking title" name="BookingWidget Component Header should display booking title" time="0.007">
+    </testcase>
+    <testcase classname="BookingWidget Component Header should have close button with X icon" name="BookingWidget Component Header should have close button with X icon" time="0.007">
+    </testcase>
+    <testcase classname="BookingWidget Component Accessibility should have accessible trigger button" name="BookingWidget Component Accessibility should have accessible trigger button" time="0.002">
+    </testcase>
+    <testcase classname="BookingWidget Component Accessibility should have accessible close button" name="BookingWidget Component Accessibility should have accessible close button" time="0.008">
+    </testcase>
+    <testcase classname="BookingWidget Component Accessibility should have accessible navigation buttons" name="BookingWidget Component Accessibility should have accessible navigation buttons" time="0.009">
+    </testcase>
+    <testcase classname="BookingWidget Component Modal State Callback should call onModalStateChange when modal opens" name="BookingWidget Component Modal State Callback should call onModalStateChange when modal opens" time="0.013">
+    </testcase>
+    <testcase classname="BookingWidget Component Modal State Callback should call onModalStateChange when modal closes" name="BookingWidget Component Modal State Callback should call onModalStateChange when modal closes" time="0.015">
+    </testcase>
+  </testsuite>
+  <testsuite name="BookingWidget - Footer Navigation Styling" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:24" time="0.93" tests="27">
+    <testcase classname="BookingWidget - Footer Navigation Styling Footer Container Padding should have correct padding classes on footer navigation container" name="BookingWidget - Footer Navigation Styling Footer Container Padding should have correct padding classes on footer navigation container" time="0.07">
+    </testcase>
+    <testcase classname="BookingWidget - Footer Navigation Styling Footer Container Padding should have border and background styling on footer" name="BookingWidget - Footer Navigation Styling Footer Container Padding should have border and background styling on footer" time="0.02">
+    </testcase>
+    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should render back button with correct text" name="BookingWidget - Footer Navigation Styling Back Button should render back button with correct text" time="0.013">
+    </testcase>
+    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should render back button with ArrowLeft icon" name="BookingWidget - Footer Navigation Styling Back Button should render back button with ArrowLeft icon" time="0.013">
+    </testcase>
+    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should disable back button on first step" name="BookingWidget - Footer Navigation Styling Back Button should disable back button on first step" time="0.01">
     </testcase>
     <testcase classname="BookingWidget - Footer Navigation Styling Back Button should enable back button on non-first steps" name="BookingWidget - Footer Navigation Styling Back Button should enable back button on non-first steps" time="0.008">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should have outline variant styling" name="BookingWidget - Footer Navigation Styling Back Button should have outline variant styling" time="0.019">
+    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should have outline variant styling" name="BookingWidget - Footer Navigation Styling Back Button should have outline variant styling" time="0.008">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should call prevStep when back button is clicked" name="BookingWidget - Footer Navigation Styling Back Button should call prevStep when back button is clicked" time="0.034">
+    <testcase classname="BookingWidget - Footer Navigation Styling Back Button should call prevStep when back button is clicked" name="BookingWidget - Footer Navigation Styling Back Button should call prevStep when back button is clicked" time="0.026">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should render next button with correct text" name="BookingWidget - Footer Navigation Styling Next Button should render next button with correct text" time="0.013">
+    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should render next button with correct text" name="BookingWidget - Footer Navigation Styling Next Button should render next button with correct text" time="0.012">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should render next button with ArrowRight icon" name="BookingWidget - Footer Navigation Styling Next Button should render next button with ArrowRight icon" time="0.023">
+    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should render next button with ArrowRight icon" name="BookingWidget - Footer Navigation Styling Next Button should render next button with ArrowRight icon" time="0.009">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should disable next button when cannot proceed" name="BookingWidget - Footer Navigation Styling Next Button should disable next button when cannot proceed" time="0.006">
+    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should disable next button when cannot proceed" name="BookingWidget - Footer Navigation Styling Next Button should disable next button when cannot proceed" time="0.007">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should enable next button when can proceed" name="BookingWidget - Footer Navigation Styling Next Button should enable next button when can proceed" time="0.006">
+    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should enable next button when can proceed" name="BookingWidget - Footer Navigation Styling Next Button should enable next button when can proceed" time="0.009">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should disable next button when loading" name="BookingWidget - Footer Navigation Styling Next Button should disable next button when loading" time="0.054">
+    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should disable next button when loading" name="BookingWidget - Footer Navigation Styling Next Button should disable next button when loading" time="0.013">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should call nextStep when next button is clicked" name="BookingWidget - Footer Navigation Styling Next Button should call nextStep when next button is clicked" time="0.037">
+    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should call nextStep when next button is clicked" name="BookingWidget - Footer Navigation Styling Next Button should call nextStep when next button is clicked" time="0.015">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should show &quot;Complete Booking&quot; text on last step" name="BookingWidget - Footer Navigation Styling Next Button should show &quot;Complete Booking&quot; text on last step" time="0.007">
+    <testcase classname="BookingWidget - Footer Navigation Styling Next Button should show &quot;Complete Booking&quot; text on last step" name="BookingWidget - Footer Navigation Styling Next Button should show &quot;Complete Booking&quot; text on last step" time="0.006">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should NOT render footer navigation on review-pay step" name="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should NOT render footer navigation on review-pay step" time="0.016">
+    <testcase classname="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should NOT render footer navigation on review-pay step" name="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should NOT render footer navigation on review-pay step" time="0.009">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should render review-pay step content when navigation is hidden" name="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should render review-pay step content when navigation is hidden" time="0.004">
+    <testcase classname="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should render review-pay step content when navigation is hidden" name="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should render review-pay step content when navigation is hidden" time="0.003">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should show footer navigation on steps BEFORE review-pay" name="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should show footer navigation on steps BEFORE review-pay" time="0.016">
+    <testcase classname="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should show footer navigation on steps BEFORE review-pay" name="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should show footer navigation on steps BEFORE review-pay" time="0.007">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should hide navigation when booking success is shown" name="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should hide navigation when booking success is shown" time="0.012">
+    <testcase classname="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should hide navigation when booking success is shown" name="BookingWidget - Footer Navigation Styling Navigation Hidden During Review-Pay should hide navigation when booking success is shown" time="0.005">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Pricing Display in Footer should display total price in footer" name="BookingWidget - Footer Navigation Styling Pricing Display in Footer should display total price in footer" time="0.024">
+    <testcase classname="BookingWidget - Footer Navigation Styling Pricing Display in Footer should display total price in footer" name="BookingWidget - Footer Navigation Styling Pricing Display in Footer should display total price in footer" time="0.005">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Pricing Display in Footer should display zero price initially" name="BookingWidget - Footer Navigation Styling Pricing Display in Footer should display zero price initially" time="0.003">
+    <testcase classname="BookingWidget - Footer Navigation Styling Pricing Display in Footer should display zero price initially" name="BookingWidget - Footer Navigation Styling Pricing Display in Footer should display zero price initially" time="0.005">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Pricing Display in Footer should update price display as pricing changes" name="BookingWidget - Footer Navigation Styling Pricing Display in Footer should update price display as pricing changes" time="0.062">
+    <testcase classname="BookingWidget - Footer Navigation Styling Pricing Display in Footer should update price display as pricing changes" name="BookingWidget - Footer Navigation Styling Pricing Display in Footer should update price display as pricing changes" time="0.007">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Footer Responsive Layout should have responsive padding classes for mobile" name="BookingWidget - Footer Navigation Styling Footer Responsive Layout should have responsive padding classes for mobile" time="0.006">
+    <testcase classname="BookingWidget - Footer Navigation Styling Footer Responsive Layout should have responsive padding classes for mobile" name="BookingWidget - Footer Navigation Styling Footer Responsive Layout should have responsive padding classes for mobile" time="0.007">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Footer Responsive Layout should hide Total label on mobile" name="BookingWidget - Footer Navigation Styling Footer Responsive Layout should hide Total label on mobile" time="0.022">
+    <testcase classname="BookingWidget - Footer Navigation Styling Footer Responsive Layout should hide Total label on mobile" name="BookingWidget - Footer Navigation Styling Footer Responsive Layout should hide Total label on mobile" time="0.01">
     </testcase>
     <testcase classname="BookingWidget - Footer Navigation Styling Footer Navigation Accessibility should have accessible button labels" name="BookingWidget - Footer Navigation Styling Footer Navigation Accessibility should have accessible button labels" time="0.007">
     </testcase>
     <testcase classname="BookingWidget - Footer Navigation Styling Footer Navigation Accessibility should have proper aria-label on complete booking button" name="BookingWidget - Footer Navigation Styling Footer Navigation Accessibility should have proper aria-label on complete booking button" time="0.005">
     </testcase>
-    <testcase classname="BookingWidget - Footer Navigation Styling Footer Navigation Accessibility should maintain button accessibility when disabled" name="BookingWidget - Footer Navigation Styling Footer Navigation Accessibility should maintain button accessibility when disabled" time="0.012">
+    <testcase classname="BookingWidget - Footer Navigation Styling Footer Navigation Accessibility should maintain button accessibility when disabled" name="BookingWidget - Footer Navigation Styling Footer Navigation Accessibility should maintain button accessibility when disabled" time="0.008">
     </testcase>
   </testsuite>
-  <testsuite name="Booking Validation Properties" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:22" time="2.437" tests="21">
-    <testcase classname="Booking Validation Properties Property 1: Booking Validation Completeness should return isValid: false for bookings with missing required fields" name="Booking Validation Properties Property 1: Booking Validation Completeness should return isValid: false for bookings with missing required fields" time="0.014">
+  <testsuite name="GuestDetails Step Component" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:51:24" time="2.332" tests="21">
+    <testcase classname="GuestDetails Step Component Rendering should render the guest details header" name="GuestDetails Step Component Rendering should render the guest details header" time="0.03">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 1: Booking Validation Completeness should include specific error messages for each missing field" name="Booking Validation Properties Property 1: Booking Validation Completeness should include specific error messages for each missing field" time="0.002">
+    <testcase classname="GuestDetails Step Component Rendering should display correct guest count instruction" name="GuestDetails Step Component Rendering should display correct guest count instruction" time="0.008">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 3: Email Validation Consistency should accept all valid email formats" name="Booking Validation Properties Property 3: Email Validation Consistency should accept all valid email formats" time="0.001">
+    <testcase classname="GuestDetails Step Component Rendering should render correct number of guest forms" name="GuestDetails Step Component Rendering should render correct number of guest forms" time="0.006">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 3: Email Validation Consistency should reject all invalid email formats" name="Booking Validation Properties Property 3: Email Validation Consistency should reject all invalid email formats" time="0.001">
+    <testcase classname="GuestDetails Step Component Rendering should mark first guest as primary" name="GuestDetails Step Component Rendering should mark first guest as primary" time="0.006">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 6: Validation Error Message Completeness should return non-empty message for any validation with errors" name="Booking Validation Properties Property 6: Validation Error Message Completeness should return non-empty message for any validation with errors" time="0.005">
+    <testcase classname="GuestDetails Step Component Form Fields should render all required fields for each guest" name="GuestDetails Step Component Form Fields should render all required fields for each guest" time="0.008">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 6: Validation Error Message Completeness should return empty string for valid results" name="Booking Validation Properties Property 6: Validation Error Message Completeness should return empty string for valid results" time="0">
+    <testcase classname="GuestDetails Step Component Form Fields should render optional fields" name="GuestDetails Step Component Form Fields should render optional fields" time="0.007">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 7: Guest Details Validation Consistency should pass validation when all guest details are complete" name="Booking Validation Properties Property 7: Guest Details Validation Consistency should pass validation when all guest details are complete" time="0.001">
+    <testcase classname="GuestDetails Step Component Form Fields should pre-fill firstName from participantNames" name="GuestDetails Step Component Form Fields should pre-fill firstName from participantNames" time="0.005">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 7: Guest Details Validation Consistency should fail validation when guest details are incomplete" name="Booking Validation Properties Property 7: Guest Details Validation Consistency should fail validation when guest details are incomplete" time="0">
+    <testcase classname="GuestDetails Step Component Input Handling should update input values on change" name="GuestDetails Step Component Input Handling should update input values on change" time="0.053">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 2: Date Range Validity should calculate positive nights for valid date ranges" name="Booking Validation Properties Property 2: Date Range Validity should calculate positive nights for valid date ranges" time="0.001">
+    <testcase classname="GuestDetails Step Component Input Handling should sync firstName changes to participantNames" name="GuestDetails Step Component Input Handling should sync firstName changes to participantNames" time="0.033">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 2: Date Range Validity should calculate correct number of nights" name="Booking Validation Properties Property 2: Date Range Validity should calculate correct number of nights" time="0">
+    <testcase classname="GuestDetails Step Component Validation should show error when saving with empty required fields" name="GuestDetails Step Component Validation should show error when saving with empty required fields" time="0.025">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 2: Date Range Validity should return consistent results for same date range" name="Booking Validation Properties Property 2: Date Range Validity should return consistent results for same date range" time="0.002">
+    <testcase classname="GuestDetails Step Component Validation should show email validation error for invalid email" name="GuestDetails Step Component Validation should show email validation error for invalid email" time="0.063">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 2: Date Range Validity should return EUR as currency for all calculations" name="Booking Validation Properties Property 2: Date Range Validity should return EUR as currency for all calculations" time="0.001">
+    <testcase classname="GuestDetails Step Component Validation should not show email error for valid email" name="GuestDetails Step Component Validation should not show email error for valid email" time="0.071">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 4: Price Formatting Round-Trip should preserve price value through format/parse cycle" name="Booking Validation Properties Property 4: Price Formatting Round-Trip should preserve price value through format/parse cycle" time="0.012">
+    <testcase classname="GuestDetails Step Component Save Guest should call updateGuestDetails when form is valid" name="GuestDetails Step Component Save Guest should call updateGuestDetails when form is valid" time="0.148">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 4: Price Formatting Round-Trip should format all valid prices without throwing" name="Booking Validation Properties Property 4: Price Formatting Round-Trip should format all valid prices without throwing" time="0.002">
+    <testcase classname="GuestDetails Step Component Save Guest should show success message after saving" name="GuestDetails Step Component Save Guest should show success message after saving" time="0.143">
     </testcase>
-    <testcase classname="Booking Validation Properties Property 4: Price Formatting Round-Trip should produce non-negative parsed values for positive prices" name="Booking Validation Properties Property 4: Price Formatting Round-Trip should produce non-negative parsed values for positive prices" time="0.003">
-    </testcase>
-    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should produce identical output when called multiple times" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should produce identical output when called multiple times" time="0.614">
-    </testcase>
-    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should return array for any valid input" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should return array for any valid input" time="0.096">
-    </testcase>
-    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should return non-empty array for valid images" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should return non-empty array for valid images" time="0.107">
-    </testcase>
-    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should use featured image as fallback when images array is empty" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should use featured image as fallback when images array is empty" time="0.114">
-    </testcase>
-    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should use default fallback when no images provided" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should use default fallback when no images provided" time="0.122">
-    </testcase>
-    <testcase classname="Booking Validation Properties Property 5: Room Image Processing Idempotence should filter out invalid image URLs" name="Booking Validation Properties Property 5: Room Image Processing Idempotence should filter out invalid image URLs" time="0.779">
-    </testcase>
-  </testsuite>
-  <testsuite name="GuestDetails Step Component" errors="0" failures="0" skipped="0" timestamp="2026-01-12T03:37:22" time="2.775" tests="21">
-    <testcase classname="GuestDetails Step Component Rendering should render the guest details header" name="GuestDetails Step Component Rendering should render the guest details header" time="0.039">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Rendering should display correct guest count instruction" name="GuestDetails Step Component Rendering should display correct guest count instruction" time="0.016">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Rendering should render correct number of guest forms" name="GuestDetails Step Component Rendering should render correct number of guest forms" time="0.012">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Rendering should mark first guest as primary" name="GuestDetails Step Component Rendering should mark first guest as primary" time="0.011">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Form Fields should render all required fields for each guest" name="GuestDetails Step Component Form Fields should render all required fields for each guest" time="0.021">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Form Fields should render optional fields" name="GuestDetails Step Component Form Fields should render optional fields" time="0.005">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Form Fields should pre-fill firstName from participantNames" name="GuestDetails Step Component Form Fields should pre-fill firstName from participantNames" time="0.007">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Input Handling should update input values on change" name="GuestDetails Step Component Input Handling should update input values on change" time="0.076">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Input Handling should sync firstName changes to participantNames" name="GuestDetails Step Component Input Handling should sync firstName changes to participantNames" time="0.09">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Validation should show error when saving with empty required fields" name="GuestDetails Step Component Validation should show error when saving with empty required fields" time="0.035">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Validation should show email validation error for invalid email" name="GuestDetails Step Component Validation should show email validation error for invalid email" time="0.106">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Validation should not show email error for valid email" name="GuestDetails Step Component Validation should not show email error for valid email" time="0.18">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Save Guest should call updateGuestDetails when form is valid" name="GuestDetails Step Component Save Guest should call updateGuestDetails when form is valid" time="0.184">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Save Guest should show success message after saving" name="GuestDetails Step Component Save Guest should show success message after saving" time="0.197">
-    </testcase>
-    <testcase classname="GuestDetails Step Component Completion Status should show completion status" name="GuestDetails Step Component Completion Status should show completion status" time="0.005">
+    <testcase classname="GuestDetails Step Component Completion Status should show completion status" name="GuestDetails Step Component Completion Status should show completion status" time="0.004">
     </testcase>
     <testcase classname="GuestDetails Step Component Completion Status should update completion status when guests are saved" name="GuestDetails Step Component Completion Status should update completion status when guests are saved" time="0.003">
     </testcase>
-    <testcase classname="GuestDetails Step Component Collapsed State should show collapsed summary when all guests are completed" name="GuestDetails Step Component Collapsed State should show collapsed summary when all guests are completed" time="0.512">
+    <testcase classname="GuestDetails Step Component Collapsed State should show collapsed summary when all guests are completed" name="GuestDetails Step Component Collapsed State should show collapsed summary when all guests are completed" time="0.509">
     </testcase>
-    <testcase classname="GuestDetails Step Component Collapsed State should expand when edit button is clicked" name="GuestDetails Step Component Collapsed State should expand when edit button is clicked" time="0.526">
+    <testcase classname="GuestDetails Step Component Collapsed State should expand when edit button is clicked" name="GuestDetails Step Component Collapsed State should expand when edit button is clicked" time="0.518">
     </testcase>
-    <testcase classname="GuestDetails Step Component Multiple Guests should handle multiple guest forms independently" name="GuestDetails Step Component Multiple Guests should handle multiple guest forms independently" time="0.054">
+    <testcase classname="GuestDetails Step Component Multiple Guests should handle multiple guest forms independently" name="GuestDetails Step Component Multiple Guests should handle multiple guest forms independently" time="0.047">
     </testcase>
-    <testcase classname="GuestDetails Step Component Accessibility should have proper aria-invalid attributes on error" name="GuestDetails Step Component Accessibility should have proper aria-invalid attributes on error" time="0.036">
+    <testcase classname="GuestDetails Step Component Accessibility should have proper aria-invalid attributes on error" name="GuestDetails Step Component Accessibility should have proper aria-invalid attributes on error" time="0.031">
     </testcase>
-    <testcase classname="GuestDetails Step Component Accessibility should have proper labels for all inputs" name="GuestDetails Step Component Accessibility should have proper labels for all inputs" time="0.006">
+    <testcase classname="GuestDetails Step Component Accessibility should have proper labels for all inputs" name="GuestDetails Step Component Accessibility should have proper labels for all inputs" time="0.005">
     </testcase>
   </testsuite>
 </testsuites>

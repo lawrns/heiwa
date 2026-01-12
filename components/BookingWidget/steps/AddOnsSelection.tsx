@@ -20,7 +20,8 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
     if (state.selectedAddOns.length > 0) {
       setSelectedAddOns(state.selectedAddOns);
     }
-  }, []); // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount - intentionally ignore state.selectedAddOns to prevent re-initialization
 
   // Update base price ref when it changes
   useEffect(() => {
@@ -64,7 +65,8 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
       fees,
       total: subtotal, // Price already includes tax
     });
-  }, [selectedAddOns, getAddOnSubtotal]); // Removed actions from dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAddOns, getAddOnSubtotal]); // Intentionally exclude actions and state.pricing to prevent infinite loops
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
