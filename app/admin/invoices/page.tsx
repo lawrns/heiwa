@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { FileText, Plus, Eye, Edit, Trash2, Search } from 'lucide-react'
 import { InvoiceModal } from '@/components/admin/invoices/InvoiceModal'
@@ -48,34 +48,34 @@ export default function InvoicesPage() {
   const [amountRange, setAmountRange] = useState({ minAmount: '', maxAmount: '' })
   const itemsPerPage = 20
 
-  useEffect(() => {
-    const fetchInvoices = async () => {
-      try {
-        setLoading(true)
-        const params = new URLSearchParams()
-        if (statusFilter !== 'all') params.set('status', statusFilter)
-        if (searchTerm) params.set('search', searchTerm)
-        params.set('page', currentPage.toString())
-        params.set('limit', itemsPerPage.toString())
+  const fetchInvoices = useCallback(async () => {
+    try {
+      setLoading(true)
+      const params = new URLSearchParams()
+      if (statusFilter !== 'all') params.set('status', statusFilter)
+      if (searchTerm) params.set('search', searchTerm)
+      params.set('page', currentPage.toString())
+      params.set('limit', itemsPerPage.toString())
 
-        const response = await fetch(`/api/invoices?${params.toString()}`)
-        const data = await response.json()
+      const response = await fetch(`/api/invoices?${params.toString()}`)
+      const data = await response.json()
 
-        if (data.success) {
-          setInvoices(data.data.invoices || [])
-        } else {
-          setError('Failed to fetch invoices')
-        }
-      } catch (err) {
-        setError('Error loading invoices')
-        console.error(err)
-      } finally {
-        setLoading(false)
+      if (data.success) {
+        setInvoices(data.data.invoices || [])
+      } else {
+        setError('Failed to fetch invoices')
       }
+    } catch (err) {
+      setError('Error loading invoices')
+      console.error(err)
+    } finally {
+      setLoading(false)
     }
-
-    fetchInvoices()
   }, [statusFilter, currentPage, searchTerm])
+
+  useEffect(() => {
+    fetchInvoices()
+  }, [fetchInvoices])
 
   const handleViewInvoice = (invoice: Invoice) => {
     setSelectedInvoice(invoice)
