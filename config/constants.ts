@@ -49,7 +49,7 @@ export const VALID_IMAGE_PREFIXES = [
 export const DEFAULT_CURRENCY = 'EUR' as const;
 
 /**
- * Default locale for formatting
+ * Default locale for formatting (en-GB for dd/mm/yyyy format)
  */
-export const DEFAULT_LOCALE = 'en-US' as const;
+export const DEFAULT_LOCALE = 'en-GB' as const;
 

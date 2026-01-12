@@ -239,7 +239,7 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
             <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
               <div className="text-center py-6 bg-gray-50 border-b border-gray-200">
                 <h3 className="text-3xl font-bold text-gray-900">
-                  {new Date(nextSurfWeek.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} to {new Date(nextSurfWeek.end_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}, {new Date(nextSurfWeek.end_date).getFullYear()}!
+                  {new Date(nextSurfWeek.start_date).toLocaleDateString('en-GB', { month: 'long', day: 'numeric' })} to {new Date(nextSurfWeek.end_date).toLocaleDateString('en-GB', { month: 'long', day: 'numeric' })}, {new Date(nextSurfWeek.end_date).getFullYear()}!
                 </h3>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">

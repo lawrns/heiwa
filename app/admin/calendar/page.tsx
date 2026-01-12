@@ -34,43 +34,44 @@ export default function CalendarPage() {
   const [showEventModal, setShowEventModal] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
 
+  // Fetch events function - defined outside useEffect so it can be called from event handlers
+  const fetchEvents = useCallback(async () => {
+    try {
+      setLoading(true)
+      let start: string
+      let end: string
+
+      if (currentView === 'month') {
+        start = startOfMonth(currentDate).toISOString().split('T')[0]
+        end = endOfMonth(currentDate).toISOString().split('T')[0]
+      } else if (currentView === 'quarter') {
+        start = startOfQuarter(currentDate).toISOString().split('T')[0]
+        end = endOfQuarter(currentDate).toISOString().split('T')[0]
+      } else {
+        start = startOfYear(currentDate).toISOString().split('T')[0]
+        end = endOfYear(currentDate).toISOString().split('T')[0]
+      }
+
+      const response = await fetch(`/api/calendar-events?start_date=${start}&end_date=${end}`)
+      const data = await response.json()
+
+      if (data.success) {
+        setEvents(data.data.events || [])
+      } else {
+        setError('Failed to fetch events')
+      }
+    } catch (err) {
+      setError('Error loading events')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }, [currentDate, currentView])
+
   // Fetch events when date or view changes
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setLoading(true)
-        let start: string
-        let end: string
-
-        if (currentView === 'month') {
-          start = startOfMonth(currentDate).toISOString().split('T')[0]
-          end = endOfMonth(currentDate).toISOString().split('T')[0]
-        } else if (currentView === 'quarter') {
-          start = startOfQuarter(currentDate).toISOString().split('T')[0]
-          end = endOfQuarter(currentDate).toISOString().split('T')[0]
-        } else {
-          start = startOfYear(currentDate).toISOString().split('T')[0]
-          end = endOfYear(currentDate).toISOString().split('T')[0]
-        }
-
-        const response = await fetch(`/api/calendar-events?start_date=${start}&end_date=${end}`)
-        const data = await response.json()
-
-        if (data.success) {
-          setEvents(data.data.events || [])
-        } else {
-          setError('Failed to fetch events')
-        }
-      } catch (err) {
-        setError('Error loading events')
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchEvents()
-  }, [currentDate, currentView])
+  }, [fetchEvents])
 
   const hasBookings = useMemo(() => {
     return events.some(

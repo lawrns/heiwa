@@ -192,7 +192,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {post.published_at && (
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                <span>{new Date(post.published_at).toLocaleDateString('en-US', {
+                <span>{new Date(post.published_at).toLocaleDateString('en-GB', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'

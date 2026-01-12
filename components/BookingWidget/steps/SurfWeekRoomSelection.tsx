@@ -353,8 +353,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
     if (!checkIn || !checkOut) return null;
     try {
       const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-      const start = new Intl.DateTimeFormat('en-US', options).format(checkIn);
-      const end = new Intl.DateTimeFormat('en-US', options).format(checkOut);
+      const start = new Intl.DateTimeFormat('en-GB', options).format(checkIn);
+      const end = new Intl.DateTimeFormat('en-GB', options).format(checkOut);
       return `${start} - ${end}`;
     } catch (error) {
       // Fallback if Intl API fails

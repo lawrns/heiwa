@@ -471,7 +471,120 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
     // Check if this is a surf camp conflict error
     const isSurfCampConflict = error?.includes('surf camp') || error?.includes('surf week');
-    
+
+    // For surf camp conflicts, show error message but also allow users to change dates
+    if (isSurfCampConflict) {
+      return (
+        <div className="space-y-6">
+          <div className="text-center space-y-2">
+            <h3 className="text-2xl font-bold text-gray-900">
+              Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
+            </h3>
+          </div>
+
+          {/* Error Message */}
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 max-w-2xl mx-auto">
+            <p className="text-black text-lg leading-relaxed">
+              We have surf camps running during those dates, so room-only bookings aren't available. We'd love for you to join one of our surf camp packages instead, or feel free to check for other dates.
+            </p>
+          </div>
+
+          {/* Date Picker for Rooms - Allow users to change dates to resolve conflict */}
+          {state.experienceType === 'room' && (
+            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 space-y-4">
+              <h4 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                <Calendar size={20} className="text-accent" />
+                Select Different Dates
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="check-in-error" className="block text-xs font-medium text-gray-700">
+                    Check-in
+                  </label>
+                  <input
+                    id="check-in-error"
+                    type="date"
+                    value={checkInDate}
+                    min={new Date().toISOString().split('T')[0]}
+                    onChange={(e) => handleCheckInChange(e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
+                      checkInDate && isDateSoldOut(checkInDate)
+                        ? 'border-red-300 bg-red-50 text-red-700'
+                        : 'border-gray-300'
+                    }`}
+                    required
+                  />
+                  {checkInDate && isDateSoldOut(checkInDate) && (
+                    <p className="text-base text-red-600 flex items-center gap-1">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      This date is fully booked. Please select another date.
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <label htmlFor="check-out-error" className="block text-xs font-medium text-gray-700">
+                    Check-out
+                  </label>
+                  <input
+                    id="check-out-error"
+                    type="date"
+                    value={checkOutDate}
+                    min={checkInDate || new Date().toISOString().split('T')[0]}
+                    onChange={(e) => handleCheckOutChange(e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
+                      checkOutDate && isDateSoldOut(checkOutDate)
+                        ? 'border-red-300 bg-red-50 text-red-700'
+                        : 'border-gray-300'
+                    }`}
+                    required
+                  />
+                  {checkOutDate && isDateSoldOut(checkOutDate) && (
+                    <p className="text-base text-red-600 flex items-center gap-1">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      This date is fully booked. Please select another date.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Date Availability Loading Indicator */}
+              {dateAvailabilityLoading && checkInDate && checkOutDate && (
+                <div className="flex items-center gap-2 text-base text-gray-600">
+                  <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+                  Checking availability for selected dates...
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button
+              onClick={handleRetry}
+              variant="outline"
+            >
+              Try Again
+            </Button>
+            {state.experienceType === 'room' && (
+              <Button
+                onClick={() => {
+                  // Clear error and retry with new dates
+                  actions.clearError('availability');
+                  handleRetry();
+                }}
+                disabled={!checkInDate || !checkOutDate}
+              >
+                Search New Dates
+              </Button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // For non-conflict errors, show generic error message
     return (
       <div className="space-y-6">
         <div className="text-center space-y-4">
@@ -479,17 +592,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
           </h3>
           <div className="space-y-2">
-            {isSurfCampConflict ? (
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 max-w-2xl mx-auto">
-                <p className="text-black text-lg leading-relaxed">
-                  We have surf camps running during those dates, so room-only bookings aren't available. We'd love for you to join one of our surf camp packages instead, or feel free to check for other dates.
-                </p>
-              </div>
-            ) : (
-              <p className="text-red-600">
-                Error loading {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}: {error}
-              </p>
-            )}
+            <p className="text-red-600">
+              Error loading {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}: {error}
+            </p>
             <Button
               onClick={handleRetry}
             >

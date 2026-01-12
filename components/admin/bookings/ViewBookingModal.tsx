@@ -87,7 +87,7 @@ export function ViewBookingModal({
 
   const formatDate = (dateString: string) => {
     try {
-      return new Date(dateString).toLocaleDateString('en-US', {
+      return new Date(dateString).toLocaleDateString('en-GB', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -99,7 +99,7 @@ export function ViewBookingModal({
 
   const formatDateTime = (dateString: string) => {
     try {
-      return new Date(dateString).toLocaleDateString('en-US', {
+      return new Date(dateString).toLocaleDateString('en-GB', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',

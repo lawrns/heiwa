@@ -42,9 +42,10 @@ function bookingReducer(state: BookingState, action: BookingAction): BookingStat
       return { ...state, currentStep: action.payload };
     
     case 'SET_EXPERIENCE_TYPE':
-      return { 
-        ...state, 
+      return {
+        ...state,
         experienceType: action.payload,
+        dates: { checkIn: null, checkOut: null }, // Reset dates when changing type
         selectedOption: null, // Reset selection when changing type
         roomAssignments: [], // Reset assignments when changing type
       };

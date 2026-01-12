@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import {
   Upload,
   Search,
@@ -9,7 +10,6 @@ import {
   Copy,
   Trash2,
   Check,
-  Image as ImageIcon,
   Link,
   Code,
   FileImage,
@@ -35,7 +35,6 @@ export default function MediaLibraryPage() {
   const [uploading, setUploading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [dragActive, setDragActive] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -269,10 +268,11 @@ export default function MediaLibraryPage() {
               className="group relative bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
             >
               <div className="aspect-square relative">
-                <img
+                <Image
                   src={item.url}
                   alt={item.name}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -350,9 +350,11 @@ export default function MediaLibraryPage() {
               {filteredMedia.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <img
+                    <Image
                       src={item.url}
                       alt={item.name}
+                      width={48}
+                      height={48}
                       className="h-12 w-12 object-cover rounded"
                     />
                   </td>

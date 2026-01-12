@@ -76,7 +76,7 @@ export function PaymentViewModal({ open, onClose, payment, onEdit, onRefund }: P
 
   const formatDate = (date?: string) => {
     if (!date) return 'N/A'
-    return new Date(date).toLocaleDateString('en-US', {
+    return new Date(date).toLocaleDateString('en-GB', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

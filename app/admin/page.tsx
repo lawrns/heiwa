@@ -163,17 +163,6 @@ export default function AdminDashboard() {
   const stats = data?.stats || []
   const recentBookings = data?.recentBookings || []
   const counts = data?.counts
-  
-  const iconMap: { [key: string]: LucideIcon } = {
-    'Bed': Bed,
-    'Calendar': Calendar,
-    'Users': Users,
-    'TrendingUp': TrendingUp,
-    'BarChart3': BarChart3,
-    'ClipboardList': ClipboardList,
-    'Building2': Building2,
-    'Box': Box
-  }
 
   return (
     <div className="space-y-8" data-testid="admin-dashboard">

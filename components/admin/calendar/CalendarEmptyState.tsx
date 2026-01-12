@@ -14,7 +14,7 @@ interface CalendarEmptyStateProps {
 
 export function CalendarEmptyState({ type, selectedDate, onCreateEvent }: CalendarEmptyStateProps) {
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    return date.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })
   }
 
   if (type === 'day') {

@@ -26,8 +26,8 @@ export function EventPopover({ event, anchorEl, onClose, onViewDetails }: EventP
     const start = new Date(event.start_date)
     const end = new Date(event.end_date || event.start_date)
     const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' }
-    const startStr = start.toLocaleDateString('en-US', options)
-    const endStr = end.toLocaleDateString('en-US', options)
+    const startStr = start.toLocaleDateString('en-GB', options)
+    const endStr = end.toLocaleDateString('en-GB', options)
 
     if (startStr === endStr) return startStr
     return `${startStr} - ${endStr}`

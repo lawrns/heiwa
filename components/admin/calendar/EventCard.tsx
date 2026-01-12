@@ -104,14 +104,14 @@ export function EventCard({ event, onUpdate, onViewFull }: EventCardProps) {
 
   const formatTime = (dateStr: string) => {
     const date = new Date(dateStr)
-    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+    return date.toLocaleTimeString('en-GB', { hour: 'numeric', minute: '2-digit' })
   }
 
   const formatDateRange = () => {
     const start = new Date(event.start_date)
     const end = new Date(event.end_date || event.start_date)
-    const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    const startStr = start.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })
+    const endStr = end.toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })
 
     if (startStr === endStr) {
       return startStr
