@@ -150,7 +150,7 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
     subtitle: 'Experience the softer side of Santa Cruz waves - perfect for learning and progression',
     epicImageUrl: '/images/surf4.jpg',
     epicImageCaption: 'once in a blue moon it is like this',
-    videoUrl: '',
+    videoUrl: null,
     videoCaption: 'Small and mid surf in Santa Cruz - realistic conditions for most visitors'
   }
 
@@ -377,12 +377,12 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
             </div>
 
             {/* Right: Realistic Video */}
-            {(surfConditionsContent?.videoUrl || defaultSurfConditions.videoUrl) && (
+            {surfConditionsContent?.videoUrl && (
               <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
                 <iframe
                   width="560"
                   height="315"
-                  src={surfConditionsContent?.videoUrl || defaultSurfConditions.videoUrl}
+                  src={surfConditionsContent.videoUrl}
                   title="YouTube video player"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"
@@ -391,7 +391,7 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
                   className="absolute inset-0 w-full h-full"
                 />
                 <p className="absolute bottom-4 left-4 right-4 text-white text-sm bg-black/50 px-3 py-2 rounded backdrop-blur-sm">
-                  {surfConditionsContent?.videoCaption || defaultSurfConditions.videoCaption}
+                  {surfConditionsContent.videoCaption || 'Check out the waves'}
                 </p>
               </div>
             )}
