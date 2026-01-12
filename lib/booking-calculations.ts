@@ -26,20 +26,22 @@ export interface PriceBreakdown {
 
 /**
  * Check if dates fall in peak season (May-September)
+ * Uses UTC to avoid timezone/DST issues
  */
 function isPeakSeasonPeriod(startDate: string, endDate: string): boolean {
   const peakSeasonMonths = [5, 6, 7, 8, 9] // May to September
-  const start = new Date(startDate)
-  const end = new Date(endDate)
+  // Parse as UTC to avoid timezone issues
+  const start = new Date(startDate + 'T00:00:00Z')
+  const end = new Date(endDate + 'T00:00:00Z')
   const current = new Date(start)
-  
+
   while (current < end) {
-    if (peakSeasonMonths.includes(current.getMonth() + 1)) {
+    if (peakSeasonMonths.includes(current.getUTCMonth() + 1)) {
       return true
     }
-    current.setDate(current.getDate() + 1)
+    current.setUTCDate(current.getUTCDate() + 1)
   }
-  
+
   return false
 }
 
@@ -61,10 +63,12 @@ export function calculateRoomPrice(
   }
 
   // Determine seasonal rate based on dates
+  // Peak season (May-Sept) uses standard pricing, off-season uses offSeason pricing
+  // Note: The schema has standard/offSeason - standard IS the peak rate
   let basePrice = 0;
   if (startDate && endDate) {
     const isPeak = isPeakSeasonPeriod(startDate, endDate);
-    basePrice = isPeak 
+    basePrice = isPeak
       ? (room.pricing.standard || room.pricing.offSeason || 0)
       : (room.pricing.offSeason || room.pricing.standard || 0);
   } else {
@@ -244,15 +248,19 @@ export function calculateNights(startDate: string, endDate: string): number {
 
 /**
  * Validate booking dates
+ * Uses UTC dates to avoid timezone/DST issues
  */
 export function validateBookingDates(startDate: string, endDate: string): {
   isValid: boolean;
   error?: string;
 } {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // Parse as UTC to avoid timezone issues
+  const start = new Date(startDate + 'T00:00:00Z');
+  const end = new Date(endDate + 'T00:00:00Z');
+
+  // Get today in UTC
+  const now = new Date();
+  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
   if (start < today) {
     return { isValid: false, error: 'Start date cannot be in the past' };
@@ -262,8 +270,7 @@ export function validateBookingDates(startDate: string, endDate: string): {
     return { isValid: false, error: 'End date must be after start date' };
   }
 
-  const maxAdvanceBooking = new Date();
-  maxAdvanceBooking.setFullYear(maxAdvanceBooking.getFullYear() + 2);
+  const maxAdvanceBooking = new Date(Date.UTC(now.getUTCFullYear() + 2, now.getUTCMonth(), now.getUTCDate()));
 
   if (start > maxAdvanceBooking) {
     return { isValid: false, error: 'Booking cannot be more than 2 years in advance' };

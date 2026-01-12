@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { X, Calendar, CheckCircle, ArrowLeft, ArrowRight, Info } from 'lucide-react';
+import { X, Calendar, CheckCircle, ArrowLeft, ArrowRight, Info, AlertTriangle, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Confetti } from '@/components/ui/confetti';
 import { useBookingFlow } from './hooks/useBookingFlow';
@@ -16,6 +16,70 @@ import { AddOnsSelection } from './steps/AddOnsSelection';
 import { GuestDetails } from './steps/GuestDetails';
 import { ReviewAndPay } from './steps/ReviewAndPay';
 import './styles/surf-enhancements.css';
+
+// Booking-specific error boundary with friendly messaging
+interface BookingErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class BookingErrorBoundary extends React.Component<
+  { children: React.ReactNode; onReset?: () => void },
+  BookingErrorBoundaryState
+> {
+  constructor(props: { children: React.ReactNode; onReset?: () => void }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): BookingErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // Log to error tracking service in production
+    if (process.env.NODE_ENV === 'production') {
+      // Could integrate with Sentry, LogRocket, etc.
+      console.error('Booking widget error:', { error: error.message, stack: errorInfo.componentStack });
+    }
+  }
+
+  handleReset = () => {
+    this.setState({ hasError: false, error: null });
+    this.props.onReset?.();
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center p-8 text-center min-h-[300px]">
+          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mb-4">
+            <AlertTriangle className="w-8 h-8 text-amber-600" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Oops! Something went wrong
+          </h3>
+          <p className="text-gray-600 mb-6 max-w-sm">
+            We hit a small bump while loading the booking form. No worries though - let&apos;s try again!
+          </p>
+          {process.env.NODE_ENV === 'development' && this.state.error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-left max-w-md">
+              <p className="text-xs font-mono text-red-700 break-words">
+                {this.state.error.message}
+              </p>
+            </div>
+          )}
+          <Button onClick={this.handleReset} className="gap-2">
+            <RotateCcw className="w-4 h-4" />
+            Try Again
+          </Button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 // Lazy load OptionSelection to prevent premature initialization
 // This prevents the component and its dependencies from loading until actually needed
@@ -307,8 +371,9 @@ export function BookingWidget({
               />
             </div>
 
-            {/* Content */}
+            {/* Content - Wrapped in error boundary for graceful error handling */}
             <div ref={contentScrollRef} className="flex-1 overflow-y-auto relative shadow-inner">
+              <BookingErrorBoundary onReset={actions.reset}>
               <div className="p-3 sm:p-4 md:p-6 lg:p-8">
                 {bookingSuccess ? (
                   <div className="text-center space-y-6 animate-fade-in-up">
@@ -452,6 +517,7 @@ export function BookingWidget({
                   renderCurrentStep()
                 )}
               </div>
+              </BookingErrorBoundary>
             </div>
 
             {/* Footer Navigation */}

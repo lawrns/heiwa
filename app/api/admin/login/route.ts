@@ -79,8 +79,11 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     )
 
-    // Set cookie via headers
-    response.headers.set('Set-Cookie', `admin_auth=${password}; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax${isProduction ? '; Secure' : ''}`)
+    // Set cookie via headers with security flags
+    // HttpOnly prevents XSS attacks from reading the cookie
+    // Secure ensures cookie is only sent over HTTPS in production
+    // SameSite=Strict provides CSRF protection
+    response.headers.set('Set-Cookie', `admin_auth=${password}; Path=/; Max-Age=${60 * 60 * 24 * 7}; HttpOnly; SameSite=Strict${isProduction ? '; Secure' : ''}`)
 
     return response
   })(request)

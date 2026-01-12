@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
+import DOMPurify from 'isomorphic-dompurify'
 import { 
   Bold, 
   Italic, 
@@ -114,6 +115,15 @@ export default function RichTextEditor({
   }, [onChange])
 
   const characterCount = document.getElementById('editor')?.innerText?.length || 0
+
+  // Sanitize HTML to prevent XSS attacks
+  const sanitizedValue = useMemo(() => {
+    return DOMPurify.sanitize(value, {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 'ul', 'ol', 'li', 'a', 'blockquote', 'pre', 'code', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div'],
+      ALLOWED_ATTR: ['href', 'target', 'rel', 'style', 'class'],
+      ALLOW_DATA_ATTR: false,
+    })
+  }, [value])
 
   return (
     <div className="border border-gray-300 rounded-lg overflow-hidden">
@@ -254,7 +264,7 @@ export default function RichTextEditor({
           style={{ minHeight: `${height}px` }}
           onInput={handleEditorChange}
           onSelect={handleTextSelection}
-          dangerouslySetInnerHTML={{ __html: value }}
+          dangerouslySetInnerHTML={{ __html: sanitizedValue }}
           data-placeholder={placeholder}
         />
         {!value && (
