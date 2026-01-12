@@ -191,9 +191,9 @@ export function useBookingFlow() {
 
   // Enhanced room assignment: Reordered step flow to collect guest details before room assignment
   const getStepFlow = useCallback(() => {
-    // If steps were skipped (e.g., when surf week is pre-selected), start from room selection
+    // If steps were skipped (e.g., when surf week is pre-selected), include options step for participant selection
     if (state.skippedSteps && state.skippedSteps.length > 0) {
-      const steps = ['surf-week-room-selection', 'guest-details', 'add-ons', 'review-pay'];
+      const steps = ['options', 'surf-week-room-selection', 'guest-details', 'add-ons', 'review-pay'];
       return steps;
     }
 
