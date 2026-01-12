@@ -2,7 +2,8 @@
 
 import React, { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Upload, Image as ImageIcon, Video, X, Plus, Tag } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowLeft, Upload, Image as ImageIcon, Video, X, Plus } from 'lucide-react'
 
 interface UploadFile {
   file: File
@@ -236,9 +237,11 @@ export default function UploadMediaPage() {
                 <div className="flex-shrink-0">
                   <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
                     {uploadFile.file.type.startsWith('image/') ? (
-                      <img
+                      <Image
                         src={uploadFile.preview}
                         alt={uploadFile.title}
+                        width={96}
+                        height={96}
                         className="w-full h-full object-cover"
                       />
                     ) : (

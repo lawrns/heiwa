@@ -260,31 +260,34 @@ export default function BookingsPage() {
     }
   }
 
-  const handleStatusChange = async (bookingId: string, newStatus: Booking['status']) => {
-    try {
-      const response = await fetch(`/api/bookings/${bookingId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: newStatus }),
-      })
+  // Note: handleStatusChange is available for future use with status dropdowns
+  // Currently status updates go through handleUpdateBooking via EditBookingModal
+  // Keeping this for future UI enhancements
+  // const handleStatusChange = async (bookingId: string, newStatus: Booking['status']) => {
+  //   try {
+  //     const response = await fetch(`/api/bookings/${bookingId}`, {
+  //       method: 'PATCH',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ status: newStatus }),
+  //     })
 
-      const data = await response.json()
+  //     const data = await response.json()
 
-      if (data.success) {
-        setBookings(bookings.map(booking => 
-          booking.id === bookingId ? { ...booking, status: newStatus } : booking
-        ))
-        toast.success('Booking status updated successfully')
-      } else {
-        toast.error(data.error || 'Failed to update booking status')
-      }
-    } catch (err) {
-      console.error('Error updating booking:', err)
-      toast.error('Failed to update booking status')
-    }
-  }
+  //     if (data.success) {
+  //       setBookings(bookings.map(booking =>
+  //         booking.id === bookingId ? { ...booking, status: newStatus } : booking
+  //       ))
+  //       toast.success('Booking status updated successfully')
+  //     } else {
+  //       toast.error(data.error || 'Failed to update booking status')
+  //     }
+  //   } catch (err) {
+  //     console.error('Error updating booking:', err)
+  //     toast.error('Failed to update booking status')
+  //   }
+  // }
 
   const handleDeleteBooking = (bookingId: string) => {
     setBookingToDelete(bookingId)

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, Save, Eye, Image as ImageIcon, Video, Type, Link as LinkIcon, Wand2 } from 'lucide-react'
+import { ArrowLeft, Save, Eye, Image as ImageIcon, Video, Type, Wand2 } from 'lucide-react'
 
 interface PageSection {
   id: string

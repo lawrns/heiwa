@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { ArrowLeft, Save, Trash2, Eye, Download, Tag, Plus, X, Image as ImageIcon, Video } from 'lucide-react'
+import { ArrowLeft, Save, Trash2, Tag, Plus, X, Image as ImageIcon, Video } from 'lucide-react'
 
 interface GalleryItem {
   id: string

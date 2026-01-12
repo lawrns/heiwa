@@ -19,7 +19,6 @@ import {
   Key,
   CreditCard,
   BookOpen,
-  AlertCircle,
   Package,
   Percent,
   Settings,
@@ -183,7 +182,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             router.push('/admin/login')
           }
         }
-      } catch (err) {
+      } catch {
         setIsAuthenticated(false)
         setShowLayout(false)
         if (pathname !== '/admin/login') {

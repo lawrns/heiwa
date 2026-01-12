@@ -86,15 +86,15 @@ export default function CMSPagesPage() {
     fetchPageStats()
   }, [])
 
-  const fetchPageStats = async (retryCount = 0) => {
+  const fetchPageStats = async () => {
     try {
       setLoading(true)
       setError(null)
-      
+
       // Use API route instead of direct Supabase call with retry logic
       let response: Response | null = null
       let lastError: Error | null = null
-      
+
       for (let attempt = 0; attempt <= 2; attempt++) {
         try {
           response = await fetch('/api/admin/cms/page-stats', {
@@ -154,19 +154,6 @@ export default function CMSPagesPage() {
     page.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     page.slug.toLowerCase().includes(searchTerm.toLowerCase())
   )
-
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      published: 'bg-green-100 text-green-800',
-      draft: 'bg-yellow-100 text-yellow-800',
-      archived: 'bg-gray-100 text-gray-800'
-    }
-    return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${variants[status as keyof typeof variants] || variants.published}`}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    )
-  }
 
   return (
     <CMSLayout

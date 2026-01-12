@@ -93,7 +93,7 @@ export default function NewBookingPage() {
     }
   }
 
-  const calculatePrice = () => {
+  useEffect(() => {
     if (formData.type === 'room' && formData.item_id && formData.check_in && formData.check_out) {
       const room = rooms.find(r => r.id === formData.item_id)
       if (room) {
@@ -107,19 +107,15 @@ export default function NewBookingPage() {
     } else if (formData.type === 'surf_camp' && formData.item_id) {
       const camp = surfCamps.find(c => c.id === formData.item_id)
       if (camp) {
-        setFormData(prev => ({ 
-          ...prev, 
+        setFormData(prev => ({
+          ...prev,
           total_price: camp.price * formData.guests,
           check_in: camp.start_date,
           check_out: camp.end_date,
         }))
       }
     }
-  }
-
-  useEffect(() => {
-    calculatePrice()
-  }, [formData.item_id, formData.check_in, formData.check_out, formData.guests, formData.type])
+  }, [formData.item_id, formData.check_in, formData.check_out, formData.guests, formData.type, rooms, surfCamps])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

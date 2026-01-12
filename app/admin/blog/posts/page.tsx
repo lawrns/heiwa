@@ -1,10 +1,44 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { Plus, Search, Eye, Edit, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { formatDateCompact } from '@/lib/utils'
+
+const fetchPosts = async (
+  statusFilter: string,
+  currentPage: number,
+  searchTerm: string,
+  setLoading: (loading: boolean) => void,
+  setPosts: (posts: BlogPost[]) => void,
+  setTotalPages: (pages: number) => void,
+  setError: (error: string | null) => void,
+  itemsPerPage: number
+) => {
+  try {
+    setLoading(true)
+    const params = new URLSearchParams()
+    if (statusFilter !== 'all') params.set('status', statusFilter)
+    if (searchTerm) params.set('search', searchTerm)
+    params.set('page', currentPage.toString())
+    params.set('limit', itemsPerPage.toString())
+
+    const response = await fetch(`/api/admin/blog/posts?${params.toString()}`)
+    const data = await response.json()
+
+    if (data.success) {
+      setPosts(data.data || [])
+      setTotalPages(data.pagination?.totalPages || 1)
+    } else {
+      setError(data.error || 'Failed to fetch posts')
+    }
+  } catch (err: unknown) {
+    setError('Error loading posts')
+    console.error(err)
+  } finally {
+    setLoading(false)
+  }
+}
 
 interface BlogPost {
   id: string
@@ -50,34 +84,8 @@ export default function BlogPostsPage() {
   const itemsPerPage = 20
 
   useEffect(() => {
-    fetchPosts()
+    fetchPosts(statusFilter, currentPage, searchTerm, setLoading, setPosts, setTotalPages, setError, itemsPerPage)
   }, [statusFilter, currentPage, searchTerm])
-
-  const fetchPosts = async () => {
-    try {
-      setLoading(true)
-      const params = new URLSearchParams()
-      if (statusFilter !== 'all') params.set('status', statusFilter)
-      if (searchTerm) params.set('search', searchTerm)
-      params.set('page', currentPage.toString())
-      params.set('limit', itemsPerPage.toString())
-
-      const response = await fetch(`/api/admin/blog/posts?${params.toString()}`)
-      const data = await response.json()
-
-      if (data.success) {
-        setPosts(data.data || [])
-        setTotalPages(data.pagination?.totalPages || 1)
-      } else {
-        setError(data.error || 'Failed to fetch posts')
-      }
-    } catch (err: unknown) {
-      setError('Error loading posts')
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this post?')) return
@@ -90,7 +98,7 @@ export default function BlogPostsPage() {
 
       if (data.success) {
         setError(null)
-        fetchPosts()
+        fetchPosts(statusFilter, currentPage, searchTerm, setLoading, setPosts, setTotalPages, setError, itemsPerPage)
       } else {
         setError(data.error || 'Failed to delete post')
       }

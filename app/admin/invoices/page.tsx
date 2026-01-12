@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { FileText, Plus, Eye, Edit, Trash2, Download, Search } from 'lucide-react'
+import { FileText, Plus, Eye, Edit, Trash2, Search } from 'lucide-react'
 import { InvoiceModal } from '@/components/admin/invoices/InvoiceModal'
 import { InvoiceViewModal } from '@/components/admin/invoices/InvoiceViewModal'
 import { BulkActions } from '@/components/admin/BulkActions'
@@ -31,9 +31,8 @@ interface Invoice {
 }
 
 export default function InvoicesPage() {
-  const router = useRouter()
   const searchParams = useSearchParams()
-  
+
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -50,33 +49,33 @@ export default function InvoicesPage() {
   const itemsPerPage = 20
 
   useEffect(() => {
-    fetchInvoices()
-  }, [statusFilter, currentPage])
+    const fetchInvoices = async () => {
+      try {
+        setLoading(true)
+        const params = new URLSearchParams()
+        if (statusFilter !== 'all') params.set('status', statusFilter)
+        if (searchTerm) params.set('search', searchTerm)
+        params.set('page', currentPage.toString())
+        params.set('limit', itemsPerPage.toString())
 
-  const fetchInvoices = async () => {
-    try {
-      setLoading(true)
-      const params = new URLSearchParams()
-      if (statusFilter !== 'all') params.set('status', statusFilter)
-      if (searchTerm) params.set('search', searchTerm)
-      params.set('page', currentPage.toString())
-      params.set('limit', itemsPerPage.toString())
+        const response = await fetch(`/api/invoices?${params.toString()}`)
+        const data = await response.json()
 
-      const response = await fetch(`/api/invoices?${params.toString()}`)
-      const data = await response.json()
-
-      if (data.success) {
-        setInvoices(data.data.invoices || [])
-      } else {
-        setError('Failed to fetch invoices')
+        if (data.success) {
+          setInvoices(data.data.invoices || [])
+        } else {
+          setError('Failed to fetch invoices')
+        }
+      } catch (err) {
+        setError('Error loading invoices')
+        console.error(err)
+      } finally {
+        setLoading(false)
       }
-    } catch (err) {
-      setError('Error loading invoices')
-      console.error(err)
-    } finally {
-      setLoading(false)
     }
-  }
+
+    fetchInvoices()
+  }, [statusFilter, currentPage, searchTerm])
 
   const handleViewInvoice = (invoice: Invoice) => {
     setSelectedInvoice(invoice)
@@ -109,11 +108,6 @@ export default function InvoicesPage() {
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete invoice'
       toast.error(errorMessage)
     }
-  }
-
-  const handleCreateFromBooking = (bookingId: string) => {
-    setSelectedInvoice({ bookingId } as Partial<Invoice> as Invoice)
-    setShowCreateModal(true)
   }
 
   // Bulk operations handlers
