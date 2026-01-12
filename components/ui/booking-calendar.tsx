@@ -136,10 +136,10 @@ export function BookingCalendar({ bookings, onBookingClick }: BookingCalendarPro
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-1 mb-4">
+      <div className="grid grid-cols-7 gap-1 mb-4 w-full">
         {/* Day headers */}
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="p-2 text-center text-sm font-medium text-gray-500">
+          <div key={day} className="p-2 text-center text-sm font-medium text-gray-500 min-w-0">
             {day}
           </div>
         ))}
@@ -154,7 +154,7 @@ export function BookingCalendar({ bookings, onBookingClick }: BookingCalendarPro
             <div
               key={index}
               className={`
-                min-h-[80px] p-1 border border-gray-200 cursor-pointer transition-colors
+                min-h-[100px] sm:min-h-[120px] p-2 border border-gray-200 cursor-pointer transition-colors min-w-0
                 ${isCurrentMonthDay ? 'bg-white' : 'bg-gray-50'}
                 ${isTodayDate ? 'ring-2 ring-accent' : ''}
                 hover:bg-gray-100

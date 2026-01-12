@@ -114,11 +114,11 @@ export function CalendarGrid({
       </div>
 
       {/* Weekday headers */}
-      <div className="grid grid-cols-7 border-b border-gray-200">
+      <div className="grid grid-cols-7 border-b border-gray-200 w-full">
         {WEEKDAYS.map((day) => (
           <div
             key={day}
-            className="py-2 text-center text-sm font-medium text-gray-500"
+            className="py-2 text-center text-sm font-medium text-gray-500 min-w-0"
           >
             {day}
           </div>
@@ -126,7 +126,7 @@ export function CalendarGrid({
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 w-full">
         {calendarDays.map((date, index) => {
           const dateKey = date.toISOString().split('T')[0]
           const dayEvents = eventsByDate.get(dateKey) || []
@@ -138,7 +138,7 @@ export function CalendarGrid({
               key={index}
               onClick={() => onDateSelect(date)}
               className={cn(
-                'min-h-[120px] p-1.5 border-b border-r border-gray-100 cursor-pointer transition-colors',
+                'min-h-[120px] sm:min-h-[140px] p-2 border-b border-r border-gray-100 cursor-pointer transition-colors min-w-0',
                 'hover:bg-gray-50',
                 !isCurrentMonth(date) && 'bg-gray-50/50',
                 isSelected(date) && 'bg-blue-50 ring-2 ring-inset ring-blue-500'

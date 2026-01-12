@@ -469,6 +469,9 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       }
     };
 
+    // Check if this is a surf camp conflict error
+    const isSurfCampConflict = error?.includes('surf camp') || error?.includes('surf week');
+    
     return (
       <div className="space-y-6">
         <div className="text-center space-y-4">
@@ -476,9 +479,17 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
           </h3>
           <div className="space-y-2">
-            <p className="text-red-600">
-              Error loading {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}: {error}
-            </p>
+            {isSurfCampConflict ? (
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 max-w-2xl mx-auto">
+                <p className="text-black text-lg leading-relaxed">
+                  We have surf camps running during those dates, so room-only bookings aren't available. We'd love for you to join one of our surf camp packages instead, or feel free to check for other dates.
+                </p>
+              </div>
+            ) : (
+              <p className="text-red-600">
+                Error loading {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}: {error}
+              </p>
+            )}
             <Button
               onClick={handleRetry}
             >

@@ -100,7 +100,7 @@ const AdminModal: React.FC<AdminModalProps> = ({
   const modalContent = (
     <div
       className={cn(
-        'fixed inset-0 z-50 flex items-center justify-center p-4',
+        'fixed inset-0 z-[10001] flex items-center justify-center p-4',
         overlayClassName
       )}
       onClick={handleBackdropClick}
