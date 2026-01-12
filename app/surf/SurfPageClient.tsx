@@ -169,65 +169,68 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
       </section>
 
       {/* Local Surfing Section - CMS Editable */}
-      <section id="section-local_break" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Content */}
-            <div className="space-y-6">
-              {localBreakContent?.title ? (
-                <>
-                  <h2 className="text-4xl font-bold text-gray-900">
-                    {localBreakContent.title}
-                  </h2>
-                  <p className="text-lg text-gray-600 leading-relaxed">
-                    {localBreakContent.description}
-                  </p>
+      {localBreakContent?.title ? (
+        <section id="section-local_break" className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Content */}
+              <div className="space-y-6">
+                <h2 className="text-4xl font-bold text-gray-900">
+                  {localBreakContent.title}
+                </h2>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  {localBreakContent.description}
+                </p>
 
+                {localBreakContent.features && localBreakContent.features.length > 0 && (
                   <div className="space-y-4">
-                    {localBreakContent.features && localBreakContent.features.length > 0 && localBreakContent.features.map((feature, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <IconComponent iconName={feature.icon} />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">{feature.title}</h3>
-                      <p className="text-gray-600">{feature.description}</p>
-                    </div>
+                    {localBreakContent.features.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <IconComponent iconName={feature.icon} />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-1">{feature.title}</h3>
+                          <p className="text-gray-600">{feature.description}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
+
+                {localBreakContent.disclaimer && (
+                  <div className="pt-4">
+                    <p className="text-sm text-gray-500 italic">
+                      {localBreakContent.disclaimer}
+                    </p>
+                  </div>
+                )}
               </div>
 
-                    {localBreakContent.disclaimer && (
-                      <div className="pt-4">
-                        <p className="text-sm text-gray-500 italic">
-                          {localBreakContent.disclaimer}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-12 bg-gray-50 rounded-lg">
-                  <p className="text-gray-500">Local Break section not configured in CMS</p>
+              {/* Map */}
+              {localBreakContent.imageUrl && (
+                <div className="relative aspect-square rounded-lg overflow-hidden shadow-xl">
+                  <Image
+                    src={localBreakContent.imageUrl}
+                    alt="Heiwa House location map"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
                 </div>
               )}
             </div>
-
-            {/* Map */}
-            {localBreakContent?.imageUrl && (
-              <div className="relative aspect-square rounded-lg overflow-hidden shadow-xl">
-                <Image
-                  src={localBreakContent.imageUrl}
-                  alt="Heiwa House location map"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-            )}
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section id="section-local_break" className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <p className="text-gray-500">Local Break section not configured in CMS</p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Promotional Surf Week Card Section */}
       {nextSurfWeek && nextSurfWeek.id && nextSurfWeek.start_date && nextSurfWeek.end_date && typeof nextSurfWeek.price === 'number' && (
@@ -305,28 +308,32 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              {surfConditionsContent?.title || defaultSurfConditions.title}
+              {surfConditionsContent?.title || 'Surf Conditions'}
             </h2>
             <p className="text-lg text-gray-600">
-              {surfConditionsContent?.subtitle || defaultSurfConditions.subtitle}
+              {surfConditionsContent?.subtitle}
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left: Epic Picture */}
             <div className="space-y-4">
-              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
-                <Image
-                  src={surfConditionsContent?.epicImageUrl || defaultSurfConditions.epicImageUrl}
-                  alt="Epic Santa Cruz surf day"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-              <p className="text-sm italic text-gray-600 text-center">
-                {surfConditionsContent?.epicImageCaption || defaultSurfConditions.epicImageCaption}
-              </p>
+              {surfConditionsContent?.epicImageUrl && (
+                <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
+                  <Image
+                    src={surfConditionsContent.epicImageUrl}
+                    alt="Epic Santa Cruz surf day"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                </div>
+              )}
+              {surfConditionsContent?.epicImageCaption && (
+                <p className="text-sm italic text-gray-600 text-center">
+                  {surfConditionsContent.epicImageCaption}
+                </p>
+              )}
             </div>
 
             {/* Right: Realistic Video */}
@@ -357,27 +364,31 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Photo Carousel */}
-            <div>
-              <ImageCarousel
-                images={surfLessonsContent?.carouselImages || defaultSurfLessonsImages}
-                alt="Surf lessons in Santa Cruz and Peniche"
-                className="w-full"
-                aspectRatio="aspect-[4/3]"
-                autoAdvance={true}
-                autoAdvanceInterval={5000}
-              />
-            </div>
+            {surfLessonsContent?.carouselImages && surfLessonsContent.carouselImages.length > 0 && (
+              <div>
+                <ImageCarousel
+                  images={surfLessonsContent.carouselImages}
+                  alt="Surf lessons in Santa Cruz and Peniche"
+                  className="w-full"
+                  aspectRatio="aspect-[4/3]"
+                  autoAdvance={true}
+                  autoAdvanceInterval={5000}
+                />
+              </div>
+            )}
 
             {/* Text Content */}
             <div className="space-y-6">
               <h2 className="text-4xl font-bold text-gray-900">
                 {surfLessonsContent?.title || 'Surf Lessons'}
               </h2>
-              <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
-                {(surfLessonsContent?.paragraphs || defaultSurfLessonsParagraphs).map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))}
-              </div>
+              {surfLessonsContent?.paragraphs && surfLessonsContent.paragraphs.length > 0 && (
+                <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
+                  {surfLessonsContent.paragraphs.map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </div>
+              )}
               <div className="pt-4">
                 <Link
                   href={surfLessonsContent?.buttonUrl || "/surf-weeks"}
@@ -398,10 +409,10 @@ export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClien
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              {worldClassSurfingContent?.title || defaultWorldClassSurfing.title}
+              {worldClassSurfingContent?.title || 'World-Class Surfing'}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {worldClassSurfingContent?.subtitle || defaultWorldClassSurfing.subtitle}
+              {worldClassSurfingContent?.subtitle}
             </p>
           </div>
 
