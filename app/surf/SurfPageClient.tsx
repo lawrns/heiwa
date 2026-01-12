@@ -8,62 +8,21 @@ import { FloatingCheckAvailability } from '@/components/floating-check-availabil
 import { HeroVideo } from '@/components/hero/hero-video'
 import { SeasonalSurfLevelChart } from '@/components/surf/SeasonalSurfLevelChart'
 import { ImageCarousel } from '@/components/ui/image-carousel'
-import { useEffect, useState } from 'react'
 import { PageSection } from '@/lib/cms-schemas'
 
-export default function SurfPageClient() {
-  const [sections, setSections] = useState<PageSection[]>([])
-  const [nextSurfWeek, setNextSurfWeek] = useState<{
+interface SurfPageClientProps {
+  sections: PageSection[]
+  nextSurfWeek: {
     id: string
     name: string
     start_date: string
     end_date: string
     price: number
     images: string[]
-  } | null>(null)
+  } | null
+}
 
-  // Fetch sections from new CMS API
-  useEffect(() => {
-    const fetchSections = async () => {
-      try {
-        const response = await fetch('/api/cms/pages/surf/sections')
-        const result = await response.json()
-        if (result.success && Array.isArray(result.data)) {
-          console.log('CMS sections loaded for surf page:', result.data.length, 'sections')
-          setSections(result.data)
-        }
-      } catch (error) {
-        console.error('Error fetching CMS sections:', error)
-      }
-    }
-
-    fetchSections()
-  }, [])
-
-  // Fetch next upcoming surf week
-  useEffect(() => {
-    const fetchNextSurfWeek = async () => {
-      try {
-        const response = await fetch('/api/surf-camps?is_active=true&limit=1')
-        const result = await response.json()
-        if (result.success && result.data && result.data.length > 0) {
-          const surfCamp = result.data[0]
-          setNextSurfWeek({
-            id: surfCamp.id,
-            name: surfCamp.name,
-            start_date: surfCamp.start_date,
-            end_date: surfCamp.end_date,
-            price: surfCamp.price,
-            images: surfCamp.images || []
-          })
-        }
-      } catch (error) {
-        console.error('Error fetching next surf week:', error)
-      }
-    }
-
-    fetchNextSurfWeek()
-  }, [])
+export default function SurfPageClient({ sections, nextSurfWeek }: SurfPageClientProps) {
 
   // Helper to get section by type
   const getSection = (type: string) => sections.find(s => s.section_type === type)
@@ -186,13 +145,12 @@ export default function SurfPageClient() {
     '/images/DSC02099-scaled.jpg',
   ]
 
-  // Default surf conditions content
   const defaultSurfConditions = {
     title: 'What People Can Surf Near Heiwa',
     subtitle: 'Experience the softer side of Santa Cruz waves - perfect for learning and progression',
     epicImageUrl: '/images/surf4.jpg',
     epicImageCaption: 'once in a blue moon it is like this',
-    videoUrl: 'https://www.youtube.com/embed/9nhQiKGsgHg?si=WWXSAJs0SAnR0wHY&controls=0',
+    videoUrl: '',
     videoCaption: 'Small and mid surf in Santa Cruz - realistic conditions for most visitors'
   }
 
@@ -419,22 +377,24 @@ export default function SurfPageClient() {
             </div>
 
             {/* Right: Realistic Video */}
-            <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
-              <iframe
-                width="560"
-                height="315"
-                src={surfConditionsContent?.videoUrl || defaultSurfConditions.videoUrl}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-              />
-              <p className="absolute bottom-4 left-4 right-4 text-white text-sm bg-black/50 px-3 py-2 rounded backdrop-blur-sm">
-                {surfConditionsContent?.videoCaption || defaultSurfConditions.videoCaption}
-              </p>
-            </div>
+            {(surfConditionsContent?.videoUrl || defaultSurfConditions.videoUrl) && (
+              <div className="relative aspect-video rounded-lg overflow-hidden shadow-lg">
+                <iframe
+                  width="560"
+                  height="315"
+                  src={surfConditionsContent?.videoUrl || defaultSurfConditions.videoUrl}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+                <p className="absolute bottom-4 left-4 right-4 text-white text-sm bg-black/50 px-3 py-2 rounded backdrop-blur-sm">
+                  {surfConditionsContent?.videoCaption || defaultSurfConditions.videoCaption}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
