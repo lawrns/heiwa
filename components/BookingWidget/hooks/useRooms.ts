@@ -91,7 +91,7 @@ export function useRooms({ checkIn, checkOut, guests, forSurfWeek = false }: Use
         if (data.success) {
           // Check for blocked by calendar event FIRST
           if (data.data?.blocked_by_event) {
-            setError(data.data.message || 'Bookings are not available during these dates due to a scheduled event or maintenance.');
+            setError(data.data.message || 'We have something special planned during those dates. Please choose different dates to continue your booking.');
             setRooms([]);
             setLoading(false);
             return;

@@ -593,20 +593,50 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     // For non-conflict errors, show generic error message
     return (
       <div className="space-y-6">
-        <div className="text-center space-y-4">
-          <h3 className="text-2xl font-bold text-gray-900">
-            Choose Your {state.experienceType === 'room' ? 'Room' : 'Surf Week'}
-          </h3>
-          <div className="space-y-2">
-            <p className="text-red-600">
-              Error loading {state.experienceType === 'room' ? 'rooms' : 'surf weeks'}: {error}
-            </p>
-            <Button
-              onClick={handleRetry}
-            >
-              Try Again
-            </Button>
+        <div className="text-center space-y-6 max-w-md mx-auto">
+          <div className="space-y-4">
+            {/* Friendly icon */}
+            <div className="flex justify-center">
+              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            </div>
+
+            <h3 className="text-2xl font-semibold text-gray-900">
+              Let's find you a perfect spot
+            </h3>
+
+            {/* Friendly message based on error type */}
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-left">
+              <p className="text-gray-700 leading-relaxed">
+                {error.includes('scheduled event') || error.includes('maintenance') ? (
+                  <>
+                    We have something special planned during those dates. How about choosing different dates?
+                    We'd love to host you another time! 🌊
+                  </>
+                ) : error.includes('surf camp') ? (
+                  <>
+                    Those dates are reserved for our surf camp experience. Want to join the surf camp,
+                    or would you prefer to book a room for different dates? 🏄‍♂️
+                  </>
+                ) : (
+                  <>
+                    We're having a small hiccup loading our availability. No worries though –
+                    let's try again and get you sorted! 😊
+                  </>
+                )}
+              </p>
+            </div>
           </div>
+
+          <Button
+            onClick={handleRetry}
+            className="w-full"
+          >
+            Choose Different Dates
+          </Button>
         </div>
       </div>
     );

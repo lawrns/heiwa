@@ -379,7 +379,7 @@ export async function GET(request: NextRequest) {
             start_date: event.start_date,
             end_date: event.end_date
           })),
-          message: 'Bookings are not available during these dates due to a scheduled event or maintenance.'
+          message: 'We have something special planned during those dates. Please choose different dates to continue your booking.'
         }
       }, {
         headers: {

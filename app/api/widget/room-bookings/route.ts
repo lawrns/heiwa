@@ -161,7 +161,7 @@ export async function POST(req: NextRequest) {
       console.log('🚫 Booking blocked by calendar event(s):', blockingEvents)
       return NextResponse.json({
         success: false,
-        error: 'Bookings are not available during these dates due to a scheduled event or maintenance.',
+        error: 'We have something special planned during those dates. Please choose different dates to continue your booking.',
         blocking_events: blockingEvents.map(e => ({
           title: e.title,
           start_date: e.start_date,
