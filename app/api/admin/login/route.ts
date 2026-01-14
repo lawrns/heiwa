@@ -67,9 +67,12 @@ export async function POST(request: NextRequest) {
       return ErrorResponses.unauthorized()
     }
 
-    // Create response with success message
+    // Set two cookies:
+    // 1. HttpOnly cookie for server-side authentication
+    // 2. Non-HttpOnly cookie for client-side admin toolbar detection
     const isProduction = process.env.NODE_ENV === 'production' || process.env.NETLIFY === 'true'
-
+    const secureFlag = isProduction ? '; Secure' : ''
+    
     const response = NextResponse.json(
       {
         success: true,
@@ -79,11 +82,11 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     )
 
-    // Set cookie via headers with security flags
-    // HttpOnly prevents XSS attacks from reading the cookie
-    // Secure ensures cookie is only sent over HTTPS in production
-    // SameSite=Strict provides CSRF protection
-    response.headers.set('Set-Cookie', `admin_auth=${password}; Path=/; Max-Age=${60 * 60 * 24 * 7}; HttpOnly; SameSite=Strict${isProduction ? '; Secure' : ''}`)
+    // Server-side auth cookie (HttpOnly)
+    response.headers.set('Set-Cookie', `admin_auth=${password}; Path=/; Max-Age=${60 * 60 * 24 * 7}; HttpOnly; SameSite=Strict${secureFlag}`)
+    
+    // Client-side admin indicator cookie (NOT HttpOnly)
+    response.headers.append('Set-Cookie', `admin_logged_in=true; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Strict${secureFlag}`)
 
     return response
   })(request)

@@ -30,17 +30,22 @@ export function AdminToolbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {
-    // Check for admin cookie
+    // Check for admin indicator cookie (non-HttpOnly)
     const checkAdmin = () => {
       const cookies = document.cookie.split(';')
-      const adminCookie = cookies.find(c => c.trim().startsWith('admin_auth='))
+      const adminCookie = cookies.find(c => c.trim().startsWith('admin_logged_in='))
       setIsAdmin(!!adminCookie)
     }
 
     checkAdmin()
     // Re-check when cookies might change
     window.addEventListener('focus', checkAdmin)
-    return () => window.removeEventListener('focus', checkAdmin)
+    // Also check periodically for first-time login
+    const interval = setInterval(checkAdmin, 1000)
+    return () => {
+      window.removeEventListener('focus', checkAdmin)
+      clearInterval(interval)
+    }
   }, [])
 
   const pageSlug = getPageSlug(pathname)
