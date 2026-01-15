@@ -1,19 +1,13 @@
 [build]
   command = "npm run build"
   publish = ".next"
-  # Ensure public directory is included
-  functions = "netlify/functions"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    # Ensure static files are served correctly
-    static_files = "public"
 
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"
   NODE_VERSION = "20"
-  # Optimize build performance
   NPM_FLAGS = "--prefer-offline --no-audit --legacy-peer-deps"
 
 # Cache static assets for better performance
