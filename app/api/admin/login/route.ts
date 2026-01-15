@@ -67,9 +67,7 @@ export async function POST(request: NextRequest) {
       return ErrorResponses.unauthorized()
     }
 
-    // Set two cookies:
-    // 1. HttpOnly cookie for server-side authentication
-    // 2. Non-HttpOnly cookie for client-side admin toolbar detection
+    // Set two cookies for proper authentication
     const isProduction = process.env.NODE_ENV === 'production' || process.env.NETLIFY === 'true'
     const secureFlag = isProduction ? '; Secure' : ''
     
@@ -85,7 +83,7 @@ export async function POST(request: NextRequest) {
     // Server-side auth cookie (HttpOnly)
     response.headers.set('Set-Cookie', `admin_auth=${password}; Path=/; Max-Age=${60 * 60 * 24 * 7}; HttpOnly; SameSite=Strict${secureFlag}`)
     
-    // Client-side admin indicator cookie (NOT HttpOnly)
+    // Client-side admin indicator cookie (accessible via JavaScript)
     response.headers.append('Set-Cookie', `admin_logged_in=true; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Strict${secureFlag}`)
 
     return response
