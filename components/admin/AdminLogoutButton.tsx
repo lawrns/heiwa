@@ -11,6 +11,11 @@ export default function AdminLogoutButton() {
   const handleLogout = async () => {
     setLoading(true)
     try {
+      // Clear client-side admin status
+      localStorage.removeItem('admin_logged_in')
+      sessionStorage.removeItem('admin_logged_in')
+      localStorage.removeItem('userEmail')
+      
       await fetch('/api/admin/logout', { method: 'POST' })
       router.push('/admin/login')
     } catch (error) {

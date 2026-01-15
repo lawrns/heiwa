@@ -106,7 +106,7 @@
         {
           "title": "Admin CMS Management",
           "file": "production-admin-cms.spec.ts",
-          "line": 4,
+          "line": 5,
           "column": 6,
           "specs": [
             {
@@ -125,31 +125,31 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 10167,
+                      "duration": 183,
                       "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/homepage/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/homepage\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/homepage\"\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/homepage/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/homepage\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/homepage\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:13:24",
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:7:5",
                         "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                          "column": 24,
-                          "line": 13
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 14,
+                          "line": 38
                         },
-                        "snippet": "\u001b[0m \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 12 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/homepage/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 14 |\u001b[39m     \n \u001b[90m 15 |\u001b[39m     \u001b[36mconst\u001b[39m editor \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form, [data-testid*=\"editor\"], [contenteditable]'\u001b[39m)\n \u001b[90m 16 |\u001b[39m     \u001b[36mawait\u001b[39m expect(editor\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m"
                       },
                       "errors": [
                         {
                           "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                            "column": 24,
-                            "line": 13
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 14,
+                            "line": 38
                           },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/homepage/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/homepage\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/homepage\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 11 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 12 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 13 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/homepage/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 14 |\u001b[39m     \n \u001b[90m 15 |\u001b[39m     \u001b[36mconst\u001b[39m editor \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form, [data-testid*=\"editor\"], [contenteditable]'\u001b[39m)\n \u001b[90m 16 |\u001b[39m     \u001b[36mawait\u001b[39m expect(editor\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:13:24\u001b[22m"
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:7:5\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-01T22:53:52.736Z",
+                      "startTime": "2026-01-15T00:35:33.554Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -161,17 +161,12 @@
                           "name": "video",
                           "contentType": "video/webm",
                           "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-chromium/error-context.md"
                         }
                       ],
                       "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                        "column": 24,
-                        "line": 13
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 14,
+                        "line": 38
                       }
                     }
                   ],
@@ -180,337 +175,7 @@
               ],
               "id": "7384a94d97a3bf5f747c-37965efc6b6c4513d716",
               "file": "production-admin-cms.spec.ts",
-              "line": 9,
-              "column": 7
-            },
-            {
-              "title": "should load CMS pages management",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 1,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 10059,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/pages/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/pages\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/pages\"\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/pages/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/pages\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/pages\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:23:24",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                          "column": 24,
-                          "line": 23
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 21 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 22 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/pages/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 24 |\u001b[39m     \n \u001b[90m 25 |\u001b[39m     \u001b[36mconst\u001b[39m pagesList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"pages-list\"], [class*=\"page\"]'\u001b[39m)\n \u001b[90m 26 |\u001b[39m     \u001b[36mawait\u001b[39m expect(pagesList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                            "column": 24,
-                            "line": 23
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/pages/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/pages\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/pages\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 21 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 22 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 23 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/pages/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 24 |\u001b[39m     \n \u001b[90m 25 |\u001b[39m     \u001b[36mconst\u001b[39m pagesList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"pages-list\"], [class*=\"page\"]'\u001b[39m)\n \u001b[90m 26 |\u001b[39m     \u001b[36mawait\u001b[39m expect(pagesList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:23:24\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:54:03.506Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                        "column": 24,
-                        "line": 23
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-d7d89b4357e8bfd3d0d0",
-              "file": "production-admin-cms.spec.ts",
-              "line": 19,
-              "column": 7
-            },
-            {
-              "title": "should load FAQ management",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 2,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 10168,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/faq/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/faq\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/faq\"\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/faq/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/faq\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/faq\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:33:24",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                          "column": 24,
-                          "line": 33
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 32 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/faq/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m     \n \u001b[90m 35 |\u001b[39m     \u001b[36mconst\u001b[39m faqList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"faq-list\"], [class*=\"faq\"]'\u001b[39m)\n \u001b[90m 36 |\u001b[39m     \u001b[36mawait\u001b[39m expect(faqList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                            "column": 24,
-                            "line": 33
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/faq/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/faq\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/faq\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 32 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 33 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/faq/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 34 |\u001b[39m     \n \u001b[90m 35 |\u001b[39m     \u001b[36mconst\u001b[39m faqList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"faq-list\"], [class*=\"faq\"]'\u001b[39m)\n \u001b[90m 36 |\u001b[39m     \u001b[36mawait\u001b[39m expect(faqList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:33:24\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:54:14.127Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                        "column": 24,
-                        "line": 33
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-c6c79437a2a4a10aacaf",
-              "file": "production-admin-cms.spec.ts",
-              "line": 29,
-              "column": 7
-            },
-            {
-              "title": "should load testimonials management",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 3,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 10158,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/testimonials/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/testimonials/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:43:24",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                          "column": 24,
-                          "line": 43
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 41 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 42 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 43 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/testimonials/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 44 |\u001b[39m     \n \u001b[90m 45 |\u001b[39m     \u001b[36mconst\u001b[39m testimonialsList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"testimonials\"], [class*=\"testimonial\"]'\u001b[39m)\n \u001b[90m 46 |\u001b[39m     \u001b[36mawait\u001b[39m expect(testimonialsList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                            "column": 24,
-                            "line": 43
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/testimonials/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/testimonials\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 41 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 42 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 43 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/testimonials/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 44 |\u001b[39m     \n \u001b[90m 45 |\u001b[39m     \u001b[36mconst\u001b[39m testimonialsList \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'table, [data-testid*=\"testimonials\"], [class*=\"testimonial\"]'\u001b[39m)\n \u001b[90m 46 |\u001b[39m     \u001b[36mawait\u001b[39m expect(testimonialsList\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:43:24\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:54:24.925Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                        "column": 24,
-                        "line": 43
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-5b235b892a9d9e54ed24",
-              "file": "production-admin-cms.spec.ts",
-              "line": 39,
-              "column": 7
-            },
-            {
-              "title": "should load CMS settings",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 4,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 10081,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/settings/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/settings\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/settings\"\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/settings/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/settings\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/settings\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:53:24",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                          "column": 24,
-                          "line": 53
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/settings/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \n \u001b[90m 55 |\u001b[39m     \u001b[36mconst\u001b[39m settingsForm \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form, [data-testid*=\"settings\"]'\u001b[39m)\n \u001b[90m 56 |\u001b[39m     \u001b[36mawait\u001b[39m expect(settingsForm\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                            "column": 24,
-                            "line": 53
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/admin\\/cms\\/settings/\u001b[39m\nReceived string:  \u001b[31m\"https://heiwahauz.netlify.app/cms/settings\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveURL\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://heiwahauz.netlify.app/cms/settings\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 51 |\u001b[39m     \u001b[36mawait\u001b[39m waitForAdminPageLoad(page)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/admin\\/cms\\/settings/\u001b[39m)\n \u001b[90m    |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \n \u001b[90m 55 |\u001b[39m     \u001b[36mconst\u001b[39m settingsForm \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'form, [data-testid*=\"settings\"]'\u001b[39m)\n \u001b[90m 56 |\u001b[39m     \u001b[36mawait\u001b[39m expect(settingsForm\u001b[33m.\u001b[39mfirst())\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:53:24\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:54:35.804Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-chromium/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts",
-                        "column": 24,
-                        "line": 53
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-ea87de7f5c6ef72779fc",
-              "file": "production-admin-cms.spec.ts",
-              "line": 49,
-              "column": 7
-            },
-            {
-              "title": "should load media library",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 4988,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:54:46.578Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-602cdea641f0a8c7e0e0",
-              "file": "production-admin-cms.spec.ts",
-              "line": 59,
+              "line": 10,
               "column": 7
             },
             {
@@ -529,31 +194,31 @@
                       "workerIndex": 6,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 33688,
+                      "duration": 813,
                       "error": {
-                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
+                        "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:7:5",
                         "location": {
                           "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                          "column": 23,
-                          "line": 15
+                          "column": 14,
+                          "line": 38
                         },
-                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m"
                       },
                       "errors": [
                         {
                           "location": {
                             "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                            "column": 23,
-                            "line": 15
+                            "column": 14,
+                            "line": 38
                           },
-                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
+                          "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:7:5\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-01T22:54:52.204Z",
+                      "startTime": "2026-01-15T00:35:37.338Z",
                       "annotations": [],
                       "attachments": [
                         {
@@ -574,8 +239,8 @@
                       ],
                       "errorLocation": {
                         "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                        "column": 23,
-                        "line": 15
+                        "column": 14,
+                        "line": 38
                       }
                     }
                   ],
@@ -584,377 +249,7 @@
               ],
               "id": "7384a94d97a3bf5f747c-43410d23801251fadb81",
               "file": "production-admin-cms.spec.ts",
-              "line": 9,
-              "column": 7
-            },
-            {
-              "title": "should load CMS pages management",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "firefox",
-                  "projectName": "firefox",
-                  "results": [
-                    {
-                      "workerIndex": 7,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 34075,
-                      "error": {
-                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                          "column": 23,
-                          "line": 15
-                        },
-                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                            "column": 23,
-                            "line": 15
-                          },
-                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:55:27.765Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-firefox/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-firefox/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-23b5a-d-load-CMS-pages-management-firefox/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                        "column": 23,
-                        "line": 15
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-67bdcc905a69bdb9cbec",
-              "file": "production-admin-cms.spec.ts",
-              "line": 19,
-              "column": 7
-            },
-            {
-              "title": "should load FAQ management",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "firefox",
-                  "projectName": "firefox",
-                  "results": [
-                    {
-                      "workerIndex": 8,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 33607,
-                      "error": {
-                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                          "column": 23,
-                          "line": 15
-                        },
-                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                            "column": 23,
-                            "line": 15
-                          },
-                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:56:03.179Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-firefox/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-firefox/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-2d727--should-load-FAQ-management-firefox/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                        "column": 23,
-                        "line": 15
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-0d4016f67f89268ca554",
-              "file": "production-admin-cms.spec.ts",
-              "line": 29,
-              "column": 7
-            },
-            {
-              "title": "should load testimonials management",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "firefox",
-                  "projectName": "firefox",
-                  "results": [
-                    {
-                      "workerIndex": 9,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 33758,
-                      "error": {
-                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                          "column": 23,
-                          "line": 15
-                        },
-                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                            "column": 23,
-                            "line": 15
-                          },
-                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:56:38.084Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-firefox/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-firefox/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-7076f-oad-testimonials-management-firefox/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                        "column": 23,
-                        "line": 15
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-d0d2dc9325340b1df4b8",
-              "file": "production-admin-cms.spec.ts",
-              "line": 39,
-              "column": 7
-            },
-            {
-              "title": "should load CMS settings",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "firefox",
-                  "projectName": "firefox",
-                  "results": [
-                    {
-                      "workerIndex": 10,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 33605,
-                      "error": {
-                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                          "column": 23,
-                          "line": 15
-                        },
-                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                            "column": 23,
-                            "line": 15
-                          },
-                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:57:13.067Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-firefox/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-firefox/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-86a3c-nt-should-load-CMS-settings-firefox/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                        "column": 23,
-                        "line": 15
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-f056557554f420bacf80",
-              "file": "production-admin-cms.spec.ts",
-              "line": 49,
-              "column": 7
-            },
-            {
-              "title": "should load media library",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 120000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "firefox",
-                  "projectName": "firefox",
-                  "results": [
-                    {
-                      "workerIndex": 11,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 33422,
-                      "error": {
-                        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n",
-                        "stack": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\n    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5",
-                        "location": {
-                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                          "column": 23,
-                          "line": 15
-                        },
-                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                            "column": 23,
-                            "line": 15
-                          },
-                          "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"password\"]') to be visible\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:15\n\n\u001b[0m \u001b[90m 13 |\u001b[39m   \u001b[90m// Fill password input\u001b[39m\n \u001b[90m 14 |\u001b[39m   \u001b[36mconst\u001b[39m passwordInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[type=\"password\"]'\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 15 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mwaitFor({ timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 16 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(password)\n \u001b[90m 17 |\u001b[39m   \n \u001b[90m 18 |\u001b[39m   \u001b[90m// Submit form\u001b[39m\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:15:23)\u001b[22m\n\u001b[2m    at ensureAdminAuth (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/helpers/admin-helpers.ts:79:7)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:6:5\u001b[22m"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-12-01T22:57:48.162Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-03352-t-should-load-media-library-firefox/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-03352-t-should-load-media-library-firefox/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-03352-t-should-load-media-library-firefox/error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
-                        "column": 23,
-                        "line": 15
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "7384a94d97a3bf5f747c-de9e76538ade31bbd763",
-              "file": "production-admin-cms.spec.ts",
-              "line": 59,
+              "line": 10,
               "column": 7
             },
             {
@@ -973,22 +268,49 @@
                       "workerIndex": 12,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 1,
+                      "duration": 661,
                       "error": {
-                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
-                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:7:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 14,
+                          "line": 38
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m"
                       },
                       "errors": [
                         {
-                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 14,
+                            "line": 38
+                          },
+                          "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-cms.spec.ts:7:5\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-01T22:58:22.789Z",
+                      "startTime": "2026-01-15T00:35:48.565Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-cms-Admin-5fae3-ld-load-CMS-homepage-editor-webkit/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 14,
+                        "line": 38
+                      }
                     }
                   ],
                   "status": "unexpected"
@@ -996,11 +318,171 @@
               ],
               "id": "7384a94d97a3bf5f747c-23d8960a62754963481a",
               "file": "production-admin-cms.spec.ts",
-              "line": 9,
+              "line": 10,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "production-admin-full-audit.spec.ts",
+      "file": "production-admin-full-audit.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Admin Panel Full Audit",
+          "file": "production-admin-full-audit.spec.ts",
+          "line": 32,
+          "column": 6,
+          "specs": [
+            {
+              "title": "9. Audit Homepage CMS",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 169,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-full-audit.spec.ts:46:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 14,
+                          "line": 38
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 14,
+                            "line": 38
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-full-audit.spec.ts:46:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:34.280Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-full-audi-166d0--Audit-9-Audit-Homepage-CMS-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-full-audi-166d0--Audit-9-Audit-Homepage-CMS-chromium/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 14,
+                        "line": 38
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "80342cb3f8d35bf6b516-cf3309cbfb527973fd60",
+              "file": "production-admin-full-audit.spec.ts",
+              "line": 260,
               "column": 7
             },
             {
-              "title": "should load CMS pages management",
+              "title": "9. Audit Homepage CMS",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 671,
+                      "error": {
+                        "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-full-audit.spec.ts:46:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 14,
+                          "line": 38
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 14,
+                            "line": 38
+                          },
+                          "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-full-audit.spec.ts:46:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:39.481Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-full-audi-166d0--Audit-9-Audit-Homepage-CMS-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-full-audi-166d0--Audit-9-Audit-Homepage-CMS-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-full-audi-166d0--Audit-9-Audit-Homepage-CMS-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 14,
+                        "line": 38
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "80342cb3f8d35bf6b516-15e7381b4d4dec4206f8",
+              "file": "production-admin-full-audit.spec.ts",
+              "line": 260,
+              "column": 7
+            },
+            {
+              "title": "9. Audit Homepage CMS",
               "ok": false,
               "tags": [],
               "tests": [
@@ -1015,34 +497,229 @@
                       "workerIndex": 13,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 1,
+                      "duration": 349,
                       "error": {
-                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
-                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-full-audit.spec.ts:46:5",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                          "column": 14,
+                          "line": 38
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m"
                       },
                       "errors": [
                         {
-                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                            "column": 14,
+                            "line": 38
+                          },
+                          "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[90m   at \u001b[39mfixtures/admin-auth.ts:38\n\n\u001b[0m \u001b[90m 36 |\u001b[39m\n \u001b[90m 37 |\u001b[39m   \u001b[90m// Navigate to admin to verify auth works\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m60000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m\n \u001b[90m 40 |\u001b[39m   \u001b[90m// Wait for page to load and verify we're not redirected to login\u001b[39m\n \u001b[90m 41 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m\n\u001b[2m    at loginAsAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts:38:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-admin-full-audit.spec.ts:46:5\u001b[22m"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-01T22:58:23.119Z",
+                      "startTime": "2026-01-15T00:35:49.879Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-full-audi-166d0--Audit-9-Audit-Homepage-CMS-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-admin-full-audi-166d0--Audit-9-Audit-Homepage-CMS-webkit/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/fixtures/admin-auth.ts",
+                        "column": 14,
+                        "line": 38
+                      }
                     }
                   ],
                   "status": "unexpected"
                 }
               ],
-              "id": "7384a94d97a3bf5f747c-9878ef1c11834932bd67",
-              "file": "production-admin-cms.spec.ts",
-              "line": 19,
+              "id": "80342cb3f8d35bf6b516-eb1f6ffae546aa5d6289",
+              "file": "production-admin-full-audit.spec.ts",
+              "line": 260,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "production-comprehensive-test.spec.ts",
+      "file": "production-comprehensive-test.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "PUBLIC SITE - User Journeys",
+          "file": "production-comprehensive-test.spec.ts",
+          "line": 27,
+          "column": 6,
+          "specs": [
+            {
+              "title": "1. Homepage - Full Content Check",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 170,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:31:16",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                          "column": 16,
+                          "line": 31
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 29 |\u001b[39m   test(\u001b[32m'1. Homepage - Full Content Check'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 30 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE FULL CHECK ==='\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 32 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 33 |\u001b[39m     \n \u001b[90m 34 |\u001b[39m     \u001b[90m// Hero Section\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                            "column": 16,
+                            "line": 31
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 29 |\u001b[39m   test(\u001b[32m'1. Homepage - Full Content Check'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 30 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE FULL CHECK ==='\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 32 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 33 |\u001b[39m     \n \u001b[90m 34 |\u001b[39m     \u001b[90m// Hero Section\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:31:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n=== HOMEPAGE FULL CHECK ===\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:34.884Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-cdf8e-mepage---Full-Content-Check-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-cdf8e-mepage---Full-Content-Check-chromium/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                        "column": 16,
+                        "line": 31
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "65c04b7daca1f457eeb6-5a74868c290ec14f150b",
+              "file": "production-comprehensive-test.spec.ts",
+              "line": 29,
               "column": 7
             },
             {
-              "title": "should load FAQ management",
+              "title": "1. Homepage - Full Content Check",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 752,
+                      "error": {
+                        "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:31:16",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                          "column": 16,
+                          "line": 31
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 29 |\u001b[39m   test(\u001b[32m'1. Homepage - Full Content Check'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 30 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE FULL CHECK ==='\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 32 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 33 |\u001b[39m     \n \u001b[90m 34 |\u001b[39m     \u001b[90m// Hero Section\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                            "column": 16,
+                            "line": 31
+                          },
+                          "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 29 |\u001b[39m   test(\u001b[32m'1. Homepage - Full Content Check'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 30 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE FULL CHECK ==='\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 32 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 33 |\u001b[39m     \n \u001b[90m 34 |\u001b[39m     \u001b[90m// Hero Section\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:31:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n=== HOMEPAGE FULL CHECK ===\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:41.233Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-cdf8e-mepage---Full-Content-Check-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-cdf8e-mepage---Full-Content-Check-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-cdf8e-mepage---Full-Content-Check-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                        "column": 16,
+                        "line": 31
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "65c04b7daca1f457eeb6-184af69bf24935d5f3e3",
+              "file": "production-comprehensive-test.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "1. Homepage - Full Content Check",
               "ok": false,
               "tags": [],
               "tests": [
@@ -1057,34 +734,224 @@
                       "workerIndex": 14,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 1,
+                      "duration": 417,
                       "error": {
-                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
-                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:31:16",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                          "column": 16,
+                          "line": 31
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 29 |\u001b[39m   test(\u001b[32m'1. Homepage - Full Content Check'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 30 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE FULL CHECK ==='\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 32 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 33 |\u001b[39m     \n \u001b[90m 34 |\u001b[39m     \u001b[90m// Hero Section\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
-                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                            "column": 16,
+                            "line": 31
+                          },
+                          "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 29 |\u001b[39m   test(\u001b[32m'1. Homepage - Full Content Check'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 30 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE FULL CHECK ==='\u001b[39m)\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 32 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 33 |\u001b[39m     \n \u001b[90m 34 |\u001b[39m     \u001b[90m// Hero Section\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:31:16\u001b[22m"
                         }
                       ],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "\n=== HOMEPAGE FULL CHECK ===\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-01T22:58:23.460Z",
+                      "startTime": "2026-01-15T00:35:50.666Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-cdf8e-mepage---Full-Content-Check-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-cdf8e-mepage---Full-Content-Check-webkit/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                        "column": 16,
+                        "line": 31
+                      }
                     }
                   ],
                   "status": "unexpected"
                 }
               ],
-              "id": "7384a94d97a3bf5f747c-64bf4e592b4365f42683",
-              "file": "production-admin-cms.spec.ts",
+              "id": "65c04b7daca1f457eeb6-399ef041161cba59ff5c",
+              "file": "production-comprehensive-test.spec.ts",
               "line": 29,
+              "column": 7
+            }
+          ]
+        },
+        {
+          "title": "ADMIN PANEL - Full Functionality",
+          "file": "production-comprehensive-test.spec.ts",
+          "line": 325,
+          "column": 6,
+          "specs": [
+            {
+              "title": "21. Admin Homepage CMS",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 164,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:8:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:537:11",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                          "column": 14,
+                          "line": 8
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[90m// Helper to login to admin\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m 10 |\u001b[39m   \n \u001b[90m 11 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                            "column": 14,
+                            "line": 8
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[90m// Helper to login to admin\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m 10 |\u001b[39m   \n \u001b[90m 11 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m\n\u001b[2m    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:8:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:537:11\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n=== ADMIN HOMEPAGE CMS ===\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:35.500Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-9333c-ality-21-Admin-Homepage-CMS-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-9333c-ality-21-Admin-Homepage-CMS-chromium/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                        "column": 14,
+                        "line": 8
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "65c04b7daca1f457eeb6-c051af2b25cf90f7c9e8",
+              "file": "production-comprehensive-test.spec.ts",
+              "line": 535,
               "column": 7
             },
             {
-              "title": "should load testimonials management",
+              "title": "21. Admin Homepage CMS",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 739,
+                      "error": {
+                        "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:8:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:537:11",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                          "column": 14,
+                          "line": 8
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[90m// Helper to login to admin\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m 10 |\u001b[39m   \n \u001b[90m 11 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                            "column": 14,
+                            "line": 8
+                          },
+                          "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[90m// Helper to login to admin\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m 10 |\u001b[39m   \n \u001b[90m 11 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m\n\u001b[2m    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:8:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:537:11\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n=== ADMIN HOMEPAGE CMS ===\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:43.087Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-9333c-ality-21-Admin-Homepage-CMS-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-9333c-ality-21-Admin-Homepage-CMS-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-9333c-ality-21-Admin-Homepage-CMS-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                        "column": 14,
+                        "line": 8
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "65c04b7daca1f457eeb6-037bc1a69c65af71e77c",
+              "file": "production-comprehensive-test.spec.ts",
+              "line": 535,
+              "column": 7
+            },
+            {
+              "title": "21. Admin Homepage CMS",
               "ok": false,
               "tags": [],
               "tests": [
@@ -1099,34 +966,384 @@
                       "workerIndex": 15,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 1,
+                      "duration": 362,
                       "error": {
-                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
-                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:8:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:537:11",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                          "column": 14,
+                          "line": 8
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[90m// Helper to login to admin\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m 10 |\u001b[39m   \n \u001b[90m 11 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m"
                       },
                       "errors": [
                         {
-                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                            "column": 14,
+                            "line": 8
+                          },
+                          "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  6 |\u001b[39m \u001b[90m// Helper to login to admin\u001b[39m\n \u001b[90m  7 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m 10 |\u001b[39m   \n \u001b[90m 11 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m\n\u001b[2m    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:8:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts:537:11\u001b[22m"
                         }
                       ],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "\n=== ADMIN HOMEPAGE CMS ===\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-01T22:58:23.757Z",
+                      "startTime": "2026-01-15T00:35:51.552Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-9333c-ality-21-Admin-Homepage-CMS-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-comprehensive-t-9333c-ality-21-Admin-Homepage-CMS-webkit/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-comprehensive-test.spec.ts",
+                        "column": 14,
+                        "line": 8
+                      }
                     }
                   ],
                   "status": "unexpected"
                 }
               ],
-              "id": "7384a94d97a3bf5f747c-4c0557221b61e523d7fa",
-              "file": "production-admin-cms.spec.ts",
-              "line": 39,
+              "id": "65c04b7daca1f457eeb6-69c73ade4019a0dfde58",
+              "file": "production-comprehensive-test.spec.ts",
+              "line": 535,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "production-final-verification.spec.ts",
+      "file": "production-final-verification.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "FINAL PRODUCTION VERIFICATION",
+          "file": "production-final-verification.spec.ts",
+          "line": 26,
+          "column": 6,
+          "specs": [
+            {
+              "title": "2. Homepage CMS Content Verification",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 178,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:53:16",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                          "column": 16,
+                          "line": 53
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 51 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE CMS VERIFICATION ==='\u001b[39m)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 55 |\u001b[39m     \n \u001b[90m 56 |\u001b[39m     \u001b[90m// Check hero section (CMS content)\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                            "column": 16,
+                            "line": 53
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 51 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE CMS VERIFICATION ==='\u001b[39m)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 55 |\u001b[39m     \n \u001b[90m 56 |\u001b[39m     \u001b[90m// Check hero section (CMS content)\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:53:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n=== HOMEPAGE CMS VERIFICATION ===\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:36.117Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-a8ea6-ge-CMS-Content-Verification-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-a8ea6-ge-CMS-Content-Verification-chromium/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                        "column": 16,
+                        "line": 53
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3d3d31d3bd53bfafa8c2-aba13ad3e3bc2effef02",
+              "file": "production-final-verification.spec.ts",
+              "line": 50,
               "column": 7
             },
             {
-              "title": "should load CMS settings",
+              "title": "5. Admin CMS - Homepage Editor",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 164,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:7:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:145:11",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                          "column": 14,
+                          "line": 7
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  5 |\u001b[39m\n \u001b[90m  6 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  7 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m  9 |\u001b[39m   \n \u001b[90m 10 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                            "column": 14,
+                            "line": 7
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3003/admin/login\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  5 |\u001b[39m\n \u001b[90m  6 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  7 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m  9 |\u001b[39m   \n \u001b[90m 10 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m\n\u001b[2m    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:7:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:145:11\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n=== ADMIN CMS HOMEPAGE ===\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:36.762Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-3a887-Admin-CMS---Homepage-Editor-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-3a887-Admin-CMS---Homepage-Editor-chromium/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                        "column": 14,
+                        "line": 7
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3d3d31d3bd53bfafa8c2-2affa60df455175d1e67",
+              "file": "production-final-verification.spec.ts",
+              "line": 142,
+              "column": 7
+            },
+            {
+              "title": "2. Homepage CMS Content Verification",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 687,
+                      "error": {
+                        "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:53:16",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                          "column": 16,
+                          "line": 53
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 51 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE CMS VERIFICATION ==='\u001b[39m)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 55 |\u001b[39m     \n \u001b[90m 56 |\u001b[39m     \u001b[90m// Check hero section (CMS content)\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                            "column": 16,
+                            "line": 53
+                          },
+                          "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 51 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE CMS VERIFICATION ==='\u001b[39m)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 55 |\u001b[39m     \n \u001b[90m 56 |\u001b[39m     \u001b[90m// Check hero section (CMS content)\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:53:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n=== HOMEPAGE CMS VERIFICATION ===\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:45.079Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-a8ea6-ge-CMS-Content-Verification-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-a8ea6-ge-CMS-Content-Verification-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-a8ea6-ge-CMS-Content-Verification-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                        "column": 16,
+                        "line": 53
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3d3d31d3bd53bfafa8c2-5cbacd2d0daeee6711e4",
+              "file": "production-final-verification.spec.ts",
+              "line": 50,
+              "column": 7
+            },
+            {
+              "title": "5. Admin CMS - Homepage Editor",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 674,
+                      "error": {
+                        "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:7:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:145:11",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                          "column": 14,
+                          "line": 7
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  5 |\u001b[39m\n \u001b[90m  6 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  7 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m  9 |\u001b[39m   \n \u001b[90m 10 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                            "column": 14,
+                            "line": 7
+                          },
+                          "message": "Error: page.goto: NS_ERROR_CONNECTION_REFUSED\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  5 |\u001b[39m\n \u001b[90m  6 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  7 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m  9 |\u001b[39m   \n \u001b[90m 10 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m\n\u001b[2m    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:7:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:145:11\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "\n=== ADMIN CMS HOMEPAGE ===\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-15T00:35:46.871Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-3a887-Admin-CMS---Homepage-Editor-firefox/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-3a887-Admin-CMS---Homepage-Editor-firefox/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-3a887-Admin-CMS---Homepage-Editor-firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                        "column": 14,
+                        "line": 7
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "3d3d31d3bd53bfafa8c2-6c0b4e36eedd338e5592",
+              "file": "production-final-verification.spec.ts",
+              "line": 142,
+              "column": 7
+            },
+            {
+              "title": "2. Homepage CMS Content Verification",
               "ok": false,
               "tags": [],
               "tests": [
@@ -1141,34 +1358,65 @@
                       "workerIndex": 16,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 1,
+                      "duration": 370,
                       "error": {
-                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
-                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:53:16",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                          "column": 16,
+                          "line": 53
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 51 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE CMS VERIFICATION ==='\u001b[39m)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 55 |\u001b[39m     \n \u001b[90m 56 |\u001b[39m     \u001b[90m// Check hero section (CMS content)\u001b[39m\u001b[0m"
                       },
                       "errors": [
                         {
-                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                            "column": 16,
+                            "line": 53
+                          },
+                          "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 51 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'\\n=== HOMEPAGE CMS VERIFICATION ==='\u001b[39m)\n \u001b[90m 52 |\u001b[39m     \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 53 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[33mBASE_URL\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 54 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m3000\u001b[39m)\n \u001b[90m 55 |\u001b[39m     \n \u001b[90m 56 |\u001b[39m     \u001b[90m// Check hero section (CMS content)\u001b[39m\u001b[0m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:53:16\u001b[22m"
                         }
                       ],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "\n=== HOMEPAGE CMS VERIFICATION ===\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-01T22:58:24.079Z",
+                      "startTime": "2026-01-15T00:35:52.336Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-a8ea6-ge-CMS-Content-Verification-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-a8ea6-ge-CMS-Content-Verification-webkit/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                        "column": 16,
+                        "line": 53
+                      }
                     }
                   ],
                   "status": "unexpected"
                 }
               ],
-              "id": "7384a94d97a3bf5f747c-d993beafe5335188585c",
-              "file": "production-admin-cms.spec.ts",
-              "line": 49,
+              "id": "3d3d31d3bd53bfafa8c2-fe03c52cf9e6d75118d7",
+              "file": "production-final-verification.spec.ts",
+              "line": 50,
               "column": 7
             },
             {
-              "title": "should load media library",
+              "title": "5. Admin CMS - Homepage Editor",
               "ok": false,
               "tags": [],
               "tests": [
@@ -1183,30 +1431,61 @@
                       "workerIndex": 17,
                       "parallelIndex": 0,
                       "status": "failed",
-                      "duration": 1,
+                      "duration": 466,
                       "error": {
-                        "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝",
-                        "stack": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                        "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n",
+                        "stack": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:7:14)\n    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:145:11",
+                        "location": {
+                          "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                          "column": 14,
+                          "line": 7
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  5 |\u001b[39m\n \u001b[90m  6 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  7 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m  9 |\u001b[39m   \n \u001b[90m 10 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m"
                       },
                       "errors": [
                         {
-                          "message": "Error: browserType.launch: Executable doesn't exist at /Users/lukatenbosch/Library/Caches/ms-playwright/webkit-2227/pw_run.sh\n╔═════════════════════════════════════════════════════════════════════════╗\n║ Looks like Playwright Test or Playwright was just installed or updated. ║\n║ Please run the following command to download new browsers:              ║\n║                                                                         ║\n║     npx playwright install                                              ║\n║                                                                         ║\n║ <3 Playwright Team                                                      ║\n╚═════════════════════════════════════════════════════════════════════════╝"
+                          "location": {
+                            "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                            "column": 14,
+                            "line": 7
+                          },
+                          "message": "Error: page.goto: Could not connect to the server.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3003/admin/login\", waiting until \"domcontentloaded\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  5 |\u001b[39m\n \u001b[90m  6 |\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToAdmin(page\u001b[33m:\u001b[39m \u001b[33mPage\u001b[39m)\u001b[33m:\u001b[39m \u001b[33mPromise\u001b[39m\u001b[33m<\u001b[39m\u001b[33mboolean\u001b[39m\u001b[33m>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  7 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m`${BASE_URL}/admin/login`\u001b[39m\u001b[33m,\u001b[39m { waitUntil\u001b[33m:\u001b[39m \u001b[32m'domcontentloaded'\u001b[39m\u001b[33m,\u001b[39m timeout\u001b[33m:\u001b[39m \u001b[35m30000\u001b[39m })\n \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  8 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\n \u001b[90m  9 |\u001b[39m   \n \u001b[90m 10 |\u001b[39m   \u001b[36mif\u001b[39m (page\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/admin'\u001b[39m) \u001b[33m&&\u001b[39m \u001b[33m!\u001b[39mpage\u001b[33m.\u001b[39murl()\u001b[33m.\u001b[39mincludes(\u001b[32m'/login'\u001b[39m)) {\u001b[0m\n\u001b[2m    at loginToAdmin (/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:7:14)\u001b[22m\n\u001b[2m    at /Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts:145:11\u001b[22m"
                         }
                       ],
-                      "stdout": [],
+                      "stdout": [
+                        {
+                          "text": "\n=== ADMIN CMS HOMEPAGE ===\n"
+                        }
+                      ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-12-01T22:58:24.402Z",
+                      "startTime": "2026-01-15T00:35:53.153Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-3a887-Admin-CMS---Homepage-Editor-webkit/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results-production/production-final-verificat-3a887-Admin-CMS---Homepage-Editor-webkit/video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/e2e/production-final-verification.spec.ts",
+                        "column": 14,
+                        "line": 7
+                      }
                     }
                   ],
                   "status": "unexpected"
                 }
               ],
-              "id": "7384a94d97a3bf5f747c-682875b9a926080e3b64",
-              "file": "production-admin-cms.spec.ts",
-              "line": 59,
+              "id": "3d3d31d3bd53bfafa8c2-7c9586101a0d7a76dc8b",
+              "file": "production-final-verification.spec.ts",
+              "line": 142,
               "column": 7
             }
           ]
@@ -1216,11 +1495,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-12-01T22:53:44.176Z",
-    "duration": 280256.56,
-    "expected": 1,
+    "startTime": "2026-01-15T00:35:04.865Z",
+    "duration": 48898.975,
+    "expected": 0,
     "skipped": 0,
-    "unexpected": 17,
+    "unexpected": 18,
     "flaky": 0
   }
 }

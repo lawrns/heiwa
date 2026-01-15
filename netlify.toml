@@ -1,9 +1,14 @@
 [build]
   command = "npm run build"
   publish = ".next"
+  # Ensure public directory is included
+  functions = "netlify/functions"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+  [plugins.inputs]
+    # Ensure static files are served correctly
+    static_files = "public"
 
 [build.environment]
   NODE_OPTIONS = "--max-old-space-size=4096"

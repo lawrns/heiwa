@@ -1,0 +1,74 @@
+[
+  {
+    "test": "Room Booking Flow",
+    "severity": "critical",
+    "description": "No booking widget trigger found on homepage",
+    "screenshot": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results/production-manual-testing/Room-Booking-Flow-2026-01-14T20-52-05-703Z.png",
+    "steps": [
+      "Navigate to homepage",
+      "Look for booking button/widget"
+    ],
+    "expected": "Visible booking button or widget trigger",
+    "actual": "No booking trigger found"
+  },
+  {
+    "test": "Room Booking Flow",
+    "severity": "high",
+    "description": "No rooms displayed on /rooms page",
+    "screenshot": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results/production-manual-testing/Room-Booking-Flow-2026-01-14T20-52-10-749Z.png",
+    "steps": [
+      "Navigate to /rooms",
+      "Look for room cards"
+    ],
+    "expected": "List of available rooms with booking options",
+    "actual": "No room cards found"
+  },
+  {
+    "test": "Room Booking Flow",
+    "severity": "medium",
+    "description": "No date input fields found in booking flow",
+    "screenshot": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results/production-manual-testing/Room-Booking-Flow-2026-01-14T20-52-13-079Z.png",
+    "steps": [
+      "Start booking flow",
+      "Look for date pickers"
+    ],
+    "expected": "Check-in and check-out date pickers",
+    "actual": "No date inputs found"
+  },
+  {
+    "test": "Surf Week Booking",
+    "severity": "high",
+    "description": "No surf camps displayed on /surf-camps page",
+    "screenshot": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results/production-manual-testing/Surf-Week-Booking-2026-01-14T20-52-17-637Z.png",
+    "steps": [
+      "Navigate to /surf-camps",
+      "Look for camp cards"
+    ],
+    "expected": "List of available surf camps",
+    "actual": "No camp cards found"
+  },
+  {
+    "test": "Surf Week Booking",
+    "severity": "medium",
+    "description": "No participant input fields found",
+    "screenshot": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results/production-manual-testing/Surf-Week-Booking-2026-01-14T20-52-19-909Z.png",
+    "steps": [
+      "Start surf week booking",
+      "Look for participant fields"
+    ],
+    "expected": "Form fields for participant information",
+    "actual": "No participant input fields found"
+  },
+  {
+    "test": "Calendar Management",
+    "severity": "low",
+    "description": "No add event button found in calendar section",
+    "screenshot": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page/test-results/production-manual-testing/Calendar-Management-2026-01-14T20-52-32-311Z.png",
+    "steps": [
+      "Navigate to calendar section",
+      "Look for add button"
+    ],
+    "expected": "Button to add new calendar events",
+    "actual": "No add button found"
+  }
+]

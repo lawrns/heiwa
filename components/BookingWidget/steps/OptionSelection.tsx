@@ -6,6 +6,7 @@ import { useSurfCamps } from '../hooks/useSurfCamps';
 import { useDateAvailability } from '../hooks/useDateAvailability';
 import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
 import { Button } from '@/components/ui/button';
+import { formatDateUTC } from '@/lib/utils';
 
 interface OptionSelectionProps {
   state: BookingState;
@@ -895,7 +896,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                   })()} nights
                 </span>
                 <span className="text-base text-gray-700">
-                  {state.dates.checkIn.toLocaleDateString()} - {state.dates.checkOut.toLocaleDateString()}
+                  {formatDateUTC(state.dates.checkIn)} - {formatDateUTC(state.dates.checkOut)}
                 </span>
               </div>
             </div>
@@ -1090,7 +1091,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     const checkOutUTC = new Date(state.dates.checkOut.getFullYear(), state.dates.checkOut.getMonth(), state.dates.checkOut.getDate());
                     const nights = Math.ceil((checkOutUTC.getTime() - checkInUTC.getTime()) / (1000 * 60 * 60 * 24));
                     return nights !== 1 ? 's' : '';
-                  })()} • {state.dates.checkIn.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })} - {state.dates.checkOut.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                  })()} • {formatDateUTC(state.dates.checkIn)} - {formatDateUTC(state.dates.checkOut)}
                 </p>
               </div>
 

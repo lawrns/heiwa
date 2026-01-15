@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { LayoutDashboard, PencilLine } from 'lucide-react'
 import { EditSidebar } from './EditSidebar'
+import { isAdminUser } from '@/lib/admin/auth-utils'
 
 // Map URL paths to page slugs for CMS
 function getPageSlug(pathname: string): string | null {
@@ -30,20 +31,29 @@ export function AdminToolbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {
-    // Check for admin indicator cookie (non-HttpOnly)
+    // Check admin status using utility function
     const checkAdmin = () => {
-      const cookies = document.cookie.split(';')
-      const adminCookie = cookies.find(c => c.trim().startsWith('admin_logged_in='))
-      setIsAdmin(!!adminCookie)
+      setIsAdmin(isAdminUser())
     }
 
     checkAdmin()
-    // Re-check when cookies might change
+    // Re-check when window gains focus
     window.addEventListener('focus', checkAdmin)
-    // Also check periodically for first-time login
+    
+    // Listen for storage events from other tabs
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'admin_logged_in') {
+        checkAdmin()
+      }
+    }
+    window.addEventListener('storage', handleStorage)
+    
+    // Check periodically for first-time login
     const interval = setInterval(checkAdmin, 1000)
+    
     return () => {
       window.removeEventListener('focus', checkAdmin)
+      window.removeEventListener('storage', handleStorage)
       clearInterval(interval)
     }
   }, [])

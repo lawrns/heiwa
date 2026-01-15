@@ -15,6 +15,7 @@ import { SurfWeekRoomSelection } from './steps/SurfWeekRoomSelection';
 import { AddOnsSelection } from './steps/AddOnsSelection';
 import { GuestDetails } from './steps/GuestDetails';
 import { ReviewAndPay } from './steps/ReviewAndPay';
+import { formatDateUTC } from '@/lib/utils';
 import './styles/surf-enhancements.css';
 
 // Booking-specific error boundary with friendly messaging
@@ -424,15 +425,7 @@ export function BookingWidget({
                             <div className="flex justify-between items-center py-2 border-b border-gray-100">
                               <span className="text-sm text-gray-500">Dates</span>
                               <span className="font-medium text-gray-900 text-right">
-                                {state.dates.checkIn.toLocaleDateString('en-GB', {
-                                  day: '2-digit',
-                                  month: '2-digit',
-                                  year: 'numeric'
-                                })} - {state.dates.checkOut.toLocaleDateString('en-GB', {
-                                  day: '2-digit',
-                                  month: '2-digit',
-                                  year: 'numeric'
-                                })}
+                                {formatDateUTC(state.dates.checkIn)} - {formatDateUTC(state.dates.checkOut)}
                               </span>
                             </div>
                           )}

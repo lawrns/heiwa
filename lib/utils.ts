@@ -7,6 +7,30 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Format a UTC date for display without timezone shifting
+ * Handles dates created with T00:00:00.000Z suffix
+ */
+export function formatDateUTC(date: Date | string | null | undefined, format: 'short' | 'long' = 'short'): string {
+  if (!date) return 'N/A'
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  if (isNaN(dateObj.getTime())) return 'N/A'
+  
+  // Use UTC methods to avoid timezone shifting
+  const day = dateObj.getUTCDate().toString().padStart(2, '0')
+  const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, '0')
+  const year = dateObj.getUTCFullYear()
+  
+  if (format === 'short') {
+    return `${day}/${month}/${year}`
+  }
+  
+  // Long format: "14 January 2026"
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                  'July', 'August', 'September', 'October', 'November', 'December']
+  return `${dateObj.getUTCDate()} ${months[dateObj.getUTCMonth()]} ${year}`
+}
+
+/**
  * Calculate the number of nights between two dates
  * Uses date-fns for robust date calculations
  */

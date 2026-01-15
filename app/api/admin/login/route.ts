@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       return ErrorResponses.unauthorized()
     }
 
-    // Set two cookies for proper authentication
+    // Set authentication cookies
     const isProduction = process.env.NODE_ENV === 'production' || process.env.NETLIFY === 'true'
     const secureFlag = isProduction ? '; Secure' : ''
     
@@ -75,7 +75,9 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         message: 'Login successful',
-        redirect: '/admin'
+        redirect: '/admin',
+        // Include client-side token for immediate detection
+        clientToken: 'admin_logged_in'
       },
       { status: 200 }
     )

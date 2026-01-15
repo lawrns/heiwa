@@ -56,7 +56,9 @@ export default function AdminLoginPage() {
       const data = await response.json()
 
       if (response.ok && data.success) {
-        // Store email before redirect
+        // Store admin status for toolbar detection (cookie may not be accessible client-side)
+        localStorage.setItem('admin_logged_in', 'true')
+        sessionStorage.setItem('admin_logged_in', 'true')
         localStorage.setItem('userEmail', 'admin@heiwa.house')
 
         // Force a full page reload to ensure sidebar renders correctly
