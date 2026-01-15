@@ -79,6 +79,19 @@ export async function POST(request: NextRequest) {
     const isSurfWeekBooking = body.camp_id && body.participants;
 
     if (isSurfWeekBooking) {
+      // Validate pricing for surf week bookings
+      const totalAmount = body.pricing?.total || 0;
+      if (totalAmount <= 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid booking amount. Total must be greater than 0.',
+            errorCode: 'INVALID_AMOUNT',
+          },
+          { status: 400 }
+        );
+      }
+
       const input: SurfWeekBookingInput = {
         camp_id: body.camp_id,
         participants: body.participants || [],
@@ -135,7 +148,19 @@ export async function POST(request: NextRequest) {
         },
       });
     } else {
-      // Room booking
+      // Room booking - validate pricing
+      const totalAmount = body.pricing?.total || body.total_amount || 0;
+      if (totalAmount <= 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Invalid booking amount. Total must be greater than 0.',
+            errorCode: 'INVALID_AMOUNT',
+          },
+          { status: 400 }
+        );
+      }
+
       const input: RoomBookingInput = {
         room_id: body.room_id,
         start_date: body.start_date,
@@ -169,7 +194,7 @@ export async function POST(request: NextRequest) {
         checkIn: body.start_date,
         checkOut: body.end_date,
         itemName: 'Room',
-        totalAmount: 0,
+        totalAmount: totalAmount,
       });
 
       return NextResponse.json(
