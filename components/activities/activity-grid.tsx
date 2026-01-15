@@ -103,16 +103,16 @@ export function ActivityGrid({
           >
             <div className="relative h-48">
               <Image
-                src={activity.image_url || '/images/placeholder-activity.jpg'}
+                src={activity.image_url || '/images/surf-weeks.jpg'}
                 alt={activity.title}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 onError={(e) => {
-                  // Fallback to placeholder if image fails to load
+                  // Fallback to surf-weeks.jpg if image fails to load
                   const target = e.target as HTMLImageElement
-                  if (target.src !== '/images/placeholder-activity.jpg') {
-                    target.src = '/images/placeholder-activity.jpg'
+                  if (target.src !== '/images/surf-weeks.jpg') {
+                    target.src = '/images/surf-weeks.jpg'
                   }
                 }}
               />

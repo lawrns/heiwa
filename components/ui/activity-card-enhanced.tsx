@@ -16,7 +16,7 @@ interface ActivityCardEnhancedProps {
   availabilityTier?: 'always' | 'on-request'
 }
 
-const PLACEHOLDER_IMAGE = '/images/placeholder-activity.jpg'
+const PLACEHOLDER_IMAGE = '/images/surf-weeks.jpg'
 
 export function ActivityCardEnhanced({
   title,
