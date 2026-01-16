@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { AlertCircle, Users, Bed, Check, X, ChevronDown } from 'lucide-react';
+import { AlertCircle, Users, Bed, Check, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { BookingState, RoomAssignment as RoomAssignmentType, Room, PricingBreakdown } from '../types';
 import { useRooms } from '../hooks/useRooms';
 import { RoomImageGallery, RoomThumbnail } from '../components/RoomImageGallery';

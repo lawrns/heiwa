@@ -1,0 +1,1036 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-16T14:14:00Z",
+    "codebase": "heiwa-page",
+    "version": "1.0.0",
+    "total_issues": 47,
+    "critical_issues": 4,
+    "high_priority_issues": 12,
+    "medium_priority_issues": 18,
+    "low_priority_issues": 13
+  },
+  "executive_summary": {
+    "overall_health": "NEEDS_ATTENTION",
+    "build_status": "PASSING",
+    "test_status": "PARTIAL",
+    "security_status": "VULNERABLE",
+    "performance_status": "DEGRADED",
+    "accessibility_status": "NON_COMPLIANT",
+    "key_findings": [
+      "Homepage CMS integration broken - admin changes don't affect live site",
+      "Image optimization timeouts causing 500 errors (20s+ load times)",
+      "Missing RLS policies on 5 critical database tables",
+      "50+ API endpoints lack rate limiting",
+      "Multiple accessibility violations (WCAG 2.1 AA)",
+      "TypeScript 'any' usage in 50+ locations reduces type safety"
+    ],
+    "immediate_actions_required": [
+      "Fix homepage CMS integration to use all sections",
+      "Resolve image optimization timeouts",
+      "Add database RLS policies",
+      "Configure Google Places API key"
+    ]
+  },
+  "findings": {
+    "critical": [
+      {
+        "id": "CRIT-001",
+        "category": "functionality",
+        "severity": "CRITICAL",
+        "title": "Homepage CMS Integration Broken",
+        "description": "The homepage only uses the hero section from CMS. Features, activities, testimonials, and CTA sections are fetched but ignored, rendering hardcoded content instead. Admin editor shows content that never appears on the live site.",
+        "impact": "CMS system non-functional for homepage. Admin changes don't affect live site. Misleading admin experience.",
+        "affected_files": [
+          {
+            "path": "app/page.tsx",
+            "lines": "36-66",
+            "issue": "Only extracts hero section from CMS data, ignores other sections"
+          },
+          {
+            "path": "app/api/admin/homepage/route.ts",
+            "lines": "1-150",
+            "issue": "Returns all 5 sections but only hero is used"
+          }
+        ],
+        "evidence": {
+          "code_snippet": "const heroSection = homepageContent?.find((s: any) => s.section === 'hero')\nconst surfWeeks = defaultSurfWeeks  // Hardcoded, not from CMS\nconst reviews = defaultReviews      // Hardcoded, not from CMS",
+          "api_response": "Returns 5 sections: hero, features, activities, testimonials, cta",
+          "actual_usage": "Only hero section rendered, others ignored"
+        },
+        "recommendation": "Update app/page.tsx to consume all CMS sections. Replace hardcoded components with CMS-driven rendering.",
+        "estimated_effort": "2-3 hours",
+        "priority": 1
+      },
+      {
+        "id": "CRIT-002",
+        "category": "performance",
+        "severity": "CRITICAL",
+        "title": "Image Optimization Timeouts",
+        "description": "Next.js image optimization requests timing out after 20+ seconds, resulting in 500 errors. Supabase storage images not loading correctly.",
+        "impact": "Poor UX, failed image loads, high bounce rate on image-heavy pages.",
+        "affected_files": [
+          {
+            "path": "next.config.js",
+            "lines": "1-230",
+            "issue": "Image optimization config may need timeout adjustments"
+          }
+        ],
+        "evidence": {
+          "error_log": "GET /_next/image?url=https%3A%2F%2Fpguipwhrxdzzrndbluxb.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Froom-images%2Ffeatured%2F1764841732178_93j54u4wkae.jpg&w=2048&q=85 500 in 20844ms",
+          "timeout_error": "[Error [TimeoutError]: The operation was aborted due to timeout]"
+        },
+        "recommendation": "Add timeout config to next.config.js, consider using Supabase CDN directly, or implement image caching layer.",
+        "estimated_effort": "3-4 hours",
+        "priority": 1
+      },
+      {
+        "id": "CRIT-003",
+        "category": "security",
+        "severity": "CRITICAL",
+        "title": "Missing Database RLS Policies",
+        "description": "Multiple CMS and content tables lack Row Level Security policies, potentially allowing unauthorized data access.",
+        "impact": "Security vulnerability. Unauthorized users may read/write sensitive data.",
+        "affected_files": [
+          {
+            "path": "supabase/migrations",
+            "lines": "N/A",
+            "issue": "Missing RLS policies for homepage_content, page_sections, page_versions, media_library, cms_settings"
+          }
+        ],
+        "evidence": {
+          "tables_without_rls": [
+            "homepage_content",
+            "page_sections",
+            "page_versions",
+            "media_library",
+            "cms_settings"
+          ]
+        },
+        "recommendation": "Create SQL migration to enable RLS on all CMS tables and add appropriate policies for public read and admin write access.",
+        "estimated_effort": "2-3 hours",
+        "priority": 1
+      },
+      {
+        "id": "CRIT-004",
+        "category": "configuration",
+        "severity": "CRITICAL",
+        "title": "Google Places API Key Not Configured",
+        "description": "Google Places API key missing from environment, causing reviews functionality to degrade to fallback defaults.",
+        "impact": "Real customer reviews not displayed. Misleading social proof.",
+        "affected_files": [
+          {
+            "path": ".env.local",
+            "lines": "N/A",
+            "issue": "Missing GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID"
+          },
+          {
+            "path": "lib/google-reviews.ts",
+            "lines": "1-100",
+            "issue": "Falls back to default reviews when API key missing"
+          }
+        ],
+        "evidence": {
+          "console_warning": "Google Places API key not configured",
+          "api_calls": "GET /api/google-reviews 200 in 1764ms (returns defaults)"
+        },
+        "recommendation": "Add GOOGLE_PLACES_API_KEY to .env.local and configure proper fallback handling.",
+        "estimated_effort": "1 hour",
+        "priority": 1
+      }
+    ],
+    "high_priority": [
+      {
+        "id": "HIGH-001",
+        "category": "security",
+        "severity": "HIGH",
+        "title": "Missing Rate Limiting on Public Endpoints",
+        "description": "Most public API endpoints lack rate limiting, making them vulnerable to abuse and DDoS attacks.",
+        "impact": "API abuse, resource exhaustion, potential service disruption.",
+        "affected_files": [
+          {
+            "path": "app/api/bookings/route.ts",
+            "lines": "1-284",
+            "issue": "POST endpoint not rate limited"
+          },
+          {
+            "path": "app/api/create-payment-intent/route.ts",
+            "lines": "1-100",
+            "issue": "POST endpoint not rate limited"
+          },
+          {
+            "path": "app/api/rooms/availability/route.ts",
+            "lines": "1-150",
+            "issue": "GET endpoint not rate limited"
+          }
+        ],
+        "recommendation": "Apply rateLimiter middleware to all public endpoints with appropriate limits per endpoint type.",
+        "estimated_effort": "4-6 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-002",
+        "category": "security",
+        "severity": "HIGH",
+        "title": "Inconsistent Error Response Envelopes",
+        "description": "API routes return errors in different formats, making frontend error handling fragile and inconsistent.",
+        "impact": "Poor developer experience, fragile error handling, potential bugs.",
+        "affected_files": [
+          {
+            "path": "app/api/**/*.ts",
+            "lines": "Multiple",
+            "issue": "Some use {success, error}, others {error, details}, others {message}"
+          }
+        ],
+        "recommendation": "Standardize all API routes to use handleApiError from lib/error-handler.ts.",
+        "estimated_effort": "6-8 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-003",
+        "category": "security",
+        "severity": "HIGH",
+        "title": "Missing Input Validation on Several Endpoints",
+        "description": "Some POST/PUT endpoints lack Zod validation, allowing invalid data to reach the database.",
+        "impact": "Data integrity issues, potential SQL injection, application errors.",
+        "affected_files": [
+          {
+            "path": "app/api/cms/sections/route.ts",
+            "lines": "1-200",
+            "issue": "POST/PUT lack validation"
+          },
+          {
+            "path": "app/api/cms/settings/route.ts",
+            "lines": "1-150",
+            "issue": "POST/PUT lack validation"
+          },
+          {
+            "path": "app/api/gallery/route.ts",
+            "lines": "1-100",
+            "issue": "POST lacks validation"
+          }
+        ],
+        "recommendation": "Add Zod validation using existing validators or create new ones for all POST/PUT endpoints.",
+        "estimated_effort": "4-6 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-004",
+        "category": "accessibility",
+        "severity": "HIGH",
+        "title": "Missing ARIA Labels and Keyboard Navigation",
+        "description": "Multiple interactive components lack proper ARIA labels and keyboard support, failing WCAG 2.1 AA standards.",
+        "impact": "Inaccessible to screen reader users and keyboard-only users. Legal compliance risk.",
+        "affected_files": [
+          {
+            "path": "components/ui/image-upload.tsx",
+            "lines": "145-176",
+            "issue": "File upload button not keyboard accessible"
+          },
+          {
+            "path": "components/admin/cms/SectionCard.tsx",
+            "lines": "1-200",
+            "issue": "Drag handle not keyboard accessible, missing ARIA labels"
+          },
+          {
+            "path": "components/BookingWidget/BookingWidget.tsx",
+            "lines": "1-500",
+            "issue": "Missing focus management between steps"
+          }
+        ],
+        "recommendation": "Add ARIA labels, keyboard event handlers, and focus management to all interactive components.",
+        "estimated_effort": "8-10 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-005",
+        "category": "ux",
+        "severity": "HIGH",
+        "title": "Missing Loading States on Async Operations",
+        "description": "Several components don't show loading indicators during async operations, leaving users uncertain.",
+        "impact": "Poor UX, users don't know if action is processing, potential duplicate submissions.",
+        "affected_files": [
+          {
+            "path": "components/contact-form.tsx",
+            "lines": "43-77",
+            "issue": "No loading state during form submission"
+          },
+          {
+            "path": "components/BookingWidget/steps/GuestDetails.tsx",
+            "lines": "1-339",
+            "issue": "No loading state during validation"
+          },
+          {
+            "path": "components/ui/room-showcase.tsx",
+            "lines": "1-245",
+            "issue": "No loading state during image fetch"
+          }
+        ],
+        "recommendation": "Add loading state with disabled buttons and loading indicators to all async operations.",
+        "estimated_effort": "4-6 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-006",
+        "category": "ux",
+        "severity": "HIGH",
+        "title": "Missing Error States on Data Fetching",
+        "description": "Components don't handle fetch errors gracefully, resulting in blank screens or generic errors.",
+        "impact": "Poor UX, users see blank screens, no recovery mechanism.",
+        "affected_files": [
+          {
+            "path": "components/home/HomeSections.tsx",
+            "lines": "1-200",
+            "issue": "No error handling for CMS fetch failures"
+          },
+          {
+            "path": "app/rooms/[id]/page.tsx",
+            "lines": "1-150",
+            "issue": "No error handling for room fetch failures"
+          }
+        ],
+        "recommendation": "Add error state with user-friendly messages and retry mechanism to all data fetching.",
+        "estimated_effort": "3-4 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-007",
+        "category": "database",
+        "severity": "HIGH",
+        "title": "Missing Database Indexes",
+        "description": "Frequently queried columns lack indexes, causing slow queries as data grows.",
+        "impact": "Poor performance, slow page loads, high database CPU usage.",
+        "affected_files": [
+          {
+            "path": "supabase/migrations",
+            "lines": "N/A",
+            "issue": "Missing indexes on bookings(check_in_date, check_out_date, status), page_sections(page_slug, is_active), media_library(file_type, category)"
+          }
+        ],
+        "recommendation": "Create migration to add indexes on frequently filtered and joined columns.",
+        "estimated_effort": "2-3 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-008",
+        "category": "database",
+        "severity": "HIGH",
+        "title": "Missing Foreign Key Constraints",
+        "description": "Tables lack foreign key constraints, allowing orphaned records and data integrity issues.",
+        "impact": "Data integrity issues, orphaned records, inconsistent state.",
+        "affected_files": [
+          {
+            "path": "supabase/migrations",
+            "lines": "N/A",
+            "issue": "Missing FK constraints on bookings.client_id, bookings.room_id, page_sections.page_id"
+          }
+        ],
+        "recommendation": "Add foreign key constraints with appropriate ON DELETE behavior.",
+        "estimated_effort": "2-3 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-009",
+        "category": "database",
+        "severity": "HIGH",
+        "title": "Missing Check Constraints",
+        "description": "Tables lack check constraints for business rules, allowing invalid data.",
+        "impact": "Invalid data in database, application errors, data quality issues.",
+        "affected_files": [
+          {
+            "path": "supabase/migrations",
+            "lines": "N/A",
+            "issue": "Missing constraints: bookings.check_out > check_in, bookings.guests > 0, rooms.capacity > 0"
+          }
+        ],
+        "recommendation": "Add check constraints to enforce business rules at database level.",
+        "estimated_effort": "2 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-010",
+        "category": "performance",
+        "severity": "HIGH",
+        "title": "No API Response Caching",
+        "description": "Static or slowly-changing data fetched on every request without caching.",
+        "impact": "Slow response times, high database load, poor performance.",
+        "affected_files": [
+          {
+            "path": "app/api/rooms/route.ts",
+            "lines": "1-150",
+            "issue": "No caching headers or revalidation"
+          },
+          {
+            "path": "app/api/cms/settings/route.ts",
+            "lines": "1-100",
+            "issue": "No caching for settings"
+          }
+        ],
+        "recommendation": "Add Next.js revalidate and Cache-Control headers to appropriate endpoints.",
+        "estimated_effort": "3-4 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-011",
+        "category": "performance",
+        "severity": "HIGH",
+        "title": "Large JavaScript Bundle Size",
+        "description": "Admin code included in public bundle, heavy components not lazy loaded.",
+        "impact": "Slow initial page load, poor performance on slow connections.",
+        "affected_files": [
+          {
+            "path": "app/admin/**/*.tsx",
+            "lines": "Multiple",
+            "issue": "Admin components not code-split"
+          },
+          {
+            "path": "components/BookingWidget/BookingWidget.tsx",
+            "lines": "1-500",
+            "issue": "Heavy component not lazy loaded"
+          }
+        ],
+        "recommendation": "Implement dynamic imports for admin panel and heavy components.",
+        "estimated_effort": "4-6 hours",
+        "priority": 2
+      },
+      {
+        "id": "HIGH-012",
+        "category": "ux",
+        "severity": "HIGH",
+        "title": "Hardcoded Design Values",
+        "description": "Colors, spacing, and typography hardcoded throughout codebase instead of using design tokens.",
+        "impact": "Inconsistent design, difficult to maintain, hard to theme.",
+        "affected_files": [
+          {
+            "path": "components/**/*.tsx",
+            "lines": "Multiple",
+            "issue": "Hardcoded colors like 'orange-500', spacing values, font sizes"
+          }
+        ],
+        "recommendation": "Create design tokens system and replace all hardcoded values.",
+        "estimated_effort": "6-8 hours",
+        "priority": 2
+      }
+    ],
+    "medium_priority": [
+      {
+        "id": "MED-001",
+        "category": "code_quality",
+        "severity": "MEDIUM",
+        "title": "Excessive TypeScript 'any' Usage",
+        "description": "50+ instances of 'any' type reducing type safety and catching potential bugs.",
+        "impact": "Lost type safety, potential runtime errors not caught at compile time.",
+        "affected_files": [
+          {
+            "path": "lib/booking-context.tsx",
+            "lines": "32,33,42,44,64,97",
+            "issue": "6 instances of 'any'"
+          },
+          {
+            "path": "lib/site-settings.ts",
+            "lines": "4,15,28,48,57,83",
+            "issue": "7 instances of 'any'"
+          },
+          {
+            "path": "lib/transactions.ts",
+            "lines": "158,159,226,241",
+            "issue": "7 instances of 'any'"
+          }
+        ],
+        "recommendation": "Define proper interfaces and types to replace all 'any' usage.",
+        "estimated_effort": "4-6 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-002",
+        "category": "code_quality",
+        "severity": "MEDIUM",
+        "title": "Unused Variables and Imports",
+        "description": "100+ ESLint warnings for unused variables, imports, and dead code.",
+        "impact": "Code bloat, confusion, harder to maintain.",
+        "affected_files": [
+          {
+            "path": "lib/booking-calculations.ts",
+            "lines": "168,198",
+            "issue": "_serviceFeeRate, getSeasonalRate unused"
+          },
+          {
+            "path": "lib/booking-service.ts",
+            "lines": "4,173,206",
+            "issue": "ApiLoadingState, booking, guests unused"
+          }
+        ],
+        "recommendation": "Run ESLint auto-fix and manually remove remaining unused code.",
+        "estimated_effort": "2-3 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-003",
+        "category": "testing",
+        "severity": "MEDIUM",
+        "title": "Insufficient Test Coverage",
+        "description": "Critical business logic functions lack unit tests, integration tests incomplete.",
+        "impact": "Regressions not caught, low confidence in changes, bugs in production.",
+        "affected_files": [
+          {
+            "path": "lib/booking-calculations.ts",
+            "lines": "1-300",
+            "issue": "Pricing calculation logic not fully tested"
+          },
+          {
+            "path": "app/api/bookings/route.ts",
+            "lines": "1-284",
+            "issue": "Edge cases not covered in tests"
+          }
+        ],
+        "recommendation": "Add unit tests for all business logic, aim for 80%+ coverage.",
+        "estimated_effort": "8-10 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-004",
+        "category": "performance",
+        "severity": "MEDIUM",
+        "title": "Unoptimized Images",
+        "description": "Not all images use Next.js Image component, missing responsive sizes and lazy loading.",
+        "impact": "Slow page loads, high bandwidth usage, poor LCP scores.",
+        "affected_files": [
+          {
+            "path": "components/home/HomeSections.tsx",
+            "lines": "Multiple",
+            "issue": "Some img tags instead of Image component"
+          }
+        ],
+        "recommendation": "Replace all img tags with Next.js Image component, add responsive sizes.",
+        "estimated_effort": "3-4 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-005",
+        "category": "accessibility",
+        "severity": "MEDIUM",
+        "title": "Missing Focus Indicators",
+        "description": "Custom components don't show visible focus indicators for keyboard navigation.",
+        "impact": "Poor keyboard navigation UX, accessibility violation.",
+        "affected_files": [
+          {
+            "path": "components/ui/button.tsx",
+            "lines": "1-100",
+            "issue": "Focus ring not visible on all variants"
+          }
+        ],
+        "recommendation": "Add visible focus indicators to all interactive elements.",
+        "estimated_effort": "2-3 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-006",
+        "category": "accessibility",
+        "severity": "MEDIUM",
+        "title": "Color Contrast Issues",
+        "description": "Some text/background combinations don't meet WCAG AA contrast ratios.",
+        "impact": "Hard to read for users with visual impairments, accessibility violation.",
+        "affected_files": [
+          {
+            "path": "components/**/*.tsx",
+            "lines": "Multiple",
+            "issue": "Light text on light backgrounds in some states"
+          }
+        ],
+        "recommendation": "Audit all color combinations, ensure 4.5:1 contrast for normal text.",
+        "estimated_effort": "3-4 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-007",
+        "category": "database",
+        "severity": "MEDIUM",
+        "title": "Missing Audit Columns",
+        "description": "Tables lack created_by/updated_by columns for audit trail.",
+        "impact": "Can't track who made changes, poor audit trail.",
+        "affected_files": [
+          {
+            "path": "supabase/migrations",
+            "lines": "N/A",
+            "issue": "cms_settings, page_sections lack created_by/updated_by"
+          }
+        ],
+        "recommendation": "Add audit columns to all CMS tables.",
+        "estimated_effort": "2 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-008",
+        "category": "database",
+        "severity": "MEDIUM",
+        "title": "No Soft Delete Support",
+        "description": "Tables use hard deletes, making data recovery impossible.",
+        "impact": "Accidental deletions can't be recovered, data loss risk.",
+        "affected_files": [
+          {
+            "path": "supabase/migrations",
+            "lines": "N/A",
+            "issue": "bookings, clients lack deleted_at column"
+          }
+        ],
+        "recommendation": "Add deleted_at column and update delete operations to soft delete.",
+        "estimated_effort": "3-4 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-009",
+        "category": "security",
+        "severity": "MEDIUM",
+        "title": "Missing CORS Configuration",
+        "description": "API routes don't explicitly configure CORS headers.",
+        "impact": "Potential CORS issues, unclear security posture.",
+        "affected_files": [
+          {
+            "path": "app/api/**/*.ts",
+            "lines": "Multiple",
+            "issue": "No explicit CORS headers"
+          }
+        ],
+        "recommendation": "Add CORS middleware with explicit allowed origins.",
+        "estimated_effort": "2-3 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-010",
+        "category": "security",
+        "severity": "MEDIUM",
+        "title": "Missing Security Headers",
+        "description": "API responses lack security headers like X-Content-Type-Options, X-Frame-Options.",
+        "impact": "Vulnerable to certain attacks, security best practices not followed.",
+        "affected_files": [
+          {
+            "path": "next.config.js",
+            "lines": "1-230",
+            "issue": "Security headers present but may need review"
+          }
+        ],
+        "recommendation": "Audit and enhance security headers in next.config.js.",
+        "estimated_effort": "1-2 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-011",
+        "category": "ux",
+        "severity": "MEDIUM",
+        "title": "Inconsistent Form Validation Messages",
+        "description": "Form validation messages vary in format and helpfulness across components.",
+        "impact": "Confusing UX, users don't understand what's wrong.",
+        "affected_files": [
+          {
+            "path": "components/BookingWidget/**/*.tsx",
+            "lines": "Multiple",
+            "issue": "Validation messages inconsistent"
+          }
+        ],
+        "recommendation": "Standardize validation message format and improve clarity.",
+        "estimated_effort": "2-3 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-012",
+        "category": "ux",
+        "severity": "MEDIUM",
+        "title": "No Optimistic UI Updates",
+        "description": "UI doesn't update optimistically during async operations, feels sluggish.",
+        "impact": "Perceived slow performance, poor UX.",
+        "affected_files": [
+          {
+            "path": "components/admin/**/*.tsx",
+            "lines": "Multiple",
+            "issue": "No optimistic updates on create/update/delete"
+          }
+        ],
+        "recommendation": "Implement optimistic UI updates for common operations.",
+        "estimated_effort": "4-6 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-013",
+        "category": "performance",
+        "severity": "MEDIUM",
+        "title": "No Database Connection Pooling",
+        "description": "Supabase client may not be using connection pooling efficiently.",
+        "impact": "Potential connection exhaustion under load.",
+        "affected_files": [
+          {
+            "path": "lib/supabase.ts",
+            "lines": "1-101",
+            "issue": "Connection pooling config not explicit"
+          }
+        ],
+        "recommendation": "Review and configure Supabase connection pooling settings.",
+        "estimated_effort": "2 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-014",
+        "category": "performance",
+        "severity": "MEDIUM",
+        "title": "No Request Deduplication",
+        "description": "Multiple components may fetch same data simultaneously without deduplication.",
+        "impact": "Unnecessary network requests, wasted bandwidth.",
+        "affected_files": [
+          {
+            "path": "components/**/*.tsx",
+            "lines": "Multiple",
+            "issue": "No SWR or React Query for request deduplication"
+          }
+        ],
+        "recommendation": "Implement SWR or React Query for data fetching.",
+        "estimated_effort": "6-8 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-015",
+        "category": "monitoring",
+        "severity": "MEDIUM",
+        "title": "Insufficient Error Logging",
+        "description": "Errors logged to console but not sent to monitoring service.",
+        "impact": "Production errors not tracked, hard to diagnose issues.",
+        "affected_files": [
+          {
+            "path": "lib/logger.ts",
+            "lines": "1-100",
+            "issue": "No integration with error tracking service"
+          }
+        ],
+        "recommendation": "Integrate Sentry or similar error tracking service.",
+        "estimated_effort": "3-4 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-016",
+        "category": "monitoring",
+        "severity": "MEDIUM",
+        "title": "No Performance Monitoring",
+        "description": "No tracking of Core Web Vitals or API performance metrics.",
+        "impact": "Can't identify performance regressions, no baseline metrics.",
+        "affected_files": [
+          {
+            "path": "app/layout.tsx",
+            "lines": "1-100",
+            "issue": "No Web Vitals reporting"
+          }
+        ],
+        "recommendation": "Add Web Vitals reporting and API performance tracking.",
+        "estimated_effort": "2-3 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-017",
+        "category": "documentation",
+        "severity": "MEDIUM",
+        "title": "Missing API Documentation",
+        "description": "API endpoints lack documentation, making integration difficult.",
+        "impact": "Poor developer experience, hard to integrate.",
+        "affected_files": [
+          {
+            "path": "app/api/**/*.ts",
+            "lines": "Multiple",
+            "issue": "No OpenAPI/Swagger documentation"
+          }
+        ],
+        "recommendation": "Generate OpenAPI documentation for all API endpoints.",
+        "estimated_effort": "4-6 hours",
+        "priority": 3
+      },
+      {
+        "id": "MED-018",
+        "category": "documentation",
+        "severity": "MEDIUM",
+        "title": "Insufficient Code Comments",
+        "description": "Complex business logic lacks explanatory comments.",
+        "impact": "Hard to understand and maintain code.",
+        "affected_files": [
+          {
+            "path": "lib/booking-calculations.ts",
+            "lines": "Multiple",
+            "issue": "Complex pricing logic not documented"
+          }
+        ],
+        "recommendation": "Add JSDoc comments to all public functions and complex logic.",
+        "estimated_effort": "3-4 hours",
+        "priority": 3
+      }
+    ],
+    "low_priority": [
+      {
+        "id": "LOW-001",
+        "category": "code_quality",
+        "severity": "LOW",
+        "title": "Inconsistent Code Formatting",
+        "description": "Some files use different indentation, quote styles.",
+        "impact": "Minor, affects code readability.",
+        "affected_files": [],
+        "recommendation": "Run Prettier on entire codebase.",
+        "estimated_effort": "1 hour",
+        "priority": 4
+      },
+      {
+        "id": "LOW-002",
+        "category": "code_quality",
+        "severity": "LOW",
+        "title": "Magic Numbers in Code",
+        "description": "Hardcoded numbers without named constants.",
+        "impact": "Minor, affects maintainability.",
+        "affected_files": [],
+        "recommendation": "Extract magic numbers to named constants.",
+        "estimated_effort": "2 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-003",
+        "category": "ux",
+        "severity": "LOW",
+        "title": "No Favicon Variants",
+        "description": "Missing dark mode favicon, touch icons.",
+        "impact": "Minor, affects branding.",
+        "affected_files": [],
+        "recommendation": "Add favicon variants for different contexts.",
+        "estimated_effort": "1 hour",
+        "priority": 4
+      },
+      {
+        "id": "LOW-004",
+        "category": "seo",
+        "severity": "LOW",
+        "title": "Missing Structured Data",
+        "description": "No JSON-LD structured data for rich snippets.",
+        "impact": "Minor, affects SEO.",
+        "affected_files": [],
+        "recommendation": "Add structured data for Organization, LocalBusiness.",
+        "estimated_effort": "2-3 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-005",
+        "category": "seo",
+        "severity": "LOW",
+        "title": "Incomplete Meta Tags",
+        "description": "Some pages missing Open Graph or Twitter Card meta tags.",
+        "impact": "Minor, affects social sharing.",
+        "affected_files": [],
+        "recommendation": "Add complete meta tags to all pages.",
+        "estimated_effort": "2 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-006",
+        "category": "performance",
+        "severity": "LOW",
+        "title": "No Service Worker",
+        "description": "No offline support or background sync.",
+        "impact": "Minor, affects offline UX.",
+        "affected_files": [],
+        "recommendation": "Consider adding service worker for offline support.",
+        "estimated_effort": "6-8 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-007",
+        "category": "ux",
+        "severity": "LOW",
+        "title": "No Dark Mode Support",
+        "description": "Application doesn't support dark mode.",
+        "impact": "Minor, affects user preference.",
+        "affected_files": [],
+        "recommendation": "Implement dark mode with system preference detection.",
+        "estimated_effort": "8-10 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-008",
+        "category": "ux",
+        "severity": "LOW",
+        "title": "No Skeleton Loaders",
+        "description": "Loading states use spinners instead of skeleton screens.",
+        "impact": "Minor, affects perceived performance.",
+        "affected_files": [],
+        "recommendation": "Replace spinners with skeleton loaders.",
+        "estimated_effort": "4-6 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-009",
+        "category": "i18n",
+        "severity": "LOW",
+        "title": "No Internationalization",
+        "description": "Application only supports English.",
+        "impact": "Minor, limits market reach.",
+        "affected_files": [],
+        "recommendation": "Implement i18n with next-intl or similar.",
+        "estimated_effort": "20-30 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-010",
+        "category": "testing",
+        "severity": "LOW",
+        "title": "No Visual Regression Tests",
+        "description": "No automated visual testing for UI changes.",
+        "impact": "Minor, affects UI quality assurance.",
+        "affected_files": [],
+        "recommendation": "Add Chromatic or Percy for visual regression testing.",
+        "estimated_effort": "4-6 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-011",
+        "category": "devops",
+        "severity": "LOW",
+        "title": "No Automated Dependency Updates",
+        "description": "Dependencies not automatically updated.",
+        "impact": "Minor, affects security and maintenance.",
+        "affected_files": [],
+        "recommendation": "Set up Dependabot or Renovate.",
+        "estimated_effort": "1-2 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-012",
+        "category": "devops",
+        "severity": "LOW",
+        "title": "No Staging Environment",
+        "description": "Only dev and production environments.",
+        "impact": "Minor, affects testing workflow.",
+        "affected_files": [],
+        "recommendation": "Set up staging environment on Netlify.",
+        "estimated_effort": "2-3 hours",
+        "priority": 4
+      },
+      {
+        "id": "LOW-013",
+        "category": "analytics",
+        "severity": "LOW",
+        "title": "No Analytics Tracking",
+        "description": "No Google Analytics or similar tracking.",
+        "impact": "Minor, affects business insights.",
+        "affected_files": [],
+        "recommendation": "Add privacy-friendly analytics (Plausible or Fathom).",
+        "estimated_effort": "2-3 hours",
+        "priority": 4
+      }
+    ]
+  },
+  "priority_matrix": {
+    "immediate": [
+      "CRIT-001",
+      "CRIT-002",
+      "CRIT-003",
+      "CRIT-004"
+    ],
+    "week_1": [
+      "HIGH-001",
+      "HIGH-002",
+      "HIGH-003",
+      "HIGH-004",
+      "HIGH-005",
+      "HIGH-006"
+    ],
+    "week_2": [
+      "HIGH-007",
+      "HIGH-008",
+      "HIGH-009",
+      "HIGH-010",
+      "HIGH-011",
+      "HIGH-012"
+    ],
+    "week_3": [
+      "MED-001",
+      "MED-002",
+      "MED-003",
+      "MED-004",
+      "MED-005",
+      "MED-006"
+    ],
+    "week_4_plus": [
+      "MED-007",
+      "MED-008",
+      "MED-009",
+      "MED-010",
+      "MED-011",
+      "MED-012",
+      "MED-013",
+      "MED-014",
+      "MED-015",
+      "MED-016",
+      "MED-017",
+      "MED-018"
+    ],
+    "backlog": [
+      "LOW-001",
+      "LOW-002",
+      "LOW-003",
+      "LOW-004",
+      "LOW-005",
+      "LOW-006",
+      "LOW-007",
+      "LOW-008",
+      "LOW-009",
+      "LOW-010",
+      "LOW-011",
+      "LOW-012",
+      "LOW-013"
+    ]
+  },
+  "recommendations": {
+    "immediate_actions": [
+      "Fix homepage CMS integration to use all sections from database",
+      "Resolve image optimization timeouts by adjusting Next.js config or using Supabase CDN",
+      "Add RLS policies to all CMS tables",
+      "Configure Google Places API key"
+    ],
+    "short_term": [
+      "Add rate limiting to all public API endpoints",
+      "Standardize error response envelopes across all routes",
+      "Add input validation to all POST/PUT endpoints",
+      "Fix accessibility issues (ARIA labels, keyboard navigation)",
+      "Add loading and error states to all components"
+    ],
+    "medium_term": [
+      "Add database indexes, constraints, and audit columns",
+      "Implement API response caching",
+      "Reduce bundle size with code splitting",
+      "Replace TypeScript 'any' with proper types",
+      "Increase test coverage to 80%+"
+    ],
+    "long_term": [
+      "Upgrade admin panel to match wavecampdashboard standards",
+      "Implement design token system",
+      "Add performance and error monitoring",
+      "Consider internationalization",
+      "Add dark mode support"
+    ]
+  },
+  "success_criteria": {
+    "performance": {
+      "lcp": "<2.5s",
+      "fid": "<100ms",
+      "cls": "<0.1",
+      "image_load": "<2s",
+      "api_response_p95": "<500ms"
+    },
+    "quality": {
+      "typescript_errors": 0,
+      "eslint_errors": 0,
+      "test_coverage": ">80%",
+      "accessibility_violations": 0
+    },
+    "security": {
+      "endpoints_rate_limited": "100%",
+      "inputs_validated": "100%",
+      "admin_routes_authenticated": "100%",
+      "tables_with_rls": "100%"
+    },
+    "functionality": {
+      "cms_changes_reflect_live": true,
+      "images_load_correctly": true,
+      "forms_submit_successfully": true,
+      "all_tests_pass": true
+    }
+  }
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -31,9 +31,22 @@ export function RoomShowcase({
   bookingHref = '/booking',
 }: RoomShowcaseProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [autoPlay, setAutoPlay] = useState(true)
+
+  useEffect(() => {
+    if (!autoPlay) return
+    if (images.length <= 1) return
+
+    const id = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length)
+    }, 5000)
+
+    return () => clearInterval(id)
+  }, [autoPlay, images.length])
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+    setAutoPlay(false)
   }
 
   const goToNext = () => {

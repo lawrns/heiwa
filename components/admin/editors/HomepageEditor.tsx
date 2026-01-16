@@ -6,10 +6,13 @@
 import React, { useState, useEffect } from 'react'
 import {
   AdminButton,
+  AdminAlert,
   AdminInput,
+  AdminTable,
   AdminTextarea,
   AdminSelect,
   AdminModal,
+  type AdminTableColumn,
 } from '../ui'
 import { 
   Eye, 
@@ -29,6 +32,20 @@ const SECTION_TYPES = [
   { value: 'testimonials', label: 'Testimonials' },
   { value: 'cta', label: 'Call to Action' }
 ] as const
+
+type HomepageSection = {
+  id: string | number
+  section_type: (typeof SECTION_TYPES)[number]['value']
+  title: string | null
+  subtitle: string | null
+  description: string | null
+  video_url: string | null
+  background_image: string | null
+  link_url: string | null
+  link_text: string | null
+  is_active: boolean
+  order_index: number
+}
 
 const HomepageEditor: React.FC<HomepageEditorProps> = ({ className }) => {
   const [sections, setSections] = useState<HomepageSection[]>([])

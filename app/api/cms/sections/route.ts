@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // GET /api/cms/sections?page={slug} - Get all sections for a page
 export async function GET(request: NextRequest) {
@@ -39,8 +40,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/cms/sections - Create a new section
+// POST /api/cms/sections - Create a new section (requires admin auth)
 export async function POST(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { page_slug, section_type, content, order_index = 0 } = body

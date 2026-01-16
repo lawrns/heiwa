@@ -11,8 +11,10 @@ import { toast } from 'react-toastify';
 // Temporary types until supabase-storage is implemented
 type UploadedFile = {
   url: string;
+  path: string;
   name: string;
   size: number;
+  type: string;
 };
 
 type UploadProgress = {
@@ -23,14 +25,108 @@ type UploadProgress = {
 };
 
 // Stub functions until supabase-storage is implemented
-const validateFile = (file: File) => ({ valid: true, error: '' });
+const validateFile = (file: File) => {
+  if (!file.type.startsWith('image/')) {
+    return { valid: false, error: 'File must be an image' }
+  }
+
+  // 5MB max
+  const maxSize = 5 * 1024 * 1024
+  if (file.size > maxSize) {
+    return { valid: false, error: 'File size must be less than 5MB' }
+  }
+
+  return { valid: true, error: '' }
+};
+
 const uploadFiles = async (
   files: File[],
   path: string,
-  onProgress: (index: number, progress: UploadProgress) => void
+  bucketName: string,
+  onProgress?: (index: number, progress: UploadProgress) => void,
+  onFileUploaded?: (index: number, result: UploadedFile) => void
 ): Promise<UploadedFile[]> => {
-  // Stub implementation - return empty array
-  return [];
+  const uploadSingleFile = async (file: File): Promise<UploadedFile> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('bucket', bucketName)
+    if (path) {
+      formData.append('path', path)
+    }
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    })
+
+    const data = await response.json().catch(() => null)
+    if (!response.ok || !data?.success) {
+      throw new Error(data?.error || 'Failed to upload file')
+    }
+
+    return {
+      url: data.data.url,
+      path: data.data.path,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    }
+  }
+
+  const results = await Promise.all(
+    files.map(async (file, index) => {
+      let progressInterval: ReturnType<typeof setInterval> | null = null
+      try {
+        if (onProgress) {
+          onProgress(index, {
+            progress: 0,
+            file,
+            bytesTransferred: 0,
+            totalBytes: file.size,
+          })
+
+          let simulated = 0
+          progressInterval = setInterval(() => {
+            simulated = Math.min(simulated + 10, 90)
+            onProgress(index, {
+              progress: simulated,
+              file,
+              bytesTransferred: Math.round((simulated / 100) * file.size),
+              totalBytes: file.size,
+            })
+          }, 100)
+        }
+
+        const uploaded = await uploadSingleFile(file)
+
+        if (progressInterval) {
+          clearInterval(progressInterval)
+          progressInterval = null
+        }
+
+        if (onProgress) {
+          onProgress(index, {
+            progress: 100,
+            file,
+            bytesTransferred: file.size,
+            totalBytes: file.size,
+          })
+        }
+
+        if (onFileUploaded) {
+          onFileUploaded(index, uploaded)
+        }
+
+        return uploaded
+      } finally {
+        if (progressInterval) {
+          clearInterval(progressInterval)
+        }
+      }
+    })
+  )
+
+  return results
 };
 
 interface ImageUploadProps {

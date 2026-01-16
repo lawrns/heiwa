@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Clock, Eye, RotateCcw, Trash2 } from 'lucide-react'
 import AdminButton from '@/components/admin/ui/AdminButton'
 import AdminModal from '@/components/admin/ui/AdminModal'
@@ -35,13 +35,7 @@ export default function VersionHistory({
   const [showPreview, setShowPreview] = useState(false)
   const [restoring, setRestoring] = useState(false)
 
-  useEffect(() => {
-    if (isOpen && pageSlug) {
-      fetchVersions()
-    }
-  }, [fetchVersions, isOpen, pageSlug])
-
-  const fetchVersions = async () => {
+  const fetchVersions = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -63,7 +57,13 @@ export default function VersionHistory({
     } finally {
       setLoading(false)
     }
-  }
+  }, [pageSlug])
+
+  useEffect(() => {
+    if (isOpen && pageSlug) {
+      fetchVersions()
+    }
+  }, [fetchVersions, isOpen, pageSlug])
 
   const handleRestore = async (version: VersionEntry) => {
     if (!confirm('Are you sure you want to restore this version? This will replace the current content.')) {

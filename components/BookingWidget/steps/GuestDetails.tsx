@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle, ChevronDown, Edit3, User } from 'lucide-react';
 import { BookingState, GuestInfo } from '../types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

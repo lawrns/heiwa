@@ -9,6 +9,8 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ initialSections = [] }: ContactFormProps) {
+  const [sections, setSections] = useState<PageSection[]>(initialSections)
+
   // Fetch sections from CMS API if not provided
   useEffect(() => {
     if (initialSections.length > 0) return

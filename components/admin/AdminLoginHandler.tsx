@@ -17,7 +17,7 @@ export function AdminLoginHandler() {
       setAdminStatus()
       
       // Clean URL
-      router.replace('/admin', false)
+      router.replace('/admin')
     }
   }, [router])
   

@@ -7,6 +7,7 @@ import { ScrollIndicator } from '../components/ScrollIndicator';
 import { apiFetch } from '../lib/api';
 import { scrollToFirstError } from '@/lib/utils/scroll-to-error';
 import { clearBookingProgress } from '@/lib/utils/booking-persistence';
+import { ensureDate } from '@/lib/utils/date-helpers';
 import { useRooms } from '../hooks/useRooms';
 import { useSurfCamps } from '../hooks/useSurfCamps';
 import { Button } from '@/components/ui/button';
@@ -246,7 +247,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
   };
 
   const formatDate = (date: Date | string | null | undefined) => {
-    const dateObj = date instanceof Date ? date : new Date(date);
+    const dateObj = ensureDate(date)
     if (!dateObj) return 'N/A'
     
     // Use UTC dates to avoid timezone issues

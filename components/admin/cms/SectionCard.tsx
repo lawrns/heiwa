@@ -38,7 +38,6 @@ interface SectionCardProps {
 
 export default function SectionCard({
   section,
-  index,
   onEdit,
   onDelete,
   onDuplicate,

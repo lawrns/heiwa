@@ -148,9 +148,10 @@ export async function POST(request: NextRequest) {
         },
       });
     } else {
-      // Room booking - validate pricing
-      const totalAmount = body.pricing?.total || body.total_amount || 0;
-      if (totalAmount <= 0) {
+      // Room booking - pricing may be calculated server-side; validate only if explicitly provided
+      const totalAmountProvided = typeof body?.pricing?.total === 'number' || typeof body?.total_amount === 'number';
+      const totalAmount = (body?.pricing?.total ?? body?.total_amount ?? 0) as number;
+      if (totalAmountProvided && totalAmount <= 0) {
         return NextResponse.json(
           {
             success: false,
@@ -194,7 +195,7 @@ export async function POST(request: NextRequest) {
         checkIn: body.start_date,
         checkOut: body.end_date,
         itemName: 'Room',
-        totalAmount: totalAmount,
+        totalAmount: totalAmountProvided ? totalAmount : 0,
       });
 
       return NextResponse.json(

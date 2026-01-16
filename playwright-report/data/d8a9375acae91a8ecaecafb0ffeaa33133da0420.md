@@ -1,0 +1,210 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - generic [ref=e5]:
+      - navigation "Main navigation" [ref=e7]:
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Navigate to HOME page" [ref=e10] [cursor=pointer]:
+              - /url: /
+              - text: HOME
+          - listitem [ref=e11]:
+            - link "Navigate to ROOM RENTALS page" [ref=e12] [cursor=pointer]:
+              - /url: /rooms
+              - text: ROOM RENTALS
+          - listitem [ref=e13]:
+            - link "Navigate to SURF WEEK page" [ref=e14] [cursor=pointer]:
+              - /url: /surf-weeks
+              - text: SURF WEEK
+      - link "Heiwa House" [ref=e16] [cursor=pointer]:
+        - /url: /
+        - img "Heiwa House" [ref=e17]
+      - generic [ref=e18]:
+        - button "Open activities menu" [ref=e20]:
+          - text: ACTIVITIES
+          - img [ref=e21]
+        - button "BOOK" [ref=e25]:
+          - img [ref=e26]
+          - text: BOOK
+  - main [ref=e31]:
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - img "Heiwa House Property Overview" [ref=e35]
+        - generic [ref=e38]:
+          - heading "The Spot" [level=1] [ref=e39]
+          - paragraph [ref=e40]: Your ultimate adult playground on Portugal's coast
+      - generic [ref=e42]:
+        - heading "Our Story" [level=2] [ref=e43]
+        - generic [ref=e44]:
+          - paragraph [ref=e45]: Heiwa House started as a dream to create more than just a surf house—a place that feels like home. After years of running surf camps and renting spaces, it was time to build something permanent. Months of searching and a shared vision led us to the perfect location on Portugal's stunning coast.
+          - paragraph [ref=e46]: A love for surfing, yoga, design, and good vibes helped shape the space into something truly special. We wanted to create a sanctuary where guests could disconnect from the everyday, reconnect with nature, and discover their true passion.
+          - paragraph [ref=e47]: Now, Heiwa House is the ultimate adult playground—a place to catch waves, find your flow, connect with like-minded adventurers, and just enjoy life to the fullest.
+      - generic [ref=e49]:
+        - heading "Explore the Property" [level=2] [ref=e50]
+        - paragraph [ref=e51]: Discover every corner of Heiwa House, from our beachfront location to our state-of-the-art facilities
+        - generic [ref=e54]:
+          - img "Explore the Property - Image 1 of 10" [ref=e55]
+          - button "Previous image" [ref=e56]:
+            - img [ref=e57]
+          - button "Next image" [ref=e59]:
+            - img [ref=e60]
+          - generic [ref=e62]: 1/10
+          - generic [ref=e63]:
+            - button "Go to image 1" [ref=e64]
+            - button "Go to image 2" [ref=e65]
+            - button "Go to image 3" [ref=e66]
+            - button "Go to image 4" [ref=e67]
+            - button "Go to image 5" [ref=e68]
+            - button "Go to image 6" [ref=e69]
+            - button "Go to image 7" [ref=e70]
+            - button "Go to image 8" [ref=e71]
+            - button "Go to image 9" [ref=e72]
+            - button "Go to image 10" [ref=e73]
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - heading "Heiwa Flow - Yoga Dome" [level=2] [ref=e78]
+          - paragraph [ref=e79]: Our stunning yoga dome overlooks the Portuguese countryside with ocean breezes and natural light. A sacred space designed for yoga, meditation, and spiritual practice.
+          - list [ref=e80]:
+            - listitem [ref=e81]:
+              - generic [ref=e82]: ✓
+              - generic [ref=e83]: Daily guided yoga sessions for all levels
+            - listitem [ref=e84]:
+              - generic [ref=e85]: ✓
+              - generic [ref=e86]: Meditation and breathwork classes
+            - listitem [ref=e87]:
+              - generic [ref=e88]: ✓
+              - generic [ref=e89]: Private sessions available
+            - listitem [ref=e90]:
+              - generic [ref=e91]: ✓
+              - generic [ref=e92]: Perfect sunset views
+        - generic [ref=e95]:
+          - img "Heiwa Flow - Yoga Dome - Image 1 of 4" [ref=e96]
+          - button "Previous image" [ref=e97]:
+            - img [ref=e98]
+          - button "Next image" [ref=e100]:
+            - img [ref=e101]
+          - generic [ref=e103]: 1/4
+          - generic [ref=e104]:
+            - button "Go to image 1" [ref=e105]
+            - button "Go to image 2" [ref=e106]
+            - button "Go to image 3" [ref=e107]
+            - button "Go to image 4" [ref=e108]
+      - generic [ref=e111]:
+        - generic [ref=e114]:
+          - img "Heiwa Play - Skatepark - Image 1 of 5" [ref=e115]
+          - button "Previous image" [ref=e116]:
+            - img [ref=e117]
+          - button "Next image" [ref=e119]:
+            - img [ref=e120]
+          - generic [ref=e122]: 1/5
+          - generic [ref=e123]:
+            - button "Go to image 1" [ref=e124]
+            - button "Go to image 2" [ref=e125]
+            - button "Go to image 3" [ref=e126]
+            - button "Go to image 4" [ref=e127]
+            - button "Go to image 5" [ref=e128]
+        - generic [ref=e129]:
+          - heading "Heiwa Play - Skatepark" [level=2] [ref=e130]
+          - paragraph [ref=e131]: Our professional-grade skatepark features custom-built ramps, bowls, and obstacles for all skill levels. Whether you are a beginner or pro, there is something for everyone.
+          - list [ref=e132]:
+            - listitem [ref=e133]:
+              - generic [ref=e134]: ✓
+              - generic [ref=e135]: Multiple difficulty levels and features
+            - listitem [ref=e136]:
+              - generic [ref=e137]: ✓
+              - generic [ref=e138]: Professional coaching available
+            - listitem [ref=e139]:
+              - generic [ref=e140]: ✓
+              - generic [ref=e141]: Community events and competitions
+            - listitem [ref=e142]:
+              - generic [ref=e143]: ✓
+              - generic [ref=e144]: Equipment rental available
+      - generic [ref=e147]:
+        - generic [ref=e148]:
+          - heading "Swimming Pool" [level=2] [ref=e149]
+          - paragraph [ref=e150]: Relax by our crystal-clear swimming pool, perfect for cooling off after an intense surf session or yoga class. Sunbathing, swimming, and socializing in a beautiful setting.
+          - list [ref=e151]:
+            - listitem [ref=e152]:
+              - generic [ref=e153]: ✓
+              - generic [ref=e154]: Open year-round
+            - listitem [ref=e155]:
+              - generic [ref=e156]: ✓
+              - generic [ref=e157]: Lounge seating and umbrellas
+            - listitem [ref=e158]:
+              - generic [ref=e159]: ✓
+              - generic [ref=e160]: Refreshment bar
+            - listitem [ref=e161]:
+              - generic [ref=e162]: ✓
+              - generic [ref=e163]: Perfect for all ages
+        - generic [ref=e166]:
+          - img "Swimming Pool - Image 1 of 2" [ref=e167]
+          - button "Previous image" [ref=e168]:
+            - img [ref=e169]
+          - button "Next image" [ref=e171]:
+            - img [ref=e172]
+          - generic [ref=e174]: 1/2
+          - generic [ref=e175]:
+            - button "Go to image 1" [ref=e176]
+            - button "Go to image 2" [ref=e177]
+      - generic [ref=e180]:
+        - generic [ref=e183]:
+          - img "Games & Recreation - Image 1 of 2" [ref=e184]
+          - button "Previous image" [ref=e185]:
+            - img [ref=e186]
+          - button "Next image" [ref=e188]:
+            - img [ref=e189]
+          - generic [ref=e191]: 1/2
+          - generic [ref=e192]:
+            - button "Go to image 1" [ref=e193]
+            - button "Go to image 2" [ref=e194]
+        - generic [ref=e195]:
+          - heading "Games & Recreation" [level=2] [ref=e196]
+          - paragraph [ref=e197]: Beyond the water and slopes, we offer plenty of entertainment options. Board games, volleyball, ping pong, and more to keep the fun going.
+          - list [ref=e198]:
+            - listitem [ref=e199]:
+              - generic [ref=e200]: ✓
+              - generic [ref=e201]: Indoor and outdoor games
+            - listitem [ref=e202]:
+              - generic [ref=e203]: ✓
+              - generic [ref=e204]: Beach volleyball court
+            - listitem [ref=e205]:
+              - generic [ref=e206]: ✓
+              - generic [ref=e207]: Table tennis and board games
+            - listitem [ref=e208]:
+              - generic [ref=e209]: ✓
+              - generic [ref=e210]: Evening entertainment and events
+      - generic [ref=e212]:
+        - heading "Ready to Experience The Spot?" [level=2] [ref=e213]
+        - paragraph [ref=e214]: Book your stay and discover your paradise at Heiwa House
+        - link "Explore Rooms" [ref=e215] [cursor=pointer]:
+          - /url: /rooms
+  - contentinfo [ref=e216]:
+    - generic [ref=e218]:
+      - generic [ref=e219]:
+        - heading "Find us here" [level=3] [ref=e220]
+        - iframe [ref=e222]:
+          
+      - generic [ref=e223]:
+        - heading "General" [level=3] [ref=e224]
+        - list [ref=e225]:
+          - listitem [ref=e226]:
+            - link "Blog" [ref=e227] [cursor=pointer]:
+              - /url: /blog
+      - generic [ref=e228]:
+        - heading "Connect" [level=3] [ref=e229]
+        - link "Instagram" [ref=e230] [cursor=pointer]:
+          - /url: https://www.instagram.com/heiwahouse_portugal
+          - img [ref=e231]
+          - generic [ref=e235]: Instagram
+      - generic [ref=e236]:
+        - heading "About Us" [level=3] [ref=e237]
+        - generic [ref=e238]:
+          - paragraph [ref=e239]
+          - paragraph [ref=e241]
+  - button "Contact us on WhatsApp" [ref=e243]:
+    - img [ref=e244]
+```

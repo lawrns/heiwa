@@ -1,0 +1,143 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - generic [ref=e5]:
+      - navigation "Main navigation" [ref=e7]:
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - link "Navigate to HOME page" [ref=e10] [cursor=pointer]:
+              - /url: /
+              - text: HOME
+          - listitem [ref=e11]:
+            - link "Navigate to ROOM RENTALS page" [ref=e12] [cursor=pointer]:
+              - /url: /rooms
+              - text: ROOM RENTALS
+          - listitem [ref=e13]:
+            - link "Navigate to SURF WEEK page" [ref=e14] [cursor=pointer]:
+              - /url: /surf-weeks
+              - text: SURF WEEK
+      - link "Heiwa House" [ref=e16] [cursor=pointer]:
+        - /url: /
+        - img "Heiwa House" [ref=e17]
+      - generic [ref=e18]:
+        - button "Open activities menu" [ref=e20]:
+          - text: ACTIVITIES
+          - img [ref=e21]
+        - button "BOOK" [ref=e25]:
+          - img [ref=e26]
+          - text: BOOK
+  - main [ref=e28]:
+    - generic [ref=e30]:
+      - generic [ref=e35]:
+        - generic [ref=e36]: Nestled on Portugal’s coast, Heiwa House is your sanctuary for rest and adventure.
+        - paragraph [ref=e37]: A WAVE AWAY
+        - generic [ref=e38]:
+          - link "Come for a Surf Camp" [ref=e39] [cursor=pointer]:
+            - /url: /surf-weeks
+            - img [ref=e40]
+            - text: Come for a Surf Camp
+          - link "Rent a Room" [ref=e44] [cursor=pointer]:
+            - /url: /rooms
+            - img [ref=e45]
+            - text: Rent a Room
+      - generic [ref=e92]:
+        - heading "What we are about?" [level=2] [ref=e93]
+        - paragraph [ref=e94]: Surf the waves, flow through yoga, and skate with freedom. Heiwa House is your sanctuary for connection, play, and self-discovery. Here, every experience is designed to help you embrace balance, fun, and the beauty of living in the moment. Test
+        - generic [ref=e95]:
+          - link "Play Test. Play Test. Explore activities and experiences around our location. Test." [ref=e96] [cursor=pointer]:
+            - /url: /play
+            - generic [ref=e97]:
+              - img "Play Test." [ref=e98]
+              - generic [ref=e101]:
+                - heading "Play Test." [level=3] [ref=e102]
+                - paragraph [ref=e103]: Explore activities and experiences around our location. Test.
+          - link "Surf Test Surf Test Discover amazing surfing" [ref=e104] [cursor=pointer]:
+            - /url: /surf
+            - generic [ref=e105]:
+              - img "Surf Test" [ref=e106]
+              - generic [ref=e109]:
+                - heading "Surf Test" [level=3] [ref=e110]
+                - paragraph [ref=e111]: Discover amazing surfing
+          - link "Flow Test Flow Test Wellness, yoga, and mindfulness experiences" [ref=e112] [cursor=pointer]:
+            - /url: /flow
+            - generic [ref=e113]:
+              - img "Flow Test" [ref=e114]
+              - generic [ref=e117]:
+                - heading "Flow Test" [level=3] [ref=e118]
+                - paragraph [ref=e119]: Wellness, yoga, and mindfulness experiences
+      - generic [ref=e132]:
+        - heading "Your Hosts" [level=2] [ref=e133]
+        - generic [ref=e134]:
+          - img "Heiwa House Hosts" [ref=e139]
+          - generic [ref=e141]:
+            - generic [ref=e142]:
+              - paragraph [ref=e143]: Welcome to Heiwa House! We are Janis, Buka, and Edijs – three friends who turned our love for surfing, travel, and community into this special place.
+              - paragraph [ref=e144]: After years of chasing waves around the world, we found our home here on the Portuguese coast. We built Heiwa House to share that feeling of freedom and adventure.
+              - paragraph [ref=e145]: Whether you are here to catch your first wave, find your flow through yoga, or simply escape the daily grind, we are here to make sure you feel at home.
+            - paragraph [ref=e147]: – Janis, Buka & Edijs
+      - heading "What Our Customers Say" [level=2] [ref=e150]
+      - generic [ref=e162]:
+        - heading "Activities Around" [level=2] [ref=e163]
+        - generic [ref=e164]:
+          - generic [ref=e166]:
+            - img "Surf Lessons" [ref=e167]
+            - heading "Surf Lessons" [level=3] [ref=e170]
+            - paragraph [ref=e172]: Learn to ride the waves with professional instructors
+          - generic [ref=e174]:
+            - img "1 on 1 Coaching" [ref=e175]
+            - heading "1 on 1 Coaching" [level=3] [ref=e178]
+            - paragraph [ref=e180]: Feel the adrenaline rush on our local tracks
+          - generic [ref=e182]:
+            - img "Horseback Riding" [ref=e183]
+            - heading "Horseback Riding" [level=3] [ref=e186]
+            - paragraph [ref=e188]: Explore the countryside on horseback
+          - generic [ref=e190]:
+            - img "Plane Flight" [ref=e191]
+            - heading "Plane Flight" [level=3] [ref=e194]
+            - paragraph [ref=e196]: Experience breathtaking aerial views
+          - generic [ref=e198]:
+            - img "Wineyard Tour" [ref=e199]
+            - heading "Wineyard Tour" [level=3] [ref=e202]
+            - paragraph [ref=e204]: Taste local wines and learn about Portuguese vineyards
+          - generic [ref=e206]:
+            - img "Hiking" [ref=e207]
+            - heading "Hiking" [level=3] [ref=e210]
+            - paragraph [ref=e212]: Discover scenic trails and natural beauty
+          - generic [ref=e214]:
+            - img "Paragliding" [ref=e215]
+            - heading "Paragliding" [level=3] [ref=e218]
+            - paragraph [ref=e220]: Soar above the landscape with stunning views
+          - generic [ref=e222]:
+            - img "Bicycle Riding" [ref=e223]
+            - heading "Bicycle Riding" [level=3] [ref=e226]
+            - paragraph [ref=e228]: Pedal through coastal paths and hidden gems
+  - contentinfo [ref=e229]:
+    - generic [ref=e231]:
+      - generic [ref=e232]:
+        - heading "Find us here" [level=3] [ref=e233]
+        - iframe [ref=e235]:
+          
+      - generic [ref=e236]:
+        - heading "General" [level=3] [ref=e237]
+        - list [ref=e238]:
+          - listitem [ref=e239]:
+            - link "Blog" [ref=e240] [cursor=pointer]:
+              - /url: /blog
+      - generic [ref=e241]:
+        - heading "Connect" [level=3] [ref=e242]
+        - link "Instagram" [ref=e243] [cursor=pointer]:
+          - /url: https://www.instagram.com/heiwahouse_portugal
+          - img [ref=e244]
+          - generic [ref=e247]: Instagram
+      - generic [ref=e248]:
+        - heading "About Us" [level=3] [ref=e249]
+        - generic [ref=e250]:
+          - paragraph [ref=e251]
+          - paragraph [ref=e253]
+  - button "Contact us on WhatsApp" [ref=e255]:
+    - img [ref=e256]
+```
