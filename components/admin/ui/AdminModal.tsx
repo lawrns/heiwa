@@ -60,11 +60,62 @@ const AdminModal: React.FC<AdminModalProps> = ({
     }
   }
 
-  // Focus management
+  // Focus management with enhanced focus trap
   useEffect(() => {
-    if (isOpen && modalRef.current) {
-      modalRef.current.focus()
+    if (!isOpen || !modalRef.current) return;
+
+    const modalElement = modalRef.current;
+    const previouslyFocusedElement = document.activeElement as HTMLElement;
+
+    // Get all focusable elements within modal
+    const getFocusableElements = () => {
+      return modalElement.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+    };
+
+    // Focus first focusable element or modal itself
+    const focusableElements = getFocusableElements();
+    if (focusableElements.length > 0) {
+      focusableElements[0].focus();
+    } else {
+      modalElement.focus();
     }
+
+    // Trap focus within modal
+    const handleTabKey = (e: KeyboardEvent) => {
+      const focusable = getFocusableElements();
+      if (focusable.length === 0) return;
+
+      const firstElement = focusable[0];
+      const lastElement = focusable[focusable.length - 1];
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          // Shift + Tab
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          // Tab
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    modalElement.addEventListener('keydown', handleTabKey);
+
+    // Cleanup: restore focus when modal closes
+    return () => {
+      modalElement.removeEventListener('keydown', handleTabKey);
+      if (previouslyFocusedElement && typeof previouslyFocusedElement.focus === 'function') {
+        previouslyFocusedElement.focus();
+      }
+    };
   }, [isOpen])
 
   // Prevent body scroll when modal is open
@@ -142,10 +193,11 @@ const AdminModal: React.FC<AdminModalProps> = ({
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="rounded-md p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="rounded-md p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 min-w-[44px] min-h-[44px]"
                 aria-label="Close modal"
+                type="button"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden="true" />
               </button>
             )}
           </div>

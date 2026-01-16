@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { MapPin, Users, Star, Check, Wifi, Car, Utensils, Calendar, Minus, Plus } from 'lucide-react';
 import { BookingState, PricingBreakdown, ParticipantName, Room, SurfWeek } from '../types';
 import { useRooms } from '../hooks/useRooms';
@@ -6,6 +6,7 @@ import { useSurfCamps } from '../hooks/useSurfCamps';
 import { useDateAvailability } from '../hooks/useDateAvailability';
 import { RoomImageGallery, RoomHeroImage } from '../components/RoomImageGallery';
 import { Button } from '@/components/ui/button';
+import { DatePicker } from '@/components/ui/date-picker';
 import { formatDateUTC } from '@/lib/utils';
 
 interface OptionSelectionProps {
@@ -36,8 +37,12 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const {
     fetchDateAvailability,
     isDateSoldOut,
+    getSoldOutDates,
     loading: dateAvailabilityLoading
   } = useDateAvailability({ participants: state.guests || 1 });
+
+  // State for unavailable dates to show in calendar
+  const [unavailableDates, setUnavailableDates] = useState<Date[]>([]);
   // Room bookings: single-select (multi-room is handled via the dedicated RoomAssignment step)
   // Surf weeks: single-select
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
@@ -144,6 +149,23 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
       }
     }
   }, [checkInDate, checkOutDate, fetchDateAvailability, state.pricing]);
+
+  // Fetch unavailable dates for calendar view (3 months ahead)
+  useEffect(() => {
+    if (state.experienceType === 'room') {
+      const fetchUnavailable = async () => {
+        const today = new Date();
+        const threeMonthsLater = new Date(today.getFullYear(), today.getMonth() + 3, today.getDate());
+        const startDate = today.toISOString().split('T')[0];
+        const endDate = threeMonthsLater.toISOString().split('T')[0];
+
+        await fetchDateAvailability(startDate, endDate);
+        const soldOut = getSoldOutDates();
+        setUnavailableDates(soldOut.map(d => new Date(d + 'T00:00:00.000Z')));
+      };
+      fetchUnavailable();
+    }
+  }, [state.experienceType, state.guests, fetchDateAvailability, getSoldOutDates]);
 
   // For surf weeks, if a surf week was already selected in step 2, auto-select it here
   useEffect(() => {
@@ -680,18 +702,20 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <label htmlFor="check-in" className="block text-xs font-medium text-gray-700">
                   Check-in
                 </label>
-                <input
+                <DatePicker
                   id="check-in"
-                  type="date"
-                  value={checkInDate}
-                  min={new Date().toISOString().split('T')[0]}
-                  onChange={(e) => handleCheckInChange(e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
-                    checkInDate && isDateSoldOut(checkInDate)
-                      ? 'border-red-300 bg-red-50 text-red-700'
-                      : 'border-gray-300'
-                  }`}
-                  required
+                  date={checkInDate ? new Date(checkInDate + 'T00:00:00.000Z') : undefined}
+                  onDateChange={(date) => {
+                    if (date) {
+                      const dateStr = date.toISOString().split('T')[0];
+                      handleCheckInChange(dateStr);
+                    }
+                  }}
+                  disabledDates={unavailableDates}
+                  minDate={new Date()}
+                  placeholder="Select check-in"
+                  aria-label="Select check-in date"
+                  className={checkInDate && isDateSoldOut(checkInDate) ? 'border-red-300 bg-red-50 text-red-700' : ''}
                 />
                 {checkInDate && isDateSoldOut(checkInDate) && (
                   <p className="text-base text-red-600 flex items-center gap-1">
@@ -705,18 +729,20 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <label htmlFor="check-out" className="block text-xs font-medium text-gray-700">
                   Check-out
                 </label>
-                <input
+                <DatePicker
                   id="check-out"
-                  type="date"
-                  value={checkOutDate}
-                  min={checkInDate || new Date().toISOString().split('T')[0]}
-                  onChange={(e) => handleCheckOutChange(e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
-                    checkOutDate && isDateSoldOut(checkOutDate)
-                      ? 'border-red-300 bg-red-50 text-red-700'
-                      : 'border-gray-300'
-                  }`}
-                  required
+                  date={checkOutDate ? new Date(checkOutDate + 'T00:00:00.000Z') : undefined}
+                  onDateChange={(date) => {
+                    if (date) {
+                      const dateStr = date.toISOString().split('T')[0];
+                      handleCheckOutChange(dateStr);
+                    }
+                  }}
+                  disabledDates={unavailableDates}
+                  minDate={checkInDate ? new Date(checkInDate + 'T00:00:00.000Z') : new Date()}
+                  placeholder="Select check-out"
+                  aria-label="Select check-out date"
+                  className={checkOutDate && isDateSoldOut(checkOutDate) ? 'border-red-300 bg-red-50 text-red-700' : ''}
                 />
                 {checkOutDate && isDateSoldOut(checkOutDate) && (
                   <p className="text-base text-red-600 flex items-center gap-1">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, ChevronDown, Edit3, User } from 'lucide-react';
+import { AlertCircle, CheckCircle, ChevronDown, Edit3, User, Loader2 } from 'lucide-react';
 import { BookingState, GuestInfo } from '../types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,6 +29,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
   const [userManuallyExpanded, setUserManuallyExpanded] = useState(false);
   const [savedGuests, setSavedGuests] = useState<Set<number>>(new Set());
   const [showSuccessMessage, setShowSuccessMessage] = useState<number | null>(null);
+  const [savingGuest, setSavingGuest] = useState<number | null>(null);
 
   // Initialize guest forms based on guest count - only when guest count changes
   // Pre-fill firstName from participantNames (Step 2) if available
@@ -141,7 +142,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     }
   };
 
-  const handleSaveGuest = (index: number) => {
+  const handleSaveGuest = async (index: number) => {
     const formData = guestForms[index];
     const formErrors = validateForm(formData, index);
 
@@ -182,6 +183,12 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     delete newErrors[`guest-${index}`];
     setErrors(newErrors);
 
+    // Set loading state
+    setSavingGuest(index);
+
+    // Simulate async validation (could be API call in the future)
+    await new Promise(resolve => setTimeout(resolve, 300));
+
     const guestInfo: GuestInfo = {
       id: `guest-${index}`,
       firstName: formData.firstName.trim(),
@@ -193,7 +200,10 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
     };
 
     actions.updateGuestDetails(guestInfo);
-    
+
+    // Clear loading state
+    setSavingGuest(null);
+
     // Mark guest as saved
     setSavedGuests(prev => new Set(prev).add(index));
     setShowSuccessMessage(index);
@@ -446,12 +456,18 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             <div className="mt-6 flex justify-end">
               <Button
                 onClick={() => handleSaveGuest(index)}
-                disabled={isSaved}
+                disabled={isSaved || savingGuest === index}
                 variant="default"
                 size="default"
                 className={isSaved ? 'bg-green-500 hover:bg-green-500' : ''}
               >
-                {isSaved ? (
+                {savingGuest === index ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span className="sr-only">Saving guest {index + 1}</span>
+                    Saving...
+                  </>
+                ) : isSaved ? (
                   <>
                     <CheckCircle size={16} />
                     Saved

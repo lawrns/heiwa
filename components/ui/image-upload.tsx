@@ -242,6 +242,14 @@ export function ImageUpload({
     fileInputRef.current?.click();
   }, [bucketName]);
 
+  // ACCESSIBILITY: Keyboard support for upload button
+  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      fileInputRef.current?.click();
+    }
+  }, []);
+
   return (
     <div className={`space-y-4 ${className}`}>
       {/* Upload Area */}
@@ -262,11 +270,13 @@ export function ImageUpload({
               type="button"
               variant="outline"
               onClick={handleUploadClick}
+              onKeyDown={handleKeyDown}
               disabled={disabled || uploading || images.length >= maxFiles}
               className="mt-4"
               data-testid="file-upload"
+              aria-label={`Choose images. ${images.length} of ${maxFiles} uploaded.`}
             >
-              <ImageIcon className="mr-2 h-4 w-4" />
+              <ImageIcon className="mr-2 h-4 w-4" aria-hidden="true" />
               Choose Images
             </Button>
           </div>
@@ -316,10 +326,17 @@ export function ImageUpload({
               <button
                 type="button"
                 onClick={() => handleRemoveImage(index)}
-                className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleRemoveImage(index);
+                  }
+                }}
+                className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity"
                 disabled={uploading}
+                aria-label={`Remove image ${index + 1}: ${image.name || 'uploaded image'}`}
               >
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4" aria-hidden="true" />
               </button>
 
               {/* Image info overlay */}

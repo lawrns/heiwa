@@ -147,14 +147,27 @@ export function BookingWidget({
   }, [isOpen, isWebComponent, onModalStateChange]);
 
   // Scroll to top of content area when step changes to ensure current step is visible
+  // Also manages focus for keyboard/screen reader accessibility
   useEffect(() => {
     if (contentScrollRef.current && isOpen) {
       // Scroll to top when step changes to ensure the current step content is visible
       // Use a small delay to allow the step content to render
       const timeoutId = setTimeout(() => {
         contentScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 150);
-      
+
+        // ACCESSIBILITY: Focus management for keyboard/screen reader users
+        const firstFocusable = contentScrollRef.current?.querySelector<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+        );
+
+        if (firstFocusable) {
+          firstFocusable.focus();
+        } else {
+          contentScrollRef.current?.setAttribute('tabindex', '-1');
+          contentScrollRef.current?.focus();
+        }
+      }, 200);
+
       return () => clearTimeout(timeoutId);
     }
   }, [computed.currentStepType, isOpen]);

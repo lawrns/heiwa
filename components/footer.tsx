@@ -43,9 +43,8 @@ export function Footer() {
   const email = settings.contact_email || 'info@heiwahouse.com'
   const phone = settings.contact_phone || '+351 912 193 785'
   const instagram = settings.instagram_url || 'https://www.instagram.com/heiwahouse_portugal'
-  const mapLat = settings.map_latitude || 39.1853
-  const mapLng = settings.map_longitude || -9.1657
-  const mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3076.5367824744444!2d${mapLng}!3d${mapLat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDExJzA3LjEiTiA5wrAwOSw1Ni41Ilc!5e0!3m2!1sen!2spt!4v1234567890`
+  // Use the actual Heiwa House location in Santa Cruz, Portugal
+  const mapUrl = settings.google_maps_embed_url || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3076.5367824744444!2d-9.1657!3d39.1353!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1ed8c42e0b7aab%3A0x6e47c8f46c8f9a73!2sSanta%20Cruz%2C%20Portugal!5e0!3m2!1sen!2spt!4v1705425600000!5m2!1sen!2spt'
 
   // Hide footer for admin routes
   if (isAdminRoute) {

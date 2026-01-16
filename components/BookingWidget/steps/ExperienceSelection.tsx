@@ -183,18 +183,11 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                     <Icon size={24} className="text-white" />
                   </div>
 
-                  {/* Title and Price */}
-                  <div className="flex-1 flex items-start justify-between gap-2 min-w-0">
+                  {/* Title */}
+                  <div className="flex-1 min-w-0">
                     <h4 className="text-xl sm:text-2xl font-bold text-white leading-tight drop-shadow-lg">
                       {experience.title}
                     </h4>
-                    {/* Price badge with prominent styling */}
-                    <div className="text-right flex-shrink-0 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/30">
-                      <div className="text-xs text-white/90 font-medium uppercase tracking-wide">From</div>
-                      <div className="text-2xl sm:text-3xl font-bold text-white">
-                        €{experience.priceFrom}
-                      </div>
-                    </div>
                   </div>
                 </div>
 
