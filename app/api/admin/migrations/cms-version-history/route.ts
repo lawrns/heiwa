@@ -1,10 +1,14 @@
 // Migration: Add CMS version history and defaults tables
 // Run once via POST /api/admin/migrations/cms-version-history
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     // Create page_section_versions table for version history
     const { error: versionsError } = await supabaseAdmin.rpc('exec_sql', {
@@ -106,7 +110,10 @@ ON page_section_defaults(page_slug, section_type);
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   // Check if tables exist
   try {
     const { error: versionsCheck } = await supabaseAdmin

@@ -3,6 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // GET /api/cms/sections/[id] - Get a specific section
 export async function GET(
@@ -45,11 +46,14 @@ export async function GET(
   }
 }
 
-// PUT /api/cms/sections/[id] - Update a section
+// PUT /api/cms/sections/[id] - Update a section (requires admin auth)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     const body = await request.json()
@@ -128,11 +132,14 @@ export async function PUT(
   }
 }
 
-// DELETE /api/cms/sections/[id] - Soft delete a section
+// DELETE /api/cms/sections/[id] - Soft delete a section (requires admin auth)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     const { searchParams } = new URL(request.url)

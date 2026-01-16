@@ -4,12 +4,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getPostById, updatePost, deletePost } from '@/lib/blog/db'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
-// GET /api/admin/blog/posts/[id] - Get single post
+// GET /api/admin/blog/posts/[id] - Get single post (requires admin auth)
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     const post = await getPostById(id)
@@ -35,11 +39,14 @@ export async function GET(
   }
 }
 
-// PUT /api/admin/blog/posts/[id] - Update post
+// PUT /api/admin/blog/posts/[id] - Update post (requires admin auth)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     const body = await request.json()
@@ -92,11 +99,14 @@ export async function PUT(
   }
 }
 
-// DELETE /api/admin/blog/posts/[id] - Delete post
+// DELETE /api/admin/blog/posts/[id] - Delete post (requires admin auth)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     await deletePost(id)

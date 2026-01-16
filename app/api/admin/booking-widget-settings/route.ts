@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 export async function GET() {
   try {
@@ -33,6 +34,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { settings } = body

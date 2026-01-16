@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 interface PageSection {
   page_slug: string
@@ -17,18 +18,10 @@ interface HomepageSection {
 }
 
 export async function GET(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
-    // Check authentication
-    const adminAuth = request.cookies.get('admin_auth')?.value
-    const adminPassword = process.env.ADMIN_PASSWORD || process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'heiwa_admin_2024'
-
-    if (!adminAuth || adminAuth !== adminPassword) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
     // Fetch page_sections stats (the unified CMS table)
     const { data: pageSectionsData, error: pageSectionsError } = await supabaseAdmin
       .from('page_sections')

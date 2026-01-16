@@ -4,9 +4,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getPosts, createPost } from '@/lib/blog/db'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
-// GET /api/admin/blog/posts - List all posts with filters
+// GET /api/admin/blog/posts - List all posts with filters (requires admin auth)
 export async function GET(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     
@@ -44,8 +48,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/admin/blog/posts - Create new post
+// POST /api/admin/blog/posts - Create new post (requires admin auth)
 export async function POST(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     

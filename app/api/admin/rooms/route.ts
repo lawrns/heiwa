@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { revalidatePath } from 'next/cache'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 interface BedType {
   type?: string
@@ -41,7 +42,10 @@ interface TransformedRoom {
 }
 
 // Admin API endpoint for getting all rooms (including inactive)
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     console.log('🏠 Admin: Fetching all rooms (including inactive)')
 
@@ -118,6 +122,9 @@ export async function GET() {
 
 // POST /api/admin/rooms - Create a new room
 export async function POST(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { 

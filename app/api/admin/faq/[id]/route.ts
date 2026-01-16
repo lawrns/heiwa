@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { FAQ_PAGE_SLUGS } from '@/lib/page-slugs'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 interface FAQUpdateData {
   question?: string
@@ -17,6 +18,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     const { data, error } = await supabaseAdmin
@@ -50,6 +54,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     const body = await request.json()
@@ -125,6 +132,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     const { error } = await supabaseAdmin

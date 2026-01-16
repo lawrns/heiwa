@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 import type {
   AnalyticsOverviewData,
   AnalyticsContentData,
@@ -13,6 +14,9 @@ import type {
 } from '@/lib/types/admin-api'
 
 export async function GET(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type') || 'overview'

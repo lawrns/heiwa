@@ -3,9 +3,13 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 // GET /api/admin/blog/authors - List all authors
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const { data, error } = await supabaseAdmin
       .from('blog_authors')
@@ -32,6 +36,9 @@ export async function GET() {
 
 // POST /api/admin/blog/authors - Create author
 export async function POST(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const {

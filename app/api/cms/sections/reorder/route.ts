@@ -3,14 +3,18 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 interface ReorderItem {
   id: string
   order_index: number
 }
 
-// PUT /api/cms/sections/reorder - Reorder multiple sections
+// PUT /api/cms/sections/reorder - Reorder multiple sections (requires admin auth)
 export async function PUT(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const { sections } = body as { sections: ReorderItem[] }

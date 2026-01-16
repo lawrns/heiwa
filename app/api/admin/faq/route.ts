@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { FAQ_PAGE_SLUGS } from '@/lib/page-slugs'
+import { requireAdminAuth } from '@/lib/admin-auth'
 
 interface FAQCreateData {
   question: string
@@ -63,6 +64,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const authError = requireAdminAuth(request)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const {
