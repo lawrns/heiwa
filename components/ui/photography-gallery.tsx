@@ -89,7 +89,7 @@ export function PhotographyGallery({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setSelectedCategory(null)}
-          className={`px-6 py-2 rounded-full font-semibold transition-all ${
+          className={`px-6 py-2 rounded-full font-semibold transition-[background-color,color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 ${
             selectedCategory === null
               ? 'bg-orange-500 text-white shadow-lg'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -104,7 +104,7 @@ export function PhotographyGallery({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setSelectedCategory(category)}
-            className={`px-6 py-2 rounded-full font-semibold transition-all ${
+            className={`px-6 py-2 rounded-full font-semibold transition-[background-color,color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 ${
               selectedCategory === category
                 ? 'bg-orange-500 text-white shadow-lg'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'

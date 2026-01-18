@@ -258,7 +258,7 @@ export default function RichTextEditor({
         <div
           id="editor"
           contentEditable
-          className="p-4 min-h-[200px] focus:outline-none"
+          className="p-4 min-h-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 rounded-b-lg transition-[box-shadow] duration-200"
           style={{ minHeight: `${height}px` }}
           onInput={handleEditorChange}
           onSelect={handleTextSelection}
@@ -293,7 +293,7 @@ export default function RichTextEditor({
                   type="text"
                   value={linkText}
                   onChange={(e) => setLinkText(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                   placeholder="Link text"
                 />
               </div>
@@ -305,7 +305,7 @@ export default function RichTextEditor({
                   type="url"
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                   placeholder="https://example.com"
                 />
               </div>
@@ -364,7 +364,7 @@ export default function RichTextEditor({
           text-decoration: underline;
         }
         
-        #editor:focus {
+        #editor:focus-visible {
           outline: none;
         }
       `}</style>

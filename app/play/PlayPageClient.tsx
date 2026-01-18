@@ -4,8 +4,8 @@ import { Mail } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { HeroVideo } from '@/components/hero/hero-video'
-import { ActivityGrid } from '@/components/activities/activity-grid'
-import { ActivityHighlight } from '@/components/activities/activity-highlight'
+import { ExperienceGrid } from '@/components/activities/experience-grid'
+import { ExperienceHighlight } from '@/components/activities/experience-highlight'
 import { useEffect, useState } from 'react'
 import { PageSection } from '@/lib/cms-schemas'
 
@@ -143,7 +143,7 @@ export default function PlayPageClient() {
                 reversed?: boolean
               }
               return (
-                <ActivityHighlight
+                <ExperienceHighlight
                   key={section.id}
                   title={content.title || ''}
                   description={content.description || ''}
@@ -181,7 +181,7 @@ export default function PlayPageClient() {
                 )}
               </div>
 
-              <ActivityGrid
+              <ExperienceGrid
                 category={content.category || 'play'}
                 tier={content.tier || 'always'}
                 showTierBadge={content.showTierBadge || false}
@@ -224,7 +224,7 @@ export default function PlayPageClient() {
           </p>
           <a
             href={ctaContent?.buttonUrl || "mailto:info@heiwahouse.com"}
-            className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-8 py-4 rounded-lg font-semibold text-lg transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
           >
             <Mail className="w-5 h-5" />
             {ctaContent?.buttonText || "Book Your Adventure"}

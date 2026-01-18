@@ -47,7 +47,7 @@ describe('Component Accessibility Tests', () => {
       render(<Button>Focus me</Button>);
       
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('focus:ring-2');
+      expect(button).toHaveClass('focus-visible:ring-2');
     });
 
     it('should support aria-label', () => {
@@ -128,7 +128,7 @@ describe('Component Accessibility Tests', () => {
       );
       
       const input = screen.getByRole('textbox');
-      expect(input).toHaveClass('focus:ring-2');
+      expect(input).toHaveClass('focus-visible:ring-2');
     });
   });
 
@@ -231,7 +231,7 @@ describe('Component Accessibility Tests', () => {
       button.focus();
       
       // Check for focus styles
-      expect(button).toHaveClass('focus:ring-2');
+      expect(button).toHaveClass('focus-visible:ring-2');
     });
 
     it('should support focus trap in modal-like components', async () => {

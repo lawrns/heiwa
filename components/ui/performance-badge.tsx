@@ -109,7 +109,7 @@ export function PerformanceBadge() {
         title="Click to view performance metrics"
       >
         {/* Badge */}
-        <div className={`w-16 h-16 rounded-full flex items-center justify-center font-bold text-lg shadow-lg bg-white border-2 border-gray-200 ${scoreColor} hover:shadow-xl transition-shadow`}>
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center font-bold text-lg shadow-lg bg-white border-2 border-gray-200 ${scoreColor} hover:shadow-xl transition-[box-shadow] duration-200`}>
           {score}
         </div>
 
@@ -150,7 +150,7 @@ export function PerformanceBadge() {
           </div>
           <button
             onClick={() => setIsVisible(false)}
-            className="mt-3 w-full text-xs bg-gray-100 hover:bg-gray-200 text-gray-900 py-1 rounded transition-colors"
+            className="mt-3 w-full text-xs bg-gray-100 hover:bg-gray-200 text-gray-900 py-1 rounded transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
           >
             Close
           </button>

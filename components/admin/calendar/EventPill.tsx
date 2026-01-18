@@ -47,8 +47,8 @@ export function EventPill({ event, onClick, compact = false }: EventPillProps) {
     <button
       onClick={(e) => onClick?.(e, event)}
       className={cn(
-        'flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium truncate w-full text-left transition-all',
-        'hover:ring-1 hover:ring-offset-1 focus:outline-none focus:ring-2 focus:ring-offset-1',
+        'flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium truncate w-full text-left transition-[box-shadow,ring,opacity,background-color,border-color]',
+        'hover:ring-1 hover:ring-offset-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
         !hasCustomColor && config.bgColor,
         !hasCustomColor && config.borderColor,
         isConfirmed && 'border',

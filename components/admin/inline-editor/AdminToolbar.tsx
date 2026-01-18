@@ -83,7 +83,7 @@ export function AdminToolbar() {
             {/* Edit Page Button - Opens Sidebar */}
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg font-medium text-sm transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg font-medium text-sm transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
             >
               <PencilLine className="w-4 h-4" />
               Edit Page
@@ -92,7 +92,7 @@ export function AdminToolbar() {
             {/* Dashboard Link */}
             <Link
               href="/admin"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium text-sm transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium text-sm transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/40 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
             >
               <LayoutDashboard className="w-4 h-4" />
               Dashboard

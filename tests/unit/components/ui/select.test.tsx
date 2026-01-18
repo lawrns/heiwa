@@ -167,14 +167,14 @@ describe('Select Component', () => {
     it('should have focus ring styling', () => {
       renderSelect();
       const trigger = screen.getByTestId('select-trigger');
-      expect(trigger).toHaveClass('focus:ring-2');
-      expect(trigger).toHaveClass('focus:ring-orange-500/20');
-      expect(trigger).toHaveClass('focus:border-orange-500');
+      expect(trigger).toHaveClass('focus-visible:ring-2');
+      expect(trigger).toHaveClass('focus-visible:ring-orange-500/20');
+      expect(trigger).toHaveClass('focus-visible:border-orange-500');
     });
 
     it('should have transition styling', () => {
       renderSelect();
-      expect(screen.getByTestId('select-trigger')).toHaveClass('transition-all');
+      expect(screen.getByTestId('select-trigger').className).toMatch(/transition-\[/);
       expect(screen.getByTestId('select-trigger')).toHaveClass('duration-150');
     });
 

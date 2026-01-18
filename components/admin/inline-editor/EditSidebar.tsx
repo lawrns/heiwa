@@ -23,8 +23,8 @@ import { RoomsPickerEditor } from './editors/RoomsPickerEditor'
 import { HostsEditor } from './editors/HostsEditor'
 import { FAQEditor } from './editors/FAQEditor'
 import { SEOEditor } from './editors/SEOEditor'
-import { ActivityHighlightEditor } from './editors/ActivityHighlightEditor'
-import { ActivityGridEditor } from './editors/ActivityGridEditor'
+import { ExperienceGridEditor } from './editors/ExperienceGridEditor'
+import { ExperienceHighlightEditor } from './editors/ExperienceHighlightEditor'
 import { GalleryEditor } from './editors/GalleryEditor'
 import { IntroEditor } from './editors/IntroEditor'
 import { CTAEditor } from './editors/CTAEditor'
@@ -79,8 +79,8 @@ const SECTION_TEMPLATES: Record<string, { name: string; defaultContent: Record<s
     defaultContent: { title: 'Your Hosts', paragraphs: [], imageUrl: '', signature: '' },
   },
   facilities: {
-    name: 'Facilities / Activities',
-    defaultContent: { title: 'Activities', subtitle: '', items: [] },
+    name: 'Facilities / Experiences',
+    defaultContent: { title: 'Experiences Around', subtitle: '', items: [] },
   },
   faq: {
     name: 'FAQ',
@@ -99,11 +99,11 @@ const SECTION_TEMPLATES: Record<string, { name: string; defaultContent: Record<s
     defaultContent: { title: 'Gallery', images: [] },
   },
   activity_highlight: {
-    name: 'Activity Highlight',
+    name: 'Experience Highlight',
     defaultContent: { title: '', description: '', image: '', link: '' },
   },
   activity_grid: {
-    name: 'Activity Grid',
+    name: 'Experience Grid',
     defaultContent: { title: '', activities: [] },
   },
   text: {
@@ -461,9 +461,9 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
       case 'seo':
         return <SEOEditor {...props} />
       case 'activityHighlight':
-        return <ActivityHighlightEditor {...props} />
+        return <ExperienceHighlightEditor {...props} />
       case 'activityGrid':
-        return <ActivityGridEditor {...props} />
+        return <ExperienceGridEditor {...props} />
       case 'gallery':
         return <GalleryEditor {...props} />
       case 'intro':
@@ -491,7 +491,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-200 rounded-lg transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
           >
             <X className="w-5 h-5" />
           </button>
@@ -525,10 +525,10 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
             <div className="p-4">
               {/* SEO Settings Panel */}
               <div className="mb-6 border border-gray-200 rounded-lg overflow-hidden">
-                <button
-                  onClick={() => setShowSeoPanel(!showSeoPanel)}
-                  className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition-colors"
-                >
+                  <button
+                    onClick={() => setShowSeoPanel(!showSeoPanel)}
+                    className="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-orange-500/40"
+                  >
                   <div className="flex items-center gap-2">
                     <Settings className="w-4 h-4 text-gray-500" />
                     <span className="font-medium text-gray-900">Page Settings & SEO</span>
@@ -552,7 +552,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                         type="text"
                         value={pageMeta.title || ''}
                         onChange={(e) => setPageMeta({ ...pageMeta, title: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                         placeholder="Page title"
                       />
                     </div>
@@ -568,7 +568,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                           setPageMeta({ ...pageMeta, meta_description: e.target.value })
                         }
                         rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200 resize-none"
                         placeholder="Brief description for search engines (160 chars recommended)"
                       />
                       <p className="mt-1 text-xs text-gray-500">
@@ -587,7 +587,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                         onChange={(e) =>
                           setPageMeta({ ...pageMeta, meta_keywords: e.target.value })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                         placeholder="keyword1, keyword2, keyword3"
                       />
                     </div>
@@ -608,7 +608,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                     <button
                       onClick={handleSaveSeo}
                       disabled={isSavingSeo}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-[background-color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
                     >
                       {isSavingSeo ? (
                         <>
@@ -630,7 +630,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                 <p className="text-sm text-gray-500">Drag to reorder sections:</p>
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 rounded-lg transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
                 >
                   <Plus className="w-4 h-4" />
                   Add Section
@@ -648,11 +648,12 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                     onDrop={(e) => handleDrop(e, index)}
                     onDragEnd={handleDragEnd}
                     className={cn(
-                      'flex items-center gap-2 p-3 bg-gray-50 rounded-lg transition-all',
+                      'flex items-center gap-2 p-3 bg-gray-50 rounded-lg transition-[opacity,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40',
                       draggedIndex === index && 'opacity-50',
                       dragOverIndex === index && 'ring-2 ring-orange-500 ring-offset-2',
                       !section.is_active && 'opacity-60'
                     )}
+                    tabIndex={0}
                   >
                     {/* Drag handle */}
                     <div className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600">
@@ -662,7 +663,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                     {/* Section name - clickable to edit */}
                     <button
                       onClick={() => handleSelectSection(section)}
-                      className="flex-1 text-left font-medium text-gray-900 hover:text-orange-600 transition-colors"
+                      className="flex-1 text-left font-medium text-gray-900 hover:text-orange-600 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
                     >
                       {getSectionDisplayName(section.section_type)}
                       {!section.is_active && (
@@ -674,14 +675,14 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleSelectSection(section)}
-                        className="p-1.5 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded transition-colors"
+                        className="p-1.5 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
                         title="Edit section"
                       >
                         <ChevronRight className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setDeleteConfirm(section.id)}
-                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
                         title="Delete section"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -695,7 +696,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                     <p className="mb-4">No sections yet.</p>
                     <button
                       onClick={() => setShowAddModal(true)}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 rounded-lg transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
                     >
                       <Plus className="w-4 h-4" />
                       Add Your First Section
@@ -713,7 +714,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-medium rounded-lg transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-medium rounded-lg transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
             >
               {isSaving ? (
                 <>
@@ -751,7 +752,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
                   <button
                     key={type}
                     onClick={() => handleAddSection(type)}
-                    className="p-4 text-left border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-colors"
+                    className="p-4 text-left border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-[border-color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
                   >
                     <div className="font-medium text-gray-900">{template.name}</div>
                     <div className="text-xs text-gray-500 mt-1">{type}</div>
@@ -780,13 +781,13 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
             <div className="flex gap-3">
               <button
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 active:scale-[0.98]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDeleteSection(deleteConfirm)}
-                className="flex-1 px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors"
+                className="flex-1 px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 active:scale-[0.98]"
               >
                 Delete
               </button>

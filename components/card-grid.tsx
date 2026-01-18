@@ -58,7 +58,7 @@ export function CardGrid({ items, columns = 3, className, priorityImages = 1 }: 
           {item.href && (
             <Link
               href={item.href}
-              className="absolute inset-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset"
+              className="absolute inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset transition-shadow duration-200"
               aria-label={`View ${item.title}`}
             >
               <span className="sr-only">View {item.title}</span>

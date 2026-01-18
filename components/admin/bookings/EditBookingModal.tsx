@@ -127,14 +127,20 @@ export function EditBookingModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 transition-opacity duration-300"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="button"
+      tabIndex={-1}
+      aria-hidden="true"
+    >
       <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" data-testid="edit-booking-modal">
         {/* Header */}
         <div className="sticky top-0 px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-white">
           <h3 className="text-lg font-semibold text-gray-900">Edit Booking</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 rounded-lg p-1"
             aria-label="Close modal"
           >
             <X className="h-6 w-6" />
@@ -175,7 +181,7 @@ export function EditBookingModal({
                   name="guest_name"
                   value={formData.guest_name}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                   data-testid="booking-guest-name"
                 />
               </div>
@@ -188,7 +194,7 @@ export function EditBookingModal({
                   name="guest_email"
                   value={formData.guest_email}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                   data-testid="booking-email"
                 />
               </div>
@@ -201,7 +207,7 @@ export function EditBookingModal({
                   name="guest_phone"
                   value={formData.guest_phone}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                   data-testid="booking-phone"
                 />
               </div>
@@ -215,7 +221,7 @@ export function EditBookingModal({
                   value={formData.guests}
                   onChange={handleChange}
                   min="1"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                   data-testid="booking-guests"
                 />
               </div>
@@ -234,7 +240,7 @@ export function EditBookingModal({
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow,background-color] duration-200"
                   data-testid="booking-experience-select"
                 >
                   <option value="room" data-testid="option-room">Room</option>
@@ -250,7 +256,7 @@ export function EditBookingModal({
                   name="item_name"
                   value={formData.item_name}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
               <div>
@@ -262,7 +268,7 @@ export function EditBookingModal({
                   name="check_in"
                   value={formData.check_in}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
               <div>
@@ -274,7 +280,7 @@ export function EditBookingModal({
                   name="check_out"
                   value={formData.check_out}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
             </div>
@@ -295,7 +301,7 @@ export function EditBookingModal({
                   onChange={handleChange}
                   step="0.01"
                   min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
               <div>
@@ -306,7 +312,7 @@ export function EditBookingModal({
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow,background-color] duration-200"
                   data-testid="booking-status-select"
                 >
                   <option value="pending" data-testid="status-pending">Pending</option>
@@ -323,7 +329,7 @@ export function EditBookingModal({
                   name="payment_status"
                   value={formData.payment_status}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow,background-color] duration-200"
                 >
                   <option value="pending">Pending</option>
                   <option value="paid">Paid</option>
@@ -344,7 +350,7 @@ export function EditBookingModal({
                 value={formData.special_requests || ''}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                 placeholder="Any special requests or notes..."
                 data-testid="booking-notes"
               />
@@ -358,25 +364,24 @@ export function EditBookingModal({
                 value={formData.dietary_preferences || ''}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
                 placeholder="Any dietary restrictions or preferences..."
               />
             </div>
           </div>
 
-          {/* Actions */}
           <div className="border-t pt-4 flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:scale-[0.98]"
               data-testid="update-booking"
             >
               {isLoading ? 'Saving...' : 'Save Changes'}

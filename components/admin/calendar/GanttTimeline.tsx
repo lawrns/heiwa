@@ -157,7 +157,7 @@ export function GanttTimeline({
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
         <button
           onClick={handlePrev}
-          className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-200 rounded-lg transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
           aria-label={viewType === 'quarter' ? 'Previous quarter' : 'Previous year'}
         >
           <ChevronLeft className="h-5 w-5 text-gray-600" />
@@ -165,7 +165,7 @@ export function GanttTimeline({
         <h2 className="text-lg font-semibold text-gray-900">{getHeaderTitle()}</h2>
         <button
           onClick={handleNext}
-          className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-200 rounded-lg transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
           aria-label={viewType === 'quarter' ? 'Next quarter' : 'Next year'}
         >
           <ChevronRight className="h-5 w-5 text-gray-600" />

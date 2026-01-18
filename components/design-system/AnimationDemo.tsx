@@ -82,7 +82,8 @@ export function AnimationDemo() {
             {transitions.map((t) => (
               <div key={t.name} className="text-center">
                 <div 
-                  className={`w-16 h-16 bg-heiwaOrange-500 rounded-lg mb-2 hover:bg-heiwaOrange-600 hover:scale-110 transition-all ${t.class} cursor-pointer`}
+                  className={`w-16 h-16 bg-heiwaOrange-500 rounded-lg mb-2 hover:bg-heiwaOrange-600 hover:scale-110 transition-[background-color,transform] duration-200 ${t.class} cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:ring-offset-2`}
+                  tabIndex={0}
                 />
                 <p className="text-sm font-medium text-gray-700">{t.name}</p>
                 <code className="text-xs font-mono text-gray-400">{t.duration}</code>

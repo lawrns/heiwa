@@ -71,7 +71,7 @@ export default function PageMetadataEditor({
               placeholder="Enter page description"
               maxLength={300}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             />
             <p className="text-xs text-gray-500 mt-1">
               {formData.description.length}/300 characters

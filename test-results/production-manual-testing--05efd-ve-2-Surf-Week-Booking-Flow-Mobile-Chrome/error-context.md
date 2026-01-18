@@ -1,0 +1,377 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation "Main navigation" [ref=e3]:
+    - generic [ref=e5]:
+      - link "Heiwa House" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - img "Heiwa House" [ref=e8]
+      - button "Toggle mobile menu" [ref=e10]:
+        - img [ref=e11]
+  - main [ref=e12]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - img "Surf Weeks" [ref=e16]
+        - generic [ref=e19]:
+          - heading "Surf Weeks" [level=1] [ref=e20]
+          - paragraph [ref=e21]: We strive to deliver an unforgettable surf week experience both in and out of the water. Even if surfing were taken out of the week, it would still be worth your while—amazing food, yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and the surfing? That's going to be awesome too 🙂
+      - generic [ref=e23]:
+        - heading "Your Complete Surf Week Experience" [level=2] [ref=e24]
+        - paragraph [ref=e25]: Join us for an unforgettable week of surfing, yoga, amazing food, and incredible community. Our surf weeks combine professional instruction, daily activities, and the perfect balance of adventure and relaxation.
+      - generic [ref=e28]:
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - img [ref=e32]
+            - img [ref=e34]
+            - img [ref=e36]
+            - img [ref=e38]
+            - img [ref=e40]
+          - generic [ref=e42]: 5 based on 76 reviews
+          - link "View on Google" [ref=e43] [cursor=pointer]:
+            - /url: https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9
+            - text: View on Google
+            - img [ref=e44]
+        - button "Book Your Surf Week" [ref=e48]
+      - generic [ref=e50]:
+        - generic [ref=e51]:
+          - heading "Available Surf Weeks" [level=2] [ref=e52]
+          - paragraph [ref=e53]: Choose your perfect week and start your surfing adventure
+        - generic [ref=e55]:
+          - generic [ref=e57]:
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - generic [ref=e60]: 01/02/2026 – 06/02/2026
+                - generic [ref=e61]: asdasdasd
+                - generic [ref=e62]: 12/12 spots available
+              - generic [ref=e64]: From €466
+            - generic [ref=e65]:
+              - button "Book Now" [ref=e66]
+              - paragraph [ref=e67]: You'll select your party size next
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - generic [ref=e72]: 13/06/2026 – 20/06/2026
+                - generic [ref=e73]: Surf and Yoga camp
+                - generic [ref=e74]: 6/13 spots available
+              - generic [ref=e76]: From €480
+            - generic [ref=e77]:
+              - button "Book Now" [ref=e78]
+              - paragraph [ref=e79]: You'll select your party size next
+          - generic [ref=e81]:
+            - generic [ref=e82]:
+              - generic [ref=e83]:
+                - generic [ref=e84]: 03/07/2026 – 10/07/2026
+                - generic [ref=e85]: July Surf Week 1 2026
+                - generic [ref=e86]: 2/13 spots available
+              - generic [ref=e88]: From €480
+            - generic [ref=e89]:
+              - button "Book Now" [ref=e90]
+              - paragraph [ref=e91]: You'll select your party size next
+          - generic [ref=e93]:
+            - generic [ref=e94]:
+              - generic [ref=e95]:
+                - generic [ref=e96]: 10/07/2026 – 17/07/2026
+                - generic [ref=e97]: July Surf Week 2 2026
+                - generic [ref=e98]: 9/13 spots available
+              - generic [ref=e100]: From €480
+            - generic [ref=e101]:
+              - button "Book Now" [ref=e102]
+              - paragraph [ref=e103]: You'll select your party size next
+          - generic [ref=e105]:
+            - generic [ref=e106]:
+              - generic [ref=e107]:
+                - generic [ref=e108]: 14/08/2026 – 21/08/2026
+                - generic [ref=e109]: Surf Week August
+                - generic [ref=e110]: 8/13 spots available
+              - generic [ref=e112]: From €480
+            - generic [ref=e113]:
+              - button "Book Now" [ref=e114]
+              - paragraph [ref=e115]: You'll select your party size next
+      - generic [ref=e117]:
+        - generic [ref=e118]:
+          - heading "How a Surf Week Works" [level=2] [ref=e119]
+          - paragraph [ref=e120]: Your journey from booking to catching waves
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - img "Choose a week & book 2" [ref=e124]
+            - generic [ref=e125]:
+              - generic [ref=e126]: "1"
+              - generic [ref=e127]:
+                - heading "Choose a week & book 2" [level=3] [ref=e128]
+                - paragraph [ref=e129]: Browse our upcoming surf weeks and secure your spot online 2
+          - generic [ref=e130]:
+            - img "Arrival 2" [ref=e132]
+            - generic [ref=e133]:
+              - generic [ref=e134]: "2"
+              - generic [ref=e135]:
+                - heading "Arrival 2" [level=3] [ref=e136]
+                - paragraph [ref=e137]: We pick you up and get you settled
+          - generic [ref=e138]:
+            - img "Surf" [ref=e140]
+            - generic [ref=e141]:
+              - generic [ref=e142]: "3"
+              - generic [ref=e143]:
+                - heading "Surf" [level=3] [ref=e144]
+                - paragraph [ref=e145]: Daily lessons with pro instructors
+          - generic [ref=e146]:
+            - img "Yoga" [ref=e148]
+            - generic [ref=e149]:
+              - generic [ref=e150]: "4"
+              - generic [ref=e151]:
+                - heading "Yoga" [level=3] [ref=e152]
+                - paragraph [ref=e153]: Morning sessions to balance body and mind
+          - generic [ref=e154]:
+            - img "Explore" [ref=e156]
+            - generic [ref=e157]:
+              - generic [ref=e158]: "5"
+              - generic [ref=e159]:
+                - heading "Explore" [level=3] [ref=e160]
+                - paragraph [ref=e161]: Day trips and local adventures
+          - generic [ref=e162]:
+            - img "Community" [ref=e164]
+            - generic [ref=e165]:
+              - generic [ref=e166]: "6"
+              - generic [ref=e167]:
+                - heading "Community" [level=3] [ref=e168]
+                - paragraph [ref=e169]: Shared meals and new friendships
+      - generic [ref=e171]:
+        - generic [ref=e172]:
+          - heading "Gallery test" [level=2] [ref=e173]
+          - paragraph [ref=e174]: Testy test
+        - generic [ref=e175]:
+          - generic [ref=e177]:
+            - img "Surf Week 1" [ref=e179] [cursor=pointer]
+            - img "Surf Week 2" [ref=e181] [cursor=pointer]
+            - img "Surf Week 3" [ref=e183] [cursor=pointer]
+            - img "Surf Week 4" [ref=e185] [cursor=pointer]
+            - img "Surf Week 5" [ref=e187] [cursor=pointer]
+          - generic [ref=e189]:
+            - img "Surf Week 6" [ref=e191] [cursor=pointer]
+            - img "Surf Week 7" [ref=e193] [cursor=pointer]
+            - img "Surf Week 8" [ref=e195] [cursor=pointer]
+            - img "Surf Week 9" [ref=e197] [cursor=pointer]
+            - img "Surf Week 10" [ref=e199] [cursor=pointer]
+      - generic [ref=e200]:
+        - img "Surf week experience" [ref=e202]
+        - generic [ref=e204]:
+          - generic [ref=e205]:
+            - generic [ref=e207]:
+              - heading "Included" [level=2] [ref=e208]
+              - generic [ref=e209]:
+                - generic [ref=e210]:
+                  - img [ref=e212]
+                  - generic [ref=e215]: Accommodation
+                - generic [ref=e216]:
+                  - img [ref=e218]
+                  - generic [ref=e223]:
+                    - generic [ref=e224]: Food
+                    - generic [ref=e225]: (2 meals a day)
+                - generic [ref=e226]:
+                  - img [ref=e228]
+                  - generic [ref=e230]:
+                    - generic [ref=e231]: Yoga
+                    - generic [ref=e232]: (5 lessons)
+                - generic [ref=e233]:
+                  - img [ref=e235]
+                  - generic [ref=e239]: Day trip
+                - generic [ref=e240]:
+                  - img [ref=e242]
+                  - generic [ref=e247]: Surfskate lesson
+                - generic [ref=e248]:
+                  - img [ref=e250]
+                  - generic [ref=e255]: Introductory surf lesson
+                - generic [ref=e256]:
+                  - generic [ref=e257]:
+                    - img [ref=e258]
+                    - heading "Other facilities" [level=3] [ref=e260]
+                  - generic [ref=e261]:
+                    - generic [ref=e262]:
+                      - img [ref=e263]
+                      - generic [ref=e266]: Table tennis
+                    - generic [ref=e267]:
+                      - img [ref=e268]
+                      - generic [ref=e271]: Darts
+                    - generic [ref=e272]:
+                      - img [ref=e273]
+                      - generic [ref=e276]: Table football
+                    - generic [ref=e277]:
+                      - img [ref=e278]
+                      - generic [ref=e281]: Basketball court
+                    - generic [ref=e282]:
+                      - img [ref=e283]
+                      - generic [ref=e286]: Slackline
+                    - generic [ref=e287]:
+                      - img [ref=e288]
+                      - generic [ref=e291]: Skateboards
+                    - generic [ref=e292]:
+                      - img [ref=e293]
+                      - generic [ref=e296]: Co-working space
+            - generic [ref=e298]:
+              - generic [ref=e299]: Price Starting
+              - generic [ref=e300]: From
+              - generic [ref=e301]: 450€
+              - generic [ref=e302]: All-inclusive package. Everything listed is included in your surf week experience.
+              - paragraph [ref=e304]: "Note: Surf lessons are not included - see add-ons"
+            - generic [ref=e306]:
+              - heading "Popular Addons" [level=2] [ref=e307]
+              - generic [ref=e308]:
+                - generic [ref=e309]:
+                  - generic [ref=e310]:
+                    - generic [ref=e311]: sdlfkjsdf
+                    - generic [ref=e312]: dsfsdfsdf
+                  - generic [ref=e314]: €22020202
+                - generic [ref=e315]:
+                  - generic [ref=e316]:
+                    - generic [ref=e317]: Test Add-on Updated
+                    - generic [ref=e318]: Test description
+                  - generic [ref=e320]: €50
+                - generic [ref=e321]:
+                  - generic [ref=e322]:
+                    - generic [ref=e323]: Testing a new add-on
+                    - generic [ref=e324]: Testing a new add-on
+                  - generic [ref=e326]: €1
+                - generic [ref=e327]:
+                  - generic [ref=e328]:
+                    - generic [ref=e329]: Edijs's addon
+                    - generic [ref=e330]: Edijs Edijs Edijs
+                  - generic [ref=e332]: €100
+          - button "Book Your Surf Week" [ref=e334]
+      - generic [ref=e336]:
+        - heading "What Our Customers Say" [level=2] [ref=e337]
+        - generic [ref=e338]:
+          - generic [ref=e341]:
+            - generic [ref=e342]:
+              - img [ref=e343]
+              - img [ref=e345]
+              - img [ref=e347]
+              - img [ref=e349]
+              - img [ref=e351]
+            - generic [ref=e353]:
+              - generic [ref=e354]: "5"
+              - generic [ref=e355]: (76 reviews)
+          - generic [ref=e356]:
+            - generic [ref=e357]:
+              - generic [ref=e358]:
+                - img "Gemful" [ref=e359]
+                - generic [ref=e360]:
+                  - paragraph [ref=e361]: Gemful
+                  - paragraph [ref=e362]: a month ago
+              - generic [ref=e363]:
+                - img [ref=e364]
+                - img [ref=e366]
+                - img [ref=e368]
+                - img [ref=e370]
+                - img [ref=e372]
+              - paragraph [ref=e374]: Had an amazing, comfortable and friendly stay! Janis and his crew are fantastic. The beds are so comfy, the amenities are seriously high end and endless. I wish I stayed longer and would love to come back for a surf camp!! I was cycling through the area and stayed for one night, Sunday which happens to be Sauna night - very worth it! There was a secure place for me to store my roadbike which is very appreciated too :)
+              - link "Read more" [ref=e375] [cursor=pointer]:
+                - /url: https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9
+            - generic [ref=e376]:
+              - generic [ref=e377]:
+                - img "Miks Ducis" [ref=e378]
+                - generic [ref=e379]:
+                  - paragraph [ref=e380]: Miks Ducis
+                  - paragraph [ref=e381]: 2 months ago
+              - generic [ref=e382]:
+                - img [ref=e383]
+                - img [ref=e385]
+                - img [ref=e387]
+                - img [ref=e389]
+                - img [ref=e391]
+              - paragraph [ref=e393]: Heiwa House Surf Camp in Portugal is a hidden gem where surf meets soul. With welcoming vibes, expert instructors, and cozy rooms, every wave rides with joy. Evenings feel like a family reunion, making it the perfect place to learn, relax, and make lifelong friends.
+              - link "Read more" [ref=e394] [cursor=pointer]:
+                - /url: https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9
+            - generic [ref=e395]:
+              - generic [ref=e396]:
+                - img "Anna Matule" [ref=e397]
+                - generic [ref=e398]:
+                  - paragraph [ref=e399]: Anna Matule
+                  - paragraph [ref=e400]: 3 months ago
+              - generic [ref=e401]:
+                - img [ref=e402]
+                - img [ref=e404]
+                - img [ref=e406]
+                - img [ref=e408]
+                - img [ref=e410]
+              - paragraph [ref=e412]: An amazing place to relax, get inspired and do fun activities. Will definitely recommend this place to others. The hosts are most inspiring and lovely people who somehow just seem to naturally bring amazing people together and build a great community ❤️
+              - link "Read more" [ref=e413] [cursor=pointer]:
+                - /url: https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9
+            - generic [ref=e414]:
+              - generic [ref=e415]:
+                - img "Ingūna Sprukule" [ref=e416]
+                - generic [ref=e417]:
+                  - paragraph [ref=e418]: Ingūna Sprukule
+                  - paragraph [ref=e419]: 7 months ago
+              - generic [ref=e420]:
+                - img [ref=e421]
+                - img [ref=e423]
+                - img [ref=e425]
+                - img [ref=e427]
+                - img [ref=e429]
+              - paragraph [ref=e431]: "This place is pure magic. From the moment you arrive, you feel taken care of — the staff is incredibly kind and attentive. The rooms and common areas are spotless and thoughtfully maintained, creating a calm and cozy atmosphere. Every day is filled with fun and freedom: you can surf, skate, play games, soak up the sun, or just chill and enjoy the moment. It’s more than just a camp — it’s a place to reconnect with yourself, meet great people, and get a fresh start. 🌊🌴☀️"
+              - link "Read more" [ref=e432] [cursor=pointer]:
+                - /url: https://maps.app.goo.gl/Vy9kZ3K7NcvcyTdB9
+      - generic [ref=e434]:
+        - heading "Frequently Asked Questions" [level=2] [ref=e435]
+        - generic [ref=e437]:
+          - heading "How much does Surf Week cost?" [level=3] [ref=e439]:
+            - button "How much does Surf Week cost?" [ref=e440]:
+              - text: How much does Surf Week cost?
+              - img [ref=e441]
+          - heading "Do I have to know how to surf or skateboard?" [level=3] [ref=e444]:
+            - button "Do I have to know how to surf or skateboard?" [ref=e445]:
+              - text: Do I have to know how to surf or skateboard?
+              - img [ref=e446]
+          - heading "How does a typical day during Surf Week look?" [level=3] [ref=e449]:
+            - button "How does a typical day during Surf Week look?" [ref=e450]:
+              - text: How does a typical day during Surf Week look?
+              - img [ref=e451]
+          - heading "How many people are in Surf Week groups?" [level=3] [ref=e454]:
+            - button "How many people are in Surf Week groups?" [ref=e455]:
+              - text: How many people are in Surf Week groups?
+              - img [ref=e456]
+          - heading "What is the age of people who sign up?" [level=3] [ref=e459]:
+            - button "What is the age of people who sign up?" [ref=e460]:
+              - text: What is the age of people who sign up?
+              - img [ref=e461]
+  - contentinfo [ref=e463]:
+    - generic [ref=e465]:
+      - generic [ref=e466]:
+        - heading "Find us here" [level=3] [ref=e467]
+        - iframe [ref=e469]
+      - generic [ref=e470]:
+        - heading "General" [level=3] [ref=e471]
+        - list [ref=e472]:
+          - listitem [ref=e473]:
+            - link "HOME" [ref=e474] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e475]:
+            - link "ROOM RENTALS" [ref=e476] [cursor=pointer]:
+              - /url: /rooms
+          - listitem [ref=e477]:
+            - link "SURF CAMP" [ref=e478] [cursor=pointer]:
+              - /url: /surf-weeks
+          - listitem [ref=e479]:
+            - link "Blog" [ref=e480] [cursor=pointer]:
+              - /url: /blog
+      - generic [ref=e481]:
+        - heading "Connect" [level=3] [ref=e482]
+        - link "Instagram" [ref=e483] [cursor=pointer]:
+          - /url: https://www.instagram.com/heiwahouse_portugal
+          - img [ref=e484]
+          - generic [ref=e487]: Instagram
+      - generic [ref=e488]:
+        - heading "About Us" [level=3] [ref=e489]
+        - generic [ref=e490]:
+          - paragraph [ref=e491]:
+            - link "E. info@heiwahouse.com" [ref=e492] [cursor=pointer]:
+              - /url: mailto:info@heiwahouse.com
+          - paragraph [ref=e493]:
+            - link "T. +351 912 193 785" [ref=e494] [cursor=pointer]:
+              - /url: tel:+351912193785
+  - button "Contact us on WhatsApp" [ref=e495]:
+    - img [ref=e496]
+  - alert [ref=e499]
+```

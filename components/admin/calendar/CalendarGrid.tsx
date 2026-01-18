@@ -96,7 +96,7 @@ export function CalendarGrid({
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
         <button
           onClick={handlePrevMonth}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
           aria-label="Previous month"
         >
           <ChevronLeft className="h-5 w-5 text-gray-600" />
@@ -106,7 +106,7 @@ export function CalendarGrid({
         </h2>
         <button
           onClick={handleNextMonth}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
           aria-label="Next month"
         >
           <ChevronRight className="h-5 w-5 text-gray-600" />
@@ -138,11 +138,20 @@ export function CalendarGrid({
               key={index}
               onClick={() => onDateSelect(date)}
               className={cn(
-                'min-h-[120px] sm:min-h-[140px] p-2 border-b border-r border-gray-100 cursor-pointer transition-colors min-w-0',
+                'min-h-[120px] sm:min-h-[140px] p-2 border-b border-r border-gray-100 cursor-pointer transition-[background-color,ring] duration-200 min-w-0 focus-visible:outline-none focus-visible:bg-gray-50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500',
                 'hover:bg-gray-50',
                 !isCurrentMonth(date) && 'bg-gray-50/50',
                 isSelected(date) && 'bg-blue-50 ring-2 ring-inset ring-blue-500'
               )}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  onDateSelect(date)
+                }
+              }}
+              role="button"
+              aria-label={`Select ${date.toDateString()}${dayEvents.length > 0 ? `, ${dayEvents.length} events` : ''}`}
             >
               {/* Date number */}
               <div className="flex items-center justify-between mb-1">
@@ -176,7 +185,7 @@ export function CalendarGrid({
                       e.stopPropagation()
                       onDateSelect(date)
                     }}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-medium px-1.5 py-0.5"
+                    className="text-xs text-blue-600 hover:text-blue-800 font-medium px-1.5 py-0.5 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline rounded"
                   >
                     +{hiddenCount} more
                   </button>

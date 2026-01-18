@@ -212,10 +212,10 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Activities
+          Back to Experiences
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900">Edit Activity</h1>
-        <p className="text-gray-600 mt-2">Update activity details for Heiwa House experiences</p>
+        <h1 className="text-3xl font-bold text-gray-900">Edit Experience</h1>
+        <p className="text-gray-600 mt-2">Update experience details for Heiwa House</p>
       </div>
 
       {error && (
@@ -225,35 +225,37 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg">
+      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg overflow-hidden">
         <div className="p-6 space-y-6">
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Activity Title *
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                Experience Title *
               </label>
               <input
+                id="title"
                 type="text"
                 required
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="e.g., Surfing Lessons"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="display_order" className="block text-sm font-medium text-gray-700 mb-2">
                 Display Order
               </label>
               <input
+                id="display_order"
                 type="number"
                 min="0"
                 value={formData.display_order}
                 onChange={(e) => handleInputChange('display_order', parseInt(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="0"
               />
@@ -265,14 +267,15 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
               Description
             </label>
             <textarea
+              id="description"
               rows={3}
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow]"
               style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
               placeholder="Describe what this activity involves..."
             />
@@ -281,14 +284,15 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
           {/* Category and Icon */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
                 Category *
               </label>
               <select
+                id="category"
                 required
                 value={formData.category}
                 onChange={(e) => handleInputChange('category', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
               >
                 {categoryOptions.map(option => (
@@ -300,13 +304,14 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="icon" className="block text-sm font-medium text-gray-700 mb-2">
                 Icon
               </label>
               <select
+                id="icon"
                 value={formData.icon}
                 onChange={(e) => handleInputChange('icon', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
               >
                 {iconOptions.map(option => (
@@ -320,31 +325,31 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
 
           {/* Availability Tier */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <span className="block text-sm font-medium text-gray-700 mb-2">
               Availability Tier *
-            </label>
+            </span>
             <div className="flex items-center gap-6">
-              <label className="flex items-center">
+              <label className="flex items-center cursor-pointer">
                 <input
                   type="radio"
                   name="availability_tier"
                   value="always"
                   checked={formData.availability_tier === 'always'}
                   onChange={(e) => handleInputChange('availability_tier', e.target.value)}
-                  className="mr-2"
+                  className="mr-2 h-4 w-4 text-accent focus:ring-accent border-gray-300"
                 />
                 <span className="text-sm">
                   <strong>Always Available</strong> - Included in standard packages
                 </span>
               </label>
-              <label className="flex items-center">
+              <label className="flex items-center cursor-pointer">
                 <input
                   type="radio"
                   name="availability_tier"
                   value="on-request"
                   checked={formData.availability_tier === 'on-request'}
                   onChange={(e) => handleInputChange('availability_tier', e.target.value)}
-                  className="mr-2"
+                  className="mr-2 h-4 w-4 text-accent focus:ring-accent border-gray-300"
                 />
                 <span className="text-sm">
                   <strong>On Request</strong> - Requires confirmation/booking
@@ -356,28 +361,30 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
           {/* Images */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Activity Image URL
+              <label htmlFor="image_url" className="block text-sm font-medium text-gray-700 mb-2">
+                Experience Image URL
               </label>
               <input
+                id="image_url"
                 type="url"
                 value={formData.image_url}
                 onChange={(e) => handleInputChange('image_url', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="https://heiwahouse.com/image.jpg"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="hero_video_url" className="block text-sm font-medium text-gray-700 mb-2">
                 Hero Video URL (optional)
               </label>
               <input
+                id="hero_video_url"
                 type="url"
                 value={formData.hero_video_url}
                 onChange={(e) => handleInputChange('hero_video_url', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="https://heiwahouse.com/video.mp4"
               />
@@ -386,23 +393,24 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
 
           {/* Features */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="feature_input" className="block text-sm font-medium text-gray-700 mb-2">
               Features (optional)
             </label>
             <div className="flex gap-2 mb-3">
               <input
+                id="feature_input"
                 type="text"
                 value={featureInput}
                 onChange={(e) => setFeatureInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="Add a feature..."
               />
               <button
                 type="button"
                 onClick={addFeature}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
               >
                 Add
               </button>
@@ -418,7 +426,8 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
                     <button
                       type="button"
                       onClick={() => removeFeature(index)}
-                      className="text-gray-500 hover:text-red-600"
+                      className="text-gray-500 hover:text-red-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-500 rounded-full px-1"
+                      aria-label={`Remove ${feature}`}
                     >
                       ×
                     </button>
@@ -430,15 +439,15 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
 
           {/* Active Status */}
           <div>
-            <label className="flex items-center">
+            <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={formData.active}
                 onChange={(e) => handleInputChange('active', e.target.checked)}
-                className="mr-2"
+                className="mr-2 h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
               />
               <span className="text-sm font-medium text-gray-700">
-                Activity is active and visible to customers
+                Experience is active and visible to customers
               </span>
             </label>
           </div>
@@ -448,18 +457,18 @@ export default function EditActivityClient({ id }: EditActivityClientProps) {
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
           <Link
             href="/admin/activities"
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 shadow-sm"
             style={{ backgroundColor: '#ec681c' }}
           >
             <Save className="w-4 h-4" />
-            {loading ? 'Updating...' : 'Update Activity'}
+            {loading ? 'Updating...' : 'Update Experience'}
           </button>
         </div>
       </form>

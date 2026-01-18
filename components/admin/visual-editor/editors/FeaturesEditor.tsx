@@ -66,7 +66,7 @@ export function FeaturesEditor({ content, onChange, onSave, saving }: FeaturesEd
           type="text"
           value={featuresContent.title || ''}
           onChange={(e) => handleChange('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="e.g., Why Choose Us"
         />
       </div>
@@ -79,7 +79,7 @@ export function FeaturesEditor({ content, onChange, onSave, saving }: FeaturesEd
           value={featuresContent.description || ''}
           onChange={(e) => handleChange('description', e.target.value)}
           rows={2}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Brief description for this section..."
         />
       </div>
@@ -92,7 +92,7 @@ export function FeaturesEditor({ content, onChange, onSave, saving }: FeaturesEd
           <button
             type="button"
             onClick={addItem}
-            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700"
+            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
           >
             <Plus className="w-4 h-4" />
             Add Feature
@@ -104,13 +104,13 @@ export function FeaturesEditor({ content, onChange, onSave, saving }: FeaturesEd
             <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
               <div className="flex items-start gap-2 mb-3">
                 <div className="flex flex-col gap-1 mt-2">
-                  <button
-                    type="button"
-                    onClick={() => moveItem(index, 'up')}
-                    disabled={index === 0}
-                    className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
-                    title="Move up"
-                  >
+                    <button
+                      type="button"
+                      onClick={() => moveItem(index, 'up')}
+                      disabled={index === 0}
+                      className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 transition-[color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded"
+                      title="Move up"
+                    >
                     <GripVertical className="w-4 h-4" />
                   </button>
                 </div>
@@ -124,7 +124,7 @@ export function FeaturesEditor({ content, onChange, onSave, saving }: FeaturesEd
                         type="text"
                         value={item.title}
                         onChange={(e) => updateItem(index, 'title', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                         placeholder="e.g., Expert Instructors"
                       />
                     </div>
@@ -136,7 +136,7 @@ export function FeaturesEditor({ content, onChange, onSave, saving }: FeaturesEd
                         type="text"
                         value={item.icon || ''}
                         onChange={(e) => updateItem(index, 'icon', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                         placeholder="e.g., star, heart, check"
                       />
                     </div>
@@ -149,7 +149,7 @@ export function FeaturesEditor({ content, onChange, onSave, saving }: FeaturesEd
                       value={item.description}
                       onChange={(e) => updateItem(index, 'description', e.target.value)}
                       rows={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                       placeholder="Describe this feature..."
                     />
                   </div>
@@ -157,7 +157,7 @@ export function FeaturesEditor({ content, onChange, onSave, saving }: FeaturesEd
                 <button
                   type="button"
                   onClick={() => removeItem(index)}
-                  className="p-2 text-gray-400 hover:text-red-600"
+                  className="p-2 text-gray-400 hover:text-red-600 transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 rounded-lg"
                   title="Remove feature"
                 >
                   <X className="w-4 h-4" />
@@ -177,7 +177,7 @@ export function FeaturesEditor({ content, onChange, onSave, saving }: FeaturesEd
         <button
           onClick={onSave}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 transition-[background-color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 shadow-sm"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Changes

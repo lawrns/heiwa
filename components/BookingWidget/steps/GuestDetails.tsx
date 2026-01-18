@@ -255,10 +255,10 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
       {/* Collapsed Summary Card */}
       {isCollapsed && allCompleted && (
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200 transition-all duration-300">
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200 transition-[background-color,border-color] duration-300">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-green-500 to-emerald-600 rounded-full flex items-center justify-center">
                 <User size={20} className="text-white" />
               </div>
               <div>
@@ -291,7 +291,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
 
       {/* Guest Forms - Show when not collapsed */}
       {!isCollapsed && (
-        <div className="space-y-6 transition-all duration-300">
+        <div className="space-y-6 transition-[background-color] duration-300">
           {guestForms.map((guestForm, index) => {
             const isSaved = savedGuests.has(index);
             const showSuccess = showSuccessMessage === index;
@@ -300,7 +300,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             <div 
               key={`guest-${index}`} 
               id={`guest-form-${index}`}
-              className={`bg-gray-50 rounded-[10px] p-6 border transition-all duration-300 ${
+              className={`bg-gray-50 rounded-[10px] p-6 border transition-[border-color,background-color,box-shadow] duration-300 ${
                 isSaved 
                   ? 'border-green-500 bg-green-50/30' 
                   : showSuccessMessage === index + 1 || (index === 0 && showSuccessMessage === null && savedGuests.has(1))
@@ -310,7 +310,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
             >
             {/* Guest Header - TOON-compliant icon-text gap (8px) */}
             <div className="flex items-center gap-2 mb-4">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm transition-all duration-300 ${
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-sm transition-[background-color] duration-300 ${
                 isSaved 
                   ? 'bg-gradient-to-br from-green-500 to-green-600' 
                   : 'bg-gradient-to-br from-accent to-accent-dark'
@@ -431,7 +431,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 value={guestForm.dietaryRequirements}
                 onChange={(e) => handleInputChange(index, 'dietaryRequirements', e.target.value)}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
+                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 focus-visible:border-accent transition-[border-color,box-shadow,background-color] duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
                 placeholder="Any dietary restrictions or preferences?"
               />
             </div>
@@ -446,7 +446,7 @@ export function GuestDetails({ state, actions }: GuestDetailsProps) {
                 value={guestForm.specialRequests}
                 onChange={(e) => handleInputChange(index, 'specialRequests', e.target.value)}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
+                className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 focus-visible:border-accent transition-[border-color,box-shadow,background-color] duration-300 motion-reduce:transition-none resize-none text-[14px] placeholder:text-gray-400"
                 placeholder="Any special requests or notes?"
               />
             </div>

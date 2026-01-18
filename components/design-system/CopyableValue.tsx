@@ -24,8 +24,8 @@ export function CopyableValue({ value, displayValue, className }: CopyableValueP
       onClick={handleCopy}
       className={cn(
         "inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-mono",
-        "bg-gray-100 hover:bg-gray-200 transition-colors",
-        "group cursor-pointer",
+        "bg-gray-100 hover:bg-gray-200 transition-[background-color] duration-200",
+        "group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500",
         className
       )}
       title={`Click to copy: ${value}`}

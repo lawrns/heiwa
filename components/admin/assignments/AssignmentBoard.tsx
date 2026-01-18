@@ -68,9 +68,10 @@ const DraggableParticipant: React.FC<DraggableParticipantProps> = memo(({ partic
   return (
     <div
       ref={drag as unknown as React.Ref<HTMLDivElement>}
-      className={`p-3 bg-white border rounded-lg cursor-move transition-all ${
+      className={`p-3 bg-white border rounded-lg cursor-move transition-[opacity,box-shadow,transform] duration-200 ${
         isDragging ? 'opacity-50 shadow-lg' : 'hover:shadow-md'
-      }`}
+      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2`}
+      tabIndex={0}
       style={{
         opacity: isDragging ? 0.5 : 1,
       }}
@@ -126,13 +127,14 @@ const DroppableRoom: React.FC<DroppableRoomProps> = memo(({
       ref={drop as unknown as React.Ref<HTMLDivElement>}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`border-2 border-dashed rounded-lg p-4 min-h-[200px] transition-all ${
+      className={`border-2 border-dashed rounded-lg p-4 min-h-[200px] transition-[border-color,background-color,transform,opacity] duration-200 ${
         isOver
           ? 'border-orange-400 bg-orange-50'
           : isFull
             ? 'border-red-300 bg-red-50'
             : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
-      }`}
+      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2`}
+      tabIndex={0}
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
@@ -158,7 +160,7 @@ const DroppableRoom: React.FC<DroppableRoomProps> = memo(({
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
-            className={`h-2 rounded-full transition-all duration-300 ${
+            className={`h-2 rounded-full transition-[width,background-color] duration-300 ${
               isOverCapacity ? 'bg-red-500' : 'bg-green-500'
             }`}
             style={{ width: `${Math.min(occupancyRate, 100)}%` }}

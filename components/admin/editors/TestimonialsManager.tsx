@@ -240,7 +240,7 @@ export function TestimonialsManager() {
           testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className={`bg-white rounded-lg shadow p-6 border-2 transition-all ${
+              className={`bg-white rounded-lg shadow p-6 border-2 transition-[border-color,opacity,box-shadow,transform] duration-200 ${
                 testimonial.is_featured ? 'border-yellow-200' : 'border-gray-200'
               }`}
             >
@@ -299,7 +299,7 @@ export function TestimonialsManager() {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => handleToggleFeatured(testimonial)}
-                    className={`p-2 rounded-lg transition-colors ${
+                    className={`p-2 rounded-lg transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500/40 focus-visible:ring-offset-2 ${
                       testimonial.is_featured 
                         ? 'text-yellow-600 hover:bg-yellow-50' 
                         : 'text-gray-400 hover:bg-gray-50'
@@ -311,7 +311,7 @@ export function TestimonialsManager() {
                   
                   <button
                     onClick={() => handleEditTestimonial(testimonial)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2"
                     title="Edit testimonial"
                   >
                     <Edit className="h-4 w-4" />
@@ -319,7 +319,7 @@ export function TestimonialsManager() {
                   
                   <button
                     onClick={() => handleDeleteTestimonial(testimonial.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 focus-visible:ring-offset-2"
                     title="Delete testimonial"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -435,7 +435,7 @@ function TestimonialEditorModal({ testimonial, onClose, onSave }: TestimonialEdi
             type="text"
             value={formData.guest_name}
             onChange={(e) => setFormData({ ...formData, guest_name: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             placeholder="John Doe"
             required
           />
@@ -449,7 +449,7 @@ function TestimonialEditorModal({ testimonial, onClose, onSave }: TestimonialEdi
             type="email"
             value={formData.guest_email}
             onChange={(e) => setFormData({ ...formData, guest_email: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             placeholder="john@example.com"
           />
         </div>
@@ -464,7 +464,8 @@ function TestimonialEditorModal({ testimonial, onClose, onSave }: TestimonialEdi
                 key={rating}
                 type="button"
                 onClick={() => setFormData({ ...formData, rating })}
-                className="p-1"
+                className="p-1 transition-transform hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2 rounded-full"
+                aria-label={`Rate ${rating} stars`}
               >
                 <Star
                   className={`h-6 w-6 ${
@@ -489,7 +490,7 @@ function TestimonialEditorModal({ testimonial, onClose, onSave }: TestimonialEdi
             value={formData.text}
             onChange={(e) => setFormData({ ...formData, text: e.target.value })}
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             placeholder="What did the guest say about their experience?"
             required
           />
@@ -503,7 +504,7 @@ function TestimonialEditorModal({ testimonial, onClose, onSave }: TestimonialEdi
             type="url"
             value={formData.guest_image_url}
             onChange={(e) => setFormData({ ...formData, guest_image_url: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             placeholder="https://example.com/image.jpg"
           />
         </div>
@@ -514,9 +515,9 @@ function TestimonialEditorModal({ testimonial, onClose, onSave }: TestimonialEdi
             id="is_featured"
             checked={formData.is_featured}
             onChange={(e) => setFormData({ ...formData, is_featured: e.target.checked })}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            className="h-4 w-4 text-blue-600 focus-visible:ring-blue-500 border-gray-300 rounded transition-[background-color,border-color,box-shadow] duration-200"
           />
-          <label htmlFor="is_featured" className="ml-2 block text-sm text-gray-900">
+          <label htmlFor="is_featured" className="ml-2 block text-sm text-gray-900 cursor-pointer">
             Feature this testimonial
           </label>
         </div>

@@ -30,7 +30,7 @@ export function ReviewCard({ review, className = '' }: ReviewCardProps) {
   }
 
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 p-3 sm:p-4 shadow-sm hover:shadow-md transition-all duration-300 touch-manipulation ${className}`}>
+    <div className={`bg-white rounded-lg border border-gray-200 p-3 sm:p-4 shadow-sm hover:shadow-md transition-[box-shadow] duration-300 touch-manipulation ${className}`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-2 sm:mb-3">
         <div className="flex items-center space-x-2">
@@ -107,7 +107,7 @@ export function GoogleReviews({ reviews, rating, reviewCount, onReviewUs }: Goog
         </div>
         <button
           onClick={onReviewUs}
-          className="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-semibold rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 min-h-[44px] self-start sm:self-auto"
+          className="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-semibold rounded-lg transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 min-h-[44px] self-start sm:self-auto"
         >
           Review us on Google
         </button>

@@ -216,7 +216,7 @@ export function FAQManager() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search questions and answers..."
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
               />
             </div>
           </div>
@@ -225,7 +225,7 @@ export function FAQManager() {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             >
               <option value="all">All Categories</option>
               {CATEGORIES.map(cat => (
@@ -273,7 +273,7 @@ export function FAQManager() {
           faqItems.map(faq => (
             <div
               key={faq.id}
-              className={`bg-white rounded-lg shadow p-6 border-2 transition-all ${
+              className={`bg-white rounded-lg shadow p-6 border-2 transition-[border-color,opacity] duration-200 ${
                 faq.is_active ? 'border-gray-200' : 'border-gray-100 opacity-75'
               }`}
             >
@@ -314,7 +314,7 @@ export function FAQManager() {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => handleToggleActive(faq)}
-                    className={`p-2 rounded-lg transition-colors ${
+            className={`p-2 rounded-lg transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/40 focus-visible:ring-offset-2 ${
                       faq.is_active 
                         ? 'text-green-600 hover:bg-green-50' 
                         : 'text-gray-400 hover:bg-gray-50'
@@ -326,7 +326,7 @@ export function FAQManager() {
                   
                   <button
                     onClick={() => handleEditFAQ(faq)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2"
                     title="Edit FAQ"
                   >
                     <Edit className="h-4 w-4" />
@@ -334,7 +334,7 @@ export function FAQManager() {
                   
                   <button
                     onClick={() => handleDeleteFAQ(faq.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 focus-visible:ring-offset-2"
                     title="Delete FAQ"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -450,7 +450,7 @@ function FAQEditorModal({ faq, onClose, onSave }: FAQEditorModalProps) {
             type="text"
             value={formData.question}
             onChange={(e) => setFormData({ ...formData, question: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             placeholder="What is your question?"
             required
           />
@@ -464,7 +464,7 @@ function FAQEditorModal({ faq, onClose, onSave }: FAQEditorModalProps) {
             value={formData.answer}
             onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             placeholder="Provide a detailed answer..."
             required
           />
@@ -478,7 +478,7 @@ function FAQEditorModal({ faq, onClose, onSave }: FAQEditorModalProps) {
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             >
               {CATEGORIES.map(cat => (
                 <option key={cat.value} value={cat.value}>
@@ -495,7 +495,7 @@ function FAQEditorModal({ faq, onClose, onSave }: FAQEditorModalProps) {
             <select
               value={formData.page_slug}
               onChange={(e) => setFormData({ ...formData, page_slug: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             >
               {PAGE_SLUGS.map(slug => (
                 <option key={slug.value} value={slug.value}>
@@ -514,7 +514,7 @@ function FAQEditorModal({ faq, onClose, onSave }: FAQEditorModalProps) {
             type="number"
             value={formData.order_index}
             onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             min="0"
           />
         </div>
@@ -525,7 +525,7 @@ function FAQEditorModal({ faq, onClose, onSave }: FAQEditorModalProps) {
             id="is_active"
             checked={formData.is_active}
             onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            className="h-4 w-4 text-blue-600 focus-visible:ring-blue-500 border-gray-300 rounded transition-[background-color,border-color,box-shadow] duration-200"
           />
           <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">
             FAQ item is active

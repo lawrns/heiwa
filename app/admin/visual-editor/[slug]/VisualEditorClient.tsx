@@ -22,8 +22,7 @@ import { PageSection, SECTION_TYPE_LABELS, SECTION_TYPES, DEFAULT_SECTION_CONTEN
 // Section editors
 import { HeroEditor } from '@/components/admin/visual-editor/editors/HeroEditor'
 import { IntroEditor } from '@/components/admin/visual-editor/editors/IntroEditor'
-import { ActivityHighlightEditor } from '@/components/admin/visual-editor/editors/ActivityHighlightEditor'
-import { ActivityGridEditor } from '@/components/admin/visual-editor/editors/ActivityGridEditor'
+import { ExperienceHighlightEditor, ExperienceGridEditor } from '@/components/admin/visual-editor/editors'
 import { FAQEditor } from '@/components/admin/visual-editor/editors/FAQEditor'
 import { CTAEditor } from '@/components/admin/visual-editor/editors/CTAEditor'
 import { FeaturesEditor } from '@/components/admin/visual-editor/editors/FeaturesEditor'
@@ -210,9 +209,9 @@ export default function VisualEditorClient({ slug }: VisualEditorClientProps) {
       case 'intro':
         return <IntroEditor {...commonProps} />
       case 'activity_highlight':
-        return <ActivityHighlightEditor {...commonProps} />
+        return <ExperienceHighlightEditor {...commonProps} />
       case 'activity_grid':
-        return <ActivityGridEditor {...commonProps} />
+        return <ExperienceGridEditor {...commonProps} />
       case 'faq':
         return <FAQEditor {...commonProps} />
       case 'cta':

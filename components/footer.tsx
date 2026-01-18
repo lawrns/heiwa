@@ -80,7 +80,7 @@ export function Footer() {
                 <li key={item.path}>
                   <Link
                     href={item.path}
-                    className="text-gray-300 hover:text-accent transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                    className="text-gray-300 hover:text-accent transition-[color] duration-200 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
                   >
                     {item.name}
                   </Link>
@@ -104,7 +104,7 @@ export function Footer() {
               href={instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-gray-300 hover:text-accent transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+              className="inline-flex items-center gap-2 text-gray-300 hover:text-accent transition-[color] duration-200 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
             >
               <Instagram className="w-5 h-5" />
               <span>Instagram</span>
@@ -129,7 +129,7 @@ export function Footer() {
                   <p>
                     <a
                       href={`mailto:${email}`}
-                      className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                      className="hover:text-accent transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
                     >
                       E. {email}
                     </a>
@@ -137,7 +137,7 @@ export function Footer() {
                   <p>
                     <a
                       href={`tel:${phone.replace(/\s/g, '')}`}
-                      className="hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                      className="hover:text-accent transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
                     >
                       T. {phone}
                     </a>

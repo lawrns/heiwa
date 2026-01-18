@@ -135,15 +135,15 @@ export default function ActivitiesPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Activities</h1>
-          <p className="text-gray-600 mt-2">Manage activities for Play, Flow, and Surf experiences</p>
+          <h1 className="text-3xl font-bold text-gray-900">Experiences</h1>
+          <p className="text-gray-600 mt-2">Manage experiences for Play, Flow, and Surf categories</p>
         </div>
         <Link
           href="/admin/activities/new"
-          className="inline-flex items-center gap-2 bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          className="inline-flex items-center gap-2 bg-heiwaOrange-600 hover:bg-heiwaOrange-700 text-white px-4 py-2 rounded-lg font-medium transition-[background-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:ring-offset-2"
         >
           <Plus className="w-4 h-4" />
-          Add Activity
+          Add Experience
         </Link>
       </div>
 
@@ -155,24 +155,24 @@ export default function ActivitiesPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search activities by name..."
+                placeholder="Search experiences by name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-heiwaOrange-500 transition-[border-color,box-shadow] duration-200"
               />
             </div>
           </div>
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-heiwaOrange-500 transition-[border-color,box-shadow] duration-200"
           >
             <option value="all">All Categories</option>
             <option value="play">Play</option>
             <option value="flow">Flow</option>
             <option value="surf">Surf</option>
           </select>
-          <button className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400">
             <Download className="h-4 w-4" />
             Export
           </button>
@@ -189,7 +189,7 @@ export default function ActivitiesPage() {
                   Order
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Activity
+                  Experience
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Category
@@ -250,10 +250,10 @@ export default function ActivitiesPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => toggleActivityStatus(activity.id, activity.active)}
-                        className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full ${
+                        className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-full transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                           activity.active 
-                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                            : 'bg-red-100 text-red-800 hover:bg-red-200'
+                            ? 'bg-green-100 text-green-800 hover:bg-green-200 focus-visible:ring-green-500'
+                            : 'bg-red-100 text-red-800 hover:bg-red-200 focus-visible:ring-red-500'
                         }`}
                       >
                         {activity.active ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
@@ -264,13 +264,15 @@ export default function ActivitiesPage() {
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/admin/activities/${activity.id}`}
-                          className="text-heiwaOrange-600 hover:text-heiwaOrange-700"
+                          className="text-heiwaOrange-600 hover:text-heiwaOrange-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:ring-offset-2 rounded"
+                          aria-label={`Edit ${activity.title}`}
                         >
                           <Edit className="w-4 h-4" />
                         </Link>
                         <button
                           onClick={() => deleteActivity(activity.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-red-600 hover:text-red-900 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 rounded"
+                          aria-label={`Delete ${activity.title}`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -286,7 +288,7 @@ export default function ActivitiesPage() {
         {filteredActivities.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500">
-              {searchTerm || categoryFilter !== 'all' ? 'No activities match your search or filters.' : 'No activities found'}
+              {searchTerm || categoryFilter !== 'all' ? 'No experiences match your search or filters.' : 'No experiences found'}
             </p>
             {!searchTerm && categoryFilter === 'all' && (
               <Link
@@ -294,7 +296,7 @@ export default function ActivitiesPage() {
                 className="inline-flex items-center gap-2 mt-4 text-heiwaOrange-600 hover:text-heiwaOrange-700 font-medium"
               >
                 <Plus className="w-4 h-4" />
-                Add your first activity
+                Add your first experience
               </Link>
             )}
           </div>

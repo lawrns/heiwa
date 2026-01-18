@@ -52,7 +52,7 @@ export function GalleryEditor({ content, onChange }: GalleryEditorProps) {
           type="text"
           value={data.title || ''}
           onChange={(e) => updateField('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Gallery title"
         />
       </div>
@@ -63,7 +63,7 @@ export function GalleryEditor({ content, onChange }: GalleryEditorProps) {
           value={data.description || ''}
           onChange={(e) => updateField('description', e.target.value)}
           rows={2}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Optional description..."
         />
       </div>
@@ -74,7 +74,7 @@ export function GalleryEditor({ content, onChange }: GalleryEditorProps) {
           <button
             type="button"
             onClick={addImage}
-            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700"
+            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
           >
             <Plus className="w-4 h-4" />
             Add Image
@@ -95,7 +95,7 @@ export function GalleryEditor({ content, onChange }: GalleryEditorProps) {
                   type="button"
                   onClick={() => moveImage(index, index - 1)}
                   disabled={index === 0}
-                  className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                  className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 transition-[color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded"
                   title="Move up"
                 >
                   ▲
@@ -104,7 +104,7 @@ export function GalleryEditor({ content, onChange }: GalleryEditorProps) {
                   type="button"
                   onClick={() => moveImage(index, index + 1)}
                   disabled={index === images.length - 1}
-                  className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                  className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 transition-[color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded"
                   title="Move down"
                 >
                   ▼
@@ -120,7 +120,7 @@ export function GalleryEditor({ content, onChange }: GalleryEditorProps) {
               <button
                 type="button"
                 onClick={() => removeImage(index)}
-                className="p-2 text-gray-400 hover:text-red-600"
+                className="p-2 text-gray-400 hover:text-red-600 transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 rounded-lg"
                 title="Remove"
               >
                 <X className="w-4 h-4" />

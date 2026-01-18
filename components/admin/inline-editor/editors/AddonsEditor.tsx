@@ -48,7 +48,7 @@ export function AddonsEditor({ content, onChange }: AddonsEditorProps) {
           type="text"
           value={(content.title as string) || ''}
           onChange={e => updateField('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -60,7 +60,7 @@ export function AddonsEditor({ content, onChange }: AddonsEditorProps) {
           type="text"
           value={(content.subtitle as string) || ''}
           onChange={e => updateField('subtitle', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -109,7 +109,7 @@ export function AddonsEditor({ content, onChange }: AddonsEditorProps) {
                   type="text"
                   value={addon.title || ''}
                   onChange={e => updateAddon(index, { title: e.target.value })}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
 
@@ -121,7 +121,7 @@ export function AddonsEditor({ content, onChange }: AddonsEditorProps) {
                   value={addon.description || ''}
                   onChange={e => updateAddon(index, { description: e.target.value })}
                   rows={2}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
 
@@ -134,7 +134,7 @@ export function AddonsEditor({ content, onChange }: AddonsEditorProps) {
                   value={addon.price || ''}
                   onChange={e => updateAddon(index, { price: e.target.value })}
                   placeholder="e.g., $50 or included"
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
 

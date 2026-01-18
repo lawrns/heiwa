@@ -192,7 +192,11 @@ export default function HomepageCMSPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-gray-600 hover:text-gray-900">
+          <button
+            onClick={() => router.back()}
+            aria-label="Go back"
+            className="text-gray-600 hover:text-gray-900"
+          >
             <ArrowLeft size={24} />
           </button>
           <h1 className="text-3xl font-bold text-gray-900">Homepage Content Management</h1>
@@ -210,7 +214,11 @@ export default function HomepageCMSPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-gray-600 hover:text-gray-900">
+          <button
+            onClick={() => router.back()}
+            aria-label="Go back"
+            className="text-gray-600 hover:text-gray-900"
+          >
             <ArrowLeft size={24} />
           </button>
           <h1 className="text-3xl font-bold text-gray-900">Homepage Content Management</h1>
@@ -218,14 +226,14 @@ export default function HomepageCMSPage() {
         <div className="flex gap-2">
           <button
             onClick={() => window.open('/', '_blank')}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
           >
             <Wand2 className="mr-2 h-4 w-4" />
             Use Visual Editor
           </button>
           <button
             onClick={() => setPreviewMode(!previewMode)}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
           >
             <Eye className="mr-2 h-4 w-4" />
             {previewMode ? 'Edit Mode' : 'Preview Mode'}
@@ -233,7 +241,7 @@ export default function HomepageCMSPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? (
               <>
@@ -362,7 +370,7 @@ export default function HomepageCMSPage() {
                         type="text"
                         value={section.title}
                         onChange={(e) => updateContent(section.id, 'title', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-accent focus-visible:border-accent"
                         required
                       />
                     </div>
@@ -374,7 +382,7 @@ export default function HomepageCMSPage() {
                         type="text"
                         value={section.subtitle || ''}
                         onChange={(e) => updateContent(section.id, 'subtitle', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-accent focus-visible:border-accent"
                       />
                     </div>
                   </div>
@@ -387,7 +395,7 @@ export default function HomepageCMSPage() {
                       value={section.description || ''}
                       onChange={(e) => updateContent(section.id, 'description', e.target.value)}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-accent focus-visible:border-accent"
                     />
                   </div>
 
@@ -400,7 +408,7 @@ export default function HomepageCMSPage() {
                         type="url"
                         value={section.imageUrl || ''}
                         onChange={(e) => updateContent(section.id, 'imageUrl', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-accent focus-visible:border-accent"
                         placeholder="https://example.com/image.jpg"
                       />
                     </div>
@@ -412,7 +420,7 @@ export default function HomepageCMSPage() {
                         type="url"
                         value={section.videoUrl || ''}
                         onChange={(e) => updateContent(section.id, 'videoUrl', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-accent focus-visible:border-accent"
                         placeholder="https://example.com/video.mp4"
                       />
                     </div>
@@ -427,7 +435,7 @@ export default function HomepageCMSPage() {
                         type="text"
                         value={section.linkUrl || ''}
                         onChange={(e) => updateContent(section.id, 'linkUrl', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-accent focus-visible:border-accent"
                         placeholder="/surf-weeks"
                       />
                     </div>
@@ -439,7 +447,7 @@ export default function HomepageCMSPage() {
                         type="text"
                         value={section.linkText || ''}
                         onChange={(e) => updateContent(section.id, 'linkText', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-accent focus-visible:border-accent"
                         placeholder="Explore surf weeks"
                       />
                     </div>
@@ -454,7 +462,7 @@ export default function HomepageCMSPage() {
                       value={section.order}
                       onChange={(e) => updateContent(section.id, 'order', parseInt(e.target.value) || 0)}
                       min="0"
-                      className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                      className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-accent focus-visible:border-accent"
                     />
                   </div>
                 </div>

@@ -64,7 +64,7 @@ export function FAQEditor({ content, onChange, onSave, saving }: FAQEditorProps)
           type="text"
           value={faqContent.title || ''}
           onChange={(e) => handleChange('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="e.g., Frequently Asked Questions"
         />
       </div>
@@ -77,7 +77,7 @@ export function FAQEditor({ content, onChange, onSave, saving }: FAQEditorProps)
           <button
             type="button"
             onClick={addItem}
-            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700"
+            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
           >
             <Plus className="w-4 h-4" />
             Add Question
@@ -93,7 +93,7 @@ export function FAQEditor({ content, onChange, onSave, saving }: FAQEditorProps)
                     type="button"
                     onClick={() => moveItem(index, 'up')}
                     disabled={index === 0}
-                    className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                    className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30 transition-[color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded"
                     title="Move up"
                   >
                     <GripVertical className="w-4 h-4" />
@@ -108,7 +108,7 @@ export function FAQEditor({ content, onChange, onSave, saving }: FAQEditorProps)
                       type="text"
                       value={item.question}
                       onChange={(e) => updateItem(index, 'question', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                       placeholder="Enter question..."
                     />
                   </div>
@@ -120,15 +120,15 @@ export function FAQEditor({ content, onChange, onSave, saving }: FAQEditorProps)
                       value={item.answer}
                       onChange={(e) => updateItem(index, 'answer', e.target.value)}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                       placeholder="Enter answer..."
                     />
                   </div>
                 </div>
-                <button
+                  <button
                   type="button"
                   onClick={() => removeItem(index)}
-                  className="p-2 text-gray-400 hover:text-red-600"
+                  className="p-2 text-gray-400 hover:text-red-600 transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 rounded-lg"
                   title="Remove question"
                 >
                   <X className="w-4 h-4" />
@@ -148,7 +148,7 @@ export function FAQEditor({ content, onChange, onSave, saving }: FAQEditorProps)
         <button
           onClick={onSave}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 transition-[background-color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 shadow-sm"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Changes

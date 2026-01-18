@@ -37,12 +37,13 @@ export function PaymentMethodSelector({ selectedMethod, onMethodChange }: Paymen
           return (
             <button
               key={method.id}
+              type="button"
               onClick={() => onMethodChange(method.id)}
               className={`
                 w-full p-4 rounded-[10px] border text-left
-                motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none
+                motion-safe:transition-[transform,box-shadow,border-color,background-color] motion-safe:duration-200 motion-reduce:transition-none
                 hover:scale-[1.01] hover:shadow-md
-                focus:outline-none focus:ring-2 focus:ring-accent/30
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30
                 ${isSelected
                   ? 'border-accent bg-orange-50 shadow-md'
                   : 'border-gray-200 bg-white hover:border-accent/30'

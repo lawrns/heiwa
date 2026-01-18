@@ -84,7 +84,7 @@ export default function Hero({ title, subtitle, image, video, ctas, className }:
               <Link
                 key={cta.label}
                 href={cta.href}
-                className="inline-flex items-center justify-center px-8 py-4 bg-accent hover:bg-accent-hover text-white text-sm font-medium tracking-[0.15em] uppercase transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 focus:ring-offset-transparent rounded-md shadow-lg hover:shadow-xl"
+                className="inline-flex items-center justify-center px-8 py-4 bg-accent hover:bg-accent-hover text-white text-sm font-medium tracking-[0.15em] uppercase transition-[background-color,box-shadow,transform] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-md shadow-lg hover:shadow-xl"
                 style={{
                   minWidth: '140px',
                   fontSize: '0.875rem',

@@ -38,7 +38,7 @@ describe('Card Styling Consistency (Property 2)', () => {
           expect(card).toHaveClass('rounded-xl')
           expect(card).toHaveClass('bg-white')
           expect(card).toHaveClass('text-gray-950')
-          expect(card).toHaveClass('transition-all')
+          expect(card).toHaveClass('transition-[box-shadow,transform,border-color,background-color]')
         }),
         { numRuns: 100 }
       )
@@ -243,7 +243,7 @@ describe('Card Styling Consistency (Property 2)', () => {
           const classes = card.className
 
           // All variants should have transition classes
-          expect(classes).toContain('transition-all')
+          expect(classes).toContain('transition-')
 
           // Check duration based on variant
           if (variant === 'interactive' || variant === 'ghost') {

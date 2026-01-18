@@ -40,7 +40,7 @@ export function BookingTable({ surfWeeks, onBook, onShowAll }: BookingTableProps
         {/* Table Body */}
         <div className="divide-y divide-gray-200">
           {surfWeeks.map((surfWeek) => (
-            <div key={surfWeek.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+            <div key={surfWeek.id} className="px-6 py-4 hover:bg-gray-50 transition duration-200">
               <div className="grid grid-cols-4 gap-4 items-center">
                 <div className="text-gray-900 font-medium">{surfWeek.dates}</div>
                 <div className="text-gray-900 font-medium">{surfWeek.price}</div>
@@ -48,7 +48,7 @@ export function BookingTable({ surfWeeks, onBook, onShowAll }: BookingTableProps
                 <div className="flex justify-end">
                   <button
                     onClick={() => onBook(surfWeek)}
-                    className="px-6 py-2 bg-accent hover:bg-accent-dark text-white text-sm font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-accent/50"
+                    className="px-6 py-2 bg-accent hover:bg-accent-dark text-white text-sm font-semibold rounded-lg transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 active:scale-[0.98]"
                   >
                     Book
                   </button>
@@ -63,7 +63,7 @@ export function BookingTable({ surfWeeks, onBook, onShowAll }: BookingTableProps
       <div className="mt-6 text-center">
         <button
           onClick={onShowAll}
-          className="px-8 py-3 border-2 border-gray-300 bg-yellow-50 hover:bg-yellow-100 text-gray-900 font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500/50"
+          className="px-8 py-3 border-2 border-gray-300 bg-yellow-50 hover:bg-yellow-100 text-gray-900 font-semibold rounded-lg transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500/50 focus-visible:ring-offset-2 active:scale-[0.98]"
         >
           Show All Surf Weeks
         </button>

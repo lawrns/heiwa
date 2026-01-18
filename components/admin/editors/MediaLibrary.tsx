@@ -38,7 +38,7 @@ const FILE_TYPES = [
 const CATEGORIES = [
   { value: 'general', label: 'General' },
   { value: 'hero', label: 'Hero' },
-  { value: 'activities', label: 'Activities' },
+  { value: 'experiences', label: 'Experiences' },
   { value: 'testimonials', label: 'Testimonials' },
   { value: 'blog', label: 'Blog' }
 ] as const
@@ -277,7 +277,7 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
           placeholder="Category"
           options={[{ value: '', label: 'All Categories' }, ...CATEGORIES]}
           value={filters.category}
-          onChange={(value) => setFilters({ ...filters, category: value as '' | 'general' | 'hero' | 'activities' | 'testimonials' | 'blog' })}
+          onChange={(value) => setFilters({ ...filters, category: value as '' | 'general' | 'hero' | 'experiences' | 'testimonials' | 'blog' })}
           className="min-w-[150px]"
         />
       </div>
@@ -322,8 +322,17 @@ const MediaLibrary: React.FC<MediaLibraryProps> = ({
       >
         <div className="space-y-4">
           <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-500 transition-colors cursor-pointer"
+            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-orange-500 transition-[border-color] duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
             onClick={() => fileInputRef.current?.click()}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                fileInputRef.current?.click()
+              }
+            }}
+            aria-label="Upload files"
           >
             <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
             <p className="text-gray-600 mb-2">Click to upload or drag and drop</p>

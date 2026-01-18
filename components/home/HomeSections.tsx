@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { supabaseAdmin } from '@/lib/supabase'
@@ -16,7 +17,7 @@ interface PageSectionData {
 }
 
 // Fetch all homepage sections in a single query for better performance
-async function getAllHomepageSections() {
+const getAllHomepageSections = cache(async () => {
   try {
     const { data, error } = await supabaseAdmin
       .from('page_sections')
@@ -36,16 +37,16 @@ async function getAllHomepageSections() {
     console.error('Error fetching homepage sections:', error)
     return null
   }
-}
+})
 
-async function getPageSection(type: string, sectionsMap: Map<string, PageSectionData> | null) {
+function getPageSection(type: string, sectionsMap: Map<string, PageSectionData> | null) {
   if (!sectionsMap) return null
   return sectionsMap.get(type) || null
 }
 
 export async function HomeHero() {
   const sectionsMap = await getAllHomepageSections()
-  const section = await getPageSection('hero', sectionsMap)
+  const section = getPageSection('hero', sectionsMap)
   const content = section?.content || {}
   
   const defaultVideoUrl = "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932934179_Timeline-1.mp4"
@@ -118,7 +119,7 @@ export async function HomeHero() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 md:mb-8">
             <Link
               href={primaryLinkUrl}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] text-white bg-accent hover:bg-accent-dark"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-[background-color,box-shadow] duration-200 shadow-lg min-h-[44px] text-white bg-accent hover:bg-accent-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
               
             >
               <Waves className="w-5 h-5" />
@@ -126,7 +127,7 @@ export async function HomeHero() {
             </Link>
             <Link
               href={secondaryLinkUrl}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] text-white border-2 border-white hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-[background-color,border-color,box-shadow] duration-200 shadow-lg min-h-[44px] text-white border-2 border-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             >
               <Bed className="w-5 h-5" />
               {secondaryLinkText}
@@ -181,13 +182,7 @@ interface SurfWeekDisplay {
   end_date: string
 }
 
-export async function HomeSurfWeeks() {
-  const sectionsMap = await getAllHomepageSections()
-  const section = await getPageSection('surf-weeks', sectionsMap)
-  const content = section?.content || {}
-  
-  // Fetch surf weeks
-  let surfWeeks: SurfWeekDisplay[] = []
+const getSurfWeeks = cache(async (): Promise<SurfWeekDisplay[]> => {
   try {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -201,7 +196,7 @@ export async function HomeSurfWeeks() {
       .limit(3)
 
     if (!surfCampsError && surfCampsData) {
-      surfWeeks = surfCampsData.map((week: SurfWeekData) => {
+      return surfCampsData.map((week: SurfWeekData) => {
         const startDate = new Date(week.start_date)
         const endDate = new Date(week.end_date)
         const dateOptions: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' }
@@ -209,13 +204,14 @@ export async function HomeSurfWeeks() {
 
         const totalSpots = week.total_spots || week.max_participants || 18
         const availableSpots = week.available_spots !== undefined ? week.available_spots : totalSpots
+        const priceValue = week.price ?? 0
 
         return {
           id: week.id,
-          dates: dates,
-          price: `From €${week.price}`,
+          dates,
+          price: `From €${priceValue}`,
           availableSpots: `${availableSpots}/${totalSpots}`,
-          totalSpots: totalSpots,
+          totalSpots,
           start_date: week.start_date,
           end_date: week.end_date
         }
@@ -224,6 +220,17 @@ export async function HomeSurfWeeks() {
   } catch (error) {
     console.error('Error fetching surf weeks:', error)
   }
+
+  return []
+})
+
+export async function HomeSurfWeeks() {
+  const [sectionsMap, surfWeeks] = await Promise.all([
+    getAllHomepageSections(),
+    getSurfWeeks()
+  ])
+  const section = getPageSection('surf-weeks', sectionsMap)
+  const content = section?.content || {}
 
   const surfWeeksTitle = (content.title as string) || 'Heiwa Surf Weeks'
   const surfWeeksSubtitle = (content.subtitle as string) || 'All-inclusive weeks with surf, yoga, great food, and coastal adventures.'
@@ -292,7 +299,7 @@ export async function HomeSurfWeeks() {
 
 export async function HomeAbout() {
   const sectionsMap = await getAllHomepageSections()
-  const section = await getPageSection('about', sectionsMap)
+  const section = getPageSection('about', sectionsMap)
   const content = section?.content || {}
 
   return (
@@ -340,8 +347,8 @@ export async function HomeAbout() {
             }
 
             return (
-              <Link key={idx} href={card.link || '#'} className="group">
-                <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 h-80 bg-gray-200">
+              <Link key={idx} href={card.link || '#'} className="group focus-visible:outline-none">
+                <div className="relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-[box-shadow] duration-300 h-80 bg-gray-200 group-focus-visible:ring-2 group-focus-visible:ring-accent group-focus-visible:ring-offset-2">
                   <Image 
                     src={imageUrl} 
                     alt={card.title} 
@@ -350,7 +357,7 @@ export async function HomeAbout() {
                     sizes="(max-width: 768px) 100vw, 33vw"
                     unoptimized={imageUrl.startsWith('http')}
                   />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors"></div>
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-[background-color] duration-200"></div>
                   <div className="absolute inset-0 flex items-end">
                     <div className="w-full p-6">
                       <h3 className="text-2xl font-bold text-white mb-2">{card.title}</h3>
@@ -369,7 +376,7 @@ export async function HomeAbout() {
 
 export async function HomeRooms() {
   const sectionsMap = await getAllHomepageSections()
-  const section = await getPageSection('rooms', sectionsMap)
+  const section = getPageSection('rooms', sectionsMap)
   const content = section?.content || {}
   
   const roomIds: string[] = Array.isArray(content?.roomIds)
@@ -439,8 +446,8 @@ export async function HomeRooms() {
             const link = room.id ? `/rooms/${room.id}` : (room.link || '/rooms')
 
             return (
-              <Link key={room.id || idx} href={link} className="group">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <Link key={room.id || idx} href={link} className="group focus-visible:outline-none">
+                <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-[box-shadow] duration-300 group-focus-visible:ring-2 group-focus-visible:ring-accent group-focus-visible:ring-offset-2">
                   <div className="relative w-full h-80">
                     <ImageCarousel images={finalImages} alt={title} className="h-80" />
                   </div>
@@ -457,7 +464,7 @@ export async function HomeRooms() {
         <div className="text-center">
           <Link
             href="/rooms"
-            className="inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white bg-accent hover:bg-accent-dark"
+            className="inline-block px-8 py-4 rounded-lg font-semibold text-lg transition-[background-color,box-shadow] duration-200 shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-transparent text-white bg-accent hover:bg-accent-dark"
           >
             Explore All Rooms
           </Link>
@@ -469,7 +476,7 @@ export async function HomeRooms() {
 
 export async function HomeHosts() {
   const sectionsMap = await getAllHomepageSections()
-  const section = await getPageSection('hosts', sectionsMap)
+  const section = getPageSection('hosts', sectionsMap)
   const content = section?.content || {}
 
   if (!((content.paragraphs as string[])?.length > 0 || content.imageUrl)) {
@@ -487,7 +494,7 @@ export async function HomeHosts() {
           {typeof content.imageUrl === 'string' && content.imageUrl && (
             <div className="lg:col-span-1 flex justify-center">
               <div className="relative">
-                <div className="bg-white p-4 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                <div className="bg-white p-4 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-300 focus-within:rotate-0">
                   <div className="bg-gray-100 p-2 relative w-[300px] h-[400px]">
                     <Image
                       src={content.imageUrl}
@@ -525,7 +532,7 @@ export async function HomeHosts() {
 
 export async function HomeReviews() {
   const sectionsMap = await getAllHomepageSections()
-  const section = await getPageSection('reviews', sectionsMap)
+  const section = getPageSection('reviews', sectionsMap)
   const content = section?.content || {}
 
   return (
@@ -546,7 +553,7 @@ export async function HomeReviews() {
   )
 }
 
-interface FacilityData {
+interface ExperienceData {
   title?: string
   name?: string
   description?: string
@@ -556,7 +563,7 @@ interface FacilityData {
   img?: string
 }
 
-interface ActivityDisplay {
+interface ExperienceDisplay {
   title: string
   desc: string
   img: string
@@ -564,15 +571,15 @@ interface ActivityDisplay {
 
 export async function HomeFacilities() {
   const sectionsMap = await getAllHomepageSections()
-  const section = await getPageSection('facilities', sectionsMap)
+  const section = getPageSection('facilities', sectionsMap)
   const content = section?.content || {}
 
-  const cmsActivities = (content?.facilities as FacilityData[]) || (content?.items as FacilityData[])
-  const activities = (Array.isArray(cmsActivities) && cmsActivities.length > 0)
-    ? cmsActivities.map((activity: FacilityData) => ({
-        title: activity.title || activity.name || '',
-        desc: activity.description || activity.desc || '',
-        img: activity.image || activity.imageUrl || activity.img || '/images/placeholder.webp'
+  const cmsExperiences = (content?.facilities as ExperienceData[]) || (content?.items as ExperienceData[])
+  const experiences = (Array.isArray(cmsExperiences) && cmsExperiences.length > 0)
+    ? cmsExperiences.map((experience: ExperienceData) => ({
+        title: experience.title || experience.name || '',
+        desc: experience.description || experience.desc || '',
+        img: experience.image || experience.imageUrl || experience.img || '/images/placeholder.webp'
       }))
     : [
         { title: 'Surf Lessons', desc: 'Learn to ride the waves with professional instructors', img: '/optimized/photography_001_dji_0098-scaled.webp' },
@@ -589,7 +596,7 @@ export async function HomeFacilities() {
     <section id="section-facilities" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-          {(content?.title as string) || 'Activities Around'}
+          {(content?.title as string) || 'Experiences Around'}
         </h2>
         {typeof content?.subtitle === 'string' && content.subtitle && (
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
@@ -598,24 +605,24 @@ export async function HomeFacilities() {
         )}
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {activities.map((activity: { title: string; desc: string; img: string }) => (
-            <div key={activity.title} className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-default">
+          {experiences.map((experience: { title: string; desc: string; img: string }) => (
+            <div key={experience.title} className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-[box-shadow] duration-300 cursor-default focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2">
               <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
                 <Image 
-                  src={activity.img} 
-                  alt={activity.title} 
+                  src={experience.img} 
+                  alt={experience.title} 
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                  className="object-cover group-hover:scale-105 group-focus-within:scale-105 transition-transform duration-500" 
                   sizes="(max-width: 640px) 50vw, 25vw"
                 />
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors"></div>
+                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 group-focus-within:bg-black/50 transition-[background-color] duration-200"></div>
 
                 <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                  <h3 className="text-sm sm:text-base font-bold text-white">{activity.title}</h3>
+                  <h3 className="text-sm sm:text-base font-bold text-white">{experience.title}</h3>
                 </div>
 
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-white text-center text-sm px-4 font-medium">{activity.desc}</p>
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300">
+                  <p className="text-white text-center text-sm px-4 font-medium">{experience.desc}</p>
                 </div>
               </div>
             </div>

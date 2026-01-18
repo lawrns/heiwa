@@ -96,7 +96,7 @@ export function ImageBlur({
         src={currentSrc}
         alt={alt}
         className={cn(
-          'transition-all duration-standard ease-out',
+          'transition-[filter,transform,opacity] duration-standard ease-out',
           // Blur and scale while loading
           isLoading && 'scale-105 blur-lg',
           // Clear and normal when loaded
@@ -162,7 +162,7 @@ export function ImageBlurBackground({
         alt={alt}
         fill
         className={cn(
-          'object-cover transition-all duration-slow ease-out',
+          'object-cover transition-[filter,transform,opacity] duration-slow ease-out',
           isLoading && 'scale-110 blur-xl opacity-50',
           !isLoading && 'scale-100 blur-0 opacity-100'
         )}

@@ -47,7 +47,7 @@ export function StepsEditor({ content, onChange }: StepsEditorProps) {
           type="text"
           value={(content.title as string) || ''}
           onChange={e => updateField('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -59,7 +59,7 @@ export function StepsEditor({ content, onChange }: StepsEditorProps) {
           type="text"
           value={(content.subtitle as string) || ''}
           onChange={e => updateField('subtitle', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -72,7 +72,7 @@ export function StepsEditor({ content, onChange }: StepsEditorProps) {
         <button
           type="button"
           onClick={addStep}
-          className="inline-flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700"
+          className="inline-flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
         >
           <Plus className="w-4 h-4" />
           Add Step
@@ -93,7 +93,7 @@ export function StepsEditor({ content, onChange }: StepsEditorProps) {
               <button
                 type="button"
                 onClick={() => removeStep(index)}
-                className="p-1 text-red-500 hover:bg-red-50 rounded"
+                className="p-1 text-red-500 hover:bg-red-50 rounded transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -108,7 +108,7 @@ export function StepsEditor({ content, onChange }: StepsEditorProps) {
                   type="text"
                   value={step.title || ''}
                   onChange={e => updateStep(index, { title: e.target.value })}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
 
@@ -120,7 +120,7 @@ export function StepsEditor({ content, onChange }: StepsEditorProps) {
                   value={step.description || ''}
                   onChange={e => updateStep(index, { description: e.target.value })}
                   rows={2}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
 

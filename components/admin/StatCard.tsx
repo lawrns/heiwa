@@ -53,8 +53,8 @@ export function StatCard({
   const isClickable = onClick || href
 
   const content = (
-    <div className={`${colors.bg} rounded-lg border ${colors.border} p-6 transition-all duration-300 ${
-      isClickable ? 'hover:shadow-md cursor-pointer hover:scale-[1.02] active:scale-[0.98]' : ''
+    <div className={`${colors.bg} rounded-lg border ${colors.border} p-6 transition-[box-shadow,transform,background-color] duration-300 ${
+      isClickable ? 'hover:shadow-md cursor-pointer hover:scale-[1.02] active:scale-[0.98] focus-within:ring-2 focus-within:ring-heiwaOrange-500/40 focus-within:ring-offset-2' : ''
     }`}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
@@ -88,7 +88,7 @@ export function StatCard({
 
   if (onClick) {
     return (
-      <button onClick={onClick} className="w-full text-left" type="button">
+      <button onClick={onClick} className="w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500/40 focus-visible:ring-offset-2 rounded-lg" type="button">
         {content}
       </button>
     )

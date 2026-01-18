@@ -236,8 +236,8 @@ describe('Form Validation Feedback (Property 3)', () => {
             const input = container.querySelector('input')
             
             // All inputs should have focus ring classes
-            expect(input).toHaveClass('focus:outline-none')
-            expect(input).toHaveClass('focus:ring-2')
+            expect(input).toHaveClass('focus-visible:outline-none')
+            expect(input).toHaveClass('focus-visible:ring-2')
           }
         ),
         { numRuns: 50 }
@@ -255,8 +255,8 @@ describe('Form Validation Feedback (Property 3)', () => {
           )
           const input = container.querySelector('input')
           
-          // Component uses motion-safe:transition-all and motion-safe:duration-300
-          expect(input).toHaveClass('motion-safe:transition-all')
+          // Component uses motion-safe:transition-[...] and motion-safe:duration-300
+          expect(input.className).toMatch(/motion-safe:transition-\[/)
           expect(input).toHaveClass('motion-safe:duration-300')
         }),
         { numRuns: 30 }

@@ -124,7 +124,7 @@ describe('Touch Target Compliance (Property 1)', () => {
             const button = container.firstChild as HTMLElement
             
             // Should have transition classes (with motion-safe prefix)
-            expect(button.className).toContain('motion-safe:transition-all')
+            expect(button.className).toMatch(/motion-safe:transition-\[/)
             expect(button.className).toContain('motion-safe:duration-300')
           }
         ),
@@ -284,9 +284,9 @@ describe('Touch Target Compliance (Property 1)', () => {
             const button = container.firstChild as HTMLElement
             
             // Should have focus ring classes
-            expect(button.className).toContain('focus:outline-none')
-            expect(button.className).toContain('focus:ring-2')
-            expect(button.className).toContain('focus:ring-offset-2')
+            expect(button.className).toContain('focus-visible:outline-none')
+            expect(button.className).toContain('focus-visible:ring-2')
+            expect(button.className).toContain('focus-visible:ring-offset-2')
           }
         ),
         { numRuns: 50 }

@@ -104,7 +104,7 @@ export function RoomShowcase({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={goToPrevious}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 transition-colors text-white"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 transition-[background-color] duration-200 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
               aria-label="Previous image"
             >
               <ChevronLeft className="w-6 h-6" />
@@ -114,7 +114,7 @@ export function RoomShowcase({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 transition-colors text-white"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white/20 hover:bg-white/40 transition-[background-color] duration-200 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
               aria-label="Next image"
             >
               <ChevronRight className="w-6 h-6" />
@@ -134,7 +134,7 @@ export function RoomShowcase({
                 onClick={() => goToSlide(index)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`relative flex-shrink-0 h-20 w-32 rounded-lg overflow-hidden border-2 transition-all ${
+                className={`relative flex-shrink-0 h-20 w-32 rounded-lg overflow-hidden border-2 transition-[border-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                   index === currentIndex
                     ? 'border-orange-500'
                     : 'border-gray-300 hover:border-gray-400'
@@ -245,7 +245,7 @@ export function RoomShowcase({
           >
             <Link
               href={bookingHref}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-colors shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 text-white bg-orange-500 hover:bg-orange-600"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg transition-[background-color,box-shadow,transform] duration-200 shadow-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 text-white bg-orange-500 hover:bg-orange-600 active:scale-[0.98]"
             >
               Book This Room
             </Link>

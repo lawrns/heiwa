@@ -36,9 +36,9 @@ const SelectTrigger = React.forwardRef<
       // Placeholder styling
       "data-[placeholder]:text-gray-500",
       // TOON-compliant focus state with subtle ring (Requirement 8.4)
-      "focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:border-orange-500",
       // Transition for smooth interactions
-      "transition-all duration-150 ease-out",
+      "transition-[border-color,box-shadow,background-color,color] duration-150 ease-out",
       // Disabled state
       "disabled:cursor-not-allowed disabled:opacity-50",
       "[&>span]:line-clamp-1",

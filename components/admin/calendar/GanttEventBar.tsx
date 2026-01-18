@@ -50,7 +50,7 @@ export function GanttEventBar({
       onClick={(e) => onClick(event, e.currentTarget)}
       className={cn(
         'absolute h-6 rounded text-xs font-medium truncate px-1 flex items-center gap-1',
-        'hover:ring-2 hover:ring-offset-1 focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all',
+        'hover:ring-2 hover:ring-offset-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 transition-[box-shadow,ring,transform,opacity]',
         'shadow-sm hover:shadow-md cursor-pointer',
         isConfirmed && 'opacity-100',
         isPending && 'opacity-75 border-2 border-dashed',

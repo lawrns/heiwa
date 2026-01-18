@@ -61,7 +61,7 @@ export function VideoEmbed({
     >
       {!isLoaded ? (
         // Poster with play button
-        <div className="relative w-full h-full cursor-pointer group" style={{ position: 'relative' }} onClick={handlePlayClick}>
+        <div className="relative w-full h-full cursor-pointer group" style={{ position: 'relative' }} onClick={handlePlayClick} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && handlePlayClick()} aria-label="Play video">
           {poster && isInView && (
             <Image
               src={poster}
@@ -74,14 +74,14 @@ export function VideoEmbed({
 
           {/* Play button overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-primary/90 hover:bg-primary rounded-full p-4 transition-all duration-200 group-hover:scale-110">
+            <div className="bg-primary/90 hover:bg-primary rounded-full p-4 transition-[transform,background-color] duration-200 group-hover:scale-110 group-focus-visible:scale-110 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2">
               <Play className="w-8 h-8 text-on-primary fill-current" />
             </div>
           </div>
 
           {/* Loading text */}
           <div className="absolute bottom-4 left-4 right-4">
-            <p className="text-text text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+            <p className="text-text text-sm opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200">
               Click to play video
             </p>
           </div>

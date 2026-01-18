@@ -78,7 +78,7 @@ export function PerformanceDashboard() {
       {/* Toggle Button */}
       <button
         onClick={() => setIsVisible(!isVisible)}
-        className="fixed bottom-4 left-4 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full text-xs z-40 transition-colors"
+        className="fixed bottom-4 left-4 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full text-xs z-40 transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 active:scale-[0.95]"
         title="Toggle Performance Dashboard"
       >
         📊

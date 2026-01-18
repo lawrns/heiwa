@@ -98,7 +98,7 @@ export function EventPopover({ event, anchorEl, onClose, onViewDetails }: EventP
         </div>
         <button
           onClick={onClose}
-          className="p-1 hover:bg-gray-100 rounded transition-colors"
+          className="p-1 rounded transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
         >
           <X className="h-4 w-4 text-gray-400" />
         </button>

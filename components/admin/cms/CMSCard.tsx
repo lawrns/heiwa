@@ -61,7 +61,7 @@ export function CMSCard({
   }
 
   const content = (
-    <div className={`bg-white border border-gray-200 rounded-lg p-5 sm:p-6 hover:shadow-lg hover:border-blue-200 transition-all duration-200 ${className}`}>
+    <div className={`bg-white border border-gray-200 rounded-lg p-5 sm:p-6 hover:shadow-lg hover:border-blue-200 transition-[box-shadow,border-color,background-color,transform] duration-200 ${className}`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-3 sm:mb-4 gap-2">
         <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
@@ -106,7 +106,7 @@ export function CMSCard({
                 <span className="hidden sm:inline">{!action.icon && action.label}</span>
               </>
             )
-            const buttonClass = `inline-flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${getActionColor(action.variant)}`
+            const buttonClass = `inline-flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-[color,background-color] duration-200 ${getActionColor(action.variant)} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500/40 focus-visible:ring-offset-2`
 
             if (action.href) {
               return (
@@ -148,7 +148,7 @@ export function CMSCard({
 
   if (onClick) {
     return (
-      <button onClick={onClick} className="w-full text-left">
+      <button onClick={onClick} className="w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500/40 focus-visible:ring-offset-2 rounded-lg">
         {content}
       </button>
     )

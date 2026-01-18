@@ -108,6 +108,7 @@ const navigationItems = [
   { name: 'Surf Weeks', href: '/admin/surf-camps', icon: Building2 },
   { name: 'Rooms', href: '/admin/rooms', icon: Box },
   { name: 'Add-ons', href: '/admin/add-ons', icon: Package },
+  { name: 'Experiences', href: '/admin/activities', icon: Globe },
   { name: 'Bookings', href: '/admin/bookings', icon: ClipboardList },
   { name: 'Assignments', href: '/admin/assignments', icon: Key },
   { name: 'Invoices', href: '/admin/invoices', icon: FileText },
@@ -330,7 +331,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     className={`
                       group relative flex items-center py-3 text-sm font-medium text-gray-300
                       rounded-lg hover:bg-gray-700 hover:text-white
-                      transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:top-1/2 after:-translate-y-1/2 after:h-5 after:w-0 after:rounded-full after:bg-orange-500 after:transition-all after:duration-300 group-hover:after:w-1
+                      transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:top-1/2 after:-translate-y-1/2 after:h-5 after:w-0 after:rounded-full after:bg-orange-500 after:transition-[width] after:duration-300 group-hover:after:w-1
                       ${sidebarCollapsed ? 'justify-center px-0' : 'px-4'}
                     `}
                     onClick={() => setSidebarOpen(false)}
@@ -345,7 +346,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </aside>
 
           {/* Main content area - offset for fixed sidebar on desktop */}
-          <main className={`flex-1 flex flex-col min-w-0 bg-gray-50 w-full ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'} transition-all duration-300`}>
+          <main className={`flex-1 flex flex-col min-w-0 bg-gray-50 w-full ${sidebarCollapsed ? 'md:ml-16' : 'md:ml-64'} transition-[margin] duration-300`}>
             {/* User/Logout header */}
             <header className="bg-white border-b border-gray-200 shadow-sm px-4 sm:px-6 h-16 flex items-center justify-between md:justify-end">
               {/* Mobile menu button */}

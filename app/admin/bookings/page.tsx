@@ -683,7 +683,7 @@ export default function BookingsPage() {
                 setCurrentPage(1) // Reset to first page when searching
                 updateUrlParams(1, newSearch, filters.status, filters.type, filters.payment_status)
               }}
-              className="w-full px-4 py-2 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 pr-8 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             />
             {searchTerm && (
               <button
@@ -715,7 +715,7 @@ export default function BookingsPage() {
                 setCurrentPage(1)
                 updateUrlParams(1, searchTerm, newStatus, filters.type, filters.payment_status)
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             >
               <option value="all">All Statuses</option>
               <option value="pending" data-testid="filter-pending">Pending</option>
@@ -736,7 +736,7 @@ export default function BookingsPage() {
                 setCurrentPage(1)
                 updateUrlParams(1, searchTerm, filters.status, newType, filters.payment_status)
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             >
               <option value="all">All Types</option>
               <option value="room">Rooms</option>
@@ -754,7 +754,7 @@ export default function BookingsPage() {
                 setCurrentPage(1)
                 updateUrlParams(1, searchTerm, filters.status, filters.type, newPaymentStatus)
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             >
               <option value="all">All Payments</option>
               <option value="pending">Pending</option>

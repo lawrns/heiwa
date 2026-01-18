@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 // Requirements: 1.4, 2.1, 2.2, 2.3, 2.4, 2.5
 const cardVariants = cva(
   // Base styles
-  "rounded-xl bg-white text-gray-950 transition-all",
+  "rounded-xl bg-white text-gray-950 transition-[box-shadow,transform,border-color,background-color]",
   {
     variants: {
       variant: {

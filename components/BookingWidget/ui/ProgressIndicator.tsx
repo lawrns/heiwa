@@ -94,7 +94,7 @@ export function ProgressIndicator({
                     {/* Animated fill */}
                     <div 
                       className={cn(
-                        "absolute inset-y-0 left-0 rounded-full transition-all duration-700 ease-in-out",
+                        "absolute inset-y-0 left-0 rounded-full transition-[width,background-color] duration-700 ease-in-out",
                         isCompleted 
                           ? "w-full bg-gradient-to-r from-accent to-accent-dark" 
                           : "w-0 bg-accent"
@@ -123,12 +123,12 @@ export function ProgressIndicator({
                     className={cn(
                       // Base styles
                       "relative z-10 w-10 h-10 rounded-full flex items-center justify-center",
-                      "transition-all duration-300 ease-in-out",
+                      "transition-[transform,box-shadow,background-color,border-color,color] duration-300 ease-in-out",
                       // Clickable states
                       clickable && [
                         "cursor-pointer",
                         "hover:scale-110",
-                        "focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2",
                         "active:scale-95"
                       ],
                       !clickable && "cursor-default",
@@ -171,7 +171,7 @@ export function ProgressIndicator({
                   {/* Step Label - Always visible with abbreviated labels on mobile */}
                   <div className="mt-1.5 sm:mt-2 text-center">
                     <div className={cn(
-                      "text-[10px] sm:text-xs font-medium motion-safe:transition-colors motion-safe:duration-300 motion-reduce:transition-none ease-in-out whitespace-nowrap",
+                      "text-[10px] sm:text-xs font-medium motion-safe:transition-[color] motion-safe:duration-300 motion-reduce:transition-none ease-in-out whitespace-nowrap",
                       isCurrent && "text-accent font-semibold",
                       isCompleted && "text-accent",
                       isUpcoming && "text-gray-400"

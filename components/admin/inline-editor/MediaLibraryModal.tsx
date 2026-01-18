@@ -163,7 +163,7 @@ export function MediaLibraryModal({
           <h2 className="text-lg font-semibold text-gray-900">Select Image</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
           >
             <X className="w-5 h-5" />
           </button>
@@ -178,13 +178,13 @@ export function MediaLibraryModal({
               placeholder="Search images..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
             />
           </div>
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-[background-color,opacity] duration-200 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
           >
             {uploading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -220,7 +220,7 @@ export function MediaLibraryModal({
                   type="button"
                   onClick={() => setSelectedUrl(item.public_url)}
                   className={cn(
-                    'relative aspect-square rounded-lg overflow-hidden border-2 transition-all',
+                    'relative aspect-square rounded-lg overflow-hidden border-2 transition-[border-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2',
                     selectedUrl === item.public_url
                       ? 'border-orange-500 ring-2 ring-orange-500 ring-offset-2'
                       : 'border-transparent hover:border-gray-300'
@@ -246,14 +246,14 @@ export function MediaLibraryModal({
         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t bg-gray-50">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
+            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
           >
             Cancel
           </button>
           <button
             onClick={handleConfirm}
             disabled={!selectedUrl}
-            className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-[background-color,opacity] duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
           >
             Select Image
           </button>

@@ -49,7 +49,10 @@ export function ShadowShowcase() {
       <div>
         <h3 className="text-base font-medium mb-4">Interactive Example</h3>
         <div className="bg-gray-100 rounded-lg p-8 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 shadow-card hover:shadow-card-hover transition-shadow duration-200 cursor-pointer">
+          <div 
+            className="bg-white rounded-lg p-6 shadow-card hover:shadow-card-hover transition-[box-shadow] duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:ring-offset-2"
+            tabIndex={0}
+          >
             <div className="w-12 h-12 bg-gradient-to-br from-heiwaOrange-400 to-heiwaOrange-600 rounded-lg mb-4" />
             <h4 className="font-semibold text-gray-900 mb-1">Hover me</h4>
             <p className="text-sm text-gray-500">Shadow elevates on hover</p>

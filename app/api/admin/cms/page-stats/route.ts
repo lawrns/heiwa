@@ -18,10 +18,10 @@ interface HomepageSection {
 }
 
 export async function GET(request: NextRequest) {
-  const authError = requireAdminAuth(request)
-  if (authError) return authError
-
   try {
+    const authError = requireAdminAuth(request)
+    if (authError) return authError
+
     // Fetch page_sections stats (the unified CMS table)
     const { data: pageSectionsData, error: pageSectionsError } = await supabaseAdmin
       .from('page_sections')

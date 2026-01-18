@@ -33,7 +33,7 @@ export function CTAEditor({ content, onChange, onSave, saving }: CTAEditorProps)
           type="text"
           value={ctaContent.title || ''}
           onChange={(e) => handleChange('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="e.g., Ready to Find Your Flow?"
         />
       </div>
@@ -46,7 +46,7 @@ export function CTAEditor({ content, onChange, onSave, saving }: CTAEditorProps)
           value={ctaContent.description || ''}
           onChange={(e) => handleChange('description', e.target.value)}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Add a compelling description..."
         />
       </div>
@@ -59,7 +59,7 @@ export function CTAEditor({ content, onChange, onSave, saving }: CTAEditorProps)
           type="text"
           value={ctaContent.buttonText || ''}
           onChange={(e) => handleChange('buttonText', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="e.g., Book Now"
         />
       </div>
@@ -72,7 +72,7 @@ export function CTAEditor({ content, onChange, onSave, saving }: CTAEditorProps)
           type="text"
           value={ctaContent.buttonUrl || ''}
           onChange={(e) => handleChange('buttonUrl', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="e.g., mailto:info@heiwahouse.com or /contact"
         />
         <p className="mt-1 text-xs text-gray-500">
@@ -110,7 +110,7 @@ export function CTAEditor({ content, onChange, onSave, saving }: CTAEditorProps)
         <button
           onClick={onSave}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 transition-[background-color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 shadow-sm"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Changes

@@ -113,11 +113,11 @@ export function SocialFeed({
           <motion.div
             key={index}
             variants={itemVariants}
-            className="group cursor-pointer"
+            className="group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-lg"
             onClick={() => handleImageClick(index)}
           >
             {/* Instagram Card */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-[box-shadow] duration-300">
               {/* Image */}
               <div className="relative h-64 overflow-hidden bg-gray-100">
                 <motion.div
@@ -171,21 +171,21 @@ export function SocialFeed({
                   <motion.button
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
-                    className="text-gray-600 hover:text-red-500 transition-colors"
+                    className="text-gray-600 hover:text-red-500 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 rounded p-0.5"
                   >
                     <Heart className="w-5 h-5" />
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
-                    className="text-gray-600 hover:text-blue-500 transition-colors"
+                    className="text-gray-600 hover:text-blue-500 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 rounded p-0.5"
                   >
                     <MessageCircle className="w-5 h-5" />
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
-                    className="text-gray-600 hover:text-orange-500 transition-colors"
+                    className="text-gray-600 hover:text-orange-500 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 rounded p-0.5"
                   >
                     <Share2 className="w-5 h-5" />
                   </motion.button>
@@ -195,7 +195,7 @@ export function SocialFeed({
                     href={post.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-orange-500 hover:text-orange-600 font-semibold text-sm"
+                    className="text-orange-500 hover:text-orange-600 font-semibold text-sm transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
                   >
                     View
                   </Link>

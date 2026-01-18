@@ -1,10 +1,10 @@
 'use client'
 
-import { ActivityHighlight } from '@/components/activities/activity-highlight'
+import { ExperienceHighlight } from '@/components/activities/experience-highlight'
 import { Mail } from 'lucide-react'
 import { FloatingCheckAvailability } from '@/components/floating-check-availability'
 import { HeroVideo } from '@/components/hero/hero-video'
-import { ActivityGrid } from '@/components/activities/activity-grid'
+import { ExperienceGrid } from '@/components/activities/experience-grid'
 import { useEffect, useState } from 'react'
 import { PageSection } from '@/lib/cms-schemas'
 
@@ -103,7 +103,7 @@ export default function FlowPageClient() {
                 reversed?: boolean
               }
               return (
-                <ActivityHighlight
+                <ExperienceHighlight
                   key={section.id}
                   title={content.title || ''}
                   description={content.description || ''}
@@ -132,7 +132,7 @@ export default function FlowPageClient() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12 px-4">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 break-words hyphens-auto">
-                  {content.title || 'Activities'}
+                  {content.title || 'Experiences'}
                 </h2>
                 {content.description && (
                   <p className="text-lg text-gray-600">
@@ -141,7 +141,7 @@ export default function FlowPageClient() {
                 )}
               </div>
 
-              <ActivityGrid
+              <ExperienceGrid
                 category={content.category || 'flow'}
                 tier={content.tier || 'always'}
                 showTierBadge={content.showTierBadge || false}
@@ -163,7 +163,7 @@ export default function FlowPageClient() {
           </p>
           <a
             href={ctaContent?.buttonUrl || "mailto:info@heiwahouse.com"}
-            className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-8 py-4 rounded-lg font-semibold text-lg transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
           >
             <Mail className="w-5 h-5" />
             {ctaContent?.buttonText || "Enquire Now"}

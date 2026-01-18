@@ -201,11 +201,11 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
               <div className="relative">
                 <Label>Select Booking *</Label>
                 <div className="mt-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setShowBookingDropdown(!showBookingDropdown)}
-                    className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-white text-left hover:border-gray-400 focus:ring-2 focus:ring-blue-500"
-                  >
+                    <button
+                      type="button"
+                      onClick={() => setShowBookingDropdown(!showBookingDropdown)}
+                      className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-white text-left hover:border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-[border-color,box-shadow] duration-200"
+                    >
                     {selectedBooking ? (
                       <span className="text-gray-900">
                         {selectedBooking.guest_name} - {selectedBooking.item_name} (€{selectedBooking.total_price})
@@ -226,7 +226,7 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
                             value={bookingSearch}
                             onChange={(e) => setBookingSearch(e.target.value)}
                             placeholder="Search by name, email, or ID..."
-                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
+                            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-[border-color,box-shadow] duration-200"
                             autoFocus
                           />
                         </div>
@@ -242,7 +242,7 @@ export function InvoiceModal({ open, onClose, invoice, bookingId, onSaved }: Inv
                               key={booking.id}
                               type="button"
                               onClick={() => handleSelectBooking(booking)}
-                              className="w-full px-3 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                              className="w-full px-3 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-[background-color] duration-200 focus-visible:outline-none focus-visible:bg-gray-50"
                             >
                               <div className="flex justify-between items-start">
                                 <div>

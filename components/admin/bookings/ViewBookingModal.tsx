@@ -204,14 +204,20 @@ export function ViewBookingModal({
   const hasMultipleParticipants = participants.length > 1 || (participants.length === 0 && booking.guests > 1)
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 transition-opacity duration-300"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      role="button"
+      tabIndex={-1}
+      aria-hidden="true"
+    >
       <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" data-testid="view-booking-modal">
         {/* Header */}
         <div className="sticky top-0 px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-white">
           <h3 className="text-lg font-semibold text-gray-900">Booking Details</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 rounded-lg p-1"
             aria-label="Close modal"
           >
             <X className="h-6 w-6" />
@@ -446,7 +452,7 @@ export function ViewBookingModal({
               {onEdit && (
                 <button
                   onClick={() => onEdit(booking)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
                   data-testid="edit-booking-btn"
                 >
                   Edit
@@ -455,7 +461,7 @@ export function ViewBookingModal({
               {onSendEmail && (
                 <button
                   onClick={() => onSendEmail(booking)}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/40 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
                   data-testid="send-email-btn"
                 >
                   Send Email
@@ -464,7 +470,7 @@ export function ViewBookingModal({
               {onDelete && (
                 <button
                   onClick={() => onDelete(booking.id)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
                   data-testid="delete-booking-btn"
                 >
                   Delete
@@ -473,7 +479,7 @@ export function ViewBookingModal({
             </div>
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
             >
               Close
             </button>

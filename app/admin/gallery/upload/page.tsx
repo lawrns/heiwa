@@ -191,9 +191,9 @@ export default function UploadMediaPage() {
 
       {/* Upload Area */}
       <div
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+        className={`border-2 border-dashed rounded-lg p-8 text-center transition-[border-color,background-color] duration-200 ${
           dragActive ? 'border-accent bg-accent/5' : 'border-gray-300 hover:border-gray-400'
-        }`}
+        } focus-within:ring-2 focus-within:ring-accent/50 focus-within:ring-offset-2`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -205,7 +205,7 @@ export default function UploadMediaPage() {
         </p>
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent transition-[background-color,box-shadow] duration-200"
         >
           <Upload className="mr-2 h-4 w-4" />
           Choose Files
@@ -260,7 +260,7 @@ export default function UploadMediaPage() {
                         type="text"
                         value={uploadFile.title}
                         onChange={(e) => updateFile(index, 'title', e.target.value)}
-                        className="w-full text-lg font-medium text-gray-900 border-none focus:ring-0 p-0"
+                        className="w-full text-lg font-medium text-gray-900 border-none focus-visible:ring-0 p-0 transition-shadow duration-200"
                         placeholder="Enter title..."
                       />
                       <div className="text-sm text-gray-500 mt-1">
@@ -269,7 +269,8 @@ export default function UploadMediaPage() {
                     </div>
                     <button
                       onClick={() => removeFile(index)}
-                      className="text-gray-400 hover:text-red-600 transition-colors"
+                      className="text-gray-400 hover:text-red-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 rounded-full p-1"
+                      aria-label={`Remove ${uploadFile.title}`}
                     >
                       <X size={20} />
                     </button>
@@ -282,7 +283,7 @@ export default function UploadMediaPage() {
                       <select
                         value={uploadFile.category}
                         onChange={(e) => updateFile(index, 'category', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent appearance-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent appearance-none transition-[border-color,box-shadow] duration-200"
                       >
                         <option value="rooms">Rooms</option>
                         <option value="surf">Surf</option>
@@ -319,7 +320,7 @@ export default function UploadMediaPage() {
                       <input
                         type="text"
                         placeholder="Add tag..."
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent transition-[border-color,box-shadow] duration-200"
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') {
                             e.preventDefault()
@@ -335,7 +336,8 @@ export default function UploadMediaPage() {
                           addTag(index, input.value)
                           input.value = ''
                         }}
-                        className="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                        className="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
+                        aria-label="Add tag"
                       >
                         <Plus size={16} />
                       </button>
@@ -349,9 +351,9 @@ export default function UploadMediaPage() {
                       type="checkbox"
                       checked={uploadFile.isActive}
                       onChange={(e) => updateFile(index, 'isActive', e.target.checked)}
-                      className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
+                      className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded transition-colors"
                     />
-                    <label htmlFor={`active-${index}`} className="block text-sm text-gray-900">
+                    <label htmlFor={`active-${index}`} className="block text-sm text-gray-900 cursor-pointer">
                       Active (available for use)
                     </label>
                   </div>
@@ -368,14 +370,14 @@ export default function UploadMediaPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent transition-[background-color,border-color,box-shadow,color] duration-200"
           >
             Cancel
           </button>
           <button
             onClick={handleUpload}
             disabled={isUploading}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,box-shadow] duration-200"
           >
             {isUploading ? (
               <>

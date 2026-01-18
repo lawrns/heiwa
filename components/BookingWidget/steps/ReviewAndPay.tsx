@@ -105,7 +105,7 @@ function TaxBreakdownSection({ taxes, basePrice, roomUpgrade, addOnsSubtotal }: 
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex justify-between items-center text-gray-700 hover:text-gray-900 motion-safe:transition-colors motion-reduce:transition-none"
+        className="w-full flex justify-between items-center text-gray-700 hover:text-gray-900 motion-safe:transition-[color] motion-safe:duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:underline rounded px-1"
         aria-expanded={isExpanded}
         aria-label={isExpanded ? 'Collapse tax details' : 'Expand tax details'}
       >
@@ -816,7 +816,7 @@ export function ReviewAndPay({ state, actions, onComplete }: ReviewAndPayProps) 
         <div className="flex justify-center">
           <button
             onClick={scrollToInstructions}
-            className="inline-flex items-center justify-center gap-2 pl-5 pr-6 py-2.5 bg-orange-100 text-orange-700 border border-orange-200 rounded-[10px] text-sm font-medium cursor-pointer transition-all duration-150 ease-out hover:bg-orange-200 hover:border-orange-300 hover:text-orange-800"
+            className="inline-flex items-center justify-center gap-2 pl-5 pr-6 py-2.5 bg-orange-100 text-orange-700 border border-orange-200 rounded-[10px] text-sm font-medium cursor-pointer transition-[background-color,border-color,color] duration-150 ease-out hover:bg-orange-200 hover:border-orange-300 hover:text-orange-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
           >
             <ChevronDown size={16} className="animate-bounce" />
             View Bank Transfer Instructions

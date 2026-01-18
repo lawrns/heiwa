@@ -50,7 +50,7 @@ export function RoomsGrid({ rooms, loading = false }: RoomsGridProps) {
                 >
                   <Link
                     href={`/rooms/${room.id}`}
-                    className="bg-white rounded-lg shadow-card overflow-hidden group hover-lift block transition-all duration-300 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 h-full flex flex-col"
+                    className="bg-white rounded-lg shadow-card overflow-hidden group hover-lift block transition-[box-shadow,transform,border-color,background-color] duration-300 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 h-full flex flex-col"
                   >
                   {/* Image Carousel */}
                   <div className="relative h-48 overflow-hidden">
@@ -88,7 +88,7 @@ export function RoomsGrid({ rooms, loading = false }: RoomsGridProps) {
                     </p>
 
                     {/* CTA */}
-                    <div className="inline-flex items-center gap-1.5 text-accent group-hover:text-accent-hover font-medium text-xs transition-all">
+                    <div className="inline-flex items-center gap-1.5 text-accent group-hover:text-accent-hover font-medium text-xs transition-colors">
                       Room Detail
                       <span className="group-hover:translate-x-0.5 transition-transform">→</span>
                     </div>

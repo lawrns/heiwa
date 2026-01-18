@@ -151,7 +151,7 @@ export default function AnalyticsPage() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-[border-color,box-shadow] duration-200"
             />
           </div>
           <div>
@@ -160,7 +160,7 @@ export default function AnalyticsPage() {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-[border-color,box-shadow] duration-200"
             />
           </div>
           <div>
@@ -168,7 +168,7 @@ export default function AnalyticsPage() {
             <select
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition-[border-color,box-shadow] duration-200"
             >
               <option value="all">All Brands</option>
               <option value="Heiwa House">Heiwa House</option>

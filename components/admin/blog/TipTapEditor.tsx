@@ -94,7 +94,7 @@ export function TipTapEditor({ content, onChange, placeholder = 'Start writing..
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-lg max-w-none focus:outline-none min-h-[300px] p-4',
+        class: 'prose prose-lg max-w-none focus-visible:outline-none min-h-[300px] p-4 transition-[box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-orange-500/40 rounded-b-lg',
       },
     },
   })

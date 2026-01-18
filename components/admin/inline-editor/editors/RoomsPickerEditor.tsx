@@ -75,7 +75,7 @@ export function RoomsPickerEditor({ content, onChange }: RoomsPickerEditorProps)
           type="text"
           value={(content.title as string) || ''}
           onChange={e => updateField('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -85,7 +85,7 @@ export function RoomsPickerEditor({ content, onChange }: RoomsPickerEditorProps)
           type="text"
           value={(content.subtitle as string) || ''}
           onChange={e => updateField('subtitle', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -101,7 +101,7 @@ export function RoomsPickerEditor({ content, onChange }: RoomsPickerEditorProps)
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Search rooms..."
         />
       </div>
@@ -117,13 +117,13 @@ export function RoomsPickerEditor({ content, onChange }: RoomsPickerEditorProps)
             return (
               <label
                 key={r.id}
-                className="flex items-center gap-2 p-2 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer"
+                className="flex items-center gap-2 p-2 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer transition-[background-color,border-color] duration-200 focus-within:ring-2 focus-within:ring-orange-500/40"
               >
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleRoom(r.id)}
-                  className="h-4 w-4"
+                  className="h-4 w-4 text-orange-600 border-gray-300 rounded transition-[background-color,border-color,box-shadow] duration-200 focus-visible:ring-offset-0 focus-visible:ring-orange-500/40"
                 />
                 <span className="text-sm text-gray-900">{r.name}</span>
               </label>

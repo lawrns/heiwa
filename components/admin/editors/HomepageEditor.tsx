@@ -27,7 +27,7 @@ interface HomepageEditorProps {
 
 const SECTION_TYPES = [
   { value: 'hero', label: 'Hero Section' },
-  { value: 'activities_around', label: 'Activities Around' },
+  { value: 'experiences_around', label: 'Experiences Around' },
   { value: 'what_we_are_about', label: 'What We Are About' },
   { value: 'testimonials', label: 'Testimonials' },
   { value: 'cta', label: 'Call to Action' }
@@ -191,7 +191,7 @@ const HomepageEditor: React.FC<HomepageEditorProps> = ({ className }) => {
       key: 'is_active',
       title: 'Status',
       render: (value: unknown) => (
-        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full transition-[background-color,color] duration-200 ${
           value ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
         }`}>
           {value ? 'Active' : 'Inactive'}
@@ -450,7 +450,7 @@ const HomepageSectionForm: React.FC<{
           id="is_active"
           checked={formData.is_active}
           onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-          className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+          className="rounded border-gray-300 text-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 transition-[border-color,box-shadow] duration-200"
         />
         <label htmlFor="is_active" className="text-sm font-medium text-gray-700">
           Active

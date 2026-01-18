@@ -152,7 +152,7 @@ export default function AdminGalleryPage() {
         <div className="flex gap-2">
           <Link
             href="/admin/gallery/upload"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent transition-[background-color,box-shadow] duration-200"
           >
             <Upload className="mr-2 h-5 w-5" />
             Upload Media
@@ -214,7 +214,7 @@ export default function AdminGalleryPage() {
                 placeholder="Search by title or tags..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent transition-[border-color,box-shadow] duration-200"
               />
             </div>
           </div>
@@ -223,7 +223,7 @@ export default function AdminGalleryPage() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+              className="px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent transition-[border-color,box-shadow] duration-200"
             >
               <option value="all">All Categories</option>
               <option value="rooms">Rooms</option>
@@ -237,7 +237,7 @@ export default function AdminGalleryPage() {
           <div className="flex gap-2">
             <button
               onClick={() => setViewMode('grid')}
-              className={`px-3 py-2 rounded-lg transition-colors ${
+              className={`px-3 py-2 rounded-lg transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
                 viewMode === 'grid' ? 'bg-accent text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -245,7 +245,7 @@ export default function AdminGalleryPage() {
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`px-3 py-2 rounded-lg transition-colors ${
+              className={`px-3 py-2 rounded-lg transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
                 viewMode === 'list' ? 'bg-accent text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -259,7 +259,7 @@ export default function AdminGalleryPage() {
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredItems.map((item) => (
-            <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
               <div className="relative aspect-video bg-gray-200">
                 {item.type === 'image' ? (
                   <Image
@@ -276,18 +276,31 @@ export default function AdminGalleryPage() {
                 )}
                 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center opacity-0 hover:opacity-100">
+                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-30 focus-within:bg-opacity-30 transition-[opacity,background-color] duration-200 flex items-center justify-center opacity-0 hover:opacity-100 focus-within:opacity-100">
                   <div className="flex gap-2">
-                    <button className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors">
+                    <button
+                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                      aria-label="View media"
+                    >
                       <Eye size={16} className="text-gray-700" />
                     </button>
-                    <button className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors">
+                    <button
+                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                      aria-label="Download media"
+                    >
                       <Download size={16} className="text-gray-700" />
                     </button>
-                    <Link href={`/admin/gallery/${item.id}`} className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors">
+                    <Link
+                      href={`/admin/gallery/${item.id}`}
+                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                      aria-label="Edit media"
+                    >
                       <Edit size={16} className="text-gray-700" />
                     </Link>
-                    <button className="p-2 bg-white rounded-full hover:bg-gray-100 transition-colors">
+                    <button
+                      className="p-2 bg-white rounded-full hover:bg-gray-100 transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                      aria-label="Delete media"
+                    >
                       <Trash2 size={16} className="text-red-600" />
                     </button>
                   </div>
@@ -437,16 +450,16 @@ export default function AdminGalleryPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex gap-2">
-                        <button className="text-blue-600 hover:text-blue-900">
+                        <button className="text-blue-600 hover:text-blue-900 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 rounded" aria-label="View media">
                           <Eye className="h-4 w-4" />
                         </button>
-                        <button className="text-gray-600 hover:text-gray-900">
+                        <button className="text-gray-600 hover:text-gray-900 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500/40 rounded" aria-label="Download media">
                           <Download className="h-4 w-4" />
                         </button>
-                        <Link href={`/admin/gallery/${item.id}`} className="text-accent hover:text-accent-hover">
+                        <Link href={`/admin/gallery/${item.id}`} className="text-accent hover:text-accent-hover transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 rounded" aria-label="Edit media">
                           <Edit className="h-4 w-4" />
                         </Link>
-                        <button className="text-red-600 hover:text-red-900">
+                        <button className="text-red-600 hover:text-red-900 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 rounded" aria-label="Delete media">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
@@ -466,7 +479,7 @@ export default function AdminGalleryPage() {
           <p className="text-gray-600 mb-4">No items match your current search criteria.</p>
           <Link
             href="/admin/gallery/upload"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent-hover"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-accent hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent transition-[background-color,box-shadow] duration-200"
           >
             <Upload className="mr-2 h-4 w-4" />
             Upload Media

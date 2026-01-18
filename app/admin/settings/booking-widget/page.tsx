@@ -180,7 +180,7 @@ export default function BookingWidgetSettingsPage() {
                     step="0.01"
                     value={roomSetting?.price_from || 45}
                     onChange={(e) => handlePriceChange('room', e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent transition-[border-color,box-shadow] duration-200"
                     placeholder="45.00"
                   />
                 </div>
@@ -215,7 +215,7 @@ export default function BookingWidgetSettingsPage() {
                     step="0.01"
                     value={surfWeekSetting?.price_from || 599}
                     onChange={(e) => handlePriceChange('surf-week', e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent transition-[border-color,box-shadow] duration-200"
                     placeholder="599.00"
                   />
                 </div>
@@ -231,7 +231,7 @@ export default function BookingWidgetSettingsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             >
               {saving ? (
                 <>

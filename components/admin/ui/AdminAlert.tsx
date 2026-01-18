@@ -101,7 +101,7 @@ const AdminAlert: React.FC<AdminAlertProps> = ({
             <button
               onClick={onDismiss}
               className={cn(
-                'inline-flex rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2',
+                'inline-flex rounded-md p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 transition-[background-color,color] duration-200',
                 getIconClasses(),
                 'hover:bg-opacity-20 hover:bg-current'
               )}

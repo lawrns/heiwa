@@ -48,7 +48,7 @@ export function ImagePicker({
         type="button"
         onClick={() => setIsOpen(true)}
         className={cn(
-          'w-full flex items-center gap-3 p-2 border border-gray-300 rounded-lg hover:border-orange-400 hover:bg-orange-50/50 transition-colors text-left',
+          'w-full flex items-center gap-3 p-2 border border-gray-300 rounded-lg hover:border-orange-400 hover:bg-orange-50/50 transition-[border-color,background-color] duration-200 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2',
           value && 'pr-2'
         )}
       >
@@ -78,7 +78,7 @@ export function ImagePicker({
           <button
             type="button"
             onClick={handleClear}
-            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
             title="Clear image"
           >
             <X className="w-4 h-4" />

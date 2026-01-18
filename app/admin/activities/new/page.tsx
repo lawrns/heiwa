@@ -114,10 +114,10 @@ export default function NewActivityPage() {
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Activities
+          Back to Experiences
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900">Add New Activity</h1>
-        <p className="text-gray-600 mt-2">Create a new activity for Heiwa House experiences</p>
+        <h1 className="text-3xl font-bold text-gray-900">Add New Experience</h1>
+        <p className="text-gray-600 mt-2">Create a new experience for Heiwa House</p>
       </div>
 
       {error && (
@@ -133,14 +133,14 @@ export default function NewActivityPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Activity Title *
+                Experience Title *
               </label>
               <input
                 type="text"
                 required
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="e.g., Surfing Lessons"
               />
@@ -155,7 +155,7 @@ export default function NewActivityPage() {
                 min="0"
                 value={formData.display_order}
                 onChange={(e) => handleInputChange('display_order', parseInt(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="0"
               />
@@ -174,7 +174,7 @@ export default function NewActivityPage() {
               rows={3}
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow]"
               style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
               placeholder="Describe what this activity involves..."
             />
@@ -190,7 +190,7 @@ export default function NewActivityPage() {
                 required
                 value={formData.category}
                 onChange={(e) => handleInputChange('category', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
               >
                 {categoryOptions.map(option => (
@@ -208,7 +208,7 @@ export default function NewActivityPage() {
               <select
                 value={formData.icon}
                 onChange={(e) => handleInputChange('icon', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
               >
                 {iconOptions.map(option => (
@@ -258,14 +258,14 @@ export default function NewActivityPage() {
           {/* Images */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Activity Image URL
-              </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Experience Image URL
+            </label>
               <input
                 type="url"
                 value={formData.image_url}
                 onChange={(e) => handleInputChange('image_url', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="https://heiwahouse.com/image.jpg"
               />
@@ -279,7 +279,7 @@ export default function NewActivityPage() {
                 type="url"
                 value={formData.hero_video_url}
                 onChange={(e) => handleInputChange('hero_video_url', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="https://heiwahouse.com/video.mp4"
               />
@@ -288,23 +288,24 @@ export default function NewActivityPage() {
 
           {/* Features */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="feature_input" className="block text-sm font-medium text-gray-700 mb-2">
               Features (optional)
             </label>
             <div className="flex gap-2 mb-3">
               <input
+                id="feature_input"
                 type="text"
                 value={featureInput}
                 onChange={(e) => setFeatureInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 style={{ '--tw-ring-color': '#ec681c' } as React.CSSProperties}
                 placeholder="Add a feature..."
               />
               <button
                 type="button"
                 onClick={addFeature}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
               >
                 Add
               </button>
@@ -320,7 +321,8 @@ export default function NewActivityPage() {
                     <button
                       type="button"
                       onClick={() => removeFeature(index)}
-                      className="text-gray-500 hover:text-red-600"
+                      className="text-gray-500 hover:text-red-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-500 rounded-full px-1"
+                      aria-label={`Remove ${feature}`}
                     >
                       ×
                     </button>
@@ -340,7 +342,7 @@ export default function NewActivityPage() {
                 className="mr-2"
               />
               <span className="text-sm font-medium text-gray-700">
-                Activity is active and visible to customers
+                Experience is active and visible to customers
               </span>
             </label>
           </div>
@@ -357,11 +359,11 @@ export default function NewActivityPage() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-accent hover:bg-accent-hover text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             style={{ backgroundColor: '#ec681c' }}
           >
             <Save className="w-4 h-4" />
-            {loading ? 'Creating...' : 'Create Activity'}
+            {loading ? 'Creating...' : 'Create Experience'}
           </button>
         </div>
       </form>

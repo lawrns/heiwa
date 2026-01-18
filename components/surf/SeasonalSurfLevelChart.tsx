@@ -144,7 +144,7 @@ export function SeasonalSurfLevelChart() {
                     return (
                       <div
                         key={monthIndex}
-                        className={`h-16 sm:h-20 rounded-lg transition-all duration-200 cursor-pointer flex items-center justify-center ${
+                        className={`h-16 sm:h-20 rounded-lg transition-[transform,box-shadow,ring] duration-200 cursor-pointer flex items-center justify-center focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[#1e7963] focus-visible:ring-opacity-60 focus-visible:scale-110 focus-visible:z-10 ${
                           isHovered 
                             ? 'ring-3 ring-[#1e7963] ring-opacity-60 scale-110 shadow-xl z-10' 
                             : 'hover:ring-2 hover:ring-[#1e7963] hover:ring-opacity-40 hover:scale-105 hover:shadow-lg'

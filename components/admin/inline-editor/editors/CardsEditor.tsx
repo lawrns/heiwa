@@ -49,7 +49,7 @@ export function CardsEditor({ content, onChange }: CardsEditorProps) {
           type="text"
           value={(content.title as string) || ''}
           onChange={e => updateField('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -61,7 +61,7 @@ export function CardsEditor({ content, onChange }: CardsEditorProps) {
           type="text"
           value={(content.subtitle as string) || ''}
           onChange={e => updateField('subtitle', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -108,7 +108,7 @@ export function CardsEditor({ content, onChange }: CardsEditorProps) {
                   type="text"
                   value={card.title || ''}
                   onChange={e => updateCard(index, { title: e.target.value })}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
 
@@ -120,7 +120,7 @@ export function CardsEditor({ content, onChange }: CardsEditorProps) {
                   value={card.description || ''}
                   onChange={e => updateCard(index, { description: e.target.value })}
                   rows={2}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                 />
               </div>
 
@@ -139,7 +139,7 @@ export function CardsEditor({ content, onChange }: CardsEditorProps) {
                   type="text"
                   value={card.link || ''}
                   onChange={e => updateCard(index, { link: e.target.value })}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                   placeholder="/play"
                 />
               </div>

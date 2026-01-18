@@ -276,7 +276,7 @@ describe('PaymentMethodSelector Component', () => {
 
       const buttons = screen.getAllByRole('button');
       buttons.forEach(button => {
-        expect(button).toHaveClass('focus:ring-2');
+        expect(button).toHaveClass('focus-visible:ring-2');
       });
     });
   });

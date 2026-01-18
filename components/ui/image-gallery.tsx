@@ -123,7 +123,7 @@ export function ImageGallery({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedIndex(null)}
-              className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-full p-1 z-10"
               aria-label="Close lightbox"
             >
               <X className="w-8 h-8" />
@@ -179,7 +179,7 @@ export function ImageGallery({
                     e.stopPropagation()
                     handlePrevious()
                   }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-full p-1"
                   aria-label="Previous image"
                 >
                   <ChevronLeft className="w-8 h-8" />
@@ -193,7 +193,7 @@ export function ImageGallery({
                     e.stopPropagation()
                     handleNext()
                   }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded-full p-1"
                   aria-label="Next image"
                 >
                   <ChevronRight className="w-8 h-8" />

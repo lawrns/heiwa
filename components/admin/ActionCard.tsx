@@ -59,7 +59,7 @@ export function ActionCard({
   const colors = colorClasses[color]
 
   return (
-    <div className={`${colors.bg} rounded-lg border ${colors.border} p-6 transition-all duration-300 hover:shadow-lg hover:scale-105 flex flex-col h-full`}>
+    <div className={`${colors.bg} rounded-lg border ${colors.border} p-6 transition-[box-shadow,transform,background-color] duration-300 hover:shadow-lg hover:scale-105 flex flex-col h-full`}>
       <div className="flex items-start justify-between mb-4">
         <div className={`${colors.icon} rounded-lg p-3 bg-white`}>
           <Icon className="h-6 w-6" />
@@ -78,8 +78,8 @@ export function ActionCard({
         </div>
       )}
 
-      <Link href={href} className="mt-auto">
-        <button className={`w-full ${colors.button} text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200`}>
+      <Link href={href} className="mt-auto group focus-visible:outline-none">
+        <button className={`w-full ${colors.button} text-white font-medium py-2 px-4 rounded-lg transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-500/40 group-focus-visible:ring-2 group-focus-visible:ring-offset-2 group-focus-visible:ring-orange-500/40 shadow-sm hover:shadow-md active:scale-[0.98]`}>
           {buttonText}
         </button>
       </Link>

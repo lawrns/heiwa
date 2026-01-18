@@ -223,16 +223,16 @@ describe('Input Component', () => {
     it('should have focus ring styling', () => {
       render(<Input data-testid="input" />);
       const input = screen.getByTestId('input');
-      expect(input).toHaveClass('focus:ring-2');
+      expect(input).toHaveClass('focus-visible:ring-2');
       // Component uses accent color for focus ring
-      expect(input).toHaveClass('focus:ring-accent/20');
-      expect(input).toHaveClass('focus:border-accent');
+      expect(input).toHaveClass('focus-visible:ring-accent/20');
+      expect(input).toHaveClass('focus-visible:border-accent');
     });
 
     it('should have transition styling', () => {
       render(<Input data-testid="input" />);
       // Component uses motion-safe prefix for transitions
-      expect(screen.getByTestId('input')).toHaveClass('motion-safe:transition-all');
+      expect(screen.getByTestId('input').className).toMatch(/motion-safe:transition-\[/);
     });
   });
 

@@ -32,7 +32,7 @@ export function IntroEditor({ content, onChange }: IntroEditorProps) {
           type="text"
           value={data.title || ''}
           onChange={(e) => updateField('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Section title"
         />
       </div>
@@ -44,7 +44,7 @@ export function IntroEditor({ content, onChange }: IntroEditorProps) {
             value={data.content || ''}
             onChange={(e) => updateField('content', e.target.value)}
             rows={6}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-mono text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200 font-mono text-sm"
             placeholder="<p>Your intro content here...</p>"
           />
           <p className="text-xs text-gray-500 mt-1">You can use basic HTML tags like &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;.</p>
@@ -59,7 +59,7 @@ export function IntroEditor({ content, onChange }: IntroEditorProps) {
               type="text"
               value={data.phone || ''}
               onChange={(e) => updateField('phone', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
               placeholder="+351 915 215 883"
             />
           </div>
@@ -70,7 +70,7 @@ export function IntroEditor({ content, onChange }: IntroEditorProps) {
               type="email"
               value={data.email || ''}
               onChange={(e) => updateField('email', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
               placeholder="bookings@heiwahouse.com"
             />
           </div>
@@ -81,7 +81,7 @@ export function IntroEditor({ content, onChange }: IntroEditorProps) {
               type="text"
               value={data.address || ''}
               onChange={(e) => updateField('address', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
               placeholder="Ericeira, Portugal"
             />
           </div>

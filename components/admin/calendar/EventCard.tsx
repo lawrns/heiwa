@@ -122,7 +122,7 @@ export function EventCard({ event, onUpdate, onViewFull }: EventCardProps) {
   return (
     <div
       className={cn(
-        'rounded-lg border p-3 transition-all',
+        'rounded-lg border p-3 transition-[background-color,border-color,opacity,box-shadow,transform] duration-200',
         !hasCustomColor && config.bgColor,
         !hasCustomColor && config.borderColor,
         event.status === 'cancelled' && 'opacity-60'
@@ -142,7 +142,7 @@ export function EventCard({ event, onUpdate, onViewFull }: EventCardProps) {
         </div>
         <button
           onClick={() => onViewFull(event)}
-          className="text-gray-500 hover:text-gray-700 p-1"
+          className="text-gray-500 hover:text-gray-700 p-1 transition-[color,background-color] duration-200 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
           title="View full details"
         >
           <ExternalLink className="h-4 w-4" />
@@ -181,7 +181,9 @@ export function EventCard({ event, onUpdate, onViewFull }: EventCardProps) {
       ) : (
         <div
           onClick={() => setIsEditing(true)}
-          className="cursor-pointer hover:bg-white/50 rounded p-1 -m-1 transition-colors"
+          className="cursor-pointer hover:bg-white/50 rounded p-1 -m-1 transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && setIsEditing(true)}
         >
           <p
             className={cn(

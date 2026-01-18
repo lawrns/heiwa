@@ -20,7 +20,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
           type="text"
           value={(content.title as string) || ''}
           onChange={e => updateField('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -32,7 +32,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
           type="text"
           value={(content.subtitle as string) || ''}
           onChange={e => updateField('subtitle', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -44,7 +44,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
           value={(content.description as string) || ''}
           onChange={e => updateField('description', e.target.value)}
           rows={6}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -65,7 +65,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
                     newFeatures[index] = e.target.value
                     onChange({ ...content, features: newFeatures })
                   }}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                 />
                 <button
                   type="button"
@@ -75,7 +75,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
                     )
                     onChange({ ...content, features: newFeatures })
                   }}
-                  className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+                  className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
                 >
                   &times;
                 </button>
@@ -87,7 +87,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
                 const newFeatures = [...(content.features as string[]), '']
                 onChange({ ...content, features: newFeatures })
               }}
-              className="text-sm text-orange-600 hover:text-orange-700"
+              className="text-sm text-orange-600 hover:text-orange-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
             >
               + Add feature
             </button>
@@ -112,7 +112,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
                     newItems[index] = e.target.value
                     onChange({ ...content, items: newItems })
                   }}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
                 />
                 <button
                   type="button"
@@ -122,7 +122,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
                     )
                     onChange({ ...content, items: newItems })
                   }}
-                  className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+                  className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
                 >
                   &times;
                 </button>
@@ -134,7 +134,7 @@ export function TextEditor({ content, onChange }: TextEditorProps) {
                 const newItems = [...(content.items as string[]), '']
                 onChange({ ...content, items: newItems })
               }}
-              className="text-sm text-orange-600 hover:text-orange-700"
+              className="text-sm text-orange-600 hover:text-orange-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
             >
               + Add item
             </button>

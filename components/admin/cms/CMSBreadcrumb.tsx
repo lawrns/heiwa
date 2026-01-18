@@ -57,7 +57,7 @@ export default function CMSBreadcrumb() {
       {/* Add Admin Dashboard link at the start */}
       <Link
         href="/admin"
-        className="flex items-center hover:text-gray-700 transition-colors"
+        className="flex items-center hover:text-gray-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded px-1"
       >
         <Home className="w-4 h-4 mr-1" />
         Admin
@@ -76,7 +76,7 @@ export default function CMSBreadcrumb() {
             ) : (
               <Link
                 href={item.href}
-                className="hover:text-gray-700 transition-colors"
+                className="hover:text-gray-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded px-1"
               >
                 {item.label}
               </Link>

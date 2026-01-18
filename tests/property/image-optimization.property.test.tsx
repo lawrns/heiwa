@@ -92,7 +92,7 @@ describe('Image Optimization (Property 5)', () => {
           )
           
           const image = container.querySelector('[data-testid="mock-image"]')
-          expect(image).toHaveClass('transition-all')
+          expect(image).toHaveClass('transition-[filter,transform,opacity]')
           expect(image).toHaveClass('duration-standard')
         }),
         { numRuns: 30 }

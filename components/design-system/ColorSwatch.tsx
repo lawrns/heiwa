@@ -36,7 +36,7 @@ export function ColorSwatch({
     <div className={cn("flex flex-col space-y-2", className)}>
       <button
         onClick={() => handleCopy(hex, 'hex')}
-        className="h-32 w-full rounded-lg shadow-sm flex items-center justify-center border border-gray-200 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-md group relative"
+        className="h-32 w-full rounded-lg shadow-sm flex items-center justify-center border border-gray-200 cursor-pointer transition-[transform,box-shadow,background-color] duration-200 hover:scale-[1.02] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-500 group relative"
         style={{ backgroundColor: hex }}
         title={`Click to copy ${hex}`}
       >
@@ -54,7 +54,7 @@ export function ColorSwatch({
         {variable && (
           <button
             onClick={() => handleCopy(variable, 'variable')}
-            className="flex items-center gap-1 text-xs text-muted-foreground font-mono hover:text-gray-900 transition-colors group"
+            className="flex items-center gap-1 text-xs text-muted-foreground font-mono hover:text-gray-900 transition-colors duration-200 group focus-visible:outline-none focus-visible:underline"
             title={`Click to copy ${variable}`}
           >
             {variable}
@@ -68,7 +68,7 @@ export function ColorSwatch({
         {tailwindClass && (
           <button
             onClick={() => handleCopy(tailwindClass, 'tailwind')}
-            className="flex items-center gap-1 text-xs text-muted-foreground font-mono hover:text-gray-900 transition-colors group"
+            className="flex items-center gap-1 text-xs text-muted-foreground font-mono hover:text-gray-900 transition-colors duration-200 group focus-visible:outline-none focus-visible:underline"
             title={`Click to copy ${tailwindClass}`}
           >
             {tailwindClass}

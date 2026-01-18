@@ -220,7 +220,7 @@ export default function NewBookingPage() {
                 value="room"
                 checked={formData.type === 'room'}
                 onChange={() => setFormData(prev => ({ ...prev, type: 'room', item_id: '' }))}
-                className="text-heiwaOrange-600 focus:ring-heiwaOrange-500"
+                className="text-heiwaOrange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:ring-offset-2"
                 data-testid="option-room"
               />
               <Home className="h-5 w-5 text-gray-600" />
@@ -233,7 +233,7 @@ export default function NewBookingPage() {
                 value="surf_camp"
                 checked={formData.type === 'surf_camp'}
                 onChange={() => setFormData(prev => ({ ...prev, type: 'surf_camp', item_id: '' }))}
-                className="text-heiwaOrange-600 focus:ring-heiwaOrange-500"
+                className="text-heiwaOrange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:ring-offset-2"
                 data-testid="option-surf-week"
               />
               <Calendar className="h-5 w-5 text-gray-600" />
@@ -254,7 +254,7 @@ export default function NewBookingPage() {
               value={formData.item_id}
               onChange={(e) => setFormData(prev => ({ ...prev, item_id: e.target.value }))}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
               data-testid="booking-room-select"
             >
               <option value="">Select {formData.type === 'room' ? 'a room' : 'a surf week'}...</option>
@@ -289,7 +289,7 @@ export default function NewBookingPage() {
                 required
                 value={formData.guest_name}
                 onChange={(e) => setFormData(prev => ({ ...prev, guest_name: e.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 placeholder="John Doe"
                 data-testid="booking-guest-name"
               />
@@ -304,7 +304,7 @@ export default function NewBookingPage() {
                 required
                 value={formData.guest_email}
                 onChange={(e) => setFormData(prev => ({ ...prev, guest_email: e.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 placeholder="john@example.com"
                 data-testid="booking-email"
               />
@@ -318,7 +318,7 @@ export default function NewBookingPage() {
                 type="tel"
                 value={formData.guest_phone}
                 onChange={(e) => setFormData(prev => ({ ...prev, guest_phone: e.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 placeholder="+1 234 567 8900"
                 data-testid="booking-phone"
               />
@@ -334,7 +334,7 @@ export default function NewBookingPage() {
                 min="1"
                 value={formData.guests}
                 onChange={(e) => setFormData(prev => ({ ...prev, guests: parseInt(e.target.value) || 1 }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 data-testid="booking-guests"
               />
             </div>
@@ -355,7 +355,7 @@ export default function NewBookingPage() {
                   required
                   value={formData.check_in}
                   onChange={(e) => setFormData(prev => ({ ...prev, check_in: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                   data-testid="booking-date-picker"
                 />
               </div>
@@ -369,7 +369,7 @@ export default function NewBookingPage() {
                   value={formData.check_out}
                   min={formData.check_in}
                   onChange={(e) => setFormData(prev => ({ ...prev, check_out: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                   data-testid="booking-checkout-date"
                 />
               </div>
@@ -388,7 +388,7 @@ export default function NewBookingPage() {
               <select
                 value={formData.status}
                 onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'pending' | 'confirmed' }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
               >
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
@@ -401,7 +401,7 @@ export default function NewBookingPage() {
               <select
                 value={formData.payment_status}
                 onChange={(e) => setFormData(prev => ({ ...prev, payment_status: e.target.value as 'pending' | 'paid' }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
               >
                 <option value="pending">Pending</option>
                 <option value="paid">Paid</option>
@@ -417,7 +417,7 @@ export default function NewBookingPage() {
                 step="0.01"
                 value={formData.total_price}
                 onChange={(e) => setFormData(prev => ({ ...prev, total_price: parseFloat(e.target.value) || 0 }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
               />
             </div>
           </div>
@@ -435,7 +435,7 @@ export default function NewBookingPage() {
                 rows={3}
                 value={formData.special_requests}
                 onChange={(e) => setFormData(prev => ({ ...prev, special_requests: e.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 placeholder="Any special requests from the guest..."
                 data-testid="booking-notes"
               />
@@ -448,7 +448,7 @@ export default function NewBookingPage() {
                 rows={3}
                 value={formData.notes}
                 onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 placeholder="Internal notes (not visible to guest)..."
               />
             </div>
@@ -470,12 +470,12 @@ export default function NewBookingPage() {
           >
             Cancel
           </Link>
-          <button
-            type="submit"
-            disabled={loading || !formData.item_id}
-            className="inline-flex items-center gap-2 px-6 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-            data-testid="save-booking"
-          >
+            <button
+              type="submit"
+              disabled={loading || !formData.item_id}
+              className="inline-flex items-center gap-2 px-6 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,transform] duration-200 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:ring-offset-2 active:scale-[0.98]"
+              data-testid="save-booking"
+            >
             <Save className="h-4 w-4" />
             {loading ? 'Creating...' : 'Create Booking'}
           </button>

@@ -193,7 +193,7 @@ const AdminModal: React.FC<AdminModalProps> = ({
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="rounded-md p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 min-w-[44px] min-h-[44px]"
+                className="rounded-md p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 min-w-[44px] min-h-[44px] transition-[background-color,color] duration-200"
                 aria-label="Close modal"
                 type="button"
               >

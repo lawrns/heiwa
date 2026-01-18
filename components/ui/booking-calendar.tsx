@@ -115,8 +115,10 @@ export function BookingCalendar({ bookings, onBookingClick }: BookingCalendarPro
         <div className="flex items-center gap-4">
           <button
             onClick={goToPreviousMonth}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
             aria-label="Previous month"
+            aria-pressed="false"
+            role="button"
           >
             <ChevronLeft size={20} />
           </button>
@@ -125,8 +127,10 @@ export function BookingCalendar({ bookings, onBookingClick }: BookingCalendarPro
           </h3>
           <button
             onClick={goToNextMonth}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
             aria-label="Next month"
+            aria-pressed="false"
+            role="button"
           >
             <ChevronRight size={20} />
           </button>
@@ -152,11 +156,15 @@ export function BookingCalendar({ bookings, onBookingClick }: BookingCalendarPro
             <div
               key={index}
               className={`
-                min-h-[100px] sm:min-h-[120px] p-2 border border-gray-200 cursor-pointer transition-colors min-w-0
+                min-h-[100px] sm:min-h-[120px] p-2 border border-gray-200 cursor-pointer transition duration-200 min-w-0
                 ${isCurrentMonthDay ? 'bg-white' : 'bg-gray-50'}
                 ${isTodayDate ? 'ring-2 ring-accent' : ''}
-                hover:bg-gray-100
+                hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent
               `}
+              tabIndex={isCurrentMonthDay ? 0 : -1}
+              role="button"
+              aria-label={isCurrentMonthDay ? `${date.toDateString()}` : undefined}
+              aria-pressed="false"
               onClick={() => setSelectedDate(date)}
             >
               <div className="text-sm font-medium text-gray-900 mb-1">

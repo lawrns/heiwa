@@ -23,7 +23,7 @@ export function CodeBlock({ code, className }: CodeBlockProps) {
       <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={handleCopy}
-          className="p-1.5 rounded-md bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+          className="p-1.5 rounded-md bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500"
           title="Copy code"
         >
           {copied ? <Check size={16} className="text-green-500" /> : <Copy size={16} />}

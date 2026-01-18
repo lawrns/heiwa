@@ -64,7 +64,7 @@ export function HostsEditor({ content, onChange }: HostsEditorProps) {
         <button
           type="button"
           onClick={seedDefaults}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg border border-orange-200 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg border border-orange-200 transition-[background-color,color,border-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
           title="Reset to default content"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@ export function HostsEditor({ content, onChange }: HostsEditorProps) {
           value={(content.title as string) || ''}
           onChange={e => updateField('title', e.target.value)}
           placeholder="Your Hosts"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
       </div>
 
@@ -117,12 +117,12 @@ export function HostsEditor({ content, onChange }: HostsEditorProps) {
               onChange={e => updateParagraph(index, e.target.value)}
               rows={3}
               placeholder={`Paragraph ${index + 1}...`}
-              className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+              className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200 text-sm"
             />
             <button
               type="button"
               onClick={() => removeParagraph(index)}
-              className="absolute top-2 right-2 p-1 text-red-500 hover:bg-red-50 rounded"
+              className="absolute top-2 right-2 p-1 text-red-500 hover:bg-red-50 rounded transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
               title="Remove paragraph"
             >
               <Trash2 className="w-4 h-4" />
@@ -147,7 +147,7 @@ export function HostsEditor({ content, onChange }: HostsEditorProps) {
           value={(content.signature as string) || ''}
           onChange={e => updateField('signature', e.target.value)}
           placeholder="Janis, Buka & Edijs"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 italic"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200 italic"
         />
       </div>
     </div>

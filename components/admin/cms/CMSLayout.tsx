@@ -35,8 +35,11 @@ export function CMSLayout({
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden transition-opacity duration-300"
           onClick={() => setMobileMenuOpen(false)}
+          role="button"
+          tabIndex={-1}
+          aria-hidden="true"
         />
       )}
 
@@ -58,7 +61,7 @@ export function CMSLayout({
             <div className="flex items-center justify-between mb-4 lg:mb-0">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
                 aria-label="Toggle menu"
               >
                 {mobileMenuOpen ? (
@@ -71,7 +74,7 @@ export function CMSLayout({
               {/* Back to Admin Dashboard Link */}
               <Link
                 href="/admin"
-                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span className="hidden sm:inline">Back to Admin Dashboard</span>
@@ -88,7 +91,7 @@ export function CMSLayout({
               {action && (
                 <button
                   onClick={action.onClick}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-colors font-medium text-sm sm:text-base w-full sm:w-auto"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-heiwaOrange-600 text-white rounded-lg hover:bg-heiwaOrange-700 transition-[background-color,box-shadow] duration-200 font-medium text-sm sm:text-base w-full sm:w-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500/40 focus-visible:ring-offset-2 shadow-sm"
                 >
                   {action.icon}
                   <span className="hidden sm:inline">{action.label}</span>

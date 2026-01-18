@@ -126,8 +126,8 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
               className={cn(
                 // Base styles
                 "relative w-full rounded-xl text-left overflow-hidden",
-                "transition-all duration-standard ease-out",
-                "focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2",
+                "transition-[transform,box-shadow,border-color,background-color] duration-standard ease-out",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2",
                 // Animation on mount
                 "animate-fade-in-up",
                 // Hover effects - lift with glow
@@ -177,7 +177,7 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
                   <div className={cn(
                     "p-3 rounded-lg bg-white/20 backdrop-blur-md",
                     "border border-white/30 flex-shrink-0",
-                    "shadow-lg transition-all duration-micro",
+                    "shadow-lg transition-[transform,background-color] duration-micro",
                     "group-hover:bg-white/30 group-hover:scale-105"
                   )}>
                     <Icon size={24} className="text-white" />

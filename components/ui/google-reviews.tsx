@@ -194,7 +194,7 @@ export function GoogleReviews({
       {showReviews && reviews && reviews.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {reviews.slice(0, maxReviews).map((review, index) => (
-            <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 hover:shadow-md transition-shadow">
+            <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 hover:shadow-md transition-[box-shadow] duration-200">
               <div className="flex items-center gap-3 mb-3 sm:mb-4">
                 {review.profile_photo_url ? (
                   <img

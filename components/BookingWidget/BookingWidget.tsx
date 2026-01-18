@@ -367,7 +367,7 @@ export function BookingWidget({
               </h2>
               <button
                 onClick={closeWidget}
-                className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all duration-micro focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2 min-w-[44px] min-h-[44px] flex items-center justify-center active:scale-95"
+                className="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 motion-safe:transition-[color,background-color,transform] motion-safe:duration-micro motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 min-w-[44px] min-h-[44px] flex items-center justify-center motion-safe:active:scale-95"
                 aria-label="Close booking widget"
               >
                 <X size={20} />

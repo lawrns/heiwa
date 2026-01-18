@@ -25,9 +25,9 @@ const Checkbox = React.forwardRef<
       // Border styling
       "border border-gray-300",
       // TOON-compliant focus state with subtle ring (Requirement 8.4)
-      "focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:ring-offset-1",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:ring-offset-1",
       // Transition for smooth interactions
-      "transition-all duration-150 ease-out",
+      "transition-[border-color,background-color,box-shadow] duration-150 ease-out",
       // Disabled state
       "disabled:cursor-not-allowed disabled:opacity-50",
       // Checked state

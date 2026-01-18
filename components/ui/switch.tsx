@@ -20,9 +20,9 @@ const Switch = React.forwardRef<
       // Border styling
       "border-2 border-transparent",
       // TOON-compliant focus state with subtle ring (Requirement 8.4)
-      "focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:ring-offset-2",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/20 focus-visible:ring-offset-2",
       // Transition for smooth interactions
-      "transition-all duration-150 ease-out",
+      "transition-[background-color,box-shadow,border-color] duration-150 ease-out",
       // Disabled state
       "disabled:cursor-not-allowed disabled:opacity-50",
       // Checked/unchecked states

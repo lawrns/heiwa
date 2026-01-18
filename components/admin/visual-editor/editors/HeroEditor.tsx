@@ -34,7 +34,7 @@ export function HeroEditor({ content, onChange, onSave, saving }: HeroEditorProp
           type="text"
           value={heroContent.title || ''}
           onChange={(e) => handleChange('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Enter hero title"
         />
       </div>
@@ -47,7 +47,7 @@ export function HeroEditor({ content, onChange, onSave, saving }: HeroEditorProp
           value={heroContent.description || ''}
           onChange={(e) => handleChange('description', e.target.value)}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Enter hero description"
         />
       </div>
@@ -60,7 +60,7 @@ export function HeroEditor({ content, onChange, onSave, saving }: HeroEditorProp
           type="text"
           value={heroContent.videoUrl || ''}
           onChange={(e) => handleChange('videoUrl', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="/videos/hero.mp4 or https://..."
         />
         <p className="mt-1 text-xs text-gray-500">
@@ -76,7 +76,7 @@ export function HeroEditor({ content, onChange, onSave, saving }: HeroEditorProp
           type="text"
           value={heroContent.imageUrl || ''}
           onChange={(e) => handleChange('imageUrl', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="/images/hero.jpg or https://..."
         />
         {heroContent.imageUrl && (
@@ -111,7 +111,7 @@ export function HeroEditor({ content, onChange, onSave, saving }: HeroEditorProp
         <button
           onClick={onSave}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 transition-[background-color,opacity] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Changes

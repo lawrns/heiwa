@@ -160,70 +160,70 @@ describe('ActivityGridEditor Current Items Display', () => {
   it('should fetch activities on mount', () => {
     const fs = require('fs')
     const path = require('path')
-    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ActivityGridEditor.tsx')
+    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ExperienceGridEditor.tsx')
     const content = fs.readFileSync(componentPath, 'utf8')
 
     expect(content).toContain('useEffect')
-    expect(content).toContain('fetchActivities')
+    expect(content).toContain('fetchExperiences')
     expect(content).toContain('/api/activities')
   })
 
-  it('should display activities preview section', () => {
+  it('should display experiences preview section', () => {
     const fs = require('fs')
     const path = require('path')
-    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ActivityGridEditor.tsx')
+    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ExperienceGridEditor.tsx')
     const content = fs.readFileSync(componentPath, 'utf8')
 
-    expect(content).toContain('Activities Preview')
-    expect(content).toContain('activities.length')
-    expect(content).toContain('activities.map')
+    expect(content).toContain('Experiences Preview')
+    expect(content).toContain('experiences.length')
+    expect(content).toContain('experiences.map')
   })
 
   it('should show loading state', () => {
     const fs = require('fs')
     const path = require('path')
-    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ActivityGridEditor.tsx')
+    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ExperienceGridEditor.tsx')
     const content = fs.readFileSync(componentPath, 'utf8')
 
     expect(content).toContain('loading')
     expect(content).toContain('Loader2')
-    expect(content).toContain('Loading activities')
+    expect(content).toContain('Loading experiences')
   })
 
   it('should show error state', () => {
     const fs = require('fs')
     const path = require('path')
-    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ActivityGridEditor.tsx')
+    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ExperienceGridEditor.tsx')
     const content = fs.readFileSync(componentPath, 'utf8')
 
     expect(content).toContain('error')
-    expect(content).toContain('Could not load activities preview')
+    expect(content).toContain('Could not load experiences preview')
   })
 
   it('should show empty state message', () => {
     const fs = require('fs')
     const path = require('path')
-    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ActivityGridEditor.tsx')
+    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ExperienceGridEditor.tsx')
     const content = fs.readFileSync(componentPath, 'utf8')
 
-    expect(content).toContain('No activities found for this category and tier combination')
+    expect(content).toContain('No experiences found for this category and tier combination')
   })
 
-  it('should link to manage activities page', () => {
+  it('should link to manage experiences page', () => {
     const fs = require('fs')
     const path = require('path')
-    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ActivityGridEditor.tsx')
+    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ExperienceGridEditor.tsx')
     const content = fs.readFileSync(componentPath, 'utf8')
 
     expect(content).toContain('/admin/activities')
-    expect(content).toContain('Manage Activities')
+    expect(content).toContain('Manage Experiences')
     expect(content).toContain('ExternalLink')
   })
 
   it('should refetch when category or tier changes', () => {
     const fs = require('fs')
     const path = require('path')
-    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ActivityGridEditor.tsx')
+    const componentPath = path.join(process.cwd(), 'components/admin/inline-editor/editors/ExperienceGridEditor.tsx')
     const content = fs.readFileSync(componentPath, 'utf8')
 
     expect(content).toContain('[data.category, data.tier]')

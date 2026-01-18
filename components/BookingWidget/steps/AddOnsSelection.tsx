@@ -140,14 +140,16 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
             return (
               <div
                 key={addOn.id}
-                className={`
-                  p-4 rounded-[10px] border transition-all duration-300
+                className={
+                  `
+                  p-4 rounded-[10px] border motion-safe:transition-[border-color,background-color,box-shadow] motion-safe:duration-300 motion-reduce:transition-none
                   ${isSelected
                     ? 'border-accent bg-accent/5 shadow-md shadow-accent/20'
                     : 'border-gray-200 bg-white hover:border-accent/30 hover:bg-accent/5'
                   }
                   animate-in fade-in-0 slide-in-from-bottom-4
-                `}
+                `
+                }
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {/* Mobile-responsive layout */}
@@ -190,8 +192,8 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                           w-[44px] h-[44px] rounded-full border border-gray-300
                           flex items-center justify-center
                           hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed
-                          motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none
-                          focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2
+                          motion-safe:transition-[background-color,border-color] motion-safe:duration-200 motion-reduce:transition-none
+                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2
                         "
                         aria-label={`Decrease ${addOn.name} quantity`}
                       >
@@ -209,8 +211,8 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                           w-[44px] h-[44px] rounded-full border border-gray-300
                           flex items-center justify-center
                           hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed
-                          motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none
-                          focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2
+                          motion-safe:transition-[background-color,border-color] motion-safe:duration-200 motion-reduce:transition-none
+                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2
                         "
                         aria-label={`Increase ${addOn.name} quantity`}
                       >

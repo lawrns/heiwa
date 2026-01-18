@@ -36,12 +36,13 @@ describe('GET /api/admin/cms/page-stats', () => {
   describe('Authentication', () => {
     it('should return 401 when admin_auth cookie is missing', async () => {
       (mockRequest.cookies.get as jest.Mock).mockReturnValue(undefined);
+      process.env.ADMIN_PASSWORD = 'test_password';
 
       const response = await GET(mockRequest);
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data).toEqual({ error: 'Unauthorized' });
+      expect(data).toEqual({ success: false, error: 'Unauthorized' });
     });
 
     it('should return 401 when admin_auth cookie is incorrect', async () => {
@@ -52,7 +53,7 @@ describe('GET /api/admin/cms/page-stats', () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data).toEqual({ error: 'Unauthorized' });
+      expect(data).toEqual({ success: false, error: 'Unauthorized' });
     });
 
     it('should allow access with correct admin_auth cookie', async () => {

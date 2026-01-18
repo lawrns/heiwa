@@ -76,17 +76,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const iconSize = size === 'sm' ? 'h-3.5 w-3.5' : size === 'lg' ? 'h-5 w-5' : 'h-4 w-4'
 
     // Base classes - TOON-compliant with design token values
-    const baseClasses = "inline-flex items-center justify-center gap-2 font-medium rounded-[10px] motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
+    const baseClasses = "inline-flex items-center justify-center gap-2 font-medium rounded-[10px] motion-safe:transition-[transform,box-shadow,background-color,border-color,color] motion-safe:duration-300 motion-safe:ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
 
     // Variant classes
     const variantClasses = {
-      default: "bg-accent text-white shadow-sm hover:bg-accent-dark focus:ring-accent/30",
-      secondary: "bg-gray-800 text-white shadow-sm hover:bg-gray-900 focus:ring-gray-500/30",
-      ghost: "text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:ring-gray-500/30",
-      outline: "bg-white border border-gray-300 text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 focus:ring-gray-500/30",
-      destructive: "bg-red-600 text-white shadow-sm hover:bg-red-700 focus:ring-red-500/30",
-      link: "text-accent underline-offset-4 hover:underline focus:ring-accent/30",
-      success: "bg-green-600 text-white shadow-sm hover:bg-green-700 focus:ring-green-500/30",
+      default: "bg-accent text-white shadow-sm hover:bg-accent-dark focus-visible:ring-accent/30",
+      secondary: "bg-gray-800 text-white shadow-sm hover:bg-gray-900 focus-visible:ring-gray-500/30",
+      ghost: "text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus-visible:ring-gray-500/30",
+      outline: "bg-white border border-gray-300 text-gray-700 shadow-sm hover:bg-gray-50 hover:border-gray-400 focus-visible:ring-gray-500/30",
+      destructive: "bg-red-600 text-white shadow-sm hover:bg-red-700 focus-visible:ring-red-500/30",
+      link: "text-accent underline-offset-4 hover:underline focus-visible:ring-accent/30",
+      success: "bg-green-600 text-white shadow-sm hover:bg-green-700 focus-visible:ring-green-500/30",
     }
 
     // Size classes - using static Tailwind values matching design tokens

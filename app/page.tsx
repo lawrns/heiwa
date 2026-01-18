@@ -58,7 +58,7 @@ export default function HomePage() {
         <HomeReviews />
       </Suspense>
 
-      {/* Activities Around Section */}
+      {/* Experiences Around Section */}
       <Suspense fallback={<CardGridSkeleton count={4} />}>
         <HomeFacilities />
       </Suspense>

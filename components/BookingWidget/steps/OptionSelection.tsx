@@ -537,7 +537,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     value={checkInDate}
                     min={new Date().toISOString().split('T')[0]}
                     onChange={(e) => handleCheckInChange(e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
+                    className={`w-full px-3 py-2 border rounded-[10px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 focus-visible:border-accent transition-[border-color,box-shadow,background-color] duration-200 motion-reduce:transition-none text-[14px] ${
                       checkInDate && isDateSoldOut(checkInDate)
                         ? 'border-red-300 bg-red-50 text-red-700'
                         : 'border-gray-300'
@@ -562,7 +562,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     value={checkOutDate}
                     min={checkInDate || new Date().toISOString().split('T')[0]}
                     onChange={(e) => handleCheckOutChange(e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px] ${
+                    className={`w-full px-3 py-2 border rounded-[10px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 focus-visible:border-accent transition-[border-color,box-shadow,background-color] duration-200 motion-reduce:transition-none text-[14px] ${
                       checkOutDate && isDateSoldOut(checkOutDate)
                         ? 'border-red-300 bg-red-50 text-red-700'
                         : 'border-gray-300'
@@ -779,7 +779,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <button
                   onClick={() => adjustGuests(-1)}
                   disabled={state.guests <= 1}
-                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2"
+                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
                   aria-label="Decrease guest count"
                 >
                   <Minus size={18} />
@@ -792,7 +792,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 <button
                   onClick={() => adjustGuests(1)}
                   disabled={state.guests >= 12}
-                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2"
+                  className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
                   aria-label="Increase guest count"
                 >
                   <Plus size={18} />
@@ -814,7 +814,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         value={name}
                         onChange={(e) => handleParticipantNameChange(index, e.target.value)}
                         placeholder={`Guest ${index + 1} first name`}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-accent/20 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px]"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-[10px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 focus-visible:border-accent transition-[border-color,box-shadow,background-color] duration-200 motion-reduce:transition-none text-[14px]"
                         aria-label={`Guest ${index + 1} first name`}
                       />
                       {name && (
@@ -855,7 +855,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               <button
                 onClick={() => adjustGuests(-1)}
                 disabled={state.guests <= 1}
-                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2"
+                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
                 aria-label="Decrease participant count"
               >
                 <Minus size={18} />
@@ -868,7 +868,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               <button
                 onClick={() => adjustGuests(1)}
                 disabled={state.guests >= 12}
-                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2"
+                className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
                 aria-label="Increase participant count"
               >
                 <Plus size={18} />
@@ -890,7 +890,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                       value={name}
                       onChange={(e) => handleParticipantNameChange(index, e.target.value)}
                       placeholder={`Participant ${index + 1} first name`}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:ring-2 focus:ring-accent/30 focus:border-accent motion-safe:transition-colors motion-safe:duration-200 motion-reduce:transition-none text-[14px]"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:border-accent transition-[border-color,box-shadow,background-color] duration-200 motion-reduce:transition-none text-[14px]"
                       aria-label={`Participant ${index + 1} first name`}
                     />
                     {name && (
@@ -964,15 +964,30 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
             }
 
             return (
-              <button
+              <div
                 key={w.id}
                 data-testid="surf-week-row"
-                onClick={() => !isDisabled && handleOptionSelect(w.id)}
-                className={`w-full p-4 sm:p-6 rounded-[10px] border bg-white text-left motion-safe:transition-all motion-safe:duration-300 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-accent/50 relative
+                role="button"
+                tabIndex={isDisabled ? -1 : 0}
+                aria-pressed={isSelected}
+                aria-disabled={isDisabled}
+                onClick={() => {
+                  if (!isDisabled) {
+                    handleOptionSelect(w.id)
+                  }
+                }}
+                onKeyDown={(event) => {
+                  if (event.currentTarget !== event.target) return
+                  if (isDisabled) return
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    handleOptionSelect(w.id)
+                  }
+                }}
+                className={`w-full p-4 sm:p-6 rounded-[10px] border bg-white text-left cursor-pointer motion-safe:transition-[box-shadow,border-color,background-color] motion-safe:duration-300 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 relative
                   ${isSelected ? 'border-accent bg-accent/5 shadow-md ring-2 ring-accent/30' : 'border-gray-200'}
                   ${isDisabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:shadow-lg hover:border-accent/30 hover:bg-accent/5'}`}
                 style={{ animationDelay: `${index * 80}ms` }}
-                disabled={isDisabled}
               >
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
                   {/* Surf Week Hero Image */}
@@ -981,7 +996,6 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                       <RoomHeroImage
                         image={w.images[0]}
                         roomName={w.name}
-                        onClick={() => openGallery(w)}
                         className="w-full h-40 sm:w-32 sm:h-24"
                       />
                     ) : (
@@ -1049,7 +1063,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                         <div className="flex items-center gap-2">
                           <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                             <div
-                              className={`h-full rounded-full transition-all ${
+                              className={`h-full rounded-full motion-safe:transition-[width,background-color] motion-safe:duration-300 motion-reduce:transition-none ${
                                 occupancyPercent >= 80 ? 'bg-red-500' :
                                 occupancyPercent >= 50 ? 'bg-accent' : 'bg-green-500'
                               }`}
@@ -1073,15 +1087,17 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
                       {/* View Photos Link */}
                       {w.images && w.images.length > 0 && (
-                        <span
+                        <button
+                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             openGallery(w);
                           }}
-                          className="inline-flex items-center gap-1 px-4 py-2 bg-orange-50 text-accent rounded-[10px] text-sm font-medium cursor-pointer select-none transition-all duration-150 ease-out hover:bg-orange-100"
+                          aria-label={`View photos for ${w.name}`}
+                          className="inline-flex items-center gap-1 px-4 py-2 bg-orange-50 text-accent rounded-[10px] text-sm font-medium cursor-pointer select-none transition-[background-color,color] duration-150 ease-out hover:bg-orange-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white shadow-sm"
                         >
                           📸 View {w.images.length} Photo{w.images.length > 1 ? 's' : ''}
-                        </span>
+                        </button>
                       )}
                     </div>
                   </div>
@@ -1094,7 +1110,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     <span className="text-base font-medium">Selected</span>
                   </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
@@ -1156,21 +1172,32 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                     const amenities = option.amenities;
 
                     return (
-                      <button
+                      <div
                         key={option.id}
                         data-testid={`room-card-${option.id}`}
+                        role="button"
+                        tabIndex={0}
+                        aria-pressed={isSelected}
                         onClick={() => handleOptionSelect(option.id)}
-                        disabled={false}
-                        className={`
-                          w-full p-4 sm:p-6 rounded-lg border text-left
-                          transition-all duration-200
+                        onKeyDown={(event) => {
+                          if (event.currentTarget !== event.target) return
+                          if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault()
+                            handleOptionSelect(option.id)
+                          }
+                        }}
+                        className={
+                          `
+                          w-full p-4 sm:p-6 rounded-lg border text-left cursor-pointer
+                          motion-safe:transition-[box-shadow,border-color,background-color] motion-safe:duration-200 motion-reduce:transition-none
                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-500
                           relative
                           ${isSelected
                             ? 'border-orange-500 bg-white shadow-md'
                             : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
                           }
-                        `}
+                        `
+                        }
                         style={{ animationDelay: `${index * 50}ms` }}
                       >
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
@@ -1181,12 +1208,11 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                 <RoomHeroImage
                                   image={option.images[0]}
                                   roomName={option.name}
-                                  onClick={() => openGallery(option)}
                                   className="w-full h-40 sm:w-32 sm:h-24"
                                 />
                                 {/* Checkbox indicator - positioned on image */}
                                 <div
-                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border flex items-center justify-center motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none shadow-md ${
+                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border flex items-center justify-center motion-safe:transition-[background-color,border-color] motion-safe:duration-200 motion-reduce:transition-none shadow-md ${
                                     isSelected
                                       ? 'bg-accent border-accent'
                                       : 'bg-white/90 backdrop-blur-sm border-gray-300'
@@ -1204,7 +1230,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                 </div>
                                 {/* Checkbox indicator - positioned on placeholder */}
                                 <div
-                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border flex items-center justify-center motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none shadow-md ${
+                                  className={`absolute top-2 left-2 w-6 h-6 rounded-md border flex items-center justify-center motion-safe:transition-[background-color,border-color] motion-safe:duration-200 motion-reduce:transition-none shadow-md ${
                                     isSelected
                                       ? 'bg-accent border-accent'
                                       : 'bg-white/90 backdrop-blur-sm border-gray-300'
@@ -1277,7 +1303,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                     <>
                                       <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                                         <div
-                                          className={`h-full rounded-full transition-all ${
+                                          className={`h-full rounded-full motion-safe:transition-[width,background-color] motion-safe:duration-300 motion-reduce:transition-none ${
                                             occupancyPercent >= 80 ? 'bg-red-500' :
                                             occupancyPercent >= 50 ? 'bg-accent' : 'bg-green-500'
                                           }`}
@@ -1312,15 +1338,17 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                                 )}
                                 {/* View Photos Link */}
                                 {option.images && option.images.length > 0 && (
-                                  <span
+                                  <button
+                                    type="button"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       openGallery(option);
                                     }}
-                                    className="flex items-center gap-1 px-2 py-1 text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-full cursor-pointer transition-colors duration-200 select-none"
+                                    aria-label={`View photos for ${option.name}`}
+                                    className="flex items-center gap-1 px-2 py-1 text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-full cursor-pointer transition-[background-color,color] duration-200 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white shadow-sm"
                                   >
                                     📸 {option.images.length} Photo{option.images.length > 1 ? 's' : ''}
-                                  </span>
+                                  </button>
                                 )}
                               </div>
                             )}
@@ -1334,7 +1362,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                             <span className="text-base font-medium">Selected</span>
                           </div>
                         )}
-                      </button>
+                      </div>
                     );
                   })}
                 </div>

@@ -177,7 +177,7 @@ export default function MediaLibraryPage() {
 
       {/* Upload Zone */}
       <div
-        className={`mb-6 border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
+        className={`mb-6 border-2 border-dashed rounded-xl p-8 text-center transition-[border-color,background-color] duration-200 ${
           dragActive 
             ? 'border-heiwaOrange-500 bg-heiwaOrange-50' 
             : 'border-gray-300 hover:border-heiwaOrange-400'
@@ -222,28 +222,30 @@ export default function MediaLibraryPage() {
             placeholder="Search images..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-heiwaOrange-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
           />
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-lg transition-colors ${
+            className={`p-2 rounded-lg transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500/40 ${
               viewMode === 'grid' 
                 ? 'bg-heiwaOrange-100 text-heiwaOrange-600' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
-          >
+            title="Grid View"
+          >  
             <Grid className="h-5 w-5" />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`p-2 rounded-lg transition-colors ${
+            className={`p-2 rounded-lg transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500/40 ${
               viewMode === 'list' 
                 ? 'bg-heiwaOrange-100 text-heiwaOrange-600' 
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
-          >
+            title="List View"
+          >  
             <List className="h-5 w-5" />
           </button>
         </div>
@@ -265,7 +267,7 @@ export default function MediaLibraryPage() {
           {filteredMedia.map((item) => (
             <div
               key={item.id}
-              className="group relative bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
+              className="group relative bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-[box-shadow] duration-300"
             >
               <div className="aspect-square relative">
                 <Image
@@ -278,7 +280,7 @@ export default function MediaLibraryPage() {
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <button
                     onClick={() => copyToClipboard(item.url, item.id)}
-                    className="p-2 bg-white rounded-lg hover:bg-gray-100 transition-colors"
+                    className="p-2 bg-white rounded-lg hover:bg-gray-100 transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500/40"
                     title="Copy URL"
                   >
                     {copiedId === item.id ? (
@@ -289,7 +291,7 @@ export default function MediaLibraryPage() {
                   </button>
                   <button
                     onClick={() => copyToClipboard(`![${item.name}](${item.url})`, `md-${item.id}`)}
-                    className="p-2 bg-white rounded-lg hover:bg-gray-100 transition-colors"
+                    className="p-2 bg-white rounded-lg hover:bg-gray-100 transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500/40"
                     title="Copy Markdown"
                   >
                     {copiedId === `md-${item.id}` ? (
@@ -300,7 +302,7 @@ export default function MediaLibraryPage() {
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="p-2 bg-white rounded-lg hover:bg-red-50 transition-colors"
+                    className="p-2 bg-white rounded-lg hover:bg-red-50 transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
                     title="Delete"
                   >
                     <Trash2 className="h-4 w-4 text-red-600" />
@@ -378,7 +380,7 @@ export default function MediaLibraryPage() {
                     <div className="flex justify-end gap-2">
                       <button
                         onClick={() => copyToClipboard(item.url, item.id)}
-                        className="p-1.5 text-gray-600 hover:text-heiwaOrange-600 hover:bg-heiwaOrange-50 rounded transition-colors"
+                        className="p-1.5 text-gray-600 hover:text-heiwaOrange-600 hover:bg-heiwaOrange-50 rounded transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500/40"
                         title="Copy URL"
                       >
                         {copiedId === item.id ? (

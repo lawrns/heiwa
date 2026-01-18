@@ -656,7 +656,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
             <p className="text-red-600 text-sm">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
             >
               Reload Page
             </button>
@@ -730,7 +730,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
           return (
             <div
               key={transformedRoom.id}
-              className={`border rounded-[10px] p-5 md:p-6 transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 ${
+              className={`border rounded-[10px] p-5 md:p-6 motion-safe:transition-[transform,box-shadow,border-color,background-color] motion-safe:duration-300 motion-reduce:transition-none hover:shadow-card-hover hover:-translate-y-0.5 ${
                 assignment && assignment.guestIds.length > 0
                   ? 'border-accent bg-accent/5 shadow-card'
                   : 'border-gray-200 bg-white shadow-subtle hover:border-gray-300'
@@ -870,7 +870,8 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                         <span>{getGuestName(guestId)}</span>
                         <button
                           onClick={() => handleRemoveGuestFromRoom(assignment.id, guestId)}
-                          className="ml-1 text-green-600 hover:text-green-800"
+                          aria-label={`Remove ${getGuestName(guestId)} from ${transformedRoom.name}`}
+                          className="ml-1 text-green-600 hover:text-green-800 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-green-100"
                         >
                           ×
                         </button>
@@ -900,7 +901,7 @@ export function SurfWeekRoomSelection({ state, actions }: SurfWeekRoomSelectionP
                         <button
                           key={guestId}
                           onClick={() => handleAssignGuestToRoom(transformedRoom.id, guestId)}
-                          className="inline-flex items-center gap-2 pl-4 pr-5 py-2.5 min-h-[44px] bg-orange-100 text-orange-800 rounded-[10px] text-sm font-medium border-2 border-transparent cursor-pointer transition-all duration-150 ease-out hover:bg-orange-200 hover:border-orange-300 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:ring-offset-2"
+                          className="inline-flex items-center gap-2 pl-4 pr-5 py-2.5 min-h-[44px] bg-orange-100 text-orange-800 rounded-[10px] text-sm font-medium border-2 border-transparent cursor-pointer motion-safe:transition-[transform,background-color,border-color] motion-safe:duration-150 motion-safe:ease-out motion-reduce:transition-none hover:bg-orange-200 hover:border-orange-300 motion-safe:active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/30 focus-visible:ring-offset-2"
                         >
                           <ArrowRight size={14} />
                           {getGuestName(guestId)}

@@ -29,7 +29,7 @@ function Calendar({
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           // Outline-like button styles (inlined to avoid buttonVariants dependency)
-          "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none shadow-sm hover:shadow-md",
+          "inline-flex items-center justify-center font-medium rounded-lg transition-[box-shadow,background-color,border-color,opacity,transform] duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none shadow-sm hover:shadow-md",
           "border border-gray-300 bg-white text-gray-700 hover:bg-blue-50 hover:border-blue-300 focus:ring-blue-500",
           "h-9 w-9 bg-transparent p-0 opacity-70 hover:opacity-100"
         ),
@@ -43,8 +43,8 @@ function Calendar({
         cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
         day: cn(
           // Ghost-like button styles (inlined to avoid buttonVariants dependency)
-          "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-fast focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none shadow-sm hover:shadow-md",
-          "text-gray-700 hover:bg-gray-100 focus:ring-gray-500",
+          "inline-flex items-center justify-center font-medium rounded-lg transition-[box-shadow,background-color,border-color,opacity,transform] duration-fast focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none shadow-sm hover:shadow-md",
+          "text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-500",
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100"
         ),
         day_range_end: "day-range-end",

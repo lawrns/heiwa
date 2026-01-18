@@ -172,7 +172,7 @@ export function RoomImageGallery({
           <button
             onClick={onClose}
             aria-label="Close gallery"
-            className="absolute top-4 right-4 z-10 p-3 min-w-[44px] min-h-[44px] bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="absolute top-4 right-4 z-10 p-3 min-w-[44px] min-h-[44px] bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-[background-color] motion-safe:duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
           >
             <X size={24} />
           </button>
@@ -200,14 +200,14 @@ export function RoomImageGallery({
                 <button
                   onClick={prevImage}
                   aria-label="Previous image"
-                  className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 p-3 min-w-[44px] min-h-[44px] bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 p-3 min-w-[44px] min-h-[44px] bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-[background-color] motion-safe:duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                 >
                   <ChevronLeft size={24} />
                 </button>
                 <button
                   onClick={nextImage}
                   aria-label="Next image"
-                  className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 p-3 min-w-[44px] min-h-[44px] bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 p-3 min-w-[44px] min-h-[44px] bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full text-white motion-safe:transition-[background-color] motion-safe:duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                 >
                   <ChevronRight size={24} />
                 </button>
@@ -230,7 +230,7 @@ export function RoomImageGallery({
                   onClick={() => goToImage(index)}
                   aria-label={`View image ${index + 1} of ${images.length}`}
                   aria-current={index === currentImageIndex ? 'true' : undefined}
-                  className={`relative flex-shrink-0 w-16 h-11 min-h-[44px] rounded-md overflow-hidden border-2 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-white/50 ${
+                  className={`relative flex-shrink-0 w-16 h-11 min-h-[44px] rounded-md overflow-hidden border-2 motion-safe:transition-[opacity,border-color] motion-safe:duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 ${
                     index === currentImageIndex
                       ? 'border-white opacity-100 ring-2 ring-white/30'
                       : 'border-transparent opacity-60 hover:opacity-90 hover:border-white/50'
@@ -351,7 +351,7 @@ export function RoomThumbnail({ image, roomName, onClick, className = '' }: Room
   return (
     <button
       onClick={onClick}
-      className={`relative group overflow-hidden rounded-lg motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none hover:scale-105 hover:shadow-lg flex items-center justify-center ${className}`}
+      className={`relative group overflow-hidden rounded-lg motion-safe:transition-[transform,box-shadow] motion-safe:duration-200 motion-reduce:transition-none hover:scale-105 hover:shadow-lg flex items-center justify-center ${className}`}
     >
       {/* Loading state */}
       {loadState === 'loading' && (
@@ -376,8 +376,8 @@ export function RoomThumbnail({ image, roomName, onClick, className = '' }: Room
       )}
       
       {/* Hover overlay - pointer-events-none to not block image */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none flex items-center justify-center pointer-events-none">
-        <ZoomIn className="text-white opacity-0 group-hover:opacity-100 motion-safe:transition-all motion-safe:duration-200 motion-reduce:transition-none" size={20} />
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 motion-safe:transition-[background-color] motion-safe:duration-200 motion-reduce:transition-none flex items-center justify-center pointer-events-none">
+        <ZoomIn className="text-white opacity-0 group-hover:opacity-100 motion-safe:transition-opacity motion-safe:duration-200 motion-reduce:transition-none" size={20} />
       </div>
     </button>
   );
@@ -452,15 +452,15 @@ export function RoomHeroImage({ image, roomName, onClick, className = '' }: Room
         <img
           src={currentSrc}
           alt={`${roomName} hero image`}
-          className={`w-full h-full object-cover transition-all duration-300 group-hover:scale-105 ${loadState === 'loading' ? 'opacity-0' : 'opacity-100'}`}
+          className={`w-full h-full object-cover transition-[transform,opacity] duration-300 group-hover:scale-105 ${loadState === 'loading' ? 'opacity-0' : 'opacity-100'}`}
           onLoad={handleLoad}
           onError={handleError}
         />
       )}
       
       {/* Hover overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
-      <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <ZoomIn className="text-white" size={16} />
       </div>
     </div>

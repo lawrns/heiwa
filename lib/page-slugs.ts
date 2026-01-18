@@ -54,7 +54,31 @@ export const FAQ_PAGE_SLUGS = [
 export type FAQPageSlug = (typeof FAQ_PAGE_SLUGS)[number]
 
 // Valid section types for page_content table
-export const VALID_SECTION_TYPES = ['hero', 'intro', 'faq', 'features', 'seo'] as const
+export const VALID_SECTION_TYPES = [
+  'hero',
+  'intro',
+  'faq',
+  'features',
+  'seo',
+  'about',
+  'rooms',
+  'facilities',
+  'cta',
+  'gallery',
+  'activity_grid',
+  'activity_highlight',
+  'steps',
+  'addons',
+  'legal_content',
+  'hosts',
+  'surf-weeks',
+  'surf_conditions',
+  'local_break',
+  'world_class_surfing',
+  'facility_gallery',
+  'surf_lessons',
+  'team'
+] as const
 
 export type SectionType = (typeof VALID_SECTION_TYPES)[number]
 

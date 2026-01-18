@@ -12,7 +12,7 @@ export default function RoomNotFound() {
         </p>
         <Link
           href="/rooms"
-          className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+          className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white px-6 py-3 rounded-lg font-semibold transition-[background-color,box-shadow,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 active:scale-[0.98] shadow-sm hover:shadow-md"
         >
           <Home className="w-5 h-5" />
           Back to Room List

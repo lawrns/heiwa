@@ -126,7 +126,7 @@ export function ContactForm({ initialSections = [] }: ContactFormProps) {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                   placeholder="Your name"
                 />
               </div>
@@ -142,7 +142,7 @@ export function ContactForm({ initialSections = [] }: ContactFormProps) {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                   placeholder="you@example.com"
                 />
               </div>
@@ -159,7 +159,7 @@ export function ContactForm({ initialSections = [] }: ContactFormProps) {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                   placeholder="+1 234 567 8900"
                 />
               </div>
@@ -174,7 +174,7 @@ export function ContactForm({ initialSections = [] }: ContactFormProps) {
                   required
                   value={formData.subject}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200"
                 >
                   <option value="">Select a subject</option>
                   <option value="surf-week">Surf Week Booking</option>
@@ -198,7 +198,7 @@ export function ContactForm({ initialSections = [] }: ContactFormProps) {
                 rows={6}
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-transparent transition-[border-color,box-shadow] duration-200 resize-none"
                 placeholder="Tell us about your plans, questions, or how we can help..."
               />
             </div>
@@ -206,7 +206,7 @@ export function ContactForm({ initialSections = [] }: ContactFormProps) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>

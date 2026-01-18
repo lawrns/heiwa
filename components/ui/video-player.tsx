@@ -159,12 +159,12 @@ export function VideoPlayer({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={handlePlayPause}
-            className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/50 transition-colors"
+            className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/50 transition-[background-color] duration-200"
           >
             <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center justify-center w-20 h-20 rounded-full bg-white/90 hover:bg-white transition-colors"
+              className="flex items-center justify-center w-20 h-20 rounded-full bg-white/90 hover:bg-white transition-[background-color] duration-200"
             >
               <Play className="w-8 h-8 text-black fill-black ml-1" />
             </motion.div>
@@ -199,7 +199,7 @@ export function VideoPlayer({
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handlePlayPause}
-                  className="hover:text-orange-400 transition-colors"
+                  className="hover:text-orange-400 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 rounded"
                   aria-label={isPlaying ? 'Pause' : 'Play'}
                 >
                   {isPlaying ? (
@@ -213,7 +213,7 @@ export function VideoPlayer({
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleMuteToggle}
-                  className="hover:text-orange-400 transition-colors"
+                  className="hover:text-orange-400 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 rounded"
                   aria-label={isMuted ? 'Unmute' : 'Mute'}
                 >
                   {isMuted ? (
@@ -238,7 +238,7 @@ export function VideoPlayer({
                     containerRef.current.requestFullscreen()
                   }
                 }}
-                className="hover:text-orange-400 transition-colors"
+                className="hover:text-orange-400 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 rounded"
                 aria-label="Fullscreen"
               >
                 <svg

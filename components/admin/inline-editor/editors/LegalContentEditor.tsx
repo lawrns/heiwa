@@ -30,7 +30,7 @@ export function LegalContentEditor({ content, onChange }: LegalContentEditorProp
           type="text"
           value={data.title || ''}
           onChange={(e) => updateField('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Privacy Policy"
         />
       </div>
@@ -41,7 +41,7 @@ export function LegalContentEditor({ content, onChange }: LegalContentEditorProp
           type="date"
           value={data.lastUpdated || ''}
           onChange={(e) => updateField('lastUpdated', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
         />
         <p className="text-xs text-gray-500 mt-1">
           This date will be displayed on the page to show when the content was last updated.
@@ -54,7 +54,7 @@ export function LegalContentEditor({ content, onChange }: LegalContentEditorProp
           <button
             type="button"
             onClick={() => setShowPreview(!showPreview)}
-            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700"
+            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
           >
             {showPreview ? (
               <>
@@ -73,7 +73,7 @@ export function LegalContentEditor({ content, onChange }: LegalContentEditorProp
           value={data.content || ''}
           onChange={(e) => updateField('content', e.target.value)}
           rows={20}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-mono text-sm"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200 font-mono text-sm"
           placeholder="<h2>Section Title</h2>
 <p>Your legal content here...</p>"
         />

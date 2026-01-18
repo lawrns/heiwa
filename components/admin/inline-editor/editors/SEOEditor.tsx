@@ -28,7 +28,7 @@ export function SEOEditor({ content, onChange }: SEOEditorProps) {
           type="text"
           value={seo.title || ''}
           onChange={(e) => updateField('title', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="e.g. Play - Heiwa House"
         />
       </div>
@@ -39,7 +39,7 @@ export function SEOEditor({ content, onChange }: SEOEditorProps) {
           value={seo.description || ''}
           onChange={(e) => updateField('description', e.target.value)}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="Short description shown in search results..."
         />
       </div>
@@ -50,7 +50,7 @@ export function SEOEditor({ content, onChange }: SEOEditorProps) {
           type="text"
           value={seo.keywords || ''}
           onChange={(e) => updateField('keywords', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="comma, separated, keywords"
         />
       </div>
@@ -61,7 +61,7 @@ export function SEOEditor({ content, onChange }: SEOEditorProps) {
           type="text"
           value={seo.ogImage || ''}
           onChange={(e) => updateField('ogImage', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="/images/og/some-image.jpg"
         />
       </div>
@@ -72,7 +72,7 @@ export function SEOEditor({ content, onChange }: SEOEditorProps) {
           type="text"
           value={seo.canonical || ''}
           onChange={(e) => updateField('canonical', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="https://heiwahouse.com/play"
         />
       </div>

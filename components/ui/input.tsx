@@ -62,23 +62,23 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             // Default border color
             !isSuccess && !isError && "border-gray-300",
             // Focus state with animated border transition
-            "focus:outline-none focus:ring-2 focus:ring-offset-0",
-            !isSuccess && !isError && "focus:ring-accent/20 focus:border-accent",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0",
+            !isSuccess && !isError && "focus-visible:ring-accent/20 focus-visible:border-accent",
             // Success state
             isSuccess && [
               "border-green-600",
-              "focus:ring-green-600/20 focus:border-green-600",
+              "focus-visible:ring-green-600/20 focus-visible:border-green-600",
               "bg-green-50"
             ],
             // Error state with shake animation
             isError && [
               "border-red-600",
-              "focus:ring-red-600/20 focus:border-red-600",
+              "focus-visible:ring-red-600/20 focus-visible:border-red-600",
               "bg-red-50",
               "animate-shake"
             ],
             // Transition for smooth interactions
-            "motion-safe:transition-all motion-safe:duration-300 motion-reduce:transition-none",
+            "motion-safe:transition-[border-color,box-shadow,background-color] motion-safe:duration-300 motion-reduce:transition-none",
             // Disabled state
             "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-50",
             className

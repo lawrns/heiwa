@@ -88,7 +88,7 @@ export function SurfWeekPromoCard({ surfWeek }: SurfWeekPromoCardProps) {
           {/* Book Now Button */}
           <button
             onClick={handleBookNow}
-            className="w-full lg:w-auto px-8 py-4 bg-accent hover:bg-accent-dark text-white font-bold text-xl rounded-lg transition-colors mb-6 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            className="w-full lg:w-auto px-8 py-4 bg-accent hover:bg-accent-dark text-white font-bold text-xl rounded-lg transition-[background-color,box-shadow,transform] duration-200 mb-6 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 active:scale-[0.98] shadow-lg hover:shadow-xl"
           >
             Book Now
           </button>

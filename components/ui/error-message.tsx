@@ -59,7 +59,7 @@ export function ErrorMessage({
           <button
             onClick={handleRetry}
             disabled={isRetrying}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md transition-[background-color] duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
             aria-label="Retry"
           >
             <RefreshCw className={`w-4 h-4 ${isRetrying ? 'animate-spin' : ''}`} />
@@ -70,7 +70,7 @@ export function ErrorMessage({
         {showDismiss && onDismiss && (
           <button
             onClick={onDismiss}
-            className="p-1 text-red-600 hover:text-red-800 hover:bg-red-100 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+            className="p-1 text-red-600 hover:text-red-800 hover:bg-red-100 rounded transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
             aria-label="Dismiss error"
           >
             <X className="w-4 h-4" />

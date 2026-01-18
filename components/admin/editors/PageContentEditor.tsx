@@ -173,11 +173,11 @@ export function PageContentEditor() {
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Select Page
         </label>
-        <select
-          value={selectedPage}
-          onChange={(e) => setSelectedPage(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        >
+          <select
+            value={selectedPage}
+            onChange={(e) => setSelectedPage(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
+          >
           {PAGES.map(page => (
             <option key={page.value} value={page.value}>
               {page.label}
@@ -221,7 +221,7 @@ export function PageContentEditor() {
             return (
               <div
                 key={section.id}
-                className={`bg-white rounded-lg shadow p-6 border-2 transition-all ${
+                className={`bg-white rounded-lg shadow p-6 border-2 transition-[border-color,opacity] duration-200 ${
                   section.is_active ? 'border-gray-200' : 'border-gray-100 opacity-75'
                 }`}
               >
@@ -252,7 +252,7 @@ export function PageContentEditor() {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => handleToggleActive(section)}
-                      className={`p-2 rounded-lg transition-colors ${
+                      className={`p-2 rounded-lg transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/40 focus-visible:ring-offset-2 ${
                         section.is_active 
                           ? 'text-green-600 hover:bg-green-50' 
                           : 'text-gray-400 hover:bg-gray-50'
@@ -264,7 +264,7 @@ export function PageContentEditor() {
                     
                     <button
                       onClick={() => handleEditSection(section)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2"
                       title="Edit section"
                     >
                       <Edit className="h-4 w-4" />
@@ -272,7 +272,7 @@ export function PageContentEditor() {
                     
                     <button
                       onClick={() => handleDeleteSection(section.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 focus-visible:ring-offset-2"
                       title="Delete section"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -389,7 +389,7 @@ function SectionEditorModal({ section, pageSlug, onClose, onSave }: SectionEdito
           <select
             value={formData.section_type}
             onChange={(e) => setFormData({ ...formData, section_type: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
           >
             {SECTION_TYPES.map(type => (
               <option key={type.value} value={type.value}>
@@ -407,7 +407,7 @@ function SectionEditorModal({ section, pageSlug, onClose, onSave }: SectionEdito
             type="text"
             value={formData.section_name}
             onChange={(e) => setFormData({ ...formData, section_name: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             placeholder="e.g., Hero Section, Features Grid"
           />
         </div>
@@ -420,7 +420,7 @@ function SectionEditorModal({ section, pageSlug, onClose, onSave }: SectionEdito
             type="number"
             value={formData.order_index}
             onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
             min="0"
           />
         </div>
@@ -431,9 +431,9 @@ function SectionEditorModal({ section, pageSlug, onClose, onSave }: SectionEdito
             id="is_active"
             checked={formData.is_active}
             onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            className="h-4 w-4 text-blue-600 focus-visible:ring-blue-500 border-gray-300 rounded transition-[background-color,border-color,box-shadow] duration-200 cursor-pointer"
           />
-          <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900">
+          <label htmlFor="is_active" className="ml-2 block text-sm text-gray-900 cursor-pointer">
             Section is active
           </label>
         </div>

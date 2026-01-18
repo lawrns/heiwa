@@ -63,7 +63,7 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
       {/* Table Body */}
       <div className="divide-y divide-gray-200">
         {surfWeeks.map((week) => (
-          <div key={week.id} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-colors">
+          <div key={week.id} className="px-4 sm:px-6 py-4 hover:bg-gray-50 transition-[background-color] duration-200">
             {/* Mobile Layout */}
             <div className="md:hidden space-y-3">
               <div className="flex items-start justify-between">
@@ -84,10 +84,10 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
               <div className="space-y-2">
                 <Button
                   disabled={week.is_full}
-                  className={`w-full px-6 py-2.5 text-sm font-semibold rounded-lg transition-colors ${
+                  className={`w-full px-6 py-2.5 text-sm font-semibold rounded-lg transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 ${
                     week.is_full 
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                      : 'bg-accent hover:bg-accent-dark text-white'
+                      : 'bg-accent hover:bg-accent-dark text-white active:scale-[0.98]'
                   }`}
                   onClick={() => {
                     window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: week.id }))
@@ -117,10 +117,10 @@ export function SurfWeeksTable({ surfWeeks }: SurfWeeksTableProps) {
               <div className="flex flex-col items-end gap-1">
                 <Button
                   disabled={week.is_full}
-                  className={`px-6 py-2 text-sm font-semibold rounded-lg transition-colors ${
+                  className={`px-6 py-2 text-sm font-semibold rounded-lg transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 ${
                     week.is_full 
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                      : 'bg-accent hover:bg-accent-dark text-white'
+                      : 'bg-accent hover:bg-accent-dark text-white active:scale-[0.98]'
                   }`}
                   onClick={() => {
                     window.dispatchEvent(new CustomEvent('openBookingForWeek', { detail: week.id }))

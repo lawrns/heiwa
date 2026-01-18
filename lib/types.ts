@@ -37,6 +37,7 @@ export interface Experience {
   hero_video_url?: string; // Hero video URL for category pages
   hero_image_url?: string; // Hero image URL for category pages
   features?: string[]; // List of features for the activity
+  link_url?: string; // Link URL for the experience
 }
 
 export interface ActivityCategory {

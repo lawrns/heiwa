@@ -75,7 +75,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
   return (
     <nav
       className={cn(
-        'fixed top-0 left-0 right-0 transition-all duration-300',
+        'fixed top-0 left-0 right-0 transition-[background-color] duration-300',
         isHomepage
           ? 'bg-black/20 backdrop-blur-md'
           : 'bg-gray-800 backdrop-blur-sm',
@@ -97,7 +97,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                       <Link
                         href={item.path}
                         className={cn(
-                          'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
+                          'text-sm font-medium tracking-wide transition-[color,background-color,box-shadow] duration-200 hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
                           currentPath === item.path
                             ? 'text-orange-400'
                             : 'text-white'
@@ -139,30 +139,42 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                 className="relative"
                 onMouseEnter={() => setActivitiesOpen(true)}
                 onMouseLeave={() => setActivitiesOpen(false)}
+                onFocus={() => setActivitiesOpen(true)}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    setActivitiesOpen(false)
+                  }
+                }}
               >
                 <button
+                  type="button"
+                  onClick={() => setActivitiesOpen((prev) => !prev)}
                   className={cn(
-                    'text-sm font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1 flex items-center gap-1',
+                    'text-sm font-medium tracking-wide transition-[color,background-color,box-shadow] duration-200 hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1 flex items-center gap-1',
                     (currentPath?.includes('/flow') || currentPath?.includes('/play'))
                       ? 'text-orange-400'
                       : 'text-white'
                   )}
-                  aria-label="Open activities menu"
+                  aria-label="Open experiences menu"
                   aria-expanded={activitiesOpen}
                   aria-haspopup="true"
+                  aria-controls="activities-menu"
                 >
-                  ACTIVITIES
+                  EXPERIENCES
                   <ChevronDown className="w-4 h-4" />
                 </button>
                 {activitiesOpen && (
                   <div className="absolute top-full left-0 pt-2" style={{ zIndex: 'var(--z-dropdown)' }}>
-                    <div className="w-40 bg-gray-900 border border-gray-700 rounded-md shadow-lg py-1">
+                    <div
+                      id="activities-menu"
+                      className="w-40 bg-gray-900 border border-gray-700 rounded-md shadow-lg py-1"
+                    >
                       {activitiesItems.map((item) => (
                         <Link
                           key={item.path}
                           href={item.path}
                           className={cn(
-                            'block px-4 py-2 text-sm font-medium tracking-wide transition-colors hover:bg-gray-800 hover:text-orange-400 uppercase',
+                            'block px-4 py-2 text-sm font-medium tracking-wide transition-[color,background-color] duration-200 hover:bg-gray-800 hover:text-orange-400 uppercase',
                             currentPath === item.path
                               ? 'text-orange-400'
                               : 'text-white'
@@ -183,7 +195,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
                   key={item.path}
                   href={item.path}
                   className={cn(
-                    'text-xs font-medium tracking-wide transition-colors hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
+                    'text-xs font-medium tracking-wide transition-[color,background-color,box-shadow] duration-200 hover:text-orange-400 uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded px-2 py-1',
                     currentPath === item.path
                       ? 'text-orange-400'
                       : 'text-white'
@@ -207,7 +219,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
               {/* Book Now Button */}
               <button
                 onClick={() => openBooking()}
-                className="px-4 py-2 text-sm font-medium tracking-wide transition-colors flex items-center gap-1 uppercase rounded text-white bg-accent hover:bg-accent-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                className="px-4 py-2 text-sm font-medium tracking-wide transition-[background-color,box-shadow,color] duration-200 flex items-center gap-1 uppercase rounded text-white bg-accent hover:bg-accent-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent shadow-sm"
               >
                 <Bed className="w-4 h-4" />
                 BOOK
@@ -218,7 +230,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
             <div className="lg:hidden ml-auto">
               <button
                 onClick={toggleMenu}
-                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-orange-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-400"
+                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-orange-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-orange-400 transition-[color,box-shadow] duration-200"
                 aria-expanded={isOpen}
                 aria-controls="mobile-menu"
                 aria-label="Toggle mobile menu"
@@ -241,7 +253,7 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
           { path: '/', name: 'HOME' },
           { path: '/rooms', name: 'ROOM RENTALS' },
           { path: '/surf-weeks', name: 'SURF WEEK' },
-          { path: '#', name: 'ACTIVITIES' }, // This will trigger the dropdown
+          { path: '#', name: 'EXPERIENCES' }, // This will trigger the dropdown
         ]}
         currentPath={currentPath || '/'}
         phoneNumber={phoneNumber}

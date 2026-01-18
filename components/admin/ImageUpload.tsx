@@ -216,11 +216,21 @@ export function ImageUpload({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={`
-          border-2 border-dashed rounded-lg p-8 text-center transition-colors
+          border-2 border-dashed rounded-lg p-8 text-center transition-[border-color,background-color] duration-200
           ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
           ${disabled || uploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2
         `}
         onClick={!disabled && !uploading ? handleUploadClick : undefined}
+        role="button"
+        tabIndex={disabled || uploading ? -1 : 0}
+        onKeyDown={(e) => {
+          if (!disabled && !uploading && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault()
+            handleUploadClick()
+          }
+        }}
+        aria-label="Upload images"
       >
         <input
           ref={fileInputRef}
@@ -263,7 +273,7 @@ export function ImageUpload({
                 handleUploadClick()
               }}
               disabled={disabled || images.length >= maxFiles}
-              className="mt-2"
+              className="mt-2 transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
             >
               <ImageIcon className="mr-2 h-4 w-4" />
               Choose Images
@@ -293,7 +303,7 @@ export function ImageUpload({
               <button
                 type="button"
                 onClick={() => handleRemoveImage(index)}
-                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 shadow-lg"
+                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-[opacity,background-color] duration-200 hover:bg-red-700 shadow-lg focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
                 disabled={uploading}
                 title="Remove image"
               >

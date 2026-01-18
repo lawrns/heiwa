@@ -13,7 +13,7 @@ interface FeatureCardProps {
 
 export function FeatureCard({ title, description, image, href, className = '' }: FeatureCardProps) {
   return (
-    <div className={`group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 touch-manipulation ${className}`}>
+    <div className={`group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-[box-shadow] duration-300 touch-manipulation ${className}`}>
       {/* Background Image */}
       <div className="relative aspect-[4/5] overflow-hidden">
         <Image
@@ -25,13 +25,13 @@ export function FeatureCard({ title, description, image, href, className = '' }:
         />
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 group-active:bg-black/40 transition-colors" />
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 group-active:bg-black/40 transition-[background-color] duration-200" />
         
         {/* Learn More Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
           <Link
             href={href}
-            className="px-4 sm:px-6 py-2 sm:py-3 bg-accent hover:bg-accent-dark active:bg-accent-dark text-white font-semibold rounded-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent opacity-0 group-hover:opacity-100 group-active:opacity-100 transform translate-y-4 group-hover:translate-y-0 group-active:translate-y-0 min-h-[44px] flex items-center justify-center text-sm sm:text-base"
+            className="px-4 sm:px-6 py-2 sm:py-3 bg-accent hover:bg-accent-dark active:bg-accent-dark text-white font-semibold rounded-lg transition-[opacity,transform,background-color] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent opacity-0 group-hover:opacity-100 group-active:opacity-100 transform translate-y-4 group-hover:translate-y-0 group-active:translate-y-0 min-h-[44px] flex items-center justify-center text-sm sm:text-base"
           >
             Learn More
           </Link>

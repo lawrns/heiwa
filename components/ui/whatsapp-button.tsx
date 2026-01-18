@@ -44,7 +44,7 @@ export function WhatsAppButton({
   return (
     <motion.button
       onClick={handleClick}
-      className={`fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white p-4 rounded-full shadow-lg transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/50 focus-visible:ring-offset-2 min-h-[56px] min-w-[56px] flex items-center justify-center ${className}`}
+      className={`fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white p-4 rounded-full shadow-lg transition-[background-color] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/50 focus-visible:ring-offset-2 min-h-[56px] min-w-[56px] flex items-center justify-center ${className}`}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       aria-label="Contact us on WhatsApp"

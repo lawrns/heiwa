@@ -256,7 +256,7 @@ const INTERACTION_STATE_CLASSES = {
   // Transition: duration-300 ease-out (Requirement 8.3)
   transitionDuration: 'motion-safe:duration-300',
   transitionEasing: 'motion-safe:ease-out',
-  transitionAll: 'motion-safe:transition-all',
+  transitionAll: 'motion-safe:transition-[transform,box-shadow,background-color,border-color,color]',
 };
 
 describe('Button Interaction State Properties', () => {

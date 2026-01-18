@@ -33,9 +33,12 @@ export function FloatingBookingWidget() {
         <div className="fixed inset-0" style={{ zIndex: 'var(--z-modal)' }}>
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
             style={{ zIndex: 'var(--z-modal-backdrop)' }}
             onClick={closeBooking}
+            role="button"
+            tabIndex={-1}
+            aria-hidden="true"
           />
 
           {/* StandaloneWidget positioned on the right */}

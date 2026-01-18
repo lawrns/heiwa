@@ -68,7 +68,7 @@ export function RadiusShowcase() {
             <div className="w-full h-32 bg-gradient-to-br from-heiwaOrange-300 to-heiwaOrange-500 rounded-image mb-4" />
             <h4 className="font-semibold text-gray-900 mb-2">Ocean View Room</h4>
             <p className="text-sm text-gray-500 mb-4">Wake up to stunning sunrise views.</p>
-            <button className="w-full bg-heiwaOrange-500 hover:bg-heiwaOrange-600 text-white py-2 px-4 rounded-button transition-colors">
+            <button className="w-full bg-heiwaOrange-500 hover:bg-heiwaOrange-600 text-white py-2 px-4 rounded-button transition-[background-color,transform,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-heiwaOrange-500 focus-visible:ring-offset-2">
               Book Now
             </button>
           </div>

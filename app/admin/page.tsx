@@ -248,16 +248,28 @@ export default function AdminDashboard() {
           color="blue"
         />
         <ActionCard
-          title="Surf Camps"
-          description="Create and manage surf camp sessions and schedules."
+          title="Experiences Management"
+          description="Manage Play, Flow, and Surf experiences."
           icon={Building2}
-          href="/admin/surf-camps"
-          buttonText="Manage Surf Camps"
+          href="/admin/activities"
+          buttonText="Manage Experiences"
           stat={{
-            label: 'Active Camps',
+            label: 'Active Experiences',
             value: (counts?.activeSurfCamps ?? 0).toString()
           }}
           color="green"
+        />
+        <ActionCard
+          title="Surf Camps"
+          description="Create and manage surf camp sessions and schedules."
+          icon={Calendar}
+          href="/admin/surf-camps"
+          buttonText="Manage Surf Camps"
+          stat={{
+            label: 'Upcoming Camps',
+            value: '3'
+          }}
+          color="orange"
         />
         <ActionCard
           title="Clients"

@@ -200,7 +200,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <nav className="text-sm">
-            <Link href="/rooms" className="text-gray-600 hover:text-accent transition-colors font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 rounded">
+            <Link href="/rooms" className="text-gray-600 hover:text-accent transition-[color] duration-200 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 rounded">
               ← Back to Room List
             </Link>
           </nav>
@@ -286,7 +286,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
 
               <BookingButton
                 roomId={room.id}
-                className="w-full bg-accent hover:bg-accent-hover text-white py-4 px-6 rounded-lg font-semibold transition-colors mb-4 shadow-md min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
+                className="w-full bg-accent hover:bg-accent-hover text-white py-4 px-6 rounded-lg font-semibold transition-[background-color,box-shadow,transform] duration-200 mb-4 shadow-md min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 active:scale-[0.98]"
               >
                 Check Availability
               </BookingButton>
@@ -335,14 +335,14 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
                 <Link
                   key={similarRoom.id}
                   href={`/rooms/${similarRoom.id}`}
-                  className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2"
+                  className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-[box-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 overflow-hidden"
                 >
-                  <div className="relative h-64 overflow-hidden rounded-t-lg bg-gray-200">
+                  <div className="relative h-64 overflow-hidden bg-gray-200">
                     <Image
                       src={similarRoom.image || '/images/rooms/room1.jpg'}
                       alt={similarRoom.name}
                       fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                       sizes="(max-width: 768px) 100vw, 50vw"
                       quality={80}
                     />
@@ -352,7 +352,7 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
                     </div>
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-accent transition-colors mb-3">
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-accent transition-[color] duration-200 mb-3">
                       {similarRoom.name}
                     </h3>
                     <div className="flex items-center gap-4 text-gray-600 text-sm">
@@ -373,7 +373,6 @@ export default async function RoomDetailPage({ params }: RoomPageProps) {
           </div>
         )}
       </div>
-
     </div>
   )
   } catch (error) {

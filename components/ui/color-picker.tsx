@@ -73,7 +73,7 @@ export function ColorPicker({ value, onChange, label, className, id }: ColorPick
               type="button"
               onClick={() => handlePresetClick(color)}
               className={cn(
-                'w-8 h-8 rounded-md border-2 transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-heiwaOrange-500',
+                'w-8 h-8 rounded-md border-2 transition-[transform,border-color,box-shadow] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-heiwaOrange-500',
                 hexValue.toLowerCase() === color.toLowerCase()
                   ? 'border-gray-900 ring-2 ring-heiwaOrange-500 ring-offset-1'
                   : 'border-gray-300 hover:border-gray-400'

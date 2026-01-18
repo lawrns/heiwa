@@ -214,7 +214,7 @@ export default function CollaborationManager({
               {activeUsers.slice(0, 3).map(user => (
                 <div
                   key={user.id}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium border-2 border-white"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-medium border-2 border-white transition-transform hover:scale-110"
                   style={{ backgroundColor: user.color }}
                   title={user.name}
                 >
@@ -229,7 +229,7 @@ export default function CollaborationManager({
             </div>
             <button
               onClick={() => setShowUsers(true)}
-              className="text-sm text-blue-600 hover:text-blue-700"
+              className="text-sm text-blue-600 hover:text-blue-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
             >
               {activeUsers.length} active
             </button>
@@ -240,7 +240,7 @@ export default function CollaborationManager({
             <MessageSquare className="w-4 h-4 text-gray-500" />
             <button
               onClick={() => setShowComments(true)}
-              className="text-sm text-blue-600 hover:text-blue-700"
+              className="text-sm text-blue-600 hover:text-blue-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
             >
               {unresolvedComments.length} comments
             </button>
@@ -332,14 +332,14 @@ export default function CollaborationManager({
                 value={selectedSection}
                 onChange={(e) => setSelectedSection(e.target.value)}
                 placeholder="Section ID (optional)"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
               />
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Write your comment..."
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 transition-[border-color,box-shadow] duration-200"
               />
               <AdminButton
                 variant="primary"

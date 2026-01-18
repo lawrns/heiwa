@@ -90,9 +90,10 @@ export function TaxCategorySelect({
           disabled={disabled}
           className={`
             w-full px-4 py-2 text-left bg-white border border-gray-300 rounded-lg
-            focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500
+            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500
             disabled:bg-gray-100 disabled:cursor-not-allowed
             flex items-center justify-between
+            transition-[border-color,box-shadow] duration-200
             ${disabled ? 'text-gray-500' : 'text-gray-900'}
           `}
           aria-haspopup="listbox"
@@ -117,6 +118,9 @@ export function TaxCategorySelect({
             <div
               className="fixed inset-0 z-10"
               onClick={() => setIsOpen(false)}
+              role="button"
+              tabIndex={-1}
+              aria-hidden="true"
             />
             <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
               {taxCategories.length === 0 ? (
@@ -131,8 +135,8 @@ export function TaxCategorySelect({
                       type="button"
                       onClick={() => handleSelect(category.id)}
                       className={`
-                        w-full px-4 py-2 text-left hover:bg-gray-50 focus:bg-gray-50
-                        focus:outline-none transition-colors
+                        w-full px-4 py-2 text-left hover:bg-gray-50 focus-visible:bg-gray-50
+                        focus-visible:outline-none transition-[background-color] duration-200
                         ${value === category.id ? 'bg-orange-50 text-orange-900' : 'text-gray-900'}
                       `}
                     >

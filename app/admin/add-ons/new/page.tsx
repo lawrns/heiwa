@@ -129,7 +129,7 @@ export default function NewAddOnPage() {
                   id="name"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent transition-[border-color,box-shadow] duration-200"
                   placeholder="e.g., Surfboard Rental"
                   required
                 />
@@ -145,7 +145,7 @@ export default function NewAddOnPage() {
                     id="category"
                     value={formData.category}
                     onChange={(e) => handleInputChange('category', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent appearance-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent appearance-none transition-[border-color,box-shadow]"
                     required
                   >
                     <option value="equipment">Equipment</option>
@@ -170,7 +170,7 @@ export default function NewAddOnPage() {
                 id="description"
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent appearance-none transition-[border-color,box-shadow] duration-200"
                 placeholder="Brief description for listings"
                 required
               />
@@ -186,7 +186,7 @@ export default function NewAddOnPage() {
                 rows={4}
                 value={formData.detailedDescription}
                 onChange={(e) => handleInputChange('detailedDescription', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent appearance-none transition-[border-color,box-shadow] duration-200"
                 placeholder="Detailed information about this add-on..."
               />
             </div>
@@ -213,7 +213,7 @@ export default function NewAddOnPage() {
                     onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)}
                     min="0"
                     step="0.01"
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent transition-[border-color,box-shadow] duration-200"
                     required
                   />
                 </div>
@@ -230,21 +230,21 @@ export default function NewAddOnPage() {
                   value={formData.maxQuantity}
                   onChange={(e) => handleInputChange('maxQuantity', e.target.value)}
                   min="1"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:border-accent transition-[border-color,box-shadow] duration-200"
                   placeholder="Leave empty for unlimited"
                 />
               </div>
 
-              <div className="flex items-center space-x-3 pt-8">
+            <div className="flex items-center space-x-3 pt-8">
                 <input
                   id="requiresBooking"
                   name="requiresBooking"
                   type="checkbox"
                   checked={formData.requiresBooking}
                   onChange={(e) => handleInputChange('requiresBooking', e.target.checked)}
-                  className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
+                  className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded transition-colors cursor-pointer"
                 />
-                <label htmlFor="requiresBooking" className="block text-sm text-gray-900">
+                <label htmlFor="requiresBooking" className="block text-sm text-gray-900 cursor-pointer">
                   Requires advance booking
                 </label>
               </div>
@@ -276,9 +276,9 @@ export default function NewAddOnPage() {
                   type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => handleInputChange('isActive', e.target.checked)}
-                  className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded"
+                  className="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded transition-colors cursor-pointer"
                 />
-                <label htmlFor="isActive" className="block text-sm text-gray-900">
+                <label htmlFor="isActive" className="block text-sm text-gray-900 cursor-pointer">
                   Active (available for booking)
                 </label>
               </div>
@@ -324,13 +324,13 @@ export default function NewAddOnPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent transition-[background-color,border-color,box-shadow,color] duration-200"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-accent hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent transition-[background-color,box-shadow] duration-200"
           >
             Save Add-on
           </button>

@@ -200,7 +200,7 @@ export function ParticipantsList({ surfCampId, onParticipantRemoved }: Participa
           {participants.map((participant) => (
             <div
               key={participant.id}
-              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-200"
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">

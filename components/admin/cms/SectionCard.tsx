@@ -97,13 +97,13 @@ export default function SectionCard({
   const IconComponent = getSectionIcon(section.section_type || 'custom')
 
   return (
-    <div className="p-6 border-b border-gray-200 hover:bg-gray-50 transition-colors group shadow-sm bg-white rounded-lg mb-4">
+    <div className="p-6 border-b border-gray-200 hover:bg-gray-50 transition-[background-color] duration-200 group shadow-sm bg-white rounded-lg mb-4">
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div className="flex items-start flex-1 w-full sm:w-auto">
           {/* Drag Handle - Keyboard accessible */}
           <div
             {...dragHandleProps}
-            className="mr-2 sm:mr-4 p-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-orange-500 rounded"
+            className="mr-2 sm:mr-4 p-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded transition-[box-shadow,color] duration-200"
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
@@ -210,7 +210,7 @@ export default function SectionCard({
                           onToggleActive(!section.is_active)
                           setShowMenu(false)
                         }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:bg-gray-100"
                       >
                         {section.is_active ? (
                           <>
@@ -230,7 +230,7 @@ export default function SectionCard({
                           onDuplicate()
                           setShowMenu(false)
                         }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:bg-gray-100"
                       >
                         <Copy className="w-4 h-4 mr-2" aria-hidden="true" />
                         Duplicate
@@ -242,7 +242,7 @@ export default function SectionCard({
                           onDelete()
                           setShowMenu(false)
                         }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-[background-color,color] duration-200 focus-visible:outline-none focus-visible:bg-red-50"
                       >
                         <Trash2 className="w-4 h-4 mr-2" aria-hidden="true" />
                         Delete
@@ -256,25 +256,25 @@ export default function SectionCard({
         </div>
 
         {/* Quick Actions */}
-        <div className="sm:ml-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+        <div className="sm:ml-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0">
           <div className="flex items-center space-x-2">
             <button
               onClick={onEdit}
-              className="p-1 hover:bg-gray-200 rounded"
+              className="p-1 hover:bg-gray-200 rounded transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
               title="Edit section"
             >
               <Edit className="w-4 h-4" />
             </button>
             <button
               onClick={onDuplicate}
-              className="p-1 hover:bg-gray-200 rounded"
+              className="p-1 hover:bg-gray-200 rounded transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
               title="Duplicate section"
             >
-              <Copy className="w-4 h-4" />
+              <Edit className="w-4 h-4" />
             </button>
             <button
               onClick={() => onToggleActive(!section.is_active)}
-              className="p-1 hover:bg-gray-200 rounded"
+              className="p-1 hover:bg-gray-200 rounded transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
               title={section.is_active ? 'Deactivate' : 'Activate'}
             >
               {section.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

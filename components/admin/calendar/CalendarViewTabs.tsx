@@ -23,7 +23,7 @@ export function CalendarViewTabs({ currentView, onViewChange }: CalendarViewTabs
           key={value}
           onClick={() => onViewChange(value)}
           className={cn(
-            'px-4 py-1.5 text-sm font-medium rounded-md transition-all',
+            'px-4 py-1.5 text-sm font-medium rounded-md transition-[background-color,color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40',
             currentView === value
               ? 'bg-white text-gray-900 shadow-sm'
               : 'text-gray-600 hover:text-gray-900'

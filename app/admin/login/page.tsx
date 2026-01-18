@@ -112,7 +112,7 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter admin password"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 focus-visible:outline-none transition-[border-color,box-shadow,background-color] duration-200 text-gray-900 placeholder-gray-400 disabled:bg-gray-50 disabled:cursor-not-allowed"
                 disabled={loading}
                 autoFocus
                 autoComplete="current-password"

@@ -14,7 +14,7 @@ export function Section({ id, title, description, children, className }: Section
     <section id={id} className={cn("py-12 border-b border-gray-200 last:border-0 scroll-mt-20", className)}>
       <div className="mb-8">
         <h2 className="text-3xl font-bold tracking-tight mb-2 flex items-center group">
-          <a href={`#${id}`} className="hover:text-primary transition-colors">
+          <a href={`#${id}`} className="hover:text-primary transition-[color] duration-200 focus-visible:outline-none focus-visible:underline">
             {title}
             <span className="ml-2 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity select-none">#</span>
           </a>
