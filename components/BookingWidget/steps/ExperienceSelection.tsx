@@ -121,6 +121,7 @@ export function ExperienceSelection({ state, actions }: ExperienceSelectionProps
 
           return (
             <button
+              type="button"
               key={experience.id}
               onClick={() => handleSelection(experience.type)}
               className={cn(

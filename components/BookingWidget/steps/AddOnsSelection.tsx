@@ -186,6 +186,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                     {/* Quantity Controls */}
                     <div className="flex items-center gap-2 shrink-0">
                       <button
+                        type="button"
                         onClick={() => updateAddOnQuantity(addOn.id, quantity - 1)}
                         disabled={quantity === 0}
                         className="
@@ -205,6 +206,7 @@ export function AddOnsSelection({ state, actions }: AddOnsSelectionProps) {
                       </span>
 
                       <button
+                        type="button"
                         onClick={() => updateAddOnQuantity(addOn.id, quantity + 1)}
                         disabled={addOn.maxQuantity ? quantity >= addOn.maxQuantity : false}
                         className="

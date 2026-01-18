@@ -367,6 +367,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
                         <Check size={14} />
                         <span>{getGuestName(guestId)}</span>
                         <button
+                          type="button"
                           onClick={() => handleRemoveGuestFromRoom(assignment.id, guestId)}
                           aria-label={`Remove ${getGuestName(guestId)} from ${room.name}`}
                           className="ml-1 text-green-600 hover:text-green-800 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-green-100"
@@ -397,6 +398,7 @@ export function RoomAssignment({ state, actions }: RoomAssignmentProps) {
 
                       return (
                         <button
+                          type="button"
                           key={guestId}
                           onClick={() => handleAssignGuestToRoom(room.id, guestId)}
                           className="inline-flex items-center gap-2 pl-4 pr-5 py-2.5 min-h-[44px] bg-orange-100 text-orange-800 rounded-[10px] text-sm font-medium border-2 border-transparent cursor-pointer motion-safe:transition-[transform,background-color,border-color] motion-safe:duration-150 motion-safe:ease-out motion-reduce:transition-none hover:bg-orange-200 hover:border-orange-300 motion-safe:active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/30 focus-visible:ring-offset-2"

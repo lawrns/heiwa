@@ -789,6 +789,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
               <div className="flex items-center gap-3">
                 <button
+                  type="button"
                   onClick={() => adjustGuests(-1)}
                   disabled={state.guests <= 1}
                   className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
@@ -802,6 +803,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 </span>
 
                 <button
+                  type="button"
                   onClick={() => adjustGuests(1)}
                   disabled={state.guests >= 12}
                   className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
@@ -865,6 +867,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
 
             <div className="flex items-center gap-3">
               <button
+                type="button"
                 onClick={() => adjustGuests(-1)}
                 disabled={state.guests <= 1}
                 className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
@@ -878,6 +881,7 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
               </span>
 
               <button
+                type="button"
                 onClick={() => adjustGuests(1)}
                 disabled={state.guests >= 12}
                 className="w-[44px] h-[44px] rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-[background-color,border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2"
