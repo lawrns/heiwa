@@ -716,10 +716,14 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 </label>
                 <DatePicker
                   id="check-in"
-                  date={checkInDate ? new Date(checkInDate + 'T00:00:00.000Z') : undefined}
+                  date={checkInDate ? new Date(checkInDate + 'T12:00:00') : undefined}
                   onDateChange={(date) => {
                     if (date) {
-                      const dateStr = date.toISOString().split('T')[0];
+                      // Use local date parts to avoid timezone shifts
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const dateStr = `${year}-${month}-${day}`;
                       handleCheckInChange(dateStr);
                     }
                   }}
@@ -743,15 +747,19 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
                 </label>
                 <DatePicker
                   id="check-out"
-                  date={checkOutDate ? new Date(checkOutDate + 'T00:00:00.000Z') : undefined}
+                  date={checkOutDate ? new Date(checkOutDate + 'T12:00:00') : undefined}
                   onDateChange={(date) => {
                     if (date) {
-                      const dateStr = date.toISOString().split('T')[0];
+                      // Use local date parts to avoid timezone shifts
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const dateStr = `${year}-${month}-${day}`;
                       handleCheckOutChange(dateStr);
                     }
                   }}
                   disabledDates={unavailableDates}
-                  minDate={checkInDate ? new Date(checkInDate + 'T00:00:00.000Z') : new Date()}
+                  minDate={checkInDate ? new Date(checkInDate + 'T12:00:00') : new Date()}
                   placeholder="Select check-out"
                   aria-label="Select check-out date"
                   className={checkOutDate && isDateSoldOut(checkOutDate) ? 'border-red-300 bg-red-50 text-red-700' : ''}
