@@ -52,27 +52,46 @@ export function DatePicker({
     return matchers
   }, [disabledDates, minDate, maxDate])
 
+  // Use a simple click handler approach that definitely works
+  const handleTriggerClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!disabled) {
+      setOpen(!open)
+    }
+  }
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        id={id}
-        disabled={disabled}
-        aria-label={ariaLabel}
-        className={cn(
-          "inline-flex items-center justify-start gap-2 w-full px-3 py-2 text-left font-normal",
-          "border border-gray-300 rounded-[10px] bg-white",
-          "hover:bg-gray-50 hover:border-gray-400",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 focus-visible:border-accent",
-          "transition-[border-color,box-shadow,background-color] duration-200",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-          !date && "text-gray-500",
-          className
-        )}
-      >
-        <CalendarIcon className="h-4 w-4 text-gray-400 flex-shrink-0" />
-        {date ? format(date, "dd/MM/yyyy") : <span>{placeholder}</span>}
+    <Popover open={open} onOpenChange={setOpen} modal={true}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          id={id}
+          disabled={disabled}
+          aria-label={ariaLabel}
+          onClick={handleTriggerClick}
+          onPointerDown={(e) => e.stopPropagation()}
+          className={cn(
+            "inline-flex items-center justify-start gap-2 w-full px-3 py-2 text-left font-normal",
+            "border border-gray-300 rounded-[10px] bg-white",
+            "hover:bg-gray-50 hover:border-gray-400",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 focus-visible:border-accent",
+            "transition-[border-color,box-shadow,background-color] duration-200",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            !date && "text-gray-500",
+            className
+          )}
+        >
+          <CalendarIcon className="h-4 w-4 text-gray-400 flex-shrink-0" />
+          {date ? format(date, "dd/MM/yyyy") : <span>{placeholder}</span>}
+        </button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent
+        className="w-auto p-0"
+        align="start"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <Calendar
           mode="single"
           selected={date}
