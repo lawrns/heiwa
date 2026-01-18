@@ -37,7 +37,6 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
   const {
     fetchDateAvailability,
     isDateSoldOut,
-    getSoldOutDates,
     loading: dateAvailabilityLoading
   } = useDateAvailability({ participants: state.guests || 1 });
 
@@ -150,22 +149,35 @@ export function OptionSelection({ state, actions }: OptionSelectionProps) {
     }
   }, [checkInDate, checkOutDate, fetchDateAvailability, state.pricing]);
 
-  // Fetch unavailable dates for calendar view (3 months ahead)
+  // Fetch unavailable dates for calendar view (3 months ahead) - only on mount or guest count change
+  const hasFetchedRef = useRef(false);
+  const lastGuestCountRef = useRef(state.guests);
+
   useEffect(() => {
-    if (state.experienceType === 'room') {
+    // Reset fetch flag when guest count changes
+    if (lastGuestCountRef.current !== state.guests) {
+      hasFetchedRef.current = false;
+      lastGuestCountRef.current = state.guests;
+    }
+
+    if (state.experienceType === 'room' && !hasFetchedRef.current) {
+      hasFetchedRef.current = true;
       const fetchUnavailable = async () => {
         const today = new Date();
         const threeMonthsLater = new Date(today.getFullYear(), today.getMonth() + 3, today.getDate());
         const startDate = today.toISOString().split('T')[0];
         const endDate = threeMonthsLater.toISOString().split('T')[0];
 
-        await fetchDateAvailability(startDate, endDate);
-        const soldOut = getSoldOutDates();
-        setUnavailableDates(soldOut.map(d => new Date(d + 'T00:00:00.000Z')));
+        const availability = await fetchDateAvailability(startDate, endDate);
+        // Update unavailable dates directly from the result
+        if (availability && availability.length > 0) {
+          const soldOut = availability.filter(d => !d.available).map(d => d.date);
+          setUnavailableDates(soldOut.map(d => new Date(d + 'T00:00:00.000Z')));
+        }
       };
       fetchUnavailable();
     }
-  }, [state.experienceType, state.guests, fetchDateAvailability, getSoldOutDates]);
+  }, [state.experienceType, state.guests, fetchDateAvailability]);
 
   // For surf weeks, if a surf week was already selected in step 2, auto-select it here
   useEffect(() => {
