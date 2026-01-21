@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { CarouselImage as CarouselImageType } from '@/types/image'
+import { CarouselImage } from './responsive-image'
 
 interface ImageCarouselProps {
-  images: string[]
-  alt: string
+  images: string[] | CarouselImageType[]
+  alt?: string
   className?: string
   showDots?: boolean
   showArrows?: boolean
@@ -17,7 +18,7 @@ interface ImageCarouselProps {
 
 export function ImageCarousel({
   images,
-  alt,
+  alt = 'Gallery image',
   className = '',
   showDots = true,
   showArrows = true,
@@ -25,8 +26,27 @@ export function ImageCarousel({
   autoAdvance = true,
   autoAdvanceInterval = 5000
 }: ImageCarouselProps) {
-  // Filter out empty or invalid image URLs
-  const validImages = images.filter(img => img && img.trim() !== '')
+  // Convert string[] to CarouselImage[] if needed
+  const carouselImages: CarouselImageType[] = (() => {
+    if (images.length === 0) return []
+    
+    // If already CarouselImage[], return as-is
+    if (typeof images[0] === 'object') {
+      return images as CarouselImageType[]
+    }
+    
+    // Convert string[] to CarouselImage[]
+    return (images as string[]).map((url, index) => ({
+      id: crypto.randomUUID(),
+      url,
+      alt_text: alt,
+      order: index,
+      created_at: new Date().toISOString()
+    }))
+  })()
+
+  // Filter out images without URLs
+  const validImages = carouselImages.filter(img => img.url && img.url.trim() !== '')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -49,7 +69,7 @@ export function ImageCarousel({
     }
   }
 
-  // Auto-advance carousel every N seconds when not hovered (hover pauses automatically)
+  // Auto-advance carousel every N seconds when not hovered
   useEffect(() => {
     if (autoAdvance && validImages.length > 1 && !isHovered) {
       intervalRef.current = setInterval(() => {
@@ -74,13 +94,14 @@ export function ImageCarousel({
   }, [validImages.length, currentIndex])
 
   if (validImages.length === 0) {
-    // Return placeholder if no valid images
     return (
       <div className={`relative ${aspectRatio} overflow-hidden rounded-lg bg-gray-200 flex items-center justify-center ${className}`}>
         <span className="text-gray-400">No image available</span>
       </div>
     )
   }
+
+  const currentImage = validImages[currentIndex]
 
   return (
     <div
@@ -90,24 +111,19 @@ export function ImageCarousel({
     >
       {/* Main Image */}
       <div className={`relative ${aspectRatio} overflow-hidden rounded-lg`}>
-        <Image
-          src={validImages[currentIndex]}
-          alt={validImages.length > 1
-            ? `${alt} - Image ${currentIndex + 1} of ${validImages.length}`
-            : alt}
-          fill
-          className="object-cover"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 800px"
-          priority={currentIndex === 0}
-          quality={85}
-          onError={(e) => {
-            const target = e.target as HTMLImageElement
-            // Try fallback image
-            if (target.src !== '/images/rooms/room1.jpg') {
-              target.src = '/images/rooms/room1.jpg'
-            }
-          }}
+        <CarouselImage
+          src={currentImage.url}
+          alt={currentImage.alt_text || alt}
+          loading={currentIndex === 0 ? 'eager' : 'lazy'}
+          className="w-full h-full"
         />
+
+        {/* Caption */}
+        {currentImage.caption && (
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+            <p className="text-white text-sm">{currentImage.caption}</p>
+          </div>
+        )}
 
         {/* Navigation Arrows */}
         {showArrows && validImages.length > 1 && (
@@ -129,14 +145,14 @@ export function ImageCarousel({
           </>
         )}
 
-        {/* Image Counter - inside image container */}
+        {/* Image Counter */}
         {validImages.length > 1 && (
           <div className="absolute top-4 right-4 bg-black/50 text-white text-sm px-2 py-1 rounded">
             {currentIndex + 1}/{validImages.length}
           </div>
         )}
 
-        {/* Dots Indicator - positioned inside image at bottom */}
+        {/* Dots Indicator */}
         {showDots && validImages.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
             {validImages.map((_, index) => (

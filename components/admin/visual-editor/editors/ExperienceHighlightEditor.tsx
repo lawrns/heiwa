@@ -1,13 +1,15 @@
 'use client'
 
-import { Save, Loader2, Plus, X } from 'lucide-react'
+import { Save, Loader2 } from 'lucide-react'
+import { CarouselImageEditor } from '../../image-editor/CarouselImageEditor'
+import { CarouselImage } from '@/types/image'
 
 interface ExperienceHighlightContent {
   title?: string
   description?: string
   videoUrl?: string
   videoPoster?: string
-  carouselImages?: string[]
+  carouselImages?: string[] | CarouselImage[]
   reversed?: boolean
 }
 
@@ -20,25 +22,33 @@ interface ExperienceHighlightEditorProps {
 
 export function ExperienceHighlightEditor({ content, onChange, onSave, saving }: ExperienceHighlightEditorProps) {
   const highlightContent = content as ExperienceHighlightContent
-  const carouselImages = highlightContent.carouselImages || []
+  
+  // Convert string[] to CarouselImage[] for backward compatibility
+  const carouselImages: CarouselImage[] = (() => {
+    const images = highlightContent.carouselImages || []
+    if (images.length === 0) return []
+    
+    // If already CarouselImage[], return as-is
+    if (typeof images[0] === 'object') {
+      return images as CarouselImage[]
+    }
+    
+    // Convert string[] to CarouselImage[]
+    return (images as string[]).map((url, index) => ({
+      id: crypto.randomUUID(),
+      url,
+      alt_text: '',
+      order: index,
+      created_at: new Date().toISOString()
+    }))
+  })()
 
   const handleChange = (field: keyof ExperienceHighlightContent, value: unknown) => {
     onChange({ ...content, [field]: value })
   }
 
-  const addCarouselImage = () => {
-    handleChange('carouselImages', [...carouselImages, ''])
-  }
-
-  const updateCarouselImage = (index: number, value: string) => {
-    const newImages = [...carouselImages]
-    newImages[index] = value
-    handleChange('carouselImages', newImages)
-  }
-
-  const removeCarouselImage = (index: number) => {
-    const newImages = carouselImages.filter((_, i) => i !== index)
-    handleChange('carouselImages', newImages)
+  const updateCarouselImages = (images: CarouselImage[]) => {
+    handleChange('carouselImages', images)
   }
 
   return (
@@ -107,56 +117,10 @@ export function ExperienceHighlightEditor({ content, onChange, onSave, saving }:
         )}
       </div>
 
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Carousel Images
-          </label>
-          <button
-            type="button"
-            onClick={addCarouselImage}
-            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 transition-[color] duration-200 focus-visible:outline-none focus-visible:underline"
-          >
-            <Plus className="w-4 h-4" />
-            Add Image
-          </button>
-        </div>
-        <div className="space-y-2">
-          {carouselImages.map((image, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <input
-                type="text"
-                value={image}
-                onChange={(e) => updateCarouselImage(index, e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
-                placeholder={`/images/carousel-${index + 1}.jpg`}
-              />
-              {image && (
-                <div className="w-12 h-12 rounded overflow-hidden bg-gray-100 flex-shrink-0">
-                  <img
-                    src={image}
-                    alt={`Carousel ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none'
-                    }}
-                  />
-                </div>
-              )}
-              <button
-                type="button"
-                onClick={() => removeCarouselImage(index)}
-                className="p-2 text-gray-400 hover:text-red-600 transition-[color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 rounded-lg"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-          {carouselImages.length === 0 && (
-            <p className="text-sm text-gray-500">No carousel images added yet.</p>
-          )}
-        </div>
-      </div>
+      <CarouselImageEditor
+        images={carouselImages}
+        onChange={updateCarouselImages}
+      />
 
       <div className="flex items-center gap-2">
         <input

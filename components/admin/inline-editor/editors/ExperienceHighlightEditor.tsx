@@ -2,13 +2,15 @@
 
 import { Plus, X } from 'lucide-react'
 import { ImagePicker } from '../ImagePicker'
+import { CarouselImageEditor } from '../../image-editor/CarouselImageEditor'
+import { CarouselImage } from '@/types/image'
 
 interface ExperienceHighlightContent {
   title?: string
   description?: string
   videoUrl?: string
   videoPoster?: string
-  carouselImages?: string[]
+  carouselImages?: string[] | CarouselImage[]
   reversed?: boolean
 }
 
@@ -19,24 +21,33 @@ interface ExperienceHighlightEditorProps {
 
 export function ExperienceHighlightEditor({ content, onChange }: ExperienceHighlightEditorProps) {
   const data = content as ExperienceHighlightContent
-  const images = Array.isArray(data.carouselImages) ? data.carouselImages : []
+  
+  // Convert string[] to CarouselImage[] for backward compatibility
+  const carouselImages: CarouselImage[] = (() => {
+    const images = data.carouselImages || []
+    if (images.length === 0) return []
+    
+    // If already CarouselImage[], return as-is
+    if (typeof images[0] === 'object') {
+      return images as CarouselImage[]
+    }
+    
+    // Convert string[] to CarouselImage[]
+    return (images as string[]).map((url, index) => ({
+      id: crypto.randomUUID(),
+      url,
+      alt_text: '',
+      order: index,
+      created_at: new Date().toISOString()
+    }))
+  })()
 
   const updateField = (field: keyof ExperienceHighlightContent, value: unknown) => {
     onChange({ ...content, [field]: value })
   }
 
-  const addImage = () => {
-    updateField('carouselImages', [...images, ''])
-  }
-
-  const updateImage = (index: number, value: string) => {
-    const next = [...images]
-    next[index] = value
-    updateField('carouselImages', next)
-  }
-
-  const removeImage = (index: number) => {
-    updateField('carouselImages', images.filter((_, i) => i !== index))
+  const updateCarouselImages = (images: CarouselImage[]) => {
+    updateField('carouselImages', images)
   }
 
   return (
@@ -92,40 +103,10 @@ export function ExperienceHighlightEditor({ content, onChange }: ExperienceHighl
         <label htmlFor="reversed" className="text-sm text-gray-700">Reverse layout (image on left)</label>
       </div>
 
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-medium text-gray-700">Carousel Images ({images.length})</label>
-          <button
-            type="button"
-            onClick={addImage}
-            className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700"
-          >
-            <Plus className="w-4 h-4" />
-            Add
-          </button>
-        </div>
-
-        <div className="space-y-2">
-          {images.map((img, index) => (
-            <div key={index} className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg">
-              <div className="flex-1">
-                <ImagePicker
-                  value={img}
-                  onChange={url => updateImage(index, url)}
-                  placeholder="Select carousel image..."
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => removeImage(index)}
-                className="p-2 text-gray-400 hover:text-red-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+      <CarouselImageEditor
+        images={carouselImages}
+        onChange={updateCarouselImages}
+      />
     </div>
   )
 }
