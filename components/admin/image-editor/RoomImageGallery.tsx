@@ -233,7 +233,7 @@ export function RoomImageGallery({ images, onChange, disabled = false, maxImages
           <button
             type="button"
             onClick={addImage}
-            disabled={disabled || (maxImages && images.length >= maxImages)}
+            disabled={disabled || (maxImages && images.length >= maxImages) ? true : false}
             className="flex items-center gap-1 px-3 py-1.5 text-sm bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Plus className="w-4 h-4" />
