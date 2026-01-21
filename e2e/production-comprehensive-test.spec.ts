@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test'
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3003'
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'testpassword123'
+const BASE_URL = process.env.BASE_URL || 'https://heiwahauz.netlify.app'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'heiwa_secure_admin_2025'
 
 // Helper to login to admin
 async function loginToAdmin(page: Page): Promise<boolean> {

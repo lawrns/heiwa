@@ -20,7 +20,7 @@ test.describe('Admin Authentication', () => {
   })
 
   test('should login with correct password', async ({ page }) => {
-    await loginAsAdmin(page, 'heiwa_admin_2024')
+    await loginAsAdmin(page, 'heiwa_secure_admin_2025')
     
     // Should redirect to dashboard (with longer timeout)
     await expect(page).toHaveURL(/.*\/admin/, { timeout: 30000 })
@@ -86,7 +86,7 @@ test.describe('Admin Authentication', () => {
     const adminCookie = cookies.find(c => c.name === 'admin_auth')
     
     expect(adminCookie).toBeDefined()
-    expect(adminCookie?.value).toBe('heiwa_admin_2024')
+    expect(adminCookie?.value).toBe('heiwa_secure_admin_2025')
   })
 
   test('should logout successfully', async ({ page }) => {
@@ -107,7 +107,7 @@ test.describe('Admin Authentication', () => {
     await page.goto('/admin/login', { waitUntil: 'domcontentloaded', timeout: 60000 })
     await page.waitForTimeout(2000)
     
-    await page.fill('input[type="password"]', 'heiwa_admin_2024')
+    await page.fill('input[type="password"]', 'heiwa_secure_admin_2025')
     await page.click('button[type="submit"]')
     
     // Wait for redirect
