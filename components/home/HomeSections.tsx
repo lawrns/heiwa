@@ -10,19 +10,56 @@ import { YouTubeVideo } from '@/components/ui/youtube-video'
 import { SurfWeeksTable } from '@/components/ui/surf-weeks-table'
 import { Bed, Waves } from 'lucide-react'
 
-interface PageSectionData {
-  section_type: string
-  content: Record<string, unknown>
-  [key: string]: unknown
+interface HomepageSection {
+  id: string
+  section: string
+  title?: string
+  subtitle?: string
+  description?: string
+  content?: string | null
+  imageUrl?: string | null
+  videoUrl?: string | null
+  videoId?: string | null
+  linkUrl?: string | null
+  linkText?: string | null
+  isActive: boolean
+  order: number
+  cards?: unknown
+  bookingData?: unknown
+  testimonials?: unknown
+  facilities?: unknown
+  googleRating?: unknown
+  blogConfig?: unknown
 }
 
-// Fetch all homepage sections in a single query for better performance
+interface HomepageContentRow {
+  id: string
+  section: string
+  title: string
+  subtitle?: string | null
+  description?: string | null
+  content?: string | null
+  image_url?: string | null
+  video_url?: string | null
+  video_id?: string | null
+  link_url?: string | null
+  link_text?: string | null
+  is_active: boolean
+  order_index: number
+  cards?: string | null
+  booking_data?: string | null
+  testimonials?: string | null
+  facilities?: string | null
+  google_rating?: string | null
+  blog_config?: string | null
+}
+
+// Fetch all homepage sections from the homepage_content table (used by admin editor)
 const getAllHomepageSections = cache(async () => {
   try {
     const { data, error } = await supabaseAdmin
-      .from('page_sections')
+      .from('homepage_content')
       .select('*')
-      .eq('page_slug', 'homepage')
       .eq('is_active', true)
       .order('order_index', { ascending: true })
 
@@ -31,15 +68,51 @@ const getAllHomepageSections = cache(async () => {
       return null
     }
 
+    const parseJsonField = (
+      value: string | null | undefined,
+      fieldName: string,
+      id: string
+    ): unknown | undefined => {
+      if (!value) return undefined
+      try {
+        return JSON.parse(value)
+      } catch (parseError) {
+        console.warn(`Failed to parse homepage_content ${fieldName} for ${id}:`, parseError)
+        return undefined
+      }
+    }
+
+    const parsedData = (data || []).map((item: HomepageContentRow): HomepageSection => ({
+      id: item.id,
+      section: item.section,
+      title: item.title,
+      subtitle: item.subtitle ?? undefined,
+      description: item.description ?? undefined,
+      content: item.content ?? undefined,
+      imageUrl: item.image_url ?? undefined,
+      videoUrl: item.video_url ?? undefined,
+      videoId: item.video_id ?? undefined,
+      linkUrl: item.link_url ?? undefined,
+      linkText: item.link_text ?? undefined,
+      isActive: item.is_active,
+      order: item.order_index,
+      cards: parseJsonField(item.cards, 'cards', item.id),
+      bookingData: parseJsonField(item.booking_data, 'booking_data', item.id),
+      testimonials: parseJsonField(item.testimonials, 'testimonials', item.id),
+      facilities: parseJsonField(item.facilities, 'facilities', item.id),
+      googleRating: parseJsonField(item.google_rating, 'google_rating', item.id),
+      blogConfig: parseJsonField(item.blog_config, 'blog_config', item.id)
+    }))
+
     // Convert array to Map for O(1) lookups
-    return new Map((data || []).map((s: PageSectionData) => [s.section_type, s]))
+    return new Map(parsedData.map((item) => [item.section, item]))
   } catch (error) {
     console.error('Error fetching homepage sections:', error)
     return null
   }
 })
 
-function getPageSection(type: string, sectionsMap: Map<string, PageSectionData> | null) {
+function getPageSection(type: string, sectionsMap: Map<string, HomepageSection> | null) {
   if (!sectionsMap) return null
   return sectionsMap.get(type) || null
 }
@@ -47,21 +120,20 @@ function getPageSection(type: string, sectionsMap: Map<string, PageSectionData> 
 export async function HomeHero() {
   const sectionsMap = await getAllHomepageSections()
   const section = getPageSection('hero', sectionsMap)
-  const content = section?.content || {}
-  
+
   const defaultVideoUrl = "https://pguipwhrxdzzrndbluxb.supabase.co/storage/v1/object/public/cms-media/videos/1763932934179_Timeline-1.mp4"
-  const heroTitle = (content.title as string) || 'Welcome to Heiwa House'
-  const rawSubtitle = (content.subtitle as string) || ''
+  const heroTitle = section?.title || 'Welcome to Heiwa House'
+  const rawSubtitle = section?.subtitle || ''
   const heroSubtitle = rawSubtitle && rawSubtitle.trim().length > 0 && !rawSubtitle.toLowerCase().includes('edjizz')
     ? rawSubtitle
     : 'Your surf and lifestyle destination in Santa Cruz, Portugal'
-  const heroDescription = (content.description as string) || ''
-  const heroVideoUrl = (content.video_url as string) || (content.videoUrl as string)
-  const heroImageUrl = (content.image_url as string) || (content.imageUrl as string)
-  const primaryLinkUrl = (content.primary_link_url as string) || '/surf-weeks'
-  const primaryLinkText = (content.primary_link_text as string) || 'Come for a Surf Camp'
-  const secondaryLinkUrl = (content.secondary_link_url as string) || '/rooms'
-  const secondaryLinkText = (content.secondary_link_text as string) || 'Rent a Room'
+  const heroDescription = section?.description || ''
+  const heroVideoUrl = section?.videoUrl
+  const heroImageUrl = section?.imageUrl
+  const primaryLinkUrl = section?.linkUrl || '/surf-weeks'
+  const primaryLinkText = section?.linkText || 'Come for a Surf Camp'
+  const secondaryLinkUrl = '/rooms'
+  const secondaryLinkText = 'Rent a Room'
 
   return (
     <section id="section-hero" className="relative h-screen w-full overflow-hidden">
@@ -230,16 +302,26 @@ export async function HomeSurfWeeks() {
     getSurfWeeks()
   ])
   const section = getPageSection('surf-weeks', sectionsMap)
-  const content = section?.content || {}
 
-  const surfWeeksTitle = (content.title as string) || 'Heiwa Surf Weeks'
-  const surfWeeksSubtitle = (content.subtitle as string) || 'All-inclusive weeks with surf, yoga, great food, and coastal adventures.'
-  const surfWeeksBullets = Array.isArray(content.bullets)
-    ? (content.bullets as string[]).filter(b => typeof b === 'string' && b.trim().length > 0)
-    : Array.isArray(content.features)
-      ? (content.features as string[]).filter(b => typeof b === 'string' && b.trim().length > 0)
-      : []
-  const surfWeeksVideoId = (content.videoId as string) || (content.video_id as string) || '9nhQiKGsgHg'
+  const surfWeeksTitle = section?.title || 'Heiwa Surf Weeks'
+  const surfWeeksSubtitle = section?.subtitle || 'All-inclusive weeks with surf, yoga, great food, and coastal adventures.'
+
+  // Parse bullets from JSON or use defaults
+  let surfWeeksBullets: string[] = []
+  if (section?.content) {
+    try {
+      const parsed = JSON.parse(section.content)
+      surfWeeksBullets = Array.isArray(parsed.bullets)
+        ? (parsed.bullets as string[]).filter(b => typeof b === 'string' && b.trim().length > 0)
+        : Array.isArray(parsed.features)
+          ? (parsed.features as string[]).filter(b => typeof b === 'string' && b.trim().length > 0)
+          : []
+    } catch (e) {
+      console.warn('Failed to parse surf-weeks content:', e)
+    }
+  }
+
+  const surfWeeksVideoId = section?.videoId || '9nhQiKGsgHg'
   const defaultBullets = [
     'Professional surf instruction for all levels',
     'Daily yoga and meditation sessions',
@@ -300,29 +382,44 @@ export async function HomeSurfWeeks() {
 export async function HomeAbout() {
   const sectionsMap = await getAllHomepageSections()
   const section = getPageSection('about', sectionsMap)
-  const content = section?.content || {}
+
+  // Parse cards from JSON or use defaults
+  let cards: CardData[] = []
+  if (section?.cards && typeof section.cards === 'object') {
+    cards = section.cards as CardData[]
+  } else if (section?.content) {
+    try {
+      const parsed = JSON.parse(section.content)
+      cards = Array.isArray(parsed.cards) ? parsed.cards as CardData[] : []
+    } catch (e) {
+      console.warn('Failed to parse about content:', e)
+    }
+  }
+
+  const defaultCards = [
+    { title: 'Play', description: 'Explore activities and experiences around our location', image: '/images/skatepark-1.jpg', link: '/play' },
+    { title: 'Surf', description: 'Discover the best surfing spots and conditions', image: '/images/surf4.jpg', link: '/surf' },
+    { title: 'Flow', description: 'Wellness, yoga, and mindfulness experiences', image: '/images/yoga_dome1.jpg', link: '/flow' }
+  ]
+  const displayCards = cards.length > 0 ? cards : defaultCards
 
   return (
     <section id="section-about" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-          {(content?.title as string) || 'What we are about'}
+          {section?.title || 'What we are about'}
         </h2>
-        {typeof content?.subtitle === 'string' && content.subtitle && (
+        {section?.subtitle && (
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            {content.subtitle}
+            {section.subtitle}
           </p>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {((content?.cards as CardData[]) || [
-            { title: 'Play', description: 'Explore activities and experiences around our location', image: '/images/skatepark-1.jpg', link: '/play' },
-            { title: 'Surf', description: 'Discover the best surfing spots and conditions', image: '/images/surf4.jpg', link: '/surf' },
-            { title: 'Flow', description: 'Wellness, yoga, and mindfulness experiences', image: '/images/yoga_dome1.jpg', link: '/flow' }
-          ]).map((card: CardData, idx: number) => {
+          {displayCards.map((card: CardData, idx: number) => {
             // Handle image URL - check for empty strings and provide fallbacks
             let imageUrl: string
-            
+
             if (card.image && card.image.trim() !== '') {
               // Use provided image if it exists and is not empty
               if (card.image.startsWith('http')) {
@@ -377,11 +474,19 @@ export async function HomeAbout() {
 export async function HomeRooms() {
   const sectionsMap = await getAllHomepageSections()
   const section = getPageSection('rooms', sectionsMap)
-  const content = section?.content || {}
-  
-  const roomIds: string[] = Array.isArray(content?.roomIds)
-    ? (content.roomIds as string[]).filter((id: unknown) => typeof id === 'string')
-    : []
+
+  // Parse roomIds from JSON or use empty array
+  let roomIds: string[] = []
+  if (section?.content) {
+    try {
+      const parsed = JSON.parse(section.content)
+      roomIds = Array.isArray(parsed.roomIds)
+        ? (parsed.roomIds as string[]).filter((id: unknown) => typeof id === 'string')
+        : []
+    } catch (e) {
+      console.warn('Failed to parse rooms content:', e)
+    }
+  }
 
   let featuredRooms: RoomData[] = []
   if (roomIds.length > 0) {
@@ -405,11 +510,11 @@ export async function HomeRooms() {
     <section id="section-rooms" className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-          {(content?.title as string) || 'Our Rooms'}
+          {section?.title || 'Our Rooms'}
         </h2>
-        {typeof content?.subtitle === 'string' && content.subtitle && (
+        {section?.subtitle && (
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            {content.subtitle}
+            {section.subtitle}
           </p>
         )}
 
@@ -477,27 +582,46 @@ export async function HomeRooms() {
 export async function HomeHosts() {
   const sectionsMap = await getAllHomepageSections()
   const section = getPageSection('hosts', sectionsMap)
-  const content = section?.content || {}
 
-  if (!((content.paragraphs as string[])?.length > 0 || content.imageUrl)) {
-    return null // Or return the default HostSection if you prefer
+  // Parse paragraphs from JSON or return null if not available
+  let paragraphs: string[] = []
+  let imageUrl: string | undefined
+  let signature: string | undefined
+
+  if (section?.content) {
+    try {
+      const parsed = JSON.parse(section.content)
+      paragraphs = Array.isArray(parsed.paragraphs) ? parsed.paragraphs as string[] : []
+      imageUrl = typeof parsed.imageUrl === 'string' ? parsed.imageUrl : undefined
+      signature = typeof parsed.signature === 'string' ? parsed.signature : undefined
+    } catch (e) {
+      console.warn('Failed to parse hosts content:', e)
+    }
+  }
+
+  if (!imageUrl && section?.imageUrl) {
+    imageUrl = section.imageUrl
+  }
+
+  if (paragraphs.length === 0 && !imageUrl) {
+    return null
   }
 
   return (
     <section id="section-hosts" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center italic">
-          {(content.title as string) || 'Your Hosts'}
+          {section?.title || 'Your Hosts'}
         </h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
-          {typeof content.imageUrl === 'string' && content.imageUrl && (
+          {imageUrl && (
             <div className="lg:col-span-1 flex justify-center">
               <div className="relative">
                 <div className="bg-white p-4 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-300 focus-within:rotate-0">
                   <div className="bg-gray-100 p-2 relative w-[300px] h-[400px]">
                     <Image
-                      src={content.imageUrl}
+                      src={imageUrl}
                       alt="Heiwa House Hosts"
                       fill
                       className="object-cover rounded"
@@ -509,17 +633,17 @@ export async function HomeHosts() {
             </div>
           )}
 
-          <div className={content.imageUrl ? 'lg:col-span-2 space-y-6' : 'lg:col-span-3 space-y-6'}>
+          <div className={imageUrl ? 'lg:col-span-2 space-y-6' : 'lg:col-span-3 space-y-6'}>
             <div className="prose prose-lg max-w-none">
-              {Array.isArray(content.paragraphs) && (content.paragraphs as string[]).map((para: string, idx: number) => (
+              {paragraphs.map((para: string, idx: number) => (
                 <p key={idx} className="text-gray-700 leading-relaxed">{para}</p>
               ))}
             </div>
 
-            {typeof content.signature === 'string' && content.signature && (
+            {signature && (
               <div className="pt-6">
                 <p className="text-2xl font-handwriting text-gray-800 italic">
-                  {content.signature}
+                  {signature}
                 </p>
               </div>
             )}
@@ -533,17 +657,16 @@ export async function HomeHosts() {
 export async function HomeReviews() {
   const sectionsMap = await getAllHomepageSections()
   const section = getPageSection('reviews', sectionsMap)
-  const content = section?.content || {}
 
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-          {(content?.title as string) || 'What Our Customers Say'}
+          {section?.title || 'What Our Customers Say'}
         </h2>
-        {typeof content?.subtitle === 'string' && content.subtitle && (
+        {section?.subtitle && (
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            {content.subtitle}
+            {section.subtitle}
           </p>
         )}
 
@@ -572,9 +695,24 @@ interface ExperienceDisplay {
 export async function HomeFacilities() {
   const sectionsMap = await getAllHomepageSections()
   const section = getPageSection('facilities', sectionsMap)
-  const content = section?.content || {}
 
-  const cmsExperiences = (content?.facilities as ExperienceData[]) || (content?.items as ExperienceData[])
+  // Parse facilities from JSON or use defaults
+  let cmsExperiences: ExperienceData[] = []
+  if (section?.facilities && typeof section.facilities === 'object') {
+    cmsExperiences = section.facilities as ExperienceData[]
+  } else if (section?.content) {
+    try {
+      const parsed = JSON.parse(section.content)
+      cmsExperiences = Array.isArray(parsed.facilities)
+        ? parsed.facilities as ExperienceData[]
+        : Array.isArray(parsed.items)
+          ? parsed.items as ExperienceData[]
+          : []
+    } catch (e) {
+      console.warn('Failed to parse facilities content:', e)
+    }
+  }
+
   const experiences = (Array.isArray(cmsExperiences) && cmsExperiences.length > 0)
     ? cmsExperiences.map((experience: ExperienceData) => ({
         title: experience.title || experience.name || '',
@@ -596,11 +734,11 @@ export async function HomeFacilities() {
     <section id="section-facilities" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-bold text-gray-900 mb-12 text-center">
-          {(content?.title as string) || 'Experiences Around'}
+          {section?.title || 'Experiences Around'}
         </h2>
-        {typeof content?.subtitle === 'string' && content.subtitle && (
+        {section?.subtitle && (
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            {content.subtitle}
+            {section.subtitle}
           </p>
         )}
 
