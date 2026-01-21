@@ -174,7 +174,7 @@ export function GridItemImageEditor({ images, onChange, disabled = false, maxIma
         <button
           type="button"
           onClick={addImage}
-          disabled={disabled || (maxImages && images.length >= maxImages)}
+          disabled={disabled || (maxImages && images.length >= maxImages) ? true : false}
           className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-700 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus className="w-4 h-4" />
