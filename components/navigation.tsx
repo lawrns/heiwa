@@ -28,13 +28,31 @@ export function Navigation({ items: initialItems, currentPath, className }: Navi
       .finally(() => setIsSettingsLoading(false))
   }, [])
 
+  // Memoize navigation items to prevent duplicate fetches
+  const navigationItems = useMemo(() => {
+    if (initialItems) return initialItems
+    return fetchedItems
+  }, [initialItems, fetchedItems])
+
   useEffect(() => {
-    if (!initialItems) {
-      getNavigationItems().then(items => {
+    if (initialItems) {
+      setFetchedItems(initialItems)
+      return
+    }
+
+    let mounted = true
+    getNavigationItems().then(items => {
+      if (mounted) {
         setFetchedItems(items)
-      }).catch(() => {
+      }
+    }).catch(() => {
+      if (mounted) {
         setFetchedItems([])
-      })
+      }
+    })
+
+    return () => {
+      mounted = false
     }
   }, [initialItems])
 

@@ -71,7 +71,7 @@ export function ExperienceGrid({
 
   useEffect(() => {
     fetchExperiences()
-  }, [category, tier, fetchExperiences])
+  }, [category, tier])
 
   if (loading) {
     return (
