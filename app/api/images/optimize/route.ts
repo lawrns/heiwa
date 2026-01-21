@@ -161,7 +161,7 @@ export async function GET(request: NextRequest) {
     const optimizedBuffer = await image.toBuffer()
     const metadata = await sharp(optimizedBuffer).metadata()
 
-    return new NextResponse(optimizedBuffer, {
+    return new NextResponse(optimizedBuffer as BodyInit, {
       headers: {
         'Content-Type': `image/${format}`,
         'Content-Length': optimizedBuffer.length.toString(),
