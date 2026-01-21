@@ -40,12 +40,12 @@ export async function GET(request: NextRequest) {
     }
 
     let query = supabase
-      .from('homepage_content')
+      .from('homepage_sections')
       .select('*', { count: 'exact' })
 
     // Apply filters
     if (sectionType) {
-      query = query.eq('section', sectionType)
+      query = query.eq('section_type', sectionType)
     }
     if (isActive !== null) {
       query = query.eq('is_active', isActive === 'true')
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { data, error } = await supabaseAdmin
-      .from('homepage_content')
+      .from('homepage_sections')
       .insert([validation.data])
       .select()
       .single()
@@ -176,7 +176,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const { data, error } = await supabaseAdmin
-      .from('homepage_content')
+      .from('homepage_sections')
       .update(validation.data)
       .eq('id', id)
       .select()
@@ -251,7 +251,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const { error } = await supabaseAdmin
-      .from('homepage_content')
+      .from('homepage_sections')
       .delete()
       .eq('id', id)
 
