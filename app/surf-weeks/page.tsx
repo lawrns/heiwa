@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { SurfWeeksClient } from '@/components/surf-weeks/SurfWeeksClient'
 import { SurfWeeksTable } from '@/components/surf-weeks/SurfWeeksTable'
 import { BookNowButton } from '@/components/surf-weeks/BookNowButton'
+import { SurfMap } from '@/components/surf-weeks/SurfMap'
 import { GoogleReviews, GoogleRatingSummary } from '@/components/ui/google-reviews'
 import { generatePageMetadata } from '@/lib/page-metadata'
 
@@ -199,21 +200,31 @@ export default async function SurfWeeksPage() {
   const heroSection = getSection('hero')
   const introSection = getSection('intro')
   const faqSection = getSection('faq')
-  const includedSection = getSection('features') || getSection('included')
-  const stepsSection = getSection('steps') || getSection('process')
+  const includedSection = getSection('surf_weeks_included') || getSection('features') || getSection('included')
+  const stepsSection = getSection('surf_weeks_steps') || getSection('steps') || getSection('process')
   const gallerySection = getSection('facility_gallery') || getSection('image_gallery') || getSection('gallery')
-  
+
   // Type-safe content accessors
   const heroContent = heroSection?.content as { title?: string; description?: string; imageUrl?: string; videoUrl?: string } | undefined
   const introContent = introSection?.content as { title?: string; content?: string } | undefined
   const faqContent = faqSection?.content as { title?: string; items?: Array<{ question: string; answer: string }> } | undefined
   const galleryContent = gallerySection?.content as { title?: string; description?: string; images?: string[]; galleryId?: string } | undefined
+  const includedContent = includedSection?.content as {
+    title?: string
+    features?: Array<{ icon?: string; title: string; description: string; subtitle?: string }>
+  } | undefined
   const stepsContent = stepsSection?.content as {
     title?: string
     subtitle?: string
     steps?: Array<{ title: string; description: string; image?: string }>
   } | undefined
-  
+
+  // Calculate dynamic pricing from surf weeks data
+  const prices = surfWeeks.map((week: any) => week.price).filter((p: number) => p != null && p > 0)
+  const minPrice = prices.length > 0 ? Math.min(...prices) : 450
+  const maxPrice = prices.length > 0 ? Math.max(...prices) : 450
+  const displayPrice = minPrice === maxPrice ? `${minPrice}` : `${minPrice}-${maxPrice}`
+
   // Gallery images - Use CMS if available, otherwise fall back to defaults
   const defaultGalleryImages = [
     '/images/DSC03081-scaled.jpg',
@@ -471,6 +482,9 @@ export default async function SurfWeeksPage() {
         </div>
       </section>
 
+      {/* Surf Map Section */}
+      <SurfMap />
+
       {/* How a Surf Week Works - With Images */}
       <section id="section-steps" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -594,36 +608,44 @@ export default async function SurfWeeksPage() {
             <div className="lg:col-span-1">
               <div className="bg-white/55 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border-2 border-white/50">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 uppercase tracking-wide drop-shadow-sm">
-                  Included
+                  {includedContent?.title || 'Included'}
                 </h2>
                 <div className="space-y-4">
-                  {includedFeatures
-                    .filter(feature => !feature.list)
-                    .map((feature, index) => {
-                      const Icon = feature.icon
-                      return (
-                        <div
-                          key={index}
-                          className="flex items-center gap-3 text-gray-900"
-                        >
-                          <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                  {(includedContent?.features && includedContent.features.length > 0
+                    ? includedContent.features
+                    : includedFeatures.filter(f => !f.list)
+                  ).map((feature: any, index: number) => {
+                    // Map icon names from CMS to Lucide components
+                    const iconMap: Record<string, any> = { Bed, UtensilsCrossed, Activity, MapPin, Waves, Star }
+                    const Icon = feature.icon ? iconMap[feature.icon] || Star : (feature.icon || Star)
+
+                    return (
+                      <div key={index} className="flex items-center gap-3 text-gray-900">
+                        <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                          {typeof Icon === 'string' ? (
+                            <span className="text-white text-lg">{Icon[0]}</span>
+                          ) : (
                             <Icon className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <div className="font-semibold text-base">{feature.title}</div>
-                            {feature.title === 'Food' && (
-                              <div className="text-xs text-gray-600">(2 meals a day)</div>
-                            )}
-                            {feature.title === 'Yoga' && (
-                              <div className="text-xs text-gray-600">(5 lessons)</div>
-                            )}
-                          </div>
+                          )}
                         </div>
-                      )
-                    })}
-                  
-                  {/* Other facilities */}
-                  {includedFeatures.find(f => f.list) && (
+                        <div>
+                          <div className="font-semibold text-base">{feature.title}</div>
+                          {feature.subtitle && (
+                            <div className="text-xs text-gray-600">{feature.subtitle}</div>
+                          )}
+                          {!feature.subtitle && feature.title === 'Food' && (
+                            <div className="text-xs text-gray-600">(2 meals a day)</div>
+                          )}
+                          {!feature.subtitle && feature.title === 'Yoga' && (
+                            <div className="text-xs text-gray-600">(5 lessons)</div>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+
+                  {/* Other facilities (only for hardcoded fallback) */}
+                  {!includedContent?.features && includedFeatures.find((f: any) => f.list) && (
                     <div className="pt-4 mt-4 border-t border-gray-300">
                       <div className="flex items-center gap-2 mb-3">
                         <Star className="w-5 h-5 text-orange-500" />
@@ -631,12 +653,9 @@ export default async function SurfWeeksPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         {includedFeatures
-                          .find(f => f.list)
-                          ?.list?.map((item, idx) => (
-                            <div
-                              key={idx}
-                              className="flex items-center gap-1.5 text-sm text-gray-700"
-                            >
+                          .find((f: any) => f.list)
+                          ?.list?.map((item: string, idx: number) => (
+                            <div key={idx} className="flex items-center gap-1.5 text-sm text-gray-700">
                               <CheckCircle className="w-4 h-4 text-orange-500 flex-shrink-0" />
                               <span>{item}</span>
                             </div>
@@ -658,7 +677,7 @@ export default async function SurfWeeksPage() {
                   From
                 </div>
                 <div className="text-5xl md:text-6xl lg:text-7xl font-bold text-orange-600 mb-6">
-                  450€
+                  {displayPrice}€
                 </div>
                 <div className="text-sm text-gray-600 max-w-xs mx-auto">
                   All-inclusive package. Everything listed is included in your surf week experience.
