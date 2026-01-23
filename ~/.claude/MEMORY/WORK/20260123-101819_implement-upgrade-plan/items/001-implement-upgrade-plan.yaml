@@ -1,0 +1,28 @@
+id: "001"
+description: "Implement the following plan:
+
+# Wavecamps Upgrade Plan
+**Based on Comprehensive Testing Assessment**
+
+## Executive Summary
+
+Overall system health is strong - 10 of 17 identified issues are RESOLVED. The upgrade focuses on:
+- **2 High-Priority Bug Fixes** (pricing format, garbage text)
+- **4 Medium-Priority Investigations** (surf map, blog borders, full testing)
+- **System Maintenance** (git sync, database cleanup)
+
+---
+
+## Priority Matrix
+
+| Priority | Issue | Impact | Effort |
+|----------|----"
+type: "work"
+effort: "THOROUGH"
+source: "USER_PROMPT"
+status: "ACTIVE"
+created_at: "2026-01-23T10:18:19-06:00"
+completed_at: null
+response_summary: null
+lineage:
+  created_by: "user_request"

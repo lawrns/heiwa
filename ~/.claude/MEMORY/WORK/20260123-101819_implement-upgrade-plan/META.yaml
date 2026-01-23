@@ -1,0 +1,12 @@
+id: "20260123-101819_implement-upgrade-plan"
+title: "Implement upgrade plan"
+created_at: "2026-01-23T10:18:19-06:00"
+completed_at: null
+source: "SESSION"
+status: "ACTIVE"
+session_id: "76551377-a2e8-4eb4-8ca9-6d6b460fd046"
+lineage:
+  tools_used: []
+  files_changed: []
+  agents_spawned: []
+parent: null

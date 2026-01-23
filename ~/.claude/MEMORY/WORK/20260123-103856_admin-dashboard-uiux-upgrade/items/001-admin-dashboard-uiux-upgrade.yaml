@@ -1,0 +1,23 @@
+id: "001"
+description: "use /agents and forge an upgrade plan with /redteam for the admin section - COMPREHENSIVE UI/UX UPGRADE LIST FOR HEIWA HOUSE ADMIN DASHBOARD
+1. SIDEBAR IMPROVEMENTS
+1.1 Collapsible Sidebar with Icon-Only Mode
+
+Add toggle to collapse sidebar to icon-only view for more screen real estate
+Current: Full width takes ~250px
+Improvement: Icons remain visible, labels appear on hover
+
+1.2 Sidebar Grouping/Sections
+
+Organize menu items into logical groups with section headers:
+
+Core Management (Bookings, "
+type: "work"
+effort: "THOROUGH"
+source: "USER_PROMPT"
+status: "ACTIVE"
+created_at: "2026-01-23T10:38:56-06:00"
+completed_at: null
+response_summary: null
+lineage:
+  created_by: "user_request"

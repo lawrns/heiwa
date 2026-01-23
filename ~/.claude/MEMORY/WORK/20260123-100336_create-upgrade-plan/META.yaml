@@ -1,0 +1,12 @@
+id: "20260123-100336_create-upgrade-plan"
+title: "Create upgrade plan"
+created_at: "2026-01-23T10:03:36-06:00"
+completed_at: null
+source: "SESSION"
+status: "ACTIVE"
+session_id: "f03c52a3-852c-417e-aa6c-4360e7a21bfa"
+lineage:
+  tools_used: []
+  files_changed: []
+  agents_spawned: []
+parent: null
