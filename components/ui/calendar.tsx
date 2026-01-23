@@ -55,7 +55,7 @@ function Calendar({
         // Week/day grid
         month_grid: cn(defaultClassNames.month_grid, "w-full border-collapse mt-2"),
         weekdays: cn(defaultClassNames.weekdays, "flex"),
-        weekday: cn(defaultClassNames.weekday, "text-gray-500 rounded-md w-10 font-medium text-[0.75rem] flex items-center justify-center py-2"),
+        weekday: cn(defaultClassNames.weekday, "text-gray-500 rounded-md w-10 font-medium text-xs flex items-center justify-center py-2 tracking-wider"),
         week: cn(defaultClassNames.week, "flex w-full mt-1"),
 
         // Day cells (v9: cell → day, day → day_button)

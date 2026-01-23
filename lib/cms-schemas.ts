@@ -19,7 +19,8 @@ export const SECTION_TYPES = [
   'testimonials', 'custom',
   'local_break', 'surf_lessons',
   'surf_conditions', 'world_class_surfing',
-  'legal_content', 'facility_gallery'
+  'legal_content', 'facility_gallery',
+  'surf_weeks_included', 'surf_weeks_steps'
 ] as const
 
 export type SectionType = typeof SECTION_TYPES[number]
@@ -226,6 +227,32 @@ export const FacilityGalleryContentSchema = z.object({
 
 export type FacilityGalleryContent = z.infer<typeof FacilityGalleryContentSchema>
 
+// Surf Weeks - What's Included Section
+export const SurfWeeksIncludedContentSchema = z.object({
+  title: z.string().optional(),
+  features: z.array(z.object({
+    icon: z.string().optional(),
+    title: z.string().min(1, 'Feature title is required'),
+    description: z.string().min(1, 'Feature description is required'),
+    subtitle: z.string().optional()
+  }))
+})
+
+export type SurfWeeksIncludedContent = z.infer<typeof SurfWeeksIncludedContentSchema>
+
+// Surf Weeks - How It Works Steps Section
+export const SurfWeeksStepsContentSchema = z.object({
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  steps: z.array(z.object({
+    title: z.string().min(1, 'Step title is required'),
+    description: z.string().min(1, 'Step description is required'),
+    image: z.string().optional()
+  }))
+})
+
+export type SurfWeeksStepsContent = z.infer<typeof SurfWeeksStepsContentSchema>
+
 // Map section types to their schemas
 export const SECTION_SCHEMAS: Record<SectionType, z.ZodSchema> = {
   hero: HeroContentSchema,
@@ -246,7 +273,9 @@ export const SECTION_SCHEMAS: Record<SectionType, z.ZodSchema> = {
   surf_conditions: SurfConditionsContentSchema,
   world_class_surfing: WorldClassSurfingContentSchema,
   legal_content: LegalContentSchema,
-  facility_gallery: FacilityGalleryContentSchema
+  facility_gallery: FacilityGalleryContentSchema,
+  surf_weeks_included: SurfWeeksIncludedContentSchema,
+  surf_weeks_steps: SurfWeeksStepsContentSchema
 }
 
 // Page Section (database row)
@@ -418,6 +447,15 @@ export const DEFAULT_SECTION_CONTENT: Record<SectionType, Record<string, unknown
     description: '',
     images: [],
     galleryId: ''
+  },
+  surf_weeks_included: {
+    title: 'Included',
+    features: []
+  },
+  surf_weeks_steps: {
+    title: 'How a surf week works',
+    subtitle: 'Your journey from booking to catching waves',
+    steps: []
   }
 }
 
@@ -441,5 +479,7 @@ export const SECTION_TYPE_LABELS: Record<SectionType, string> = {
   surf_conditions: 'Surf Conditions',
   world_class_surfing: 'World-Class Surfing',
   legal_content: 'Legal Content',
-  facility_gallery: 'Facility Gallery'
+  facility_gallery: 'Facility Gallery',
+  surf_weeks_included: 'Surf Weeks - What\'s Included',
+  surf_weeks_steps: 'Surf Weeks - How It Works'
 }
