@@ -17,14 +17,9 @@ interface CalendarEvent {
 
 interface Booking {
   id: string
-  items?: Array<{
-    type: string
-    itemId?: string
-    dates?: {
-      checkIn: string
-      checkOut: string
-    }
-  }>
+  check_in: string
+  check_out: string
+  room_type: string | null
   status: string
   payment_status: string
   client_ids?: string[]
@@ -58,7 +53,7 @@ export async function GET(request: NextRequest) {
     // Fetch bookings and convert to calendar events
     const { data: bookings, error: bookingsError } = await supabaseAdmin
       .from('bookings')
-      .select('id, items, status, payment_status, client_ids, created_at')
+      .select('id, check_in, check_out, room_type, status, payment_status, client_ids, created_at')
       .order('created_at', { ascending: false })
 
     if (!bookingsError && bookings) {
@@ -84,70 +79,29 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Collect surf camp IDs to fetch in batch
-      const surfCampIds = new Set<string>()
-      bookings.forEach((booking: Booking) => {
-        const firstItem = booking.items?.[0]
-        if (firstItem?.type === 'surfCamp' && firstItem.itemId) {
-          surfCampIds.add(firstItem.itemId)
-        }
-      })
-
-      // Fetch all surf camps in one query
-      let surfCampMap = new Map<string, SurfCamp>()
-      if (surfCampIds.size > 0) {
-        const { data: camps } = await supabaseAdmin
-          .from('surf_camps')
-          .select('id, name, start_date, end_date')
-          .in('id', Array.from(surfCampIds))
-
-        if (camps) {
-          camps.forEach((camp: SurfCamp) => {
-            surfCampMap.set(camp.id, camp)
-          })
-        }
-      }
-
       // Convert bookings to calendar events
+      // Room bookings use check_in, check_out, room_type fields directly
       bookings.forEach((booking: Booking) => {
-        const firstItem = booking.items?.[0]
-        if (!firstItem) return
+        // Skip bookings without valid dates
+        if (!booking.check_in || !booking.check_out) return
 
         const guestName = booking.client_ids && booking.client_ids.length > 0
           ? (clientMap.get(booking.client_ids[0]) || 'Unknown Guest')
           : 'Unknown Guest'
 
-        if (firstItem.type === 'room' && firstItem.dates?.checkIn && firstItem.dates?.checkOut) {
-          events.push({
-            id: `booking-${booking.id}`,
-            title: `Booking: ${guestName}`,
-            description: `Room booking - ${booking.status}`,
-            start_date: firstItem.dates.checkIn,
-            end_date: firstItem.dates.checkOut,
-            event_type: 'booking',
-            location: 'Heiwa House',
-            color: booking.status === 'confirmed' ? 'blue' : booking.status === 'pending' ? 'yellow' : 'gray',
-            created_at: booking.created_at
-          })
-        } else if (firstItem.type === 'surfCamp') {
-          // Use pre-fetched surf camp data
-          if (firstItem.itemId) {
-            const camp = surfCampMap.get(firstItem.itemId)
-            if (camp && camp.start_date) {
-              events.push({
-                id: `booking-surf-${booking.id}`,
-                title: `Surf Camp Booking: ${camp.name}`,
-                description: `Surf camp booking - ${guestName}`,
-                start_date: camp.start_date,
-                end_date: camp.end_date || camp.start_date,
-                event_type: 'surf_camp_booking',
-                location: 'Heiwa House',
-                color: 'green',
-                created_at: booking.created_at
-              })
-            }
-          }
-        }
+        const roomLabel = booking.room_type || 'Room'
+
+        events.push({
+          id: `booking-${booking.id}`,
+          title: `${roomLabel}: ${guestName}`,
+          description: `Room booking - ${booking.status || 'pending'}`,
+          start_date: booking.check_in,
+          end_date: booking.check_out,
+          event_type: 'booking',
+          location: 'Heiwa House',
+          color: booking.status === 'confirmed' ? 'blue' : booking.status === 'pending' ? 'yellow' : 'gray',
+          created_at: booking.created_at
+        })
       })
     }
 
