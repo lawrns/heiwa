@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test'
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'testpassword123'
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3003'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'heiwa_secure_admin_2025'
+const BASE_URL = process.env.BASE_URL || 'https://heiwahauz.netlify.app'
 
 // Extract domain from BASE_URL for cookie setting
 function getCookieDomain(): string {

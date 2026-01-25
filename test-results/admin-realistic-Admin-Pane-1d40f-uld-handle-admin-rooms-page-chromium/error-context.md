@@ -1,7 +1,7 @@
 # Page snapshot
 
 ```yaml
-- generic [ref=e1]:
+- generic [active] [ref=e1]:
   - main [ref=e2]:
     - generic [ref=e5]:
       - generic [ref=e6]:
@@ -11,11 +11,13 @@
       - generic [ref=e13]:
         - generic [ref=e14]:
           - generic [ref=e15]: Password
-          - textbox "Password" [active] [ref=e16]:
+          - textbox "Password" [ref=e16]:
             - /placeholder: Enter admin password
-        - button "Sign In" [disabled]
-      - paragraph [ref=e18]: Heiwa House Admin Dashboard
-  - button "Contact us on WhatsApp" [ref=e19]:
-    - img [ref=e20]
-  - alert [ref=e22]
+            - text: heiwa_secure_admin_2025
+        - paragraph [ref=e18]: Invalid password. Please try again.
+        - button "Sign In" [ref=e19]
+      - paragraph [ref=e21]: Heiwa House Admin Dashboard
+  - button "Contact us on WhatsApp" [ref=e22]:
+    - img [ref=e23]
+  - alert [ref=e25]
 ```

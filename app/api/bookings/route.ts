@@ -172,6 +172,12 @@ export async function POST(request: NextRequest) {
         email: body.email,
         phone: body.phone,
         message: body.message,
+        // Admin-specific fields
+        total_amount: body.total_amount,
+        status: body.status,
+        payment_status: body.payment_status,
+        special_requests: body.special_requests,
+        internal_notes: body.internal_notes,
       };
 
       const result = await bookingService.createRoomBooking(input);
