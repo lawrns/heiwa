@@ -18,6 +18,7 @@ interface CMSCardProps {
     icon?: React.ReactNode
     onClick?: () => void
     href?: string
+    target?: '_blank' | '_self'
     variant?: 'primary' | 'secondary' | 'danger'
   }[]
   onClick?: () => void
@@ -113,6 +114,7 @@ export function CMSCard({
                 <Link
                   key={idx}
                   href={action.href}
+                  target={action.target}
                   onClick={(e) => e.stopPropagation()}
                   className={buttonClass}
                   title={action.label}
