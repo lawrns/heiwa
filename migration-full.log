@@ -1,0 +1,379 @@
+🔄 Starting database migration...
+
+📁 Using temp directory: /var/folders/5j/lg5934p5529bqb2w8jbf12sw0000gn/T/tmp.k9jZo9h3qf
+
+📋 Getting list of tables from old database...
+Found tables:
+     1	activity_categories
+     2	activity_log
+     3	add_ons
+     4	automations
+     5	blog_authors
+     6	blog_categories
+     7	blog_post_tags
+     8	blog_post_translations
+     9	blog_posts
+    10	blog_tags
+    11	bookings
+    12	camp_weeks
+    13	clients
+    14	cta_buttons
+    15	custom_events
+    16	experiences
+    17	external_calendar_events
+    18	faq_items
+    19	feature_flags
+    20	homepage_content
+    21	homepage_sections
+    22	invoices
+    23	media_library
+    24	navigation_items
+    25	page_content
+    26	page_versions
+    27	pages
+    28	pages_meta
+    29	payments
+    30	room_assignments
+    31	rooms
+    32	surf_camp_enrollments
+    33	surf_camps
+    34	surf_week_assignments
+    35	testimonials
+
+🔄 Migrating table: activity_categories
+  ⚠️  Table activity_categories doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: activity_log
+  ℹ️  No data to migrate (0 rows)
+
+🔄 Migrating table: add_ons
+  ⚠️  Table add_ons doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: automations
+  ⚠️  Table automations doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: blog_authors
+  📊 Found 1 rows in old database
+  📤 Exporting data...
+COPY 1
+  📥 Importing 1 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_a_17727" is a system trigger
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+NOTICE:  truncate cascades to table "blog_posts"
+NOTICE:  truncate cascades to table "blog_post_tags"
+NOTICE:  truncate cascades to table "blog_post_translations"
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+COPY 1
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_a_17727" is a system trigger
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+1 rows
+
+🔄 Migrating table: blog_categories
+  📊 Found 6 rows in old database
+  📤 Exporting data...
+COPY 6
+  📥 Importing 6 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_a_17722" is a system trigger
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+NOTICE:  truncate cascades to table "blog_posts"
+NOTICE:  truncate cascades to table "blog_post_tags"
+NOTICE:  truncate cascades to table "blog_post_translations"
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+COPY 6
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_a_17722" is a system trigger
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+6 rows
+
+🔄 Migrating table: blog_post_tags
+  📊 Found 18 rows in old database
+  📤 Exporting data...
+COPY 18
+  📥 Importing 18 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_c_17739" is a system trigger
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  insert or update on table "blog_post_tags" violates foreign key constraint "blog_post_tags_post_id_fkey"
+DETAIL:  Key (post_id)=(90f54287-b12d-4b7b-af68-7822e385fdc2) is not present in table "blog_posts".
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_c_17739" is a system trigger
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+0 rows
+
+🔄 Migrating table: blog_post_translations
+  📊 Found 6 rows in old database
+  📤 Exporting data...
+COPY 6
+  📥 Importing 6 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_c_17766" is a system trigger
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  insert or update on table "blog_post_translations" violates foreign key constraint "blog_post_translations_post_id_fkey"
+DETAIL:  Key (post_id)=(b2e42f47-4c5a-466b-a55b-4b3cc848c5ee) is not present in table "blog_posts".
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_c_17766" is a system trigger
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+0 rows
+
+🔄 Migrating table: blog_posts
+  📊 Found 6 rows in old database
+  📤 Exporting data...
+COPY 6
+  📥 Importing 6 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_a_17737" is a system trigger
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+NOTICE:  truncate cascades to table "blog_post_tags"
+NOTICE:  truncate cascades to table "blog_post_translations"
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+COPY 6
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_a_17737" is a system trigger
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+6 rows
+
+🔄 Migrating table: blog_tags
+  📊 Found 18 rows in old database
+  📤 Exporting data...
+COPY 18
+  📥 Importing 18 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_a_17742" is a system trigger
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+NOTICE:  truncate cascades to table "blog_post_tags"
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+COPY 18
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  permission denied: "RI_ConstraintTrigger_a_17742" is a system trigger
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+18 rows
+
+🔄 Migrating table: bookings
+  ⚠️  Table bookings doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: camp_weeks
+  ⚠️  Table camp_weeks doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: clients
+  ⚠️  Table clients doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: cta_buttons
+  ℹ️  No data to migrate (0 rows)
+
+🔄 Migrating table: custom_events
+  ⚠️  Table custom_events doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: experiences
+  📊 Found 25 rows in old database
+  📤 Exporting data...
+COPY 25
+  📥 Importing 25 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  extra data after last expected column
+CONTEXT:  COPY experiences, line 2: "59d2b5da-7cc6-40eb-b385-3185c705d3c6,Bicycle Ride,https://heiwahouse.com/wp-content/uploads/2025/01/..."
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+0 rows
+
+🔄 Migrating table: external_calendar_events
+  ⚠️  Table external_calendar_events doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: faq_items
+  ℹ️  No data to migrate (0 rows)
+
+🔄 Migrating table: feature_flags
+  ⚠️  Table feature_flags doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: homepage_content
+  📊 Found 8 rows in old database
+  📤 Exporting data...
+COPY 8
+  📥 Importing 8 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  invalid input syntax for type boolean: "6"
+CONTEXT:  COPY homepage_content, line 2, column is_active: "6"
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+0 rows
+
+🔄 Migrating table: homepage_sections
+  ℹ️  No data to migrate (0 rows)
+
+🔄 Migrating table: invoices
+  ⚠️  Table invoices doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: media_library
+  ℹ️  No data to migrate (0 rows)
+
+🔄 Migrating table: navigation_items
+  📊 Found 6 rows in old database
+  📤 Exporting data...
+COPY 6
+  📥 Importing 6 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+COPY 6
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+6 rows
+
+🔄 Migrating table: page_content
+  📊 Found 10 rows in old database
+  📤 Exporting data...
+COPY 10
+  📥 Importing 10 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  invalid input syntax for type json
+DETAIL:  Expected end of input, but found "-11".
+CONTEXT:  JSON data, line 1: 2025-11...
+COPY page_content, line 2, column json_content: "2025-11-08 22:55:33.971797+00"
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+0 rows
+
+🔄 Migrating table: page_versions
+  ⚠️  Table page_versions doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: pages
+  📊 Found 4 rows in old database
+  📤 Exporting data...
+COPY 4
+  📥 Importing 4 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+COPY 4
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+4 rows
+
+🔄 Migrating table: pages_meta
+  📊 Found 7 rows in old database
+  📤 Exporting data...
+COPY 7
+  📥 Importing 7 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+COPY 7
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+7 rows
+
+🔄 Migrating table: payments
+  ⚠️  Table payments doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: room_assignments
+  ⚠️  Table room_assignments doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: rooms
+  📊 Found 4 rows in old database
+  📤 Exporting data...
+COPY 4
+  📥 Importing 4 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  extra data after last expected column
+CONTEXT:  COPY rooms, line 2: "6a6e6bb0-d3e5-4fab-87d8-7e39174637e9,Room Nr 3,2,whole,"{""camp"": {""1"": 80, ""2"": 80}, ""standar..."
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+0 rows
+
+🔄 Migrating table: surf_camp_enrollments
+  ⚠️  Table surf_camp_enrollments doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: surf_camps
+  📊 Found 7 rows in old database
+  📤 Exporting data...
+COPY 7
+  📥 Importing 7 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  extra data after last expected column
+CONTEXT:  COPY surf_camps, line 2: "bb8c0720-aa3b-4a3a-b424-02d875b4aac8,Beginner Surf Week,Perfect introduction to surfing with profess..."
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+0 rows
+
+🔄 Migrating table: surf_week_assignments
+  ⚠️  Table surf_week_assignments doesn't exist in new database (exists=f), skipping...
+
+🔄 Migrating table: testimonials
+  📊 Found 4 rows in old database
+  📤 Exporting data...
+COPY 4
+  📥 Importing 4 rows...
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  🗑️  Clearing existing data...
+DETAIL:  "supautils" is now a reserved prefix.
+TRUNCATE TABLE
+DETAIL:  "supautils" is now a reserved prefix.
+ERROR:  extra data after last expected column
+CONTEXT:  COPY testimonials, line 2: "ba824a9f-7284-4e46-9cce-3d172db6e643,Maria S.,Yoga Enthusiast,,The yoga sessions in the dome were ab..."
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+  ✅ Migrated DETAIL:"supautils"isnowareservedprefix.
+0 rows
+
+🧹 Cleaning up temp files...
+
+✅ Migration complete!

@@ -1,0 +1,305 @@
+openapi: 3.0.3
+info:
+  title: Heiwa Admin System API
+  description: API contracts for admin system integration
+  version: 1.0.0
+  contact:
+    name: Heiwa House
+    email: admin@heiwa.house
+
+servers:
+  - url: https://admin.heiwa.house/api/wordpress
+    description: Production admin system
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /rooms:
+    get:
+      summary: Get available rooms
+      description: Retrieve list of active rooms with pricing and availability
+      operationId: getRooms
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      rooms:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Room'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /availability:
+    get:
+      summary: Check room availability
+      description: Check availability for specific dates and room
+      operationId: checkAvailability
+      parameters:
+        - name: roomId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Room identifier
+        - name: checkIn
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Check-in date (YYYY-MM-DD)
+        - name: checkOut
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Check-out date (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Availability check result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /bookings:
+    post:
+      summary: Create booking
+      description: Submit a new booking request
+      operationId: createBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingRequest'
+      responses:
+        '200':
+          description: Booking created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    Room:
+      type: object
+      required:
+        - id
+        - name
+        - capacity
+        - price_per_night
+        - booking_type
+      properties:
+        id:
+          type: string
+          example: "room-1"
+        name:
+          type: string
+          example: "Ocean View Suite"
+        capacity:
+          type: integer
+          minimum: 1
+          example: 2
+        price_per_night:
+          type: number
+          minimum: 0
+          example: 120.00
+        amenities:
+          type: array
+          items:
+            type: string
+          example: ["wifi", "ocean-view", "private-bathroom"]
+        featured_image:
+          type: string
+          format: uri
+          example: "https://heiwa.house/images/rooms/ocean-view.jpg"
+        description:
+          type: string
+          example: "Beautiful ocean view suite with private balcony"
+        booking_type:
+          type: string
+          enum: [whole, perBed]
+          example: "whole"
+
+    AvailabilityResponse:
+      type: object
+      required:
+        - available
+      properties:
+        available:
+          type: boolean
+          example: true
+        price:
+          type: number
+          minimum: 0
+          example: 240.00
+        message:
+          type: string
+          example: "Room available for selected dates"
+
+    BookingRequest:
+      type: object
+      required:
+        - clientName
+        - email
+        - checkIn
+        - checkOut
+        - roomId
+        - guests
+      properties:
+        clientName:
+          type: string
+          minLength: 1
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
+        phone:
+          type: string
+          example: "+351 912 193 785"
+        checkIn:
+          type: string
+          format: date
+          example: "2025-02-01"
+        checkOut:
+          type: string
+          format: date
+          example: "2025-02-03"
+        roomId:
+          type: string
+          example: "room-1"
+        guests:
+          type: integer
+          minimum: 1
+          example: 2
+        message:
+          type: string
+          example: "Late check-in requested"
+
+    BookingResponse:
+      type: object
+      required:
+        - success
+        - bookingId
+      properties:
+        success:
+          type: boolean
+          example: true
+        bookingId:
+          type: string
+          example: "booking-12345"
+        status:
+          type: string
+          enum: [pending, confirmed, cancelled]
+          example: "pending"
+        message:
+          type: string
+          example: "Booking request submitted successfully"
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: "Invalid date format"
+              message:
+                type: string
+                example: "Check-in date must be before check-out date"
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: "Unauthorized"
+              message:
+                type: string
+                example: "Invalid or missing API key"
+
+    Conflict:
+      description: Booking conflict
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: "Booking conflict"
+              message:
+                type: string
+                example: "Room not available for selected dates"
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: "Internal server error"
+              message:
+                type: string
+                example: "Please try again later"
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Heiwa-API-Key
+

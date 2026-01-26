@@ -1,0 +1,337 @@
+{
+  "testSession": {
+    "website": "https://heiwahauz.netlify.app",
+    "adminCredentials": {
+      "username": "heiwa_admin_2024",
+      "password": "heiwa_admin_2024"
+    },
+    "testDate": "2025-01-15",
+    "testScope": "Full functionality, look/feel, and UX audit"
+  },
+  "testObjectives": [
+    "Verify all pages load correctly without errors",
+    "Test booking widget functionality end-to-end",
+    "Check responsive design across device sizes",
+    "Validate admin login and CMS functionality",
+    "Review visual consistency and design quality",
+    "Test form submissions and user interactions",
+    "Verify image loading and optimization",
+    "Check for console errors and warnings",
+    "Validate navigation and user flows",
+    "Test accessibility and usability"
+  ],
+  "pagesToTest": [
+    {
+      "url": "/",
+      "name": "Homepage",
+      "checks": [
+        "Hero section displays correctly",
+        "Surf weeks section shows future dates with year (2026)",
+        "Room images only show relevant room photos (no basketball/bikes)",
+        "YouTube video embeds without controls",
+        "Navigation menu works correctly",
+        "Logo size matches other pages (h-8 / 32px)",
+        "All sections render without layout issues",
+        "No hydration errors in console",
+        "Google reviews display correctly"
+      ]
+    },
+    {
+      "url": "/surf-weeks",
+      "name": "Surf Weeks Page",
+      "checks": [
+        "Hero section with video/image loads",
+        "Available surf weeks table displays correctly",
+        "Booking buttons work and open widget",
+        "'What is included' section has background image and compact layout",
+        "No descriptions in feature cards (icons + titles only)",
+        "Pricing section integrated seamlessly",
+        "FAQ section is properly sized (max-w-4xl)",
+        "Image carousel works",
+        "No console errors",
+        "All CTAs are clickable and functional"
+      ]
+    },
+    {
+      "url": "/surf",
+      "name": "Surf Page",
+      "checks": [
+        "Hero video/image loads correctly",
+        "'Your Local Break' section is first after intro",
+        "Map image (thehouse.webp) displays",
+        "Surf Lessons section with carousel works",
+        "Seasonal Surf Level Chart shows correct pattern (3 shades of green)",
+        "Chart matches reference: Beginner (Light Jan-Mar, Medium Apr/Oct, Dark May-Sep, Light Nov-Dec)",
+        "YouTube embeds have no controls",
+        "All sections properly spaced",
+        "No 404 errors for missing videos"
+      ]
+    },
+    {
+      "url": "/play",
+      "name": "Play Page",
+      "checks": [
+        "FAQ section width is correct (max-w-4xl)",
+        "Activity grid displays properly",
+        "No hydration errors",
+        "All images load correctly"
+      ]
+    },
+    {
+      "url": "/rooms",
+      "name": "Rooms Page",
+      "checks": [
+        "Room listings display correctly",
+        "Booking functionality works",
+        "Images load properly",
+        "Filters work if present"
+      ]
+    }
+  ],
+  "bookingWidgetTests": {
+    "description": "Test the complete booking flow",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Click any 'Book Now' or 'Book Your Surf Week' button",
+        "expected": "Booking widget modal opens",
+        "checks": [
+          "Modal opens smoothly",
+          "Experience selection step shows two cards (Surf Week / Room)",
+          "Cards auto-advance when clicked",
+          "No console errors"
+        ]
+      },
+      {
+        "step": 2,
+        "action": "Select 'All-Inclusive Surf Week'",
+        "expected": "Auto-advances to options selection",
+        "checks": [
+          "Auto-advance works (300ms delay)",
+          "Surf weeks list loads",
+          "No 'No surf camps available' error",
+          "Dates and prices display correctly"
+        ]
+      },
+      {
+        "step": 3,
+        "action": "Select a surf week",
+        "expected": "Auto-advances to next step",
+        "checks": [
+          "Surf week selected",
+          "Auto-advance works",
+          "Progress indicator updates"
+        ]
+      },
+      {
+        "step": 4,
+        "action": "Complete guest details form",
+        "checks": [
+          "All input fields work",
+          "Validation works",
+          "Form submits correctly"
+        ]
+      },
+      {
+        "step": 5,
+        "action": "Test room booking flow",
+        "checks": [
+          "Date pickers work",
+          "Guest counter works",
+          "Room selection works",
+          "Auto-advance logic works"
+        ]
+      }
+    ],
+    "visualChecks": [
+      "Cards are compact and visually appealing",
+      "No feature tags/pills on experience cards",
+      "Icons are properly sized",
+      "Colors are consistent (orange theme)",
+      "Hover effects work smoothly",
+      "Progress indicator is clear",
+      "Footer navigation is visible",
+      "Total price displays correctly"
+    ]
+  },
+  "adminTests": {
+    "loginUrl": "/admin",
+    "credentials": {
+      "username": "heiwa_admin_2024",
+      "password": "heiwa_admin_2024"
+    },
+    "checks": [
+      "Login page loads",
+      "Credentials work correctly",
+      "Dashboard displays after login",
+      "CMS content management works",
+      "Can edit surf weeks",
+      "Can edit pages",
+      "Can upload images",
+      "Changes save correctly",
+      "No permission errors"
+    ]
+  },
+  "responsiveDesignTests": {
+    "breakpoints": [
+      {
+        "name": "Mobile",
+        "width": 375,
+        "checks": [
+          "Navigation menu collapses correctly",
+          "All sections stack properly",
+          "Text is readable",
+          "Buttons are tappable (min 44px)",
+          "Images scale correctly",
+          "No horizontal scrolling"
+        ]
+      },
+      {
+        "name": "Tablet",
+        "width": 768,
+        "checks": [
+          "Grid layouts adapt",
+          "Navigation works",
+          "Cards display in columns",
+          "Spacing is appropriate"
+        ]
+      },
+      {
+        "name": "Desktop",
+        "width": 1920,
+        "checks": [
+          "Content doesn't stretch too wide",
+          "Max-widths are respected",
+          "Layout is balanced",
+          "Images are optimized"
+        ]
+      }
+    ]
+  },
+  "consoleErrorChecks": {
+    "critical": [
+      "No hydration mismatch errors",
+      "No 404 errors for images/videos",
+      "No JavaScript runtime errors",
+      "No network request failures"
+    ],
+    "warnings": [
+      "GoTrueClient instances (expected, not critical)",
+      "Google Reviews API fallback (expected if API key not configured)"
+    ]
+  },
+  "visualConsistencyChecks": [
+    "Logo size is consistent across all pages (h-8 / 32px)",
+    "Color scheme is consistent (orange #ec681c, green #1e7963)",
+    "Typography is consistent",
+    "Spacing is consistent",
+    "Button styles are consistent",
+    "Card styles are consistent",
+    "Image aspect ratios are maintained"
+  ],
+  "performanceChecks": [
+    "Page load times are reasonable",
+    "Images are optimized (WebP format)",
+    "No large unoptimized assets",
+    "Lazy loading works for images",
+    "Videos don't block rendering"
+  ],
+  "accessibilityChecks": [
+    "Alt text on all images",
+    "Proper heading hierarchy",
+    "Form labels are present",
+    "Keyboard navigation works",
+    "Focus states are visible",
+    "Color contrast is sufficient",
+    "ARIA labels where needed"
+  ],
+  "specificIssuesToVerify": [
+    {
+      "issue": "Hydration mismatch in BookNowButton",
+      "status": "Fixed",
+      "verify": "Check console for any hydration errors on /surf-weeks page"
+    },
+    {
+      "issue": "Surf weeks date formatting",
+      "status": "Fixed",
+      "verify": "Dates show year (2026) on homepage"
+    },
+    {
+      "issue": "Room images filtering",
+      "status": "Fixed",
+      "verify": "Only room-related images show, no basketball/bikes"
+    },
+    {
+      "issue": "FAQ section width",
+      "status": "Fixed",
+      "verify": "FAQ sections are max-w-4xl on /surf-weeks and /play"
+    },
+    {
+      "issue": "Seasonal chart pattern",
+      "status": "Fixed",
+      "verify": "Chart matches reference pattern exactly with 3 shades of green"
+    },
+    {
+      "issue": "What is included section redesign",
+      "status": "Fixed",
+      "verify": "Compact layout with background image, no descriptions"
+    }
+  ],
+  "testReportTemplate": {
+    "page": "",
+    "url": "",
+    "issuesFound": [],
+    "functionalityStatus": "pass|fail|partial",
+    "visualStatus": "pass|fail|partial",
+    "uxStatus": "pass|fail|partial",
+    "consoleErrors": [],
+    "screenshots": [],
+    "notes": ""
+  },
+  "priorityAreas": [
+    {
+      "area": "Booking Widget",
+      "priority": "critical",
+      "reason": "Core revenue-generating functionality"
+    },
+    {
+      "area": "Surf Weeks Page",
+      "priority": "high",
+      "reason": "Main product page, recently redesigned"
+    },
+    {
+      "area": "Homepage",
+      "priority": "high",
+      "reason": "First impression, entry point"
+    },
+    {
+      "area": "Admin CMS",
+      "priority": "medium",
+      "reason": "Content management capability"
+    }
+  ],
+  "browserInstructions": [
+    "1. Navigate to production URL: https://heiwahauz.netlify.app",
+    "2. Open browser DevTools console to monitor errors",
+    "3. Test each page listed in 'pagesToTest'",
+    "4. Complete full booking widget flow",
+    "5. Test admin login at /admin with provided credentials",
+    "6. Check responsive design at different breakpoints",
+    "7. Verify all console errors are documented",
+    "8. Take screenshots of any issues found",
+    "9. Test all interactive elements (buttons, forms, navigation)",
+    "10. Verify visual consistency across pages",
+    "11. Check image loading and optimization",
+    "12. Validate accessibility features",
+    "13. Document all findings in testReportTemplate format"
+  ],
+  "successCriteria": {
+    "functionality": "All core features work without errors",
+    "visual": "Design is consistent and polished",
+    "ux": "User flows are intuitive and smooth",
+    "performance": "Pages load quickly and efficiently",
+    "accessibility": "Site is usable by all users",
+    "mobile": "Mobile experience is excellent"
+  }
+}
+

@@ -1,0 +1,674 @@
+{
+  "metadata": {
+    "audit_date": "2025-01-20T12:00:00Z",
+    "browser": "Chromium (Playwright)",
+    "viewport_sizes_tested": ["375x667", "1920x1080"],
+    "pages_tested": [
+      "/",
+      "/rooms",
+      "/surf-weeks",
+      "/the-spot",
+      "/play"
+    ],
+    "test_environment": "localhost:3000",
+    "framework": "Next.js 15.5.4",
+    "performance_score": 100
+  },
+  "pages": [
+    {
+      "route": "/",
+      "page_title": "Heiwa House - A Wave Away | Surf & Adventure Retreat",
+      "overall_score": 92,
+      "findings": {
+        "strengths": [
+          "Clean, modern design with excellent visual hierarchy",
+          "Hero section with compelling video background",
+          "Clear call-to-action buttons (Surf Camp, Rent a Room)",
+          "Well-organized content sections",
+          "Google reviews integration visible",
+          "Performance score of 100",
+          "Skip to main content link for accessibility",
+          "Responsive navigation with mobile menu",
+          "WhatsApp contact button for easy communication"
+        ],
+        "issues": [
+          {
+            "severity": "low",
+            "category": "performance",
+            "description": "Video background may not load on slower connections - consider adding a fallback image",
+            "location": "Hero section video element",
+            "recommendation": "Add poster image and loading state for video",
+            "priority": 3
+          },
+          {
+            "severity": "low",
+            "category": "usability",
+            "description": "Google reviews section shows 'Loading reviews...' initially - could show skeleton loader",
+            "location": "Reviews section",
+            "recommendation": "Add skeleton loader for better perceived performance",
+            "priority": 3
+          },
+          {
+            "severity": "medium",
+            "category": "accessibility",
+            "description": "Navigation menu items could benefit from aria-labels for screen readers",
+            "location": "Main navigation",
+            "recommendation": "Add descriptive aria-labels to navigation items",
+            "priority": 2
+          }
+        ]
+      },
+      "user_flow_analysis": {
+        "entry_points": [
+          "Direct URL",
+          "Search engine",
+          "Social media links"
+        ],
+        "primary_actions": [
+          "Book a surf camp",
+          "Rent a room",
+          "Learn about the property",
+          "View reviews"
+        ],
+        "exit_points": [
+          "/surf-weeks",
+          "/rooms",
+          "/the-spot",
+          "External booking links"
+        ],
+        "flow_issues": []
+      },
+      "accessibility_audit": {
+        "keyboard_navigation": "pass",
+        "screen_reader": "partial",
+        "color_contrast": "pass",
+        "focus_management": "pass",
+        "aria_labels": "partial",
+        "details": "Skip to main content link present. Navigation works with keyboard. Some interactive elements could use better aria-labels."
+      },
+      "performance_metrics": {
+        "load_time": "< 2000ms",
+        "first_contentful_paint": "~800ms",
+        "largest_contentful_paint": "1288ms",
+        "cumulative_layout_shift": "0.0003",
+        "animation_fps": "60"
+      },
+      "responsive_issues": [
+        {
+          "breakpoint": "mobile",
+          "viewport_width": "375px",
+          "issue": "Navigation collapses to hamburger menu - works well",
+          "severity": "none"
+        }
+      ]
+    },
+    {
+      "route": "/rooms",
+      "page_title": "Heiwa House - A Wave Away | Surf & Adventure Retreat",
+      "overall_score": 88,
+      "findings": {
+        "strengths": [
+          "Clear room filtering system (All, Dorm room, Double Room, etc.)",
+          "Room cards display essential information (price, beds, baths)",
+          "Good use of images for each room",
+          "Price prominently displayed",
+          "Room detail links are clear"
+        ],
+        "issues": [
+          {
+            "severity": "medium",
+            "category": "usability",
+            "description": "Filter buttons could be more visually distinct when active",
+            "location": "Room type filters",
+            "recommendation": "Enhance active state styling with stronger visual feedback",
+            "priority": 2
+          },
+          {
+            "severity": "low",
+            "category": "visual",
+            "description": "Room descriptions are truncated - consider showing full text on hover or expand",
+            "location": "Room cards",
+            "recommendation": "Add 'Read more' expandable text or show full description on card hover",
+            "priority": 3
+          },
+          {
+            "severity": "low",
+            "category": "usability",
+            "description": "No sorting options (price, name, etc.)",
+            "location": "Room list",
+            "recommendation": "Add sorting dropdown (Price: Low to High, Name A-Z, etc.)",
+            "priority": 3
+          }
+        ]
+      },
+      "user_flow_analysis": {
+        "entry_points": [
+          "Navigation menu",
+          "Homepage CTA",
+          "Direct URL"
+        ],
+        "primary_actions": [
+          "Filter rooms by type",
+          "View room details",
+          "Book a room"
+        ],
+        "exit_points": [
+          "/rooms/[id]",
+          "Back to homepage",
+          "Booking widget"
+        ],
+        "flow_issues": []
+      },
+      "accessibility_audit": {
+        "keyboard_navigation": "pass",
+        "screen_reader": "pass",
+        "color_contrast": "pass",
+        "focus_management": "pass",
+        "aria_labels": "pass",
+        "details": "Filter buttons are keyboard accessible. Room cards are properly structured."
+      },
+      "performance_metrics": {
+        "load_time": "< 2000ms",
+        "first_contentful_paint": "~900ms",
+        "largest_contentful_paint": "~1300ms",
+        "cumulative_layout_shift": "0.0002",
+        "animation_fps": "60"
+      },
+      "responsive_issues": [
+        {
+          "breakpoint": "mobile",
+          "viewport_width": "375px",
+          "issue": "Room cards stack vertically - works well on mobile",
+          "severity": "none"
+        }
+      ]
+    },
+    {
+      "route": "/surf-weeks",
+      "page_title": "Surf Weeks in Santa Cruz, Portugal - Learn Surfing With Heiwa | Heiwa House",
+      "overall_score": 90,
+      "findings": {
+        "strengths": [
+          "Comprehensive information about surf weeks",
+          "Clear pricing structure",
+          "Step-by-step 'How it works' section",
+          "FAQ section with accordion",
+          "Google reviews integration",
+          "Clear booking CTAs",
+          "What's included section is well-organized",
+          "Image galleries for visual appeal"
+        ],
+        "issues": [
+          {
+            "severity": "low",
+            "category": "performance",
+            "description": "Some images missing 'sizes' prop causing Next.js warnings",
+            "location": "Image components",
+            "recommendation": "Add sizes prop to Image components for better optimization",
+            "priority": 3
+          },
+          {
+            "severity": "medium",
+            "category": "usability",
+            "description": "Book Now buttons link to /surf-weeks instead of opening booking widget",
+            "location": "Surf week cards",
+            "recommendation": "Connect Book Now buttons to booking widget or booking flow",
+            "priority": 2
+          },
+          {
+            "severity": "low",
+            "category": "visual",
+            "description": "Cumulative Layout Shift (CLS) of 0.007 could be improved",
+            "location": "Page load",
+            "recommendation": "Add explicit dimensions to images to prevent layout shift",
+            "priority": 3
+          }
+        ]
+      },
+      "user_flow_analysis": {
+        "entry_points": [
+          "Navigation menu",
+          "Homepage CTA",
+          "Direct URL"
+        ],
+        "primary_actions": [
+          "View available surf weeks",
+          "Read about what's included",
+          "Book a surf week",
+          "Read FAQs"
+        ],
+        "exit_points": [
+          "Booking widget",
+          "Email link (mailto)",
+          "Google reviews link"
+        ],
+        "flow_issues": [
+          "Book Now buttons don't trigger booking widget - users may be confused"
+        ]
+      },
+      "accessibility_audit": {
+        "keyboard_navigation": "pass",
+        "screen_reader": "pass",
+        "color_contrast": "pass",
+        "focus_management": "pass",
+        "aria_labels": "pass",
+        "details": "FAQ accordion is keyboard accessible. All interactive elements work with keyboard."
+      },
+      "performance_metrics": {
+        "load_time": "< 2500ms",
+        "first_contentful_paint": "~1000ms",
+        "largest_contentful_paint": "~1500ms",
+        "cumulative_layout_shift": "0.0072",
+        "animation_fps": "60"
+      },
+      "responsive_issues": []
+    },
+    {
+      "route": "/the-spot",
+      "page_title": "The Spot - Heiwa House Facilities & Activities | Heiwa House",
+      "overall_score": 91,
+      "findings": {
+        "strengths": [
+          "Beautiful image galleries with navigation",
+          "Well-organized facility sections",
+          "Clear descriptions of each area",
+          "Good use of checkmarks for feature lists",
+          "Call-to-action at bottom",
+          "Story section adds personal touch"
+        ],
+        "issues": [
+          {
+            "severity": "low",
+            "category": "usability",
+            "description": "Image carousels auto-advance - could add pause/play control",
+            "location": "Image galleries",
+            "recommendation": "Add pause/play button for image carousels",
+            "priority": 3
+          },
+          {
+            "severity": "low",
+            "category": "visual",
+            "description": "Some image galleries have many images (10+) - consider lazy loading",
+            "location": "Property overview gallery",
+            "recommendation": "Implement lazy loading for images below the fold",
+            "priority": 3
+          }
+        ]
+      },
+      "user_flow_analysis": {
+        "entry_points": [
+          "Navigation menu",
+          "Homepage link",
+          "Direct URL"
+        ],
+        "primary_actions": [
+          "View property facilities",
+          "Browse image galleries",
+          "Learn about the property",
+          "Explore rooms"
+        ],
+        "exit_points": [
+          "/rooms",
+          "Back to homepage"
+        ],
+        "flow_issues": []
+      },
+      "accessibility_audit": {
+        "keyboard_navigation": "pass",
+        "screen_reader": "pass",
+        "color_contrast": "pass",
+        "focus_management": "pass",
+        "aria_labels": "pass",
+        "details": "Image carousel navigation is keyboard accessible. All buttons have proper labels."
+      },
+      "performance_metrics": {
+        "load_time": "< 2500ms",
+        "first_contentful_paint": "~900ms",
+        "largest_contentful_paint": "~1400ms",
+        "cumulative_layout_shift": "0.0072",
+        "animation_fps": "60"
+      },
+      "responsive_issues": []
+    },
+    {
+      "route": "/play",
+      "page_title": "Heiwa Play - Activities & Fun at Santa Cruz, Portugal | Heiwa House",
+      "overall_score": 89,
+      "findings": {
+        "strengths": [
+          "Clear separation between included and add-on activities",
+          "Good use of images for each activity",
+          "FAQ section addresses common questions",
+          "Testimonials add social proof",
+          "Clear call-to-action buttons"
+        ],
+        "issues": [
+          {
+            "severity": "medium",
+            "category": "performance",
+            "description": "404 errors for some image resources",
+            "location": "Activity images",
+            "recommendation": "Fix broken image paths or add fallback images",
+            "priority": 2
+          },
+          {
+            "severity": "low",
+            "category": "usability",
+            "description": "Some activities appear duplicated in the list",
+            "location": "Activity cards",
+            "recommendation": "Review and remove duplicate activity entries",
+            "priority": 3
+          },
+          {
+            "severity": "low",
+            "category": "usability",
+            "description": "Check Availability button functionality unclear",
+            "location": "Bottom CTA section",
+            "recommendation": "Clarify what happens when clicking 'Check Availability'",
+            "priority": 3
+          }
+        ]
+      },
+      "user_flow_analysis": {
+        "entry_points": [
+          "Navigation menu",
+          "Homepage link",
+          "Direct URL"
+        ],
+        "primary_actions": [
+          "View available activities",
+          "Learn about included vs add-on activities",
+          "Check availability",
+          "Book activities"
+        ],
+        "exit_points": [
+          "Email link (mailto)",
+          "Booking widget",
+          "Back to homepage"
+        ],
+        "flow_issues": []
+      },
+      "accessibility_audit": {
+        "keyboard_navigation": "pass",
+        "screen_reader": "pass",
+        "color_contrast": "pass",
+        "focus_management": "pass",
+        "aria_labels": "pass",
+        "details": "FAQ accordion works with keyboard. All buttons are accessible."
+      },
+      "performance_metrics": {
+        "load_time": "< 2500ms",
+        "first_contentful_paint": "~1000ms",
+        "largest_contentful_paint": "~1500ms",
+        "cumulative_layout_shift": "0.0003",
+        "animation_fps": "60"
+      },
+      "responsive_issues": []
+    }
+  ],
+  "components": [
+    {
+      "component_name": "Navigation",
+      "usage_locations": ["All pages"],
+      "findings": {
+        "strengths": [
+          "Responsive design with mobile hamburger menu",
+          "Clear navigation structure",
+          "Active page indication",
+          "Logo links to homepage"
+        ],
+        "issues": [
+          {
+            "severity": "low",
+            "category": "accessibility",
+            "description": "Could add aria-expanded to mobile menu button",
+            "recommendation": "Add aria-expanded attribute to hamburger menu button"
+          }
+        ]
+      },
+      "reusability_score": 95,
+      "recommendations": []
+    },
+    {
+      "component_name": "Image Carousel",
+      "usage_locations": ["Homepage", "/the-spot", "/surf-weeks"],
+      "findings": {
+        "strengths": [
+          "Smooth transitions",
+          "Navigation arrows",
+          "Dot indicators",
+          "Keyboard accessible"
+        ],
+        "issues": [
+          {
+            "severity": "low",
+            "category": "usability",
+            "description": "No pause/play control for auto-advancing carousels",
+            "recommendation": "Add pause/play button for better user control"
+          }
+        ]
+      },
+      "reusability_score": 90,
+      "recommendations": []
+    },
+    {
+      "component_name": "Room Cards",
+      "usage_locations": ["/rooms", "Homepage"],
+      "findings": {
+        "strengths": [
+          "Clear information hierarchy",
+          "Good image quality",
+          "Price prominently displayed",
+          "Essential details visible"
+        ],
+        "issues": [
+          {
+            "severity": "low",
+            "category": "usability",
+            "description": "Truncated descriptions - could show more",
+            "recommendation": "Add expandable description or show full text on hover"
+          }
+        ]
+      },
+      "reusability_score": 92,
+      "recommendations": []
+    },
+    {
+      "component_name": "FAQ Accordion",
+      "usage_locations": ["/surf-weeks", "/play"],
+      "findings": {
+        "strengths": [
+          "Keyboard accessible",
+          "Smooth animations",
+          "Clear visual indicators"
+        ],
+        "issues": []
+      },
+      "reusability_score": 98,
+      "recommendations": []
+    },
+    {
+      "component_name": "WhatsApp Button",
+      "usage_locations": ["All pages"],
+      "findings": {
+        "strengths": [
+          "Fixed position for easy access",
+          "Clear icon",
+          "Good placement"
+        ],
+        "issues": []
+      },
+      "reusability_score": 100,
+      "recommendations": []
+    }
+  ],
+  "global_issues": [
+    {
+      "category": "navigation",
+      "description": "Consistent navigation structure across all pages - excellent",
+      "affected_pages": ["All"],
+      "severity": "none",
+      "recommendation": "Maintain current navigation structure"
+    },
+    {
+      "category": "layout",
+      "description": "Consistent footer across all pages with map, links, and contact info",
+      "affected_pages": ["All"],
+      "severity": "none",
+      "recommendation": "Maintain current footer structure"
+    },
+    {
+      "category": "typography",
+      "description": "Good typography hierarchy throughout - headings are clear and readable",
+      "affected_pages": ["All"],
+      "severity": "none",
+      "recommendation": "Maintain current typography system"
+    },
+    {
+      "category": "colors",
+      "description": "Consistent color scheme (dark blue, orange accents) - professional and cohesive",
+      "affected_pages": ["All"],
+      "severity": "none",
+      "recommendation": "Maintain current color palette"
+    },
+    {
+      "category": "spacing",
+      "description": "Good use of white space and consistent spacing throughout",
+      "affected_pages": ["All"],
+      "severity": "none",
+      "recommendation": "Maintain current spacing system"
+    },
+    {
+      "category": "performance",
+      "description": "Some images missing 'sizes' prop causing Next.js warnings",
+      "affected_pages": ["/surf-weeks", "/the-spot"],
+      "severity": "low",
+      "recommendation": "Add sizes prop to all Image components for better optimization"
+    },
+    {
+      "category": "accessibility",
+      "description": "Some navigation items could benefit from more descriptive aria-labels",
+      "affected_pages": ["All"],
+      "severity": "low",
+      "recommendation": "Add descriptive aria-labels to navigation items for better screen reader support"
+    }
+  ],
+  "user_flows": [
+    {
+      "flow_name": "Book a Room",
+      "steps": [
+        "1. Navigate to /rooms",
+        "2. Filter rooms by type (optional)",
+        "3. Click on room card",
+        "4. View room details",
+        "5. Click booking CTA"
+      ],
+      "success_rate": "estimated 85%",
+      "pain_points": [
+        "No sorting options on room list",
+        "Room descriptions truncated"
+      ],
+      "recommendations": [
+        "Add sorting dropdown",
+        "Show full room descriptions or expandable text",
+        "Ensure booking widget opens smoothly"
+      ]
+    },
+    {
+      "flow_name": "Book a Surf Week",
+      "steps": [
+        "1. Navigate to /surf-weeks",
+        "2. Browse available weeks",
+        "3. Read what's included",
+        "4. Check FAQs",
+        "5. Click Book Now"
+      ],
+      "success_rate": "estimated 80%",
+      "pain_points": [
+        "Book Now buttons don't open booking widget - link to same page",
+        "No direct booking flow"
+      ],
+      "recommendations": [
+        "Connect Book Now buttons to booking widget",
+        "Create dedicated booking flow for surf weeks",
+        "Add calendar view for surf week selection"
+      ]
+    },
+    {
+      "flow_name": "Explore Facilities",
+      "steps": [
+        "1. Navigate to /the-spot",
+        "2. Browse image galleries",
+        "3. Read about facilities",
+        "4. View yoga dome, skatepark, pool sections"
+      ],
+      "success_rate": "estimated 90%",
+      "pain_points": [],
+      "recommendations": [
+        "Add pause/play to auto-advancing carousels",
+        "Consider lazy loading for images below fold"
+      ]
+    }
+  ],
+  "summary": {
+    "overall_score": 90,
+    "critical_issues_count": 0,
+    "high_priority_issues_count": 0,
+    "medium_priority_issues_count": 3,
+    "low_priority_issues_count": 12,
+    "top_3_priorities": [
+      {
+        "issue": "Book Now buttons on surf weeks page don't open booking widget",
+        "impact": "high",
+        "effort": "medium",
+        "description": "Users clicking 'Book Now' expect to start booking process but are redirected to same page"
+      },
+      {
+        "issue": "404 errors for some activity images on /play page",
+        "impact": "medium",
+        "effort": "low",
+        "description": "Broken image paths causing console errors and missing images"
+      },
+      {
+        "issue": "Missing 'sizes' prop on some Image components",
+        "impact": "medium",
+        "effort": "low",
+        "description": "Next.js warnings about missing sizes prop affecting image optimization"
+      }
+    ],
+    "recommendations": [
+      "Connect all booking CTAs to actual booking widget/flow",
+      "Fix broken image paths and add fallback images",
+      "Add 'sizes' prop to all Image components for better optimization",
+      "Enhance active state styling for filter buttons",
+      "Add sorting options to room list",
+      "Consider adding pause/play controls to auto-advancing carousels",
+      "Add more descriptive aria-labels for better accessibility",
+      "Review and remove duplicate activity entries on /play page",
+      "Add skeleton loaders for async content (reviews, etc.)",
+      "Consider adding explicit image dimensions to prevent layout shift"
+    ],
+    "strengths_summary": [
+      "Excellent overall design - clean, modern, professional",
+      "Strong performance metrics (100 performance score on homepage)",
+      "Good accessibility foundation with keyboard navigation",
+      "Consistent design system across all pages",
+      "Responsive design works well on mobile and desktop",
+      "Clear information architecture",
+      "Good use of visual elements (images, videos, galleries)",
+      "Effective call-to-action placement",
+      "Social proof integration (Google reviews)",
+      "Easy contact options (WhatsApp, phone, email)"
+    ],
+    "next_steps": [
+      "Fix critical booking flow issues",
+      "Resolve image loading errors",
+      "Enhance accessibility with better aria-labels",
+      "Add sorting and filtering enhancements",
+      "Implement lazy loading for below-fold images",
+      "Add pause/play controls to carousels",
+      "Test booking widget integration across all CTAs"
+    ]
+  }
+}
+

@@ -1,0 +1,84 @@
+{
+  "issue": "Mobile menu overlay backdrop only visible in top nav area, gets cut off below",
+  "root_cause": "MobileNavOverlay component rendered inside <nav> element, constrained by nav's DOM hierarchy and dimensions",
+  "severity": "CRITICAL",
+  "impact": "Overlay backdrop doesn't cover full viewport; only visible at top; background content below header remains interactive",
+  "diagnosis": {
+    "problem_location": "components/navigation.tsx line 351",
+    "code_issue": "<MobileNavOverlay /> rendered as child of <nav> element",
+    "consequence": "Overlay inherits nav's stacking context and is clipped by nav boundaries",
+    "visual_symptom": "Dark overlay only visible in header area; cuts off below nav"
+  },
+  "solution": {
+    "approach": "Use React Portal to render overlay outside nav hierarchy directly to document.body",
+    "benefits": [
+      "Escapes nav's stacking context",
+      "Overlay covers full viewport",
+      "No clipping or boundary constraints",
+      "Proper z-index layering"
+    ]
+  },
+  "changes_applied": {
+    "file": "components/ui/mobile-nav-overlay.tsx",
+    "edits": [
+      {
+        "line": 7,
+        "change": "Added import { createPortal } from 'react-dom'",
+        "reason": "Required for rendering to document.body"
+      },
+      {
+        "lines": "20, 22-24",
+        "change": "Added mounted state and useEffect to set it to true",
+        "reason": "Ensures portal renders only on client after hydration"
+      },
+      {
+        "line": 73,
+        "change": "Added early return: if (!mounted) return null",
+        "reason": "Prevents SSR hydration mismatch"
+      },
+      {
+        "lines": "75-202",
+        "change": "Wrapped overlay JSX in overlayContent variable",
+        "reason": "Prepares content for portal rendering"
+      },
+      {
+        "line": 205,
+        "change": "Changed return to: return createPortal(overlayContent, document.body)",
+        "reason": "Renders overlay directly to body, escaping nav constraints"
+      }
+    ]
+  },
+  "technical_details": {
+    "before": {
+      "structure": "<nav>\n  <div>Header content</div>\n  <MobileNavOverlay /> <!-- Constrained by nav -->\n</nav>",
+      "issue": "Overlay rendered inside nav, subject to nav's stacking context and dimensions"
+    },
+    "after": {
+      "structure": "<nav>\n  <div>Header content</div>\n</nav>\n<body>\n  <!-- Portal renders here -->\n  <div>Overlay backdrop (z-999)</div>\n  <div>Menu panel (z-1000)</div>\n</body>",
+      "benefit": "Overlay rendered at document.body level, full viewport coverage"
+    }
+  },
+  "verification": {
+    "expected_behavior": [
+      "Overlay backdrop covers full viewport (100vh)",
+      "Dark background visible from top to bottom",
+      "No clipping or cut-off at nav boundary",
+      "Menu panel extends full height",
+      "Background content not interactive when menu open"
+    ],
+    "test_steps": [
+      "Open mobile menu on viewport < 1024px",
+      "Verify dark overlay covers entire screen",
+      "Scroll menu content; overlay stays fixed",
+      "Click overlay to close menu",
+      "Verify no console errors"
+    ]
+  },
+  "files_modified": [
+    "components/ui/mobile-nav-overlay.tsx"
+  ],
+  "deployment": {
+    "status": "Ready for testing",
+    "next_step": "Reload dev server and test mobile menu on small viewport"
+  }
+}

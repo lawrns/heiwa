@@ -1,0 +1,491 @@
+{
+  "audit_context": {
+    "title": "Comprehensive UI/UX Audit Prompt for Admin Section",
+    "version": "1.0",
+    "date": "2025-01-20",
+    "scope": "Admin dashboard, modals, forms, and all user-facing interfaces",
+    "purpose": "Identify and document all low-quality UI/UX elements, inconsistencies, and areas needing improvement"
+  },
+  
+  "audit_criteria": {
+    "visual_hierarchy": {
+      "description": "Assess visual hierarchy, spacing, and layout quality",
+      "checks": [
+        "Are form sections visually separated with proper spacing?",
+        "Do related fields have visual grouping (borders, backgrounds, spacing)?",
+        "Is there clear visual hierarchy between primary and secondary actions?",
+        "Are form fields properly spaced (not cramped, not too loose)?",
+        "Do modals have proper padding and breathing room?",
+        "Are labels clearly associated with inputs (spacing, typography)?",
+        "Is there visual distinction between required and optional fields?",
+        "Do error states have proper visual treatment?"
+      ],
+      "red_flags": [
+        "Forms using only space-y-4 without visual grouping",
+        "Color pickers using basic HTML input[type='color']",
+        "No visual separation between form sections",
+        "Buttons cramped at bottom without proper spacing",
+        "Labels too close or too far from inputs",
+        "No visual indication of required fields",
+        "Inconsistent spacing between form elements"
+      ]
+    },
+    
+    "modal_quality": {
+      "description": "Assess modal/dialog design and UX",
+      "checks": [
+        "Is the modal properly centered and sized?",
+        "Does the modal have proper backdrop/overlay?",
+        "Is the close button clearly visible and accessible?",
+        "Are form fields in modals properly spaced?",
+        "Do modals have proper max-height with scrolling?",
+        "Is the modal title and description clear?",
+        "Are action buttons properly positioned and styled?",
+        "Does the modal have proper focus management?",
+        "Is there proper visual feedback on form submission?"
+      ],
+      "red_flags": [
+        "Modals without proper backdrop",
+        "Forms in modals with no visual grouping",
+        "Color inputs using basic HTML color picker",
+        "No loading states on submit buttons",
+        "Buttons at bottom without proper spacing/padding",
+        "Modal content too cramped or too spread out",
+        "No visual separation between form sections in modals"
+      ]
+    },
+    
+    "form_design": {
+      "description": "Assess form input design and layout",
+      "checks": [
+        "Are inputs properly styled with consistent borders and focus states?",
+        "Do date inputs have proper calendar icons or date pickers?",
+        "Are select dropdowns properly styled and functional?",
+        "Do textareas have proper sizing and resize handling?",
+        "Are color pickers custom-designed or using basic HTML input?",
+        "Do number inputs have proper step and validation?",
+        "Are file uploads properly styled with drag-and-drop?",
+        "Is there proper error handling and display?",
+        "Are placeholders helpful and not redundant with labels?"
+      ],
+      "red_flags": [
+        "Basic HTML color input (looks terrible)",
+        "Date inputs without calendar icons or date pickers",
+        "Inconsistent input styling across forms",
+        "No visual feedback on validation errors",
+        "Select dropdowns that look unstyled",
+        "File inputs using basic HTML file input",
+        "Number inputs without proper formatting",
+        "Textareas without proper min/max height"
+      ]
+    },
+    
+    "button_quality": {
+      "description": "Assess button design and placement",
+      "checks": [
+        "Are buttons properly sized and have adequate padding?",
+        "Do buttons have proper hover and active states?",
+        "Are primary and secondary actions clearly distinguished?",
+        "Are buttons properly spaced from each other?",
+        "Do buttons have loading states?",
+        "Are destructive actions (delete) properly styled?",
+        "Are button groups properly aligned?",
+        "Do buttons have proper disabled states?"
+      ],
+      "red_flags": [
+        "Buttons too small or too large",
+        "No visual distinction between primary/secondary",
+        "Buttons cramped together",
+        "No loading states on async actions",
+        "Destructive actions not clearly marked",
+        "Buttons without proper hover effects",
+        "Inconsistent button styling across pages"
+      ]
+    },
+    
+    "spacing_consistency": {
+      "description": "Assess spacing consistency across admin",
+      "checks": [
+        "Is spacing consistent between similar components?",
+        "Are page sections properly spaced?",
+        "Do cards have consistent padding?",
+        "Are table rows properly spaced?",
+        "Is there proper spacing between form groups?",
+        "Are modals properly padded?",
+        "Do stats cards have consistent spacing?",
+        "Is there proper margin between major sections?"
+      ],
+      "red_flags": [
+        "Inconsistent spacing between pages",
+        "Cards with different padding values",
+        "Table rows too cramped or too spaced",
+        "Form sections without proper separation",
+        "Stats cards with inconsistent gaps",
+        "Modals with insufficient padding",
+        "No consistent spacing scale"
+      ]
+    },
+    
+    "color_and_visual_elements": {
+      "description": "Assess color usage and visual elements",
+      "checks": [
+        "Are colors used consistently across admin?",
+        "Do status indicators use appropriate colors?",
+        "Are color pickers custom-designed?",
+        "Is there proper contrast for accessibility?",
+        "Do icons have consistent sizing and spacing?",
+        "Are badges and tags properly styled?",
+        "Is there visual feedback for interactive elements?",
+        "Are loading states properly styled?"
+      ],
+      "red_flags": [
+        "Basic HTML color input (ugly default styling)",
+        "Inconsistent color usage for status",
+        "Poor contrast ratios",
+        "Icons without proper spacing",
+        "Badges with inconsistent styling",
+        "No visual feedback on hover/focus",
+        "Loading states that look unprofessional"
+      ]
+    },
+    
+    "typography": {
+      "description": "Assess typography hierarchy and consistency",
+      "checks": [
+        "Is there clear typography hierarchy?",
+        "Are labels properly sized and weighted?",
+        "Is text readable with proper line height?",
+        "Are headings properly sized and spaced?",
+        "Is there consistent font sizing across forms?",
+        "Are error messages properly styled?",
+        "Is help text properly styled and positioned?"
+      ],
+      "red_flags": [
+        "Labels too small or too large",
+        "No clear hierarchy between headings",
+        "Text too cramped or too loose",
+        "Inconsistent font sizes",
+        "Error messages hard to read",
+        "Help text not properly styled"
+      ]
+    },
+    
+    "interaction_design": {
+      "description": "Assess user interaction and feedback",
+      "checks": [
+        "Do forms provide proper validation feedback?",
+        "Are loading states clear and informative?",
+        "Is there proper error handling and display?",
+        "Do modals close properly on backdrop click?",
+        "Is there proper focus management?",
+        "Are tooltips used where helpful?",
+        "Is there confirmation for destructive actions?",
+        "Are success messages properly displayed?"
+      ],
+      "red_flags": [
+        "No validation feedback until submit",
+        "Loading states unclear or missing",
+        "Errors displayed poorly",
+        "Modals don't close on backdrop",
+        "No focus management",
+        "Destructive actions without confirmation",
+        "Success messages unclear"
+      ]
+    },
+    
+    "responsive_design": {
+      "description": "Assess mobile and tablet responsiveness",
+      "checks": [
+        "Do modals work properly on mobile?",
+        "Are forms usable on small screens?",
+        "Do tables have proper mobile handling?",
+        "Are buttons properly sized for touch?",
+        "Is spacing appropriate for mobile?",
+        "Do grids collapse properly?",
+        "Is text readable on mobile?"
+      ],
+      "red_flags": [
+        "Modals too wide for mobile",
+        "Forms cramped on small screens",
+        "Tables not responsive",
+        "Buttons too small for touch",
+        "Spacing issues on mobile",
+        "Grids don't collapse",
+        "Text too small on mobile"
+      ]
+    },
+    
+    "accessibility": {
+      "description": "Assess accessibility compliance",
+      "checks": [
+        "Do inputs have proper labels?",
+        "Are required fields properly marked?",
+        "Is there proper ARIA labeling?",
+        "Is keyboard navigation supported?",
+        "Is focus visible?",
+        "Are error messages associated with inputs?",
+        "Is color not the only indicator?",
+        "Is contrast sufficient?"
+      ],
+      "red_flags": [
+        "Inputs without labels",
+        "Required fields not marked",
+        "No ARIA labels",
+        "Keyboard navigation broken",
+        "Focus not visible",
+        "Errors not associated with inputs",
+        "Color-only indicators",
+        "Poor contrast"
+      ]
+    }
+  },
+  
+  "specific_components_to_check": {
+    "modals": [
+      "CreateEventModal",
+      "EventDetailsModal",
+      "PaymentModal",
+      "PaymentViewModal",
+      "RefundModal",
+      "InvoiceModal",
+      "InvoiceViewModal",
+      "CreateBookingModal",
+      "EditBookingModal",
+      "ViewBookingModal",
+      "EnrollmentModal",
+      "FAQEditorModal",
+      "TestimonialEditorModal",
+      "SectionEditModal",
+      "AdminModal"
+    ],
+    "forms": [
+      "All admin form pages",
+      "Edit pages for rooms, add-ons, gallery, clients",
+      "CMS editor forms",
+      "Booking forms",
+      "Payment forms",
+      "Invoice forms"
+    ],
+    "tables": [
+      "Bookings table",
+      "Clients table",
+      "Payments table",
+      "Invoices table",
+      "Add-ons table",
+      "Gallery table"
+    ],
+    "inputs": [
+      "Date inputs",
+      "Color inputs",
+      "File uploads",
+      "Select dropdowns",
+      "Number inputs",
+      "Textareas",
+      "Text inputs"
+    ]
+  },
+  
+  "known_issues_to_look_for": [
+    {
+      "component": "CreateEventModal",
+      "issues": [
+        "Basic HTML color input (type='color') looks terrible",
+        "No visual grouping of related fields",
+        "Form uses only space-y-4 without sections",
+        "Date inputs without calendar icons",
+        "No visual separation between form groups",
+        "Buttons at bottom without proper spacing",
+        "Modal title could be more descriptive"
+      ]
+    },
+    {
+      "component": "PaymentModal",
+      "issues": [
+        "Similar form layout issues",
+        "Check for proper field grouping",
+        "Verify button placement and spacing"
+      ]
+    },
+    {
+      "component": "InvoiceModal",
+      "issues": [
+        "Check form layout quality",
+        "Verify spacing consistency",
+        "Check button styling"
+      ]
+    },
+    {
+      "component": "All Admin Forms",
+      "issues": [
+        "Inconsistent spacing",
+        "No visual hierarchy",
+        "Basic input styling",
+        "Poor error handling",
+        "No loading states"
+      ]
+    }
+  ],
+  
+  "improvement_recommendations": {
+    "form_sections": {
+      "description": "Group related fields visually",
+      "example": "Use bordered sections, background colors, or dividers to group related fields",
+      "implementation": "Wrap related fields in <div className='border rounded-lg p-4 space-y-4'>"
+    },
+    "color_picker": {
+      "description": "Replace basic HTML color input",
+      "example": "Use a custom color picker component with swatches and hex input",
+      "implementation": "Create ColorPicker component with visual swatches"
+    },
+    "date_inputs": {
+      "description": "Enhance date inputs",
+      "example": "Add calendar icons, use date picker library, or custom calendar component",
+      "implementation": "Use react-day-picker or similar with proper styling"
+    },
+    "form_spacing": {
+      "description": "Improve form spacing",
+      "example": "Use space-y-6 for form sections, space-y-4 for fields within sections",
+      "implementation": "Apply consistent spacing scale: space-y-6 between sections, space-y-4 within sections"
+    },
+    "button_groups": {
+      "description": "Improve button placement",
+      "example": "Add proper padding, use DialogFooter component, ensure proper spacing",
+      "implementation": "Use DialogFooter with gap-2 or gap-3, add pt-6 before buttons"
+    },
+    "visual_hierarchy": {
+      "description": "Add visual hierarchy",
+      "example": "Use section headers, dividers, background colors, or borders",
+      "implementation": "Add h3 headers for sections, use border-t dividers, subtle bg-gray-50 for sections"
+    }
+  },
+  
+  "audit_output_format": {
+    "structure": {
+      "component_name": "string",
+      "file_path": "string",
+      "issues": [
+        {
+          "type": "visual_hierarchy | modal_quality | form_design | spacing | color | typography | interaction | responsive | accessibility",
+          "severity": "critical | high | medium | low",
+          "description": "string",
+          "location": "string (line numbers or element)",
+          "current_implementation": "string (code snippet)",
+          "recommended_fix": "string (code snippet or description)",
+          "impact": "string (how this affects UX)"
+        }
+      ],
+      "screenshots_needed": ["boolean"],
+      "priority": "high | medium | low"
+    }
+  },
+  
+  "checklist": {
+    "modals": [
+      "Check all modals for proper backdrop",
+      "Verify modal sizing and centering",
+      "Check form spacing within modals",
+      "Verify button placement and styling",
+      "Check for proper close button",
+      "Verify loading states",
+      "Check error handling display"
+    ],
+    "forms": [
+      "Check all form inputs for proper styling",
+      "Verify label positioning and association",
+      "Check for visual grouping of fields",
+      "Verify spacing consistency",
+      "Check error message display",
+      "Verify required field indicators",
+      "Check placeholder text quality"
+    ],
+    "inputs": [
+      "Check date inputs for calendar icons",
+      "Verify color inputs are custom-designed",
+      "Check select dropdowns for proper styling",
+      "Verify file uploads have proper UI",
+      "Check number inputs for formatting",
+      "Verify textareas have proper sizing"
+    ],
+    "buttons": [
+      "Check button sizing and padding",
+      "Verify hover and active states",
+      "Check loading states",
+      "Verify proper spacing between buttons",
+      "Check primary/secondary distinction",
+      "Verify disabled states"
+    ],
+    "spacing": [
+      "Check spacing consistency across pages",
+      "Verify section spacing (should be space-y-8)",
+      "Check card padding (should be p-6)",
+      "Verify table row spacing (should be py-3)",
+      "Check form field spacing (should be space-y-4 or space-y-6)",
+      "Verify modal padding (should be p-6)"
+    ],
+    "visual_elements": [
+      "Check for proper icons",
+      "Verify badge/tag styling",
+      "Check status indicators",
+      "Verify loading spinners",
+      "Check dividers and separators",
+      "Verify shadows and borders"
+    ]
+  },
+  
+  "priority_fixes": {
+    "critical": [
+      "Replace all basic HTML color inputs with custom color pickers",
+      "Fix form spacing and visual hierarchy in all modals",
+      "Add proper visual grouping to all forms",
+      "Fix button placement and spacing in modals",
+      "Add loading states to all async actions"
+    ],
+    "high": [
+      "Enhance date inputs with calendar icons",
+      "Improve error message display",
+      "Add proper form section headers",
+      "Fix inconsistent spacing across admin",
+      "Improve modal backdrop and overlay"
+    ],
+    "medium": [
+      "Add tooltips where helpful",
+      "Improve placeholder text",
+      "Enhance focus states",
+      "Add confirmation dialogs for destructive actions",
+      "Improve responsive design"
+    ]
+  },
+  
+  "examples_of_good_ui": {
+    "form_section": {
+      "description": "Properly grouped form section",
+      "code": "<div className='border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50'>\n  <h3 className='text-sm font-semibold text-gray-900 mb-4'>Event Details</h3>\n  {/* form fields */}\n</div>"
+    },
+    "color_picker": {
+      "description": "Custom color picker component",
+      "code": "<div className='flex items-center gap-3'>\n  <div className='flex gap-2'>\n    {presetColors.map(color => <button className='w-8 h-8 rounded border-2' style={{backgroundColor: color}} />)}\n  </div>\n  <Input type='text' value={hexValue} />\n  <input type='color' className='w-12 h-10 rounded' />\n</div>"
+    },
+    "date_input": {
+      "description": "Date input with icon",
+      "code": "<div className='relative'>\n  <CalendarIcon className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400' />\n  <Input className='pl-10' type='date' />\n</div>"
+    },
+    "form_buttons": {
+      "description": "Properly spaced form buttons",
+      "code": "<DialogFooter className='pt-6 border-t'>\n  <Button variant='outline' onClick={onClose}>Cancel</Button>\n  <Button type='submit' disabled={loading}>\n    {loading ? 'Saving...' : 'Save'}\n  </Button>\n</DialogFooter>"
+    }
+  },
+  
+  "testing_scenarios": [
+    "Open CreateEventModal and assess visual quality",
+    "Check all modals for consistent styling",
+    "Test form submission with validation errors",
+    "Check loading states on all async actions",
+    "Test responsive design on mobile",
+    "Check keyboard navigation",
+    "Verify focus management in modals",
+    "Test color picker usability",
+    "Check date input functionality",
+    "Verify error message display"
+  ]
+}
+

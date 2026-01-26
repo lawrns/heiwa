@@ -1,0 +1,362 @@
+{
+  "meta": {
+    "title": "Comprehensive Codebase Optimization & Testing Maturity Audit",
+    "version": "1.0.0",
+    "created": "2025-11-24",
+    "purpose": "Master prompt to ensure all systems are production-grade, optimized, and fully tested"
+  },
+  "prompt": {
+    "instruction": "Execute a comprehensive audit and optimization of the entire Heiwa House codebase. This is a BLOCKING task - do not skip any section. For each area, identify issues, fix them immediately, and verify the fix works. Document everything.",
+
+    "phases": [
+      {
+        "phase": 1,
+        "name": "Database Optimization Audit",
+        "priority": "CRITICAL",
+        "tasks": [
+          "Connect to Supabase and run EXPLAIN ANALYZE on all frequently-used queries",
+          "Identify missing indexes on foreign keys and frequently-queried columns",
+          "Check for N+1 query patterns in API routes",
+          "Verify all tables have proper RLS policies enabled",
+          "Audit database schema for normalization issues",
+          "Check for orphaned records and referential integrity",
+          "Verify all NOT NULL constraints are properly set",
+          "Add indexes for: client_ids, booking dates, room_id, status fields",
+          "Review and optimize Supabase Edge Functions if any",
+          "Check connection pooling configuration"
+        ],
+        "commands": [
+          "PGPASSWORD='...' psql -h db.pguipwhrxdzzrndbluxb.supabase.co -U postgres -d postgres -c \"SELECT schemaname, tablename, indexname FROM pg_indexes WHERE schemaname = 'public';\"",
+          "PGPASSWORD='...' psql -h db.pguipwhrxdzzrndbluxb.supabase.co -U postgres -d postgres -c \"SELECT relname, seq_scan, idx_scan FROM pg_stat_user_tables ORDER BY seq_scan DESC;\"",
+          "PGPASSWORD='...' psql -h db.pguipwhrxdzzrndbluxb.supabase.co -U postgres -d postgres -c \"SELECT * FROM pg_stat_statements ORDER BY total_time DESC LIMIT 20;\""
+        ],
+        "expected_outputs": [
+          "List of all indexes (should cover all FK and query columns)",
+          "Sequential vs index scan ratio (index scans should dominate)",
+          "Slow query identification and optimization plan"
+        ]
+      },
+      {
+        "phase": 2,
+        "name": "API Endpoint Audit",
+        "priority": "CRITICAL",
+        "tasks": [
+          "Map ALL API routes in app/api/** directory",
+          "Verify each endpoint has proper error handling (try-catch)",
+          "Check all endpoints validate input before processing",
+          "Ensure all endpoints return consistent response format",
+          "Verify authentication/authorization on protected routes",
+          "Check for rate limiting on public endpoints",
+          "Audit for SQL injection vulnerabilities",
+          "Audit for XSS vulnerabilities in response data",
+          "Check all endpoints handle edge cases (null, undefined, empty)",
+          "Verify proper HTTP status codes are returned",
+          "Check for memory leaks in long-running operations",
+          "Ensure all database queries use parameterized queries"
+        ],
+        "validation_schema": {
+          "success_response": {
+            "success": true,
+            "data": "object | array",
+            "message": "string (optional)"
+          },
+          "error_response": {
+            "success": false,
+            "error": "string",
+            "errorCode": "string (optional)",
+            "details": "object (optional)"
+          }
+        },
+        "endpoints_to_audit": [
+          "/api/widget/room-bookings (POST, GET)",
+          "/api/widget/availability (GET)",
+          "/api/bookings (POST, GET, PATCH)",
+          "/api/rooms (GET)",
+          "/api/surf-camps (GET)",
+          "/api/add-ons (GET)",
+          "/api/create-payment-intent (POST)",
+          "/api/admin/** (all admin routes)",
+          "/api/webhooks/** (Stripe, etc.)"
+        ]
+      },
+      {
+        "phase": 3,
+        "name": "Frontend Performance Audit",
+        "priority": "HIGH",
+        "tasks": [
+          "Run Lighthouse audit on all main pages",
+          "Check for unnecessary re-renders with React DevTools",
+          "Verify all images use Next.js Image component with proper sizing",
+          "Check bundle size with next/bundle-analyzer",
+          "Identify and code-split large components",
+          "Verify proper use of useMemo, useCallback, React.memo",
+          "Check for memory leaks in useEffect cleanup",
+          "Audit CSS for unused styles",
+          "Verify lazy loading on below-fold content",
+          "Check Web Vitals: LCP, FID, CLS",
+          "Ensure proper caching headers on static assets",
+          "Verify service worker configuration (if applicable)"
+        ],
+        "pages_to_audit": [
+          "/ (homepage)",
+          "/rooms",
+          "/rooms/[id]",
+          "/surf-weeks",
+          "/booking",
+          "/admin (and all admin sub-routes)"
+        ],
+        "target_metrics": {
+          "lighthouse_performance": ">= 90",
+          "lighthouse_accessibility": ">= 95",
+          "lighthouse_best_practices": ">= 90",
+          "lighthouse_seo": ">= 90",
+          "lcp": "< 2.5s",
+          "fid": "< 100ms",
+          "cls": "< 0.1"
+        }
+      },
+      {
+        "phase": 4,
+        "name": "Testing Infrastructure Maturity",
+        "priority": "CRITICAL",
+        "tasks": [
+          "Audit existing test coverage (aim for 80%+)",
+          "Create missing unit tests for all utility functions",
+          "Create integration tests for all API endpoints",
+          "Create E2E tests for critical user flows",
+          "Set up test database with seed data",
+          "Configure CI/CD to run tests on every PR",
+          "Add snapshot tests for critical UI components",
+          "Create performance regression tests",
+          "Set up visual regression testing",
+          "Add accessibility testing (axe-core)",
+          "Create load testing scripts for API endpoints",
+          "Document testing strategy and conventions"
+        ],
+        "test_categories": {
+          "unit_tests": {
+            "location": "__tests__/unit/**",
+            "framework": "Jest + React Testing Library",
+            "coverage_target": "80%",
+            "files_to_test": [
+              "lib/utils.ts",
+              "lib/email-service.ts",
+              "lib/supabase.ts",
+              "components/BookingWidget/hooks/*.ts",
+              "components/BookingWidget/lib/*.ts"
+            ]
+          },
+          "integration_tests": {
+            "location": "__tests__/integration/**",
+            "framework": "Jest + Supertest",
+            "coverage_target": "90% of endpoints",
+            "endpoints_to_test": [
+              "POST /api/widget/room-bookings",
+              "GET /api/widget/availability",
+              "POST /api/create-payment-intent",
+              "All CRUD operations"
+            ]
+          },
+          "e2e_tests": {
+            "location": "__tests__/e2e/** or e2e/**",
+            "framework": "Playwright or Cypress",
+            "flows_to_test": [
+              "Complete room booking flow (1 guest)",
+              "Multi-room booking flow (6+ guests)",
+              "Surf camp enrollment flow",
+              "Admin login and booking management",
+              "Payment processing (Stripe test mode)",
+              "Email confirmation verification"
+            ]
+          }
+        },
+        "commands": [
+          "npm test -- --coverage",
+          "npm run test:integration",
+          "npm run test:e2e",
+          "npx playwright test --reporter=html"
+        ]
+      },
+      {
+        "phase": 5,
+        "name": "Security Audit",
+        "priority": "CRITICAL",
+        "tasks": [
+          "Run npm audit and fix all vulnerabilities",
+          "Check all environment variables are properly secured",
+          "Verify API keys are not exposed in client-side code",
+          "Audit authentication flow for vulnerabilities",
+          "Check CORS configuration",
+          "Verify CSP headers are set",
+          "Check for sensitive data in logs",
+          "Audit file upload handling (if any)",
+          "Verify Stripe webhook signature validation",
+          "Check rate limiting on auth endpoints",
+          "Audit admin routes for proper authorization",
+          "Review Supabase RLS policies"
+        ],
+        "commands": [
+          "npm audit",
+          "npx snyk test",
+          "grep -r 'SUPABASE\\|API_KEY\\|SECRET' --include='*.tsx' --include='*.ts' | grep -v '.env' | grep -v 'node_modules'"
+        ]
+      },
+      {
+        "phase": 6,
+        "name": "Code Quality & Maintainability",
+        "priority": "HIGH",
+        "tasks": [
+          "Run ESLint with strict rules and fix all errors",
+          "Run TypeScript in strict mode and fix all errors",
+          "Check for dead code and remove it",
+          "Identify duplicate code and refactor",
+          "Verify consistent naming conventions",
+          "Check for proper error boundaries in React",
+          "Audit component structure for maintainability",
+          "Verify proper TypeScript types (no 'any' except justified)",
+          "Check for proper async/await error handling",
+          "Review and update dependencies",
+          "Check for circular dependencies",
+          "Verify proper code documentation"
+        ],
+        "commands": [
+          "npm run lint -- --fix",
+          "npx tsc --noEmit --strict",
+          "npx madge --circular src/",
+          "npx depcheck"
+        ]
+      },
+      {
+        "phase": 7,
+        "name": "Email System Verification",
+        "priority": "HIGH",
+        "tasks": [
+          "Verify Resend API key is valid and active",
+          "Test all email templates render correctly",
+          "Verify emails are sent for all booking scenarios",
+          "Check email deliverability (SPF, DKIM, DMARC)",
+          "Test email templates on multiple clients (Gmail, Outlook, Apple Mail)",
+          "Verify unsubscribe links work (if applicable)",
+          "Check for proper error handling when emails fail",
+          "Verify admin notifications are sent",
+          "Test scheduled emails (pre-trip, post-trip)",
+          "Audit email content for personalization accuracy"
+        ],
+        "email_scenarios": [
+          "Booking confirmation (room)",
+          "Booking confirmation (surf camp)",
+          "Admin notification (new booking)",
+          "Payment confirmation",
+          "Pre-trip planning email",
+          "Post-trip feedback request",
+          "Invoice email",
+          "Refund notification"
+        ]
+      },
+      {
+        "phase": 8,
+        "name": "Production Readiness Checklist",
+        "priority": "CRITICAL",
+        "tasks": [
+          "Verify all environment variables are set in production",
+          "Check error monitoring is configured (Sentry, LogRocket, etc.)",
+          "Verify analytics is properly configured",
+          "Check SSL certificate is valid",
+          "Verify proper caching configuration",
+          "Check CDN configuration for static assets",
+          "Verify backup strategy for database",
+          "Check disaster recovery plan",
+          "Verify proper logging in production",
+          "Check health check endpoints exist",
+          "Verify proper 404 and 500 error pages",
+          "Check sitemap and robots.txt are correct"
+        ],
+        "environment_variables_required": [
+          "NEXT_PUBLIC_SUPABASE_URL",
+          "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+          "SUPABASE_SERVICE_ROLE_KEY",
+          "RESEND_API_KEY",
+          "STRIPE_SECRET_KEY",
+          "STRIPE_WEBHOOK_SECRET",
+          "FROM_EMAIL",
+          "ADMIN_EMAIL",
+          "REPLY_TO_EMAIL"
+        ]
+      }
+    ],
+
+    "execution_rules": [
+      "Execute phases in order - each phase depends on the previous",
+      "Do NOT skip any task - mark as N/A with justification if not applicable",
+      "Fix issues immediately upon discovery - don't just list them",
+      "Verify each fix with a test before moving on",
+      "Document all changes in a CHANGELOG",
+      "Commit changes after each phase with descriptive messages",
+      "If blocked, document the blocker and continue with other tasks",
+      "Create GitHub issues for items requiring external input",
+      "Update documentation after each significant change"
+    ],
+
+    "output_requirements": {
+      "per_phase": {
+        "issues_found": "array of {severity, description, file, line}",
+        "fixes_applied": "array of {issue, solution, files_changed}",
+        "tests_added": "array of {test_name, file, coverage_added}",
+        "remaining_blockers": "array of {issue, reason, next_steps}"
+      },
+      "final_report": {
+        "total_issues_found": "number",
+        "total_issues_fixed": "number",
+        "test_coverage_before": "percentage",
+        "test_coverage_after": "percentage",
+        "lighthouse_scores": "object with all metrics",
+        "security_vulnerabilities": "number remaining",
+        "production_readiness_score": "percentage (0-100)"
+      }
+    }
+  },
+
+  "quick_start_command": "/prompt Conduct a comprehensive optimization and testing maturity audit of this codebase. Execute ALL 8 phases in order: (1) Database Optimization, (2) API Endpoint Audit, (3) Frontend Performance, (4) Testing Infrastructure, (5) Security Audit, (6) Code Quality, (7) Email System Verification, (8) Production Readiness. For each phase: identify all issues, fix them immediately, add tests to prevent regression, and document changes. Do not skip any section. Target: 80%+ test coverage, 90+ Lighthouse scores, 0 security vulnerabilities, all API endpoints validated. Output a final report with metrics.",
+
+  "abbreviated_prompts": {
+    "database_only": "Audit and optimize the database: check indexes, query performance, RLS policies, and schema integrity. Fix all issues found.",
+    "api_only": "Audit all API endpoints in app/api/**: verify error handling, input validation, response consistency, and security. Fix all issues.",
+    "testing_only": "Audit and improve test coverage: add unit tests for utils, integration tests for APIs, E2E tests for booking flows. Target 80%+ coverage.",
+    "security_only": "Run comprehensive security audit: npm audit, check env vars, audit auth flow, verify CORS/CSP, check RLS policies. Fix all vulnerabilities.",
+    "performance_only": "Run Lighthouse on all pages, optimize images, reduce bundle size, fix re-renders, improve Web Vitals. Target 90+ scores."
+  },
+
+  "context": {
+    "tech_stack": {
+      "framework": "Next.js 15.5.4",
+      "database": "Supabase (PostgreSQL)",
+      "auth": "Supabase Auth",
+      "payments": "Stripe",
+      "email": "Resend",
+      "hosting": "Netlify",
+      "styling": "Tailwind CSS",
+      "state": "React hooks (useState, useContext)",
+      "testing": "Jest + React Testing Library"
+    },
+    "key_files": {
+      "api_routes": "app/api/**",
+      "components": "components/**",
+      "hooks": "components/BookingWidget/hooks/**",
+      "lib": "lib/**",
+      "tests": "__tests__/**",
+      "config": "next.config.ts, tailwind.config.ts, jest.config.js"
+    },
+    "critical_flows": [
+      "Room booking (single and multi-room)",
+      "Surf camp enrollment",
+      "Payment processing",
+      "Admin booking management",
+      "Email notifications"
+    ],
+    "known_issues": [
+      "Some ESLint warnings for unused variables",
+      "Pre-existing lint issues in admin components",
+      "CSS @import warning in build"
+    ]
+  }
+}

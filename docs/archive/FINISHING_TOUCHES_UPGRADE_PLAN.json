@@ -1,0 +1,355 @@
+{
+  "projectName": "Heiwa House Website - Finishing Touches Upgrade Plan",
+  "currentStatus": "Production-Ready with Enhanced UI/UX",
+  "objective": "Final polish to make the site more endearing, emotionally engaging, and visually compelling",
+  "totalEstimatedDays": 8,
+  "phases": [
+    {
+      "phaseId": "POLISH-001",
+      "phaseName": "Interactive Hero & Immersive Storytelling",
+      "description": "Make the homepage hero section more engaging and set emotional tone",
+      "priority": "CRITICAL",
+      "estimatedDays": 2,
+      "tasks": [
+        {
+          "taskId": "POLISH-001-001",
+          "title": "Add parallax scrolling effect to hero video",
+          "description": "Create depth with parallax movement on hero section as user scrolls - makes experience feel more premium and modern",
+          "implementation": "Add Framer Motion parallax effect to hero background video",
+          "impact": "HIGH",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-001-002",
+          "title": "Animated text reveal on hero heading",
+          "description": "Hero headline 'Surf. Yoga. Live.' animates in with staggered character reveal on page load",
+          "implementation": "Use Framer Motion to animate heading characters on mount",
+          "impact": "HIGH",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-001-003",
+          "title": "Add 'scroll to explore' indicator with bounce animation",
+          "description": "Subtle animated arrow at bottom of hero prompting user to scroll - improves engagement",
+          "implementation": "SVG arrow with Lottie animation or CSS keyframes",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-001-004",
+          "title": "Hero video loading skeleton",
+          "description": "Show elegant loading state while video buffers - prevents blank screen experience",
+          "implementation": "Add blur-up placeholder while hero video loads",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        }
+      ]
+    },
+    {
+      "phaseId": "POLISH-002",
+      "phaseName": "Micro-Interactions & Delightful Details",
+      "description": "Add subtle animations and interactions that create joy and delight",
+      "priority": "HIGH",
+      "estimatedDays": 2,
+      "tasks": [
+        {
+          "taskId": "POLISH-002-001",
+          "title": "Room card hover animations",
+          "description": "Cards get subtle lift, shadow expansion, and image zoom on hover",
+          "implementation": "Enhanced Tailwind + Framer Motion on room cards",
+          "impact": "HIGH",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-002-002",
+          "title": "Image carousel auto-advance with pause-on-hover",
+          "description": "Carousels gently auto-advance every 5 seconds, pause when user hovers",
+          "implementation": "Add setInterval with pause logic to ImageCarousel component",
+          "impact": "MEDIUM",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-002-003",
+          "title": "Counter animations for stats section",
+          "description": "'15 years', '500+ guests', 'World-class facilities' - numbers animate from 0 on scroll into view",
+          "implementation": "Add counter animation library or custom scroll trigger",
+          "impact": "MEDIUM",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-002-004",
+          "title": "Button ripple effect on click",
+          "description": "Material Design-style ripple effect on all buttons for tactile feedback",
+          "implementation": "CSS or Framer Motion ripple animation",
+          "impact": "LOW",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-002-005",
+          "title": "Navigation link underline animation",
+          "description": "Underline animates in from left to right on hover (smooth and elegant)",
+          "implementation": "CSS clip-path or width animation with transform",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        }
+      ]
+    },
+    {
+      "phaseId": "POLISH-003",
+      "phaseName": "Visual Hierarchy & Typography Polish",
+      "description": "Refine typography, spacing, and visual hierarchy for premium feel",
+      "priority": "HIGH",
+      "estimatedDays": 1.5,
+      "tasks": [
+        {
+          "taskId": "POLISH-003-001",
+          "title": "Add subtle texture overlay to background sections",
+          "description": "Noise texture on light grey sections (very subtle) - prevents flat look",
+          "implementation": "Add SVG noise pattern or subtle gradient texture",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-003-002",
+          "title": "Implement premium font pairing",
+          "description": "Add Google Fonts 'Playfair Display' for headings (elegant serif) + keep clean sans-serif for body",
+          "implementation": "Update font imports in globals.css and apply to h1-h6 tags",
+          "impact": "HIGH",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-003-003",
+          "title": "Increase letter spacing on headings",
+          "description": "Add tracking/letter-spacing to h1-h4 for more premium, airy feel",
+          "implementation": "Add `tracking-wide` or `tracking-wider` to heading classes",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-003-004",
+          "title": "Improve line height consistency",
+          "description": "Ensure all body text has optimal line-height (1.6-1.8) for readability and elegance",
+          "implementation": "Apply `leading-relaxed` or `leading-loose` throughout",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        }
+      ]
+    },
+    {
+      "phaseId": "POLISH-004",
+      "phaseName": "Emotional Content Enhancements",
+      "description": "Add human touch and emotional storytelling elements",
+      "priority": "HIGH",
+      "estimatedDays": 2,
+      "tasks": [
+        {
+          "taskId": "POLISH-004-001",
+          "title": "Guest testimonial carousel with avatars",
+          "description": "Replace current static reviews with animated carousel of testimonials with guest photos",
+          "implementation": "Create TestimonialCarousel component with guest avatar images",
+          "impact": "HIGH",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-004-002",
+          "title": "Add 'Why Heiwa House' section with icons",
+          "description": "3-column section explaining unique value props (Community, Wellness, Adventure) with custom icons",
+          "implementation": "New section on homepage with icon cards + hover effects",
+          "impact": "HIGH",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-004-003",
+          "title": "Founder story modal or expandable section",
+          "description": "Brief, personal story about why Heiwa House was created - builds emotional connection",
+          "implementation": "Add click-to-expand 'Our Story' section or modal trigger",
+          "impact": "MEDIUM",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-004-004",
+          "title": "Social proof badges",
+          "description": "Add trust badges: '⭐ 4.9/5 from 200+ reviews', 'Featured in Travel Magazine', etc.",
+          "implementation": "Add small badge components to hero or below booking widget",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        }
+      ]
+    },
+    {
+      "phaseId": "POLISH-005",
+      "phaseName": "Page Transitions & Loading States",
+      "description": "Smooth page transitions and elegant loading experiences",
+      "priority": "MEDIUM",
+      "estimatedDays": 1.5,
+      "tasks": [
+        {
+          "taskId": "POLISH-005-001",
+          "title": "Page transition animations",
+          "description": "Fade/slide animations when navigating between pages for smooth experience",
+          "implementation": "Add Framer Motion AnimatePresence on layout component",
+          "impact": "MEDIUM",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-005-002",
+          "title": "Skeleton loading screens",
+          "description": "Replace boring 'Loading...' text with skeleton card layouts while data loads",
+          "implementation": "Create SkeletonCard component, use while fetching room data",
+          "impact": "MEDIUM",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-005-003",
+          "title": "Progress bar on page scroll",
+          "description": "Subtle progress bar at top showing scroll position through page",
+          "implementation": "Add fixed top progress bar component with scroll listener",
+          "impact": "LOW",
+          "complexity": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "phaseId": "POLISH-006",
+      "phaseName": "CTA Optimization & Conversion",
+      "description": "Make booking and contact CTAs more compelling and visible",
+      "priority": "HIGH",
+      "estimatedDays": 1,
+      "tasks": [
+        {
+          "taskId": "POLISH-006-001",
+          "title": "Floating action button for booking",
+          "description": "Small, elegant floating 'Book Now' button that appears after scrolling past hero",
+          "implementation": "Add fixed FAB with animation on scroll past hero",
+          "impact": "HIGH",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-006-002",
+          "title": "CTA button gradient animations",
+          "description": "Button background gradient shifts on hover - more dynamic and engaging",
+          "implementation": "Add animated gradient shift on .btn-accent:hover",
+          "impact": "MEDIUM",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-006-003",
+          "title": "WhatsApp quick contact button",
+          "description": "Floating WhatsApp icon in bottom corner for instant messaging - common in travel industry",
+          "implementation": "Add FloatingWhatsApp component or similar package",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-006-004",
+          "title": "Add limited-time urgency messaging",
+          "description": "'Only 2 spots left in July', 'Early bird discount ends soon' - creates urgency",
+          "implementation": "Add dynamic urgency banner on room cards or hero",
+          "impact": "HIGH",
+          "complexity": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "phaseId": "POLISH-007",
+      "phaseName": "Accessibility & Performance Polish",
+      "description": "Final refinements for accessibility and performance",
+      "priority": "MEDIUM",
+      "estimatedDays": 1,
+      "tasks": [
+        {
+          "taskId": "POLISH-007-001",
+          "title": "Add skip-to-content link",
+          "description": "Invisible link for keyboard users to skip to main content (WCAG best practice)",
+          "implementation": "Add visually-hidden skip link component",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-007-002",
+          "title": "Optimize image loading with Next.js Image component",
+          "description": "Ensure all images use Next.js Image for auto-optimization, lazy loading, and WebP format",
+          "implementation": "Replace remaining img tags with Image components",
+          "impact": "MEDIUM",
+          "complexity": "MEDIUM"
+        },
+        {
+          "taskId": "POLISH-007-003",
+          "title": "Add breadcrumb navigation",
+          "description": "Show breadcrumb path on room detail pages (Home > Rooms > Room Name)",
+          "implementation": "Add Breadcrumb component to room detail page",
+          "impact": "LOW",
+          "complexity": "LOW"
+        }
+      ]
+    },
+    {
+      "phaseId": "POLISH-008",
+      "phaseName": "Mobile Experience Perfection",
+      "description": "Ensure mobile experience is delightful and optimized",
+      "priority": "HIGH",
+      "estimatedDays": 1,
+      "tasks": [
+        {
+          "taskId": "POLISH-008-001",
+          "title": "Mobile navigation refinements",
+          "description": "Smooth slide-in menu, better mobile menu styling, touch-optimized sizing",
+          "implementation": "Enhance mobile menu in Navigation component",
+          "impact": "HIGH",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-008-002",
+          "title": "Touch-friendly form inputs",
+          "description": "Larger input fields, better spacing, numeric keyboards for phone numbers",
+          "implementation": "Update booking widget form inputs for mobile",
+          "impact": "MEDIUM",
+          "complexity": "LOW"
+        },
+        {
+          "taskId": "POLISH-008-003",
+          "title": "Mobile image carousel improvements",
+          "description": "Larger navigation arrows on mobile, swipe gesture support",
+          "implementation": "Add swipe gesture library (e.g., react-use-gesture) to ImageCarousel",
+          "impact": "MEDIUM",
+          "complexity": "MEDIUM"
+        }
+      ]
+    }
+  ],
+  "implementationStrategy": {
+    "approach": "Progressive Enhancement",
+    "startWith": ["POLISH-001", "POLISH-002", "POLISH-003"],
+    "testing": "Visual regression testing + User feedback",
+    "deployment": "Staged rollout with feature flags if needed"
+  },
+  "estimatedTotalEffort": {
+    "days": 11.5,
+    "developmentTeam": "1 Full-stack Developer",
+    "designer": "Optional - for custom icon creation"
+  },
+  "expectedOutcomes": [
+    "Premium, polished user experience",
+    "Increased emotional connection with visitors",
+    "Better conversion rates on booking CTAs",
+    "Improved mobile experience",
+    "Higher engagement with micro-interactions",
+    "Professional, endearing brand perception"
+  ],
+  "priorityRecommendation": {
+    "phase1": "POLISH-001 + POLISH-002 (Interactive hero + micro-interactions)",
+    "phase2": "POLISH-003 + POLISH-004 (Typography + emotional content)",
+    "phase3": "POLISH-006 + POLISH-008 (CTA optimization + mobile)"
+  },
+  "notes": {
+    "beforeStarting": "All phases assume Next.js 15 and Framer Motion are available",
+    "consideredLibraries": [
+      "Framer Motion - For animations",
+      "react-use-gesture - For touch/swipe gestures",
+      "AOS (Animate On Scroll) - For scroll-triggered animations",
+      "Lottie React - For animated SVG files"
+    ],
+    "designConsiderations": "Maintain consistent brand orange (#ec681c) in animations and interactions",
+    "performanceNote": "Monitor Core Web Vitals - animations should not negatively impact LCP/CLS scores"
+  }
+}

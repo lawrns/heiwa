@@ -1,0 +1,511 @@
+{
+  "mission": "Zero Drift Verification & Feature Implementation",
+  "objective": "Ensure 100% synchronization between site, database, and CMS while implementing booking flow improvements and fixing admin panel regressions",
+  
+  "phase_1_zero_drift_verification": {
+    "name": "Complete System Synchronization Audit",
+    "priority": "CRITICAL",
+    "description": "Verify and fix any drift between frontend site, database schema, and CMS content",
+    
+    "tasks": [
+      {
+        "id": "1.1",
+        "name": "Database Schema Audit",
+        "description": "Verify all database tables match expected schema and CMS requirements",
+        "steps": [
+          "Query all tables: bookings, clients, rooms, surf_camps, homepage_content, navigation_items, experiences, pages",
+          "Verify column types match TypeScript interfaces",
+          "Check for missing indexes, foreign keys, and constraints",
+          "Verify RLS policies are correctly configured",
+          "Document any schema drift found"
+        ],
+        "validation": "All tables exist with correct schema, indexes, and RLS policies"
+      },
+      {
+        "id": "1.2",
+        "name": "CMS Content Synchronization",
+        "description": "Ensure all CMS content is properly stored and retrievable",
+        "steps": [
+          "Verify homepage_content table has all required sections (hero, surf-weeks, about, rooms, reviews, facilities)",
+          "Check JSONB columns contain valid JSON",
+          "Verify image URLs in CMS point to valid Supabase Storage paths",
+          "Test API endpoints: GET /api/admin/homepage, POST, PUT, DELETE",
+          "Verify CMS changes reflect immediately on homepage"
+        ],
+        "validation": "All CMS content loads correctly, CRUD operations work, changes reflect on site"
+      },
+      {
+        "id": "1.3",
+        "name": "Frontend-Database Mapping Verification",
+        "description": "Ensure all frontend components correctly fetch and display database data",
+        "steps": [
+          "Verify BookingWidget fetches rooms from database (not hardcoded)",
+          "Verify SurfWeeksTable fetches surf_camps from database",
+          "Verify homepage sections fetch from homepage_content table",
+          "Check all API routes use correct Supabase queries",
+          "Verify no hardcoded data remains in components"
+        ],
+        "validation": "Zero hardcoded data, all content from database"
+      },
+      {
+        "id": "1.4",
+        "name": "State Management Consistency",
+        "description": "Verify booking flow state matches database structure",
+        "steps": [
+          "Review BookingState interface matches database booking structure",
+          "Verify participantNames array structure matches database",
+          "Check roomAssignments structure matches room_assignments table",
+          "Verify guestDetails structure matches clients table",
+          "Test state persistence across booking steps"
+        ],
+        "validation": "State structure matches database, data flows correctly through steps"
+      }
+    ]
+  },
+  
+  "phase_2_booking_flow_step2": {
+    "name": "Dynamic Participant Name Inputs (Step 2)",
+    "priority": "HIGH",
+    "description": "Add dynamic name input fields that appear when participant quantity is selected",
+    
+    "current_state": {
+      "file": "components/BookingWidget/steps/OptionSelection.tsx",
+      "issue": "Step 2 only collects participant count, not individual names",
+      "current_behavior": "User selects quantity (1-3), but names are not collected until Step 4"
+    },
+    
+    "required_changes": [
+      {
+        "id": "2.1",
+        "name": "Add Dynamic Name Input Fields",
+        "file": "components/BookingWidget/steps/OptionSelection.tsx",
+        "location": "Inside the 'Number of Guests' card, below the counter controls",
+        "implementation": [
+          "Add input fields that dynamically render based on state.guests value",
+          "Fields should appear immediately when guest count changes",
+          "Each field should have label: 'Participant {index} Name' (e.g., 'Participant 1 Name')",
+          "Use existing participantNames state array",
+          "Sync local state with global state.participantNames",
+          "Fields should be required and validate before allowing Next"
+        ],
+        "code_reference": {
+          "existing_counter": "lines 540-570 in OptionSelection.tsx",
+          "state_structure": "participantNames: ParticipantName[] in types.ts",
+          "action": "setParticipantNames action in useBookingFlow.ts"
+        }
+      },
+      {
+        "id": "2.2",
+        "name": "Update State Management",
+        "file": "components/BookingWidget/hooks/useBookingFlow.ts",
+        "description": "Ensure SET_PARTICIPANT_NAMES action properly updates state",
+        "validation": "When guest count changes, participantNames array updates correctly"
+      },
+      {
+        "id": "2.3",
+        "name": "Add Validation",
+        "file": "components/BookingWidget/steps/OptionSelection.tsx",
+        "description": "Prevent proceeding to next step if name fields are empty",
+        "implementation": [
+          "Disable 'Next' button if any participant name is empty",
+          "Show validation error messages for empty fields",
+          "Highlight empty fields with red border"
+        ]
+      },
+      {
+        "id": "2.4",
+        "name": "Update Data Structure",
+        "description": "Change from simple count to array of participant objects",
+        "current": "guests: 3",
+        "new": "participantNames: [{id: 'guest-1', firstName: 'John'}, {id: 'guest-2', firstName: 'Sarah'}, {id: 'guest-3', firstName: 'Mike'}]",
+        "validation": "State contains array of ParticipantName objects with firstName"
+      }
+    ],
+    
+    "acceptance_criteria": [
+      "When user selects 1 participant, 1 name input field appears",
+      "When user increments to 3, 3 name input fields appear",
+      "When user decrements, excess fields are removed from bottom",
+      "Next button is disabled if any name field is empty",
+      "Names are stored in state.participantNames array",
+      "UI matches existing rounded corner style"
+    ]
+  },
+  
+  "phase_3_booking_flow_step3": {
+    "name": "Room Assignment via Participant Tags (Step 3)",
+    "priority": "HIGH",
+    "description": "Enable assigning specific participants to specific rooms using tag/chip selection",
+    
+    "current_state": {
+      "file": "components/BookingWidget/steps/RoomAssignment.tsx",
+      "issue": "Room assignment uses generic guest IDs, not participant names",
+      "current_behavior": "Guests assigned by ID (guest-1, guest-2), not by name"
+    },
+    
+    "required_changes": [
+      {
+        "id": "3.1",
+        "name": "Display Participant Names as Tags",
+        "file": "components/BookingWidget/steps/RoomAssignment.tsx",
+        "location": "Inside each Room Card, below description/amenities, above price/add button",
+        "implementation": [
+          "Add section: 'Assign Guests to this Room:'",
+          "Display participant names from state.participantNames as clickable tags/chips",
+          "Unselected state: outline style or greyed out",
+          "Selected state: solid orange color (brand orange) indicating assignment",
+          "Tags should show participant firstName from Step 2"
+        ],
+        "code_reference": {
+          "existing_room_card": "lines 270-400 in RoomAssignment.tsx",
+          "participant_names": "state.participantNames from BookingState",
+          "room_assignments": "state.roomAssignments array"
+        }
+      },
+      {
+        "id": "3.2",
+        "name": "Implement Capacity Limits",
+        "file": "components/BookingWidget/steps/RoomAssignment.tsx",
+        "description": "Enforce max_guests attribute strictly",
+        "implementation": [
+          "Check room.maxOccupancy before allowing assignment",
+          "If room has 'Up to 1 guest', only allow 1 tag selection",
+          "If room has 'Up to 6 guests', allow multiple selections",
+          "Show warning or auto-deselect if capacity exceeded",
+          "Disable tags when room is full"
+        ],
+        "validation": "Cannot assign more guests than room capacity"
+      },
+      {
+        "id": "3.3",
+        "name": "Implement Exclusivity Logic",
+        "file": "components/BookingWidget/steps/RoomAssignment.tsx",
+        "description": "Ensure participant cannot be in two rooms simultaneously",
+        "implementation": [
+          "When participant tag is clicked in Room A, remove them from Room B if assigned",
+          "OR: Disable/hide tag in Room B if already assigned to Room A",
+          "Update state.roomAssignments to reflect single-room assignment",
+          "Show visual feedback when participant is moved between rooms"
+        ],
+        "validation": "Each participant assigned to exactly one room"
+      },
+      {
+        "id": "3.4",
+        "name": "Update Room Assignment Data Structure",
+        "file": "components/BookingWidget/types.ts",
+        "description": "Store participant names in room assignments",
+        "current": "RoomAssignment: {roomId, guestIds: ['guest-1', 'guest-2']}",
+        "new": "RoomAssignment: {roomId, participantNames: ['John', 'Sarah']} OR keep guestIds but map to names",
+        "implementation": [
+          "Map guestIds to participantNames when displaying",
+          "Ensure assignment uses participant IDs that match participantNames array"
+        ]
+      },
+      {
+        "id": "3.5",
+        "name": "Add Visual Feedback",
+        "file": "components/BookingWidget/steps/RoomAssignment.tsx",
+        "description": "Show room full state and assignment status",
+        "implementation": [
+          "Visual indicator when room reaches max capacity (e.g., red counter, disabled add button)",
+          "Highlight assigned participants in orange",
+          "Show unassigned guests list at top",
+          "Update price calculation based on assigned guests"
+        ]
+      }
+    ],
+    
+    "acceptance_criteria": [
+      "Participant names from Step 2 appear as tags in each room card",
+      "Clicking a tag assigns participant to that room",
+      "Room capacity limits are strictly enforced",
+      "Participant cannot be in two rooms at once",
+      "Visual feedback shows assignment status",
+      "Price calculation updates based on room assignments"
+    ]
+  },
+  
+  "phase_4_booking_flow_step4": {
+    "name": "Pre-fill Guest Details (Step 4)",
+    "priority": "HIGH",
+    "description": "Initialize First Name fields with data from Step 2",
+    
+    "current_state": {
+      "file": "components/BookingWidget/steps/GuestDetails.tsx",
+      "issue": "First Name fields are empty even if names were entered in Step 2",
+      "current_behavior": "User must re-enter names in Step 4"
+    },
+    
+    "required_changes": [
+      {
+        "id": "4.1",
+        "name": "Pre-fill First Name Fields",
+        "file": "components/BookingWidget/steps/GuestDetails.tsx",
+        "location": "Guest form initialization (lines 32-64)",
+        "implementation": [
+          "In useEffect that initializes guestForms, check state.participantNames",
+          "Pre-fill firstName: existingGuest?.firstName || participantName?.firstName || ''",
+          "Priority: existingGuest > participantName > empty",
+          "Ensure all guests from Step 2 have their names pre-filled",
+          "Keep fields editable so user can correct typos"
+        ],
+        "code_reference": {
+          "existing_logic": "lines 32-64 in GuestDetails.tsx already has this logic!",
+          "verification_needed": "Ensure participantNames[0].firstName maps to guestForms[0].firstName"
+        }
+      },
+      {
+        "id": "4.2",
+        "name": "Bi-directional Sync (Optional Enhancement)",
+        "file": "components/BookingWidget/steps/GuestDetails.tsx",
+        "description": "If user edits name in Step 4, update global state",
+        "implementation": [
+          "When firstName is edited, update state.participantNames",
+          "If user goes back to Step 3, tags show corrected names",
+          "Update state when form field changes"
+        ],
+        "priority": "RECOMMENDED"
+      },
+      {
+        "id": "4.3",
+        "name": "Validation Enhancement",
+        "file": "components/BookingWidget/steps/GuestDetails.tsx",
+        "description": "Mark pre-filled First Name as valid immediately",
+        "implementation": [
+          "If firstName is pre-filled from participantNames, mark field as valid",
+          "Show green checkmark or no error state",
+          "User still needs to enter Last Name, Email, Phone"
+        ]
+      }
+    ],
+    
+    "acceptance_criteria": [
+      "First Name fields show values from Step 2 on page load",
+      "Fields remain editable",
+      "Pre-filled fields are marked as valid",
+      "If names edited in Step 4, they update in Step 3 if user goes back"
+    ],
+    
+    "note": "Code review shows GuestDetails.tsx lines 38-52 already implement pre-filling! Verify it works correctly."
+  },
+  
+  "phase_5_admin_panel_regression": {
+    "name": "Fix Missing Create/Edit Functionality",
+    "priority": "CRITICAL",
+    "description": "Restore Create and Edit buttons/functionality for Surf Weeks, Clients, Rooms, Bookings",
+    
+    "affected_modules": [
+      "Surf Weeks",
+      "Clients", 
+      "Rooms",
+      "Bookings"
+    ],
+    
+    "investigation_tasks": [
+      {
+        "id": "5.1",
+        "name": "Verify Button Visibility",
+        "description": "Check if buttons exist but are hidden",
+        "files_to_check": [
+          "app/admin/surf-camps/page.tsx",
+          "app/admin/clients/page.tsx",
+          "app/admin/rooms/page.tsx",
+          "app/admin/bookings/page.tsx"
+        ],
+        "checks": [
+          "Search for 'Create', 'Add', 'Edit', 'Plus' buttons",
+          "Check for conditional rendering that might hide buttons",
+          "Verify CSS classes don't hide buttons (hidden, opacity-0, etc.)",
+          "Check for authentication/permission checks that disable buttons"
+        ]
+      },
+      {
+        "id": "5.2",
+        "name": "Verify Button Functionality",
+        "description": "Test if buttons work when clicked",
+        "checks": [
+          "Click 'Add Surf Week' - should navigate to /admin/surf-camps/new",
+          "Click 'Edit' on surf camp - should navigate to /admin/surf-camps/{id}/edit",
+          "Click 'Add Room' - should navigate to /admin/rooms/new",
+          "Click 'Edit' on room - should navigate to /admin/rooms/{id}/edit",
+          "Click 'Create Booking' - should navigate to /admin/bookings/new",
+          "Click 'Edit' on booking - should open EditBookingModal",
+          "Click 'Edit' on client - should open EditModal"
+        ]
+      },
+      {
+        "id": "5.3",
+        "name": "Check Route Existence",
+        "description": "Verify all create/edit routes exist",
+        "routes_to_verify": [
+          "/admin/surf-camps/new",
+          "/admin/surf-camps/[id]/edit",
+          "/admin/rooms/new",
+          "/admin/rooms/[id]/edit",
+          "/admin/bookings/new",
+          "/admin/clients (edit modal)"
+        ]
+      }
+    ],
+    
+    "fixes_required": [
+      {
+        "id": "5.4",
+        "name": "Surf Weeks - Restore Create Button",
+        "file": "app/admin/surf-camps/page.tsx",
+        "current_status": "Button exists at line 188-194",
+        "action": "Verify button is visible and functional, check for CSS/permission issues"
+      },
+      {
+        "id": "5.5",
+        "name": "Surf Weeks - Restore Edit Button",
+        "file": "app/admin/surf-camps/page.tsx",
+        "current_status": "Button exists at line 306-312",
+        "action": "Verify Edit link works, check route /admin/surf-camps/[id]/edit exists"
+      },
+      {
+        "id": "5.6",
+        "name": "Rooms - Restore Create Button",
+        "file": "app/admin/rooms/page.tsx",
+        "current_status": "Button exists at line 155-161",
+        "action": "Verify button visibility and route /admin/rooms/new exists"
+      },
+      {
+        "id": "5.7",
+        "name": "Rooms - Restore Edit Button",
+        "file": "app/admin/rooms/page.tsx",
+        "current_status": "Button exists at line 249-255",
+        "action": "Verify Edit link works, check route /admin/rooms/[id]/edit exists"
+      },
+      {
+        "id": "5.8",
+        "name": "Bookings - Restore Create Button",
+        "file": "app/admin/bookings/page.tsx",
+        "current_status": "Button exists at line 553-560",
+        "action": "Verify button visibility, check route /admin/bookings/new exists"
+      },
+      {
+        "id": "5.9",
+        "name": "Bookings - Restore Edit Button",
+        "file": "app/admin/bookings/page.tsx",
+        "current_status": "EditBookingModal component imported, check usage",
+        "action": "Verify Edit button in table opens EditBookingModal correctly"
+      },
+      {
+        "id": "5.10",
+        "name": "Clients - Restore Create Button",
+        "file": "app/admin/clients/page.tsx",
+        "action": "Add 'Create Client' button if missing, verify modal/route exists"
+      },
+      {
+        "id": "5.11",
+        "name": "Clients - Restore Edit Button",
+        "file": "app/admin/clients/page.tsx",
+        "current_status": "Edit button exists at line 390-399",
+        "action": "Verify EditModal opens correctly when Edit button clicked"
+      }
+    ],
+    
+    "common_issues_to_check": [
+      "CSS classes hiding buttons (hidden, invisible, opacity-0)",
+      "Conditional rendering based on user permissions",
+      "Z-index issues covering buttons",
+      "JavaScript errors preventing button clicks",
+      "Missing route handlers",
+      "Authentication middleware blocking access"
+    ]
+  },
+  
+  "phase_6_data_flow_verification": {
+    "name": "End-to-End Data Flow Testing",
+    "priority": "HIGH",
+    "description": "Verify data flows correctly through all booking steps",
+    
+    "test_scenarios": [
+      {
+        "scenario": "Complete Room Booking Flow",
+        "steps": [
+          "Step 1: Select 'Room' experience",
+          "Step 2: Select dates, set guests to 3, enter names: ['John', 'Sarah', 'Mike']",
+          "Step 3: Assign John to Room A, Sarah to Room B, Mike to Room C",
+          "Step 4: Verify names pre-filled, complete remaining fields",
+          "Step 5: Review and submit",
+          "Verify: Database contains booking with correct participant names and room assignments"
+        ]
+      },
+      {
+        "scenario": "Surf Week Booking Flow",
+        "steps": [
+          "Step 1: Select 'Surf Week' experience",
+          "Step 2: Select surf week, set participants to 2, enter names",
+          "Step 3: Select room for surf week",
+          "Step 4: Verify names pre-filled",
+          "Step 5: Review and submit",
+          "Verify: Database contains surf camp enrollment with participant names"
+        ]
+      },
+      {
+        "scenario": "Edit Participant Names",
+        "steps": [
+          "Enter names in Step 2",
+          "Proceed to Step 3, verify names appear in tags",
+          "Go back to Step 2, change a name",
+          "Proceed to Step 3, verify updated name appears",
+          "Proceed to Step 4, verify updated name pre-filled"
+        ]
+      }
+    ],
+    
+    "database_verification": [
+      "Check bookings table has correct guest information",
+      "Verify room_assignments table links guests to rooms correctly",
+      "Check clients table has participant details",
+      "Verify surf_camp_enrollments table has participant names"
+    ]
+  },
+  
+  "testing_requirements": {
+    "unit_tests": [
+      "Test participantNames state updates correctly",
+      "Test room assignment capacity limits",
+      "Test participant exclusivity logic",
+      "Test name pre-filling in Step 4"
+    ],
+    "integration_tests": [
+      "Test complete booking flow end-to-end",
+      "Test admin panel create/edit functionality",
+      "Test CMS content synchronization"
+    ],
+    "e2e_tests": [
+      "Test booking widget flow with Playwright",
+      "Test admin panel CRUD operations",
+      "Test CMS content updates reflect on site"
+    ]
+  },
+  
+  "deliverables": [
+    "✅ Zero drift between site, database, and CMS verified",
+    "✅ Step 2: Dynamic participant name inputs implemented",
+    "✅ Step 3: Room assignment via participant tags implemented",
+    "✅ Step 4: Guest details pre-filling verified/improved",
+    "✅ Admin panel Create/Edit functionality restored",
+    "✅ End-to-end data flow tested and verified",
+    "✅ All changes tested and documented"
+  ],
+  
+  "success_criteria": {
+    "zero_drift": "100% of site content comes from database/CMS, zero hardcoded data",
+    "booking_flow": "All 3 booking flow improvements work correctly",
+    "admin_panel": "All Create/Edit buttons visible and functional",
+    "data_integrity": "Data flows correctly from Step 2 → Step 3 → Step 4 → Database"
+  },
+  
+  "notes": [
+    "GuestDetails.tsx already has pre-filling logic (lines 38-52) - verify it works",
+    "Admin pages appear to have Create/Edit buttons - investigate why user reports they're missing",
+    "Ensure all database migrations are applied",
+    "Verify Supabase RLS policies allow admin operations",
+    "Test on production environment to catch any environment-specific issues"
+  ]
+}
+

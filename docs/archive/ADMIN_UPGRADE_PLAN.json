@@ -1,0 +1,620 @@
+{
+  "project": "Heiwa House Admin Panel Upgrade",
+  "objective": "Upgrade /admin/ styling and functionality to match wavecampdashboard standards",
+  "status": "PLANNING",
+  "priority": "HIGH",
+  "estimatedEffort": "40-50 hours",
+  "targetBranch": "innovation",
+  "sourceReference": "/Users/lukatenbosch/Downloads/heiwahouse/wavecampdashboard",
+  "targetProject": "/Users/lukatenbosch/Downloads/heiwahouse/heiwa-page",
+  
+  "currentState": {
+    "adminLayout": "Basic layout with minimal styling",
+    "sidebar": "Not implemented",
+    "dashboard": "Simple stats display",
+    "bookings": "Basic table with view/edit modals",
+    "styling": "Tailwind with basic colors",
+    "features": [
+      "View bookings",
+      "Edit bookings",
+      "Delete bookings",
+      "Calendar view",
+      "Filters",
+      "Export CSV"
+    ],
+    "issues": [
+      "No sidebar navigation",
+      "No admin layout wrapper",
+      "Minimal styling",
+      "No real-time updates",
+      "No advanced filtering",
+      "No pagination",
+      "No create booking modal",
+      "No error boundary",
+      "No authentication check",
+      "No toast notifications"
+    ]
+  },
+
+  "targetState": {
+    "adminLayout": "Professional admin layout with sidebar and header",
+    "sidebar": "Collapsible sidebar with navigation menu",
+    "dashboard": "Advanced dashboard with stats cards and action cards",
+    "bookings": "Advanced bookings page with multiple modals and real-time updates",
+    "styling": "Professional dark theme with orange accents",
+    "features": [
+      "Sidebar navigation with 11 menu items",
+      "Collapsible sidebar (desktop)",
+      "Mobile responsive sidebar",
+      "Admin logo in sidebar",
+      "User profile in header",
+      "Logout button",
+      "Dashboard with 4 stat cards",
+      "6 action cards (Bookings, Rooms, Surf Camps, Clients, Calendar, Analytics)",
+      "Advanced bookings page with pagination",
+      "Real-time booking updates",
+      "Create booking modal",
+      "View booking modal",
+      "Edit booking modal",
+      "Search functionality",
+      "Status filtering",
+      "Error boundary",
+      "Authentication check",
+      "Toast notifications",
+      "Framer motion animations",
+      "Loading states"
+    ]
+  },
+
+  "implementationPhases": {
+    "phase1": {
+      "name": "Admin Layout & Sidebar",
+      "duration": "8-10 hours",
+      "priority": "CRITICAL",
+      "tasks": [
+        {
+          "id": "1.1",
+          "name": "Create Admin Layout Component",
+          "description": "Create new admin layout wrapper with sidebar and header",
+          "file": "/app/admin/layout.tsx",
+          "source": "/wavecampdashboard/src/app/admin/layout.tsx",
+          "changes": [
+            "Copy layout structure from wavecampdashboard",
+            "Update navigation items for heiwa-page",
+            "Implement error boundary",
+            "Add authentication check",
+            "Add user profile header",
+            "Add logout functionality"
+          ],
+          "dependencies": ["useAuth hook", "AuthProvider component"]
+        },
+        {
+          "id": "1.2",
+          "name": "Create Admin Logo Component",
+          "description": "Create reusable admin logo component",
+          "file": "/components/admin/AdminLogo.tsx",
+          "changes": [
+            "Extract logo component from layout",
+            "Make it reusable",
+            "Support collapsed state"
+          ]
+        },
+        {
+          "id": "1.3",
+          "name": "Update Tailwind Config",
+          "description": "Add heiwaOrange color scheme to tailwind config",
+          "file": "/tailwind.config.ts",
+          "changes": [
+            "Add heiwaOrange color palette",
+            "Add custom animations",
+            "Add custom utilities"
+          ]
+        },
+        {
+          "id": "1.4",
+          "name": "Create Navigation Constants",
+          "description": "Create navigation items configuration",
+          "file": "/lib/admin/navigation.ts",
+          "changes": [
+            "Define navigation items array",
+            "Include icons from lucide-react",
+            "Support nested routes"
+          ]
+        }
+      ]
+    },
+
+    "phase2": {
+      "name": "Dashboard Upgrade",
+      "duration": "8-10 hours",
+      "priority": "CRITICAL",
+      "tasks": [
+        {
+          "id": "2.1",
+          "name": "Create Enhanced Dashboard Component",
+          "description": "Replace dashboard with advanced version",
+          "file": "/components/admin/AdminDashboard.tsx",
+          "source": "/wavecampdashboard/src/components/admin/AdminDashboard.tsx",
+          "changes": [
+            "Copy dashboard structure from wavecampdashboard",
+            "Update stat cards styling",
+            "Add action cards (Bookings, Rooms, Surf Camps, Clients, Calendar, Analytics)",
+            "Add framer-motion animations",
+            "Update data fetching logic",
+            "Add loading states",
+            "Add error handling"
+          ],
+          "dependencies": ["Card component", "Button component", "framer-motion"]
+        },
+        {
+          "id": "2.2",
+          "name": "Create Stat Card Component",
+          "description": "Create reusable stat card component",
+          "file": "/components/admin/StatCard.tsx",
+          "changes": [
+            "Create stat card with icon and value",
+            "Support different colors",
+            "Add hover effects"
+          ]
+        },
+        {
+          "id": "2.3",
+          "name": "Create Action Card Component",
+          "description": "Create reusable action card component",
+          "file": "/components/admin/ActionCard.tsx",
+          "changes": [
+            "Create card with icon, title, description",
+            "Add action button",
+            "Add stat display",
+            "Add animations"
+          ]
+        },
+        {
+          "id": "2.4",
+          "name": "Update Dashboard Data Fetching",
+          "description": "Implement proper data fetching from Supabase",
+          "file": "/components/admin/AdminDashboard.tsx",
+          "changes": [
+            "Fetch clients count",
+            "Fetch bookings count and revenue",
+            "Fetch rooms count",
+            "Fetch surf camps count",
+            "Add real-time subscriptions",
+            "Add error handling"
+          ]
+        }
+      ]
+    },
+
+    "phase3": {
+      "name": "Bookings Page Advanced Features",
+      "duration": "12-15 hours",
+      "priority": "HIGH",
+      "tasks": [
+        {
+          "id": "3.1",
+          "name": "Create Advanced Bookings Page",
+          "description": "Replace bookings page with advanced version",
+          "file": "/app/admin/bookings/page.tsx",
+          "source": "/wavecampdashboard/src/app/admin/bookings/page.tsx",
+          "changes": [
+            "Copy bookings page structure",
+            "Implement pagination",
+            "Add search functionality",
+            "Add status filtering",
+            "Add real-time updates",
+            "Add error boundary",
+            "Add loading states",
+            "Add toast notifications"
+          ],
+          "dependencies": ["Table component", "Dialog component", "toast notifications"]
+        },
+        {
+          "id": "3.2",
+          "name": "Create Create Booking Modal",
+          "description": "Create modal for creating new bookings",
+          "file": "/components/admin/bookings/CreateBookingModal.tsx",
+          "changes": [
+            "Create form for booking creation",
+            "Add client selection",
+            "Add item selection",
+            "Add date selection",
+            "Add payment method selection",
+            "Add form validation",
+            "Add submit handler"
+          ]
+        },
+        {
+          "id": "3.3",
+          "name": "Create View Booking Modal",
+          "description": "Enhance view booking modal",
+          "file": "/components/admin/bookings/ViewBookingModal.tsx",
+          "changes": [
+            "Display all booking details",
+            "Format dates and amounts",
+            "Show client information",
+            "Show item details",
+            "Add close button"
+          ]
+        },
+        {
+          "id": "3.4",
+          "name": "Create Edit Booking Modal",
+          "description": "Enhance edit booking modal",
+          "file": "/components/admin/bookings/EditBookingModal.tsx",
+          "changes": [
+            "Create form for booking editing",
+            "Allow status changes",
+            "Allow payment status changes",
+            "Allow notes editing",
+            "Add form validation",
+            "Add submit handler",
+            "Add cancel button"
+          ]
+        },
+        {
+          "id": "3.5",
+          "name": "Implement Real-time Updates",
+          "description": "Add Supabase real-time subscriptions",
+          "file": "/app/admin/bookings/page.tsx",
+          "changes": [
+            "Subscribe to bookings table changes",
+            "Handle INSERT events",
+            "Handle UPDATE events",
+            "Handle DELETE events",
+            "Update UI in real-time",
+            "Show toast notifications"
+          ]
+        },
+        {
+          "id": "3.6",
+          "name": "Implement Pagination",
+          "description": "Add pagination to bookings table",
+          "file": "/app/admin/bookings/page.tsx",
+          "changes": [
+            "Calculate total pages",
+            "Implement page navigation",
+            "Add previous/next buttons",
+            "Display current page info",
+            "Update URL with page number"
+          ]
+        }
+      ]
+    },
+
+    "phase4": {
+      "name": "Additional Admin Pages",
+      "duration": "12-15 hours",
+      "priority": "MEDIUM",
+      "tasks": [
+        {
+          "id": "4.1",
+          "name": "Create Clients Management Page",
+          "description": "Create clients management page",
+          "file": "/app/admin/clients/page.tsx",
+          "changes": [
+            "Create table of clients",
+            "Add search functionality",
+            "Add create client modal",
+            "Add edit client modal",
+            "Add delete functionality",
+            "Add pagination"
+          ]
+        },
+        {
+          "id": "4.2",
+          "name": "Create Rooms Management Page",
+          "description": "Create rooms management page",
+          "file": "/app/admin/rooms/page.tsx",
+          "changes": [
+            "Create table of rooms",
+            "Add search functionality",
+            "Add create room modal",
+            "Add edit room modal",
+            "Add delete functionality",
+            "Add pagination"
+          ]
+        },
+        {
+          "id": "4.3",
+          "name": "Create Surf Camps Management Page",
+          "description": "Create surf camps management page",
+          "file": "/app/admin/surfcamps/page.tsx",
+          "changes": [
+            "Create table of surf camps",
+            "Add search functionality",
+            "Add create camp modal",
+            "Add edit camp modal",
+            "Add delete functionality",
+            "Add pagination"
+          ]
+        },
+        {
+          "id": "4.4",
+          "name": "Create Calendar Page",
+          "description": "Create calendar view for bookings",
+          "file": "/app/admin/calendar/page.tsx",
+          "changes": [
+            "Create calendar component",
+            "Display bookings on calendar",
+            "Add date navigation",
+            "Add booking details on hover",
+            "Add click to view booking"
+          ]
+        },
+        {
+          "id": "4.5",
+          "name": "Create Analytics Page",
+          "description": "Create analytics and reporting page",
+          "file": "/app/admin/analytics/page.tsx",
+          "changes": [
+            "Create charts for revenue",
+            "Create charts for bookings",
+            "Create charts for occupancy",
+            "Add date range filtering",
+            "Add export functionality"
+          ]
+        }
+      ]
+    },
+
+    "phase5": {
+      "name": "Styling & Polish",
+      "duration": "5-8 hours",
+      "priority": "MEDIUM",
+      "tasks": [
+        {
+          "id": "5.1",
+          "name": "Apply Professional Styling",
+          "description": "Apply consistent styling across admin panel",
+          "changes": [
+            "Use heiwaOrange color scheme",
+            "Apply consistent spacing",
+            "Add hover effects",
+            "Add transitions",
+            "Add shadows",
+            "Ensure responsive design"
+          ]
+        },
+        {
+          "id": "5.2",
+          "name": "Add Animations",
+          "description": "Add framer-motion animations",
+          "changes": [
+            "Card hover animations",
+            "Page transitions",
+            "Modal animations",
+            "Loading animations",
+            "Button animations"
+          ]
+        },
+        {
+          "id": "5.3",
+          "name": "Add Dark Mode Support",
+          "description": "Add dark mode theme option",
+          "changes": [
+            "Create dark theme colors",
+            "Add theme toggle",
+            "Save theme preference",
+            "Apply theme to all components"
+          ]
+        }
+      ]
+    }
+  },
+
+  "requiredDependencies": {
+    "existing": [
+      "react",
+      "next",
+      "tailwindcss",
+      "lucide-react",
+      "supabase-js"
+    ],
+    "toAdd": [
+      "framer-motion",
+      "react-toastify",
+      "recharts (for analytics)",
+      "react-calendar (for calendar view)"
+    ]
+  },
+
+  "fileStructure": {
+    "new_directories": [
+      "/app/admin/clients/",
+      "/app/admin/rooms/",
+      "/app/admin/surfcamps/",
+      "/app/admin/calendar/",
+      "/app/admin/analytics/",
+      "/app/admin/compliance/",
+      "/app/admin/system/",
+      "/components/admin/bookings/",
+      "/lib/admin/"
+    ],
+    "new_files": [
+      "/app/admin/layout.tsx",
+      "/app/admin/clients/page.tsx",
+      "/app/admin/rooms/page.tsx",
+      "/app/admin/surfcamps/page.tsx",
+      "/app/admin/calendar/page.tsx",
+      "/app/admin/analytics/page.tsx",
+      "/app/admin/compliance/page.tsx",
+      "/app/admin/system/page.tsx",
+      "/components/admin/AdminLogo.tsx",
+      "/components/admin/StatCard.tsx",
+      "/components/admin/ActionCard.tsx",
+      "/components/admin/bookings/CreateBookingModal.tsx",
+      "/components/admin/bookings/ViewBookingModal.tsx",
+      "/components/admin/bookings/EditBookingModal.tsx",
+      "/lib/admin/navigation.ts",
+      "/lib/admin/constants.ts"
+    ],
+    "modified_files": [
+      "/app/admin/page.tsx",
+      "/app/admin/bookings/page.tsx",
+      "/components/admin/AdminDashboard.tsx",
+      "/tailwind.config.ts"
+    ]
+  },
+
+  "keyFeatures": {
+    "sidebar": {
+      "description": "Collapsible sidebar with navigation",
+      "items": [
+        "Dashboard",
+        "Clients",
+        "Surf Camps",
+        "Rooms",
+        "Assignments",
+        "Add-ons",
+        "Calendar",
+        "Bookings",
+        "Analytics",
+        "Compliance",
+        "System"
+      ],
+      "styling": "Dark theme (gray-800) with orange accents",
+      "responsive": "Collapses on mobile, toggleable"
+    },
+    "header": {
+      "description": "Top header with user info and logout",
+      "elements": [
+        "User avatar",
+        "User email",
+        "Logout button"
+      ],
+      "styling": "White background with subtle border"
+    },
+    "dashboard": {
+      "description": "Main dashboard with stats and action cards",
+      "stats": [
+        "Total Clients",
+        "Total Bookings",
+        "Available Rooms",
+        "Revenue"
+      ],
+      "actionCards": [
+        "Bookings Management",
+        "Rooms Management",
+        "Surf Camps",
+        "Clients",
+        "Calendar",
+        "Analytics"
+      ],
+      "styling": "Grid layout with hover animations"
+    },
+    "bookings": {
+      "description": "Advanced bookings management",
+      "features": [
+        "Paginated table",
+        "Search by ID or notes",
+        "Filter by status",
+        "Real-time updates",
+        "Create booking modal",
+        "View booking modal",
+        "Edit booking modal",
+        "Delete with confirmation"
+      ],
+      "columns": [
+        "Booking ID",
+        "Client Names",
+        "Items",
+        "Total Amount",
+        "Payment Status",
+        "Created Date",
+        "Actions"
+      ]
+    }
+  },
+
+  "colorScheme": {
+    "primary": "heiwaOrange-600",
+    "primaryHover": "heiwaOrange-700",
+    "background": "gray-50",
+    "sidebar": "gray-800",
+    "sidebarHover": "gray-700",
+    "text": "gray-900",
+    "textMuted": "gray-600",
+    "border": "gray-200",
+    "success": "green-600",
+    "warning": "yellow-600",
+    "error": "red-600"
+  },
+
+  "testingStrategy": {
+    "phase": "After each phase",
+    "tests": [
+      "Component rendering",
+      "Navigation functionality",
+      "Data fetching",
+      "Real-time updates",
+      "Modal interactions",
+      "Form submissions",
+      "Error handling",
+      "Responsive design",
+      "Accessibility"
+    ]
+  },
+
+  "rolloutPlan": {
+    "step1": "Create feature branch from 'innovation'",
+    "step2": "Implement Phase 1 (Layout & Sidebar)",
+    "step3": "Test Phase 1 thoroughly",
+    "step4": "Commit Phase 1",
+    "step5": "Implement Phase 2 (Dashboard)",
+    "step6": "Test Phase 2",
+    "step7": "Commit Phase 2",
+    "step8": "Implement Phase 3 (Bookings)",
+    "step9": "Test Phase 3",
+    "step10": "Commit Phase 3",
+    "step11": "Implement Phase 4 (Additional Pages)",
+    "step12": "Test Phase 4",
+    "step13": "Commit Phase 4",
+    "step14": "Implement Phase 5 (Styling)",
+    "step15": "Final testing and polish",
+    "step16": "Create pull request",
+    "step17": "Code review",
+    "step18": "Merge to main"
+  },
+
+  "risks": [
+    {
+      "risk": "Breaking existing admin functionality",
+      "mitigation": "Keep old components as backup, test thoroughly before merging"
+    },
+    {
+      "risk": "Performance issues with real-time updates",
+      "mitigation": "Implement proper subscription management, add debouncing"
+    },
+    {
+      "risk": "Authentication issues",
+      "mitigation": "Test with multiple user roles, ensure proper redirects"
+    },
+    {
+      "risk": "Database schema mismatches",
+      "mitigation": "Verify schema matches wavecampdashboard, add proper error handling"
+    }
+  ],
+
+  "successCriteria": [
+    "Admin layout matches wavecampdashboard design",
+    "Sidebar navigation fully functional",
+    "Dashboard displays real data",
+    "Bookings page has all advanced features",
+    "Real-time updates working",
+    "All modals functional",
+    "Responsive design on all devices",
+    "No console errors",
+    "All tests passing",
+    "Performance metrics acceptable"
+  ],
+
+  "nextSteps": [
+    "Review this plan with team",
+    "Approve implementation approach",
+    "Create feature branch",
+    "Begin Phase 1 implementation",
+    "Set up testing environment",
+    "Schedule code reviews"
+  ]
+}

@@ -1,0 +1,394 @@
+{
+  "project": {
+    "name": "Heiwa House Supabase CMS",
+    "description": "Content Management System for Heiwa House website using Supabase",
+    "status": "Partially Implemented",
+    "completion_percentage": 70
+  },
+  "supabase_config": {
+    "url": "https://zejrhceuuujzgyukdwnb.supabase.co",
+    "anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcxMDQ4MDksImV4cCI6MjA3MjY4MDgwOX0.yIqpTz-OTqcaL5h7GIzoBmRezoJD-MC2yPTpxvo-aNA",
+    "service_role_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplanJoY2V1dXVqemd5dWtkd25iIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzEwNDgwOSwiZXhwIjoyMDcyNjgwODA5fQ.RbzOLzCaOAsgaMixdACMLdPvLZjU9MPfXn8Y90gsxcc",
+    "tables": [
+      "navigation_items",
+      "rooms",
+      "experiences",
+      "pages"
+    ],
+    "storage_buckets": ["cms-images"]
+  },
+  "completed_tasks": [
+    {
+      "id": "database_schema",
+      "description": "Design and create Supabase database schema",
+      "status": "completed",
+      "files": ["docs/cms-schema.md", "lib/cms-migration.sql"],
+      "sql_migration_required": true
+    },
+    {
+      "id": "admin_auth",
+      "description": "Implement simple password-based admin authentication",
+      "status": "completed",
+      "files": ["app/admin/page.tsx"],
+      "password": "heiwa2024",
+      "env_var": "NEXT_PUBLIC_ADMIN_PASSWORD"
+    },
+    {
+      "id": "admin_dashboard",
+      "description": "Create admin dashboard with navigation",
+      "status": "completed",
+      "files": ["app/admin/dashboard/page.tsx"],
+      "routes": ["/admin/dashboard"]
+    },
+    {
+      "id": "navigation_management",
+      "description": "Build admin UI for managing navigation items",
+      "status": "completed",
+      "files": ["app/admin/dashboard/navigation/page.tsx"],
+      "features": ["CRUD operations", "Order management", "Active/inactive status"]
+    },
+    {
+      "id": "rooms_management",
+      "description": "Build admin UI for managing rooms with image upload",
+      "status": "completed",
+      "files": ["app/admin/dashboard/rooms/page.tsx"],
+      "features": ["CRUD operations", "Image upload to Supabase Storage", "Active/inactive status"]
+    },
+    {
+      "id": "content_fetching",
+      "description": "Update content fetching to use Supabase with fallbacks",
+      "status": "completed",
+      "files": ["lib/content.ts", "components/navigation.tsx", "components/footer.tsx", "app/rooms/page.tsx"],
+      "features": ["Dynamic content loading", "Fallback to static content", "Error handling"]
+    }
+  ],
+  "remaining_tasks": [
+    {
+      "id": "run_migration",
+      "description": "Execute SQL migration in Supabase dashboard",
+      "status": "pending",
+      "priority": "critical",
+      "instructions": "Copy SQL from lib/cms-migration.sql and run in Supabase SQL Editor",
+      "blocking": true
+    },
+    {
+      "id": "experiences_management",
+      "description": "Build admin UI for managing experiences with image upload",
+      "status": "pending",
+      "priority": "high",
+      "files_to_create": ["app/admin/dashboard/experiences/page.tsx"],
+      "features": ["CRUD operations", "Image upload", "Category management", "Active/inactive status"],
+      "similar_to": "rooms_management"
+    },
+    {
+      "id": "pages_management",
+      "description": "Build admin UI for managing page content",
+      "status": "pending",
+      "priority": "high",
+      "files_to_create": ["app/admin/dashboard/pages/page.tsx"],
+      "features": ["Edit home page content", "Edit rooms page content", "Edit experiences page content", "Edit surf-weeks page content"],
+      "content_types": ["hero", "featureCards", "videoEmbed", "program", "bookingCta"]
+    },
+    {
+      "id": "experiences_content_fetching",
+      "description": "Update experiences content fetching to use Supabase",
+      "status": "pending",
+      "priority": "medium",
+      "files_to_update": ["lib/content.ts", "app/the-spot/page.tsx"],
+      "similar_to": "rooms_content_fetching"
+    },
+    {
+      "id": "pages_content_fetching",
+      "description": "Update pages content fetching to use Supabase",
+      "status": "pending",
+      "priority": "medium",
+      "files_to_update": ["lib/content.ts", "app/page.tsx", "app/surf-weeks/page.tsx"],
+      "pages": ["home", "rooms", "experiences", "surf-weeks"]
+    },
+    {
+      "id": "image_upload_experiences",
+      "description": "Add image upload functionality for experiences",
+      "status": "pending",
+      "priority": "medium",
+      "integrated_into": "experiences_management"
+    },
+    {
+      "id": "real_time_updates",
+      "description": "Implement real-time content updates on frontend",
+      "status": "pending",
+      "priority": "low",
+      "features": ["Supabase real-time subscriptions", "Auto-refresh content"]
+    },
+    {
+      "id": "error_handling",
+      "description": "Add comprehensive error handling and loading states",
+      "status": "pending",
+      "priority": "medium",
+      "scope": ["Admin panels", "Content fetching", "Image uploads"]
+    },
+    {
+      "id": "testing",
+      "description": "Test CMS functionality end-to-end",
+      "status": "pending",
+      "priority": "high",
+      "test_cases": [
+        "Admin login/logout",
+        "CRUD operations for all content types",
+        "Image upload and display",
+        "Content display on public pages",
+        "Fallback behavior when CMS unavailable"
+      ]
+    },
+    {
+      "id": "documentation",
+      "description": "Update documentation and add CMS usage guide",
+      "status": "pending",
+      "priority": "low",
+      "files_to_update": ["docs/cms-implementation-options.md"],
+      "sections": ["Admin guide", "Content management", "Troubleshooting"]
+    }
+  ],
+  "database_schema": {
+    "navigation_items": {
+      "columns": {
+        "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+        "name": "TEXT NOT NULL",
+        "path": "TEXT NOT NULL",
+        "order_index": "INTEGER NOT NULL",
+        "active": "BOOLEAN DEFAULT true",
+        "created_at": "TIMESTAMP WITH TIME ZONE DEFAULT NOW()",
+        "updated_at": "TIMESTAMP WITH TIME ZONE DEFAULT NOW()"
+      },
+      "policies": [
+        "Allow public read access on navigation_items FOR SELECT USING (true)",
+        "Allow authenticated users to manage navigation_items FOR ALL USING (auth.role() = 'authenticated')"
+      ]
+    },
+    "rooms": {
+      "columns": {
+        "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+        "name": "TEXT NOT NULL",
+        "image_url": "TEXT",
+        "description": "TEXT",
+        "active": "BOOLEAN DEFAULT true",
+        "created_at": "TIMESTAMP WITH TIME ZONE DEFAULT NOW()",
+        "updated_at": "TIMESTAMP WITH TIME ZONE DEFAULT NOW()"
+      },
+      "policies": [
+        "Allow public read access on rooms FOR SELECT USING (true)",
+        "Allow authenticated users to manage rooms FOR ALL USING (auth.role() = 'authenticated')"
+      ]
+    },
+    "experiences": {
+      "columns": {
+        "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+        "title": "TEXT NOT NULL",
+        "image_url": "TEXT",
+        "category": "TEXT",
+        "active": "BOOLEAN DEFAULT true",
+        "created_at": "TIMESTAMP WITH TIME ZONE DEFAULT NOW()",
+        "updated_at": "TIMESTAMP WITH TIME ZONE DEFAULT NOW()"
+      },
+      "policies": [
+        "Allow public read access on experiences FOR SELECT USING (true)",
+        "Allow authenticated users to manage experiences FOR ALL USING (auth.role() = 'authenticated')"
+      ]
+    },
+    "pages": {
+      "columns": {
+        "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+        "slug": "TEXT UNIQUE NOT NULL",
+        "title": "TEXT NOT NULL",
+        "content": "JSONB NOT NULL",
+        "published": "BOOLEAN DEFAULT false",
+        "created_at": "TIMESTAMP WITH TIME ZONE DEFAULT NOW()",
+        "updated_at": "TIMESTAMP WITH TIME ZONE DEFAULT NOW()"
+      },
+      "policies": [
+        "Allow public read access on published pages FOR SELECT USING (published = true)",
+        "Allow authenticated users to manage pages FOR ALL USING (auth.role() = 'authenticated')"
+      ]
+    }
+  },
+  "initial_data": {
+    "navigation_items": [
+      {"name": "HOME", "path": "/", "order_index": 1},
+      {"name": "THE SPOT", "path": "/the-spot", "order_index": 2},
+      {"name": "ROOM RENTALS", "path": "/rooms", "order_index": 3},
+      {"name": "SURF CAMP", "path": "/surf-weeks", "order_index": 4}
+    ],
+    "rooms": [
+      {
+        "name": "Room Nr 1",
+        "image_url": "https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-52-scaled-570x600.jpg"
+      },
+      {
+        "name": "Room Nr 2",
+        "image_url": "https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-29-scaled-570x600.webp"
+      },
+      {
+        "name": "Room Nr 3",
+        "image_url": "https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-22-scaled-570x600.webp"
+      },
+      {
+        "name": "Dorm room",
+        "image_url": "https://heiwahouse.com/wp-content/uploads/2024/12/Freedomroutes-rooms-1-scaled-570x600.webp"
+      }
+    ],
+    "experiences": [
+      {"title": "Hiking", "image_url": "https://heiwahouse.com/wp-content/uploads/2025/01/8B8BA276-6D91-419B-B8F4-7696042ED92F-01.jpeg"},
+      {"title": "Horseback Riding", "image_url": "https://heiwahouse.com/wp-content/uploads/2025/01/Freedomroutes_35mm-39-scaled.jpg"},
+      {"title": "Sauna", "image_url": "https://heiwahouse.com/wp-content/uploads/2024/12/portrait_sauna3.jpg"},
+      {"title": "Surfing", "image_url": "https://heiwahouse.com/wp-content/uploads/2025/01/Surf-Lessons.jpg"},
+      {"title": "Skatepark", "image_url": "https://heiwahouse.com/wp-content/uploads/2025/01/skatepark-1.jpg"},
+      {"title": "Yoga", "image_url": "https://heiwahouse.com/wp-content/uploads/2025/01/Yoga.jpg"},
+      {"title": "Bicycle Ride", "image_url": "https://heiwahouse.com/wp-content/uploads/2025/01/Freedomroutes_35mm-7-scaled.jpg"},
+      {"title": "Day Trips", "image_url": "https://heiwahouse.com/wp-content/uploads/2025/01/DSCF8628.jpg"}
+    ],
+    "pages": {
+      "home": {
+        "title": "Heiwa House - A Wave Away | Surf & Adventure Retreat",
+        "content": {
+          "hero": {
+            "title": "Nestled on Portugal's coast, Heiwa House is your sanctuary for rest and adventure.",
+            "subtitle": "A WAVE AWAY",
+            "backgroundImage": "/images/hero/heiwa-hero.jpg",
+            "cta": [{"label": "EXPLORE", "href": "/rooms"}]
+          },
+          "featureCards": [
+            {"title": "Heiwa Play", "image": "https://heiwahouse.com/wp-content/uploads/2025/01/play.jpg", "href": "/the-spot#play"},
+            {"title": "Heiwa Surf", "image": "https://heiwahouse.com/wp-content/uploads/2025/01/surf4.jpg", "href": "/surf-weeks"},
+            {"title": "Heiwa Flow", "image": "https://heiwahouse.com/wp-content/uploads/2024/12/image00023-722x1024.jpeg", "href": "/the-spot#flow"}
+          ],
+          "videoEmbed": {
+            "provider": "youtube",
+            "src": "https://youtu.be/9nhQiKGsgHg",
+            "poster": "/images/posters/surfweeks.svg"
+          }
+        }
+      },
+      "rooms": {
+        "title": "Room Rentals - Heiwa House Accommodation",
+        "content": {
+          "bookingCta": {"label": "Check Availability", "href": "/rooms#booking"}
+        }
+      },
+      "experiences": {
+        "title": "Experiences - Heiwa House Activities",
+        "content": {}
+      },
+      "surf-weeks": {
+        "title": "Surf Weeks - Professional Surf Training Program",
+        "content": {
+          "videoEmbed": {
+            "provider": "youtube",
+            "src": "https://youtu.be/9nhQiKGsgHg",
+            "poster": "/images/posters/surfweeks.svg"
+          },
+          "program": {
+            "title": "Surf Weeks Program",
+            "description": "Join our comprehensive surf training program designed for all skill levels.",
+            "features": [
+              "Professional surf instruction",
+              "Equipment provided",
+              "Small group sessions",
+              "Beachside accommodation",
+              "Video analysis and feedback",
+              "Certification upon completion"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "code_patterns": {
+    "admin_page_structure": {
+      "authentication_check": "useEffect(() => { const isAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true'; if (!isAuthenticated) { router.push('/admin'); } else { setAuthenticated(true); } setLoading(false); }, [])",
+      "data_fetching": "const fetchData = async () => { try { const { data, error } = await supabaseAdmin.from('table_name').select('*'); if (error) throw error; setData(data || []); } catch (error) { console.error('Error:', error); } }",
+      "crud_operations": {
+        "create": "const { error } = await supabaseAdmin.from('table_name').insert(newItem)",
+        "update": "const { error } = await supabaseAdmin.from('table_name').update(item).eq('id', item.id)",
+        "delete": "const { error } = await supabaseAdmin.from('table_name').delete().eq('id', id)"
+      }
+    },
+    "content_fetching": {
+      "with_fallback": "export const getData = async (): Promise<Type[]> => { try { const { data, error } = await supabase.from('table_name').select('*').eq('active', true); if (error) return getFallbackData(); return data?.map(transform) || getFallbackData(); } catch (error) { return getFallbackData(); } }"
+    },
+    "image_upload": {
+      "upload_function": "const { error } = await supabaseAdmin.storage.from('cms-images').upload(filePath, file); const { data } = supabaseAdmin.storage.from('cms-images').getPublicUrl(filePath);"
+    }
+  },
+  "file_structure": {
+    "admin_routes": {
+      "/admin": "Login page",
+      "/admin/dashboard": "Main dashboard",
+      "/admin/dashboard/navigation": "Navigation management",
+      "/admin/dashboard/rooms": "Rooms management",
+      "/admin/dashboard/experiences": "Experiences management (TODO)",
+      "/admin/dashboard/pages": "Pages management (TODO)"
+    },
+    "content_files": {
+      "lib/content.ts": "Content fetching functions with Supabase integration",
+      "lib/supabase.ts": "Supabase client configuration",
+      "lib/types.ts": "TypeScript type definitions",
+      "docs/cms-schema.md": "Database schema documentation",
+      "lib/cms-migration.sql": "SQL migration script"
+    },
+    "components": {
+      "components/navigation.tsx": "Dynamic navigation component",
+      "components/footer.tsx": "Dynamic footer component"
+    }
+  },
+  "instructions_for_next_ai": {
+    "immediate_priority": "Run the SQL migration in Supabase dashboard using lib/cms-migration.sql",
+    "development_workflow": [
+      "1. Execute database migration",
+      "2. Test admin login at /admin",
+      "3. Test rooms management functionality",
+      "4. Implement experiences management (similar to rooms)",
+      "5. Implement pages management with JSON editor",
+      "6. Update remaining content fetching functions",
+      "7. Add comprehensive error handling",
+      "8. Test all functionality end-to-end",
+      "9. Update documentation"
+    ],
+    "key_patterns_to_follow": [
+      "Use supabaseAdmin for admin operations, supabase for public reads",
+      "Implement fallback to static content when CMS unavailable",
+      "Use sessionStorage for admin authentication",
+      "Follow existing UI patterns for admin panels",
+      "Use proper TypeScript types throughout",
+      "Handle loading states and errors appropriately"
+    ],
+    "testing_checklist": [
+      "Admin login/logout works",
+      "CRUD operations work for all content types",
+      "Image upload and display works",
+      "Public pages display dynamic content",
+      "Fallback content works when CMS unavailable",
+      "No console errors in browser",
+      "Responsive design works on mobile"
+    ],
+    "deployment_notes": [
+      "Set NEXT_PUBLIC_ADMIN_PASSWORD environment variable",
+      "Ensure Supabase keys are configured",
+      "Run SQL migration before deployment",
+      "Test in production environment"
+    ]
+  },
+  "current_issues": [
+    "SQL migration needs to be run manually in Supabase dashboard",
+    "Experiences management UI not implemented",
+    "Pages management UI not implemented",
+    "Some ESLint warnings in code (non-blocking)",
+    "No real-time updates implemented yet"
+  ],
+  "estimated_completion": {
+    "experiences_management": "2 hours",
+    "pages_management": "4 hours",
+    "content_fetching_updates": "2 hours",
+    "testing_and_polish": "3 hours",
+    "documentation": "1 hour",
+    "total_remaining": "12 hours"
+  }
+}

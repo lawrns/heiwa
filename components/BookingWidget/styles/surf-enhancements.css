@@ -1,0 +1,434 @@
+/**
+ * Heiwa Booking Widget - Surf Theme Enhancements
+ * Beautiful surf-themed backgrounds and patterns for the booking widget
+ * 
+ * Author: Heiwa House Development Team
+ * Version: 1.0.0
+ * Last Updated: December 2024
+ */
+
+/* ===========================================
+   1. SURF PATTERN DEFINITIONS
+   =========================================== */
+
+/* Dynamic Wave Pattern for Surf Week Cards */
+@keyframes surf-wave-flow {
+  0% { transform: translateX(-120px); }
+  100% { transform: translateX(0px); }
+}
+
+@keyframes gentle-wave-flow {
+  0% { transform: translateX(-60px); }
+  100% { transform: translateX(0px); }
+}
+
+/* Surf-themed background patterns */
+.heiwa-surf-pattern-dynamic {
+  background-image: url("data:image/svg+xml,%3csvg width='120' height='40' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,20 C30,5 60,35 90,20 C105,12.5 120,27.5 120,20 L120,40 L0,40 Z' fill='rgba(255,255,255,0.1)'/%3e%3cpath d='M0,25 C40,10 80,40 120,25 L120,40 L0,40 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/svg%3e");
+  background-repeat: repeat-x;
+  background-position: bottom;
+  animation: surf-wave-flow 8s linear infinite;
+}
+
+.heiwa-surf-pattern-gentle {
+  background-image: url("data:image/svg+xml,%3csvg width='60' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,10 C15,2 30,18 45,10 C52.5,6 60,14 60,10 L60,20 L0,20 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/svg%3e");
+  background-repeat: repeat-x;
+  background-position: bottom;
+  animation: gentle-wave-flow 12s linear infinite;
+}
+
+/* ===========================================
+   2. ENHANCED BOOKING CARDS
+   =========================================== */
+
+/* Surf Week Card Enhancement */
+.heiwa-experience-card[data-experience-type="surf-week"] {
+  position: relative;
+  background: 
+    linear-gradient(135deg, 
+      rgba(236, 104, 28, 0.9) 0%, 
+      rgba(236, 104, 28, 0.7) 100%
+    ),
+    url('/room1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.heiwa-experience-card[data-experience-type="surf-week"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3csvg width='120' height='40' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,20 C30,5 60,35 90,20 C105,12.5 120,27.5 120,20 L120,40 L0,40 Z' fill='rgba(255,255,255,0.08)'/%3e%3cpath d='M0,25 C40,10 80,40 120,25 L120,40 L0,40 Z' fill='rgba(255,255,255,0.04)'/%3e%3c/svg%3e");
+  background-repeat: repeat-x;
+  background-position: bottom;
+  animation: surf-wave-flow 8s linear infinite;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Room Booking Card Enhancement */
+.heiwa-experience-card[data-experience-type="room"] {
+  position: relative;
+  background: 
+    linear-gradient(135deg, 
+      rgba(59, 130, 246, 0.9) 0%, 
+      rgba(59, 130, 246, 0.7) 100%
+    ),
+    url('/room2.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.heiwa-experience-card[data-experience-type="room"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3csvg width='60' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,10 C15,2 30,18 45,10 C52.5,6 60,14 60,10 L60,20 L0,20 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/svg%3e");
+  background-repeat: repeat-x;
+  background-position: bottom;
+  animation: gentle-wave-flow 12s linear infinite;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ===========================================
+   3. HOVER EFFECTS & INTERACTIONS
+   =========================================== */
+
+.heiwa-experience-card:hover::before {
+  animation-duration: 4s;
+  opacity: 0.8;
+}
+
+.heiwa-experience-card:hover {
+  transform: scale(1.02) translateY(-2px);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* ===========================================
+   4. ACCESSIBILITY & REDUCED MOTION
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .heiwa-surf-pattern-dynamic,
+  .heiwa-surf-pattern-gentle,
+  .heiwa-experience-card::before {
+    animation: none;
+  }
+  
+  .heiwa-experience-card:hover {
+    transform: none;
+  }
+}
+
+/* ===========================================
+   5. RESPONSIVE DESIGN
+   =========================================== */
+
+@media (max-width: 768px) {
+  .heiwa-experience-card::before {
+    opacity: 0.3;
+  }
+  
+  .heiwa-experience-card:hover::before {
+    opacity: 0.5;
+  }
+}
+
+/* ===========================================
+   6. LOADING STATES WITH SURF THEME
+   =========================================== */
+
+.heiwa-surf-loading {
+  background: linear-gradient(
+    90deg,
+    rgba(14, 165, 233, 0.1) 0%,
+    rgba(6, 182, 212, 0.2) 50%,
+    rgba(14, 165, 233, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: surf-shimmer 2s infinite;
+}
+
+@keyframes surf-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ===========================================
+   7. FALLBACK PATTERNS FOR MISSING IMAGES
+   =========================================== */
+
+.heiwa-surf-fallback-pattern {
+  background: 
+    linear-gradient(135deg, 
+      rgba(14, 165, 233, 0.8) 0%, 
+      rgba(6, 182, 212, 0.6) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='waves' x='0' y='0' width='50' height='25' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,12.5 C12.5,0 25,25 37.5,12.5 C43.75,6.25 50,18.75 50,12.5' stroke='rgba(255,255,255,0.1)' stroke-width='1' fill='none'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='100' height='100' fill='url(%23waves)'/%3e%3c/svg%3e");
+}
+
+/* ===========================================
+   8. ENHANCED SELECTION STATES
+   =========================================== */
+
+.heiwa-experience-card[data-selected="true"] {
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 0 0 4px rgba(236, 104, 28, 0.3),
+    0 20px 40px rgba(236, 104, 28, 0.2);
+}
+
+.heiwa-experience-card[data-selected="true"]::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===========================================
+   9. SURF WEEK SPECIFIC ENHANCEMENTS
+   =========================================== */
+
+.heiwa-surf-week-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: 
+    linear-gradient(135deg, 
+      rgba(236, 104, 28, 0.95) 0%, 
+      rgba(251, 146, 60, 0.9) 100%
+    );
+}
+
+.heiwa-surf-week-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='surf-texture' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3e%3ccircle cx='20' cy='20' r='1' fill='rgba(255,255,255,0.05)'/%3e%3cpath d='M0,20 Q10,10 20,20 T40,20' stroke='rgba(255,255,255,0.03)' stroke-width='0.5' fill='none'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23surf-texture)'/%3e%3c/svg%3e");
+  animation: surf-texture-rotate 20s linear infinite;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+@keyframes surf-texture-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===========================================
+   10. BEAUTIFUL SURF SPOT FALLBACK IMAGES
+   =========================================== */
+
+/* Portugal Surf Spot Pattern */
+.heiwa-surf-spot-portugal {
+  background:
+    linear-gradient(135deg,
+      rgba(59, 130, 246, 0.9) 0%,
+      rgba(29, 78, 216, 0.8) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='portugal-waves' x='0' y='0' width='80' height='40' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,20 C20,5 40,35 60,20 C70,12.5 80,27.5 80,20 L80,40 L0,40 Z' fill='rgba(255,255,255,0.1)'/%3e%3cpath d='M0,25 C30,10 50,40 80,25 L80,40 L0,40 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23portugal-waves)'/%3e%3c/svg%3e");
+  background-size: cover;
+}
+
+/* Morocco Surf Spot Pattern */
+.heiwa-surf-spot-morocco {
+  background:
+    linear-gradient(135deg,
+      rgba(236, 104, 28, 0.9) 0%,
+      rgba(194, 65, 12, 0.8) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='morocco-waves' x='0' y='0' width='100' height='50' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,25 C25,10 50,40 75,25 C87.5,17.5 100,32.5 100,25 L100,50 L0,50 Z' fill='rgba(255,255,255,0.12)'/%3e%3cpath d='M0,30 C40,15 60,45 100,30 L100,50 L0,50 Z' fill='rgba(255,255,255,0.06)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23morocco-waves)'/%3e%3c/svg%3e");
+  background-size: cover;
+}
+
+/* Costa Rica Surf Spot Pattern */
+.heiwa-surf-spot-costa-rica {
+  background:
+    linear-gradient(135deg,
+      rgba(34, 197, 94, 0.9) 0%,
+      rgba(21, 128, 61, 0.8) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='costa-rica-waves' x='0' y='0' width='90' height='45' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,22.5 C22.5,7.5 45,37.5 67.5,22.5 C78.75,15 90,30 90,22.5 L90,45 L0,45 Z' fill='rgba(255,255,255,0.1)'/%3e%3cpath d='M0,27.5 C35,12.5 55,42.5 90,27.5 L90,45 L0,45 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23costa-rica-waves)'/%3e%3c/svg%3e");
+  background-size: cover;
+}
+
+/* Indonesia Surf Spot Pattern */
+.heiwa-surf-spot-indonesia {
+  background:
+    linear-gradient(135deg,
+      rgba(168, 85, 247, 0.9) 0%,
+      rgba(124, 58, 237, 0.8) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='indonesia-waves' x='0' y='0' width='110' height='55' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,27.5 C27.5,12.5 55,42.5 82.5,27.5 C96.25,20 110,35 110,27.5 L110,55 L0,55 Z' fill='rgba(255,255,255,0.11)'/%3e%3cpath d='M0,32.5 C45,17.5 65,47.5 110,32.5 L110,55 L0,55 Z' fill='rgba(255,255,255,0.055)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23indonesia-waves)'/%3e%3c/svg%3e");
+  background-size: cover;
+}
+
+/* Australia Surf Spot Pattern */
+.heiwa-surf-spot-australia {
+  background:
+    linear-gradient(135deg,
+      rgba(6, 182, 212, 0.9) 0%,
+      rgba(8, 145, 178, 0.8) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='australia-waves' x='0' y='0' width='120' height='60' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,30 C30,15 60,45 90,30 C105,22.5 120,37.5 120,30 L120,60 L0,60 Z' fill='rgba(255,255,255,0.1)'/%3e%3cpath d='M0,35 C50,20 70,50 120,35 L120,60 L0,60 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23australia-waves)'/%3e%3c/svg%3e");
+  background-size: cover;
+}
+
+/* Hawaii Surf Spot Pattern */
+.heiwa-surf-spot-hawaii {
+  background:
+    linear-gradient(135deg,
+      rgba(251, 146, 60, 0.9) 0%,
+      rgba(245, 101, 101, 0.8) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='hawaii-waves' x='0' y='0' width='130' height='65' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,32.5 C32.5,17.5 65,47.5 97.5,32.5 C113.75,25 130,40 130,32.5 L130,65 L0,65 Z' fill='rgba(255,255,255,0.12)'/%3e%3cpath d='M0,37.5 C55,22.5 75,52.5 130,37.5 L130,65 L0,65 Z' fill='rgba(255,255,255,0.06)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23hawaii-waves)'/%3e%3c/svg%3e");
+  background-size: cover;
+}
+
+/* ===========================================
+   11. DYNAMIC SURF SPOT ASSIGNMENT
+   =========================================== */
+
+/* Auto-assign surf spot patterns based on content */
+.heiwa-surf-week-card[data-destination*="portugal" i],
+.heiwa-surf-week-card[data-destination*="ericeira" i] {
+  background-image:
+    linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(29, 78, 216, 0.8) 100%),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='portugal-waves' x='0' y='0' width='80' height='40' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,20 C20,5 40,35 60,20 C70,12.5 80,27.5 80,20 L80,40 L0,40 Z' fill='rgba(255,255,255,0.1)'/%3e%3cpath d='M0,25 C30,10 50,40 80,25 L80,40 L0,40 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23portugal-waves)'/%3e%3c/svg%3e") !important;
+}
+
+.heiwa-surf-week-card[data-destination*="morocco" i],
+.heiwa-surf-week-card[data-destination*="taghazout" i] {
+  background-image:
+    linear-gradient(135deg, rgba(236, 104, 28, 0.9) 0%, rgba(194, 65, 12, 0.8) 100%),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='morocco-waves' x='0' y='0' width='100' height='50' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,25 C25,10 50,40 75,25 C87.5,17.5 100,32.5 100,25 L100,50 L0,50 Z' fill='rgba(255,255,255,0.12)'/%3e%3cpath d='M0,30 C40,15 60,45 100,30 L100,50 L0,50 Z' fill='rgba(255,255,255,0.06)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23morocco-waves)'/%3e%3c/svg%3e") !important;
+}
+
+/* ===========================================
+   12. IMAGE FALLBACK SYSTEM
+   =========================================== */
+
+/* Beautiful fallback when background images fail to load */
+.heiwa-experience-card[data-experience-type="surf-week"]:not([style*="background-image"]),
+.heiwa-experience-card[data-experience-type="surf-week"][style*="background-image: none"] {
+  background:
+    linear-gradient(135deg,
+      rgba(236, 104, 28, 0.95) 0%,
+      rgba(251, 146, 60, 0.9) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='surf-fallback' x='0' y='0' width='60' height='30' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,15 C15,5 30,25 45,15 C52.5,10 60,20 60,15 L60,30 L0,30 Z' fill='rgba(255,255,255,0.08)'/%3e%3cpath d='M0,20 C25,10 35,30 60,20 L60,30 L0,30 Z' fill='rgba(255,255,255,0.04)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23surf-fallback)'/%3e%3c/svg%3e") !important;
+}
+
+.heiwa-experience-card[data-experience-type="room"]:not([style*="background-image"]),
+.heiwa-experience-card[data-experience-type="room"][style*="background-image: none"] {
+  background:
+    linear-gradient(135deg,
+      rgba(59, 130, 246, 0.95) 0%,
+      rgba(29, 78, 216, 0.9) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='room-fallback' x='0' y='0' width='40' height='20' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,10 C10,5 20,15 30,10 C35,7.5 40,12.5 40,10 L40,20 L0,20 Z' fill='rgba(255,255,255,0.06)'/%3e%3cpath d='M0,13 C15,8 25,18 40,13 L40,20 L0,20 Z' fill='rgba(255,255,255,0.03)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23room-fallback)'/%3e%3c/svg%3e") !important;
+}
+
+/* Surf week card fallbacks */
+.heiwa-surf-week-card:not([style*="background-image"]),
+.heiwa-surf-week-card[style*="background-image: none"] {
+  background:
+    linear-gradient(135deg,
+      rgba(236, 104, 28, 0.95) 0%,
+      rgba(251, 146, 60, 0.9) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3cpattern id='default-surf-fallback' x='0' y='0' width='80' height='40' patternUnits='userSpaceOnUse'%3e%3cpath d='M0,20 C20,8 40,32 60,20 C70,14 80,26 80,20 L80,40 L0,40 Z' fill='rgba(255,255,255,0.1)'/%3e%3cpath d='M0,25 C30,13 50,37 80,25 L80,40 L0,40 Z' fill='rgba(255,255,255,0.05)'/%3e%3c/pattern%3e%3c/defs%3e%3crect width='200' height='200' fill='url(%23default-surf-fallback)'/%3e%3c/svg%3e") !important;
+}
+
+/* ===========================================
+   13. PROGRESSIVE ENHANCEMENT
+   =========================================== */
+
+/* Enhanced loading states with surf theme */
+.heiwa-loading-surf {
+  background:
+    linear-gradient(90deg,
+      rgba(14, 165, 233, 0.1) 0%,
+      rgba(6, 182, 212, 0.3) 25%,
+      rgba(236, 104, 28, 0.2) 50%,
+      rgba(6, 182, 212, 0.3) 75%,
+      rgba(14, 165, 233, 0.1) 100%
+    );
+  background-size: 400% 100%;
+  animation: surf-loading-wave 3s ease-in-out infinite;
+}
+
+@keyframes surf-loading-wave {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Enhanced error states */
+.heiwa-error-surf {
+  background:
+    linear-gradient(135deg,
+      rgba(239, 68, 68, 0.1) 0%,
+      rgba(220, 38, 38, 0.05) 100%
+    ),
+    url("data:image/svg+xml,%3csvg width='60' height='30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0,15 C15,10 30,20 45,15 C52.5,12.5 60,17.5 60,15 L60,30 L0,30 Z' fill='rgba(239,68,68,0.03)'/%3e%3c/svg%3e");
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
+
+/* ===========================================
+   14. PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+/* Optimize animations for better performance */
+@media (prefers-reduced-motion: no-preference) {
+  .heiwa-surf-pattern-dynamic,
+  .heiwa-surf-pattern-gentle {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+}
+
+/* GPU acceleration for smooth animations */
+.heiwa-experience-card,
+.heiwa-surf-week-card {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize background patterns for mobile */
+@media (max-width: 640px) {
+  .heiwa-surf-pattern-dynamic,
+  .heiwa-surf-pattern-gentle {
+    animation-duration: 8s;
+  }
+
+  .heiwa-experience-card::before,
+  .heiwa-surf-week-card::before {
+    opacity: 0.2;
+  }
+}

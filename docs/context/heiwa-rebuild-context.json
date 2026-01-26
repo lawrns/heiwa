@@ -1,0 +1,580 @@
+{
+  "project_name": "Heiwa House Website Rebuild",
+  "objective": "Rebuild heiwahouse.com in Next.js with modern tech stack while preserving the exact design language, aesthetic, and user experience of the original site, with strategic upgrades for performance and functionality",
+  
+  "design_system_analysis": {
+    "brand_identity": {
+      "tagline": "Surf, Stay, and Play by the Ocean",
+      "core_values": ["Peace (Heiwa)", "Adventure", "Community", "Balance", "Authenticity"],
+      "tone": "Welcoming, laid-back, authentic, unpretentious, adventurous yet peaceful"
+    },
+    
+    "color_palette": {
+      "primary": {
+        "ocean_blue": "#2B5F75",
+        "teal_accent": "#4A9DB5",
+        "description": "Deep ocean blues representing water, trust, and peace"
+      },
+      "secondary": {
+        "warm_sand": "#D4C5A9",
+        "beige": "#E8DCC4",
+        "description": "Warm, earthy tones representing beach and relaxation"
+      },
+      "accent": {
+        "sunset_coral": "#E57A5F",
+        "burnt_orange": "#D76A47",
+        "description": "Warm sunset tones for CTAs and energy"
+      },
+      "neutrals": {
+        "white": "#FFFFFF",
+        "off_white": "#F9F7F4",
+        "light_gray": "#E5E5E5",
+        "charcoal": "#2C2C2C",
+        "black": "#1A1A1A"
+      },
+      "overlays": {
+        "dark_overlay": "rgba(0, 0, 0, 0.3)",
+        "gradient_overlay": "linear-gradient(135deg, rgba(43, 95, 117, 0.7), rgba(74, 157, 181, 0.5))"
+      }
+    },
+    
+    "typography": {
+      "headings": {
+        "font_family": "System-based sans-serif (appears to be default theme font, possibly Montserrat or similar)",
+        "weights": ["600 (semi-bold)", "700 (bold)"],
+        "style": "Clean, modern, highly readable",
+        "case": "Sentence case (natural, not all caps)"
+      },
+      "body": {
+        "font_family": "Sans-serif, highly readable",
+        "size": "16px base, comfortable line-height",
+        "style": "Natural, conversational, easy to read"
+      },
+      "hierarchy": {
+        "h1": "Large, bold, hero text",
+        "h2": "Section headers, prominent",
+        "h3": "Subsection headers, card titles",
+        "h5": "Large quote/statement text (used on surf weeks page)",
+        "body": "Comfortable reading size with good spacing"
+      }
+    },
+    
+    "layout_patterns": {
+      "hero_sections": {
+        "style": "Full-width background images with text overlay",
+        "overlay": "Dark semi-transparent overlay for text legibility",
+        "text_position": "Centered, large heading + descriptive subtitle",
+        "cta_placement": "Prominent button below text"
+      },
+      "content_sections": {
+        "padding": "Generous vertical spacing (80-120px sections)",
+        "max_width": "1200-1400px centered container",
+        "background": "Alternating white and off-white backgrounds for section separation"
+      },
+      "card_grids": {
+        "room_cards": {
+          "layout": "2-3 columns on desktop, 1 on mobile",
+          "image": "Large image carousel at top (8+ images per room)",
+          "content": "Price badge top-right, title, icons for beds/bathrooms, short description, 'Room Detail' link",
+          "style": "Clean white cards with subtle shadow, rounded corners"
+        },
+        "navigation": "Top categories filter (All, Dorm room - Bed, Double Room, Family Suite, Twin Room)"
+      },
+      "image_galleries": {
+        "style": "Full-width image carousels with dot navigation",
+        "aspect_ratio": "Varied, authentic photography (not stock)",
+        "quality": "High resolution, natural lighting"
+      }
+    },
+    
+    "navigation": {
+      "header": {
+        "layout": "Centered logo, left menu items (Home, The Spot, Room Rentals, Surf Camp), right phone number + 'Book Now' button",
+        "sticky": true,
+        "background": "White with subtle shadow on scroll",
+        "logo": "Simple text logo 'Heiwa House'",
+        "phone": "+351 912 193 785 visible in header"
+      },
+      "mobile": {
+        "style": "Hamburger menu (standard pattern)",
+        "logo_position": "Center"
+      },
+      "book_now_button": {
+        "style": "Prominent orange/coral button",
+        "action": "Opens booking widget/modal (#canvas-check-availabity)",
+        "placement": "Header (always visible)"
+      }
+    },
+    
+    "footer": {
+      "layout": "4-column grid on desktop",
+      "sections": [
+        {
+          "title": "Find us here",
+          "content": "Embedded Google Map"
+        },
+        {
+          "title": "General",
+          "content": "Navigation links (Home, The Spot, Room Rentals, Surf Weeks)"
+        },
+        {
+          "title": "Connect",
+          "content": "Instagram link with icon"
+        },
+        {
+          "title": "About Us",
+          "content": "Email: info@heiwahouse.com, Phone: +351 912 193 785"
+        }
+      ],
+      "style": "Dark text on light background, clean and organized"
+    },
+    
+    "photography_style": {
+      "aesthetic": "Authentic, lifestyle, natural",
+      "subjects": "Real people, actual venue, genuine moments",
+      "lighting": "Natural, golden hour, warm tones",
+      "composition": "Candid, action shots, environmental",
+      "avoid": "Stock photos, overly staged, corporate feel"
+    },
+    
+    "ui_components": {
+      "buttons": {
+        "primary": {
+          "background": "Coral/orange accent color",
+          "text": "White",
+          "style": "Rounded corners, medium padding, hover state",
+          "cta_text": "Book Now, Explore, Room Detail"
+        },
+        "secondary": {
+          "background": "Transparent or white",
+          "border": "Accent color",
+          "style": "Outlined style"
+        }
+      },
+      "price_badges": {
+        "style": "Absolute positioned top-right on room cards",
+        "background": "Semi-transparent dark or accent color",
+        "text": "Large price, 'Per Night' subtitle"
+      },
+      "icons": {
+        "style": "Simple line icons for amenities (beds, bathrooms)",
+        "placement": "Below room titles with accompanying text"
+      },
+      "carousels": {
+        "controls": "Dot navigation at bottom center",
+        "transition": "Smooth slide",
+        "autoplay": "Appears to be manual only"
+      }
+    }
+  },
+  
+  "page_structure": {
+    "homepage": {
+      "hero": {
+        "type": "Full-screen with background image",
+        "heading": "A Wave Away",
+        "subheading": "Nestled on Portugal's coast, Heiwa House is your sanctuary for rest and adventure.",
+        "cta": "Explore button"
+      },
+      "sections": [
+        {
+          "name": "About Heiwa House",
+          "heading": "Where Adventure Meets Tranquility",
+          "content": "Multi-paragraph text explaining the experience, booking options",
+          "layout": "Text left, large video thumbnail right with play overlay"
+        },
+        {
+          "name": "Room Showcase",
+          "heading": "Rustic charm meets Portuguese style.",
+          "subheading": "We would be honored to host you in one of our rooms.",
+          "content": "Image carousel of room interiors",
+          "cta": "Implicit - view carousel"
+        },
+        {
+          "name": "Facilities",
+          "heading": "Facilities",
+          "content": "Visual grid/carousel showing skatepark, yoga dome, pool, etc."
+        },
+        {
+          "name": "Experiences",
+          "heading": "What to do in and around",
+          "content": "Carousel of activities and experiences"
+        }
+      ]
+    },
+    
+    "rooms_page": {
+      "title": "Room List",
+      "filter": "Category tabs at top (All, Dorm room - Bed, Double Room, Family Suite, Twin Room)",
+      "layout": "Grid of room cards (2-3 columns)",
+      "room_card_structure": {
+        "image_carousel": "8+ high-quality photos per room, dot navigation",
+        "price_badge": "Top-right corner, 'XXX€ Per Night'",
+        "title": "Room name (Room Nr 1, Room Nr 2, etc.)",
+        "amenities": "Icons + text for beds and bathrooms",
+        "description": "Short excerpt (truncated)",
+        "cta": "'Room Detail' link button"
+      },
+      "rooms": [
+        {
+          "name": "Room Nr 1",
+          "price": "90€",
+          "beds": "2 beds",
+          "bathrooms": "1 bathroom",
+          "type": "Twin Room",
+          "description": "Step into this beautifully designed room, blending modern comforts with a rustic charm..."
+        },
+        {
+          "name": "Room Nr 2",
+          "price": "80€",
+          "beds": "1 bed",
+          "bathrooms": "1 bathroom",
+          "type": "Double Room",
+          "description": "This inviting room combines the warmth of handcrafted wooden furniture..."
+        },
+        {
+          "name": "Room Nr 3",
+          "price": "80€",
+          "beds": "2 beds",
+          "bathrooms": "1 bathroom",
+          "type": "Twin Room",
+          "description": "Step into the charm of this beautifully designed twin room..."
+        },
+        {
+          "name": "Dorm room",
+          "price": "30€",
+          "beds": "6 beds",
+          "bathrooms": null,
+          "type": "Dorm room - Bed",
+          "description": "Welcome to our spacious and airy shared dormitory..."
+        }
+      ]
+    },
+    
+    "surf_weeks_page": {
+      "title": "Surf Camp",
+      "hero_quote": "We strive to deliver an unforgettable surf camp experience both in and out of the water. Even if surfing were taken out of the week, it would still be worth your while—amazing food, yoga, music, skateboarding, games, exploring, relaxing, and simply enjoying life. Oh, and the surfing? That's going to be awesome too 🙂",
+      "video": {
+        "type": "Large embedded video thumbnail with play button",
+        "url": "https://youtu.be/9nhQiKGsgHg"
+      },
+      "gallery": {
+        "type": "Masonry/grid photo gallery",
+        "count": "16 high-quality surf/lifestyle photos"
+      },
+      "pricing": "*prices starting 450€",
+      "style": "Visual-first, minimal text, let images tell the story"
+    },
+    
+    "the_spot_page": {
+      "title": "The Spot",
+      "sections": [
+        {
+          "name": "Our story",
+          "content": "Narrative text about how Heiwa House was created",
+          "layout": "Text on left, space on right"
+        },
+        {
+          "name": "Venue Gallery",
+          "content": "Large carousel of venue photos (aerial, building exterior, common areas)",
+          "images": "10+ photos"
+        },
+        {
+          "name": "Yoga Dome",
+          "content": "Carousel of yoga dome photos",
+          "images": "4 photos"
+        },
+        {
+          "name": "Skatepark/Activities",
+          "content": "Carousel of activity photos",
+          "images": "6+ photos"
+        }
+      ],
+      "style": "Story-driven, visual galleries, authentic narrative"
+    }
+  },
+  
+  "booking_integration": {
+    "trigger": "Book Now button in header, opens modal/canvas (#canvas-check-availabity)",
+    "requirements": [
+      "Room selection",
+      "Date picker (check-in/check-out)",
+      "Guest count",
+      "Contact details",
+      "Price calculation",
+      "Confirmation"
+    ],
+    "current_implementation": "Existing BookingWidget with 7-step flow already built"
+  },
+  
+  "technical_upgrades": {
+    "preserve": [
+      "Exact visual design and layout",
+      "Typography and spacing",
+      "Color scheme",
+      "Navigation structure",
+      "Content hierarchy",
+      "User flow"
+    ],
+    "improve": [
+      "Page load speed (Next.js Image optimization)",
+      "Mobile responsiveness (current site is already responsive, but can be refined)",
+      "SEO (structured data, meta tags)",
+      "Booking flow (integrate with admin API)",
+      "Admin content management (Supabase CMS)",
+      "Animations (subtle, tasteful transitions)",
+      "Accessibility (ARIA labels, keyboard navigation)",
+      "Performance (lazy loading, code splitting)"
+    ],
+    "avoid": [
+      "Changing the overall aesthetic",
+      "Over-designing or making it too 'modern'",
+      "Removing the authentic, laid-back feel",
+      "Corporate or sterile design patterns",
+      "Heavy animations or distracting effects"
+    ]
+  },
+  
+  "content_strategy": {
+    "copy_tone": "Conversational, warm, genuine, inviting",
+    "messaging": [
+      "Emphasize peace (Heiwa) and adventure balance",
+      "Community and connection",
+      "Authentic experiences over luxury",
+      "Surf, yoga, skate, play",
+      "Portugal coastal lifestyle"
+    ],
+    "calls_to_action": [
+      "Book Now (primary)",
+      "Explore",
+      "Room Detail",
+      "Check Availability"
+    ]
+  },
+  
+  "implementation_priorities": {
+    "phase_1_foundation": [
+      {
+        "task": "Set up design tokens (colors, typography, spacing) matching exact heiwahouse.com values",
+        "files": ["tailwind.config.js", "app/globals.css"]
+      },
+      {
+        "task": "Create reusable components library (Button, Card, Carousel, Hero, Section)",
+        "files": ["components/ui/*"]
+      },
+      {
+        "task": "Build navigation and footer matching exact structure",
+        "files": ["components/navigation.tsx", "components/footer.tsx"]
+      }
+    ],
+    
+    "phase_2_core_pages": [
+      {
+        "task": "Rebuild homepage with exact sections and content",
+        "files": ["app/page.tsx"],
+        "sections": ["Hero", "About", "Room Showcase", "Facilities", "Experiences"]
+      },
+      {
+        "task": "Rebuild rooms page with filtering and card layout",
+        "files": ["app/rooms/page.tsx"],
+        "features": ["Category filter", "Room cards with carousels", "Price badges", "Grid layout"]
+      },
+      {
+        "task": "Rebuild surf weeks page with visual-first approach",
+        "files": ["app/surf-weeks/page.tsx"],
+        "features": ["Hero quote", "Video embed", "Photo gallery", "Pricing"]
+      },
+      {
+        "task": "Rebuild the spot page with story sections",
+        "files": ["app/the-spot/page.tsx"],
+        "features": ["Story text", "Multiple image carousels", "Section divisions"]
+      }
+    ],
+    
+    "phase_3_booking_integration": [
+      {
+        "task": "Style BookingWidget to match Heiwa aesthetic",
+        "files": ["components/BookingWidget/*"]
+      },
+      {
+        "task": "Integrate booking modal trigger in header",
+        "files": ["components/navigation.tsx"]
+      },
+      {
+        "task": "Connect booking flow to admin API (already implemented)",
+        "files": ["lib/admin-api.ts", "lib/booking-service.ts"]
+      }
+    ],
+    
+    "phase_4_polish": [
+      {
+        "task": "Add subtle scroll animations (fade-in, parallax)",
+        "library": "framer-motion"
+      },
+      {
+        "task": "Optimize all images (next/image, proper sizing)",
+        "files": ["public/images/*"]
+      },
+      {
+        "task": "Add loading states and skeletons",
+        "files": ["components/ui/*"]
+      },
+      {
+        "task": "SEO optimization (meta tags, structured data, sitemap)",
+        "files": ["app/layout.tsx", "app/*/page.tsx"]
+      },
+      {
+        "task": "Mobile refinements (touch targets, spacing)",
+        "files": ["app/globals.css", "components/*"]
+      }
+    ]
+  },
+  
+  "design_details_to_preserve": {
+    "spacing": {
+      "section_padding": "80-120px vertical",
+      "container_max_width": "1200-1400px",
+      "card_gap": "24-32px",
+      "content_padding": "40-60px"
+    },
+    "borders": {
+      "card_radius": "8-12px (subtle rounded corners)",
+      "button_radius": "4-8px",
+      "image_radius": "0-4px (mostly square with slight rounding)"
+    },
+    "shadows": {
+      "card_shadow": "0 2px 12px rgba(0,0,0,0.08) (subtle)",
+      "hover_shadow": "0 4px 20px rgba(0,0,0,0.12) (slightly more prominent)"
+    },
+    "transitions": {
+      "duration": "200-300ms",
+      "easing": "ease-in-out",
+      "properties": "transform, opacity, box-shadow"
+    }
+  },
+  
+  "asset_requirements": {
+    "images": {
+      "source": "Use existing images from /public/images/ directory",
+      "optimization": "Convert to WebP, provide multiple sizes, lazy load below fold",
+      "aspect_ratios": "Maintain original ratios, mostly 16:9 and 4:3"
+    },
+    "videos": {
+      "source": "Use existing videos from /public/videos/",
+      "format": "MP4, optimized for web",
+      "fallback": "Poster image for slow connections"
+    },
+    "icons": {
+      "library": "lucide-react (simple line icons)",
+      "style": "Minimal, line-based, consistent stroke width"
+    }
+  },
+  
+  "responsive_breakpoints": {
+    "mobile": "< 640px",
+    "tablet": "640px - 1024px",
+    "desktop": "> 1024px",
+    "wide": "> 1400px"
+  },
+  
+  "accessibility_requirements": {
+    "color_contrast": "WCAG AA minimum (already good on existing site)",
+    "keyboard_navigation": "All interactive elements accessible via keyboard",
+    "screen_readers": "Proper ARIA labels, semantic HTML",
+    "focus_indicators": "Clear, visible focus states",
+    "image_alt_text": "Descriptive alt text for all images"
+  },
+  
+  "performance_targets": {
+    "lighthouse_score": "> 90 on all metrics",
+    "first_contentful_paint": "< 1.5s",
+    "largest_contentful_paint": "< 2.5s",
+    "time_to_interactive": "< 3.5s",
+    "cumulative_layout_shift": "< 0.1"
+  },
+  
+  "content_migration": {
+    "rooms": {
+      "source": "Supabase database (already set up)",
+      "fields": ["name", "price", "images[]", "description", "beds", "bathrooms", "type", "amenities"]
+    },
+    "pages": {
+      "source": "Existing heiwahouse.com content",
+      "method": "Manual content entry or scraping",
+      "storage": "Markdown files or Supabase CMS"
+    },
+    "images": {
+      "source": "Already in /public/images/",
+      "optimization": "Next.js Image component with proper sizing"
+    }
+  },
+  
+  "testing_checklist": {
+    "visual_regression": "Compare side-by-side with heiwahouse.com on all breakpoints",
+    "cross_browser": "Chrome, Firefox, Safari, Edge",
+    "devices": "iPhone, Android, iPad, Desktop",
+    "booking_flow": "End-to-end booking test",
+    "forms": "All form validation and submission",
+    "navigation": "All links and menus functional",
+    "performance": "Lighthouse audit on all pages"
+  },
+  
+  "launch_requirements": {
+    "seo": [
+      "Meta tags on all pages",
+      "Open Graph tags",
+      "Structured data (JSON-LD)",
+      "Sitemap.xml",
+      "Robots.txt"
+    ],
+    "analytics": [
+      "Google Analytics setup",
+      "Conversion tracking for bookings",
+      "Heatmap tracking (optional)"
+    ],
+    "legal": [
+      "Cookie consent banner (GDPR)",
+      "Privacy policy page",
+      "Terms and conditions page"
+    ],
+    "infrastructure": [
+      "Domain setup",
+      "SSL certificate",
+      "CDN for assets",
+      "Backup strategy"
+    ]
+  },
+  
+  "success_criteria": {
+    "design_fidelity": "90%+ match with existing heiwahouse.com aesthetic",
+    "performance": "Faster load times than current WordPress site",
+    "functionality": "All features working, booking flow complete",
+    "mobile_experience": "Seamless mobile booking and browsing",
+    "admin_usability": "Easy content management via dashboard",
+    "conversion_rate": "Maintain or improve booking conversion rate"
+  },
+  
+  "notes_for_ai_agent": {
+    "critical_principles": [
+      "The existing heiwahouse.com has a PERFECT aesthetic - don't change it, replicate it exactly",
+      "Rustic + modern + Portuguese charm = the brand essence",
+      "Authentic > polished, genuine > professional",
+      "Let photography do the talking, keep text minimal and warm",
+      "The vibe is 'adult playground' not 'luxury resort' - keep it playful and welcoming"
+    ],
+    "implementation_approach": [
+      "Start with design tokens (colors, fonts, spacing) matching exactly",
+      "Build component library that mirrors existing UI patterns",
+      "Use existing images and content, don't invent new copy",
+      "Test each page against the original for visual accuracy",
+      "Prioritize authenticity over innovation - this is a replication with strategic upgrades"
+    ],
+    "what_not_to_do": [
+      "Don't make it more 'corporate' or 'professional'",
+      "Don't add heavy animations or flashy effects",
+      "Don't change the color scheme or fonts significantly",
+      "Don't over-complicate the booking flow",
+      "Don't lose the laid-back, beachy, authentic vibe"
+    ]
+  }
+}

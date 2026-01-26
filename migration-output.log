@@ -1,0 +1,639 @@
+🚀 Applying all migrations to database...
+📄 Applying: migrations/002_create_surf_camps.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/002_create_surf_camps.sql:14: NOTICE:  relation "surf_camps" already exists, skipping
+CREATE TABLE
+psql:migrations/002_create_surf_camps.sql:17: ERROR:  constraint "check_dates" for relation "surf_camps" already exists
+psql:migrations/002_create_surf_camps.sql:18: ERROR:  constraint "check_spots" for relation "surf_camps" already exists
+psql:migrations/002_create_surf_camps.sql:21: ERROR:  relation "idx_surf_camps_dates" already exists
+psql:migrations/002_create_surf_camps.sql:22: ERROR:  relation "idx_surf_camps_active" already exists
+psql:migrations/002_create_surf_camps.sql:23: ERROR:  relation "idx_surf_camps_start_date" already exists
+ALTER TABLE
+psql:migrations/002_create_surf_camps.sql:30: ERROR:  policy "Public read access for active surf camps" for table "surf_camps" already exists
+psql:migrations/002_create_surf_camps.sql:38: ERROR:  policy "Admin full access to surf camps" for table "surf_camps" already exists
+INSERT 0 6
+CREATE FUNCTION
+psql:migrations/002_create_surf_camps.sql:61: ERROR:  trigger "update_surf_camps_updated_at" for relation "surf_camps" already exists
+psql:migrations/002_create_surf_camps.sql:64: ERROR:  relation "surf_camps" is already member of publication "supabase_realtime"
+                status                 
+---------------------------------------
+ surf_camps table created successfully
+(1 row)
+
+ surf_weeks_inserted 
+---------------------
+                  13
+(1 row)
+
+📄 Applying: migrations/003_cms_content_tables.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/003_cms_content_tables.sql:6: NOTICE:  extension "uuid-ossp" already exists, skipping
+CREATE EXTENSION
+psql:migrations/003_cms_content_tables.sql:25: NOTICE:  relation "homepage_sections" already exists, skipping
+CREATE TABLE
+psql:migrations/003_cms_content_tables.sql:43: NOTICE:  relation "page_content" already exists, skipping
+CREATE TABLE
+psql:migrations/003_cms_content_tables.sql:59: NOTICE:  relation "testimonials" already exists, skipping
+CREATE TABLE
+psql:migrations/003_cms_content_tables.sql:73: NOTICE:  relation "faq_items" already exists, skipping
+CREATE TABLE
+psql:migrations/003_cms_content_tables.sql:91: NOTICE:  relation "media_library" already exists, skipping
+CREATE TABLE
+psql:migrations/003_cms_content_tables.sql:105: NOTICE:  relation "cta_buttons" already exists, skipping
+CREATE TABLE
+psql:migrations/003_cms_content_tables.sql:119: NOTICE:  relation "activity_log" already exists, skipping
+CREATE TABLE
+psql:migrations/003_cms_content_tables.sql:122: NOTICE:  relation "idx_homepage_sections_type" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:123: NOTICE:  relation "idx_homepage_sections_active" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:124: NOTICE:  relation "idx_homepage_sections_order" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:126: NOTICE:  relation "idx_page_content_slug" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:127: NOTICE:  relation "idx_page_content_section" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:128: NOTICE:  relation "idx_page_content_active" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:130: NOTICE:  relation "idx_testimonials_active" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:131: NOTICE:  relation "idx_testimonials_rating" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:132: NOTICE:  relation "idx_testimonials_order" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:134: NOTICE:  relation "idx_faq_items_page" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:135: NOTICE:  relation "idx_faq_items_category" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:136: NOTICE:  relation "idx_faq_items_active" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:138: NOTICE:  relation "idx_media_library_type" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:139: NOTICE:  relation "idx_media_library_category" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:140: NOTICE:  relation "idx_media_library_tags" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:141: NOTICE:  relation "idx_media_library_active" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:143: NOTICE:  relation "idx_cta_buttons_location" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:144: NOTICE:  relation "idx_cta_buttons_active" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:146: NOTICE:  relation "idx_activity_log_table" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:147: NOTICE:  relation "idx_activity_log_record" already exists, skipping
+CREATE INDEX
+psql:migrations/003_cms_content_tables.sql:148: NOTICE:  relation "idx_activity_log_created" already exists, skipping
+CREATE INDEX
+CREATE FUNCTION
+psql:migrations/003_cms_content_tables.sql:160: ERROR:  trigger "update_homepage_sections_updated_at" for relation "homepage_sections" already exists
+psql:migrations/003_cms_content_tables.sql:161: ERROR:  trigger "update_page_content_updated_at" for relation "page_content" already exists
+psql:migrations/003_cms_content_tables.sql:162: ERROR:  trigger "update_testimonials_updated_at" for relation "testimonials" already exists
+psql:migrations/003_cms_content_tables.sql:163: ERROR:  trigger "update_faq_items_updated_at" for relation "faq_items" already exists
+psql:migrations/003_cms_content_tables.sql:164: ERROR:  trigger "update_media_library_updated_at" for relation "media_library" already exists
+psql:migrations/003_cms_content_tables.sql:165: ERROR:  trigger "update_cta_buttons_updated_at" for relation "cta_buttons" already exists
+CREATE FUNCTION
+psql:migrations/003_cms_content_tables.sql:189: ERROR:  trigger "log_homepage_sections_activity" for relation "homepage_sections" already exists
+psql:migrations/003_cms_content_tables.sql:190: ERROR:  trigger "log_page_content_activity" for relation "page_content" already exists
+psql:migrations/003_cms_content_tables.sql:191: ERROR:  trigger "log_testimonials_activity" for relation "testimonials" already exists
+psql:migrations/003_cms_content_tables.sql:192: ERROR:  trigger "log_faq_items_activity" for relation "faq_items" already exists
+psql:migrations/003_cms_content_tables.sql:193: ERROR:  trigger "log_media_library_activity" for relation "media_library" already exists
+psql:migrations/003_cms_content_tables.sql:194: ERROR:  trigger "log_cta_buttons_activity" for relation "cta_buttons" already exists
+psql:migrations/003_cms_content_tables.sql:203: ERROR:  INSERT has more target columns than expressions
+LINE 1: ...ription, content, video_url, link_url, link_text, order_inde...
+                                                             ^
+INSERT 0 1
+INSERT 0 3
+INSERT 0 3
+INSERT 0 4
+INSERT 0 10
+INSERT 0 8
+INSERT 0 0
+ALTER TABLE
+psql:migrations/003_cms_content_tables.sql:268: ERROR:  policy "Allow read access for authenticated users" for table "homepage_sections" already exists
+psql:migrations/003_cms_content_tables.sql:269: ERROR:  policy "Allow all operations for service_role" for table "homepage_sections" already exists
+ALTER TABLE
+psql:migrations/003_cms_content_tables.sql:273: ERROR:  policy "Allow read access for authenticated users" for table "page_content" already exists
+psql:migrations/003_cms_content_tables.sql:274: ERROR:  policy "Allow all operations for service_role" for table "page_content" already exists
+ALTER TABLE
+psql:migrations/003_cms_content_tables.sql:278: ERROR:  policy "Allow read access for authenticated users" for table "testimonials" already exists
+psql:migrations/003_cms_content_tables.sql:279: ERROR:  policy "Allow all operations for service_role" for table "testimonials" already exists
+ALTER TABLE
+psql:migrations/003_cms_content_tables.sql:283: ERROR:  policy "Allow read access for authenticated users" for table "faq_items" already exists
+psql:migrations/003_cms_content_tables.sql:284: ERROR:  policy "Allow all operations for service_role" for table "faq_items" already exists
+ALTER TABLE
+psql:migrations/003_cms_content_tables.sql:288: ERROR:  policy "Allow read access for authenticated users" for table "media_library" already exists
+psql:migrations/003_cms_content_tables.sql:289: ERROR:  policy "Allow all operations for service_role" for table "media_library" already exists
+ALTER TABLE
+psql:migrations/003_cms_content_tables.sql:293: ERROR:  policy "Allow read access for authenticated users" for table "cta_buttons" already exists
+psql:migrations/003_cms_content_tables.sql:294: ERROR:  policy "Allow all operations for service_role" for table "cta_buttons" already exists
+ALTER TABLE
+psql:migrations/003_cms_content_tables.sql:298: ERROR:  policy "Allow read access for authenticated users" for table "activity_log" already exists
+psql:migrations/003_cms_content_tables.sql:299: ERROR:  policy "Allow insert for service_role" for table "activity_log" already exists
+psql:migrations/003_cms_content_tables.sql:302: ERROR:  policy "Allow read access for cms-media" for table "objects" already exists
+psql:migrations/003_cms_content_tables.sql:303: ERROR:  must be owner of table objects
+psql:migrations/003_cms_content_tables.sql:304: ERROR:  must be owner of table objects
+psql:migrations/003_cms_content_tables.sql:305: ERROR:  must be owner of table objects
+psql:migrations/003_cms_content_tables.sql:307: WARNING:  there is no transaction in progress
+COMMIT
+📄 Applying: migrations/004_cms_content_tables.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/004_cms_content_tables.sql:6: NOTICE:  extension "uuid-ossp" already exists, skipping
+CREATE EXTENSION
+psql:migrations/004_cms_content_tables.sql:25: NOTICE:  relation "homepage_sections" already exists, skipping
+CREATE TABLE
+psql:migrations/004_cms_content_tables.sql:40: NOTICE:  relation "page_content" already exists, skipping
+CREATE TABLE
+psql:migrations/004_cms_content_tables.sql:57: NOTICE:  relation "testimonials" already exists, skipping
+CREATE TABLE
+psql:migrations/004_cms_content_tables.sql:71: NOTICE:  relation "faq_items" already exists, skipping
+CREATE TABLE
+psql:migrations/004_cms_content_tables.sql:90: NOTICE:  relation "media_library" already exists, skipping
+CREATE TABLE
+psql:migrations/004_cms_content_tables.sql:106: NOTICE:  relation "cta_buttons" already exists, skipping
+CREATE TABLE
+psql:migrations/004_cms_content_tables.sql:119: NOTICE:  relation "activity_log" already exists, skipping
+CREATE TABLE
+psql:migrations/004_cms_content_tables.sql:133: NOTICE:  relation "pages_meta" already exists, skipping
+CREATE TABLE
+psql:migrations/004_cms_content_tables.sql:136: NOTICE:  relation "idx_homepage_sections_order" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:137: NOTICE:  relation "idx_homepage_sections_active" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:138: NOTICE:  relation "idx_page_content_slug" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:139: NOTICE:  relation "idx_page_content_order" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:140: ERROR:  column "is_featured" does not exist
+psql:migrations/004_cms_content_tables.sql:141: NOTICE:  relation "idx_testimonials_active" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:142: NOTICE:  relation "idx_faq_category" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:143: NOTICE:  relation "idx_faq_active" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:144: NOTICE:  relation "idx_media_category" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:145: NOTICE:  relation "idx_media_type" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:146: NOTICE:  relation "idx_activity_log_table" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:147: NOTICE:  relation "idx_activity_log_record" already exists, skipping
+CREATE INDEX
+psql:migrations/004_cms_content_tables.sql:148: NOTICE:  relation "idx_activity_log_created" already exists, skipping
+CREATE INDEX
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+psql:migrations/004_cms_content_tables.sql:161: ERROR:  policy "Allow public read" for table "homepage_sections" already exists
+psql:migrations/004_cms_content_tables.sql:162: ERROR:  policy "Allow public read" for table "page_content" already exists
+psql:migrations/004_cms_content_tables.sql:163: ERROR:  policy "Allow public read" for table "testimonials" already exists
+psql:migrations/004_cms_content_tables.sql:164: ERROR:  policy "Allow public read" for table "faq_items" already exists
+psql:migrations/004_cms_content_tables.sql:165: ERROR:  column "is_public" does not exist
+psql:migrations/004_cms_content_tables.sql:166: ERROR:  policy "Allow public read" for table "cta_buttons" already exists
+psql:migrations/004_cms_content_tables.sql:167: ERROR:  policy "Allow public read" for table "pages_meta" already exists
+psql:migrations/004_cms_content_tables.sql:170: ERROR:  policy "Allow admin write" for table "homepage_sections" already exists
+psql:migrations/004_cms_content_tables.sql:171: ERROR:  policy "Allow admin update" for table "homepage_sections" already exists
+psql:migrations/004_cms_content_tables.sql:172: ERROR:  policy "Allow admin delete" for table "homepage_sections" already exists
+psql:migrations/004_cms_content_tables.sql:174: ERROR:  policy "Allow admin write" for table "page_content" already exists
+psql:migrations/004_cms_content_tables.sql:175: ERROR:  policy "Allow admin update" for table "page_content" already exists
+psql:migrations/004_cms_content_tables.sql:176: ERROR:  policy "Allow admin delete" for table "page_content" already exists
+psql:migrations/004_cms_content_tables.sql:178: ERROR:  policy "Allow admin write" for table "testimonials" already exists
+psql:migrations/004_cms_content_tables.sql:179: ERROR:  policy "Allow admin update" for table "testimonials" already exists
+psql:migrations/004_cms_content_tables.sql:180: ERROR:  policy "Allow admin delete" for table "testimonials" already exists
+psql:migrations/004_cms_content_tables.sql:182: ERROR:  policy "Allow admin write" for table "faq_items" already exists
+psql:migrations/004_cms_content_tables.sql:183: ERROR:  policy "Allow admin update" for table "faq_items" already exists
+psql:migrations/004_cms_content_tables.sql:184: ERROR:  policy "Allow admin delete" for table "faq_items" already exists
+psql:migrations/004_cms_content_tables.sql:186: ERROR:  policy "Allow admin write" for table "media_library" already exists
+psql:migrations/004_cms_content_tables.sql:187: ERROR:  policy "Allow admin update" for table "media_library" already exists
+psql:migrations/004_cms_content_tables.sql:188: ERROR:  policy "Allow admin delete" for table "media_library" already exists
+psql:migrations/004_cms_content_tables.sql:190: ERROR:  policy "Allow admin write" for table "cta_buttons" already exists
+psql:migrations/004_cms_content_tables.sql:191: ERROR:  policy "Allow admin update" for table "cta_buttons" already exists
+psql:migrations/004_cms_content_tables.sql:192: ERROR:  policy "Allow admin delete" for table "cta_buttons" already exists
+psql:migrations/004_cms_content_tables.sql:194: ERROR:  policy "Allow admin write" for table "pages_meta" already exists
+psql:migrations/004_cms_content_tables.sql:195: ERROR:  policy "Allow admin update" for table "pages_meta" already exists
+psql:migrations/004_cms_content_tables.sql:196: ERROR:  policy "Allow admin delete" for table "pages_meta" already exists
+psql:migrations/004_cms_content_tables.sql:199: ERROR:  policy "Allow admin write" for table "activity_log" already exists
+psql:migrations/004_cms_content_tables.sql:200: ERROR:  policy "Allow admin read" for table "activity_log" already exists
+INSERT 0 0
+📄 Applying: migrations/005_seed_flow_testimonials.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/005_seed_flow_testimonials.sql:46: ERROR:  column "author_title" of relation "testimonials" does not exist
+LINE 1: INSERT INTO testimonials (author_name, author_title, content...
+                                               ^
+psql:migrations/005_seed_flow_testimonials.sql:122: ERROR:  column "section_type" of relation "page_content" does not exist
+LINE 1: INSERT INTO page_content (page_slug, section_type, section_n...
+                                             ^
+📄 Applying: migrations/006_blog_tables.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/006_blog_tables.sql:6: NOTICE:  extension "uuid-ossp" already exists, skipping
+CREATE EXTENSION
+psql:migrations/006_blog_tables.sql:17: NOTICE:  relation "blog_categories" already exists, skipping
+CREATE TABLE
+psql:migrations/006_blog_tables.sql:26: NOTICE:  relation "blog_tags" already exists, skipping
+CREATE TABLE
+psql:migrations/006_blog_tables.sql:39: NOTICE:  relation "blog_authors" already exists, skipping
+CREATE TABLE
+psql:migrations/006_blog_tables.sql:54: NOTICE:  relation "blog_posts" already exists, skipping
+CREATE TABLE
+psql:migrations/006_blog_tables.sql:61: NOTICE:  relation "blog_post_tags" already exists, skipping
+CREATE TABLE
+psql:migrations/006_blog_tables.sql:83: NOTICE:  relation "blog_post_translations" already exists, skipping
+CREATE TABLE
+psql:migrations/006_blog_tables.sql:86: NOTICE:  relation "idx_blog_categories_slug" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:87: NOTICE:  relation "idx_blog_categories_active" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:88: NOTICE:  relation "idx_blog_tags_slug" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:89: NOTICE:  relation "idx_blog_authors_active" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:90: NOTICE:  relation "idx_blog_posts_status" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:91: NOTICE:  relation "idx_blog_posts_featured" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:92: NOTICE:  relation "idx_blog_posts_category" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:93: NOTICE:  relation "idx_blog_posts_author" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:94: NOTICE:  relation "idx_blog_posts_published" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:95: NOTICE:  relation "idx_blog_post_tags_post" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:96: NOTICE:  relation "idx_blog_post_tags_tag" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:97: NOTICE:  relation "idx_blog_post_translations_post" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:98: NOTICE:  relation "idx_blog_post_translations_locale" already exists, skipping
+CREATE INDEX
+psql:migrations/006_blog_tables.sql:99: NOTICE:  relation "idx_blog_post_translations_slug" already exists, skipping
+CREATE INDEX
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+psql:migrations/006_blog_tables.sql:113: ERROR:  policy "Allow public read active categories" for table "blog_categories" already exists
+psql:migrations/006_blog_tables.sql:116: ERROR:  policy "Allow public read tags" for table "blog_tags" already exists
+psql:migrations/006_blog_tables.sql:119: ERROR:  policy "Allow public read active authors" for table "blog_authors" already exists
+psql:migrations/006_blog_tables.sql:122: ERROR:  policy "Allow public read published posts" for table "blog_posts" already exists
+psql:migrations/006_blog_tables.sql:131: ERROR:  policy "Allow public read published post tags" for table "blog_post_tags" already exists
+psql:migrations/006_blog_tables.sql:140: ERROR:  policy "Allow public read published translations" for table "blog_post_translations" already exists
+psql:migrations/006_blog_tables.sql:144: ERROR:  policy "Allow admin manage categories" for table "blog_categories" already exists
+psql:migrations/006_blog_tables.sql:147: ERROR:  policy "Allow admin manage tags" for table "blog_tags" already exists
+psql:migrations/006_blog_tables.sql:150: ERROR:  policy "Allow admin manage authors" for table "blog_authors" already exists
+psql:migrations/006_blog_tables.sql:153: ERROR:  policy "Allow admin manage posts" for table "blog_posts" already exists
+psql:migrations/006_blog_tables.sql:156: ERROR:  policy "Allow admin manage post tags" for table "blog_post_tags" already exists
+psql:migrations/006_blog_tables.sql:159: ERROR:  policy "Allow admin manage translations" for table "blog_post_translations" already exists
+INSERT 0 0
+psql:migrations/006_blog_tables.sql:169: ERROR:  policy "Public read access for blog-images" for table "objects" already exists
+psql:migrations/006_blog_tables.sql:176: ERROR:  must be owner of table objects
+psql:migrations/006_blog_tables.sql:183: ERROR:  must be owner of table objects
+psql:migrations/006_blog_tables.sql:190: ERROR:  must be owner of table objects
+CREATE FUNCTION
+CREATE FUNCTION
+psql:migrations/006_blog_tables.sql:235: ERROR:  trigger "trigger_update_reading_minutes" for relation "blog_post_translations" already exists
+CREATE FUNCTION
+psql:migrations/006_blog_tables.sql:249: ERROR:  trigger "trigger_blog_categories_updated_at" for relation "blog_categories" already exists
+psql:migrations/006_blog_tables.sql:254: ERROR:  trigger "trigger_blog_tags_updated_at" for relation "blog_tags" already exists
+psql:migrations/006_blog_tables.sql:259: ERROR:  trigger "trigger_blog_authors_updated_at" for relation "blog_authors" already exists
+psql:migrations/006_blog_tables.sql:264: ERROR:  trigger "trigger_blog_posts_updated_at" for relation "blog_posts" already exists
+psql:migrations/006_blog_tables.sql:269: ERROR:  trigger "trigger_blog_post_translations_updated_at" for relation "blog_post_translations" already exists
+📄 Applying: migrations/007_create_clients_bookings.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/007_create_clients_bookings.sql:19: NOTICE:  relation "clients" already exists, skipping
+CREATE TABLE
+psql:migrations/007_create_clients_bookings.sql:36: NOTICE:  relation "bookings" already exists, skipping
+CREATE TABLE
+psql:migrations/007_create_clients_bookings.sql:39: NOTICE:  relation "idx_clients_email" already exists, skipping
+CREATE INDEX
+psql:migrations/007_create_clients_bookings.sql:40: NOTICE:  relation "idx_clients_status" already exists, skipping
+CREATE INDEX
+psql:migrations/007_create_clients_bookings.sql:41: NOTICE:  relation "idx_bookings_client_ids" already exists, skipping
+CREATE INDEX
+psql:migrations/007_create_clients_bookings.sql:42: NOTICE:  relation "idx_bookings_check_in" already exists, skipping
+CREATE INDEX
+psql:migrations/007_create_clients_bookings.sql:43: NOTICE:  relation "idx_bookings_status" already exists, skipping
+CREATE INDEX
+ALTER TABLE
+ALTER TABLE
+psql:migrations/007_create_clients_bookings.sql:51: ERROR:  policy "Allow public read access on clients" for table "clients" already exists
+psql:migrations/007_create_clients_bookings.sql:54: ERROR:  policy "Allow authenticated users to manage clients" for table "clients" already exists
+psql:migrations/007_create_clients_bookings.sql:58: ERROR:  policy "Allow public read access on bookings" for table "bookings" already exists
+psql:migrations/007_create_clients_bookings.sql:61: ERROR:  policy "Allow authenticated users to manage bookings" for table "bookings" already exists
+CREATE FUNCTION
+psql:migrations/007_create_clients_bookings.sql:76: ERROR:  trigger "trigger_clients_updated_at" for relation "clients" already exists
+psql:migrations/007_create_clients_bookings.sql:81: ERROR:  trigger "trigger_bookings_updated_at" for relation "bookings" already exists
+📄 Applying: migrations/008_create_surf_camp_enrollments.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/008_create_surf_camp_enrollments.sql:15: NOTICE:  relation "surf_camp_enrollments" already exists, skipping
+CREATE TABLE
+psql:migrations/008_create_surf_camp_enrollments.sql:18: NOTICE:  relation "idx_enrollments_surf_camp_id" already exists, skipping
+CREATE INDEX
+psql:migrations/008_create_surf_camp_enrollments.sql:19: NOTICE:  relation "idx_enrollments_client_id" already exists, skipping
+CREATE INDEX
+psql:migrations/008_create_surf_camp_enrollments.sql:20: NOTICE:  relation "idx_enrollments_status" already exists, skipping
+CREATE INDEX
+ALTER TABLE
+psql:migrations/008_create_surf_camp_enrollments.sql:27: ERROR:  policy "Allow public read access on enrollments" for table "surf_camp_enrollments" already exists
+psql:migrations/008_create_surf_camp_enrollments.sql:30: ERROR:  policy "Allow authenticated users to manage enrollments" for table "surf_camp_enrollments" already exists
+psql:migrations/008_create_surf_camp_enrollments.sql:36: ERROR:  trigger "trigger_surf_camp_enrollments_updated_at" for relation "surf_camp_enrollments" already exists
+📄 Applying: migrations/009_fix_rooms_table.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+DO
+DO
+ALTER TABLE
+CREATE FUNCTION
+DO
+📄 Applying: migrations/20241122_add_email_tracking_indexes.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/20241122_add_email_tracking_indexes.sql:9: ERROR:  column "items" does not exist
+LINE 2: ON bookings ((items->>'check_in_date'), pre_trip_email_sent_...
+                      ^
+psql:migrations/20241122_add_email_tracking_indexes.sql:14: ERROR:  column "items" does not exist
+LINE 2: ON bookings ((items->>'check_out_date'), post_trip_email_sen...
+                      ^
+psql:migrations/20241122_add_email_tracking_indexes.sql:19: NOTICE:  relation "idx_bookings_email_tracking" already exists, skipping
+CREATE INDEX
+📄 Applying: migrations/20241122_add_email_tracking_to_bookings.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:11: NOTICE:  column "pre_trip_email_sent_at" of relation "bookings" already exists, skipping
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:11: NOTICE:  column "post_trip_email_sent_at" of relation "bookings" already exists, skipping
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:11: NOTICE:  column "pre_trip_email_days_before" of relation "bookings" already exists, skipping
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:11: NOTICE:  column "post_trip_email_days_after" of relation "bookings" already exists, skipping
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:11: NOTICE:  column "email_preferences" of relation "bookings" already exists, skipping
+ALTER TABLE
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:16: ERROR:  column "check_in_date" does not exist
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:20: ERROR:  column "check_out_date" does not exist
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:37: NOTICE:  relation "email_logs" already exists, skipping
+CREATE TABLE
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:40: NOTICE:  relation "idx_email_logs_booking_id" already exists, skipping
+CREATE INDEX
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:41: NOTICE:  relation "idx_email_logs_client_id" already exists, skipping
+CREATE INDEX
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:42: NOTICE:  relation "idx_email_logs_email_type" already exists, skipping
+CREATE INDEX
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:43: NOTICE:  relation "idx_email_logs_sent_at" already exists, skipping
+CREATE INDEX
+psql:migrations/20241122_add_email_tracking_to_bookings.sql:44: NOTICE:  relation "idx_email_logs_status" already exists, skipping
+CREATE INDEX
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+📄 Applying: migrations/20250120_create_storage_buckets.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+INSERT 0 0
+psql:migrations/20250120_create_storage_buckets.sql:27: ERROR:  policy "Public read access for room-images" for table "objects" already exists
+psql:migrations/20250120_create_storage_buckets.sql:31: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:35: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:39: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:47: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:54: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:61: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:68: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:76: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:83: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:90: ERROR:  must be owner of table objects
+psql:migrations/20250120_create_storage_buckets.sql:97: ERROR:  must be owner of table objects
+📄 Applying: migrations/20250120_create_surf_camp_enrollments.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/20250120_create_surf_camp_enrollments.sql:20: NOTICE:  relation "surf_camp_enrollments" already exists, skipping
+CREATE TABLE
+CREATE INDEX
+CREATE INDEX
+psql:migrations/20250120_create_surf_camp_enrollments.sql:25: ERROR:  column "booking_id" does not exist
+psql:migrations/20250120_create_surf_camp_enrollments.sql:26: NOTICE:  relation "idx_enrollments_status" already exists, skipping
+CREATE INDEX
+CREATE INDEX
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+COMMENT
+📄 Applying: migrations/20250120_fix_database_drift.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+ALTER TABLE
+ALTER TABLE
+psql:migrations/20250120_fix_database_drift.sql:19: NOTICE:  column "notes" of relation "payments" already exists, skipping
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+psql:migrations/20250120_fix_database_drift.sql:31: NOTICE:  constraint "payments_payment_method_check" of relation "payments" does not exist, skipping
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+psql:migrations/20250120_fix_database_drift.sql:59: NOTICE:  column "notes" of relation "surf_camp_enrollments" already exists, skipping
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+psql:migrations/20250120_fix_database_drift.sql:86: NOTICE:  constraint "surf_camp_enrollments_surf_camp_id_client_id_booking_id_key" of relation "surf_camp_enrollments" does not exist, skipping
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+psql:migrations/20250120_fix_database_drift.sql:106: NOTICE:  relation "idx_enrollments_status" already exists, skipping
+CREATE INDEX
+CREATE INDEX
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+COMMENT
+📄 Applying: migrations/20250121_create_cms_settings.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/20250121_create_cms_settings.sql:11: NOTICE:  relation "cms_settings" already exists, skipping
+CREATE TABLE
+ALTER TABLE
+psql:migrations/20250121_create_cms_settings.sql:17: ERROR:  policy "Allow public read" for table "cms_settings" already exists
+psql:migrations/20250121_create_cms_settings.sql:20: ERROR:  policy "Allow admin write" for table "cms_settings" already exists
+psql:migrations/20250121_create_cms_settings.sql:21: ERROR:  policy "Allow admin update" for table "cms_settings" already exists
+INSERT 0 0
+📄 Applying: migrations/20250121_create_payments_table.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/20250121_create_payments_table.sql:16: NOTICE:  relation "payments" already exists, skipping
+CREATE TABLE
+psql:migrations/20250121_create_payments_table.sql:28: NOTICE:  column "booking_id" of relation "payments" already exists, skipping
+psql:migrations/20250121_create_payments_table.sql:28: NOTICE:  column "amount" of relation "payments" already exists, skipping
+psql:migrations/20250121_create_payments_table.sql:28: NOTICE:  column "currency" of relation "payments" already exists, skipping
+psql:migrations/20250121_create_payments_table.sql:28: NOTICE:  column "payment_method" of relation "payments" already exists, skipping
+psql:migrations/20250121_create_payments_table.sql:28: NOTICE:  column "payment_status" of relation "payments" already exists, skipping
+psql:migrations/20250121_create_payments_table.sql:28: NOTICE:  column "transaction_id" of relation "payments" already exists, skipping
+psql:migrations/20250121_create_payments_table.sql:28: NOTICE:  column "payment_date" of relation "payments" already exists, skipping
+psql:migrations/20250121_create_payments_table.sql:28: NOTICE:  column "notes" of relation "payments" already exists, skipping
+psql:migrations/20250121_create_payments_table.sql:28: NOTICE:  column "updated_at" of relation "payments" already exists, skipping
+ALTER TABLE
+DO
+ALTER TABLE
+DROP POLICY
+DROP POLICY
+CREATE POLICY
+CREATE POLICY
+psql:migrations/20250121_create_payments_table.sql:80: NOTICE:  relation "idx_payments_booking_id" already exists, skipping
+CREATE INDEX
+psql:migrations/20250121_create_payments_table.sql:81: NOTICE:  relation "idx_payments_status" already exists, skipping
+CREATE INDEX
+psql:migrations/20250121_create_payments_table.sql:82: NOTICE:  relation "idx_payments_transaction_id" already exists, skipping
+CREATE INDEX
+psql:migrations/20250121_create_payments_table.sql:83: NOTICE:  relation "idx_payments_payment_date" already exists, skipping
+CREATE INDEX
+               status                
+-------------------------------------
+ payments table created successfully
+(1 row)
+
+📄 Applying: migrations/20250121_fix_admin_issues.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/20250121_fix_admin_issues.sql:6: NOTICE:  policy "Allow admin read" for relation "page_content" does not exist, skipping
+DROP POLICY
+CREATE POLICY
+DROP POLICY
+DROP POLICY
+DROP POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+DO
+psql:migrations/20250121_fix_admin_issues.sql:51: NOTICE:  relation "idx_bookings_client_ids" already exists, skipping
+CREATE INDEX
+psql:migrations/20250121_fix_admin_issues.sql:52: NOTICE:  relation "idx_bookings_status" already exists, skipping
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+psql:migrations/20250121_fix_admin_issues.sql:57: NOTICE:  relation "idx_clients_email" already exists, skipping
+CREATE INDEX
+CREATE INDEX
+DO
+psql:migrations/20250121_fix_admin_issues.sql:119: ERROR:  column "max_participants" does not exist
+LINE 1: SELECT id, total_spots, max_participants FROM surf_camps
+                                ^
+QUERY:  SELECT id, total_spots, max_participants FROM surf_camps
+CONTEXT:  PL/pgSQL function inline_code_block line 6 at FOR over SELECT rows
+                 status                 
+----------------------------------------
+ Admin panel fixes applied successfully
+(1 row)
+
+📄 Applying: migrations/20250121_fix_experiences_table.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/20250121_fix_experiences_table.sql:20: NOTICE:  relation "experiences" already exists, skipping
+CREATE TABLE
+psql:migrations/20250121_fix_experiences_table.sql:32: NOTICE:  column "description" of relation "experiences" already exists, skipping
+psql:migrations/20250121_fix_experiences_table.sql:32: NOTICE:  column "icon" of relation "experiences" already exists, skipping
+psql:migrations/20250121_fix_experiences_table.sql:32: NOTICE:  column "category" of relation "experiences" already exists, skipping
+psql:migrations/20250121_fix_experiences_table.sql:32: NOTICE:  column "availability_tier" of relation "experiences" already exists, skipping
+psql:migrations/20250121_fix_experiences_table.sql:32: NOTICE:  column "display_order" of relation "experiences" already exists, skipping
+psql:migrations/20250121_fix_experiences_table.sql:32: NOTICE:  column "active" of relation "experiences" already exists, skipping
+psql:migrations/20250121_fix_experiences_table.sql:32: NOTICE:  column "hero_video_url" of relation "experiences" already exists, skipping
+psql:migrations/20250121_fix_experiences_table.sql:32: NOTICE:  column "hero_image_url" of relation "experiences" already exists, skipping
+psql:migrations/20250121_fix_experiences_table.sql:32: NOTICE:  column "features" of relation "experiences" already exists, skipping
+ALTER TABLE
+DO
+ALTER TABLE
+DROP POLICY
+DROP POLICY
+CREATE POLICY
+CREATE POLICY
+psql:migrations/20250121_fix_experiences_table.sql:62: NOTICE:  relation "idx_experiences_category" already exists, skipping
+CREATE INDEX
+psql:migrations/20250121_fix_experiences_table.sql:63: NOTICE:  relation "idx_experiences_active" already exists, skipping
+CREATE INDEX
+psql:migrations/20250121_fix_experiences_table.sql:64: NOTICE:  relation "idx_experiences_display_order" already exists, skipping
+CREATE INDEX
+INSERT 0 0
+                status                
+--------------------------------------
+ experiences table fixed successfully
+(1 row)
+
+📄 Applying: migrations/20250121_fix_invoices_table.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/20250121_fix_invoices_table.sql:17: NOTICE:  relation "invoices" already exists, skipping
+CREATE TABLE
+psql:migrations/20250121_fix_invoices_table.sql:29: NOTICE:  column "booking_id" of relation "invoices" already exists, skipping
+psql:migrations/20250121_fix_invoices_table.sql:29: NOTICE:  column "invoice_number" of relation "invoices" already exists, skipping
+psql:migrations/20250121_fix_invoices_table.sql:29: NOTICE:  column "amount" of relation "invoices" already exists, skipping
+psql:migrations/20250121_fix_invoices_table.sql:29: NOTICE:  column "currency" of relation "invoices" already exists, skipping
+psql:migrations/20250121_fix_invoices_table.sql:29: NOTICE:  column "status" of relation "invoices" already exists, skipping
+psql:migrations/20250121_fix_invoices_table.sql:29: NOTICE:  column "due_date" of relation "invoices" already exists, skipping
+psql:migrations/20250121_fix_invoices_table.sql:29: NOTICE:  column "sent_date" of relation "invoices" already exists, skipping
+psql:migrations/20250121_fix_invoices_table.sql:29: NOTICE:  column "paid_date" of relation "invoices" already exists, skipping
+psql:migrations/20250121_fix_invoices_table.sql:29: NOTICE:  column "updated_at" of relation "invoices" already exists, skipping
+ALTER TABLE
+DO
+ALTER TABLE
+DROP POLICY
+DROP POLICY
+CREATE POLICY
+CREATE POLICY
+psql:migrations/20250121_fix_invoices_table.sql:90: NOTICE:  relation "idx_invoices_booking_id" already exists, skipping
+CREATE INDEX
+psql:migrations/20250121_fix_invoices_table.sql:91: NOTICE:  relation "idx_invoices_status" already exists, skipping
+CREATE INDEX
+psql:migrations/20250121_fix_invoices_table.sql:92: NOTICE:  relation "idx_invoices_invoice_number" already exists, skipping
+CREATE INDEX
+psql:migrations/20250121_fix_invoices_table.sql:93: NOTICE:  relation "idx_invoices_due_date" already exists, skipping
+CREATE INDEX
+              status               
+-----------------------------------
+ invoices table fixed successfully
+(1 row)
+
+📄 Applying: migrations/20250122_add_email_tracking_to_bookings.sql
+WARNING:  invalid configuration parameter name "supautils.disable_program", removing it
+DETAIL:  "supautils" is now a reserved prefix.
+psql:migrations/20250122_add_email_tracking_to_bookings.sql:7: NOTICE:  column "pre_trip_email_sent_at" of relation "bookings" already exists, skipping
+psql:migrations/20250122_add_email_tracking_to_bookings.sql:7: NOTICE:  column "post_trip_email_sent_at" of relation "bookings" already exists, skipping
+psql:migrations/20250122_add_email_tracking_to_bookings.sql:7: NOTICE:  column "pre_trip_email_days_before" of relation "bookings" already exists, skipping
+ALTER TABLE
+psql:migrations/20250122_add_email_tracking_to_bookings.sql:12: NOTICE:  relation "idx_bookings_pre_trip_email" already exists, skipping
+CREATE INDEX
+psql:migrations/20250122_add_email_tracking_to_bookings.sql:17: NOTICE:  relation "idx_bookings_post_trip_email" already exists, skipping
+CREATE INDEX
+COMMENT
+COMMENT
+COMMENT
+✅ All migrations completed!

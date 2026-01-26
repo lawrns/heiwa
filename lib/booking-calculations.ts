@@ -1,0 +1,302 @@
+import { Room, SurfCamp, AddOn } from '@/lib/schemas';
+import { differenceInDays } from 'date-fns';
+
+export interface BookingItem {
+  id: string;
+  type: 'room' | 'surfCamp' | 'addOn';
+  itemId: string;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  startDate?: string;
+  endDate?: string;
+  nights?: number;
+  participants?: number;
+}
+
+export interface PriceBreakdown {
+  subtotal: number;
+  taxes: number;
+  fees: number;
+  discounts: number;
+  total: number;
+  items: BookingItem[];
+}
+
+/**
+ * Check if dates fall in peak season (May-September)
+ * Uses UTC to avoid timezone/DST issues
+ */
+function isPeakSeasonPeriod(startDate: string, endDate: string): boolean {
+  const peakSeasonMonths = [5, 6, 7, 8, 9] // May to September
+  // Parse as UTC to avoid timezone issues
+  const start = new Date(startDate + 'T00:00:00Z')
+  const end = new Date(endDate + 'T00:00:00Z')
+  const current = new Date(start)
+
+  while (current < end) {
+    if (peakSeasonMonths.includes(current.getUTCMonth() + 1)) {
+      return true
+    }
+    current.setUTCDate(current.getUTCDate() + 1)
+  }
+
+  return false
+}
+
+/**
+ * Calculate room price based on dates, quantity, and pricing model
+ */
+export function calculateRoomPrice(
+  room: Room & { id: string },
+  startDate?: string,
+  endDate?: string,
+  quantity: number = 1
+): { unitPrice: number; totalPrice: number; nights?: number } {
+  // Calculate nights if dates are provided
+  let nights = 1;
+  if (startDate && endDate) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    nights = Math.max(1, differenceInDays(end, start));
+  }
+
+  // Determine seasonal rate based on dates
+  // Peak season (May-Sept) uses standard pricing, off-season uses offSeason pricing
+  // Note: The schema has standard/offSeason - standard IS the peak rate
+  let basePrice = 0;
+  if (startDate && endDate) {
+    const isPeak = isPeakSeasonPeriod(startDate, endDate);
+    basePrice = isPeak
+      ? (room.pricing.standard || room.pricing.offSeason || 0)
+      : (room.pricing.offSeason || room.pricing.standard || 0);
+  } else {
+    // No dates provided - use standard rate as default
+    basePrice = room.pricing.standard || room.pricing.offSeason || 0;
+  }
+
+  // Handle different pricing models based on bookingType and camp pricing
+  let unitPrice = basePrice;
+
+  if (room.bookingType === 'perBed') {
+    // Use camp pricing for per-bed bookings
+    if (typeof room.pricing.camp === 'object' && 'perBed' in room.pricing.camp) {
+      unitPrice = room.pricing.camp.perBed * nights;
+    } else {
+      unitPrice = basePrice * nights;
+    }
+  } else {
+    // Whole room pricing - use camp pricing if available
+    if (typeof room.pricing.camp === 'object' && typeof room.pricing.camp === 'object' && !('perBed' in room.pricing.camp)) {
+      // Use camp pricing for occupancy-based rates
+      const campPricing = room.pricing.camp as Record<number, number>;
+      const occupancyRate = campPricing[1] || basePrice; // Default to 1 person rate
+      unitPrice = occupancyRate * nights;
+    } else {
+      unitPrice = basePrice * nights;
+    }
+  }
+
+  return {
+    unitPrice,
+    totalPrice: unitPrice * quantity,
+    nights
+  };
+}
+
+/**
+ * Calculate surf camp price based on participants and duration
+ * Note: SurfCamp schema doesn't include pricing - this would need CampWeek data
+ */
+export function calculateSurfCampPrice(
+  camp: SurfCamp & { id: string },
+  participants: number = 1,
+  duration?: number,
+  basePrice: number = 0 // Base price should be provided from CampWeek or other source
+): { unitPrice: number; totalPrice: number } {
+  let unitPrice = basePrice;
+
+  // Apply duration multiplier if specified
+  if (duration && duration > 1) {
+    unitPrice = basePrice * duration;
+  }
+
+  // Apply basic group discount based on participants (simplified)
+  if (participants > 1) {
+    const discountRate = Math.min(0.1 * (participants - 1), 0.3); // Max 30% discount
+    unitPrice = unitPrice * (1 - discountRate);
+  }
+
+  return {
+    unitPrice,
+    totalPrice: unitPrice * participants
+  };
+}
+
+/**
+ * Calculate add-on service price
+ */
+export function calculateAddOnPrice(
+  addOn: AddOn & { id: string },
+  quantity: number = 1
+): { unitPrice: number; totalPrice: number } {
+  const unitPrice = addOn.price || 0;
+  
+  return {
+    unitPrice,
+    totalPrice: unitPrice * quantity
+  };
+}
+
+/**
+ * Calculate total amount for all booking items
+ */
+export function calculateTotalAmount(items: BookingItem[]): number {
+  return items.reduce((total, item) => total + item.totalPrice, 0);
+}
+
+/**
+ * Calculate comprehensive price breakdown with taxes
+ * PRICING RULES:
+ * 1. Prices are tax-INCLUSIVE (tax is extracted for display, not added)
+ * 2. No service fee
+ */
+export function calculatePriceBreakdown(
+  items: BookingItem[],
+  taxRate: number = 0.1, // 10% VAT included in prices
+  _serviceFeeRate: number = 0, // No service fee (kept for API compatibility)
+  discountAmount: number = 0
+): PriceBreakdown {
+  const subtotal = calculateTotalAmount(items);
+  // Tax is INCLUDED in price, extract for display (not added on top)
+  const taxes = subtotal * taxRate / (1 + taxRate);
+  const fees = 0; // No service fee
+  const total = subtotal - discountAmount; // Price already includes tax
+
+  return {
+    subtotal,
+    taxes,
+    fees,
+    discounts: discountAmount,
+    total: Math.max(0, total), // Ensure total is never negative
+    items
+  };
+}
+
+interface SeasonalRate {
+  startMonth: number
+  startDay: number
+  endMonth: number
+  endDay: number
+  price: number
+}
+
+/**
+ * Get seasonal rate for a specific date
+ */
+function getSeasonalRate(seasonalRates: SeasonalRate[], date: string): number | null {
+  if (!seasonalRates || seasonalRates.length === 0) return null;
+
+  const targetDate = new Date(date);
+  const month = targetDate.getMonth() + 1; // 1-based month
+  const day = targetDate.getDate();
+
+  for (const rate of seasonalRates) {
+    if (isDateInRange(month, day, rate.startMonth, rate.startDay, rate.endMonth, rate.endDay)) {
+      return rate.price;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Check if a date falls within a seasonal range
+ */
+function isDateInRange(
+  month: number,
+  day: number,
+  startMonth: number,
+  startDay: number,
+  endMonth: number,
+  endDay: number
+): boolean {
+  const targetDate = month * 100 + day; // MMDD format
+  const startDate = startMonth * 100 + startDay;
+  const endDate = endMonth * 100 + endDay;
+
+  if (startDate <= endDate) {
+    // Same year range
+    return targetDate >= startDate && targetDate <= endDate;
+  } else {
+    // Cross-year range (e.g., Dec to Feb)
+    return targetDate >= startDate || targetDate <= endDate;
+  }
+}
+
+// formatCurrency is now imported from lib/utils.ts
+
+/**
+ * Calculate booking duration in nights
+ */
+export function calculateNights(startDate: string, endDate: string): number {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  return Math.max(1, differenceInDays(end, start));
+}
+
+/**
+ * Validate booking dates
+ * Uses UTC dates to avoid timezone/DST issues
+ */
+export function validateBookingDates(startDate: string, endDate: string): {
+  isValid: boolean;
+  error?: string;
+} {
+  // Parse as UTC to avoid timezone issues
+  const start = new Date(startDate + 'T00:00:00Z');
+  const end = new Date(endDate + 'T00:00:00Z');
+
+  // Get today in UTC
+  const now = new Date();
+  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
+  if (start < today) {
+    return { isValid: false, error: 'Start date cannot be in the past' };
+  }
+
+  if (end <= start) {
+    return { isValid: false, error: 'End date must be after start date' };
+  }
+
+  const maxAdvanceBooking = new Date(Date.UTC(now.getUTCFullYear() + 2, now.getUTCMonth(), now.getUTCDate()));
+
+  if (start > maxAdvanceBooking) {
+    return { isValid: false, error: 'Booking cannot be more than 2 years in advance' };
+  }
+
+  return { isValid: true };
+}
+
+/**
+ * Apply discount to booking total
+ */
+export function applyDiscount(
+  total: number,
+  discountType: 'percentage' | 'fixed',
+  discountValue: number
+): { discountAmount: number; newTotal: number } {
+  let discountAmount = 0;
+
+  if (discountType === 'percentage') {
+    discountAmount = total * (discountValue / 100);
+  } else {
+    discountAmount = Math.min(discountValue, total); // Don't exceed total
+  }
+
+  return {
+    discountAmount,
+    newTotal: Math.max(0, total - discountAmount)
+  };
+}

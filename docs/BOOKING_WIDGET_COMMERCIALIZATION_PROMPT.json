@@ -1,0 +1,393 @@
+{
+  "title": "Heiwa Booking Widget - Commercial Product Extraction & Global SaaS Strategy",
+  "version": "2.0",
+  "created": "2025-12-26",
+  "author": "Codebase-Connected AI",
+  "context": {
+    "current_state": {
+      "location": "/components/BookingWidget/",
+      "technology_stack": {
+        "frontend": {
+          "framework": "React/Next.js 14 with App Router",
+          "language": "TypeScript 5.0+",
+          "styling": "TailwindCSS 3.4+ with custom design tokens",
+          "components": "shadcn/ui (Radix UI primitives)",
+          "icons": "Lucide React",
+          "animations": "Framer Motion",
+          "forms": "React Hook Form with Zod validation",
+          "state": "React Context + useReducer pattern",
+          "testing": "Jest + React Testing Library + Playwright E2E"
+        },
+        "backend": {
+          "database": "Supabase (PostgreSQL 15)",
+          "auth": "Supabase Auth + JWT",
+          "payments": "Stripe (Elements, Connect, Financial Connections)",
+          "realtime": "Supabase Realtime Subscriptions",
+          "storage": "Supabase Storage for images",
+          "functions": "Supabase Edge Functions",
+          "api": "Next.js API Routes with OpenAPI schema"
+        },
+        "infrastructure": {
+          "deployment": "Vercel (Frontend) + Supabase (Backend)",
+          "cdn": "Vercel Edge Network",
+          "monitoring": "Vercel Analytics + Sentry",
+          "ci_cd": "GitHub Actions",
+          "environment": "Multi-environment setup (dev/staging/prod)"
+        }
+      },
+      "widget_features": {
+        "booking_flow": {
+          "steps": [
+            "Experience Selection (Rooms vs Surf Camps)",
+            "Date Selection with Real-time Availability",
+            "Guest Count & Details",
+            "Room/Option Assignment",
+            "Add-ons Upsell",
+            "Review & Confirmation",
+            "Payment Processing"
+          ],
+          "innovations": [
+            "Progressive disclosure pattern",
+            "Smart defaults based on availability",
+            "Persistent state across sessions",
+            "Back/forward navigation with state preservation",
+            "Mobile-first responsive design",
+            "Touch-optimized interactions"
+          ]
+        },
+        "technical_features": {
+          "performance": "Lazy loading, code splitting, <2s initial load",
+          "accessibility": "WCAG 2.1 AA compliant, screen reader support",
+          "internationalization": "i18n ready with RTL support",
+          "customization": "Dynamic theming, CSS variables, brand customization",
+          "integrations": "Web Component, React, Vue, Angular, WordPress",
+          "analytics": "Event tracking, conversion funnel, A/B testing ready"
+        },
+        "business_features": {
+          "revenue_optimization": [
+            "Dynamic pricing support",
+            "Promo codes and discounts",
+            "Deposit and partial payments",
+            "Add-on marketplace",
+            "Waitlist management"
+          ],
+          "operations": [
+            "Real-time availability sync",
+            "Calendar integrations (Google, Outlook, iCal)",
+            "Staff assignment and notifications",
+            "Automated email/SMS confirmations",
+            "Reporting and analytics dashboard"
+          ]
+        }
+      },
+      "code_architecture": {
+        "core_components": {
+          "BookingWidget.tsx": "Main orchestrator with modal management",
+          "StandaloneWidget.tsx": "Standalone deployment wrapper",
+          "FloatingWidget.tsx": "Fixed position trigger variant",
+          "WebComponent.tsx": "Custom element wrapper"
+        },
+        "step_components": {
+          "ExperienceSelection": "Service type picker with rich media",
+          "DateSelection": "Calendar with availability visualization",
+          "GuestDetails": "Multi-guest form with validation",
+          "RoomAssignment": "Interactive room selection with images",
+          "AddOnsSelection": "Upsell with conditional logic",
+          "ReviewAndPay": "Summary with payment forms"
+        },
+        "hooks": {
+          "useBookingFlow": "Central state management",
+          "useAvailability": "Real-time availability checking",
+          "usePayments": "Stripe integration",
+          "usePersistence": "Session/local storage sync",
+          "useAnalytics": "Event tracking"
+        },
+        "api_structure": {
+          "rest_endpoints": [
+            "/api/rooms - Room management",
+            "/api/surf-camps - Experience management",
+            "/api/availability - Real-time availability",
+            "/api/bookings - CRUD operations",
+            "/api/payments - Stripe webhooks",
+            "/api/analytics - Business metrics"
+          ],
+          "realtime_channels": [
+            "bookings - Live booking updates",
+            "availability - Inventory changes",
+            "notifications - System alerts"
+          ]
+        }
+      }
+    },
+    "competitive_landscape": {
+      "direct_competitors": [
+        {
+          "name": "Checkfront",
+          "strengths": ["Established brand", "Feature complete"],
+          "weaknesses": ["Outdated UI", "Complex pricing", "Poor mobile"]
+        },
+        {
+          "name": "FareHarbor",
+          "strengths": ["Activity focus", "Channel management"],
+          "weaknesses": ["Enterprise pricing", "Steep learning curve"]
+        },
+        {
+          "name": "Bookeo",
+          "strengths": ["Versatile", "Good reporting"],
+          "weaknesses": ["Generic design", "Limited customization"]
+        }
+      ],
+      "adjacent_competitors": [
+        "Calendly (appointments)",
+        "Square Appointments",
+        "Mindbody (wellness)",
+        "Resy (restaurants)",
+        "Booking.com (hotels)"
+      ],
+      "our_advantages": [
+        "Modern, beautiful UI that converts",
+        "Flexible architecture for any business type",
+        "Developer-friendly with excellent APIs",
+        "Transparent, developer-first pricing",
+        "Open-source core with premium features",
+        "Edge performance and reliability"
+      ]
+    }
+  },
+  "strategic_prompts": {
+    "product_strategy": {
+      "prompt": "You are a SaaS product strategist. Analyze the Heiwa booking widget and design a product strategy that can achieve $100M ARR in 5 years. Consider: 1) Market positioning against incumbents, 2) Product-led growth motions, 3) Platform expansion opportunities, 4) M&A landscape, 5) Exit strategies. Provide detailed quarterly roadmaps for the first 2 years.",
+      "expected_output": {
+        "market_analysis": "TAM, SAM, SOM calculations",
+        "positioning": "Unique value proposition and messaging",
+        "growth_model": "Viral coefficients, conversion rates, LTV/CAC",
+        "roadmap": "Feature releases with success metrics",
+        "financials": "Revenue projections and unit economics"
+      }
+    },
+    "technical_architecture": {
+      "prompt": "You are a principal architect designing a multi-tenant SaaS platform from the Heiwa widget. Design: 1) Tenant isolation strategy (database per tenant vs schema vs row-level), 2) Global deployment architecture (CDN, edge functions, data residency), 3) API gateway and rate limiting, 4) Plugin/app store architecture, 5) Event-driven architecture for integrations. Include diagrams, tech stack decisions, and migration paths.",
+      "expected_output": {
+        "architecture_diagrams": "System, data flow, deployment diagrams",
+        "infrastructure": "Cloud setup, CI/CD, monitoring",
+        "security": "Auth, encryption, compliance (SOC2, GDPR)",
+        "scalability": "Horizontal scaling, caching strategies",
+        "apis": "REST, GraphQL, webhook specifications"
+      }
+    },
+    "developer_experience": {
+      "prompt": "You are leading DX at a developer tool company. Design the world's best booking widget developer experience: 1) SDK design for 5+ frameworks, 2) Documentation that developers love, 3) Onboarding that converts in 5 minutes, 4) Debugging and monitoring tools, 5) Community building strategy. Include interactive examples, CLI tools, and VS Code extensions.",
+      "expected_output": {
+        "sdks": "TypeScript, Python, Ruby, PHP, Go client libraries",
+        "documentation": "Interactive docs, API explorer, tutorials",
+        "tools": "CLI, browser devtools, IDE extensions",
+        "onboarding": "Interactive playground, quick starts",
+        "community": "Discord, GitHub, meetups, contribution program"
+      }
+    },
+    "go_to_market": {
+      "prompt": "You are a CMO launching a new developer product. Create a comprehensive GTM strategy: 1) Product launch sequence (alpha, beta, GA), 2) Developer acquisition channels, 3) Content marketing strategy, 4) Partner ecosystem, 5) Pricing and packaging. Include specific tactics, budgets, and KPIs for each channel.",
+      "expected_output": {
+        "phases": "Pre-launch, launch, post-launch tactics",
+        "channels": "Organic, paid, partnerships metrics",
+        "content": "Blog, video, documentation, social media",
+        "pricing": "Tier structure, usage metrics, enterprise sales",
+        "metrics": "Activation, retention, referral targets"
+      }
+    },
+    "design_system": {
+      "prompt": "You are a design systems lead creating a customizable booking widget. Design: 1) A design token system that allows any brand customization, 2) Component library with 50+ booking-specific components, 3) Theme system for light/dark/brand modes, 4) Animation library for delightful micro-interactions, 5) Accessibility system beyond WCAG. Include Figma library and CSS architecture.",
+      "expected_output": {
+        "tokens": "Colors, typography, spacing, motion definitions",
+        "components": "Button, form, layout, feedback components",
+        "themes": "Implementation guide and theme builder",
+        "animations": "Motion principles and component animations",
+        "guidelines": "Usage, do's/don'ts, brand expression"
+      }
+    },
+    "business_model": {
+      "prompt": "You are a startup economist designing innovative monetization for a booking widget. Go beyond SaaS subscriptions: 1) Transaction-based revenue models, 2) Marketplace for add-ons and integrations, 3) Data/analytics products, 4) Lead generation and B2B2C opportunities, 5) White-label and licensing models. Include pricing elasticity analysis and revenue optimization tactics.",
+      "expected_output": {
+        "revenue_streams": "Primary and secondary monetization",
+        "pricing": "Models, tiers, psychology, optimization",
+        "metrics": "Unit economics, LTV, churn analysis",
+        "experiments": "A/B tests for pricing optimization",
+        "scaling": "How revenue scales with usage"
+      }
+    },
+    "ai_integration": {
+      "prompt": "You are an AI product strategist. Design how AI can transform the booking experience: 1) AI-powered booking recommendations, 2) Dynamic pricing optimization, 3) Automated scheduling and routing, 4) Predictive availability management, 5) Conversational booking interfaces. Include ethical considerations and data requirements.",
+      "expected_output": {
+        "features": "AI-powered booking enhancements",
+        "models": "ML requirements and training data",
+        "infrastructure": "MLOps pipeline and serving",
+        "ethics": "Bias mitigation and transparency",
+        "roadmap": "AI feature rollout timeline"
+      }
+    },
+    "mobile_strategy": {
+      "prompt": "You are a mobile product lead. Extend the booking widget to mobile: 1) Native app strategy (React Native/Flutter), 2) Progressive Web App implementation, 3) Mobile-specific features (push notifications, offline mode), 4) App store optimization, 5) Cross-platform sync. Include wireframes and technical specifications.",
+      "expected_output": {
+        "apps": "Native app features and architecture",
+        "pwa": "Service worker and offline strategy",
+        "features": "Mobile-first capabilities",
+        "distribution": "App store strategy and ASO",
+        "sync": "Data synchronization architecture"
+      }
+    },
+    "enterprise_features": {
+      "prompt": "You are building for enterprise customers. Design: 1) Advanced security and compliance (SOC2, HIPAA, PCI), 2) SSO and identity management, 3) Advanced reporting and business intelligence, 4) Custom integrations and iPaaS connectivity, 5) Professional services and support tiers. Include compliance checklists and enterprise architecture.",
+      "expected_output": {
+        "security": "Compliance frameworks and controls",
+        "identity": "SSO, RBAC, audit logging",
+        "analytics": "Enterprise reporting and data warehouse",
+        "integrations": "iPaaS connectors and API management",
+        "support": "Tiered support and SLAs"
+      }
+    },
+    "ecosystem_strategy": {
+      "prompt": "You are building a platform ecosystem. Design: 1) App marketplace for third-party extensions, 2) API platform for developers, 3) Partner program strategy, 4) Integration templates and connectors, 5) Developer fund and incentives. Include marketplace economics and developer acquisition strategy.",
+      "expected_output": {
+        "marketplace": "App store design and revenue share",
+        "platform": "API products and developer tools",
+        "partners": "Partner tiers and benefits",
+        "integrations": "Connector library and templates",
+        "incentives": "Developer fund and programs"
+      }
+    }
+  },
+  "implementation_roadmap": {
+    "phase_1_extraction": {
+      "duration": "4 weeks",
+      "goal": "Extract widget as standalone product",
+      "tasks": [
+        "Create monorepo structure with packages/widget, packages/api, packages/docs",
+        "Build generic API layer with multi-tenancy",
+        "Implement configuration system for branding",
+        "Create deployment pipeline for widget distribution",
+        "Build documentation site with interactive examples"
+      ],
+      "deliverables": [
+        "NPM package @heiwa/booking-widget",
+        "CDN-hosted widget loader",
+        "WordPress plugin",
+        "Documentation site",
+        "5 integration examples"
+      ]
+    },
+    "phase_2_saaS": {
+      "duration": "8 weeks",
+      "goal": "Build SaaS platform",
+      "tasks": [
+        "Implement tenant management and billing",
+        "Build analytics dashboard",
+        "Create template library",
+        "Add A/B testing capabilities",
+        "Implement webhook system"
+      ],
+      "deliverables": [
+        "SaaS dashboard",
+        "Billing integration",
+        "Analytics platform",
+        "20+ templates",
+        "Webhook documentation"
+      ]
+    },
+    "phase_3_scale": {
+      "duration": "12 weeks",
+      "goal": "Scale to enterprise",
+      "tasks": [
+        "Build enterprise features (SSO, audit logs)",
+        "Implement advanced security",
+        "Create partner program",
+        "Build mobile apps",
+        "Launch marketplace"
+      ],
+      "deliverables": [
+        "Enterprise plan",
+        "Mobile apps",
+        "Partner portal",
+        "App marketplace",
+        "Global deployment"
+      ]
+    }
+  },
+  "success_criteria": {
+    "technical_metrics": {
+      "performance": {
+        "widget_load": "< 1.5s 95th percentile",
+        "api_response": "< 200ms average",
+        "uptime": "99.95% SLA",
+        "bundle_size": "< 100KB gzipped"
+      },
+      "quality": {
+        "test_coverage": "> 95%",
+        "accessibility": "WCAG 2.1 AAA",
+        "security": "0 critical vulnerabilities",
+        "lighthouse": "> 95 score"
+      }
+    },
+    "business_metrics": {
+      "adoption": {
+        "beta_signups": "1000+ in first month",
+        "active_widgets": "10,000+ in 6 months",
+        "enterprise_customers": "100+ in year 1"
+      },
+      "revenue": {
+        "arr": "$1M in 12 months",
+        "ltv_cac": "> 3:1 ratio",
+        "net_retention": "> 120%",
+        "gross_margin": "> 85%"
+      },
+      "satisfaction": {
+        "nps": "> 70",
+        "support_tickets": "< 2% of users",
+        "churn": "< 5% monthly",
+        "documentation_rating": "> 4.5/5"
+      }
+    }
+  },
+  "resources_references": {
+    "code_locations": {
+      "widget_core": "/components/BookingWidget/BookingWidget.tsx",
+      "state_management": "/components/BookingWidget/hooks/useBookingFlow.ts",
+      "api_layer": "/components/BookingWidget/lib/api.ts",
+      "styling": "/components/BookingWidget/styles/design-tokens.ts",
+      "types": "/components/BookingWidget/types/config.ts",
+      "standalone": "/components/BookingWidget/StandaloneWidget.tsx"
+    },
+    "inspiration_sources": {
+      "developer_tools": ["Stripe", "Twilio", "Vercel", "Linear"],
+      "booking_industry": ["Airbnb Experiences", "GetYourGuide", "Viator", "Expedia"],
+      "design_systems": ["Salesforce Lightning", "Atlassian Design", "Google Material"],
+      "saas_metrics": ["OpenView SaaS Benchmarks", "KeyBanc SaaS Survey"],
+      "platform_playbooks": ["AWS Marketplace", "Salesforce AppExchange", "Shopify App Store"]
+    },
+    "market_research": {
+      "tam_analysis": "$28B booking software market growing 12% YoY",
+      "customer_segments": ["Hospitality", "Tourism", "Wellness", "Education", "Services"],
+      "pricing_benchmarks": "$29-299/mo typical for booking software",
+      "integration_demand": "WordPress (43%), Shopify (12%), Custom (45%)"
+    }
+  },
+  "next_actions": {
+    "immediate": [
+      "Review and refine strategic prompts with stakeholders",
+      "Create technical specification document",
+      "Set up development environment and repositories",
+      "Begin Phase 1 extraction tasks"
+    ],
+    "research": [
+      "Conduct customer discovery interviews",
+      "Analyze competitor APIs and features",
+      "Study pricing models in depth",
+      "Research integration requirements"
+    ],
+    "planning": [
+      "Hire key team members (product, engineering, design)",
+      "Set up advisory board",
+      "Create detailed project plans",
+      "Establish success metrics and tracking"
+    ]
+  }
+}

@@ -1,0 +1,128 @@
+const { test, expect } = require('@playwright/test')
+
+const BASE_URL = 'https://heiwa-house-portugal.netlify.app'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'heiwa_admin_2024'
+
+async function login(page) {
+  await page.goto(`${BASE_URL}/admin/login`)
+  await page.fill('input#password', ADMIN_PASSWORD)
+  await page.getByRole('button', { name: 'Sign In' }).click()
+  await page.waitForURL('**/admin')
+  await page.waitForLoadState('domcontentloaded')
+}
+
+async function saveChanges(page) {
+  const [dialog] = await Promise.all([
+    page.waitForEvent('dialog'),
+    page.getByRole('button', { name: 'Save Changes' }).click(),
+  ])
+  await dialog.accept()
+  await page.waitForTimeout(1500)
+}
+
+test('Admin CMS updates reflect on homepage', async ({ page }) => {
+  expect(ADMIN_PASSWORD, 'Admin password must be provided').toBeTruthy()
+
+  const newTitle = `Welcome to Heiwa House – Automated Test ${Date.now()}`
+  let originalTitle = ''
+
+  const updateHeroTitle = async (title) => {
+    await page.goto(`${BASE_URL}/admin/homepage`)
+    await page.waitForLoadState('domcontentloaded')
+    await page.waitForTimeout(3000)
+
+    // Find any input field and update it
+    const firstInput = page.locator('input[type="text"]').first()
+    await firstInput.waitFor({ state: 'visible' })
+
+    if (!originalTitle) {
+      originalTitle = await firstInput.inputValue()
+      console.log(`Original title: "${originalTitle}"`)
+    }
+
+    await firstInput.clear()
+    await firstInput.fill(title)
+    console.log(`Updated title to: "${title}"`)
+    
+    // Listen for network requests to debug
+    const responses = []
+    page.on('response', async response => {
+      if (response.url().includes('/api/admin/homepage')) {
+        const status = response.status()
+        const url = response.url()
+        console.log(`API Response: ${status} ${url}`)
+        
+        if (status >= 400) {
+          const text = await response.text()
+          console.log(`Error response body: ${text}`)
+        }
+        
+        responses.push(response)
+      }
+    })
+    
+    await saveChanges(page)
+    
+    // Wait a bit and check responses
+    await page.waitForTimeout(2000)
+    console.log(`Total API responses: ${responses.length}`)
+    for (const resp of responses) {
+      console.log(`Status: ${resp.status()}, URL: ${resp.url()}`)
+    }
+  }
+
+  const checkApiTitle = async (expectedTitle) => {
+    const response = await page.goto(`${BASE_URL}/api/admin/homepage?t=${Date.now()}`)
+    const text = await response.text()
+    return text.includes(expectedTitle)
+  }
+
+  try {
+    await login(page)
+
+    // Update hero title via CMS
+    await updateHeroTitle(newTitle)
+
+    // Verify API returns updated title
+    console.log('Checking API response...')
+    const apiHasUpdated = await checkApiTitle(newTitle)
+    if (!apiHasUpdated) {
+      console.log('API does not have updated title yet, waiting...')
+      await page.waitForTimeout(5000)
+      const apiHasUpdatedAfterWait = await checkApiTitle(newTitle)
+      if (!apiHasUpdatedAfterWait) {
+        throw new Error(`API does not contain updated title "${newTitle}"`)
+      }
+    }
+    console.log('✅ API has updated title')
+
+    // Verify change on homepage with hard refresh
+    await page.goto(`${BASE_URL}/`, { waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(3000) // Wait for client-side JS to load CMS data
+    
+    // Hard refresh to bypass any caching
+    await page.reload({ waitUntil: 'domcontentloaded' })
+    await page.waitForTimeout(3000)
+    
+    // Check if the title is visible anywhere on the page
+    const titleLocator = page.getByText(newTitle, { exact: true })
+    const isVisible = await titleLocator.isVisible().catch(() => false)
+    
+    if (!isVisible) {
+      // Fallback: check if the title is in the page content
+      const pageContent = await page.content()
+      const hasTitle = pageContent.includes(newTitle)
+      if (!hasTitle) {
+        throw new Error(`Title "${newTitle}" not found on homepage after CMS update. API has updated title but frontend does not reflect it.`)
+      }
+    }
+    
+    console.log('✅ Homepage reflects updated title')
+    await expect(titleLocator).toBeVisible()
+  } finally {
+    if (originalTitle && originalTitle !== newTitle) {
+      await login(page)
+      await updateHeroTitle(originalTitle)
+    }
+  }
+})

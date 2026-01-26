@@ -1,0 +1,226 @@
+import { Home, Waves, Check } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { BookingState } from '../types';
+import { cn } from '@/lib/utils';
+
+interface ExperienceSelectionProps {
+  state: BookingState;
+  actions: {
+    setExperienceType: (type: 'room' | 'surf-week') => void;
+    nextStep: () => void;
+  };
+}
+
+interface BookingWidgetPrices {
+  room: number;
+  surfWeek: number;
+}
+
+const defaultPrices: BookingWidgetPrices = {
+  room: 45,
+  surfWeek: 599,
+};
+
+export function ExperienceSelection({ state, actions }: ExperienceSelectionProps) {
+  const pendingTypeRef = useRef<'room' | 'surf-week' | null>(null);
+  const [prices, setPrices] = useState<BookingWidgetPrices>(defaultPrices);
+
+  // Fetch prices from API
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        const response = await fetch('/api/booking-widget-settings', {
+          cache: 'no-store',
+        });
+        const data = await response.json();
+
+        if (data.success && data.data) {
+          setPrices({
+            room: data.data.room || defaultPrices.room,
+            surfWeek: data.data.surfWeek || defaultPrices.surfWeek,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching booking widget prices:', error);
+        // Use default prices on error
+      }
+    };
+
+    fetchPrices();
+  }, []);
+
+  const experiences = [
+    {
+      id: 'room',
+      type: 'room' as const,
+      title: 'Book a Room',
+      description: 'Choose your dates and accommodation. Perfect for flexible stays.',
+      icon: Home,
+      gradient: 'from-blue-500 to-cyan-500',
+      features: ['Flexible dates', 'Choose your room', 'Self-guided experience'],
+      priceFrom: prices.room,
+      backgroundImage: '',
+      surfPattern: 'gentle-waves',
+    },
+    {
+      id: 'surf-week',
+      type: 'surf-week' as const,
+      title: 'All-Inclusive Surf Week',
+      description: 'Join our structured surf camp programs with coaching and community.',
+      icon: Waves,
+      gradient: 'from-accent to-red-500',
+      features: ['Professional coaching', 'All meals included', 'Structured program'],
+      priceFrom: prices.surfWeek,
+      backgroundImage: '',
+      surfPattern: 'dynamic-waves',
+    },
+  ];
+
+  const handleSelection = (type: 'room' | 'surf-week') => {
+    // Debug: selection handler
+    try { console.log('[HeiwaWidget] Experience selected:', type); } catch {}
+    
+    // Set the pending type and update experience type
+    pendingTypeRef.current = type;
+    actions.setExperienceType(type);
+  };
+
+  // Watch for state.experienceType to match pendingType, then advance
+  useEffect(() => {
+    if (pendingTypeRef.current && state.experienceType === pendingTypeRef.current) {
+      // State has been updated, safe to advance
+      const timeoutId = setTimeout(() => {
+        try {
+          actions.nextStep();
+        } catch (error) {
+          console.error('[HeiwaWidget] Error advancing to next step:', error);
+        }
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [state.experienceType, actions]);
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h3 className="text-3xl font-bold text-gray-900">
+          Choose Your Adventure
+        </h3>
+        <p className="text-lg text-gray-600">
+          How would you like to experience Heiwa House?
+        </p>
+      </div>
+
+      {/* Experience Options */}
+      <div className="space-y-4">
+        {experiences.map((experience, index) => {
+          const Icon = experience.icon;
+          const isSelected = state.experienceType === experience.type;
+
+          return (
+            <button
+              type="button"
+              key={experience.id}
+              onClick={() => handleSelection(experience.type)}
+              className={cn(
+                // Base styles
+                "relative w-full rounded-xl text-left overflow-hidden",
+                "transition-[transform,box-shadow,border-color,background-color] duration-standard ease-out",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2",
+                // Animation on mount
+                "animate-fade-in-up",
+                // Hover effects - lift with glow
+                "hover:-translate-y-1",
+                experience.type === 'surf-week' 
+                  ? "hover:shadow-[0_20px_40px_-10px_rgba(236,104,28,0.4)]"
+                  : "hover:shadow-[0_20px_40px_-10px_rgba(59,130,246,0.4)]",
+                // Selected state
+                isSelected && [
+                  "ring-4 ring-accent shadow-xl",
+                  experience.type === 'surf-week'
+                    ? "shadow-accent/30"
+                    : "shadow-blue-500/30"
+                ],
+                // Unselected state
+                !isSelected && "ring-2 ring-gray-200 hover:ring-accent/50"
+              )}
+              style={{
+                animationDelay: `${index * 100}ms`,
+              }}
+            >
+              {/* Background with gradient */}
+              <div 
+                className={cn(
+                  "absolute inset-0",
+                  experience.type === 'surf-week'
+                    ? 'bg-gradient-to-br from-accent via-accent-dark to-red-700'
+                    : 'bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-600'
+                )}
+              />
+              
+              {/* Overlay for better text readability */}
+              <div className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-black/20" />
+
+              {/* Selection Checkmark with bounce animation */}
+              {isSelected && (
+                <div className="absolute top-4 right-4 z-20 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-xl border border-accent animate-bounce-in">
+                  <Check size={20} className="text-accent" />
+                </div>
+              )}
+
+              {/* Card Content */}
+              <div className="relative z-10 p-5 sm:p-6">
+                {/* Icon and Title Row */}
+                <div className="flex items-start gap-3 mb-3">
+                  {/* Icon with glow effect on hover */}
+                  <div className={cn(
+                    "p-3 rounded-lg bg-white/20 backdrop-blur-md",
+                    "border border-white/30 flex-shrink-0",
+                    "shadow-lg transition-[transform,background-color] duration-micro",
+                    "group-hover:bg-white/30 group-hover:scale-105"
+                  )}>
+                    <Icon size={24} className="text-white" />
+                  </div>
+
+                  {/* Title */}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-xl sm:text-2xl font-bold text-white leading-tight drop-shadow-lg">
+                      {experience.title}
+                    </h4>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p className="text-white/95 text-base sm:text-lg leading-relaxed drop-shadow-md">
+                  {experience.description}
+                </p>
+
+                {/* Features list - subtle on hover */}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {experience.features.map((feature, i) => (
+                    <span 
+                      key={i}
+                      className="text-xs text-white/80 bg-white/10 px-2 py-1 rounded-full"
+                    >
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Help Text */}
+      <div className="text-center pt-2">
+        <p className="text-base text-gray-500 leading-relaxed">
+          Not sure which option? Our room booking offers more flexibility,
+          while surf weeks provide a complete guided experience.
+        </p>
+      </div>
+    </div>
+  );
+}

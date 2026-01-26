@@ -1,0 +1,437 @@
+{
+  "audit_report": {
+    "title": "Heiwa House Admin UI/UX Audit Feedback",
+    "date": "2025-11-11",
+    "url": "heiwa-fr.netlify.app",
+    "scope": "Admin & CMS interfaces",
+    "reviewer": "External audit",
+    "status": "Critical issues identified"
+  },
+  
+  "summary": {
+    "key_problems": {
+      "forms_modals": {
+        "issues": [
+          "Many forms rely on minimal spacing (space-y classes) without grouping related fields",
+          "Required fields are not clearly indicated",
+          "Inputs lack consistent styling (e.g., plain date fields, default HTML color pickers)",
+          "Buttons are often cramped at the bottom without proper DialogFooter styling"
+        ],
+        "impact": "Causes cluttered, confusing layouts and makes it hard to scan sections and identify required inputs"
+      },
+      "create_event_modal": {
+        "issues": [
+          "Uses basic <input type='color'> for event colour",
+          "Plain date inputs with no calendar picker",
+          "Fields are stacked with little separation",
+          "Calendar appears inside the modal, leading to cramped layout"
+        ],
+        "impact": "Poor visual hierarchy and an unprofessional feel. Colour picker is hard to use; date fields are confusing without a picker"
+      },
+      "invoices_payments_modals": {
+        "issues": [
+          "Almost no spacing between fields",
+          "Plain inputs for dates and currency",
+          "Labels are sometimes missing or unclear",
+          "No grouping of related fields"
+        ],
+        "impact": "Users may not know what to enter or may miss important information. Lack of grouping and spacing reduces usability"
+      },
+      "clients_bookings_tables": {
+        "issues": [
+          "Add Client button appears disabled and cannot be used (link leads to 404)",
+          "Table rows have minimal spacing",
+          "No way to view details when clicking the row or eye icon (link is broken)"
+        ],
+        "impact": "Missing functionality prevents adding or viewing clients; inconsistent spacing makes tables hard to read"
+      },
+      "dashboard_analytics": {
+        "issues": [
+          "Date filters are basic input fields with placeholders but no date-picker",
+          "No visual grouping between filter controls and metrics"
+        ],
+        "impact": "Could be improved with date-picker controls and clearer separation of control and metric areas"
+      },
+      "cms_page_editor": {
+        "issues": [
+          "Section cards use small checkboxes for 'Active'",
+          "Little spacing between controls",
+          "Add Section dialog truncates section names due to narrow card widths"
+        ],
+        "impact": "Section names are difficult to read; small toggles may hinder accessibility. Users may struggle to choose the correct section type"
+      },
+      "hero_section_editor": {
+        "issues": [
+          "Relies on a long vertical scroll",
+          "Field grouping is minimal",
+          "Required fields are not obvious"
+        ],
+        "impact": "Editing long sections becomes tedious; users may overlook required fields"
+      }
+    }
+  },
+  
+  "detailed_findings": {
+    "create_event_modal": {
+      "component": "CreateEventModal",
+      "location": "Calendar > Create Event",
+      "issues": [
+        {
+          "type": "form_design",
+          "severity": "critical",
+          "description": "Uses the default <input type='color'> for event colour, resulting in an unstyled colour picker",
+          "current_implementation": "Colour field shows a basic browser colour picker",
+          "recommended_fix": "Replace with a custom colour picker component that shows colour swatches and a hex input",
+          "impact": "Improves aesthetics and usability; matches brand colours"
+        },
+        {
+          "type": "form_design_spacing",
+          "severity": "high",
+          "description": "Start/End date fields are plain text inputs without calendar icons or date-picker. Calendar component appears inside the modal, making the layout very crowded",
+          "current_implementation": "Date inputs use mm/dd/yyyy placeholders; no calendar icon; the calendar sits between fields",
+          "recommended_fix": "Use a proper date-picker component with an icon and an external calendar; group date fields with a heading such as 'Event dates'",
+          "impact": "Simplifies selecting dates and improves visual hierarchy"
+        },
+        {
+          "type": "visual_hierarchy",
+          "severity": "high",
+          "description": "There is no clear separation between the Title, Description, Dates, Event Type, Colour and Location fields. Everything is stacked with minimal spacing",
+          "current_implementation": "Single vertical column of inputs; fields appear cramped",
+          "recommended_fix": "Wrap related fields in bordered sections or use subtle background colours (e.g., bg-gray-50/50) and headings (e.g., 'Event Details,' 'Scheduling')",
+          "impact": "Helps users scan sections quickly"
+        },
+        {
+          "type": "button_quality",
+          "severity": "medium",
+          "description": "'Cancel' and 'Create Event' buttons are adjacent without extra padding or section break",
+          "current_implementation": "Buttons are at the bottom with little spacing",
+          "recommended_fix": "Place buttons inside a DialogFooter with top border and gap-2 spacing; ensure the primary button stands out",
+          "impact": "Prevents accidental clicks and improves hierarchy"
+        }
+      ]
+    },
+    
+    "payment_modal": {
+      "component": "PaymentModal",
+      "location": "Payments > Record Payment",
+      "issues": [
+        {
+          "type": "form_design",
+          "severity": "high",
+          "description": "Fields in the 'Record Payment' modal have no labels and inconsistent styling; Payment Method dropdown is hidden until user scrolls; date and currency fields are plain inputs with no icons",
+          "current_implementation": "Booking ID and Amount fields appear without labels; currency dropdown is small; date input uses mm/dd/yyyy placeholder",
+          "recommended_fix": "Add labels above each input; integrate a date-picker with calendar icon; provide a custom select component for currency and payment method; group related fields",
+          "impact": "Improves clarity and prevents input errors"
+        },
+        {
+          "type": "spacing",
+          "severity": "high",
+          "description": "Inputs are stacked directly on top of each other with almost no space",
+          "current_implementation": "The modal shows fields crammed together; 'Transaction ID' and 'Payment Date' fields overlap",
+          "recommended_fix": "Increase vertical spacing (space-y-4 within a section) and separate groups (e.g., Payment Info vs. Notes)",
+          "impact": "Enhances readability and reduces cognitive load"
+        },
+        {
+          "type": "button_quality",
+          "severity": "medium",
+          "description": "The 'Cancel' and 'Record Payment' buttons lack a footer or border; they are flush against inputs",
+          "current_implementation": "Buttons are not separated from form content",
+          "recommended_fix": "Use a DialogFooter component with padding, and make the primary button visually prominent",
+          "impact": "Distinguishes actions clearly"
+        }
+      ]
+    },
+    
+    "invoice_modal": {
+      "component": "InvoiceModal",
+      "location": "Invoices > Create Invoice",
+      "issues": [
+        {
+          "type": "form_design_spacing",
+          "severity": "high",
+          "description": "Fields have no clear labels; Booking ID and Amount inputs are adjacent with no spacing; date inputs have no calendar picker",
+          "current_implementation": "The modal shows a long input for Booking ID, followed by Amount, currency, due date, and status all in one compressed area",
+          "recommended_fix": "Add labels and group fields (Booking details vs Invoice details); use a date-picker with icon; clearly mark required fields",
+          "impact": "Reduces confusion and aids data entry"
+        },
+        {
+          "type": "color",
+          "severity": "medium",
+          "description": "Status drop-down uses default select styling; colours for statuses are absent",
+          "current_implementation": "Default HTML select element appears inside the modal",
+          "recommended_fix": "Use custom select components with consistent styling and apply colour tags for statuses (e.g., green for paid, yellow for pending)",
+          "impact": "Improves visual consistency and recognition"
+        },
+        {
+          "type": "interaction",
+          "severity": "low",
+          "description": "There are no loading states for the 'Create Invoice' button; user receives no feedback during submission",
+          "current_implementation": "The button shows static text even when clicked",
+          "recommended_fix": "Add a loading spinner or change button text to 'Creating…' when performing asynchronous operations",
+          "impact": "Enhances user feedback"
+        }
+      ]
+    },
+    
+    "bookings_management_page": {
+      "component": "BookingsPage",
+      "location": "Bookings Management",
+      "issues": [
+        {
+          "type": "interaction",
+          "severity": "critical",
+          "description": "The row 'eye' icon and booking ID link do not open any details; clicking them does nothing",
+          "current_implementation": "On the Bookings table, the eye icon fails to trigger any action and there's no way to view bookings",
+          "recommended_fix": "Implement click handlers to open a booking details modal or page; ensure keyboard accessibility",
+          "impact": "Prevents frustration and ensures core functionality"
+        },
+        {
+          "type": "responsive_design",
+          "severity": "high",
+          "description": "Table columns (Booking ID, Guest, Type, Dates, Amount, Status) are fixed and will overflow on smaller screens; filters and date inputs are inline and may not wrap nicely",
+          "current_implementation": "On large screens the table appears fine; on smaller screens it likely requires horizontal scrolling",
+          "recommended_fix": "Use a responsive table pattern (stack columns or provide collapsible details) and ensure the filter section wraps",
+          "impact": "Improves usability on tablets and mobile"
+        },
+        {
+          "type": "form_design",
+          "severity": "medium",
+          "description": "Date filters are plain inputs with mm/dd/yyyy placeholder and calendar icons, but clicking the icon does nothing",
+          "current_implementation": "Filter section uses two date inputs with small icons",
+          "recommended_fix": "Integrate actual date-picker components with a calendar pop-up; show clear placeholder text like 'Start date'",
+          "impact": "Helps users choose dates correctly"
+        }
+      ]
+    },
+    
+    "clients_management_page": {
+      "component": "ClientsPage",
+      "location": "Clients Management",
+      "issues": [
+        {
+          "type": "interaction",
+          "severity": "critical",
+          "description": "'Add Client' button appears but is not functional; the URL /admin/clients/new returns a 404 page",
+          "current_implementation": "Top-right 'Add Client' link leads to a 404 error",
+          "recommended_fix": "Implement the client creation page or hide the button until implemented",
+          "impact": "Prevents user confusion and incomplete tasks"
+        },
+        {
+          "type": "interaction",
+          "severity": "high",
+          "description": "Clicking the eye icon in each row does not open client details; the link is broken",
+          "current_implementation": "Eye icon in 'Actions' column does nothing when clicked",
+          "recommended_fix": "Fix or implement the client detail modal/page",
+          "impact": "Allows admins to view and edit client information"
+        },
+        {
+          "type": "spacing",
+          "severity": "medium",
+          "description": "Table rows are tightly packed; there is minimal padding",
+          "current_implementation": "Each row uses default table styling with little vertical spacing",
+          "recommended_fix": "Increase table row padding (py-3 or py-4); add zebra striping for readability",
+          "impact": "Enhances legibility"
+        }
+      ]
+    },
+    
+    "rooms_add_room_form": {
+      "component": "AddRoomForm",
+      "location": "Rooms > Add Room",
+      "issues": [
+        {
+          "type": "visual_hierarchy_spacing",
+          "severity": "high",
+          "description": "Fields are grouped only by space-y-4; there are no visual dividers between Room Information, Amenities and Images sections",
+          "current_implementation": "The form appears as one long list of inputs and checkboxes",
+          "recommended_fix": "Add section headers (e.g., 'Room Details,' 'Pricing,' 'Amenities,' 'Images') with borders or background colours; wrap each section in a div with border, rounded-lg, p-4 and space-y-4",
+          "impact": "Makes the form easier to scan and reduces cognitive load"
+        },
+        {
+          "type": "form_design",
+          "severity": "high",
+          "description": "Amenities checkboxes are plain and not grouped; colour pickers are absent",
+          "current_implementation": "Amenities are displayed as a grid of basic checkboxes",
+          "recommended_fix": "Use custom checkboxes with icons and labels; group them under a heading",
+          "impact": "Improves usability and ensures consistency"
+        },
+        {
+          "type": "interaction",
+          "severity": "medium",
+          "description": "Featured image and additional images use drag-and-drop, which is good; however, there is no preview or validation",
+          "current_implementation": "The upload area shows an icon and text but no preview",
+          "recommended_fix": "Show thumbnails of uploaded images and enforce file type/size validation; indicate the recommended dimensions",
+          "impact": "Enhances feedback"
+        }
+      ]
+    },
+    
+    "analytics_dashboard": {
+      "component": "AnalyticsDashboard",
+      "location": "Dashboard > Analytics",
+      "issues": [
+        {
+          "type": "form_design",
+          "severity": "medium",
+          "description": "Filters for Start Date, End Date and Brand are plain inputs; there are no date-pickers or clear guidelines",
+          "current_implementation": "Filter bar uses mm/dd/yyyy inputs with small icons; clicking the icon does not open a calendar",
+          "recommended_fix": "Use date-picker components with icons; clearly separate filters from metrics using a border or a card header",
+          "impact": "Improves data selection and emphasises filter controls"
+        },
+        {
+          "type": "color_visual_elements",
+          "severity": "low",
+          "description": "Bar charts and stats use good colour contrast, but there is no legend or tooltips explaining the data",
+          "current_implementation": "The Monthly Revenue and Booking Trends charts show coloured bars without labels",
+          "recommended_fix": "Add simple legends or tooltips; allow hover to reveal exact values",
+          "impact": "Improves data understanding"
+        }
+      ]
+    },
+    
+    "cms_page_editor": {
+      "component": "PageEditor",
+      "location": "CMS > Flow Page Editor & Add Section Modal",
+      "issues": [
+        {
+          "type": "visual_hierarchy",
+          "severity": "high",
+          "description": "Section cards have minimal spacing and small active toggles; there is no clear separation between sections",
+          "current_implementation": "The content-section list uses only light borders; toggles are small checkboxes",
+          "recommended_fix": "Increase spacing between section cards, use a border-t or shadow for each card, and replace small checkboxes with larger toggles or switches",
+          "impact": "Improves readability and makes toggling easier"
+        },
+        {
+          "type": "modal_quality",
+          "severity": "high",
+          "description": "The Add Section modal displays numerous section types in small cards; names are truncated (e.g., 'Text Sectio n') due to narrow widths",
+          "current_implementation": "Section names break mid-word; cards have limited width",
+          "recommended_fix": "Use a two-column grid with responsive breakpoints; allow section names to wrap properly or increase card width; add tooltips or previews",
+          "impact": "Helps users choose the right section"
+        },
+        {
+          "type": "accessibility",
+          "severity": "medium",
+          "description": "The 'Active' checkbox on each section is small and not labelled; keyboard navigation may be difficult",
+          "current_implementation": "Only a small checkmark indicates active state; there is no label",
+          "recommended_fix": "Replace checkboxes with labelled toggle switches; ensure the label is associated with the control",
+          "impact": "Improves accessibility and usability"
+        }
+      ]
+    },
+    
+    "hero_section_editor": {
+      "component": "HeroSectionEditor",
+      "location": "CMS > Hero Section Editor",
+      "issues": [
+        {
+          "type": "modal_quality",
+          "severity": "medium",
+          "description": "The Edit Hero Section modal is long and requires scrolling; there is little grouping of related fields and no clear indication of required fields",
+          "current_implementation": "Fields for title, subtitle, description, button text, link and background image are stacked",
+          "recommended_fix": "Divide the modal into subsections with headings ('Text Content,' 'Button,' 'Background Image'), mark required fields with an asterisk and use scrollable panels when necessary",
+          "impact": "Enhances editing flow"
+        }
+      ]
+    }
+  },
+  
+  "additional_observations": {
+    "navigation_authentication": {
+      "issue": "The admin login page prompts for a password but the site is accessible without entering it. Clicking 'Log Out' returns to login but still shows the admin pages",
+      "severity": "critical",
+      "impact": "This behaviour may be a security issue. A proper authentication flow with session handling and password verification is needed"
+    },
+    "broken_links": {
+      "issue": "Many admin actions (viewing clients, bookings, or rooms) lead to 404 pages or client-side errors",
+      "severity": "critical",
+      "impact": "Broken links degrade trust and make the admin unusable",
+      "examples": [
+        "/admin/clients/new returns 404",
+        "Eye icon links in tables are broken",
+        "Booking detail links don't work"
+      ]
+    },
+    "loading_states": {
+      "issue": "Across modals and forms there are no loading or disabled states while asynchronous actions occur",
+      "severity": "high",
+      "impact": "Users don't know if their action is being processed",
+      "recommended_fix": "Adding spinners or button text changes ('Saving…') would provide feedback"
+    },
+    "responsive_design": {
+      "issue": "Most pages were tested on a desktop viewport; there is no evidence of responsive tables or modal resizing",
+      "severity": "high",
+      "impact": "Admin pages may be unusable on tablets and mobile devices",
+      "recommended_fix": "Admin pages should be tested on smaller screens and provide responsive layouts (stacked filters, collapsible sections, etc.)"
+    }
+  },
+  
+  "priority_fixes": {
+    "critical": [
+      "Fix broken links (Add Client, view details, booking details)",
+      "Implement proper authentication flow with session handling",
+      "Replace all basic HTML color inputs with custom color pickers",
+      "Fix booking/client detail view functionality"
+    ],
+    "high": [
+      "Add visual grouping to all forms (bordered sections, headers)",
+      "Replace plain date inputs with date-picker components",
+      "Add proper spacing between form fields and sections",
+      "Implement loading states for all async actions",
+      "Fix table row spacing and add proper padding",
+      "Add labels to all form inputs",
+      "Use DialogFooter for all modal buttons",
+      "Test and fix responsive design issues"
+    ],
+    "medium": [
+      "Add status color tags to selects",
+      "Improve section card spacing in CMS editor",
+      "Fix truncated section names in Add Section modal",
+      "Replace small checkboxes with toggle switches",
+      "Add image previews to file uploads",
+      "Add legends and tooltips to charts"
+    ],
+    "low": [
+      "Add loading text to buttons",
+      "Improve placeholder text clarity",
+      "Add zebra striping to tables"
+    ]
+  },
+  
+  "conclusion": {
+    "summary": "The Heiwa House admin dashboard offers a functional skeleton but suffers from major UI/UX shortcomings: broken links, cramped forms and modals, basic input elements (especially date and colour fields), inconsistent spacing and lack of visual hierarchy",
+    "recommendations": [
+      "Replace default inputs with custom components",
+      "Group related fields into clearly defined sections",
+      "Add proper date-picker and colour-picker controls",
+      "Ensure all links work",
+      "Implement loading states",
+      "Enhance accessibility with labelled toggle switches, larger touch targets and proper focus management"
+    ],
+    "expected_outcome": "Addressing these issues will make the admin dashboard more professional, usable and accessible"
+  },
+  
+  "implementation_guidelines": {
+    "form_sections": {
+      "pattern": "Wrap related fields in bordered sections with headers",
+      "example": "<div className='border border-gray-200 rounded-lg p-6 space-y-4 bg-gray-50/50'><h3 className='text-sm font-semibold text-gray-900 mb-4'>Section Title</h3>{/* fields */}</div>"
+    },
+    "date_inputs": {
+      "pattern": "Use date-picker component with calendar icon",
+      "example": "<div className='relative'><CalendarIcon className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400' /><Input className='pl-10' type='date' /></div>"
+    },
+    "color_picker": {
+      "pattern": "Custom color picker with swatches and hex input",
+      "example": "<div className='flex items-center gap-3'><div className='flex gap-2'>{presetColors.map(color => <button className='w-8 h-8 rounded border-2' style={{backgroundColor: color}} />)}</div><Input type='text' value={hexValue} /><input type='color' className='w-12 h-10 rounded' /></div>"
+    },
+    "modal_buttons": {
+      "pattern": "Use DialogFooter with proper spacing",
+      "example": "<DialogFooter className='pt-6 border-t'><Button variant='outline' onClick={onClose}>Cancel</Button><Button type='submit' disabled={loading}>{loading ? 'Saving...' : 'Save'}</Button></DialogFooter>"
+    },
+    "table_rows": {
+      "pattern": "Proper padding and hover states",
+      "example": "<tr className='hover:bg-gray-50'><td className='px-6 py-3 whitespace-nowrap text-sm text-gray-900'>Data</td></tr>"
+    }
+  }
+}
+

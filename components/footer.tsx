@@ -1,0 +1,153 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { Instagram } from 'lucide-react'
+import { getNavigationItems } from '@/lib/content'
+import type { NavigationItem } from '@/lib/types'
+
+export function Footer() {
+  const pathname = usePathname()
+  const [navigationItems, setNavigationItems] = useState<NavigationItem[]>([])
+  const [settings, setSettings] = useState<Record<string, string>>({})
+  const [isSettingsLoading, setIsSettingsLoading] = useState(true)
+  const isAdminRoute = pathname.startsWith('/admin')
+
+  useEffect(() => {
+    // Skip fetching for admin routes
+    if (isAdminRoute) return
+
+    getNavigationItems().then(items => {
+      // Filter out THE SPOT from navigation items
+      const filteredItems = items.filter(item => item.path !== '/the-spot')
+      setNavigationItems(filteredItems)
+    }).catch(() => {
+      // Fallback to static items (already excludes THE SPOT)
+      setNavigationItems([
+        { path: '/', name: 'Home' },
+        { path: '/rooms', name: 'Room Rentals' },
+        { path: '/surf-weeks', name: 'Surf Weeks' }
+      ])
+    })
+
+    fetch('/api/cms/settings')
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) setSettings(result.data)
+      })
+      .catch(() => {})
+      .finally(() => setIsSettingsLoading(false))
+  }, [isAdminRoute])
+
+  const email = settings.contact_email || 'info@heiwahouse.com'
+  const phone = settings.contact_phone || '+351 912 193 785'
+  const instagram = settings.instagram_url || 'https://www.instagram.com/heiwahouse_portugal'
+  // Use the actual Heiwa House location in Santa Cruz, Portugal
+  const mapUrl = settings.google_maps_embed_url || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3076.5367824744444!2d-9.1657!3d39.1353!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1ed8c42e0b7aab%3A0x6e47c8f46c8f9a73!2sSanta%20Cruz%2C%20Portugal!5e0!3m2!1sen!2spt!4v1705425600000!5m2!1sen!2spt'
+
+  // Hide footer for admin routes
+  if (isAdminRoute) {
+    return null
+  }
+
+  return (
+    <footer className="bg-gray-900 text-white">
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+          {/* Map Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4">Find us here</h3>
+            <div className="w-full h-72 bg-gray-100 rounded-lg overflow-hidden">
+              <iframe
+                src={mapUrl}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Heiwa House Location - Santa Cruz, Portugal"
+              />
+            </div>
+          </div>
+
+          {/* General Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4">General</h3>
+            <ul className="space-y-3">
+              {navigationItems.map((item) => (
+                <li key={item.path}>
+                  <Link
+                    href={item.path}
+                    className="text-gray-300 hover:text-accent transition-[color] duration-200 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-gray-300 hover:text-accent transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                >
+                  Blog
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Connect */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4">Connect</h3>
+            <a
+              href={instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-gray-300 hover:text-accent transition-[color] duration-200 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+            >
+              <Instagram className="w-5 h-5" />
+              <span>Instagram</span>
+            </a>
+          </div>
+
+          {/* About Us / Contact */}
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4">About Us</h3>
+            <div className="space-y-3 text-gray-300 text-sm">
+              {isSettingsLoading ? (
+                <>
+                  <p>
+                    <span className="inline-block w-40 h-4 bg-white/10 rounded animate-pulse" />
+                  </p>
+                  <p>
+                    <span className="inline-block w-32 h-4 bg-white/10 rounded animate-pulse" />
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    <a
+                      href={`mailto:${email}`}
+                      className="hover:text-accent transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                    >
+                      E. {email}
+                    </a>
+                  </p>
+                  <p>
+                    <a
+                      href={`tel:${phone.replace(/\s/g, '')}`}
+                      className="hover:text-accent transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900 rounded"
+                    >
+                      T. {phone}
+                    </a>
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}

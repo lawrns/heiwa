@@ -1,0 +1,579 @@
+{
+  "metadata": {
+    "generated": "2025-01-30",
+    "project": "heiwa-house",
+    "analysis_type": "user_story_verification",
+    "total_stories_analyzed": 247,
+    "methodology": "codebase_search_and_verification"
+  },
+  "summary": {
+    "total_shortcomings": 32,
+    "critical_priority": 1,
+    "high_priority": 7,
+    "medium_priority": 15,
+    "low_priority": 9,
+    "by_status": {
+      "missing": 20,
+      "partial": 12
+    }
+  },
+  "shortcomings": [
+    {
+      "id": "PUB-ROOM-003",
+      "title": "Room Comparison",
+      "priority": "LOW",
+      "status": "MISSING",
+      "category": "Public Website - Accommodation Browsing",
+      "issue": "No room comparison feature exists. Visitors cannot compare rooms side-by-side.",
+      "evidence": "No comparison component or API endpoint found. Only individual room detail pages exist.",
+      "impact": "Low impact - visitors can still view individual rooms, but cannot easily compare features.",
+      "recommendation": "Implement a room comparison view with side-by-side feature matrix and price comparison."
+    },
+    {
+      "id": "PUB-BOOK-005",
+      "title": "Add-ons Selection",
+      "priority": "MEDIUM",
+      "status": "PARTIAL",
+      "category": "Public Website - Booking Flow",
+      "issue": "Add-ons exist in database and admin panel, and are integrated in booking flow, but may not be fully persisted or displayed correctly in all booking scenarios.",
+      "evidence": "AddOnsSelection component exists and is integrated in booking flow. Add-ons are stored in booking notes as text rather than structured data.",
+      "impact": "Medium impact - add-ons functionality works but data structure could be improved for better reporting.",
+      "recommendation": "Consider creating a dedicated booking_addons junction table for better data structure and reporting."
+    },
+    {
+      "id": "PUB-BOOK-009",
+      "title": "Multiple Payment Methods",
+      "priority": "MEDIUM",
+      "status": "PARTIAL",
+      "category": "Public Website - Booking Flow",
+      "issue": "PaymentMethodSelector component exists and bank transfer option is available, but full implementation status unclear.",
+      "evidence": "PaymentMethodSelector exists in ReviewAndPay component. Bank wire payment method is supported. Stripe integration is complete.",
+      "impact": "Medium impact - payment methods work but may need verification of all payment method flows.",
+      "recommendation": "Verify all payment methods (Stripe, bank transfer) are fully tested and working in production."
+    },
+    {
+      "id": "PUB-BOOK-010",
+      "title": "Booking Modification Request",
+      "priority": "MEDIUM",
+      "status": "MISSING",
+      "category": "Public Website - Booking Flow",
+      "issue": "No guest self-service booking modification feature exists. Only admin can modify bookings.",
+      "evidence": "No guest-facing booking modification form or API endpoint found. Only admin EditBookingModal exists.",
+      "impact": "Medium impact - guests must contact admin to modify bookings, increasing support burden.",
+      "recommendation": "Implement guest portal with booking modification request form, or add modification request form accessible via booking confirmation email."
+    },
+    {
+      "id": "PUB-BOOK-011",
+      "title": "Booking Cancellation Request",
+      "priority": "MEDIUM",
+      "status": "MISSING",
+      "category": "Public Website - Booking Flow",
+      "issue": "No guest self-service cancellation feature exists. Only admin can cancel bookings.",
+      "evidence": "No guest-facing cancellation form or API endpoint found. Only admin cancellation functionality exists.",
+      "impact": "Medium impact - guests must contact admin to cancel, potentially missing cancellation deadlines.",
+      "recommendation": "Implement guest cancellation request form accessible via booking confirmation email or guest portal."
+    },
+    {
+      "id": "PUB-NAV-005",
+      "title": "Page Load Performance",
+      "priority": "HIGH",
+      "status": "PARTIAL",
+      "category": "Public Website - Navigation",
+      "issue": "Performance monitoring exists but optimization is ongoing. LCP, FID, CLS metrics may not meet targets.",
+      "evidence": "Next.js Image component used, code splitting implemented, but no performance monitoring results found.",
+      "impact": "High impact - slow page loads can lead to user abandonment and poor SEO rankings.",
+      "recommendation": "Implement performance monitoring (Lighthouse CI, Web Vitals) and optimize based on metrics."
+    },
+    {
+      "id": "PUB-NAV-006",
+      "title": "Accessibility Compliance",
+      "priority": "HIGH",
+      "status": "PARTIAL",
+      "category": "Public Website - Navigation",
+      "issue": "Skip-to-content exists, but full WCAG 2.1 AA compliance audit not complete.",
+      "evidence": "No automated accessibility testing found. Skip-to-content link exists but full audit needed.",
+      "impact": "High impact - accessibility issues can exclude users and create legal compliance risks.",
+      "recommendation": "Run automated accessibility audit (axe-core, Lighthouse) and fix identified issues. Implement keyboard navigation testing."
+    },
+    {
+      "id": "PUB-SEO-004",
+      "title": "XML Sitemap",
+      "priority": "MEDIUM",
+      "status": "PARTIAL",
+      "category": "Public Website - SEO",
+      "issue": "Sitemap generation exists but may need verification of completeness and automatic updates.",
+      "evidence": "app/sitemap.ts exists and generates sitemap with static pages and blog posts. Verification needed for all pages.",
+      "impact": "Medium impact - incomplete sitemap can affect search engine indexing.",
+      "recommendation": "Verify sitemap includes all public pages and test automatic updates work correctly."
+    },
+    {
+      "id": "ADM-AUTH-004",
+      "title": "Password Reset",
+      "priority": "MEDIUM",
+      "status": "MISSING",
+      "category": "Admin Panel - Authentication",
+      "issue": "No password reset functionality exists. Admins locked out cannot recover access.",
+      "evidence": "No forgot password link, reset endpoint, or email verification found. Only simple password-based login exists.",
+      "impact": "High impact - admins locked out require manual intervention to regain access.",
+      "recommendation": "Implement password reset flow with email verification and secure token-based reset process."
+    },
+    {
+      "id": "ADM-AUTH-005",
+      "title": "Multi-Factor Authentication",
+      "priority": "LOW",
+      "status": "MISSING",
+      "category": "Admin Panel - Authentication",
+      "issue": "No MFA implementation exists. Admin accounts rely solely on password protection.",
+      "evidence": "No 2FA setup, authenticator app support, or backup codes found.",
+      "impact": "Low impact - current password-based auth works but MFA would improve security.",
+      "recommendation": "Implement MFA using TOTP (Time-based One-Time Password) with authenticator app support."
+    },
+    {
+      "id": "ADM-AUTH-006",
+      "title": "Role-Based Access Control",
+      "priority": "LOW",
+      "status": "MISSING",
+      "category": "Admin Panel - Authentication",
+      "issue": "No role-based access control exists. All admins have full access.",
+      "evidence": "No role definition, permission matrix, or role assignment found. Single admin password used.",
+      "impact": "Low impact - current single-admin model works but limits scalability.",
+      "recommendation": "Implement role-based access with roles (admin, staff, viewer) and permission matrix."
+    },
+    {
+      "id": "ADM-BOOK-010",
+      "title": "Booking Export",
+      "priority": "MEDIUM",
+      "status": "PARTIAL",
+      "category": "Admin Panel - Booking Management",
+      "issue": "Export functionality may be partial. CSV export may not include all fields or date range selection.",
+      "evidence": "No explicit export endpoint found. Bulk operations exist but export functionality unclear.",
+      "impact": "Medium impact - admins may need to manually extract data for external analysis.",
+      "recommendation": "Verify and enhance booking export functionality with CSV/Excel export, date range selection, and field selection."
+    },
+    {
+      "id": "ADM-INV-005",
+      "title": "Send Invoice Email",
+      "priority": "HIGH",
+      "status": "PARTIAL",
+      "category": "Admin Panel - Invoice Management",
+      "issue": "Invoice email sending may be partial implementation. Email template and delivery confirmation unclear.",
+      "evidence": "Email service has sendInvoice method, but full implementation and testing status unclear.",
+      "impact": "High impact - invoices not sent automatically can delay payment collection.",
+      "recommendation": "Verify invoice email sending works correctly and add delivery confirmation tracking."
+    },
+    {
+      "id": "ADM-CMS-009",
+      "title": "Version History",
+      "priority": "LOW",
+      "status": "PARTIAL",
+      "category": "Admin Panel - Content Management",
+      "issue": "VersionHistory component exists but full functionality unclear. May not track all changes or allow restoration.",
+      "evidence": "VersionHistory component mentioned but full implementation and database schema unclear.",
+      "impact": "Low impact - content versioning is nice-to-have but not critical.",
+      "recommendation": "Verify version history functionality and enhance if needed for content restoration."
+    },
+    {
+      "id": "ADM-ANA-006",
+      "title": "Export Reports",
+      "priority": "LOW",
+      "status": "PARTIAL",
+      "category": "Admin Panel - Analytics",
+      "issue": "Report export functionality may be partial. CSV/Excel export with date range selection unclear.",
+      "evidence": "No explicit report export endpoint found. Analytics dashboard exists but export unclear.",
+      "impact": "Low impact - reports can be viewed in dashboard, export is convenience feature.",
+      "recommendation": "Implement report export functionality with CSV/Excel format and date range selection."
+    },
+    {
+      "id": "EMAIL-004",
+      "title": "Cancellation Confirmation Email",
+      "priority": "HIGH",
+      "status": "PARTIAL",
+      "category": "Email & Communications",
+      "issue": "Cancellation email may not be fully implemented or automatically triggered on booking cancellation.",
+      "evidence": "Email service has refund notification but cancellation confirmation email unclear. No automatic trigger found.",
+      "impact": "High impact - guests not notified of cancellation can cause confusion and support requests.",
+      "recommendation": "Verify cancellation email is sent automatically when admin cancels booking, or implement trigger."
+    },
+    {
+      "id": "EMAIL-005",
+      "title": "Pre-Arrival Email",
+      "priority": "MEDIUM",
+      "status": "PARTIAL",
+      "category": "Email & Communications",
+      "issue": "Pre-arrival email service exists but automation may not be configured or running.",
+      "evidence": "Scheduled email service exists (lib/scheduled-email-service.ts) and cron endpoint exists (/api/cron/send-scheduled-emails), but cron job configuration unclear.",
+      "impact": "Medium impact - guests may not receive pre-arrival information automatically.",
+      "recommendation": "Verify cron job is configured and running (Netlify Scheduled Functions or external cron service)."
+    },
+    {
+      "id": "EMAIL-006",
+      "title": "Post-Stay Email",
+      "priority": "LOW",
+      "status": "MISSING",
+      "category": "Email & Communications",
+      "issue": "Post-stay feedback email service exists but may not be automatically triggered.",
+      "evidence": "Post-trip feedback email service exists in scheduled-email-service.ts, but automation status unclear.",
+      "impact": "Low impact - post-stay emails improve customer engagement but not critical.",
+      "recommendation": "Verify post-stay email automation is configured and running via cron job."
+    },
+    {
+      "id": "EMAIL-007",
+      "title": "Admin Notification Email",
+      "priority": "MEDIUM",
+      "status": "PARTIAL",
+      "category": "Email & Communications",
+      "issue": "Admin notification email on new booking may not be fully implemented or tested.",
+      "evidence": "Email service has sendBookingNotificationToAdmin method, but automatic trigger on booking creation unclear.",
+      "impact": "Medium impact - admins may not be notified immediately of new bookings.",
+      "recommendation": "Verify admin notification email is automatically sent when new booking is created."
+    },
+    {
+      "id": "PAY-005",
+      "title": "Multi-Currency Support",
+      "priority": "LOW",
+      "status": "MISSING",
+      "category": "Payment & Financial",
+      "issue": "Currency field exists in payments table (defaults to EUR) but no currency selection or conversion exists in booking flow.",
+      "evidence": "PaymentModal has currency selector (EUR, USD, GBP) but no conversion logic. Booking flow only supports EUR.",
+      "impact": "Low impact - EUR-only is acceptable for Portugal-based business, but multi-currency would improve international appeal.",
+      "recommendation": "Implement currency selection in booking flow with real-time conversion rates if multi-currency is desired."
+    },
+    {
+      "id": "PAY-006",
+      "title": "Deposit/Partial Payments",
+      "priority": "MEDIUM",
+      "status": "MISSING",
+      "category": "Payment & Financial",
+      "issue": "No deposit payment system exists. All bookings require full payment upfront.",
+      "evidence": "No deposit amount calculation, balance due tracking, or payment schedule found.",
+      "impact": "Medium impact - requiring full payment upfront may reduce bookings. Deposit system would increase flexibility.",
+      "recommendation": "Implement deposit payment system with balance due tracking, payment schedule, and reminders."
+    },
+    {
+      "id": "SEC-003",
+      "title": "GDPR Compliance",
+      "priority": "HIGH",
+      "status": "PARTIAL",
+      "category": "Security & Compliance",
+      "issue": "Privacy policy exists and soft delete implemented, but full GDPR audit may be needed. Data export capability unclear.",
+      "evidence": "Privacy policy page exists. Soft delete (deleted_at) implemented. Cookie consent unclear. Data export API unclear.",
+      "impact": "High impact - GDPR non-compliance can result in legal issues and fines.",
+      "recommendation": "Conduct full GDPR audit. Implement data export API, cookie consent banner, and data deletion request process."
+    },
+    {
+      "id": "SEC-006",
+      "title": "Rate Limiting",
+      "priority": "MEDIUM",
+      "status": "MISSING",
+      "category": "Security & Compliance",
+      "issue": "Rate limiting mentioned in INVESTIGATION_REPORT.json but lib/rate-limiter.ts file does not exist. No rate limiting implementation found.",
+      "evidence": "INVESTIGATION_REPORT.json mentions rate limiting configuration, but actual implementation file missing. No rate limiting middleware found.",
+      "impact": "Medium impact - lack of rate limiting exposes API to abuse and potential DDoS attacks.",
+      "recommendation": "Implement rate limiting middleware for API endpoints, especially booking and payment endpoints. Use libraries like express-rate-limit or upstash-rate-limit."
+    },
+    {
+      "id": "PERF-007",
+      "title": "Offline Support",
+      "priority": "LOW",
+      "status": "MISSING",
+      "category": "Performance & Reliability",
+      "issue": "No service worker or offline support exists. Site requires constant internet connection.",
+      "evidence": "No service worker, offline fallback page, or PWA manifest found.",
+      "impact": "Low impact - offline support is nice-to-have but not critical for booking site.",
+      "recommendation": "Implement service worker and offline fallback page if PWA features are desired."
+    },
+    {
+      "id": "TEST-001",
+      "title": "Unit Tests",
+      "priority": "HIGH",
+      "status": "PARTIAL",
+      "category": "Testing & Quality",
+      "issue": "Jest configured and unit tests exist, but coverage percentage unclear. May not have comprehensive coverage.",
+      "evidence": "Unit tests exist in __tests__/unit/ directory. Jest configured. Coverage command exists but no coverage report found.",
+      "impact": "High impact - insufficient test coverage can lead to bugs in production.",
+      "recommendation": "Run test coverage report and identify gaps. Aim for minimum 80% coverage on critical paths."
+    },
+    {
+      "id": "TEST-002",
+      "title": "API Tests",
+      "priority": "HIGH",
+      "status": "PARTIAL",
+      "category": "Testing & Quality",
+      "issue": "API tests exist but coverage may be incomplete. Error case handling and authentication testing unclear.",
+      "evidence": "API tests exist in __tests__/api/ directory. Jest API config exists. Full coverage unclear.",
+      "impact": "High impact - API bugs can break booking flow and payment processing.",
+      "recommendation": "Verify API test coverage includes all endpoints, error cases, and authentication scenarios."
+    },
+    {
+      "id": "TEST-003",
+      "title": "E2E Tests",
+      "priority": "HIGH",
+      "status": "PARTIAL",
+      "category": "Testing & Quality",
+      "issue": "Playwright configured and production verification tests exist, but full E2E test coverage unclear.",
+      "evidence": "Playwright config exists. Production verification tests exist. E2E test files exist but coverage unclear.",
+      "impact": "High impact - E2E tests catch integration issues that unit tests miss.",
+      "recommendation": "Verify E2E tests cover critical user flows: booking flow, payment, admin operations."
+    },
+    {
+      "id": "TEST-004",
+      "title": "Visual Regression Tests",
+      "priority": "LOW",
+      "status": "MISSING",
+      "category": "Testing & Quality",
+      "issue": "No visual regression testing exists. UI changes are not automatically detected.",
+      "evidence": "No screenshot comparison or visual testing setup found.",
+      "impact": "Low impact - visual regression tests are nice-to-have but not critical.",
+      "recommendation": "Implement visual regression testing using Playwright screenshot comparison if UI stability is important."
+    },
+    {
+      "id": "TEST-005",
+      "title": "Accessibility Testing",
+      "priority": "MEDIUM",
+      "status": "MISSING",
+      "category": "Testing & Quality",
+      "issue": "No automated accessibility testing exists. WCAG compliance validation not automated.",
+      "evidence": "No axe-core, pa11y, or other a11y testing tools found in test setup.",
+      "impact": "Medium impact - accessibility issues can exclude users and create legal risks.",
+      "recommendation": "Implement automated accessibility testing using axe-core or Lighthouse in CI/CD pipeline."
+    },
+    {
+      "id": "INT-006",
+      "title": "Analytics Integration",
+      "priority": "MEDIUM",
+      "status": "PARTIAL",
+      "category": "Integrations",
+      "issue": "Internal analytics exist but external analytics (Google Analytics) integration unclear.",
+      "evidence": "No Google Analytics or other external analytics integration found. Internal analytics dashboard exists.",
+      "impact": "Medium impact - external analytics provide better insights and marketing data.",
+      "recommendation": "Implement Google Analytics or similar external analytics if marketing insights are needed."
+    },
+    {
+      "id": "INT-007",
+      "title": "Calendar Sync",
+      "priority": "LOW",
+      "status": "PARTIAL",
+      "category": "Integrations",
+      "issue": "External calendar events table exists but calendar sync (iCal, Google Calendar) unclear.",
+      "evidence": "No iCal export or Google Calendar sync implementation found. Calendar events table exists.",
+      "impact": "Low impact - calendar sync is convenience feature but not critical.",
+      "recommendation": "Implement iCal export and Google Calendar sync if calendar integration is desired."
+    }
+  ],
+  "recommendations_by_priority": {
+    "critical": [
+      {
+        "id": "SEC-006",
+        "title": "Rate Limiting",
+        "effort": "LOW",
+        "impact": "HIGH",
+        "rationale": "Security vulnerability - API exposed to abuse without rate limiting."
+      }
+    ],
+    "high_priority": [
+      {
+        "id": "ADM-AUTH-004",
+        "title": "Password Reset",
+        "effort": "MEDIUM",
+        "impact": "HIGH",
+        "rationale": "Admins locked out cannot recover access without manual intervention."
+      },
+      {
+        "id": "EMAIL-004",
+        "title": "Cancellation Confirmation Email",
+        "effort": "LOW",
+        "impact": "HIGH",
+        "rationale": "Guests not notified of cancellation causes confusion and support burden."
+      },
+      {
+        "id": "PUB-NAV-005",
+        "title": "Page Load Performance",
+        "effort": "MEDIUM",
+        "impact": "HIGH",
+        "rationale": "Slow pages lead to user abandonment and poor SEO."
+      },
+      {
+        "id": "PUB-NAV-006",
+        "title": "Accessibility Compliance",
+        "effort": "MEDIUM",
+        "impact": "HIGH",
+        "rationale": "Accessibility issues exclude users and create legal compliance risks."
+      },
+      {
+        "id": "SEC-003",
+        "title": "GDPR Compliance",
+        "effort": "MEDIUM",
+        "impact": "HIGH",
+        "rationale": "GDPR non-compliance can result in legal issues and fines."
+      },
+      {
+        "id": "TEST-001",
+        "title": "Unit Tests Coverage",
+        "effort": "HIGH",
+        "impact": "HIGH",
+        "rationale": "Insufficient test coverage can lead to production bugs."
+      },
+      {
+        "id": "TEST-002",
+        "title": "API Tests Coverage",
+        "effort": "HIGH",
+        "impact": "HIGH",
+        "rationale": "API bugs can break booking flow and payment processing."
+      },
+      {
+        "id": "TEST-003",
+        "title": "E2E Tests Coverage",
+        "effort": "HIGH",
+        "impact": "HIGH",
+        "rationale": "E2E tests catch integration issues that unit tests miss."
+      }
+    ],
+    "medium_priority": [
+      {
+        "id": "PUB-BOOK-010",
+        "title": "Booking Modification Request",
+        "effort": "MEDIUM",
+        "impact": "MEDIUM",
+        "rationale": "Reduces support burden by allowing self-service modifications."
+      },
+      {
+        "id": "PUB-BOOK-011",
+        "title": "Booking Cancellation Request",
+        "effort": "MEDIUM",
+        "impact": "MEDIUM",
+        "rationale": "Reduces support burden and prevents missed cancellation deadlines."
+      },
+      {
+        "id": "EMAIL-005",
+        "title": "Pre-Arrival Email Automation",
+        "effort": "LOW",
+        "impact": "MEDIUM",
+        "rationale": "Improves guest experience and reduces support questions."
+      },
+      {
+        "id": "EMAIL-007",
+        "title": "Admin Notification Email",
+        "effort": "LOW",
+        "impact": "MEDIUM",
+        "rationale": "Ensures admins are notified immediately of new bookings."
+      },
+      {
+        "id": "PAY-006",
+        "title": "Deposit/Partial Payments",
+        "effort": "HIGH",
+        "impact": "MEDIUM",
+        "rationale": "Increases booking flexibility and may increase conversion."
+      },
+      {
+        "id": "ADM-INV-005",
+        "title": "Send Invoice Email",
+        "effort": "LOW",
+        "impact": "MEDIUM",
+        "rationale": "Ensures invoices are sent automatically for faster payment."
+      },
+      {
+        "id": "TEST-005",
+        "title": "Accessibility Testing",
+        "effort": "MEDIUM",
+        "impact": "MEDIUM",
+        "rationale": "Automated testing catches accessibility issues early."
+      },
+      {
+        "id": "INT-006",
+        "title": "Analytics Integration",
+        "effort": "LOW",
+        "impact": "MEDIUM",
+        "rationale": "External analytics provide better marketing insights."
+      }
+    ],
+    "low_priority": [
+      {
+        "id": "PUB-ROOM-003",
+        "title": "Room Comparison",
+        "effort": "MEDIUM",
+        "impact": "LOW",
+        "rationale": "Nice-to-have feature but not critical for booking flow."
+      },
+      {
+        "id": "ADM-AUTH-005",
+        "title": "Multi-Factor Authentication",
+        "effort": "MEDIUM",
+        "impact": "LOW",
+        "rationale": "Improves security but current password-based auth works."
+      },
+      {
+        "id": "ADM-AUTH-006",
+        "title": "Role-Based Access Control",
+        "effort": "HIGH",
+        "impact": "LOW",
+        "rationale": "Useful for scaling but current single-admin model works."
+      },
+      {
+        "id": "EMAIL-006",
+        "title": "Post-Stay Email",
+        "effort": "LOW",
+        "impact": "LOW",
+        "rationale": "Improves engagement but not critical for operations."
+      },
+      {
+        "id": "PAY-005",
+        "title": "Multi-Currency Support",
+        "effort": "HIGH",
+        "impact": "LOW",
+        "rationale": "EUR-only is acceptable for Portugal-based business."
+      },
+      {
+        "id": "PERF-007",
+        "title": "Offline Support",
+        "effort": "HIGH",
+        "impact": "LOW",
+        "rationale": "Nice-to-have but not critical for booking site."
+      },
+      {
+        "id": "TEST-004",
+        "title": "Visual Regression Tests",
+        "effort": "MEDIUM",
+        "impact": "LOW",
+        "rationale": "Useful for UI stability but not critical."
+      },
+      {
+        "id": "INT-007",
+        "title": "Calendar Sync",
+        "effort": "MEDIUM",
+        "impact": "LOW",
+        "rationale": "Convenience feature but not critical."
+      }
+    ]
+  },
+  "implementation_notes": {
+    "verified_working": [
+      "Homepage with CMS integration",
+      "Room catalog and detail pages",
+      "Booking flow with date selection and payment",
+      "Stripe payment integration",
+      "Admin panel with booking management",
+      "Email service with multiple templates",
+      "Scheduled email service (pre-trip, post-trip)",
+      "Add-ons selection in booking flow",
+      "Surf camp enrollment",
+      "Invoice generation and PDF download",
+      "Refund processing",
+      "Sitemap generation",
+      "Robots.txt",
+      "Blog management",
+      "Gallery management",
+      "Testimonials management"
+    ],
+    "needs_verification": [
+      "Rate limiting implementation (file missing)",
+      "Email automation cron job configuration",
+      "Test coverage percentages",
+      "GDPR compliance completeness",
+      "Accessibility WCAG 2.1 AA compliance",
+      "Performance metrics (LCP, FID, CLS)",
+      "Invoice email delivery",
+      "Admin notification email triggers"
+    ]
+  }
+}
+

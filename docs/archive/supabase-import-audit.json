@@ -1,0 +1,508 @@
+{
+  "directImports": [
+    {
+      "file": "app/blog/rss.xml/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": false,
+      "isServerComponent": false,
+      "shouldFix": true
+    },
+    {
+      "file": "app/sitemap.ts",
+      "hasContextUsage": false,
+      "isApiRoute": false,
+      "isServerComponent": false,
+      "shouldFix": true
+    }
+  ],
+  "contextUsage": [],
+  "apiRoutes": [
+    {
+      "file": "app/api/activities/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/activities/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/activity-categories/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/add-ons/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/add-ons/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/analytics/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/blog/authors/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/blog/authors/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/blog/categories/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/blog/categories/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/blog/tags/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/blog/tags/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/cms/page-stats/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/cms/settings/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/faq/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/faq/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/homepage/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/pages/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/pages/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/testimonials/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/admin/testimonials/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/analytics/bookings/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/analytics/clients/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/analytics/occupancy/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/analytics/revenue/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/assignments/participants/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/assignments/rooms/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/assignments/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/availability/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/blog/posts/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/bookings/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/bookings/bulk/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/bookings/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/calendar-events/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/calendar-events/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/clients/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/clients/bulk/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/clients/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/cms/activity/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/cms/cta/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/cms/faq/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/cms/homepage/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/cms/media/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/cms/page-content/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/cms/stats/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/cms/testimonials/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/create-payment-intent/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/dates/availability/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/enrollments/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/gallery/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/gallery/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/invoices/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/invoices/bulk/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/invoices/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/payments/[id]/refund/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/payments/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/payments/bulk/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/payments/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/rooms/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/rooms/availability/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/rooms/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/surf-camps/[id]/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/surf-camps/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/upload/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/widget/room-bookings/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    },
+    {
+      "file": "app/api/widget/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": true,
+      "isServerComponent": false,
+      "shouldFix": false
+    }
+  ],
+  "serverComponents": [
+    {
+      "file": "app/page.tsx",
+      "hasContextUsage": false,
+      "isApiRoute": false,
+      "isServerComponent": true,
+      "shouldFix": false
+    }
+  ],
+  "issues": [
+    {
+      "file": "app/blog/rss.xml/route.ts",
+      "hasContextUsage": false,
+      "isApiRoute": false,
+      "isServerComponent": false,
+      "shouldFix": true
+    },
+    {
+      "file": "app/sitemap.ts",
+      "hasContextUsage": false,
+      "isApiRoute": false,
+      "isServerComponent": false,
+      "shouldFix": true
+    }
+  ]
+}

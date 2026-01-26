@@ -1,0 +1,539 @@
+@config "../tailwind.config.js";
+@import "tailwindcss";
+
+/* Fonts are loaded via Next.js font optimization in layout.tsx */
+/* This eliminates FOUT by self-hosting and inlining font CSS */
+
+@layer base {
+  :root {
+    /* Color System */
+    --color-accent: #ec681c;
+    --color-accent-hover: #d65d16;
+    --color-accent-light: rgba(236, 104, 28, 0.1);
+    --color-accent-dark: #b8491a;
+
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 24 89% 52%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 24 95% 53%;
+
+    /* Semantic Colors */
+    --color-primary: #2B5F75;
+    --color-primary-light: #4A9DB5;
+    --color-primary-dark: #1A4252;
+
+    --color-secondary: #D4C5A9;
+    --color-secondary-light: #E8DCC4;
+    --color-secondary-dark: #B8A88C;
+
+    /* Status Colors */
+    --color-success: #16a34a;
+    --color-success-light: #dcfce7;
+    --color-success-dark: #15803d;
+
+    --color-warning: #d97706;
+    --color-warning-light: #fef3c7;
+    --color-warning-dark: #b45309;
+
+    --color-error: #dc2626;
+    --color-error-light: #fee2e2;
+    --color-error-dark: #b91c1c;
+
+    --color-info: #2563eb;
+    --color-info-light: #eff6ff;
+    --color-info-dark: #1d4ed8;
+
+    --color-surface: #FFFFFF;
+    --color-surface-alt: #F9F7F4;
+    --color-surface-light: #FAFAFA;
+
+    --color-text: #1A1A1A;
+    --color-text-muted: #5A5A5A;
+    --color-text-light: #757575;
+
+    /* ============================================
+     * Airbnb-Quality Design Tokens
+     * ============================================ */
+    
+    /* Shadow Tokens */
+    --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    /* Transition Tokens */
+    --transition-micro: 150ms ease-out;
+    --transition-standard: 300ms ease-out;
+    --transition-slow: 500ms ease-out;
+    --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Radius Tokens */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+    
+    /* Spacing Tokens */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+    --space-3xl: 64px;
+    --space-section: 80px;
+    --space-section-lg: 120px;
+
+    /* Z-Index Layers - Use CSS variables for consistent layering */
+    --z-base: 0;
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    --z-mobile-nav: 10000; /* Mobile nav must be above everything */
+  }
+  
+  /* Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --transition-micro: 0ms;
+      --transition-standard: 0ms;
+      --transition-slow: 0ms;
+      --transition-bounce: 0ms;
+    }
+    
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .btn-primary {
+    background-color: #ec681c;
+    color: #FFFFFF;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    border-radius: 8px;
+  }
+
+  .btn-primary:hover {
+    background-color: #ed5600;
+  }
+
+  .btn-primary:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #ec681c;
+  }
+
+  .card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+  }
+
+  .text-muted {
+    color: #5a5a5a;
+  }
+
+  .focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #ec681c;
+  }
+
+  .btn-accent {
+    background-color: #ec681c;
+    color: #FFFFFF;
+    transition: background-color 0.15s ease;
+  }
+
+  .btn-accent:hover {
+    background-color: #d65d16;
+  }
+
+  .btn-accent:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #d65d16;
+  }
+
+  /* Fix for admin buttons - ensure bg-heiwaOrange-600 works on Link components */
+  a.bg-heiwaOrange-600,
+  button.bg-heiwaOrange-600,
+  .bg-heiwaOrange-600 {
+    background-color: #ea580c !important;
+    color: #ffffff !important;
+  }
+
+  a.bg-heiwaOrange-600:hover,
+  button.bg-heiwaOrange-600:hover,
+  .bg-heiwaOrange-600:hover {
+    background-color: #c2410c !important;
+  }
+
+  a.bg-heiwaOrange-700,
+  button.bg-heiwaOrange-700,
+  .bg-heiwaOrange-700 {
+    background-color: #c2410c !important;
+    color: #ffffff !important;
+  }
+
+  a.bg-heiwaOrange-700:hover,
+  button.bg-heiwaOrange-700:hover,
+  .bg-heiwaOrange-700:hover {
+    background-color: #9a3412 !important;
+  }
+
+  /* ============================================
+   * TOON-Compliant Form Input Styles
+   * Requirements: 4.1, 4.2, 4.3, 8.4
+   * ============================================ */
+
+  /* Base input styles - TOON compliant */
+  .form-input,
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="search"],
+  select,
+  textarea {
+    min-height: 40px;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: all 150ms ease-out;
+    border: 1px solid #d1d5db; /* gray-300 */
+  }
+
+  /* TOON-compliant focus states for form inputs (Requirement 8.4) */
+  .form-input:focus,
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  input[type="date"]:focus,
+  input[type="search"]:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(236, 104, 28, 0.2); /* orange-500/20 ring */
+    border-color: #ec681c; /* orange-500 */
+  }
+
+  /* Focus-visible states for keyboard navigation */
+  .form-input:focus-visible,
+  input[type="text"]:focus-visible,
+  input[type="email"]:focus-visible,
+  input[type="tel"]:focus-visible,
+  input[type="password"]:focus-visible,
+  input[type="number"]:focus-visible,
+  input[type="date"]:focus-visible,
+  input[type="search"]:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(236, 104, 28, 0.2); /* orange-500/20 ring */
+    border-color: #ec681c; /* orange-500 */
+  }
+
+  /* Form label styles - TOON compliant */
+  .form-label {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    display: block;
+    color: #374151;
+  }
+
+  /* Helper text styles - TOON compliant */
+  .form-helper-text {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* Error helper text */
+  .form-helper-text.error {
+    color: #dc2626;
+  }
+
+  /* Form group spacing */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group > label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+  }
+}
+
+@layer base {
+  * {
+    scroll-behavior: smooth;
+  }
+  
+  html.menu-open {
+    overflow: hidden;
+    overscroll-behavior: contain;
+    touch-action: none;
+  }
+  
+  body {
+    background-color: #FFFFFF;
+    color: #1a1a1a;
+    font-family: var(--font-archivo), 'Archivo', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-archivo-narrow), 'Archivo Narrow', sans-serif;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.02em;
+  }
+
+  h1 {
+    font-size: 4.5rem;
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 2rem;
+    line-height: 1.3;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  p {
+    line-height: 1.75;
+    color: #5a5a5a;
+  }
+  
+  .prose p {
+    margin-bottom: 1.5em;
+  }
+  
+  /* Blog content text overflow handling */
+  .prose {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  .prose * {
+    max-width: 100%;
+  }
+  
+  .prose pre {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  
+  .prose code {
+    word-break: break-word;
+  }
+  
+  .prose img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .prose a {
+    word-break: break-word;
+  }
+}
+
+/* ============================================
+ * TOON-Compliant Icon-Text Alignment Utilities
+ * Requirements: 7.1, 7.3
+ * - Icon-text gap: 8px
+ * - Vertical alignment with text baseline
+ * ============================================ */
+@layer utilities {
+  /* Icon-text container with proper gap and alignment */
+  .icon-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* TOON-compliant 8px gap */
+  }
+
+  /* Icon-text for flex containers */
+  .icon-text-flex {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* TOON-compliant 8px gap */
+  }
+
+  /* Icon sizing relative to text (0.9x ratio) */
+  .icon-text svg,
+  .icon-text-flex svg {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+  }
+
+  /* Larger icon variant for headings */
+  .icon-text-lg {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-text-lg svg {
+    flex-shrink: 0;
+    width: 1.25em;
+    height: 1.25em;
+  }
+}
+
+/* Accessibility utilities */
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .not-sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+/* Texture overlays for subtle depth */
+@layer utilities {
+  .texture-noise {
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  .section-light-texture {
+    background-color: #f3f4f6;
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  .section-white-texture {
+    background-color: white;
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+}
+
+/* ============================================
+ * Airbnb-Quality Animation Utilities
+ * ============================================ */
+@layer utilities {
+  /* Shimmer effect for skeleton loaders */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #f0f0f0 25%,
+      #e0e0e0 50%,
+      #f0f0f0 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  /* Interactive card hover effect */
+  .card-interactive {
+    transition: transform var(--transition-micro), box-shadow var(--transition-micro);
+  }
+  
+  .card-interactive:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  /* Touch feedback for mobile */
+  .touch-feedback {
+    transition: transform var(--transition-micro);
+  }
+  
+  .touch-feedback:active {
+    transform: scale(0.98);
+  }
+  
+  /* Focus ring for accessibility */
+  .focus-ring {
+    outline: none;
+  }
+  
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  
+  /* Smooth image loading */
+  .image-fade-in {
+    opacity: 0;
+    transition: opacity var(--transition-standard);
+  }
+  
+  .image-fade-in.loaded {
+    opacity: 1;
+  }
+  
+  /* Price update pulse */
+  .price-pulse {
+    animation: pulse-ring 0.3s ease-out;
+  }
+}

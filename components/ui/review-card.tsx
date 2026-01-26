@@ -1,0 +1,127 @@
+'use client'
+
+import { Star, CheckCircle } from 'lucide-react'
+
+interface Review {
+  id: string
+  name: string
+  rating: number
+  text: string
+  timeAgo: string
+  verified?: boolean
+}
+
+interface ReviewCardProps {
+  review: Review
+  className?: string
+}
+
+export function ReviewCard({ review, className = '' }: ReviewCardProps) {
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        data-testid="star"
+        className={`w-3 h-3 sm:w-4 sm:h-4 ${
+          i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+        }`}
+      />
+    ))
+  }
+
+  return (
+    <div className={`bg-white rounded-lg border border-gray-200 p-3 sm:p-4 shadow-sm hover:shadow-md transition-[box-shadow] duration-300 touch-manipulation ${className}`}>
+      {/* Header */}
+      <div className="flex items-start justify-between mb-2 sm:mb-3">
+        <div className="flex items-center space-x-2">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs sm:text-sm font-semibold">
+            G
+          </div>
+          <div>
+            <div className="flex items-center space-x-1">
+              <span className="font-semibold text-gray-900 text-xs sm:text-sm">{review.name}</span>
+              {review.verified && (
+                <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500" />
+              )}
+            </div>
+            <span className="text-xs text-gray-500">{review.timeAgo}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Rating */}
+      <div className="flex items-center space-x-1 mb-2 sm:mb-3">
+        {renderStars(review.rating)}
+      </div>
+
+      {/* Review Text */}
+      <p className="text-gray-700 text-xs sm:text-sm leading-relaxed mb-2 line-clamp-3">
+        {review.text}
+      </p>
+
+      {/* Read More Link */}
+      <button className="text-blue-600 hover:text-blue-800 active:text-blue-900 text-xs sm:text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 rounded min-h-[44px] px-2 py-1">
+        Read more
+      </button>
+    </div>
+  )
+}
+
+interface GoogleReviewsProps {
+  reviews: Review[]
+  rating: number
+  reviewCount: number
+  onReviewUs: () => void
+}
+
+export function GoogleReviews({ reviews, rating, reviewCount, onReviewUs }: GoogleReviewsProps) {
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`w-4 h-4 sm:w-5 sm:h-5 ${
+          i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+        }`}
+      />
+    ))
+  }
+
+  return (
+    <div className="w-full">
+      {/* Google Reviews Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded flex items-center justify-center text-white font-bold text-sm sm:text-base">
+            G
+          </div>
+          <div>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Reviews</h3>
+            <div className="flex items-center space-x-2">
+              <span className="text-xl sm:text-2xl font-bold text-gray-900">{rating}</span>
+              <div className="flex items-center space-x-1">
+                {renderStars(rating)}
+              </div>
+              <span className="text-xs sm:text-sm text-gray-600">({reviewCount.toLocaleString()})</span>
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={onReviewUs}
+          className="px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-semibold rounded-lg transition-[background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 min-h-[44px] self-start sm:self-auto"
+        >
+          Review us on Google
+        </button>
+      </div>
+
+      {/* Reviews Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {reviews.map((review) => (
+          <ReviewCard key={review.id} review={review} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+
+

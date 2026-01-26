@@ -1,0 +1,1040 @@
+{
+  "audit_metadata": {
+    "project": "Heiwa House Website",
+    "audit_date": "2025-09-29",
+    "version": "1.0.0",
+    "auditor": "Claude Code Deep Dive Analysis",
+    "total_issues_identified": 78,
+    "pages_analyzed": 7,
+    "components_analyzed": 15
+  },
+  "executive_summary": {
+    "critical_issues": 5,
+    "high_priority_issues": 15,
+    "medium_priority_issues": 28,
+    "low_priority_issues": 30,
+    "primary_concerns": [
+      "Navigation max-width constraint preventing edge-to-edge layout",
+      "Selected navigation item has poor visibility - appears black/nearly invisible",
+      "Inconsistent container widths across pages creating jarring user experience",
+      "Accessibility issues with color contrast and touch targets",
+      "Responsive design breakpoint inconsistencies across components"
+    ]
+  },
+  "critical_issues": [
+    {
+      "id": "CRIT-001",
+      "priority": "P0",
+      "category": "Layout",
+      "title": "Navigation max-width constraint prevents full-width layout",
+      "description": "Navigation uses max-w-container (1400px) which prevents edge-to-edge layout on large screens",
+      "user_impact": "Navigation appears boxed-in with white space on sides on large displays",
+      "file": "components/navigation.tsx",
+      "line_numbers": [75],
+      "current_code": "<div className=\"max-w-container mx-auto px-4 sm:px-6 lg:px-8\">",
+      "recommended_fix": "<div className=\"w-full mx-auto px-4 sm:px-6 lg:px-8\">",
+      "alternative_fix": "Create separate layout for nav without max-width but keep container for inner content",
+      "estimated_effort": "5 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "CRIT-002",
+      "priority": "P0",
+      "category": "Navigation",
+      "title": "Selected navigation item nearly invisible - poor active state",
+      "description": "Active navigation item uses text-accent which user reports appears black/nearly invisible. Needs stronger visual indicator like underline or background",
+      "user_impact": "Users cannot tell which page they are on, poor navigation feedback",
+      "file": "components/navigation.tsx",
+      "line_numbers": [89, 180, 244],
+      "current_code": "currentPath === item.path ? 'text-accent' : textColorClass",
+      "recommended_fix": "currentPath === item.path ? 'text-accent font-bold border-b-2 border-accent pb-1' : textColorClass",
+      "visual_enhancement": "Add underline border to clearly indicate active page",
+      "estimated_effort": "10 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "CRIT-003",
+      "priority": "P0",
+      "category": "Mobile UX",
+      "title": "Floating booking widget blocks content on mobile",
+      "description": "Fixed bottom booking button always visible, blocks last section content without bottom padding compensation",
+      "user_impact": "Users cannot see or interact with bottom page content on mobile devices",
+      "file": "components/floating-booking-widget.tsx",
+      "line_numbers": [13, 14],
+      "current_code": "className=\"fixed bottom-0 left-0 right-0 z-50\"",
+      "recommended_fix": "Add pb-20 or pb-24 to all page layouts when booking widget is present, or make widget dismissible",
+      "alternative_fix": "Use IntersectionObserver to hide widget when footer is visible",
+      "estimated_effort": "30 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "CRIT-004",
+      "priority": "P0",
+      "category": "Accessibility",
+      "title": "Touch targets too small on mobile - below 44x44px minimum",
+      "description": "Many buttons and links don't meet iOS/Android minimum touch target size of 44x44px",
+      "user_impact": "Users struggle to tap buttons accurately on mobile, leading to frustration",
+      "files_affected": [
+        "app/rooms/page.tsx (category filters)",
+        "components/navigation.tsx (mobile nav links)",
+        "components/card-grid.tsx (card action buttons)"
+      ],
+      "current_issue": "Buttons use py-2 px-4 which creates ~32px touch targets",
+      "recommended_fix": "Ensure all interactive elements have min-h-[44px] and adequate padding",
+      "wcag_guideline": "WCAG 2.1 Success Criterion 2.5.5 (AAA)",
+      "estimated_effort": "2 hours",
+      "breaking_change": false
+    },
+    {
+      "id": "CRIT-005",
+      "priority": "P0",
+      "category": "Accessibility",
+      "title": "Missing focus states for keyboard navigation",
+      "description": "Many interactive elements lack visible focus indicators for keyboard users",
+      "user_impact": "Keyboard users cannot navigate site effectively, fails WCAG requirements",
+      "files_affected": [
+        "components/navigation.tsx",
+        "components/card-grid.tsx",
+        "app/rooms/page.tsx",
+        "components/BookingWidget/BookingWidget.tsx"
+      ],
+      "current_issue": "No focus:ring or focus:outline styles on most buttons/links",
+      "recommended_fix": "Add focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none to all interactive elements",
+      "wcag_guideline": "WCAG 2.1 Success Criterion 2.4.7 (AA)",
+      "estimated_effort": "3 hours",
+      "breaking_change": false
+    }
+  ],
+  "high_priority_issues": [
+    {
+      "id": "HIGH-001",
+      "priority": "P1",
+      "category": "Layout",
+      "title": "Inconsistent container widths across pages",
+      "description": "Pages use different max-width values (max-w-4xl, max-w-7xl, max-w-container) without consistent pattern",
+      "user_impact": "Content jumps width as users navigate between pages, feels unprofessional",
+      "files_affected": [
+        "app/page.tsx (uses max-w-4xl and max-w-7xl)",
+        "app/rooms/page.tsx (uses max-w-7xl)",
+        "app/surf-weeks/page.tsx (uses max-w-6xl)",
+        "app/booking/page.tsx (uses max-w-4xl)"
+      ],
+      "recommended_fix": "Establish consistent width system: Hero sections = full width, Content sections = max-w-7xl, Text sections = max-w-4xl",
+      "estimated_effort": "1 hour",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-002",
+      "priority": "P1",
+      "category": "UI Design",
+      "title": "Category filter buttons lack visual prominence",
+      "description": "Room category filters only show bottom border when active, easy to miss",
+      "user_impact": "Users don't notice filtering functionality, may think site lacks filtering",
+      "file": "app/rooms/page.tsx",
+      "line_numbers": [82, 92],
+      "current_code": "Active state only adds border-b-2 border-accent",
+      "recommended_fix": "Add background color and more prominent styling: 'bg-accent text-white px-6 py-3 rounded-lg' for active state",
+      "estimated_effort": "15 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-003",
+      "priority": "P1",
+      "category": "Performance",
+      "title": "Similar rooms section uses img tag instead of Next Image",
+      "description": "Room detail page similar rooms use standard img tag, losing optimization benefits",
+      "user_impact": "Slower page load, poor image optimization, worse Core Web Vitals",
+      "file": "app/rooms/[id]/page.tsx",
+      "line_numbers": [259, 263],
+      "current_code": "<img src={similarRoom.image} alt={similarRoom.name} className=\"w-full h-full object-cover\" />",
+      "recommended_fix": "Replace with Next.js Image component: <Image src={similarRoom.image} alt={similarRoom.name} fill className=\"object-cover\" />",
+      "estimated_effort": "20 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-004",
+      "priority": "P1",
+      "category": "Mobile UX",
+      "title": "Image carousel navigation hidden on touch devices",
+      "description": "Carousel arrows use opacity-0 group-hover:opacity-100, invisible on touch screens",
+      "user_impact": "Mobile users cannot navigate image galleries easily",
+      "file": "components/ui/image-carousel.tsx",
+      "line_numbers": [72],
+      "current_code": "className includes opacity-0 group-hover:opacity-100",
+      "recommended_fix": "Make arrows always visible on mobile: 'opacity-100 md:opacity-0 md:group-hover:opacity-100'",
+      "estimated_effort": "10 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-005",
+      "priority": "P1",
+      "category": "Accessibility",
+      "title": "Color contrast issues - gray text may fail WCAG AA",
+      "description": "text-gray-500 and text-gray-600 on white may not meet 4.5:1 contrast ratio",
+      "user_impact": "Users with vision impairments cannot read body text easily",
+      "files_affected": [
+        "app/page.tsx",
+        "app/rooms/page.tsx",
+        "app/surf-weeks/page.tsx",
+        "components/footer.tsx"
+      ],
+      "current_issue": "Uses text-gray-500 and text-gray-600 for body text",
+      "recommended_fix": "Use text-gray-700 minimum for body text, test all colors with contrast checker",
+      "wcag_guideline": "WCAG 2.1 Success Criterion 1.4.3 (AA)",
+      "testing_tool": "https://webaim.org/resources/contrastchecker/",
+      "estimated_effort": "1 hour",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-006",
+      "priority": "P1",
+      "category": "Layout",
+      "title": "Footer max-width prevents edge-to-edge layout",
+      "description": "Footer uses max-w-container limiting width to 1400px",
+      "user_impact": "Footer doesn't extend to screen edges on large displays, looks incomplete",
+      "file": "components/footer.tsx",
+      "line_numbers": [28],
+      "current_code": "<div className=\"max-w-container mx-auto px-4 sm:px-6 lg:px-8 py-16\">",
+      "recommended_fix": "Remove max-width or apply max-width only to inner content grid, let footer background extend full width",
+      "estimated_effort": "15 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-007",
+      "priority": "P1",
+      "category": "Responsive Design",
+      "title": "Footer grid layout breaks awkwardly on tablets",
+      "description": "Footer grid jumps from 1 column to 4 columns, no tablet breakpoint",
+      "user_impact": "Awkward layout on iPad and tablet devices, columns too narrow",
+      "file": "components/footer.tsx",
+      "line_numbers": [29],
+      "current_code": "grid grid-cols-1 md:grid-cols-4 gap-12",
+      "recommended_fix": "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12",
+      "estimated_effort": "5 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-008",
+      "priority": "P1",
+      "category": "UI Design",
+      "title": "Loading states are minimal - just text",
+      "description": "Room list loading state shows plain text instead of skeleton or spinner",
+      "user_impact": "Poor perceived performance, looks unfinished",
+      "file": "app/rooms/page.tsx",
+      "line_numbers": [101, 104],
+      "current_code": "<div>Loading rooms...</div>",
+      "recommended_fix": "Add skeleton cards or spinner component for better loading UX",
+      "estimated_effort": "30 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-009",
+      "priority": "P1",
+      "category": "UI Design",
+      "title": "Price badge visibility issues on dark images",
+      "description": "Room card price badges use bg-black/50 which may be illegible on dark room images",
+      "user_impact": "Users cannot see prices on some room cards",
+      "file": "app/rooms/page.tsx",
+      "line_numbers": [123],
+      "current_code": "PriceBadge with bg-black/50 backdrop",
+      "recommended_fix": "Increase backdrop opacity to bg-black/70 or add white border for better contrast",
+      "estimated_effort": "10 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-010",
+      "priority": "P1",
+      "category": "Typography",
+      "title": "Inconsistent heading sizes across pages",
+      "description": "H1 sizes vary without clear hierarchy: some 3xl, some 4xl, some 5xl",
+      "user_impact": "Visual inconsistency, unprofessional appearance",
+      "files_affected": [
+        "app/page.tsx (text-5xl md:text-7xl)",
+        "app/rooms/page.tsx (text-4xl)",
+        "app/surf-weeks/page.tsx (text-4xl)"
+      ],
+      "recommended_fix": "Standardize page titles to text-4xl md:text-5xl, hero titles to text-5xl md:text-7xl",
+      "estimated_effort": "30 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-011",
+      "priority": "P1",
+      "category": "UX",
+      "title": "Room detail page has duplicate price displays",
+      "description": "Price shown both in top-right badge AND booking card - redundant",
+      "user_impact": "Visual clutter, confusing layout",
+      "file": "app/rooms/[id]/page.tsx",
+      "line_numbers": [117, 120, 198, 201],
+      "recommended_fix": "Remove top-right price badge, keep only in booking card where action happens",
+      "estimated_effort": "10 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-012",
+      "priority": "P1",
+      "category": "Responsive Design",
+      "title": "Inconsistent breakpoint progressions across components",
+      "description": "Some components go 1→4 cols, others 2→4, no standard tablet experience",
+      "user_impact": "Inconsistent tablet layouts, some pages look good, others broken",
+      "files_affected": [
+        "components/footer.tsx (1→4)",
+        "app/surf-weeks/page.tsx gallery (2→4)",
+        "app/rooms/page.tsx (1→2→3)"
+      ],
+      "recommended_fix": "Establish standard: Mobile=1, Tablet=2, Desktop=3-4 cols",
+      "estimated_effort": "1 hour",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-013",
+      "priority": "P1",
+      "category": "UI Design",
+      "title": "Sticky booking card may overlap footer",
+      "description": "Room detail sticky booking card uses sticky top-24 without bottom constraint",
+      "user_impact": "Booking card overlaps footer on short screens",
+      "file": "app/rooms/[id]/page.tsx",
+      "line_numbers": [194],
+      "current_code": "sticky top-24",
+      "recommended_fix": "Add max-height and scroll container or use intersection observer to unstick at footer",
+      "estimated_effort": "45 minutes",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-014",
+      "priority": "P1",
+      "category": "UI Design",
+      "title": "Button styling inconsistency across pages",
+      "description": "Primary buttons use different classes: some use bg-[#ec681c], others use bg-accent",
+      "user_impact": "Inconsistent brand appearance, looks unprofessional",
+      "files_affected": [
+        "components/navigation.tsx (uses hardcoded #ec681c)",
+        "app/surf-weeks/page.tsx (uses bg-accent)",
+        "components/hero.tsx (uses inline styles)"
+      ],
+      "recommended_fix": "Always use theme colors: bg-accent hover:bg-accent-hover, never hardcode colors",
+      "estimated_effort": "1 hour",
+      "breaking_change": false
+    },
+    {
+      "id": "HIGH-015",
+      "priority": "P1",
+      "category": "Mobile UX",
+      "title": "Horizontal scrolling category filters janky on mobile",
+      "description": "Room category filter uses overflow-x-auto without snap points or smooth scrolling",
+      "user_impact": "Awkward scrolling experience on mobile",
+      "file": "app/rooms/page.tsx",
+      "line_numbers": [80],
+      "current_code": "overflow-x-auto",
+      "recommended_fix": "Add snap-x snap-mandatory scrollbar-hide for better mobile UX",
+      "estimated_effort": "15 minutes",
+      "breaking_change": false
+    }
+  ],
+  "medium_priority_issues": [
+    {
+      "id": "MED-001",
+      "priority": "P2",
+      "category": "Spacing",
+      "title": "Section padding inconsistency across pages",
+      "description": "Sections use varying padding (py-12, py-16, py-20) without clear hierarchy",
+      "files_affected": "All page files",
+      "recommended_fix": "Standardize: Small sections=py-12, Standard=py-16, Hero=py-20/py-24",
+      "estimated_effort": "1 hour"
+    },
+    {
+      "id": "MED-002",
+      "priority": "P2",
+      "category": "Spacing",
+      "title": "Grid gap values vary across components",
+      "description": "Different components use gap-4, gap-6, gap-8, gap-12 without pattern",
+      "recommended_fix": "Standardize to gap-6 for card grids, gap-8 for section spacing",
+      "estimated_effort": "30 minutes"
+    },
+    {
+      "id": "MED-003",
+      "priority": "P2",
+      "category": "Content",
+      "title": "Room facilities list is too sparse",
+      "description": "Room detail only shows 'Towels' and 'Wifi Access' - looks under-equipped",
+      "file": "app/rooms/[id]/page.tsx",
+      "line_numbers": [164, 176],
+      "recommended_fix": "Add comprehensive amenities list or fetch from CMS",
+      "estimated_effort": "20 minutes"
+    },
+    {
+      "id": "MED-004",
+      "priority": "P2",
+      "category": "UI Design",
+      "title": "Hero component uses inline styles instead of Tailwind",
+      "description": "Video filter and transforms use inline styles, hard to maintain",
+      "file": "components/hero.tsx",
+      "line_numbers": [18, 19, 84, 88],
+      "recommended_fix": "Convert to Tailwind utility classes or extract to component variants",
+      "estimated_effort": "30 minutes"
+    },
+    {
+      "id": "MED-005",
+      "priority": "P2",
+      "category": "UX",
+      "title": "Image carousel lacks keyboard navigation",
+      "description": "No arrow key support for navigating image galleries",
+      "file": "components/ui/image-carousel.tsx",
+      "recommended_fix": "Add keyboard event listeners for left/right arrow keys",
+      "estimated_effort": "45 minutes"
+    },
+    {
+      "id": "MED-006",
+      "priority": "P2",
+      "category": "Mobile UX",
+      "title": "Image carousel lacks swipe gesture support",
+      "description": "Touch users cannot swipe to navigate galleries",
+      "file": "components/ui/image-carousel.tsx",
+      "recommended_fix": "Implement touch event handlers or use library like swiper.js",
+      "estimated_effort": "2 hours"
+    },
+    {
+      "id": "MED-007",
+      "priority": "P2",
+      "category": "UI Design",
+      "title": "Floating booking widget has no close button",
+      "description": "Modal only closes by clicking backdrop, not obvious to users",
+      "file": "components/floating-booking-widget.tsx",
+      "line_numbers": [28, 31],
+      "recommended_fix": "Add visible X button in modal header",
+      "estimated_effort": "15 minutes"
+    },
+    {
+      "id": "MED-008",
+      "priority": "P2",
+      "category": "Design System",
+      "title": "Floating booking widget uses hardcoded orange color",
+      "description": "Uses bg-orange-500 instead of theme's bg-accent",
+      "file": "components/floating-booking-widget.tsx",
+      "line_numbers": [16, 42],
+      "recommended_fix": "Replace all instances of bg-orange-500 with bg-accent",
+      "estimated_effort": "10 minutes"
+    },
+    {
+      "id": "MED-009",
+      "priority": "P2",
+      "category": "UI Design",
+      "title": "Homepage sections use inconsistent max-widths",
+      "description": "Some sections max-w-4xl, others max-w-7xl within same page",
+      "file": "app/page.tsx",
+      "line_numbers": [60, 81, 181, 232],
+      "recommended_fix": "Apply consistent pattern: Hero=full, Features=max-w-7xl, Quotes=max-w-4xl",
+      "estimated_effort": "20 minutes"
+    },
+    {
+      "id": "MED-010",
+      "priority": "P2",
+      "category": "Mobile UX",
+      "title": "Video hero padding insufficient on smallest screens",
+      "description": "Only px-4 padding may cause text to touch edges on very small devices",
+      "file": "app/page.tsx",
+      "line_numbers": [32],
+      "recommended_fix": "Increase to px-6 for better breathing room",
+      "estimated_effort": "5 minutes"
+    },
+    {
+      "id": "MED-011",
+      "priority": "P2",
+      "category": "UI Design",
+      "title": "Room showcase cards have inconsistent spacing",
+      "description": "Card grid gap-8 but internal card spacing varies",
+      "file": "app/page.tsx",
+      "line_numbers": [91, 175],
+      "recommended_fix": "Standardize internal card padding to p-6",
+      "estimated_effort": "15 minutes"
+    },
+    {
+      "id": "MED-012",
+      "priority": "P2",
+      "category": "UI Design",
+      "title": "Rooms page title lacks visual hierarchy",
+      "description": "Page title section very minimal, just h1 with border",
+      "file": "app/rooms/page.tsx",
+      "line_numbers": [71, 75],
+      "recommended_fix": "Add subtitle, breadcrumb, or description for context",
+      "estimated_effort": "20 minutes"
+    },
+    {
+      "id": "MED-013",
+      "priority": "P2",
+      "category": "Layout",
+      "title": "Room detail page uses hardcoded nav height",
+      "description": "Uses h-20 spacer but nav height changes on scroll",
+      "file": "app/rooms/[id]/page.tsx",
+      "line_numbers": [95],
+      "recommended_fix": "Use pt-20 on main container instead of separate spacer div",
+      "estimated_effort": "10 minutes"
+    },
+    {
+      "id": "MED-014",
+      "priority": "P2",
+      "category": "Content",
+      "title": "Surf weeks page uses emojis that may render inconsistently",
+      "description": "Emojis in text may look different across devices/browsers",
+      "file": "app/surf-weeks/page.tsx",
+      "line_numbers": [83, 98, 166],
+      "recommended_fix": "Replace emojis with icon components from Lucide",
+      "estimated_effort": "20 minutes"
+    },
+    {
+      "id": "MED-015",
+      "priority": "P2",
+      "category": "Typography",
+      "title": "Surf weeks hero quote section lacks visual breaks",
+      "description": "Long text block without breaks is hard to read",
+      "file": "app/surf-weeks/page.tsx",
+      "line_numbers": [160, 169],
+      "recommended_fix": "Split into paragraphs with emphasis on key phrases",
+      "estimated_effort": "15 minutes"
+    },
+    {
+      "id": "MED-016",
+      "priority": "P2",
+      "category": "Responsive Design",
+      "title": "Gallery grid missing tablet breakpoint",
+      "description": "Jumps from 2 cols to 4 cols, no 3-column tablet state",
+      "file": "app/surf-weeks/page.tsx",
+      "line_numbers": [199],
+      "recommended_fix": "grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+      "estimated_effort": "5 minutes"
+    },
+    {
+      "id": "MED-017",
+      "priority": "P2",
+      "category": "UI Design",
+      "title": "Surf weeks dates section poor visual hierarchy",
+      "description": "Critical booking dates shown as plain list without prominence",
+      "file": "app/surf-weeks/page.tsx",
+      "line_numbers": [218, 252],
+      "recommended_fix": "Add calendar icons, highlight available dates, show booking status",
+      "estimated_effort": "1 hour"
+    },
+    {
+      "id": "MED-018",
+      "priority": "P2",
+      "category": "UI Design",
+      "title": "FAQ accordion needs better hover/active states",
+      "description": "Accordion items need clearer interaction affordance",
+      "file": "app/surf-weeks/page.tsx",
+      "line_numbers": [347, 358],
+      "recommended_fix": "Add hover background color and arrow animation",
+      "estimated_effort": "20 minutes"
+    },
+    {
+      "id": "MED-019",
+      "priority": "P2",
+      "category": "Content",
+      "title": "The Spot page minimal content structure",
+      "description": "Single text paragraph without visual interest or formatting",
+      "file": "app/the-spot/page.tsx",
+      "line_numbers": [52, 67],
+      "recommended_fix": "Add pull quotes, timeline, images, or visual breaks",
+      "estimated_effort": "2 hours"
+    },
+    {
+      "id": "MED-020",
+      "priority": "P2",
+      "category": "Content",
+      "title": "Image carousels without descriptive context",
+      "description": "Three carousels in sequence without captions or descriptions",
+      "file": "app/the-spot/page.tsx",
+      "line_numbers": [72, 109],
+      "recommended_fix": "Add captions or section titles for each carousel",
+      "estimated_effort": "30 minutes"
+    },
+    {
+      "id": "MED-021",
+      "priority": "P2",
+      "category": "Spacing",
+      "title": "The Spot page section spacing inconsistent",
+      "description": "Sections use py-16, py-12 without clear pattern",
+      "file": "app/the-spot/page.tsx",
+      "line_numbers": [52, 72, 82, 98],
+      "recommended_fix": "Standardize to py-16 for all sections",
+      "estimated_effort": "10 minutes"
+    },
+    {
+      "id": "MED-022",
+      "priority": "P2",
+      "category": "Layout",
+      "title": "Booking page layout inconsistent with other pages",
+      "description": "Uses bg-gray-50 py-12 while others have consistent header structure",
+      "file": "app/booking/page.tsx",
+      "line_numbers": [10, 12],
+      "recommended_fix": "Add consistent page header section like other pages",
+      "estimated_effort": "30 minutes"
+    },
+    {
+      "id": "MED-023",
+      "priority": "P2",
+      "category": "Design System",
+      "title": "Booking page uses emojis instead of icons",
+      "description": "Uses phone and email emojis instead of Lucide icons",
+      "file": "app/booking/page.tsx",
+      "line_numbers": [25, 34],
+      "recommended_fix": "Replace with <Phone /> and <Mail /> from lucide-react",
+      "estimated_effort": "10 minutes"
+    },
+    {
+      "id": "MED-024",
+      "priority": "P2",
+      "category": "Design System",
+      "title": "Contact links use wrong color class",
+      "description": "Uses text-orange-500 instead of theme's text-accent",
+      "file": "app/booking/page.tsx",
+      "line_numbers": [28, 38],
+      "recommended_fix": "Replace text-orange-500 with text-accent",
+      "estimated_effort": "5 minutes"
+    },
+    {
+      "id": "MED-025",
+      "priority": "P2",
+      "category": "UI Design",
+      "title": "Footer map embed too short",
+      "description": "Map has h-48 which may cut off map controls",
+      "file": "components/footer.tsx",
+      "line_numbers": [33],
+      "recommended_fix": "Increase to h-64 or h-72 for better visibility",
+      "estimated_effort": "5 minutes"
+    },
+    {
+      "id": "MED-026",
+      "priority": "P2",
+      "category": "Typography",
+      "title": "Long paragraphs lack explicit line-height",
+      "description": "Body text in surf-weeks and the-spot may be hard to read",
+      "files_affected": [
+        "app/surf-weeks/page.tsx",
+        "app/the-spot/page.tsx"
+      ],
+      "recommended_fix": "Add leading-relaxed or leading-loose to body text",
+      "estimated_effort": "15 minutes"
+    },
+    {
+      "id": "MED-027",
+      "priority": "P2",
+      "category": "Typography",
+      "title": "Uppercase text overused",
+      "description": "Too much uppercase reduces readability",
+      "files_affected": [
+        "components/navigation.tsx",
+        "app/page.tsx buttons"
+      ],
+      "recommended_fix": "Reserve uppercase for small UI elements only, not long text",
+      "estimated_effort": "30 minutes"
+    },
+    {
+      "id": "MED-028",
+      "priority": "P2",
+      "category": "Mobile UX",
+      "title": "Navigation mobile menu background inconsistent",
+      "description": "Mobile menu bg-black/90, desktop homepage nav bg-black/20",
+      "file": "components/navigation.tsx",
+      "line_numbers": [53, 237],
+      "recommended_fix": "Use consistent theming or explicitly different styling",
+      "estimated_effort": "15 minutes"
+    }
+  ],
+  "low_priority_issues": [
+    {
+      "id": "LOW-001",
+      "priority": "P3",
+      "category": "Performance",
+      "title": "Rooms page uses client-side rendering",
+      "description": "Entire rooms page is 'use client', loses SEO benefits",
+      "file": "app/rooms/page.tsx",
+      "line_numbers": [1],
+      "recommended_fix": "Convert to Server Component, use Server Actions for filtering",
+      "estimated_effort": "4 hours"
+    },
+    {
+      "id": "LOW-002",
+      "priority": "P3",
+      "category": "Performance",
+      "title": "Navigation fetches data client-side",
+      "description": "Nav items fetched on every page load client-side",
+      "file": "components/navigation.tsx",
+      "line_numbers": [18, 26],
+      "recommended_fix": "Pass navigation items from layout as server data",
+      "estimated_effort": "2 hours"
+    },
+    {
+      "id": "LOW-003",
+      "priority": "P3",
+      "category": "Performance",
+      "title": "Missing priority loading on hero images",
+      "description": "Above-fold images not marked with priority prop",
+      "files_affected": [
+        "app/page.tsx room cards",
+        "components/hero.tsx"
+      ],
+      "recommended_fix": "Add priority prop to hero and first 3 room cards",
+      "estimated_effort": "15 minutes"
+    },
+    {
+      "id": "LOW-004",
+      "priority": "P3",
+      "category": "Performance",
+      "title": "Video autoplay without preload strategy",
+      "description": "Homepage video has no poster or preload optimization",
+      "file": "app/page.tsx",
+      "line_numbers": [17, 26],
+      "recommended_fix": "Add poster image and preload=metadata",
+      "estimated_effort": "20 minutes"
+    },
+    {
+      "id": "LOW-005",
+      "priority": "P3",
+      "category": "Performance",
+      "title": "Framer Motion animation may be janky on low-end devices",
+      "description": "Card grid animates each card individually with delay",
+      "file": "components/card-grid.tsx",
+      "line_numbers": [24, 29],
+      "recommended_fix": "Use CSS animations or reduce complexity",
+      "estimated_effort": "1 hour"
+    },
+    {
+      "id": "LOW-006",
+      "priority": "P3",
+      "category": "Animation",
+      "title": "Image hover scale too aggressive",
+      "description": "scale-105 and scale-110 can feel jarring",
+      "files_affected": [
+        "app/page.tsx",
+        "app/rooms/page.tsx",
+        "app/rooms/[id]/page.tsx"
+      ],
+      "recommended_fix": "Reduce to scale-102 for subtlety",
+      "estimated_effort": "20 minutes"
+    },
+    {
+      "id": "LOW-007",
+      "priority": "P3",
+      "category": "Animation",
+      "title": "Transition duration inconsistency",
+      "description": "Some transitions 200ms, others 300ms, 500ms",
+      "files_affected": "Multiple components",
+      "recommended_fix": "Standardize to 300ms for most transitions",
+      "estimated_effort": "30 minutes"
+    },
+    {
+      "id": "LOW-008",
+      "priority": "P3",
+      "category": "Performance",
+      "title": "Image aspect ratios inconsistent",
+      "description": "Room images use different aspect ratios (h-64 vs aspect-video)",
+      "files_affected": [
+        "app/rooms/page.tsx",
+        "components/card-grid.tsx"
+      ],
+      "recommended_fix": "Standardize to aspect-video or aspect-[4/3]",
+      "estimated_effort": "30 minutes"
+    },
+    {
+      "id": "LOW-009",
+      "priority": "P3",
+      "category": "Content",
+      "title": "Booking page is placeholder",
+      "description": "Entire page says 'Coming Soon', no actual functionality",
+      "file": "app/booking/page.tsx",
+      "recommended_fix": "Integrate booking system or remove page from nav",
+      "estimated_effort": "Depends on integration complexity"
+    },
+    {
+      "id": "LOW-010",
+      "priority": "P3",
+      "category": "Content",
+      "title": "Room details are hardcoded",
+      "description": "Room data hardcoded in component, not from CMS",
+      "file": "app/rooms/page.tsx",
+      "line_numbers": [44, 61],
+      "recommended_fix": "Fetch all data from CMS/API",
+      "estimated_effort": "3 hours"
+    },
+    {
+      "id": "LOW-011",
+      "priority": "P3",
+      "category": "Accessibility",
+      "title": "Some alt text is generic",
+      "description": "Images use generic alt text like 'Room image'",
+      "files_affected": "Multiple image components",
+      "recommended_fix": "Add descriptive alt text for each image",
+      "estimated_effort": "1 hour"
+    },
+    {
+      "id": "LOW-012",
+      "priority": "P3",
+      "category": "UI Design",
+      "title": "Button hover scale causes layout shift",
+      "description": "hover:scale-105 on buttons causes CLS issues",
+      "files_affected": [
+        "components/navigation.tsx",
+        "components/hero.tsx"
+      ],
+      "recommended_fix": "Use color/shadow changes instead of scale",
+      "estimated_effort": "30 minutes"
+    },
+    {
+      "id": "LOW-013",
+      "priority": "P3",
+      "category": "Accessibility",
+      "title": "Orange accent color may not meet contrast for small text",
+      "description": "Accent color #ec681c on white may fail AA for small text",
+      "files_affected": "Throughout site",
+      "recommended_fix": "Test and potentially darken accent for text usage",
+      "estimated_effort": "2 hours including testing"
+    },
+    {
+      "id": "LOW-014",
+      "priority": "P3",
+      "category": "Accessibility",
+      "title": "White text on video overlays may not be readable",
+      "description": "Video backgrounds vary, white text needs darker overlay",
+      "file": "app/page.tsx, components/hero.tsx",
+      "recommended_fix": "Increase overlay to bg-black/40 or add text-shadow",
+      "estimated_effort": "15 minutes"
+    },
+    {
+      "id": "LOW-015",
+      "priority": "P3",
+      "category": "Code Quality",
+      "title": "CTA buttons use inline styles",
+      "description": "Hero CTA buttons have extensive inline styles",
+      "file": "components/hero.tsx",
+      "line_numbers": [84, 88],
+      "recommended_fix": "Extract to button variant component",
+      "estimated_effort": "45 minutes"
+    },
+    {
+      "id": "LOW-016",
+      "priority": "P3",
+      "category": "Spacing",
+      "title": "Container padding progression is jumpy",
+      "description": "Padding jumps px-4 sm:px-6 lg:px-8",
+      "files_affected": "Multiple pages",
+      "recommended_fix": "Consider smoother: px-4 md:px-6 lg:px-8",
+      "estimated_effort": "30 minutes"
+    }
+  ],
+  "implementation_plan": {
+    "phase_1_critical": {
+      "title": "Critical Fixes - Week 1",
+      "estimated_time": "8-12 hours",
+      "issues": ["CRIT-001", "CRIT-002", "CRIT-003", "CRIT-004", "CRIT-005"],
+      "rationale": "These issues break core UX and accessibility, must be fixed immediately",
+      "success_criteria": [
+        "Navigation extends edge-to-edge on all screen sizes",
+        "Active nav items clearly visible with underline",
+        "All touch targets meet 44x44px minimum",
+        "All interactive elements have visible focus states",
+        "Floating widget doesn't block content on mobile"
+      ]
+    },
+    "phase_2_high_priority": {
+      "title": "High Priority Improvements - Week 2",
+      "estimated_time": "12-16 hours",
+      "issues": ["HIGH-001", "HIGH-002", "HIGH-003", "HIGH-004", "HIGH-005", "HIGH-006", "HIGH-007", "HIGH-008", "HIGH-009", "HIGH-010"],
+      "rationale": "These issues significantly impact user experience and professional appearance",
+      "success_criteria": [
+        "Consistent container widths across all pages",
+        "All images use Next.js Image component",
+        "Color contrast passes WCAG AA",
+        "Footer extends full-width",
+        "Category filters visually prominent",
+        "Loading states use spinners/skeletons"
+      ]
+    },
+    "phase_3_medium_priority": {
+      "title": "Polish and Consistency - Week 3-4",
+      "estimated_time": "20-24 hours",
+      "issues": ["MED-001 through MED-028"],
+      "rationale": "These issues improve consistency and professional polish",
+      "success_criteria": [
+        "Consistent spacing throughout site",
+        "All colors use theme system",
+        "Keyboard navigation fully functional",
+        "Mobile touch interactions smooth",
+        "Typography hierarchy consistent"
+      ]
+    },
+    "phase_4_optimization": {
+      "title": "Performance and Enhancement - Ongoing",
+      "estimated_time": "30+ hours",
+      "issues": ["LOW-001 through LOW-016"],
+      "rationale": "These are nice-to-have improvements for long-term maintenance",
+      "success_criteria": [
+        "Server components where possible",
+        "Optimized image loading",
+        "Smooth animations",
+        "CMS integration complete"
+      ]
+    }
+  },
+  "testing_requirements": {
+    "browsers": [
+      "Chrome (latest)",
+      "Safari (latest)",
+      "Firefox (latest)",
+      "Edge (latest)",
+      "Safari iOS (latest)",
+      "Chrome Android (latest)"
+    ],
+    "devices": [
+      "iPhone 12/13/14 (390px)",
+      "iPhone Pro Max (428px)",
+      "iPad (768px)",
+      "iPad Pro (1024px)",
+      "Desktop 1920px",
+      "Desktop 2560px"
+    ],
+    "accessibility_tools": [
+      "WAVE Browser Extension",
+      "axe DevTools",
+      "Lighthouse Accessibility Audit",
+      "WebAIM Contrast Checker",
+      "Keyboard navigation manual testing",
+      "Screen reader testing (NVDA/JAWS)"
+    ],
+    "performance_tools": [
+      "Lighthouse Performance Audit",
+      "WebPageTest",
+      "Chrome DevTools Coverage",
+      "Next.js Bundle Analyzer"
+    ]
+  },
+  "design_system_recommendations": {
+    "layout": {
+      "containers": {
+        "full_width": "w-full",
+        "hero_sections": "w-full (no max-width)",
+        "content_sections": "max-w-7xl mx-auto",
+        "text_sections": "max-w-4xl mx-auto",
+        "narrow_text": "max-w-3xl mx-auto"
+      },
+      "spacing": {
+        "section_padding": {
+          "small": "py-12",
+          "standard": "py-16",
+          "hero": "py-20 md:py-24"
+        },
+        "grid_gaps": {
+          "tight": "gap-4",
+          "standard": "gap-6 md:gap-8",
+          "loose": "gap-8 md:gap-12"
+        },
+        "container_padding": "px-4 md:px-6 lg:px-8"
+      }
+    },
+    "typography": {
+      "headings": {
+        "h1_hero": "text-5xl md:text-6xl lg:text-7xl font-bold",
+        "h1_page": "text-4xl md:text-5xl font-bold",
+        "h2": "text-3xl md:text-4xl font-bold",
+        "h3": "text-2xl md:text-3xl font-semibold",
+        "h4": "text-xl md:text-2xl font-semibold"
+      },
+      "body": {
+        "large": "text-lg leading-relaxed text-gray-700",
+        "base": "text-base leading-relaxed text-gray-700",
+        "small": "text-sm leading-normal text-gray-600"
+      }
+    },
+    "colors": {
+      "primary": "bg-accent (orange #ec681c)",
+      "text": {
+        "primary": "text-gray-900",
+        "secondary": "text-gray-700",
+        "muted": "text-gray-600"
+      },
+      "backgrounds": {
+        "white": "bg-white",
+        "light": "bg-gray-50",
+        "dark": "bg-gray-900"
+      }
+    },
+    "interactive": {
+      "touch_targets": "min-h-[44px] min-w-[44px]",
+      "focus_state": "focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:outline-none",
+      "button_primary": "bg-accent hover:bg-accent-hover text-white px-6 py-3 rounded-lg font-medium transition-colors",
+      "button_secondary": "bg-white hover:bg-gray-50 text-accent border-2 border-accent px-6 py-3 rounded-lg font-medium transition-colors"
+    },
+    "breakpoints": {
+      "mobile": "base (< 768px)",
+      "tablet": "md: (768px)",
+      "desktop": "lg: (1024px)",
+      "wide": "xl: (1280px)"
+    }
+  },
+  "quick_wins": [
+    {
+      "issue": "Navigation max-width",
+      "effort": "5 minutes",
+      "impact": "High - immediate visual improvement"
+    },
+    {
+      "issue": "Active nav state underline",
+      "effort": "10 minutes",
+      "impact": "High - solves user-reported visibility issue"
+    },
+    {
+      "issue": "Footer grid breakpoint",
+      "effort": "5 minutes",
+      "impact": "Medium - better tablet experience"
+    },
+    {
+      "issue": "Carousel arrows always visible mobile",
+      "effort": "10 minutes",
+      "impact": "High - fixes mobile navigation"
+    },
+    {
+      "issue": "Gallery grid tablet breakpoint",
+      "effort": "5 minutes",
+      "impact": "Medium - smoother responsive design"
+    },
+    {
+      "issue": "Replace hardcoded colors with theme",
+      "effort": "30 minutes",
+      "impact": "Medium - design system consistency"
+    },
+    {
+      "issue": "Add loading spinners",
+      "effort": "30 minutes",
+      "impact": "Medium - better perceived performance"
+    },
+    {
+      "issue": "Footer full-width",
+      "effort": "15 minutes",
+      "impact": "Medium - cleaner layout"
+    }
+  ],
+  "files_requiring_changes": {
+    "critical": [
+      "components/navigation.tsx",
+      "components/floating-booking-widget.tsx",
+      "components/ui/image-carousel.tsx"
+    ],
+    "high_priority": [
+      "app/page.tsx",
+      "app/rooms/page.tsx",
+      "app/rooms/[id]/page.tsx",
+      "components/footer.tsx",
+      "tailwind.config.ts"
+    ],
+    "medium_priority": [
+      "app/surf-weeks/page.tsx",
+      "app/the-spot/page.tsx",
+      "app/booking/page.tsx",
+      "components/hero.tsx",
+      "components/card-grid.tsx"
+    ],
+    "global_styles": [
+      "app/globals.css",
+      "tailwind.config.ts"
+    ]
+  }
+}

@@ -1,0 +1,512 @@
+{
+  "testing_infrastructure_roadmap": {
+    "goal": "Achieve production-ready testing coverage with 80%+ code coverage and comprehensive E2E testing",
+    "target_completion": "Q1 2025",
+    "current_state": "7/10 - Good foundation, critical gaps in E2E and component coverage",
+    
+    "phases": {
+      "phase_1_critical": {
+        "name": "Critical Path - High Risk Areas",
+        "duration": "2-3 weeks",
+        "priority": "IMMEDIATE",
+        "items": [
+          {
+            "id": "e2e_001",
+            "task": "Create E2E test suite for booking widget flow",
+            "description": "Test complete user journey: room selection → dates → guests → add-ons → payment",
+            "files_to_create": [
+              "e2e/booking-widget-flow.spec.ts",
+              "e2e/booking-payment.spec.ts",
+              "e2e/booking-confirmation.spec.ts"
+            ],
+            "test_scenarios": [
+              "Complete booking flow with all options",
+              "Booking with add-ons",
+              "Payment method selection (card, bank wire)",
+              "Form validation errors",
+              "Availability check integration",
+              "Mobile responsive booking"
+            ],
+            "estimated_effort": "8 hours",
+            "risk_level": "CRITICAL",
+            "business_impact": "Revenue-critical feature"
+          },
+          {
+            "id": "e2e_002",
+            "task": "Create E2E test suite for admin bookings management",
+            "description": "Test admin dashboard: view bookings → create → edit → delete → search/filter",
+            "files_to_create": [
+              "e2e/admin-bookings-crud.spec.ts",
+              "e2e/admin-bookings-search.spec.ts",
+              "e2e/admin-bookings-realtime.spec.ts"
+            ],
+            "test_scenarios": [
+              "Create new booking",
+              "Edit existing booking",
+              "Delete booking",
+              "Search by ID/name/email",
+              "Filter by status/payment status",
+              "Pagination",
+              "Real-time updates",
+              "Bulk operations"
+            ],
+            "estimated_effort": "10 hours",
+            "risk_level": "CRITICAL",
+            "business_impact": "Core admin functionality"
+          },
+          {
+            "id": "int_001",
+            "task": "Add real database integration tests",
+            "description": "Test with actual Supabase connection (test database)",
+            "files_to_create": [
+              "__tests__/integration/database-bookings.test.ts",
+              "__tests__/integration/database-rooms.test.ts",
+              "__tests__/integration/database-payments.test.ts"
+            ],
+            "test_scenarios": [
+              "Create booking with real DB",
+              "Update booking status",
+              "Query with filters",
+              "Transaction rollback on error",
+              "Concurrent operations"
+            ],
+            "estimated_effort": "12 hours",
+            "risk_level": "CRITICAL",
+            "business_impact": "Data integrity"
+          },
+          {
+            "id": "comp_001",
+            "task": "Add component tests for BookingWidget",
+            "description": "Test all booking widget steps and interactions",
+            "files_to_create": [
+              "__tests__/components/BookingWidget/BookingWidget.test.tsx",
+              "__tests__/components/BookingWidget/steps/GuestDetails.test.tsx",
+              "__tests__/components/BookingWidget/steps/ReviewAndPay.test.tsx",
+              "__tests__/components/BookingWidget/steps/OptionSelection.test.tsx"
+            ],
+            "test_scenarios": [
+              "Step navigation",
+              "Form validation",
+              "State management",
+              "Error handling",
+              "Loading states"
+            ],
+            "estimated_effort": "10 hours",
+            "risk_level": "HIGH",
+            "business_impact": "User-facing feature"
+          }
+        ]
+      },
+
+      "phase_2_high_priority": {
+        "name": "High Priority - Core Features",
+        "duration": "3-4 weeks",
+        "priority": "HIGH",
+        "items": [
+          {
+            "id": "e2e_003",
+            "task": "Create E2E test suite for admin CMS",
+            "description": "Test homepage editor: create → edit → save → publish",
+            "files_to_create": [
+              "e2e/admin-cms-homepage.spec.ts",
+              "e2e/admin-cms-pages.spec.ts",
+              "e2e/admin-cms-testimonials.spec.ts"
+            ],
+            "test_scenarios": [
+              "Create CMS section",
+              "Edit section content",
+              "Save and verify on homepage",
+              "Publish changes",
+              "Revert changes",
+              "Media upload"
+            ],
+            "estimated_effort": "12 hours",
+            "risk_level": "HIGH",
+            "business_impact": "Content management"
+          },
+          {
+            "id": "comp_002",
+            "task": "Add component tests for admin pages",
+            "description": "Test admin dashboard, bookings, payments, invoices",
+            "files_to_create": [
+              "__tests__/components/admin/Dashboard.test.tsx",
+              "__tests__/components/admin/BookingsTable.test.tsx",
+              "__tests__/components/admin/PaymentsTable.test.tsx",
+              "__tests__/components/admin/InvoicesTable.test.tsx"
+            ],
+            "test_scenarios": [
+              "Data rendering",
+              "Sorting/filtering",
+              "Pagination",
+              "Modal interactions",
+              "Form submissions"
+            ],
+            "estimated_effort": "14 hours",
+            "risk_level": "HIGH",
+            "business_impact": "Admin UX"
+          },
+          {
+            "id": "api_001",
+            "task": "Add tests for remaining API endpoints",
+            "description": "Complete coverage of all 40 API routes",
+            "files_to_create": [
+              "__tests__/api/admin-analytics.test.ts",
+              "__tests__/api/admin-clients.test.ts",
+              "__tests__/api/admin-activities.test.ts",
+              "__tests__/api/cms-pages.test.ts",
+              "__tests__/api/cms-testimonials.test.ts"
+            ],
+            "test_scenarios": [
+              "GET endpoints",
+              "POST endpoints",
+              "PUT endpoints",
+              "DELETE endpoints",
+              "Error scenarios",
+              "Validation"
+            ],
+            "estimated_effort": "16 hours",
+            "risk_level": "MEDIUM",
+            "business_impact": "API reliability"
+          },
+          {
+            "id": "hook_001",
+            "task": "Add tests for custom hooks",
+            "description": "Test useBookingsRealtime, useAddOns, useRooms, etc.",
+            "files_to_create": [
+              "__tests__/hooks/useAddOns.test.ts",
+              "__tests__/hooks/useRooms.test.ts",
+              "__tests__/hooks/useSurfCamps.test.ts",
+              "__tests__/hooks/useDateAvailability.test.ts"
+            ],
+            "test_scenarios": [
+              "Hook initialization",
+              "State updates",
+              "Error handling",
+              "Cleanup"
+            ],
+            "estimated_effort": "10 hours",
+            "risk_level": "MEDIUM",
+            "business_impact": "Data fetching"
+          }
+        ]
+      },
+
+      "phase_3_medium_priority": {
+        "name": "Medium Priority - Coverage & Quality",
+        "duration": "2-3 weeks",
+        "priority": "MEDIUM",
+        "items": [
+          {
+            "id": "perf_001",
+            "task": "Set up performance testing",
+            "description": "Add Lighthouse CI and performance benchmarks",
+            "files_to_create": [
+              "lighthouserc.json",
+              "__tests__/performance/booking-widget.perf.ts",
+              "__tests__/performance/homepage.perf.ts"
+            ],
+            "test_scenarios": [
+              "Booking widget load time",
+              "Homepage performance",
+              "Admin dashboard performance",
+              "API response times"
+            ],
+            "estimated_effort": "8 hours",
+            "risk_level": "MEDIUM",
+            "business_impact": "User experience"
+          },
+          {
+            "id": "visual_001",
+            "task": "Set up visual regression testing",
+            "description": "Add Percy or similar for visual testing",
+            "files_to_create": [
+              "e2e/visual-regression.spec.ts",
+              ".percy.yml"
+            ],
+            "test_scenarios": [
+              "Homepage visual",
+              "Booking widget visual",
+              "Admin pages visual",
+              "Mobile responsive"
+            ],
+            "estimated_effort": "6 hours",
+            "risk_level": "LOW",
+            "business_impact": "UI consistency"
+          },
+          {
+            "id": "a11y_001",
+            "task": "Add accessibility testing",
+            "description": "Test WCAG 2.1 AA compliance",
+            "files_to_create": [
+              "__tests__/accessibility/homepage.a11y.ts",
+              "__tests__/accessibility/booking-widget.a11y.ts",
+              "__tests__/accessibility/admin.a11y.ts"
+            ],
+            "test_scenarios": [
+              "Keyboard navigation",
+              "Screen reader compatibility",
+              "Color contrast",
+              "ARIA labels"
+            ],
+            "estimated_effort": "10 hours",
+            "risk_level": "LOW",
+            "business_impact": "Accessibility compliance"
+          },
+          {
+            "id": "contract_001",
+            "task": "Expand contract testing",
+            "description": "Add contract tests for all API endpoints",
+            "files_to_create": [
+              "__tests__/contracts/admin-api-payments.test.ts",
+              "__tests__/contracts/admin-api-invoices.test.ts",
+              "__tests__/contracts/admin-api-analytics.test.ts"
+            ],
+            "test_scenarios": [
+              "Request/response validation",
+              "Schema compliance",
+              "Error response format"
+            ],
+            "estimated_effort": "8 hours",
+            "risk_level": "LOW",
+            "business_impact": "API contract"
+          }
+        ]
+      },
+
+      "phase_4_optimization": {
+        "name": "Optimization & Maintenance",
+        "duration": "1-2 weeks",
+        "priority": "LOW",
+        "items": [
+          {
+            "id": "ci_001",
+            "task": "Set up GitHub Actions CI/CD",
+            "description": "Automated test runs on push/PR",
+            "files_to_create": [
+              ".github/workflows/test.yml",
+              ".github/workflows/e2e.yml",
+              ".github/workflows/coverage.yml"
+            ],
+            "test_scenarios": [
+              "Run tests on PR",
+              "Generate coverage reports",
+              "Run E2E tests",
+              "Fail on coverage drop"
+            ],
+            "estimated_effort": "6 hours",
+            "risk_level": "LOW",
+            "business_impact": "Development workflow"
+          },
+          {
+            "id": "test_001",
+            "task": "Create test data management",
+            "description": "Seed test database with realistic data",
+            "files_to_create": [
+              "__tests__/fixtures/seed-test-db.ts",
+              "__tests__/fixtures/test-data.ts",
+              "scripts/setup-test-db.sh"
+            ],
+            "test_scenarios": [
+              "Seed bookings",
+              "Seed rooms",
+              "Seed users",
+              "Seed payments"
+            ],
+            "estimated_effort": "8 hours",
+            "risk_level": "LOW",
+            "business_impact": "Test reliability"
+          },
+          {
+            "id": "doc_001",
+            "task": "Update testing documentation",
+            "description": "Create comprehensive testing guide",
+            "files_to_create": [
+              "docs/TESTING_GUIDE.md",
+              "docs/E2E_TESTING.md",
+              "docs/TEST_DATA.md"
+            ],
+            "test_scenarios": [
+              "How to write tests",
+              "How to run tests",
+              "How to debug tests"
+            ],
+            "estimated_effort": "4 hours",
+            "risk_level": "LOW",
+            "business_impact": "Developer experience"
+          }
+        ]
+      }
+    },
+
+    "coverage_targets": {
+      "current": {
+        "api_routes": "37%",
+        "components": "9%",
+        "pages": "32%",
+        "overall": "~25%"
+      },
+      "phase_1_target": {
+        "api_routes": "60%",
+        "components": "40%",
+        "pages": "50%",
+        "overall": "~50%"
+      },
+      "phase_2_target": {
+        "api_routes": "80%",
+        "components": "65%",
+        "pages": "75%",
+        "overall": "~70%"
+      },
+      "final_target": {
+        "api_routes": "90%",
+        "components": "80%",
+        "pages": "85%",
+        "overall": "~85%"
+      }
+    },
+
+    "configuration_updates": [
+      {
+        "file": "jest.config.js",
+        "changes": [
+          "Update coverage thresholds to realistic values (80% for lines, 75% for branches)",
+          "Add testMatch patterns for new test files",
+          "Add setupFilesAfterEnv for database setup"
+        ]
+      },
+      {
+        "file": "playwright.config.ts",
+        "changes": [
+          "Add more browser configurations (Firefox, Safari)",
+          "Add mobile device testing",
+          "Increase timeout for slow operations",
+          "Add screenshot/video on failure"
+        ]
+      },
+      {
+        "file": "package.json",
+        "changes": [
+          "Add 'test:e2e:headed' for debugging",
+          "Add 'test:coverage:report' to open HTML report",
+          "Add 'test:watch:all' for all tests in watch mode",
+          "Add 'test:debug' for debugging tests"
+        ]
+      }
+    ],
+
+    "dependencies_to_add": [
+      {
+        "package": "@testing-library/user-event",
+        "version": "^14.6.1",
+        "reason": "Better user interaction simulation"
+      },
+      {
+        "package": "jest-extended",
+        "version": "^4.0.0",
+        "reason": "Additional Jest matchers"
+      },
+      {
+        "package": "@axe-core/react",
+        "version": "^4.7.0",
+        "reason": "Accessibility testing"
+      },
+      {
+        "package": "lighthouse",
+        "version": "^10.0.0",
+        "reason": "Performance testing"
+      },
+      {
+        "package": "percy",
+        "version": "^1.0.0",
+        "reason": "Visual regression testing"
+      }
+    ],
+
+    "success_criteria": {
+      "phase_1": [
+        "E2E booking flow tests passing",
+        "E2E admin bookings tests passing",
+        "Database integration tests passing",
+        "BookingWidget component tests at 80%+ coverage"
+      ],
+      "phase_2": [
+        "All admin pages have component tests",
+        "All API endpoints have tests",
+        "Custom hooks have tests",
+        "Overall coverage at 70%+"
+      ],
+      "phase_3": [
+        "Performance benchmarks established",
+        "Visual regression tests passing",
+        "Accessibility tests passing",
+        "Contract tests comprehensive"
+      ],
+      "phase_4": [
+        "CI/CD pipeline fully automated",
+        "Test data management in place",
+        "Documentation complete",
+        "Overall coverage at 85%+"
+      ]
+    },
+
+    "risk_mitigation": [
+      {
+        "risk": "E2E tests are flaky",
+        "mitigation": "Use explicit waits, retry logic, and stable selectors"
+      },
+      {
+        "risk": "Database tests interfere with production",
+        "mitigation": "Use separate test database with cleanup after each test"
+      },
+      {
+        "risk": "Tests take too long to run",
+        "mitigation": "Parallelize tests, use test sharding, cache dependencies"
+      },
+      {
+        "risk": "Mock data becomes stale",
+        "mitigation": "Keep mocks in sync with API, use contract testing"
+      }
+    ],
+
+    "estimated_timeline": {
+      "phase_1": "2-3 weeks",
+      "phase_2": "3-4 weeks",
+      "phase_3": "2-3 weeks",
+      "phase_4": "1-2 weeks",
+      "total": "8-12 weeks"
+    },
+
+    "resource_requirements": {
+      "team_size": "1-2 developers",
+      "time_commitment": "50-60% of sprint capacity",
+      "tools": [
+        "Jest",
+        "Playwright",
+        "MSW",
+        "Percy (optional)",
+        "Lighthouse CI (optional)"
+      ]
+    },
+
+    "quick_wins": [
+      {
+        "task": "Add 3 E2E booking flow tests",
+        "effort": "4 hours",
+        "impact": "HIGH",
+        "coverage_gain": "10-15%"
+      },
+      {
+        "task": "Add BookingWidget component tests",
+        "effort": "6 hours",
+        "impact": "HIGH",
+        "coverage_gain": "8-10%"
+      },
+      {
+        "task": "Add admin CRUD tests for bookings",
+        "effort": "5 hours",
+        "impact": "MEDIUM",
+        "coverage_gain": "5-8%"
+      }
+    ]
+  }
+}

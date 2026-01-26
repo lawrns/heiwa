@@ -1,0 +1,173 @@
+{
+  "timestamp": "2025-12-01T23:02:44.816Z",
+  "baseUrl": "https://heiwahauz.netlify.app",
+  "summary": {
+    "total": 23,
+    "passed": 23,
+    "failed": 0,
+    "passRate": 100
+  },
+  "results": [
+    {
+      "name": "PUB-NAV-001: Homepage loads",
+      "category": "1.1 Navigation",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 1709
+    },
+    {
+      "name": "PUB-NAV-001: Hero section visible",
+      "category": "1.1 Navigation",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 1831
+    },
+    {
+      "name": "PUB-NAV-001: Book CTA visible",
+      "category": "1.1 Navigation",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 492
+    },
+    {
+      "name": "PUB-NAV-004: Mobile responsive",
+      "category": "1.1 Navigation",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 314
+    },
+    {
+      "name": "PUB-ROOM-001: Rooms page loads",
+      "category": "1.2 Accommodation",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 673
+    },
+    {
+      "name": "PUB-CONT-006: Contact page loads",
+      "category": "1.5 Content",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 475
+    },
+    {
+      "name": "PUB-CONT-007: Privacy page loads",
+      "category": "1.5 Content",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 356
+    },
+    {
+      "name": "PUB-CONT-008: Terms page loads",
+      "category": "1.5 Content",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 365
+    },
+    {
+      "name": "PUB-SEO-001: Meta tags present",
+      "category": "1.9 SEO",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 259
+    },
+    {
+      "name": "API: GET /api/rooms",
+      "category": "API",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 396
+    },
+    {
+      "name": "API: GET /api/bookings",
+      "category": "API",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 311
+    },
+    {
+      "name": "API: GET /api/surf-camps",
+      "category": "API",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 282
+    },
+    {
+      "name": "API: GET /api/availability",
+      "category": "API",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 476
+    },
+    {
+      "name": "API: GET /api/admin/homepage",
+      "category": "API",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 182
+    },
+    {
+      "name": "Room Assignments: Bookings API has room data",
+      "category": "Critical",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 311
+    },
+    {
+      "name": "Participants API: Returns data",
+      "category": "Critical",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 243
+    },
+    {
+      "name": "No 500 Errors: API endpoints healthy",
+      "category": "Critical",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 1046
+    },
+    {
+      "name": "ADM-AUTH-001: Admin login page loads",
+      "category": "2.1 Auth",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 341
+    },
+    {
+      "name": "ADM-BOOK-001: Bookings page accessible",
+      "category": "2.3 Bookings",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 295
+    },
+    {
+      "name": "ADM-CLI-001: Clients page accessible",
+      "category": "2.4 Clients",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 307
+    },
+    {
+      "name": "ADM-ROOM-001: Rooms page accessible",
+      "category": "2.5 Rooms",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 290
+    },
+    {
+      "name": "Performance: Homepage load time",
+      "category": "Performance",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 315
+    },
+    {
+      "name": "Performance: API response time",
+      "category": "Performance",
+      "status": "PASS",
+      "message": "Test passed",
+      "duration": 192
+    }
+  ]
+}

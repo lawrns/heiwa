@@ -1,0 +1,286 @@
+{
+  "metadata": {
+    "tested_url": "https://heiwahouse.netlify.app",
+    "test_date": "2025-01-30",
+    "test_method": "curl_production_testing",
+    "admin_password_provided": true
+  },
+  "critical_findings": {
+    "api_routes_returning_404_html": [
+      {
+        "endpoint": "/api/admin/login",
+        "method": "POST",
+        "expected": "JSON response with authentication cookie",
+        "actual": "404 HTML page (Next.js not-found page)",
+        "severity": "CRITICAL",
+        "impact": "Admin login completely broken - cannot authenticate"
+      },
+      {
+        "endpoint": "/api/bookings",
+        "method": "GET",
+        "expected": "JSON response with bookings list",
+        "actual": "404 HTML page",
+        "severity": "CRITICAL",
+        "impact": "Admin panel cannot fetch bookings - core functionality broken"
+      },
+      {
+        "endpoint": "/api/bookings",
+        "method": "POST",
+        "expected": "JSON response for booking creation",
+        "actual": "404 HTML page",
+        "severity": "CRITICAL",
+        "impact": "Booking flow completely broken - cannot create bookings"
+      },
+      {
+        "endpoint": "/api/payments",
+        "method": "GET",
+        "expected": "JSON response with payments list",
+        "actual": "404 HTML page",
+        "severity": "CRITICAL",
+        "impact": "Admin panel cannot fetch payments"
+      },
+      {
+        "endpoint": "/api/invoices",
+        "method": "GET",
+        "expected": "JSON response with invoices list",
+        "actual": "404 HTML page",
+        "severity": "CRITICAL",
+        "impact": "Admin panel cannot fetch invoices"
+      },
+      {
+        "endpoint": "/api/cms/page-content",
+        "method": "GET",
+        "expected": "JSON response with CMS content",
+        "actual": "404 HTML page",
+        "severity": "CRITICAL",
+        "impact": "CMS functionality broken - cannot fetch page content"
+      },
+      {
+        "endpoint": "/api/availability",
+        "method": "GET",
+        "expected": "JSON response with availability data",
+        "actual": "404 HTML page",
+        "severity": "CRITICAL",
+        "impact": "Booking widget cannot check availability - booking flow broken"
+      },
+      {
+        "endpoint": "/api/create-payment-intent",
+        "method": "POST",
+        "expected": "JSON response with Stripe payment intent",
+        "actual": "404 HTML page",
+        "severity": "CRITICAL",
+        "impact": "Payment processing completely broken - cannot accept payments"
+      },
+      {
+        "endpoint": "/api/surf-camps",
+        "method": "GET",
+        "expected": "JSON response with surf camps list",
+        "actual": "404 HTML page",
+        "severity": "CRITICAL",
+        "impact": "Surf camps page broken - cannot display camps"
+      }
+    ],
+    "api_routes_with_auth_issues": [
+      {
+        "endpoint": "/api/rooms",
+        "method": "GET",
+        "expected": "Public JSON response (no auth required)",
+        "actual": "401 JSON error: 'Authentication failed: No authentication token provided'",
+        "severity": "CRITICAL",
+        "impact": "Public booking widget cannot fetch rooms - booking flow broken",
+        "code_location": "app/api/rooms/route.ts",
+        "issue": "Route requires authentication but should be public for booking widget"
+      }
+    ],
+    "working_endpoints": [
+      {
+        "endpoint": "/",
+        "method": "GET",
+        "status": "200 OK",
+        "note": "Homepage loads correctly"
+      }
+    ]
+  },
+  "codebase_analysis_findings": {
+    "missing_implementations": [
+      {
+        "feature": "Rate Limiting",
+        "evidence": "INVESTIGATION_REPORT.json mentions rate limiting config, but lib/rate-limiter.ts file does not exist",
+        "severity": "HIGH",
+        "impact": "API endpoints exposed to abuse/DDoS attacks"
+      },
+      {
+        "feature": "Password Reset",
+        "evidence": "No password reset endpoint or UI found in codebase",
+        "severity": "HIGH",
+        "impact": "Admins locked out cannot recover access"
+      },
+      {
+        "feature": "Guest Booking Modification",
+        "evidence": "No guest-facing booking modification endpoint or UI",
+        "severity": "MEDIUM",
+        "impact": "Guests must contact admin to modify bookings"
+      },
+      {
+        "feature": "Guest Booking Cancellation",
+        "evidence": "No guest-facing cancellation endpoint or UI",
+        "severity": "MEDIUM",
+        "impact": "Guests must contact admin to cancel bookings"
+      },
+      {
+        "feature": "Room Comparison",
+        "evidence": "No comparison component or feature found",
+        "severity": "LOW",
+        "impact": "Cannot compare rooms side-by-side"
+      }
+    ],
+    "partial_implementations": [
+      {
+        "feature": "Add-ons in Booking Flow",
+        "evidence": "AddOnsSelection component exists, but add-ons stored as text in notes rather than structured data",
+        "severity": "MEDIUM",
+        "impact": "Add-ons work but data structure limits reporting capabilities"
+      },
+      {
+        "feature": "Email Automation",
+        "evidence": "Scheduled email service exists but cron job configuration unclear",
+        "severity": "MEDIUM",
+        "impact": "Pre-arrival and post-stay emails may not be automatically sent"
+      },
+      {
+        "feature": "Test Coverage",
+        "evidence": "Tests exist but coverage percentage unclear",
+        "severity": "HIGH",
+        "impact": "Unknown test coverage may hide bugs"
+      },
+      {
+        "feature": "GDPR Compliance",
+        "evidence": "Privacy policy exists but full audit unclear, data export API unclear",
+        "severity": "HIGH",
+        "impact": "Potential GDPR compliance gaps"
+      },
+      {
+        "feature": "Accessibility",
+        "evidence": "Skip-to-content exists but full WCAG audit not complete",
+        "severity": "HIGH",
+        "impact": "Accessibility issues may exclude users"
+      }
+    ],
+    "code_quality_issues": [
+      {
+        "issue": "Syntax Error in Admin Login Route",
+        "file": "app/api/admin/login/route.ts",
+        "line": 29,
+        "evidence": "Missing opening brace after 'try' statement",
+        "severity": "CRITICAL",
+        "impact": "Admin login route may not compile correctly"
+      },
+      {
+        "issue": "TODO Comments Found",
+        "files": [
+          "app/api/contact/route.ts:60",
+          "app/api/errors/route.ts:18"
+        ],
+        "severity": "LOW",
+        "impact": "Incomplete features or error handling"
+      },
+      {
+        "issue": "Extensive Console Logging",
+        "evidence": "120+ files contain console.error/console.warn",
+        "severity": "MEDIUM",
+        "impact": "Performance overhead and potential information leakage"
+      }
+    ]
+  },
+  "deployment_issues": {
+    "nextjs_routing_problem": {
+      "symptom": "API routes return 404 HTML pages instead of JSON",
+      "possible_causes": [
+        "Next.js API routes not properly deployed to Netlify",
+        "Netlify routing configuration issue",
+        "Build configuration problem",
+        "API routes not included in build output"
+      ],
+      "severity": "CRITICAL",
+      "impact": "Entire API layer non-functional - admin panel and booking flow completely broken"
+    },
+    "authentication_misconfiguration": {
+      "endpoint": "/api/rooms",
+      "issue": "Public endpoint requires authentication",
+      "severity": "CRITICAL",
+      "impact": "Booking widget cannot fetch rooms without authentication token"
+    }
+  },
+  "recommendations": {
+    "immediate_critical_fixes": [
+      {
+        "priority": 1,
+        "issue": "Fix API route deployment",
+        "action": "Verify Next.js API routes are properly deployed to Netlify. Check netlify.toml configuration and build output.",
+        "impact": "Restores entire API functionality"
+      },
+      {
+        "priority": 2,
+        "issue": "Fix /api/rooms authentication",
+        "action": "Remove authentication requirement from /api/rooms route - it should be public for booking widget",
+        "impact": "Restores booking widget functionality"
+      },
+      {
+        "priority": 3,
+        "issue": "Fix syntax error in admin login route",
+        "action": "Add missing opening brace in app/api/admin/login/route.ts line 29",
+        "impact": "Fixes admin login compilation"
+      }
+    ],
+    "high_priority_fixes": [
+      {
+        "priority": 4,
+        "issue": "Implement rate limiting",
+        "action": "Create lib/rate-limiter.ts and apply to all API endpoints",
+        "impact": "Prevents API abuse"
+      },
+      {
+        "priority": 5,
+        "issue": "Implement password reset",
+        "action": "Add password reset flow with email verification",
+        "impact": "Allows admin account recovery"
+      },
+      {
+        "priority": 6,
+        "issue": "Verify email automation",
+        "action": "Verify cron job is configured and running for scheduled emails",
+        "impact": "Ensures automated emails are sent"
+      }
+    ]
+  },
+  "test_summary": {
+    "total_endpoints_tested": 10,
+    "endpoints_returning_404": 9,
+    "endpoints_with_auth_issues": 1,
+    "endpoints_working": 1,
+    "critical_issues_found": 11,
+    "high_priority_issues": 5,
+    "medium_priority_issues": 4,
+    "low_priority_issues": 2
+  },
+  "conclusion": {
+    "status": "CRITICAL_FAILURE",
+    "summary": "Production site has critical deployment issues - majority of API endpoints return 404 HTML pages instead of JSON responses. This indicates a fundamental Next.js routing/deployment problem. The site is effectively non-functional for admin operations and booking functionality.",
+    "blockers": [
+      "API routes not accessible (404 errors)",
+      "Admin login broken",
+      "Booking flow broken",
+      "Payment processing broken",
+      "CMS functionality broken"
+    ],
+    "next_steps": [
+      "1. Investigate Netlify deployment configuration",
+      "2. Verify Next.js API routes are included in build",
+      "3. Check netlify.toml for correct routing rules",
+      "4. Test API routes locally to verify they work",
+      "5. Fix /api/rooms authentication requirement",
+      "6. Fix syntax error in admin login route"
+    ]
+  }
+}
+

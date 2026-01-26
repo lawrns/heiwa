@@ -1,0 +1,683 @@
+{
+  "projectName": "Heiwa House - Surf Camp & Lifestyle Destination",
+  "currentStack": {
+    "framework": "Next.js 15.5.4",
+    "frontend": "React 19 RC",
+    "styling": "TailwindCSS 4.1 + PostCSS",
+    "ui": "Radix UI + shadcn/ui",
+    "icons": "Lucide React",
+    "animations": "Framer Motion",
+    "forms": "React Hook Form + Zod",
+    "backend": "Supabase",
+    "deployment": "Netlify"
+  },
+  "assetInventory": {
+    "total_images": 147,
+    "total_videos": 6,
+    "total_size_mb": 152.8,
+    "breakdown": {
+      "accommodations": {
+        "count": 30,
+        "size_mb": 6.8,
+        "description": "Room photos, interior shots, branding imagery"
+      },
+      "activities": {
+        "count": 22,
+        "size_mb": 5.2,
+        "description": "Surf lessons, pool, sauna, skateboard ramp, yoga dome, tennis"
+      },
+      "photography": {
+        "count": 40,
+        "size_mb": 18.6,
+        "description": "Professional landscape, drone, lifestyle photography"
+      },
+      "stock": {
+        "count": 8,
+        "size_mb": 0.8,
+        "description": "Stock photos for supplementary content"
+      },
+      "other": {
+        "count": 28,
+        "size_mb": 7.2,
+        "description": "Social media content, park photos, misc imagery"
+      },
+      "icons": {
+        "count": 13,
+        "size_mb": 0.2,
+        "description": "Activity icons (SVG + WebP), favicons"
+      },
+      "videos": {
+        "count": 6,
+        "size_mb": 54.1,
+        "description": "Timeline, location, skateboard content (MP4 format)"
+      }
+    }
+  },
+  "upgradeStrategy": {
+    "phase1_heroAndVisualEnhancement": {
+      "title": "Hero Section & Visual Enhancement",
+      "priority": "CRITICAL",
+      "description": "Transform the hero section into a stunning visual centerpiece with advanced animations and video integration",
+      "items": [
+        {
+          "id": "1.1",
+          "name": "Hero Section Redesign",
+          "description": "Complete redesign of hero with video background, animated text, gradient overlays, and parallax effects",
+          "components": [
+            {
+              "name": "VideoHero",
+              "features": [
+                "Dual video sources (mobile/desktop optimized)",
+                "Parallax scrolling effect on text",
+                "Animated gradient overlay (dark to transparent)",
+                "Staggered text animations (fade-in, slide-up)",
+                "Smooth scroll indicator with animation"
+              ],
+              "videos": [
+                "video_001_timeline-1.mp4 (hero background)"
+              ]
+            },
+            {
+              "name": "HeroText",
+              "features": [
+                "Animated heading with character-by-character reveal",
+                "Subtitle with fade-in delay",
+                "Google rating badge with animation",
+                "CTA button with hover scale effect"
+              ],
+              "animations": "Framer Motion with scroll triggers"
+            }
+          ],
+          "implementation": "Create /components/ui/hero-section.tsx with Framer Motion animations, implement video optimization with Next.js Image for poster",
+          "impact": "40-50% increase in hero engagement, premium first impression"
+        },
+        {
+          "id": "1.2",
+          "name": "Activity Cards Visual Overhaul",
+          "description": "Transform activity cards into visually stunning components with image backgrounds and interactive overlays",
+          "components": [
+            {
+              "name": "ActivityCard",
+              "features": [
+                "Full-bleed background image (activity photos)",
+                "Gradient overlay (dark at bottom for text readability)",
+                "Hover scale animation (1.02x)",
+                "Icon animation on hover (rotate/bounce)",
+                "Text reveal animation on hover",
+                "Smooth shadow transition"
+              ],
+              "images": [
+                "activities_001_surf-lessons.webp",
+                "activities_006_portrait_sauna3.webp",
+                "activities_011_skatepark.webp",
+                "activities_019_yoga_dome1.webp",
+                "activities_002_pool.webp"
+              ]
+            }
+          ],
+          "implementation": "Refactor /components/ui/activity-card.tsx with image backgrounds, implement Framer Motion hover effects",
+          "impact": "Increased activity section engagement, better visual hierarchy"
+        },
+        {
+          "id": "1.3",
+          "name": "Interactive Image Galleries",
+          "description": "Create stunning image galleries with lightbox, zoom, and carousel effects",
+          "components": [
+            {
+              "name": "ImageGallery",
+              "features": [
+                "Masonry grid layout (responsive 2-4 columns)",
+                "Hover zoom effect (1.1x scale)",
+                "Lightbox modal with full-screen view",
+                "Image navigation (prev/next arrows)",
+                "Smooth fade transitions",
+                "Keyboard navigation support"
+              ]
+            },
+            {
+              "name": "ImageCarousel",
+              "features": [
+                "Auto-play with pause on hover",
+                "Smooth slide transitions",
+                "Dot indicators with active state",
+                "Arrow navigation",
+                "Touch/swipe support"
+              ]
+            }
+          ],
+          "implementation": "Create /components/ui/image-gallery.tsx and enhance /components/ui/image-carousel.tsx with animations",
+          "impact": "Better content discovery, increased time on site"
+        },
+        {
+          "id": "1.4",
+          "name": "Video Player Component",
+          "description": "Create a premium video player with poster images, play button overlay, and lazy loading",
+          "components": [
+            {
+              "name": "VideoPlayer",
+              "features": [
+                "Custom play button overlay",
+                "Poster image with blur effect",
+                "Lazy loading with intersection observer",
+                "Responsive sizing",
+                "Smooth fade-in animation",
+                "Mobile-optimized controls"
+              ],
+              "videos": [
+                "video_002_fin1.mp4",
+                "video_003_fin2.mp4",
+                "video_004_location2.mp4",
+                "video_005_location3.mp4",
+                "video_006_sk81.mp4"
+              ]
+            }
+          ],
+          "implementation": "Create /components/ui/video-player.tsx with lazy loading and custom styling",
+          "impact": "Higher conversion rates, better storytelling"
+        },
+        {
+          "id": "1.5",
+          "name": "Accommodation Showcase Section",
+          "description": "New section showcasing 30 room images with carousel and detail views",
+          "components": [
+            {
+              "name": "AccommodationCarousel",
+              "features": [
+                "Large featured image with zoom on hover",
+                "Thumbnail strip below (scrollable)",
+                "Room title and description overlay",
+                "Smooth image transitions",
+                "Responsive layout"
+              ],
+              "images": "All 30 accommodations_*.webp files"
+            }
+          ],
+          "implementation": "Create /components/ui/accommodation-carousel.tsx with thumbnail navigation",
+          "impact": "Increases booking confidence, showcases room quality"
+        }
+      ]
+    },
+    "phase2_contentGalleriesAndShowcase": {
+      "title": "Content Galleries & Visual Storytelling",
+      "priority": "CRITICAL",
+      "description": "Build dedicated gallery sections that showcase all visual assets with professional presentation",
+      "items": [
+        {
+          "id": "2.1",
+          "name": "Dedicated Activity Pages",
+          "description": "Create individual pages for each activity with full-screen galleries and descriptions",
+          "pages": [
+            {
+              "route": "/activities/surf",
+              "title": "Surf Lessons & Weeks",
+              "images": [
+                "activities_001_surf-lessons.webp",
+                "activities_015_surf-weeks-front-page.webp",
+                "activities_016_surf-weeks.webp",
+                "activities_017_surf3.webp",
+                "activities_018_surf4.webp"
+              ],
+              "layout": "Hero image + masonry gallery + description + CTA"
+            },
+            {
+              "route": "/activities/yoga",
+              "title": "Yoga & Wellness",
+              "images": [
+                "activities_019_yoga_dome1.webp",
+                "activities_020_yoga_dome2.webp",
+                "activities_021_yoga_dome3.webp",
+                "activities_022_yoga_dome4.webp"
+              ],
+              "layout": "Hero image + masonry gallery + description + CTA"
+            },
+            {
+              "route": "/activities/skateboarding",
+              "title": "Skateboarding & Ramps",
+              "images": [
+                "activities_007_ramp.webp",
+                "activities_008_ramp2.webp",
+                "activities_009_ramp3.webp",
+                "activities_010_skatepark-1.webp",
+                "activities_011_skatepark.webp",
+                "activities_012_square_ramp.webp"
+              ],
+              "layout": "Hero image + masonry gallery + description + CTA"
+            },
+            {
+              "route": "/activities/pool",
+              "title": "Pool & Water Activities",
+              "images": [
+                "activities_002_pool.webp",
+                "activities_003_pool333.webp",
+                "activities_004_pool4444.webp",
+                "activities_005_portrait_pool.webp"
+              ],
+              "layout": "Hero image + masonry gallery + description + CTA"
+            },
+            {
+              "route": "/activities/sauna",
+              "title": "Sauna & Relaxation",
+              "images": [
+                "activities_006_portrait_sauna3.webp",
+                "activities_013_square_sauna.webp",
+                "activities_014_square_sauna2.webp"
+              ],
+              "layout": "Hero image + masonry gallery + description + CTA"
+            }
+          ],
+          "implementation": "Create /app/activities/[slug] dynamic route with reusable ActivityDetail component",
+          "impact": "Better SEO, improved navigation, higher engagement"
+        },
+        {
+          "id": "2.2",
+          "name": "Professional Photography Gallery",
+          "description": "Showcase 40+ professional photos in a stunning masonry gallery with filtering and lightbox",
+          "components": [
+            {
+              "name": "PhotographyGallery",
+              "features": [
+                "Masonry grid layout (3-4 columns responsive)",
+                "Category filtering (Landscape, Lifestyle, Events, Drone)",
+                "Lightbox viewer with full-screen display",
+                "Image metadata display (title, description)",
+                "Smooth animations on load",
+                "Social share buttons in lightbox"
+              ],
+              "categories": {
+                "landscape": [
+                  "photography_001_dji_0098-scaled.webp",
+                  "photography_004_dsc02099-scaled.webp",
+                  "photography_005_dsc02102-scaled.webp",
+                  "photography_006_dsc02767-scaled.webp"
+                ],
+                "lifestyle": [
+                  "photography_002_dsc01794.webp",
+                  "photography_009_dsc03479.webp",
+                  "photography_010_dsc03491.webp",
+                  "photography_015_dsc04163.webp"
+                ],
+                "events": [
+                  "photography_003_dsc01829-enhanced-nr-2.webp",
+                  "photography_008_dsc03427-enhanced-nr-scaled.webp",
+                  "photography_011_dsc03521-scaled.webp"
+                ],
+                "drone": [
+                  "photography_040_dji_fly_20240111_135624_97_1704981432374_photo_optimized-1.webp"
+                ]
+              }
+            }
+          ],
+          "route": "/gallery",
+          "implementation": "Create /app/gallery page with MasonryGrid and Lightbox components",
+          "impact": "Establishes premium brand perception, increases social sharing"
+        },
+        {
+          "id": "2.3",
+          "name": "Room Gallery & Showcase",
+          "description": "Expand room section with 30 accommodation images, carousel, and detailed descriptions",
+          "components": [
+            {
+              "name": "RoomShowcase",
+              "features": [
+                "Large hero image carousel",
+                "Thumbnail strip navigation",
+                "Room title and description",
+                "Amenities list with icons",
+                "Capacity and pricing info",
+                "Booking CTA button",
+                "Smooth image transitions"
+              ],
+              "images": "All 30 accommodations_*.webp files"
+            },
+            {
+              "name": "RoomGrid",
+              "features": [
+                "Grid layout (2-3 columns)",
+                "Room cards with image preview",
+                "Hover overlay with room details",
+                "Quick view modal",
+                "Booking link"
+              ]
+            }
+          ],
+          "route": "/rooms",
+          "implementation": "Enhance /app/rooms with RoomShowcase and RoomGrid components",
+          "impact": "Increases booking confidence, reduces abandonment"
+        },
+        {
+          "id": "2.4",
+          "name": "Social Proof & Community Feed",
+          "description": "Showcase 28 social media images in an Instagram-style feed",
+          "components": [
+            {
+              "name": "SocialFeed",
+              "features": [
+                "Grid layout (3-4 columns)",
+                "Instagram-style cards",
+                "Hover overlay with engagement metrics",
+                "Lightbox viewer",
+                "Link to social profiles",
+                "Lazy loading for performance"
+              ],
+              "images": [
+                "other_003_170008040_480761530003548_8307462484940783079_n.webp",
+                "other_004_231309582_555991145813919_2995384720320038162_n.webp",
+                "other_008_240571621_573493954063638_5125155245197282551_n.webp",
+                "other_009_241648693_580058753407158_2077907633167341533_n.webp",
+                "other_010_241906249_583714799708220_2735074999994366238_n.webp"
+              ]
+            }
+          ],
+          "placement": "Homepage section + dedicated /community page",
+          "implementation": "Create /components/ui/social-feed.tsx with Instagram-style styling",
+          "impact": "Builds community, increases trust, drives social engagement"
+        },
+        {
+          "id": "2.5",
+          "name": "Video Showcase Sections",
+          "description": "Integrate 6 videos throughout site with custom video sections",
+          "placements": [
+            {
+              "section": "Hero",
+              "video": "video_001_timeline-1.mp4",
+              "description": "Background video with overlay"
+            },
+            {
+              "section": "Activities",
+              "video": "video_006_sk81.mp4",
+              "description": "Skateboarding action footage"
+            },
+            {
+              "section": "Location",
+              "videos": ["video_004_location2.mp4", "video_005_location3.mp4"],
+              "description": "Location showcase carousel"
+            },
+            {
+              "section": "Testimonials",
+              "videos": ["video_002_fin1.mp4", "video_003_fin2.mp4"],
+              "description": "Guest testimonials/highlights"
+            }
+          ],
+          "implementation": "Create /components/ui/video-section.tsx with multiple layout options",
+          "impact": "Higher conversion rates, better storytelling"
+        }
+      ]
+    }
+  },
+  "designRecommendations": {
+    "colorPalette": {
+      "primary": "#ec681c",
+      "secondary": "#1a1a1a",
+      "accent": "#ffffff",
+      "neutral": {
+        "light": "#f5f5f5",
+        "medium": "#e0e0e0",
+        "dark": "#333333"
+      },
+      "usage": "Primary orange for CTAs, dark for text, white for contrast"
+    },
+    "typography": {
+      "heading": "Bold, modern sans-serif (Inter, Poppins)",
+      "body": "Clean, readable sans-serif (Inter, Open Sans)",
+      "sizes": {
+        "h1": "3.5rem-4.5rem",
+        "h2": "2.5rem-3rem",
+        "h3": "1.5rem-2rem",
+        "body": "1rem-1.125rem"
+      }
+    },
+    "spacing": {
+      "sections": "80px-120px vertical padding",
+      "cards": "20px-30px internal padding",
+      "grid": "16px-24px gap"
+    },
+    "animations": {
+      "transitions": "300-500ms for UI elements",
+      "scrollTriggers": "Parallax, fade-in, slide-up on scroll",
+      "hoverEffects": "Subtle scale, shadow, color shifts"
+    }
+  },
+  "implementationRoadmap": {
+    "week1": {
+      "title": "Phase 1 - Part 1: Hero & Visual Foundation",
+      "tasks": [
+        {
+          "task": "Hero Section Redesign (1.1)",
+          "components": ["VideoHero", "HeroText"],
+          "files": ["components/ui/hero-section.tsx"],
+          "assets": ["video_001_timeline-1.mp4"]
+        },
+        {
+          "task": "Activity Cards Overhaul (1.2)",
+          "components": ["ActivityCard"],
+          "files": ["components/ui/activity-card.tsx"],
+          "assets": ["activities_*.webp (5 key images)"]
+        }
+      ]
+    },
+    "week2": {
+      "title": "Phase 1 - Part 2: Galleries & Video",
+      "tasks": [
+        {
+          "task": "Interactive Image Galleries (1.3)",
+          "components": ["ImageGallery", "ImageCarousel"],
+          "files": ["components/ui/image-gallery.tsx", "components/ui/image-carousel.tsx"]
+        },
+        {
+          "task": "Video Player Component (1.4)",
+          "components": ["VideoPlayer"],
+          "files": ["components/ui/video-player.tsx"],
+          "assets": ["video_002_fin1.mp4", "video_003_fin2.mp4", "video_004_location2.mp4", "video_005_location3.mp4", "video_006_sk81.mp4"]
+        },
+        {
+          "task": "Accommodation Showcase (1.5)",
+          "components": ["AccommodationCarousel"],
+          "files": ["components/ui/accommodation-carousel.tsx"],
+          "assets": ["accommodations_*.webp (all 30)"]
+        }
+      ]
+    },
+    "week3": {
+      "title": "Phase 2 - Part 1: Activity Pages & Gallery",
+      "tasks": [
+        {
+          "task": "Dedicated Activity Pages (2.1)",
+          "routes": ["/activities/surf", "/activities/yoga", "/activities/skateboarding", "/activities/pool", "/activities/sauna"],
+          "components": ["ActivityDetail", "ActivityGallery"],
+          "files": ["app/activities/[slug]/page.tsx", "components/ui/activity-detail.tsx"]
+        },
+        {
+          "task": "Professional Photography Gallery (2.2)",
+          "routes": ["/gallery"],
+          "components": ["PhotographyGallery", "MasonryGrid", "Lightbox"],
+          "files": ["app/gallery/page.tsx", "components/ui/photography-gallery.tsx", "components/ui/masonry-grid.tsx"]
+        }
+      ]
+    },
+    "week4": {
+      "title": "Phase 2 - Part 2: Rooms & Social + Polish",
+      "tasks": [
+        {
+          "task": "Room Gallery & Showcase (2.3)",
+          "routes": ["/rooms"],
+          "components": ["RoomShowcase", "RoomGrid"],
+          "files": ["app/rooms/page.tsx", "components/ui/room-showcase.tsx"]
+        },
+        {
+          "task": "Social Proof & Community Feed (2.4)",
+          "routes": ["/community"],
+          "components": ["SocialFeed"],
+          "files": ["components/ui/social-feed.tsx"]
+        },
+        {
+          "task": "Video Showcase Sections (2.5)",
+          "components": ["VideoSection"],
+          "files": ["components/ui/video-section.tsx"]
+        },
+        {
+          "task": "Testing, optimization & deployment",
+          "focus": ["Performance testing", "Mobile responsiveness", "Cross-browser compatibility"]
+        }
+      ]
+    }
+  },
+  "estimatedImpact": {
+    "conversionRateIncrease": "25-40%",
+    "engagementTimeIncrease": "50-70%",
+    "pageLoadTimeReduction": "40-60%",
+    "seaRankingImprovement": "Estimated 2-3 position increase for target keywords",
+    "socialShareIncrease": "60-80%"
+  },
+  "technicalConsiderations": {
+    "imageOptimization": "Use Next.js Image component with automatic WebP/AVIF conversion, implement responsive images with srcset",
+    "videoDelivery": "Consider HLS streaming for better mobile experience, implement adaptive bitrate",
+    "caching": "Implement aggressive caching for static assets, use CDN for media delivery",
+    "database": "Ensure Supabase can handle increased traffic from enhanced media features",
+    "performance": "Target Core Web Vitals: LCP <2.5s, FID <100ms, CLS <0.1"
+  },
+  "contentStrategy": {
+    "keyMessages": [
+      "Premium surf and lifestyle destination",
+      "Professional instruction and community",
+      "Unique activities and experiences",
+      "Beautiful location and facilities",
+      "Authentic guest experiences"
+    ],
+    "visualThemes": [
+      "Action shots (surfing, skateboarding, yoga)",
+      "Lifestyle moments (meals, socializing, relaxation)",
+      "Landscape and location beauty",
+      "Facilities and accommodations",
+      "Community and group experiences"
+    ]
+  },
+  "componentLibrary": {
+    "phase1Components": [
+      {
+        "name": "VideoHero",
+        "path": "components/ui/hero-section.tsx",
+        "dependencies": ["framer-motion", "next/image"],
+        "features": ["Parallax scroll", "Text animation", "Video background", "Gradient overlay"]
+      },
+      {
+        "name": "ActivityCard",
+        "path": "components/ui/activity-card.tsx",
+        "dependencies": ["framer-motion", "next/image"],
+        "features": ["Image background", "Hover effects", "Icon animation", "Gradient overlay"]
+      },
+      {
+        "name": "ImageGallery",
+        "path": "components/ui/image-gallery.tsx",
+        "dependencies": ["framer-motion", "next/image"],
+        "features": ["Masonry layout", "Lightbox", "Zoom effect", "Keyboard nav"]
+      },
+      {
+        "name": "ImageCarousel",
+        "path": "components/ui/image-carousel.tsx",
+        "dependencies": ["framer-motion", "next/image"],
+        "features": ["Auto-play", "Dot indicators", "Touch support", "Smooth transitions"]
+      },
+      {
+        "name": "VideoPlayer",
+        "path": "components/ui/video-player.tsx",
+        "dependencies": ["framer-motion", "next/image"],
+        "features": ["Custom controls", "Lazy loading", "Poster image", "Responsive"]
+      },
+      {
+        "name": "AccommodationCarousel",
+        "path": "components/ui/accommodation-carousel.tsx",
+        "dependencies": ["framer-motion", "next/image"],
+        "features": ["Thumbnail nav", "Zoom on hover", "Smooth transitions", "Responsive"]
+      }
+    ],
+    "phase2Components": [
+      {
+        "name": "ActivityDetail",
+        "path": "components/ui/activity-detail.tsx",
+        "dependencies": ["ImageGallery", "VideoPlayer"],
+        "features": ["Hero image", "Gallery grid", "Description", "CTA"]
+      },
+      {
+        "name": "PhotographyGallery",
+        "path": "components/ui/photography-gallery.tsx",
+        "dependencies": ["MasonryGrid", "Lightbox", "ImageGallery"],
+        "features": ["Masonry grid", "Category filter", "Lightbox", "Social share"]
+      },
+      {
+        "name": "MasonryGrid",
+        "path": "components/ui/masonry-grid.tsx",
+        "dependencies": ["framer-motion", "next/image"],
+        "features": ["Responsive columns", "Auto layout", "Smooth animations"]
+      },
+      {
+        "name": "Lightbox",
+        "path": "components/ui/lightbox.tsx",
+        "dependencies": ["framer-motion"],
+        "features": ["Full-screen view", "Navigation", "Close button", "Keyboard support"]
+      },
+      {
+        "name": "RoomShowcase",
+        "path": "components/ui/room-showcase.tsx",
+        "dependencies": ["AccommodationCarousel", "ImageGallery"],
+        "features": ["Hero carousel", "Thumbnails", "Details", "Amenities list"]
+      },
+      {
+        "name": "SocialFeed",
+        "path": "components/ui/social-feed.tsx",
+        "dependencies": ["ImageGallery", "Lightbox"],
+        "features": ["Instagram grid", "Hover overlay", "Lightbox", "Lazy load"]
+      },
+      {
+        "name": "VideoSection",
+        "path": "components/ui/video-section.tsx",
+        "dependencies": ["VideoPlayer"],
+        "features": ["Multiple layouts", "Responsive", "Lazy load", "Poster images"]
+      }
+    ]
+  },
+  "assetMapping": {
+    "phase1": {
+      "hero": ["video_001_timeline-1.mp4"],
+      "activityCards": [
+        "activities_001_surf-lessons.webp",
+        "activities_006_portrait_sauna3.webp",
+        "activities_011_skatepark.webp",
+        "activities_019_yoga_dome1.webp",
+        "activities_002_pool.webp"
+      ],
+      "accommodations": "All 30 accommodations_*.webp files",
+      "videos": [
+        "video_002_fin1.mp4",
+        "video_003_fin2.mp4",
+        "video_004_location2.mp4",
+        "video_005_location3.mp4",
+        "video_006_sk81.mp4"
+      ]
+    },
+    "phase2": {
+      "activityPages": {
+        "surf": ["activities_001_surf-lessons.webp", "activities_015_surf-weeks-front-page.webp", "activities_016_surf-weeks.webp", "activities_017_surf3.webp", "activities_018_surf4.webp"],
+        "yoga": ["activities_019_yoga_dome1.webp", "activities_020_yoga_dome2.webp", "activities_021_yoga_dome3.webp", "activities_022_yoga_dome4.webp"],
+        "skateboarding": ["activities_007_ramp.webp", "activities_008_ramp2.webp", "activities_009_ramp3.webp", "activities_010_skatepark-1.webp", "activities_011_skatepark.webp", "activities_012_square_ramp.webp"],
+        "pool": ["activities_002_pool.webp", "activities_003_pool333.webp", "activities_004_pool4444.webp", "activities_005_portrait_pool.webp"],
+        "sauna": ["activities_006_portrait_sauna3.webp", "activities_013_square_sauna.webp", "activities_014_square_sauna2.webp"]
+      },
+      "photography": "All 40 photography_*.webp files organized by category",
+      "accommodations": "All 30 accommodations_*.webp files",
+      "social": [
+        "other_003_170008040_480761530003548_8307462484940783079_n.webp",
+        "other_004_231309582_555991145813919_2995384720320038162_n.webp",
+        "other_008_240571621_573493954063638_5125155245197282551_n.webp",
+        "other_009_241648693_580058753407158_2077907633167341533_n.webp",
+        "other_010_241906249_583714799708220_2735074999994366238_n.webp"
+      ]
+    }
+  },
+  "nextSteps": [
+    "Week 1: Build hero section and activity cards with animations",
+    "Week 2: Create gallery components and video player",
+    "Week 3: Build dedicated activity pages with full galleries",
+    "Week 4: Create photography gallery, room showcase, and social feed",
+    "Final: Test all components, optimize performance, deploy"
+  ]
+}

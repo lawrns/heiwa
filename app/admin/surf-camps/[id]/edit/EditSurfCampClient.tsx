@@ -1,0 +1,489 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react'
+import { ImageUpload } from '@/components/admin/ImageUpload'
+import { TaxCategorySelect } from '@/components/admin/TaxCategorySelect'
+
+interface SurfCampFormData {
+  name: string
+  description: string
+  start_date: string
+  end_date: string
+  max_participants: number
+  price: number
+  level: string
+  includes: string[]
+  images: string[]
+  is_active: boolean
+  tax_category_id: string | null
+}
+
+const surfLevels = ['Beginner', 'Intermediate', 'Advanced', 'All Levels']
+const commonIncludes = [
+  'Accommodation',
+  'Surf Lessons',
+  'Equipment Rental',
+  'Meals',
+  'Transportation',
+  'Yoga Classes',
+  'Skateboard Sessions',
+  'Photography',
+  'Video Analysis',
+  'Beach Cleanup',
+  'Cultural Activities',
+  'Airport Transfer',
+]
+
+export default function EditSurfCampClient({ id }: { id: string }) {
+  const router = useRouter()
+  const [formData, setFormData] = useState<SurfCampFormData>({
+    name: '',
+    description: '',
+    start_date: '',
+    end_date: '',
+    max_participants: 12,
+    price: 0,
+    level: 'All Levels',
+    includes: [],
+    images: [],
+    is_active: true,
+    tax_category_id: null,
+  })
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [newInclude, setNewInclude] = useState('')
+
+  useEffect(() => {
+    fetchSurfCamp()
+  }, [id])
+
+  const fetchSurfCamp = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/surf-camps/${id}`)
+      const data = await response.json()
+      
+      if (data.success && data.data.surf_camp) {
+        const camp = data.data.surf_camp
+        setFormData({
+          name: camp.name || '',
+          description: camp.description || '',
+          start_date: camp.start_date || '',
+          end_date: camp.end_date || '',
+          max_participants: camp.max_participants || 12,
+          price: camp.price || 0,
+          level: camp.level || 'All Levels',
+          includes: camp.includes || [],
+          images: camp.images || [],
+          is_active: camp.is_active !== undefined ? camp.is_active : true,
+          tax_category_id: camp.tax_category_id || null,
+        })
+      } else {
+        setError('Failed to fetch surf week')
+      }
+    } catch (err) {
+      setError('Error loading surf week')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const validateForm = () => {
+    if (!formData.name?.trim()) {
+      setError('Surf week name is required')
+      return false
+    }
+    if (!formData.start_date) {
+      setError('Start date is required')
+      return false
+    }
+    if (!formData.end_date) {
+      setError('End date is required')
+      return false
+    }
+    if (new Date(formData.end_date) <= new Date(formData.start_date)) {
+      setError('End date must be after start date')
+      return false
+    }
+    if (formData.max_participants <= 0) {
+      setError('Maximum participants must be greater than 0')
+      return false
+    }
+    if (formData.price < 0) {
+      setError('Price cannot be negative')
+      return false
+    }
+    return true
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSaving(true)
+    setError(null)
+
+    // Client-side validation
+    if (!validateForm()) {
+      setSaving(false)
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/surf-camps/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          tax_category_id: formData.tax_category_id,
+        }),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        router.push('/admin/surf-camps')
+        router.refresh()
+      } else {
+        // Provide more detailed error message
+        const errorMessage = data.error || data.message || 'Failed to update surf week'
+        setError(`${errorMessage}. Please check your input and try again.`)
+        console.error('Surf week update error:', data)
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Network error'
+      setError(`Failed to update surf week: ${errorMessage}. Please check your connection and try again.`)
+      console.error('Surf week update exception:', err)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleIncludeChange = (include: string, checked: boolean) => {
+    if (checked) {
+      setFormData(prev => ({
+        ...prev,
+        includes: [...prev.includes, include]
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        includes: prev.includes.filter(i => i !== include)
+      }))
+    }
+  }
+
+  const addCustomInclude = () => {
+    if (newInclude.trim() && !formData.includes.includes(newInclude.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        includes: [...prev.includes, newInclude.trim()]
+      }))
+      setNewInclude('')
+    }
+  }
+
+  const removeInclude = (include: string) => {
+    setFormData(prev => ({
+      ...prev,
+      includes: prev.includes.filter(i => i !== include)
+    }))
+  }
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
+          <div className="h-64 bg-gray-200 rounded-lg"></div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-8">
+      <div className="mb-8">
+        <div className="flex items-center gap-4 mb-4">
+          <Link
+            href="/admin/surf-camps"
+            className="inline-flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Surf Weeks
+          </Link>
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900">Edit Surf Week</h1>
+        <p className="text-gray-600 mt-2">Update surf week program details</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="max-w-4xl">
+        <div className="bg-white shadow rounded-lg">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-medium text-gray-900">Surf Week Information</h3>
+          </div>
+          
+          <div className="p-6 space-y-6">
+            {/* Basic Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Camp Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="e.g., Spring Surf Adventure"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="level" className="block text-sm font-medium text-gray-700 mb-2">
+                  Skill Level *
+                </label>
+                <select
+                  id="level"
+                  required
+                  value={formData.level}
+                  onChange={(e) => setFormData(prev => ({ ...prev, level: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {surfLevels.map((level) => (
+                    <option key={level} value={level}>{level}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                Description *
+              </label>
+              <textarea
+                id="description"
+                required
+                rows={4}
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Describe the surf week, what participants will learn, and the overall experience..."
+              />
+            </div>
+
+            {/* Dates */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="start_date" className="block text-sm font-medium text-gray-700 mb-2">
+                  Start Date *
+                </label>
+                <input
+                  type="date"
+                  id="start_date"
+                  required
+                  value={formData.start_date}
+                  onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="end_date" className="block text-sm font-medium text-gray-700 mb-2">
+                  End Date *
+                </label>
+                <input
+                  type="date"
+                  id="end_date"
+                  required
+                  value={formData.end_date}
+                  onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            {/* Capacity and Pricing */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="max_participants" className="block text-sm font-medium text-gray-700 mb-2">
+                  Max Participants *
+                </label>
+                <input
+                  type="number"
+                  id="max_participants"
+                  required
+                  min="1"
+                  max="50"
+                  value={formData.max_participants}
+                  onChange={(e) => setFormData(prev => ({ ...prev, max_participants: parseInt(e.target.value) }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+                  Price per Person (€) *
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  required
+                  min="0"
+                  step="0.01"
+                  value={formData.price}
+                  onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="450.00"
+                />
+              </div>
+
+              <TaxCategorySelect
+                value={formData.tax_category_id}
+                onChange={(taxCategoryId) => setFormData(prev => ({ ...prev, tax_category_id: taxCategoryId }))}
+                label="Tax Category"
+              />
+            </div>
+
+            {/* Includes */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                What's Included
+              </label>
+              
+              {/* Selected Includes */}
+              {formData.includes.length > 0 && (
+                <div className="mb-4">
+                  <div className="flex flex-wrap gap-2">
+                    {formData.includes.map((include) => (
+                      <span
+                        key={include}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                      >
+                        {include}
+                        <button
+                          type="button"
+                          onClick={() => removeInclude(include)}
+                          className="ml-1 text-blue-600 hover:text-blue-800"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Common Includes */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
+                {commonIncludes.map((include) => (
+                  <label key={include} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={formData.includes.includes(include)}
+                      onChange={(e) => handleIncludeChange(include, e.target.checked)}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-gray-700">{include}</span>
+                  </label>
+                ))}
+              </div>
+              
+              {/* Custom Include */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newInclude}
+                  onChange={(e) => setNewInclude(e.target.value)}
+                  placeholder="Add custom include..."
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      addCustomInclude()
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={addCustomInclude}
+                  className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Images */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Images
+              </label>
+              <ImageUpload
+                value={formData.images}
+                onChange={(urls) => setFormData(prev => ({ ...prev, images: urls }))}
+                maxFiles={10}
+                bucketName="surf-camp-images"
+                storagePath="gallery"
+                disabled={saving}
+              />
+            </div>
+
+            {/* Status */}
+            <div>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.is_active}
+                  onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm font-medium text-gray-700">Active (camp is available for booking)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="mt-8 flex justify-end gap-4">
+          <Link
+            href="/admin/surf-camps"
+            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+          >
+            Cancel
+          </Link>
+          <button
+            type="submit"
+            disabled={saving}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Save className="h-4 w-4" />
+            {saving ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+
+
+
+
+
+
+
