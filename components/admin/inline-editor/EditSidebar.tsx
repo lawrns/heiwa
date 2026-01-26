@@ -483,7 +483,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
 
   return (
     <>
-      <div className="fixed top-0 right-0 bottom-0 w-[420px] bg-white shadow-2xl z-[9999] flex flex-col">
+      <div className="fixed top-0 right-0 bottom-0 w-[420px] bg-white shadow-2xl z-[99999] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b bg-gray-50">
           <h2 className="font-semibold text-gray-900">
@@ -734,7 +734,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
 
       {/* Add Section Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center">
+        <div className="fixed inset-0 z-[100000] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50" onClick={() => setShowAddModal(false)} />
           <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md m-4 max-h-[80vh] flex flex-col">
             <div className="flex items-center justify-between px-4 py-3 border-b">
@@ -766,7 +766,7 @@ export function EditSidebar({ pageSlug, onClose }: EditSidebarProps) {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center">
+        <div className="fixed inset-0 z-[100000] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50" onClick={() => setDeleteConfirm(null)} />
           <div className="relative bg-white rounded-lg shadow-xl w-full max-w-sm m-4 p-6">
             <div className="flex items-center gap-3 mb-4">
