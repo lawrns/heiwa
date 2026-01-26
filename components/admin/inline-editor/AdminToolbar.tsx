@@ -74,7 +74,7 @@ export function AdminToolbar() {
   return (
     <>
       {/* Floating bottom toolbar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900 text-white shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 z-[9999] bg-gray-900 text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-green-500" />
