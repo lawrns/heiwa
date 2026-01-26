@@ -60,7 +60,7 @@ interface EditSidebarProps {
 const SECTION_TEMPLATES: Record<string, { name: string; defaultContent: Record<string, unknown> }> = {
   hero: {
     name: 'Hero',
-    defaultContent: { title: 'New Hero Section', subtitle: '', description: '', video_url: '', image_url: '' },
+    defaultContent: { title: 'New Hero Section', subtitle: '', description: '', videoUrl: '', imageUrl: '' },
   },
   about: {
     name: 'About / Cards',
@@ -100,7 +100,7 @@ const SECTION_TEMPLATES: Record<string, { name: string; defaultContent: Record<s
   },
   activity_highlight: {
     name: 'Experience Highlight',
-    defaultContent: { title: '', description: '', image: '', link: '' },
+    defaultContent: { title: '', description: '', videoUrl: '', videoPoster: '', carouselImages: [], reversed: false },
   },
   activity_grid: {
     name: 'Experience Grid',

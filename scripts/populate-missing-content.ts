@@ -170,11 +170,11 @@ const ACTIVITY_HIGHLIGHTS = [
   {
     title: 'Massage & Bodywork',
     description: 'Professional massage therapy to complement your active lifestyle. Deep tissue, sports massage, and relaxation treatments available.',
-    videoUrl: '/optimized/videos/massage-video.mp4',
-    videoPoster: '/images/massage-therapy.jpg',
+    videoUrl: '',
+    videoPoster: '/images/DSF8619-1.jpg',
     carouselImages: [
-      '/images/massage-1.jpg',
-      '/images/massage-2.jpg'
+      '/images/yoga_dome3.jpg',
+      '/images/yoga_dome4.jpg'
     ],
     reversed: true
   },
@@ -182,11 +182,11 @@ const ACTIVITY_HIGHLIGHTS = [
     title: 'Breathwork & Meditation',
     description: 'Guided breathwork sessions and meditation practices to reduce stress, increase focus, and connect with your inner self.',
     videoUrl: null,
-    videoPoster: '/images/meditation.jpg',
+    videoPoster: '/images/yoga_dome2.jpg',
     carouselImages: [
-      '/images/meditation-1.jpg',
-      '/images/meditation-2.jpg',
-      '/images/meditation-3.jpg'
+      '/images/DSC03491.jpg',
+      '/images/DSC04163.jpg',
+      '/images/yoga_dome1.jpg'
     ],
     reversed: false
   },
@@ -194,10 +194,10 @@ const ACTIVITY_HIGHLIGHTS = [
     title: 'Sound Healing',
     description: 'Experience the therapeutic power of sound with crystal bowls, gongs, and harmonic frequencies for deep relaxation.',
     videoUrl: null,
-    videoPoster: '/images/sound-healing.jpg',
+    videoPoster: '/images/yoga_dome1.jpg',
     carouselImages: [
-      '/images/sound-healing-1.jpg',
-      '/images/sound-healing-2.jpg'
+      '/images/Freedomroutes-rooms-1.jpg',
+      '/images/yoga_dome2.jpg'
     ],
     reversed: true
   }

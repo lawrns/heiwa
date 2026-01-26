@@ -56,8 +56,8 @@ export function HeroEditor({ content, onChange }: HeroEditorProps) {
         </label>
         <input
           type="url"
-          value={(content.video_url as string) || ''}
-          onChange={e => updateField('video_url', e.target.value)}
+          value={(content.videoUrl as string) || ''}
+          onChange={e => updateField('videoUrl', e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-[border-color,box-shadow] duration-200"
           placeholder="https://..."
         />
@@ -65,8 +65,8 @@ export function HeroEditor({ content, onChange }: HeroEditorProps) {
 
       <ImagePicker
         label="Image (fallback)"
-        value={(content.image_url as string) || ''}
-        onChange={url => updateField('image_url', url)}
+        value={(content.imageUrl as string) || ''}
+        onChange={url => updateField('imageUrl', url)}
         placeholder="Select fallback image..."
       />
 
