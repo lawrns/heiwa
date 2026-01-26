@@ -30,5 +30,25 @@ public/videos.zip
 *.avi
 *.mkv
 
+# Test artifacts
+playwright-report/
+.playwright-mcp/
+coverage/
+test-results-*/
+*.log
+
+# Build artifacts
+.next/
+tsconfig.tsbuildinfo
+
+# Screenshots and temporary files
+still/
+png/
+screenshots/
+*.pdf
+
+# Document files (keep in separate docs repo)
+*.docx
+
 .kluster
 .cursor/
