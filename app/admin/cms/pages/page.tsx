@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 // Link import removed - using router navigation
-import { FileText, Edit, Plus, Eye, Wand2 } from 'lucide-react'
+import { FileText, Plus, Eye, PencilLine } from 'lucide-react'
 import { CMSLayout } from '@/components/admin/cms/CMSLayout'
 import { CMSCard } from '@/components/admin/cms/CMSCard'
 import { formatDateCompact } from '@/lib/utils'
@@ -70,6 +70,30 @@ const pages: PageData[] = [
     slug: 'contact',
     title: 'Contact',
     description: 'Contact information, location, and inquiry forms',
+    sectionCount: 0,
+    lastModified: 'Never',
+    status: 'published'
+  },
+  {
+    slug: 'the-spot',
+    title: 'The Spot',
+    description: 'Information about the surf spot and location',
+    sectionCount: 0,
+    lastModified: 'Never',
+    status: 'published'
+  },
+  {
+    slug: 'terms',
+    title: 'Terms & Conditions',
+    description: 'Legal terms and conditions for the website',
+    sectionCount: 0,
+    lastModified: 'Never',
+    status: 'published'
+  },
+  {
+    slug: 'privacy',
+    title: 'Privacy Policy',
+    description: 'Privacy policy and data handling information',
     sectionCount: 0,
     lastModified: 'Never',
     status: 'published'
@@ -198,25 +222,20 @@ export default function CMSPagesPage() {
                 ]}
                 actions={[
                   {
-                    label: 'Visual Editor',
-                    icon: <Wand2 className="w-4 h-4" />,
+                    label: 'Edit Page',
+                    icon: <PencilLine className="w-4 h-4" />,
                     variant: 'primary',
                     href: `/${page.slug === 'homepage' ? '' : page.slug}`
                   },
                   {
-                    label: 'Form Editor',
-                    icon: <Edit className="w-4 h-4" />,
-                    variant: 'secondary',
-                    href: page.slug === 'homepage' ? '/admin/homepage' : `/admin/cms/pages/${page.slug}`
-                  },
-                  {
-                    label: 'View',
+                    label: 'Preview',
                     icon: <Eye className="w-4 h-4" />,
                     variant: 'secondary',
-                    href: `/${page.slug === 'homepage' ? '' : page.slug}`
+                    href: `/${page.slug === 'homepage' ? '' : page.slug}`,
+                    target: '_blank'
                   }
                 ]}
-                href={page.slug === 'homepage' ? '/admin/homepage' : `/admin/cms/pages/${page.slug}`}
+                href={`/${page.slug === 'homepage' ? '' : page.slug}`}
               />
             )
           })}

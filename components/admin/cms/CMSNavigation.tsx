@@ -3,13 +3,12 @@
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import { 
-  FileText, 
-  MessageSquare, 
-  HelpCircle, 
-  BarChart3, 
+import {
+  FileText,
+  MessageSquare,
+  HelpCircle,
+  BarChart3,
   Settings,
-  ChevronRight,
   Home
 } from 'lucide-react'
 
@@ -30,44 +29,8 @@ const navigation: NavItem[] = [
   {
     title: 'Pages',
     href: '/admin/cms/pages',
-    icon: FileText,
-    children: [
-      {
-        title: 'Flow',
-        href: '/admin/cms/pages/flow',
-        icon: ChevronRight
-      },
-      {
-        title: 'Play',
-        href: '/admin/cms/pages/play',
-        icon: ChevronRight
-      },
-      {
-        title: 'Surf',
-        href: '/admin/cms/pages/surf',
-        icon: ChevronRight
-      },
-      {
-        title: 'Surf Weeks',
-        href: '/admin/cms/pages/surf-weeks',
-        icon: ChevronRight
-      },
-      {
-        title: 'The Spot',
-        href: '/admin/cms/pages/the-spot',
-        icon: ChevronRight
-      },
-      {
-        title: 'About',
-        href: '/admin/cms/pages/about',
-        icon: ChevronRight
-      },
-      {
-        title: 'Contact',
-        href: '/admin/cms/pages/contact',
-        icon: ChevronRight
-      }
-    ]
+    icon: FileText
+    // Individual page links removed - edit pages using inline editor on live pages
   },
   {
     title: 'Testimonials',

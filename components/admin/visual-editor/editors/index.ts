@@ -1,6 +1,0 @@
-export { HeroEditor } from './HeroEditor'
-export { IntroEditor } from './IntroEditor'
-export { ExperienceHighlightEditor } from './ExperienceHighlightEditor'
-export { ExperienceGridEditor } from './ExperienceGridEditor'
-export { FAQEditor } from './FAQEditor'
-export { CTAEditor } from './CTAEditor'

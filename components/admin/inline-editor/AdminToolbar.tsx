@@ -21,6 +21,8 @@ function getPageSlug(pathname: string): string | null {
   if (pathname === '/the-spot') return 'the-spot'
   if (pathname === '/about') return 'about'
   if (pathname === '/surf-weeks') return 'surf-weeks'
+  if (pathname === '/terms') return 'terms'
+  if (pathname === '/privacy') return 'privacy'
 
   return null
 }

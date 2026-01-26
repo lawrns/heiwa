@@ -11,7 +11,7 @@ import {
   Package,
   Receipt,
   Image,
-  LucideIcon
+  type LucideIcon
 } from 'lucide-react'
 
 export interface NavigationItem {
@@ -103,12 +103,6 @@ export const cmsNavigationItems: NavigationItem[] = [
     href: '/admin/cms/pages',
     icon: FileText,
     description: 'Manage website pages'
-  },
-  {
-    name: 'Homepage',
-    href: '/admin/homepage',
-    icon: Home,
-    description: 'Edit homepage sections'
   },
   {
     name: 'Testimonials',

@@ -1,6 +1,8 @@
-import CmsPageClient from './CmsPageClient'
+import { redirect } from 'next/navigation'
 
-export default async function CmsPage({ params }: { params: Promise<{ slug: string }> }) {
+// Redirect to inline editor on live page
+export default async function CmsPageRedirect({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  return <CmsPageClient slug={slug} />
+  // Redirect to the live page where AdminToolbar provides inline editing
+  redirect(slug === 'homepage' ? '/' : `/${slug}`)
 }
